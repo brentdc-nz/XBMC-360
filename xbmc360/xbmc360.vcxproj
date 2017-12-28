@@ -1,0 +1,391 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="CodeAnalysis|Xbox 360">
+      <Configuration>CodeAnalysis</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Xbox 360">
+      <Configuration>Debug</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Profile|Xbox 360">
+      <Configuration>Profile</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Profile_FastCap|Xbox 360">
+      <Configuration>Profile_FastCap</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Xbox 360">
+      <Configuration>Release</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_LTCG|Xbox 360">
+      <Configuration>Release_LTCG</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{6D8604EB-029E-4096-A902-E5002DD822F8}</ProjectGuid>
+    <Keyword>Xbox360Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='CodeAnalysis|Xbox 360'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Xbox 360'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile_FastCap|Xbox 360'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='CodeAnalysis|Xbox 360'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Profile|Xbox 360'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Profile_FastCap|Xbox 360'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='CodeAnalysis|Xbox 360'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Xbox 360'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile_FastCap|Xbox 360'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <ExceptionHandling>false</ExceptionHandling>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PreprocessorDefinitions>_DEBUG;_XBOX</PreprocessorDefinitions>
+      <CallAttributedProfiling>Callcap</CallAttributedProfiling>
+      <AdditionalIncludeDirectories>..\xbox360 ffmpeg\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
+      <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirenderd.lib;xmediad2.lib;libavformat.lib;libavfilter.lib;libavutil.lib;libswscale.lib;libavcodec.lib;pthreads.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\xbox360 ffmpeg\vcproj\Xbox 360\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <Deploy>
+      <DeploymentType>CopyToHardDrive</DeploymentType>
+    </Deploy>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='CodeAnalysis|Xbox 360'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <ExceptionHandling>false</ExceptionHandling>
+      <MinimalRebuild>true</MinimalRebuild>
+      <PREfast>AnalyzeOnly</PREfast>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PreprocessorDefinitions>_DEBUG;_XBOX</PreprocessorDefinitions>
+      <CallAttributedProfiling>Callcap</CallAttributedProfiling>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
+      <AdditionalDependencies>xapilibd.lib;d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xboxkrnl.lib;xnetd.lib;xaudiod2.lib;xactd3.lib;x3daudiod.lib;xmcored.lib;xbdm.lib;vcompd.lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Xbox 360'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <ExceptionHandling>false</ExceptionHandling>
+      <StringPooling>true</StringPooling>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PreprocessorDefinitions>NDEBUG;_XBOX;PROFILE</PreprocessorDefinitions>
+      <CallAttributedProfiling>Callcap</CallAttributedProfiling>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
+      <IgnoreSpecificDefaultLibraries>xapilib.lib</IgnoreSpecificDefaultLibraries>
+      <OptimizeReferences>true</OptimizeReferences>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
+      <SetChecksum>true</SetChecksum>
+      <AdditionalDependencies>xapilibi.lib;d3d9i.lib;d3dx9.lib;xgraphics.lib;xboxkrnl.lib;xnet.lib;xaudio2.lib;xact3i.lib;x3daudioi.lib;xmcorei.lib;xbdm.lib;vcomp.lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile_FastCap|Xbox 360'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <ExceptionHandling>false</ExceptionHandling>
+      <StringPooling>true</StringPooling>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CallAttributedProfiling>Fastcap</CallAttributedProfiling>
+      <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PreprocessorDefinitions>NDEBUG;_XBOX;PROFILE;FASTCAP</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
+      <SetChecksum>true</SetChecksum>
+      <AdditionalDependencies>xapilib.lib;d3d9.lib;d3dx9.lib;xgraphics.lib;xboxkrnl.lib;xnet.lib;xaudio2.lib;xact3.lib;x3daudio.lib;xmcore.lib;vcomp.lib;xbdm.lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <StringPooling>true</StringPooling>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <ExceptionHandling>false</ExceptionHandling>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PreprocessorDefinitions>NDEBUG;_XBOX</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\xbox360 ffmpeg\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
+      <SetChecksum>true</SetChecksum>
+      <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirenderd.lib;xmediad2.lib;libavformat.lib;libavfilter.lib;libavutil.lib;libswscale.lib;libavcodec.lib;pthreads.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\xbox360 ffmpeg\vcproj\Xbox 360\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <Deploy>
+      <DeploymentType>CopyToHardDrive</DeploymentType>
+    </Deploy>
+    <ImageXex>
+      <HeapSize>
+      </HeapSize>
+    </ImageXex>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <StringPooling>true</StringPooling>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
+      <ExceptionHandling>false</ExceptionHandling>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PreprocessorDefinitions>NDEBUG;_XBOX;LTCG</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
+      <SetChecksum>true</SetChecksum>
+      <AdditionalDependencies>xapilib.lib;d3d9ltcg.lib;d3dx9.lib;xgraphics.lib;xboxkrnl.lib;xnet.lib;xaudio2.lib;xact3ltcg.lib;x3daudioltcg.lib;xmcoreltcg.lib;vcomp.lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="Application.h" />
+    <ClInclude Include="ButtonTranslator.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDAudioDevice.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDClock.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDCodecs\DVDAudioCodec.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDCodecs\DVDAudioCodecFFmpeg.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDCodecs\DVDCodecUtils.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDCodecs\DVDVideoCodec.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDCodecs\DVDVideoCodecFFmpeg.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDDemuxers\DVDDemux.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDDemuxers\DVDDemuxFFmpeg.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDDemuxers\DVDDemuxUtils.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDMessage.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDMessageQueue.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDPlayer.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDPlayerAudio.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDPlayerVideo.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDStreamInfo.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDUtils\memutil.h" />
+    <ClInclude Include="cores\IPlayer.h" />
+    <ClInclude Include="cores\VideoRenderers\BaseRenderer.h" />
+    <ClInclude Include="cores\VideoRenderers\RenderManager.h" />
+    <ClInclude Include="cores\VideoRenderers\RGBRenderer.h" />
+    <ClInclude Include="guilib\GraphicContext.h" />
+    <ClInclude Include="guilib\GUIButtonControl.h" />
+    <ClInclude Include="guilib\GUIControl.h" />
+    <ClInclude Include="guilib\GUIControlFactory.h" />
+    <ClInclude Include="guilib\GUID3DTexture.h" />
+    <ClInclude Include="guilib\GUIFont.h" />
+    <ClInclude Include="guilib\GUIFontManager.h" />
+    <ClInclude Include="guilib\GUIImage.h" />
+    <ClInclude Include="guilib\GUIIncludes.h" />
+    <ClInclude Include="guilib\GUIInfoManager.h" />
+    <ClInclude Include="guilib\GUIInfoTypes.h" />
+    <ClInclude Include="guilib\GUILabel.h" />
+    <ClInclude Include="guilib\GUILabelControl.h" />
+    <ClInclude Include="guilib\GUIMessage.h" />
+    <ClInclude Include="guilib\GUITexture.h" />
+    <ClInclude Include="guilib\GUIUserMessage.h" />
+    <ClInclude Include="guilib\GUIVideoControl.h" />
+    <ClInclude Include="guilib\GUIWindow.h" />
+    <ClInclude Include="guilib\GUIWindowManager.h" />
+    <ClInclude Include="guilib\IMsgTargetCallback.h" />
+    <ClInclude Include="guilib\Key.h" />
+    <ClInclude Include="guilib\SkinInfo.h" />
+    <ClInclude Include="guilib\TextureManager.h" />
+    <ClInclude Include="guilib\tinyxml\tinystr.h" />
+    <ClInclude Include="guilib\tinyxml\tinyxml.h" />
+    <ClInclude Include="guilib\windows\GUIWindowFullScreen.h" />
+    <ClInclude Include="guilib\windows\GUIWindowHome.h" />
+    <ClInclude Include="guilib\windows\GUIWindowSettings.h" />
+    <ClInclude Include="guilib\windows\GUIWindowVideoFiles.h" />
+    <ClInclude Include="guilib\XMLUtils.h" />
+    <ClInclude Include="GUISettings.h" />
+    <ClInclude Include="utils\CriticalSection.h" />
+    <ClInclude Include="utils\Event.h" />
+    <ClInclude Include="utils\log.h" />
+    <ClInclude Include="utils\SharedSection.h" />
+    <ClInclude Include="utils\SingleLock.h" />
+    <ClInclude Include="utils\stdafx.h" />
+    <ClInclude Include="utils\StdString.h" />
+    <ClInclude Include="utils\StringUtils.h" />
+    <ClInclude Include="utils\Thread.h" />
+    <ClInclude Include="utils\TimeUtils.h" />
+    <ClInclude Include="utils\URIUtils.h" />
+    <ClInclude Include="utils\Util.h" />
+    <ClInclude Include="XBApplicationEx.h" />
+    <ClInclude Include="xbox\XBInput.h" />
+    <ClInclude Include="xbox\XBKernalExports.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Application.cpp">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">..\xbox360 ffmpeg\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <ClCompile Include="ButtonTranslator.cpp" />
+    <ClCompile Include="cores\DVDPlayer\DVDAudioDevice.cpp" />
+    <ClCompile Include="cores\DVDPlayer\DVDClock.cpp" />
+    <ClCompile Include="cores\DVDPlayer\DVDCodecs\DVDAudioCodecFFmpeg.cpp" />
+    <ClCompile Include="cores\DVDPlayer\DVDCodecs\DVDCodecUtils.cpp" />
+    <ClCompile Include="cores\DVDPlayer\DVDCodecs\DVDVideoCodecFFmpeg.cpp" />
+    <ClCompile Include="cores\DVDPlayer\DVDDemuxers\DVDDemuxFFmpeg.cpp" />
+    <ClCompile Include="cores\DVDPlayer\DVDDemuxers\DVDDemuxUtils.cpp" />
+    <ClCompile Include="cores\DVDPlayer\DVDMessage.cpp" />
+    <ClCompile Include="cores\DVDPlayer\DVDMessageQueue.cpp" />
+    <ClCompile Include="cores\DVDPlayer\DVDPlayer.cpp" />
+    <ClCompile Include="cores\DVDPlayer\DVDPlayerAudio.cpp" />
+    <ClCompile Include="cores\DVDPlayer\DVDPlayerVideo.cpp" />
+    <ClCompile Include="cores\DVDPlayer\DVDStreamInfo.cpp" />
+    <ClCompile Include="cores\DVDPlayer\DVDUtils\memutil.cpp" />
+    <ClCompile Include="cores\VideoRenderers\RenderManager.cpp" />
+    <ClCompile Include="cores\VideoRenderers\RGBRenderer.cpp" />
+    <ClCompile Include="guilib\GraphicContext.cpp" />
+    <ClCompile Include="guilib\GUIButtonControl.cpp" />
+    <ClCompile Include="guilib\GUIControl.cpp" />
+    <ClCompile Include="guilib\GUIControlFactory.cpp" />
+    <ClCompile Include="guilib\GUID3DTexture.cpp" />
+    <ClCompile Include="guilib\GUIFont.cpp" />
+    <ClCompile Include="guilib\GUIFontManager.cpp" />
+    <ClCompile Include="guilib\GUIImage.cpp" />
+    <ClCompile Include="guilib\GUIIncludes.cpp" />
+    <ClCompile Include="guilib\GUIInfoManager.cpp" />
+    <ClCompile Include="guilib\GUIInfoTypes.cpp" />
+    <ClCompile Include="guilib\GUILabel.cpp" />
+    <ClCompile Include="guilib\GUILabelControl.cpp" />
+    <ClCompile Include="guilib\GUIMessage.cpp" />
+    <ClCompile Include="guilib\GUITexture.cpp" />
+    <ClCompile Include="guilib\GUIVideoControl.cpp" />
+    <ClCompile Include="guilib\GUIWindow.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIWindowManager.cpp" />
+    <ClCompile Include="guilib\SkinInfo.cpp" />
+    <ClCompile Include="guilib\TextureManager.cpp" />
+    <ClCompile Include="guilib\tinyxml\tinystr.cpp" />
+    <ClCompile Include="guilib\tinyxml\tinyxml.cpp" />
+    <ClCompile Include="guilib\tinyxml\tinyxmlerror.cpp" />
+    <ClCompile Include="guilib\tinyxml\tinyxmlparser.cpp" />
+    <ClCompile Include="guilib\windows\GUIWindowFullScreen.cpp" />
+    <ClCompile Include="guilib\windows\GUIWindowHome.cpp" />
+    <ClCompile Include="guilib\windows\GUIWindowSettings.cpp" />
+    <ClCompile Include="guilib\windows\GUIWindowVideoFiles.cpp" />
+    <ClCompile Include="guilib\XMLUtils.cpp" />
+    <ClCompile Include="GUISettings.cpp" />
+    <ClCompile Include="utils\CriticalSection.cpp" />
+    <ClCompile Include="utils\Event.cpp" />
+    <ClCompile Include="utils\log.cpp" />
+    <ClCompile Include="utils\SharedSection.cpp" />
+    <ClCompile Include="utils\SingleLock.cpp" />
+    <ClCompile Include="utils\stdafx.cpp" />
+    <ClCompile Include="utils\StringUtils.cpp" />
+    <ClCompile Include="utils\Thread.cpp" />
+    <ClCompile Include="utils\TimeUtils.cpp" />
+    <ClCompile Include="utils\URIUtils.cpp" />
+    <ClCompile Include="utils\Util.cpp" />
+    <ClCompile Include="XBApplicationEx.cpp" />
+    <ClCompile Include="xbmc.cpp" />
+    <ClCompile Include="xbox\XBInput.cpp" />
+    <ClCompile Include="xbox\XBKernalExports.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

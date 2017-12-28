@@ -1,0 +1,485 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files\cores">
+      <UniqueIdentifier>{aa9ad487-6568-42f6-a1d2-2f9da2664623}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\cores">
+      <UniqueIdentifier>{c8859a8a-39d3-447d-9ce9-2d014a1787d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\guilib">
+      <UniqueIdentifier>{76e066d7-d0a8-49dd-b414-cf5607b65dcb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\guilib">
+      <UniqueIdentifier>{22d68bdc-6100-4316-985e-6b510156fcc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\utils">
+      <UniqueIdentifier>{60bdde72-fc90-4560-9eb2-d10cf623af4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\utils">
+      <UniqueIdentifier>{1e3797b2-4d9e-4a0a-8c9c-50a8b67d0a10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\cores\DVDPlayer">
+      <UniqueIdentifier>{d944252f-4cdc-46f7-8dd9-be64438bce56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\cores\DVDPlayer">
+      <UniqueIdentifier>{39570759-6881-4c13-9c23-08b4b8cb9bfd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\cores\VideoRenderers">
+      <UniqueIdentifier>{8dc3f6c2-a93c-4d54-90b2-291b7598a9b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\cores\VideoRenderers">
+      <UniqueIdentifier>{25977d9c-2d43-4374-bda3-1abdab077030}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\cores\DVDPlayer\DVDCodecs">
+      <UniqueIdentifier>{2e7f0d19-c56b-46ab-8f9c-9c57d2bb76ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\cores\DVDPlayer\DVDCodecs">
+      <UniqueIdentifier>{5720bf70-e6bc-4536-966a-5dfc3d8ea859}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\cores\DVDPlayer\DVDDemuxers">
+      <UniqueIdentifier>{2d4b5751-fe92-4ea5-b04e-0b0948cc2a2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\cores\DVDPlayer\DVDDemuxers">
+      <UniqueIdentifier>{c06db60f-8638-4009-a657-5c09a974393d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\cores\DVDPlayer\DVDInputStreams">
+      <UniqueIdentifier>{66d17660-cab4-49e6-8bde-1ddd69559039}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\cores\DVDPlayer\DVDInputStreams">
+      <UniqueIdentifier>{223abd07-ec4a-415d-8cda-7131325d8f42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\cores\DVDPlayer\DVDUtils">
+      <UniqueIdentifier>{4bac87b1-a8e4-45e8-9dcc-6d592955fa9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\cores\DVDPlayer\DVDUtils">
+      <UniqueIdentifier>{b5df6486-e9d3-445b-a016-12dcf98c1f0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\xbox">
+      <UniqueIdentifier>{37bf5306-7efa-43c3-9a0d-b4565108be89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\xbox">
+      <UniqueIdentifier>{3cbccd79-4624-41b5-98f2-3d88ebe25230}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\guilib\windows">
+      <UniqueIdentifier>{bab4bcc5-b048-422f-8a43-eb0793841b1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\guilib\windows">
+      <UniqueIdentifier>{90192d1f-369d-449a-981e-c71e77b5b629}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\guilib\tinyxml">
+      <UniqueIdentifier>{c875e4c5-a6b1-49e9-9678-f85336c26529}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\guilib\tinyxml">
+      <UniqueIdentifier>{8365e199-d8b6-46a1-8785-ec6532442eaf}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Application.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="XBApplicationEx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\DVDPlayer\DVDAudioDevice.h">
+      <Filter>Header Files\cores\DVDPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\DVDPlayer\DVDClock.h">
+      <Filter>Header Files\cores\DVDPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\DVDPlayer\DVDMessage.h">
+      <Filter>Header Files\cores\DVDPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\DVDPlayer\DVDMessageQueue.h">
+      <Filter>Header Files\cores\DVDPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\DVDPlayer\DVDPlayer.h">
+      <Filter>Header Files\cores\DVDPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\DVDPlayer\DVDPlayerAudio.h">
+      <Filter>Header Files\cores\DVDPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\DVDPlayer\DVDPlayerVideo.h">
+      <Filter>Header Files\cores\DVDPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\VideoRenderers\BaseRenderer.h">
+      <Filter>Header Files\cores\VideoRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\VideoRenderers\RenderManager.h">
+      <Filter>Header Files\cores\VideoRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\VideoRenderers\RGBRenderer.h">
+      <Filter>Header Files\cores\VideoRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\DVDPlayer\DVDCodecs\DVDAudioCodec.h">
+      <Filter>Header Files\cores\DVDPlayer\DVDCodecs</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\DVDPlayer\DVDCodecs\DVDAudioCodecFFmpeg.h">
+      <Filter>Header Files\cores\DVDPlayer\DVDCodecs</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\DVDPlayer\DVDCodecs\DVDCodecUtils.h">
+      <Filter>Header Files\cores\DVDPlayer\DVDCodecs</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\DVDPlayer\DVDCodecs\DVDVideoCodec.h">
+      <Filter>Header Files\cores\DVDPlayer\DVDCodecs</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\DVDPlayer\DVDCodecs\DVDVideoCodecFFmpeg.h">
+      <Filter>Header Files\cores\DVDPlayer\DVDCodecs</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\DVDPlayer\DVDDemuxers\DVDDemux.h">
+      <Filter>Header Files\cores\DVDPlayer\DVDDemuxers</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\DVDPlayer\DVDDemuxers\DVDDemuxFFmpeg.h">
+      <Filter>Header Files\cores\DVDPlayer\DVDDemuxers</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\DVDPlayer\DVDDemuxers\DVDDemuxUtils.h">
+      <Filter>Header Files\cores\DVDPlayer\DVDDemuxers</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\DVDPlayer\DVDUtils\memutil.h">
+      <Filter>Header Files\cores\DVDPlayer\DVDUtils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\CriticalSection.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\Event.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\log.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\SharedSection.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\SingleLock.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\StdString.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\Thread.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\URIUtils.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\stdafx.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="xbox\XBInput.h">
+      <Filter>Header Files\xbox</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GraphicContext.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\DVDPlayer\DVDStreamInfo.h">
+      <Filter>Header Files\cores\DVDPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIWindowManager.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIWindow.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\windows\GUIWindowHome.h">
+      <Filter>Header Files\guilib\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\windows\GUIWindowFullScreen.h">
+      <Filter>Header Files\guilib\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIMessage.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\IPlayer.h">
+      <Filter>Header Files\cores</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIUserMessage.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUID3DTexture.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUITexture.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIImage.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIControl.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\tinyxml\tinystr.h">
+      <Filter>Header Files\guilib\tinyxml</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\tinyxml\tinyxml.h">
+      <Filter>Header Files\guilib\tinyxml</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIControlFactory.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\XMLUtils.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIInfoTypes.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIIncludes.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\SkinInfo.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIFont.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIFontManager.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\TextureManager.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUILabelControl.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUILabel.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\StringUtils.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIVideoControl.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIButtonControl.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\windows\GUIWindowVideoFiles.h">
+      <Filter>Header Files\guilib\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\TimeUtils.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIInfoManager.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\Key.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="xbox\XBKernalExports.h">
+      <Filter>Header Files\xbox</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\IMsgTargetCallback.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\Util.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="ButtonTranslator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\windows\GUIWindowSettings.h">
+      <Filter>Header Files\guilib\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="GUISettings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Application.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="XBApplicationEx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="xbmc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cores\DVDPlayer\DVDAudioDevice.cpp">
+      <Filter>Source Files\cores\DVDPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="cores\DVDPlayer\DVDClock.cpp">
+      <Filter>Source Files\cores\DVDPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="cores\DVDPlayer\DVDMessage.cpp">
+      <Filter>Source Files\cores\DVDPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="cores\DVDPlayer\DVDMessageQueue.cpp">
+      <Filter>Source Files\cores\DVDPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="cores\DVDPlayer\DVDPlayer.cpp">
+      <Filter>Source Files\cores\DVDPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="cores\DVDPlayer\DVDPlayerAudio.cpp">
+      <Filter>Source Files\cores\DVDPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="cores\DVDPlayer\DVDPlayerVideo.cpp">
+      <Filter>Source Files\cores\DVDPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="cores\VideoRenderers\RenderManager.cpp">
+      <Filter>Source Files\cores\VideoRenderers</Filter>
+    </ClCompile>
+    <ClCompile Include="cores\VideoRenderers\RGBRenderer.cpp">
+      <Filter>Source Files\cores\VideoRenderers</Filter>
+    </ClCompile>
+    <ClCompile Include="cores\DVDPlayer\DVDCodecs\DVDAudioCodecFFmpeg.cpp">
+      <Filter>Source Files\cores\DVDPlayer\DVDCodecs</Filter>
+    </ClCompile>
+    <ClCompile Include="cores\DVDPlayer\DVDCodecs\DVDCodecUtils.cpp">
+      <Filter>Source Files\cores\DVDPlayer\DVDCodecs</Filter>
+    </ClCompile>
+    <ClCompile Include="cores\DVDPlayer\DVDCodecs\DVDVideoCodecFFmpeg.cpp">
+      <Filter>Source Files\cores\DVDPlayer\DVDCodecs</Filter>
+    </ClCompile>
+    <ClCompile Include="cores\DVDPlayer\DVDDemuxers\DVDDemuxFFmpeg.cpp">
+      <Filter>Source Files\cores\DVDPlayer\DVDDemuxers</Filter>
+    </ClCompile>
+    <ClCompile Include="cores\DVDPlayer\DVDDemuxers\DVDDemuxUtils.cpp">
+      <Filter>Source Files\cores\DVDPlayer\DVDDemuxers</Filter>
+    </ClCompile>
+    <ClCompile Include="cores\DVDPlayer\DVDUtils\memutil.cpp">
+      <Filter>Source Files\cores\DVDPlayer\DVDUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\CriticalSection.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\Event.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\log.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\SharedSection.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\SingleLock.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\Thread.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\URIUtils.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\stdafx.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="xbox\XBInput.cpp">
+      <Filter>Source Files\xbox</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GraphicContext.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="cores\DVDPlayer\DVDStreamInfo.cpp">
+      <Filter>Source Files\cores\DVDPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIWindowManager.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIWindow.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\windows\GUIWindowHome.cpp">
+      <Filter>Source Files\guilib\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\windows\GUIWindowFullScreen.cpp">
+      <Filter>Source Files\guilib\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIMessage.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUID3DTexture.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIImage.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIControl.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\tinyxml\tinystr.cpp">
+      <Filter>Source Files\guilib\tinyxml</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\tinyxml\tinyxml.cpp">
+      <Filter>Source Files\guilib\tinyxml</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\tinyxml\tinyxmlerror.cpp">
+      <Filter>Source Files\guilib\tinyxml</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\tinyxml\tinyxmlparser.cpp">
+      <Filter>Source Files\guilib\tinyxml</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIControlFactory.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\XMLUtils.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIInfoTypes.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIIncludes.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\SkinInfo.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUITexture.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIFont.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIFontManager.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\TextureManager.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUILabelControl.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUILabel.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\StringUtils.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIVideoControl.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIButtonControl.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\windows\GUIWindowVideoFiles.cpp">
+      <Filter>Source Files\guilib\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\TimeUtils.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIInfoManager.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="xbox\XBKernalExports.cpp">
+      <Filter>Source Files\xbox</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\Util.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="ButtonTranslator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\windows\GUIWindowSettings.cpp">
+      <Filter>Source Files\guilib\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="GUISettings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
