@@ -47,6 +47,8 @@ public:
 
 	int GetID() {return iWindowID;};
 
+	DWORD GetIDRange() const { return m_dwIDRange; };
+
 protected:
 	// control state saving on window close
 	virtual void SaveControlStates();
@@ -65,6 +67,8 @@ protected:
 	bool m_loadOnDemand;  // true if the window should be loaded only as needed
 	bool m_windowLoaded;  // true if the window's xml file has been loaded
 	int iWindowID;
+	DWORD m_dwIDRange;
+
 	bool m_bAllocated;
 
 	DWORD m_clearBackground; // colour to clear the window

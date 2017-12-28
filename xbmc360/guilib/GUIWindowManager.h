@@ -39,7 +39,8 @@ public:
 	void PreviousWindow();
 	void Delete(int id);
 	void Remove(int id);
-	void ActivateWindow(int iWindowID);
+	void ChangeActiveWindow(int iNewID);
+	void ActivateWindow(int iWindowID, bool swappingWindows = false);
 
 	// OnAction() runs through our active dialogs and windows and sends the message
 	// off to the callbacks (application, python, playlist player) and to the

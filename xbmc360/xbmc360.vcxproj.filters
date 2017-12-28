@@ -290,6 +290,9 @@
     <ClInclude Include="GUISettings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="guilib\windows\GUIWindowSettingsCategory.h">
+      <Filter>Header Files\guilib\windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -480,6 +483,9 @@
     </ClCompile>
     <ClCompile Include="GUISettings.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\windows\GUIWindowSettingsCategory.cpp">
+      <Filter>Source Files\guilib\windows</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

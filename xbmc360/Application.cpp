@@ -15,6 +15,7 @@
 #include "guilib\windows\GUIWindowFullScreen.h"
 #include "guilib\windows\GUIWindowVideoFiles.h"
 #include "guilib\windows\GUIWindowSettings.h"
+#include "guilib\windows\GUIWindowSettingsCategory.h"
 
 CApplication::CApplication() 
 {
@@ -87,7 +88,8 @@ bool CApplication::Initialize()
 
 	g_windowManager.Add(new CGUIWindowFullScreen); 
 	g_windowManager.Add(new CGUIWindowVideoFiles); 
-	g_windowManager.Add(new CGUIWindowSettimgs); 	
+	g_windowManager.Add(new CGUIWindowSettimgs); 
+	g_windowManager.Add(new CGUIWindowSettimgsCategory); 	
 
 	g_windowManager.Initialize();
 
@@ -228,8 +230,8 @@ bool CApplication::ProcessGamepad()
 	//Seeking test
 	if( m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_DPAD_RIGHT )
 	{
-		if(m_pPlayer)
-			m_pPlayer->Pause();
+//		if(m_pPlayer)
+//			m_pPlayer->Pause();
 	}
 
 	if( m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_A )
@@ -582,6 +584,7 @@ void CApplication::Stop()
 	g_windowManager.Delete(WINDOW_FULLSCREEN_VIDEO);
 	g_windowManager.Delete(WINDOW_VIDEOS);
 	g_windowManager.Delete(WINDOW_SETTINGS);
+	g_windowManager.Delete(WINDOW_SETTINGS_MYPICTURES); // all the settings categories
 	
 	CLog::Log(LOGNOTICE, "Destroy");
     Destroy();

@@ -51,3 +51,8 @@ int CGUIMessage::GetParam1() const
 {
 	return m_param1;
 }
+
+int CGUIMessage::GetParam2() const
+{
+	return m_param2;
+}

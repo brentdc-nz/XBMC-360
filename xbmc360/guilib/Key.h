@@ -23,6 +23,15 @@
 
 #define WINDOW_FULLSCREEN_VIDEO           12005
 
+#define WINDOW_SETTINGS_MYPICTURES        10012
+#define WINDOW_SETTINGS_MYPROGRAMS        10013
+#define WINDOW_SETTINGS_MYWEATHER         10014
+#define WINDOW_SETTINGS_MYMUSIC           10015
+#define WINDOW_SETTINGS_SYSTEM            10016
+#define WINDOW_SETTINGS_MYVIDEOS          10017
+#define WINDOW_SETTINGS_NETWORK           10018
+#define WINDOW_SETTINGS_APPEARANCE        10019
+
 /*!
   \ingroup actionkeys
   \brief 

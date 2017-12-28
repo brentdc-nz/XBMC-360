@@ -34,9 +34,10 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
 	else if (strWindow.Equals("myprograms")) wWindowID = WINDOW_PROGRAMS;
 	else if (strWindow.Equals("myvideos")) wWindowID = WINDOW_VIDEOS;
 	else if (strWindow.Equals("settings")) wWindowID = WINDOW_SETTINGS;
+	else if (strWindow.Equals("appearancesettings")) wWindowID = WINDOW_SETTINGS_APPEARANCE;
 	else
 		CLog::Log(LOGERROR, "Window Translator: Can't find window %s", strWindow.c_str());
 
-	//CLog::Log(LOGDEBUG,"CButtonTranslator::TranslateWindowString(%s) returned Window ID (%i)", szWindow, wWindowID);
+	//CLog::Log(LOGDEBUG, "CButtonTranslator::TranslateWindowString(%s) returned Window ID (%i)", szWindow, wWindowID);
 	return wWindowID;
 }

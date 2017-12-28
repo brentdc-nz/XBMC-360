@@ -34,6 +34,7 @@ public:
 	const std::string& GetStringParam() const;
 
 	int GetParam1() const;
+	int GetParam2() const;
 private:
 	std::string m_strLabel;
 	std::string m_strParam;

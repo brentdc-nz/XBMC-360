@@ -138,9 +138,9 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
 //			g_application.ResetScreenSaverWindow();
 			if (execute.Equals("activatewindow"))
 				g_windowManager.ActivateWindow(iWindow/*, strPath*/);
-//			else  
+			else  
 				// ReplaceWindow
-//				m_gWindowManager.ChangeActiveWindow(iWindow, strPath);
+				g_windowManager.ChangeActiveWindow(iWindow/*, strPath*/);
 		}
 		else
 		{

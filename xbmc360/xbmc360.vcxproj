@@ -297,6 +297,7 @@
     <ClInclude Include="guilib\windows\GUIWindowFullScreen.h" />
     <ClInclude Include="guilib\windows\GUIWindowHome.h" />
     <ClInclude Include="guilib\windows\GUIWindowSettings.h" />
+    <ClInclude Include="guilib\windows\GUIWindowSettingsCategory.h" />
     <ClInclude Include="guilib\windows\GUIWindowVideoFiles.h" />
     <ClInclude Include="guilib\XMLUtils.h" />
     <ClInclude Include="GUISettings.h" />
@@ -366,6 +367,7 @@
     <ClCompile Include="guilib\windows\GUIWindowFullScreen.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowHome.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowSettings.cpp" />
+    <ClCompile Include="guilib\windows\GUIWindowSettingsCategory.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowVideoFiles.cpp" />
     <ClCompile Include="guilib\XMLUtils.cpp" />
     <ClCompile Include="GUISettings.cpp" />

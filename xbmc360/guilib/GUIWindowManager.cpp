@@ -88,7 +88,7 @@ void CGUIWindowManager::Add(CGUIWindow* pWindow)
 	
 	// push back all the windows if there are more than one covered by this class
 	CSingleLock lock(g_graphicsContext);
-/*	for (int i = 0; i < pWindow->GetIDRange(); i++)
+	for (int i = 0; i < (int)pWindow->GetIDRange(); i++)
 	{
 		WindowMap::iterator it = m_mapWindows.find(pWindow->GetID() + i);
 		if (it != m_mapWindows.end())
@@ -98,8 +98,8 @@ void CGUIWindowManager::Add(CGUIWindow* pWindow)
                 pWindow->GetID());
 			return;
 		}
-*/		m_mapWindows.insert(pair<int, CGUIWindow *>(pWindow->GetID()/* + i*/, pWindow));
-//	}
+		m_mapWindows.insert(pair<DWORD, CGUIWindow *>(pWindow->GetID() + i, pWindow));
+	}
 }
 
 void CGUIWindowManager::LoadNotOnDemandWindows()
@@ -242,7 +242,12 @@ void CGUIWindowManager::Remove(int id)
 	}
 }
 
-void CGUIWindowManager::ActivateWindow(int iWindowID)
+void CGUIWindowManager::ChangeActiveWindow(int newWindow)
+{
+	ActivateWindow(newWindow, true);
+}
+
+void CGUIWindowManager::ActivateWindow(int iWindowID, bool swappingWindows)
 {
 	// debug
 	CLog::Log(LOGDEBUG, "Activating window ID: %i", iWindowID);
@@ -270,8 +275,8 @@ void CGUIWindowManager::ActivateWindow(int iWindowID)
 	// as all messages done in WINDOW_INIT will want to be sent to the new
 	// topmost window).  If we are swapping windows, we pop the old window
 	// off the history stack
-//	if (swappingWindows && m_windowHistory.size())
-//		m_windowHistory.pop();
+	if (swappingWindows && m_windowHistory.size())
+		m_windowHistory.pop();
 	AddToWindowHistory(iWindowID);
 
 	// Send the init message

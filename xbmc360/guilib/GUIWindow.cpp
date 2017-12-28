@@ -9,6 +9,7 @@
 CGUIWindow::CGUIWindow(int id, const CStdString &xmlFile)
 {
 	SetID(id);
+	m_dwIDRange = 1;
 	m_xmlFile = xmlFile;
 	m_dwDefaultFocusControlID = 0;
 	m_saveLastControl = false;
