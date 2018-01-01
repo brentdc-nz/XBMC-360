@@ -21,8 +21,6 @@
 #include "GUIButtonControl.h"
 #include "GUIWindowManager.h" //FIXME ME - Remove for grahicscontext.h
 
-#include "GUIFontManager.h" //REMOVE ME FIXME ME
-
 using namespace std;
 
 CGUIButtonControl::CGUIButtonControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus, const CLabelInfo& labelInfo)
@@ -35,7 +33,7 @@ CGUIButtonControl::CGUIButtonControl(int parentID, int controlID, float posX, fl
 	m_bSelected = false;
 //	m_alpha = 255;
 //	m_focusCounter = 0;
-//	ControlType = GUICONTROL_BUTTON;
+	ControlType = GUICONTROL_BUTTON;
 }
 
 CGUIButtonControl::~CGUIButtonControl(void)
@@ -51,6 +49,15 @@ void CGUIButtonControl::DynamicResourceAlloc(bool bOnOff)
 	m_imgNoFocus.AllocResources();
 }
 
+void CGUIButtonControl::Update()
+{
+	m_imgFocus.Update((int)m_posX, (int)m_posY);
+	m_imgNoFocus.Update((int)m_posX, (int)m_posY);
+
+	m_label.SetPosition((int)m_posX, (int)m_posY);
+	m_label2.SetPosition((int)m_posX, (int)m_posY);
+}
+
 void CGUIButtonControl::Render()
 {
 	if (!IsVisible()) return;
@@ -63,31 +70,33 @@ void CGUIButtonControl::Render()
     m_imgNoFocus.SetWidth(m_width);
     m_imgNoFocus.SetHeight(m_height);
   }
+*/
+	if (HasFocus())
+	{
+/*		if (m_pulseOnSelect)
+		{
+			unsigned int alphaCounter = m_focusCounter + 2;
+			unsigned int alphaChannel;
+			
+			if ((alphaCounter % 128) >= 64)
+				alphaChannel = alphaCounter % 64;
+			else
+				alphaChannel = 63 - (alphaCounter % 64);
 
-  if (HasFocus())
-  {
-    if (m_pulseOnSelect)
-    {
-      unsigned int alphaCounter = m_focusCounter + 2;
-      unsigned int alphaChannel;
-      if ((alphaCounter % 128) >= 64)
-        alphaChannel = alphaCounter % 64;
-      else
-        alphaChannel = 63 - (alphaCounter % 64);
-
-      alphaChannel += 192;
-      alphaChannel = (unsigned int)((float)m_alpha * (float)alphaChannel / 255.0f);
-      m_imgFocus.SetAlpha((unsigned char)alphaChannel);
-    }
-    m_imgFocus.SetVisible(true);
-    m_imgNoFocus.SetVisible(false);
-    m_focusCounter++;
-  }
-  else
-  {
-    m_imgFocus.SetVisible(false);
-    m_imgNoFocus.SetVisible(true);
-  }*/
+			alphaChannel += 192;
+			alphaChannel = (unsigned int)((float)m_alpha * (float)alphaChannel / 255.0f);
+			m_imgFocus.SetAlpha((unsigned char)alphaChannel);
+		}
+*/		m_imgFocus.SetVisible(true);
+		m_imgNoFocus.SetVisible(false);
+//		m_focusCounter++;
+	}
+	else
+	{
+		m_imgFocus.SetVisible(false);
+		m_imgNoFocus.SetVisible(true);
+	}
+	
 	// render both so the visibility settings cause the frame counter to resetcorrectly
 	if(HasFocus())
 		m_imgFocus.Render();
@@ -95,16 +104,13 @@ void CGUIButtonControl::Render()
 		m_imgNoFocus.Render();
 
 	RenderText();
+
 	CGUIControl::Render();
 }
 
 void CGUIButtonControl::RenderText()
 {
-//	m_label.m_label.font = g_fontManager.GetFont("font10"); //FIXME
-	
 	m_label.Render();
-
-	//m_label.m_label.font->DrawText(80, 80, D3DCOLOR_ARGB( 255, 255, 255, 255 ), "M" );
 }
 
 bool CGUIButtonControl::OnAction(const CAction &action)

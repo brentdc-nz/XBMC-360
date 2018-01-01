@@ -56,7 +56,9 @@ public:
 	virtual bool OnMessage(CGUIMessage& message);
 
 	virtual bool IsVisible() const;
-	void SetVisibleCondition(int visible/*, const CGUIInfoBool &allowHiddenFocus*/);
+	virtual void SetVisible(bool bVisible);
+	virtual void SetVisibleCondition(int visible/*, const CGUIInfoBool &allowHiddenFocus*/);
+	virtual void SetPosition(float posX, float posY);
 
 	virtual int GetID(void) const;
 	void SetID(int id) { m_controlID = id; };
@@ -64,13 +66,23 @@ public:
 	bool HasFocus(void) const;
 	virtual bool HasID(int id) const;
 	virtual void SetNavigation(DWORD dwUp, DWORD dwDown, DWORD dwLeft, DWORD dwRight);
+	DWORD GetControlIdUp() const { return m_dwControlUp;};
+	DWORD GetControlIdDown() const { return m_dwControlDown;};
+	DWORD GetControlIdLeft() const { return m_dwControlLeft;};
+	DWORD GetControlIdRight() const { return m_dwControlRight;};
 	virtual void DynamicResourceAlloc(bool bOnOff);
 	virtual bool IsDynamicallyAllocated() { return false; };	
-	virtual void PreAllocResources() {}
+	virtual void PreAllocResources() {};
 	virtual void AllocResources();
 	virtual void FreeResources();
+	virtual void Update() {};
 
 	void SetFocus(bool bOnOff);
+
+	int GetXPosition() const;
+	int GetYPosition() const;
+	int GetWidth() const;
+	int GetHeight() const;
 
 	enum GUICONTROLTYPES {
 		GUICONTROL_UNKNOWN,
@@ -121,10 +133,10 @@ protected:
 	int m_controlID;
 	bool m_bAllocated;
 
-	int m_posX;
-	int m_posY;
-	int m_width;
-	int m_height;
+	float m_posX;
+	float m_posY;
+	float m_width;
+	float m_height;
 
 	DWORD m_dwControlLeft;
 	DWORD m_dwControlRight;
@@ -132,8 +144,9 @@ protected:
 	DWORD m_dwControlDown;
 
 	bool m_bHasFocus;
-
 	bool m_bInvalidated;
+
+	GUICONTROLTYPES ControlType;
 
 	// visibility condition/state
 	int m_visibleCondition;

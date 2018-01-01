@@ -206,9 +206,6 @@
     <ClInclude Include="guilib\GUID3DTexture.h">
       <Filter>Header Files\guilib</Filter>
     </ClInclude>
-    <ClInclude Include="guilib\GUITexture.h">
-      <Filter>Header Files\guilib</Filter>
-    </ClInclude>
     <ClInclude Include="guilib\GUIImage.h">
       <Filter>Header Files\guilib</Filter>
     </ClInclude>
@@ -292,6 +289,24 @@
     </ClInclude>
     <ClInclude Include="guilib\windows\GUIWindowSettingsCategory.h">
       <Filter>Header Files\guilib\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\LocalizeStrings.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUISpinControl.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUISpinControlEx.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUITexture.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="SettingsControls.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -433,9 +448,6 @@
     <ClCompile Include="guilib\SkinInfo.cpp">
       <Filter>Source Files\guilib</Filter>
     </ClCompile>
-    <ClCompile Include="guilib\GUITexture.cpp">
-      <Filter>Source Files\guilib</Filter>
-    </ClCompile>
     <ClCompile Include="guilib\GUIFont.cpp">
       <Filter>Source Files\guilib</Filter>
     </ClCompile>
@@ -486,6 +498,21 @@
     </ClCompile>
     <ClCompile Include="guilib\windows\GUIWindowSettingsCategory.cpp">
       <Filter>Source Files\guilib\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\LocalizeStrings.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUISpinControl.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUISpinControlEx.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="SettingsControls.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Settings.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

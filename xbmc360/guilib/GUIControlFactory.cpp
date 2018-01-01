@@ -27,6 +27,8 @@
 #include "GUIVideoControl.h"
 #include "GUIButtonControl.h"
 #include "GUIInfoManager.h"
+#include "GUISpinControl.h"
+#include "GUISpinControlEx.h"
 
 typedef struct
 {
@@ -110,7 +112,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
 	float spinPosX = 0, spinPosY = 0;
 	float checkWidth = 0, checkHeight = 0;
 	CStdString strSubType;
-//	int iType = SPIN_CONTROL_TYPE_TEXT;
+	int iType = SPIN_CONTROL_TYPE_TEXT;
 	int iMin = 0;
 	int iMax = 100;
 	int iInterval = 1;
@@ -122,8 +124,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
 //	CTextureInfo textureBackground, textureLeft, textureRight, textureMid, textureOverlay;
 //	CTextureInfo textureNib, textureNibFocus, textureBar, textureBarFocus;
 //	CTextureInfo textureLeftFocus, textureRightFocus;
-//	CTextureInfo textureUp, textureDown;
-//	CTextureInfo textureUpFocus, textureDownFocus;
+	CTextureInfo textureUp, textureDown;
+	CTextureInfo textureUpFocus, textureDownFocus;
 	CTextureInfo texture, borderTexture;
 	CGUIInfoLabel textureFile;
 //	CTextureInfo textureCheckMark, textureCheckMarkNF;
@@ -322,12 +324,13 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
   iToggleSelect = g_infoManager.TranslateString(strToggleSelect);
 
   XMLUtils::GetBoolean(pControlNode, "haspath", bHasPath);
+  */
+	GetTexture(pControlNode, "textureup", textureUp);
+	GetTexture(pControlNode, "texturedown", textureDown);
+	GetTexture(pControlNode, "textureupfocus", textureUpFocus);
+	GetTexture(pControlNode, "texturedownfocus", textureDownFocus);
 
-  GetTexture(pControlNode, "textureup", textureUp);
-  GetTexture(pControlNode, "texturedown", textureDown);
-  GetTexture(pControlNode, "textureupfocus", textureUpFocus);
-  GetTexture(pControlNode, "texturedownfocus", textureDownFocus);
-
+  /*
   GetTexture(pControlNode, "textureleft", textureLeft);
   GetTexture(pControlNode, "textureright", textureRight);
   GetTexture(pControlNode, "textureleftfocus", textureLeftFocus);
@@ -336,11 +339,11 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
   GetInfoColor(pControlNode, "spincolor", spinInfo.textColor, parentID);
   if (XMLUtils::GetString(pControlNode, "spinfont", strFont))
     spinInfo.font = g_fontManager.GetFont(strFont);
-  if (!spinInfo.font) spinInfo.font = labelInfo.font;
+  if (!spinInfo.font) spinInfo.font = labelInfo.font;*/
 
   GetFloat(pControlNode, "spinwidth", spinWidth);
   GetFloat(pControlNode, "spinheight", spinHeight);
-  GetFloat(pControlNode, "spinposx", spinPosX);
+ /* GetFloat(pControlNode, "spinposx", spinPosX);
   GetFloat(pControlNode, "spinposy", spinPosY);
 
   GetFloat(pControlNode, "markwidth", checkWidth);
@@ -364,28 +367,28 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
   XMLUtils::GetString(pControlNode, "tagset", strRSSTags);
   GetInfoColor(pControlNode, "headlinecolor", headlineColor, parentID);
   GetInfoColor(pControlNode, "titlecolor", textColor3, parentID);
+*/
+	if (XMLUtils::GetString(pControlNode, "subtype", strSubType))
+	{
+		strSubType.ToLower();
 
-  if (XMLUtils::GetString(pControlNode, "subtype", strSubType))
-  {
-    strSubType.ToLower();
-
-    if ( strSubType == "int")
-      iType = SPIN_CONTROL_TYPE_INT;
-    else if ( strSubType == "page")
-      iType = SPIN_CONTROL_TYPE_PAGE;
-    else if ( strSubType == "float")
-      iType = SPIN_CONTROL_TYPE_FLOAT;
-    else
-      iType = SPIN_CONTROL_TYPE_TEXT;
+		if ( strSubType == "int")
+			iType = SPIN_CONTROL_TYPE_INT;
+//		else if ( strSubType == "page")
+//			iType = SPIN_CONTROL_TYPE_PAGE;
+		else if ( strSubType == "float")
+			iType = SPIN_CONTROL_TYPE_FLOAT;
+		else
+			iType = SPIN_CONTROL_TYPE_TEXT;
   }
 
-  if (!GetIntRange(pControlNode, "range", iMin, iMax, iInterval))
+/*  if (!GetIntRange(pControlNode, "range", iMin, iMax, iInterval))
   {
     GetFloatRange(pControlNode, "range", fMin, fMax, fInterval);
   }
-
-  XMLUtils::GetBoolean(pControlNode, "reverse", bReverse);
-  XMLUtils::GetBoolean(pControlNode, "reveal", bReveal);
+  */
+	 XMLUtils::GetBoolean(pControlNode, "reverse", bReverse);
+ /* XMLUtils::GetBoolean(pControlNode, "reveal", bReveal);
 
   GetTexture(pControlNode, "texturebg", textureBackground);
   GetTexture(pControlNode, "lefttexture", textureLeft);
@@ -828,18 +831,18 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
       textureFocus, textureNoFocus, labelInfo);
     ((CGUIButtonScroller *)control)->LoadButtons(pControlNode);
   }
-  else if (type == CGUIControl::GUICONTROL_SPINEX)
-  {
-    control = new CGUISpinControlEx(
-      parentID, id, posX, posY, width, height, spinWidth, spinHeight,
-      labelInfo, textureFocus, textureNoFocus, textureUp, textureDown, textureUpFocus, textureDownFocus,
-      labelInfo, iType);
+*/	else if (type == CGUIControl::GUICONTROL_SPINEX)
+	{
+		control = new CGUISpinControlEx(
+		parentID, dwID, posX, posY, width, height, spinWidth, spinHeight,
+		labelInfo, textureFocus, textureNoFocus, textureUp, textureDown, textureUpFocus,
+		textureDownFocus, labelInfo, iType);
 
-    ((CGUISpinControlEx *)control)->SetSpinPosition(spinPosX);
-    ((CGUISpinControlEx *)control)->SetText(strLabel);
-    ((CGUISpinControlEx *)control)->SetReverse(bReverse);
-  }
-  else if (type == CGUIControl::GUICONTROL_VISUALISATION)
+//		((CGUISpinControlEx *)control)->SetSpinPosition(spinPosX);
+//		((CGUISpinControlEx *)control)->SetText(strLabel);
+//		((CGUISpinControlEx *)control)->SetReverse(bReverse);
+	}
+/*  else if (type == CGUIControl::GUICONTROL_VISUALISATION)
   {
     control = new CGUIVisualisationControl(parentID, id, posX, posY, width, height);
   }

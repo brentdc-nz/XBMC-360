@@ -50,6 +50,7 @@ class CGUITextureBase
 public:
 
 protected:
+	bool m_bVisible;
 
 	float m_posX;
 	float m_posY;

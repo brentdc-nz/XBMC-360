@@ -123,6 +123,34 @@ void CGUIWindow::AddControl(CGUIControl* pControl)
 	m_vecControls.push_back(pControl);
 }
 
+void CGUIWindow::InsertControl(CGUIControl *control, const CGUIControl *insertPoint)
+{
+	// get the insertion point
+	ivecControls i = m_vecControls.begin();
+	while (i != m_vecControls.end())
+	{
+		if (*i == insertPoint)
+		break;
+		i++;
+	}
+	m_vecControls.insert(i, control);
+}
+
+void CGUIWindow::RemoveControl(DWORD dwId)
+{
+	ivecControls i = m_vecControls.begin();
+	while (i != m_vecControls.end())
+	{
+		CGUIControl* pControl = *i;
+		if (pControl->GetID() == dwId)
+		{
+			m_vecControls.erase(i);
+			return ;
+		}
+		++i;
+	}
+}
+
   /// \brief Called on window open.
 ///  * Restores the control state(s)
 ///  * Sets initial visibility of controls
@@ -260,6 +288,16 @@ int CGUIWindow::GetFocusedControl() const
 		if (pControl->HasFocus() ) return pControl->GetID();
 	}
 	return -1;
+}
+
+const CGUIControl* CGUIWindow::GetControl(int iControl) const
+{
+	for (int i = 0;i < (int)m_vecControls.size(); ++i)
+	{
+		const CGUIControl* pControl = m_vecControls[i];
+		if (pControl->GetID() == iControl) return pControl;
+	}
+	return NULL;
 }
 
 void CGUIWindow::SaveControlStates()

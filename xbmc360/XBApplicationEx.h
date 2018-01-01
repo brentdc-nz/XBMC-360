@@ -23,6 +23,8 @@ public:
 	int Run();
 	void Destroy();
 
+	bool IsStoppoing() { return m_bStop; };
+
 protected:
 	//Main Direct3D objects
 	LPDIRECT3D9						m_pD3D;

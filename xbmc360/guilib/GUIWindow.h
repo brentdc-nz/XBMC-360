@@ -20,6 +20,8 @@ public:
 
 	virtual bool OnMessage(CGUIMessage& message);
 	void AddControl(CGUIControl* pControl);
+	void InsertControl(CGUIControl *control, const CGUIControl *insertPoint);
+	void RemoveControl(DWORD dwId);
 	virtual void OnInitWindow();
 
 	virtual void OnDeinitWindow();
@@ -28,6 +30,7 @@ public:
 	virtual void FreeResources(bool forceUnload = false);
 
 	void ClearAll();
+	const CGUIControl* GetControl(int iControl) const;
 	int GetFocusedControl() const;
 
 	bool GetLoadOnDemand() { return m_loadOnDemand; }

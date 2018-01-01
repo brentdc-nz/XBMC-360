@@ -36,6 +36,7 @@ public:
 	static bool GetInt(const TiXmlNode* pRootNode, const char* strTag, int& iIntValue);
 	static bool GetInt(const TiXmlNode* pRootNode, const char* strTag, int& iIntValue, const int min, const int max);
 	static bool GetHex(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwHexValue);
+	static bool GetBoolean(const TiXmlNode* pRootNode, const char* strTag, bool& bBoolValue);
 };
 
 #endif // H_CXMLUTILS

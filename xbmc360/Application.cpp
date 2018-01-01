@@ -9,6 +9,7 @@
 #include "guilib\GUIFontManager.h"
 #include "guilib\GUIInfoManager.h"
 #include "cores\DVDPlayer\DVDPlayer.h"
+#include "guilib\LocalizeStrings.h"
 
 // Window includes
 #include "guilib\windows\GUIWindowHome.h"
@@ -16,6 +17,8 @@
 #include "guilib\windows\GUIWindowVideoFiles.h"
 #include "guilib\windows\GUIWindowSettings.h"
 #include "guilib\windows\GUIWindowSettingsCategory.h"
+
+CStdString g_LoadErrorStr;
 
 CApplication::CApplication() 
 {
@@ -76,12 +79,21 @@ bool CApplication::Create()
 
 	g_graphicsContext.SetXUIDevice(m_hXUIDC);
 
+	CStdString strLanguagePath;
+	strLanguagePath.Format("D:\\language\\%s\\strings.xml", /*g_guiSettings.GetString("LookAndFeel.Language")*/"English"); //TODO
+
+	CLog::Log(LOGINFO, "load language file:%s", strLanguagePath.c_str());
+	if (!g_localizeStrings.Load( strLanguagePath ))
+	{
+//		FatalErrorHandler(false, false, true); //TODO
+	}
+
 	return CXBApplicationEX::Create();
 }
 
 bool CApplication::Initialize()
 {
-	g_windowManager.Add(new CGUIWindowHome);		// window id = 0
+	g_windowManager.Add(new CGUIWindowHome); // window id = 0
 
 	CLog::Log(LOGNOTICE, "load default skin:[%s]", g_guiSettings.GetString("LookAndFeel.Skin").c_str());
 	LoadSkin(g_guiSettings.GetString("LookAndFeel.Skin"));
@@ -89,7 +101,7 @@ bool CApplication::Initialize()
 	g_windowManager.Add(new CGUIWindowFullScreen); 
 	g_windowManager.Add(new CGUIWindowVideoFiles); 
 	g_windowManager.Add(new CGUIWindowSettimgs); 
-	g_windowManager.Add(new CGUIWindowSettimgsCategory); 	
+	g_windowManager.Add(new CGUIWindowSettingsCategory); 	
 
 	g_windowManager.Initialize();
 
@@ -149,9 +161,9 @@ void CApplication::UnloadSkin()
 {
 	g_windowManager.DeInitialize();
 
-//	g_TextureManager.Cleanup(); //FIXME
+	g_TextureManager.Cleanup();
 
-//	g_fontManager.Clear(); //FIXME
+	g_fontManager.Clear();
 }
 
 void CApplication::Process()
@@ -227,7 +239,6 @@ bool CApplication::ProcessGamepad()
 		g_windowManager.PreviousWindow();
 	}
 
-	//Seeking test
 	if( m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_DPAD_RIGHT )
 	{
 //		if(m_pPlayer)
@@ -355,6 +366,7 @@ void CApplication::Render()
 	m_pd3dDevice->EndScene();
 
 	m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
+	
 	g_graphicsContext.Unlock();
 }
 
@@ -590,6 +602,7 @@ void CApplication::Stop()
     Destroy();
 
 	g_guiSettings.Clear();
+    g_localizeStrings.Clear();
 
     CLog::Log(LOGNOTICE, "Stopped");
 }

@@ -45,10 +45,10 @@ void CGUIVideoControl::Render()
 //			g_application.ResetScreenSaver();
 
 		RECT rc;
-		rc.left = m_posX;
-		rc.top = m_posY;
-		rc.right = rc.left + m_width;
-		rc.bottom = rc.top + m_height;
+		rc.left = (LONG)m_posX;
+		rc.top = (LONG)m_posY;
+		rc.right = (LONG)rc.left + (LONG)m_width;
+		rc.bottom = (LONG)rc.top + (LONG)m_height;
 		g_graphicsContext.SetViewWindow(rc);
 
 		g_renderManager.RenderUpdate(false);

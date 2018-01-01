@@ -283,6 +283,8 @@
     <ClInclude Include="guilib\GUILabel.h" />
     <ClInclude Include="guilib\GUILabelControl.h" />
     <ClInclude Include="guilib\GUIMessage.h" />
+    <ClInclude Include="guilib\GUISpinControl.h" />
+    <ClInclude Include="guilib\GUISpinControlEx.h" />
     <ClInclude Include="guilib\GUITexture.h" />
     <ClInclude Include="guilib\GUIUserMessage.h" />
     <ClInclude Include="guilib\GUIVideoControl.h" />
@@ -290,6 +292,7 @@
     <ClInclude Include="guilib\GUIWindowManager.h" />
     <ClInclude Include="guilib\IMsgTargetCallback.h" />
     <ClInclude Include="guilib\Key.h" />
+    <ClInclude Include="guilib\LocalizeStrings.h" />
     <ClInclude Include="guilib\SkinInfo.h" />
     <ClInclude Include="guilib\TextureManager.h" />
     <ClInclude Include="guilib\tinyxml\tinystr.h" />
@@ -301,6 +304,8 @@
     <ClInclude Include="guilib\windows\GUIWindowVideoFiles.h" />
     <ClInclude Include="guilib\XMLUtils.h" />
     <ClInclude Include="GUISettings.h" />
+    <ClInclude Include="Settings.h" />
+    <ClInclude Include="SettingsControls.h" />
     <ClInclude Include="utils\CriticalSection.h" />
     <ClInclude Include="utils\Event.h" />
     <ClInclude Include="utils\log.h" />
@@ -352,12 +357,14 @@
     <ClCompile Include="guilib\GUILabel.cpp" />
     <ClCompile Include="guilib\GUILabelControl.cpp" />
     <ClCompile Include="guilib\GUIMessage.cpp" />
-    <ClCompile Include="guilib\GUITexture.cpp" />
+    <ClCompile Include="guilib\GUISpinControl.cpp" />
+    <ClCompile Include="guilib\GUISpinControlEx.cpp" />
     <ClCompile Include="guilib\GUIVideoControl.cpp" />
     <ClCompile Include="guilib\GUIWindow.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">MaxSpeed</Optimization>
     </ClCompile>
     <ClCompile Include="guilib\GUIWindowManager.cpp" />
+    <ClCompile Include="guilib\LocalizeStrings.cpp" />
     <ClCompile Include="guilib\SkinInfo.cpp" />
     <ClCompile Include="guilib\TextureManager.cpp" />
     <ClCompile Include="guilib\tinyxml\tinystr.cpp" />
@@ -371,6 +378,8 @@
     <ClCompile Include="guilib\windows\GUIWindowVideoFiles.cpp" />
     <ClCompile Include="guilib\XMLUtils.cpp" />
     <ClCompile Include="GUISettings.cpp" />
+    <ClCompile Include="Settings.cpp" />
+    <ClCompile Include="SettingsControls.cpp" />
     <ClCompile Include="utils\CriticalSection.cpp" />
     <ClCompile Include="utils\Event.cpp" />
     <ClCompile Include="utils\log.cpp" />

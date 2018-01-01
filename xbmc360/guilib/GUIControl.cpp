@@ -31,6 +31,7 @@ CGUIControl::CGUIControl()
 	m_controlID = 0;
 	m_parentID = 0;
 	m_visible = true;
+	m_forceHidden = false;
 
 	m_posX = 0;
 	m_posY = 0;
@@ -41,20 +42,23 @@ CGUIControl::CGUIControl()
 	m_dwControlRight = 0;
 	m_dwControlUp = 0;
 	m_dwControlDown = 0;
+
+	ControlType = GUICONTROL_UNKNOWN;
 }
 
 CGUIControl::CGUIControl(int parentID, int controlID, float posX, float posY, float width, float height)
 {
 	m_controlID = controlID;
 	m_visible = true;
+	m_forceHidden = false;
 	m_parentID = parentID;
 	m_forceHidden = false;
 	m_hasRendered = false;
 
-	m_posX = (int)posX;
-	m_posY = (int)posY;
-	m_width = (int)width;
-	m_height = (int)height;
+	m_posX = posX;
+	m_posY = posY;
+	m_width = width;
+	m_height = height;
 
 	m_bHasFocus = false;
 
@@ -252,7 +256,43 @@ bool CGUIControl::IsVisible() const
 	return m_visible;
 }
 
+void CGUIControl::SetVisible(bool bVisible)
+{
+	// just force to hidden if necessary
+	m_forceHidden = !bVisible;
+}
+
 void CGUIControl::SetVisibleCondition(int visible/*, const CGUIInfoBool &allowHiddenFocus*/)
 {
 	m_visibleCondition = visible;
+}
+
+void CGUIControl::SetPosition(float posX, float posY)
+{
+	 if ((m_posX != posX) || (m_posY != posY))
+	{
+		m_posX = posX;
+		m_posY = posY;
+		Update();
+	}
+}
+
+int CGUIControl::GetXPosition() const
+{
+	return (int)m_posX;
+}
+
+int CGUIControl::GetYPosition() const
+{
+	return (int)m_posY;
+}
+
+int CGUIControl::GetWidth() const
+{
+	return (int)m_width;
+}
+
+int CGUIControl::GetHeight() const
+{
+	return (int)m_height;
 }

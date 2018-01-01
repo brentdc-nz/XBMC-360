@@ -3,6 +3,7 @@
 #include "..\utils\stdafx.h"
 #include "..\utils\log.h"
 #include "..\Application.h"
+#include "LocalizeStrings.h"
 #include <vector>
 
 using namespace std;
@@ -316,6 +317,7 @@ void CGUIInfoManager::UpdateFPS()
 {
 	m_frameCounter++;
 	float fTimeSpan = (float)(GetTickCount() - m_lastFPSTime);
+	
 	if (fTimeSpan >= 1000.0f)
 	{
 		fTimeSpan /= 1000.0f;
@@ -375,30 +377,30 @@ CStdString CGUIInfoManager::GetDate(bool bNumbersOnly)
 		CStdString day;
 		switch (time.wDayOfWeek)
 		{
-			case 1 : day = "Mon";/*g_localizeStrings.Get(11);*/ break;
-			case 2 : day = "Tue";/*g_localizeStrings.Get(12);*/ break;
-			case 3 : day = "Wed";/*g_localizeStrings.Get(13);*/ break;
-			case 4 : day = "Thu";/*g_localizeStrings.Get(14);*/ break;
-			case 5 : day = "Fri";/*g_localizeStrings.Get(15);*/ break;
-			case 6 : day = "Sat";/*g_localizeStrings.Get(16);*/ break;
-			default: day = "Sun";/*g_localizeStrings.Get(17);*/ break;
+			case 1 : day = g_localizeStrings.Get(11); break;
+			case 2 : day = g_localizeStrings.Get(12); break;
+			case 3 : day = g_localizeStrings.Get(13); break;
+			case 4 : day = g_localizeStrings.Get(14); break;
+			case 5 : day = g_localizeStrings.Get(15); break;
+			case 6 : day = g_localizeStrings.Get(16); break;
+			default: day = g_localizeStrings.Get(17); break;
 		}
 
 		CStdString month;
 		switch (time.wMonth)
 		{
-			case 1 : month = "Jan";/*g_localizeStrings.Get(21);*/ break;
-			case 2 : month = "Feb";/*g_localizeStrings.Get(22);*/ break;
-			case 3 : month = "Mar";/*g_localizeStrings.Get(23);*/ break;
-			case 4 : month = "Apr";/*g_localizeStrings.Get(24);*/ break;
-			case 5 : month = "May";/*g_localizeStrings.Get(25);*/ break;
-			case 6 : month = "Jun";/*g_localizeStrings.Get(26);*/ break;
-			case 7 : month = "Jul";/*g_localizeStrings.Get(27);*/ break;
-			case 8 : month = "Aug";/*g_localizeStrings.Get(28);*/ break;
-			case 9 : month = "Sep";/*g_localizeStrings.Get(29);*/ break;
-			case 10: month = "Oct";/*g_localizeStrings.Get(30);*/ break;
-			case 11: month = "Nov";/*g_localizeStrings.Get(31);*/ break;
-			default: month = "Dec";/*g_localizeStrings.Get(32);*/ break;
+			case 1 : month = g_localizeStrings.Get(21); break;
+			case 2 : month = g_localizeStrings.Get(22); break;
+			case 3 : month = g_localizeStrings.Get(23); break;
+			case 4 : month = g_localizeStrings.Get(24); break;
+			case 5 : month = g_localizeStrings.Get(25); break;
+			case 6 : month = g_localizeStrings.Get(26); break;
+			case 7 : month = g_localizeStrings.Get(27); break;
+			case 8 : month = g_localizeStrings.Get(28); break;
+			case 9 : month = g_localizeStrings.Get(29); break;
+			case 10: month = g_localizeStrings.Get(30); break;
+			case 11: month = g_localizeStrings.Get(31); break;
+			default: month = g_localizeStrings.Get(32); break;
 		}
 
 		if (day.size() && month.size())

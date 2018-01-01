@@ -39,6 +39,12 @@ void CGUILabel::SetText(CStdString strText)
 	m_strText = strText;
 }
 
+void CGUILabel::SetPosition(int iPosX, int iPosY)
+{
+	m_iPosX = (float)iPosX;
+	m_iPosY = (float)iPosY;
+}
+
 void CGUILabel::Render()
 {
 	if(!m_label.font)

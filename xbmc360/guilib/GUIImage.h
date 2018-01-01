@@ -14,6 +14,7 @@ public:
 	virtual void AllocResources();
 	virtual void FreeResources();
 	virtual void SetInfo(const CGUIInfoLabel &info);
+	virtual void Update();
 	virtual void Render();
 protected:
 	CGUIInfoLabel m_info;

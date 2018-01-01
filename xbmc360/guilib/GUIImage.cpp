@@ -21,7 +21,7 @@ void CGUIImage::AllocResources()
 
 void CGUIImage::FreeResources()
 {
-	CGUIControl::FreeResources();
+	CGUIControl::FreeResources(); 
 
 	m_texture.FreeResources();
 }
@@ -32,6 +32,11 @@ void CGUIImage::SetInfo(const CGUIInfoLabel &info)
 	// a constant image never needs updating
 	if (m_info.IsConstant())
 		m_texture.SetFileName(m_info.GetLabel(0));
+}
+
+void CGUIImage::Update()
+{
+	m_texture.Update((int)m_posX, (int)m_posY);
 }
 
 void CGUIImage::Render()

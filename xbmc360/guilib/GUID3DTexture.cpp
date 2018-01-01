@@ -60,6 +60,8 @@ CGUID3DTexture::CGUID3DTexture(float posX, float posY, float width, float height
 	m_width = width;
 	m_height = height;
 
+	m_bVisible = true;
+
 	m_pd3dDevice = g_graphicsContext.Get3DDevice();
 	m_pTexture = NULL;
 	m_pVB = NULL;
@@ -232,9 +234,46 @@ bool CGUID3DTexture::FreeResources()
 	return true;
 }
 
+void CGUID3DTexture::SetVisible(bool bOnOff)
+{
+	m_bVisible = bOnOff;
+}
+
+void CGUID3DTexture::Update(int iPosX, int iPosY)
+{
+	m_posY = (float)iPosY;
+	m_posX = (float)iPosX;
+
+	if( !m_initialized || !m_pd3dDevice || !m_pVertexShader || !m_pVB )
+		return;
+
+	COLORVERTEX Vertices[] =
+    {
+        {(FLOAT)m_posX, (FLOAT)m_posY,  0.0f, 0, 0 ,},
+        {(FLOAT)m_posX+m_width, (FLOAT)m_posY, 0.0f,  1, 0 ,},
+        {(FLOAT)m_posX, (FLOAT)m_height+(FLOAT)m_posY, 0.0f,  0, 1 ,},
+	    {(FLOAT)m_posX+(FLOAT)m_width, (FLOAT)m_posY+(FLOAT)m_height, 0.0f,  1, 1 ,},
+    };
+
+    COLORVERTEX* pVertices;
+    m_pVB->Lock( 0, 0, ( void** )&pVertices, 0 );
+    memcpy( pVertices, Vertices, 4 * sizeof( COLORVERTEX ) );
+    m_pVB->Unlock();
+
+    // Initialize the world and view matrix
+    D3DXMatrixIdentity( &m_matWorld );
+    D3DXMatrixIdentity( &m_matView );
+
+    // Initialize the projection matrix
+	D3DXMatrixOrthoOffCenterLH(&m_matProj, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight(), 0, 0.0f, 1.0f ); 
+}
+
 void CGUID3DTexture::Render()
 {
 	if( !m_initialized || !m_pd3dDevice || !m_pVertexShader || !m_pVB )
+		return;
+
+	if(!m_bVisible)
 		return;
 
 	if ( !g_graphicsContext.IsFullScreenVideo() )
