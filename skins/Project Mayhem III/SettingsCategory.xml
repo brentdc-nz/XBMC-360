@@ -1,0 +1,139 @@
+<window id="0">
+	<defaultcontrol>30</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+	
+		<control>
+			<description>background image </description>
+			<type>image</type>				
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>1280</width>
+			<height>720</height>
+			<texture>background.png</texture>
+			<visible>true</visible>			
+		</control>
+		
+		<control>
+			<description>background image</description>
+			<type>image</type>				
+			<posx>-5</posx>
+			<posy>-20</posy>
+			<width>1288</width>
+			<height>145</height>
+			<texture>header_settings.png</texture>
+			<visible>true</visible>			
+		</control>		
+		
+		<control>
+			<description>Title</description>
+			<type>label</type>			
+			<width>255</width>
+			<posx>100</posx>
+			<posy>50</posy>
+			<label>Settings</label>
+			<font>special13</font>
+			<visible>true</visible>
+		</control>				
+
+		<control>
+			<description>button area</description>
+			<type>image</type>
+			<id>3</id>
+			<posx>50</posx>
+			<posy>120</posy>
+			<width>150</width>
+			<height>300</height>
+			<texture>-</texture>
+		</control>		
+		
+		<control>
+			<description>Button Gap</description>
+			<type>image</type>			
+			<id>4</id>
+			<width>350</width>
+			<height>38</height>
+			<posx>0</posx>
+			<posy>0</posy>
+			<texture>-</texture>
+			<visible>false</visible>		
+		</control>	
+				
+		<control>
+			<description>control area</description>
+			<type>image</type>
+			<id>5</id>
+			<posx>390</posx>
+			<posy>150</posy>
+			<width>445</width>
+			<height>300</height>
+			<texture>-</texture>
+		</control>
+
+		<control>
+			<description>control gap</description>
+			<type>image</type>
+			<id>6</id>
+			<width>350</width>
+			<height>34</height>
+			<texture>-</texture>
+		</control>		
+	    
+		<control>
+			<description>Default SpinControlex</description>
+			<type>spincontrolex</type>
+			<id>9</id>
+			<posx>530</posx>
+			<posy>150</posy>
+			<width>800</width>
+			<height>50</height>
+			<spinwidth>50</spinwidth>
+			<spinheight>25</spinheight>
+			<texturefocus>list_focus.png</texturefocus>
+			<texturenofocus>list_focus.png</texturenofocus>
+			<textureup>scroll_up.png</textureup>
+			<texturedown>scroll_down.png</texturedown>
+			<textureupfocus>scroll_up_focus.png</textureupfocus>
+			<texturedownfocus>scroll_down_focus.png</texturedownfocus>
+			<font>special13</font>
+			<disabledcolor>60d0d0d0</disabledcolor>
+			<textoffsetx>-18</textoffsetx>
+			<reverse>yes</reverse>
+			<visible>true</visible>					
+		</control>
+			
+		<control>
+			<description>Default Button</description>
+			<type>button</type>
+			<id>10</id>
+			<posx>5</posx>
+			<posy>140</posy>
+			<width>250</width>
+			<height>50</height>
+			<label>Programs</label>
+			<font>special13</font>
+			<onclick>-</onclick>
+			<onleft>9</onleft>
+			<onright>9</onright>
+			<onup>9</onup>
+			<ondown>5</ondown>
+			<texturefocus>button_focus.png</texturefocus>
+			<texturenofocus>button_nofocus.png</texturenofocus>
+			<textoffsetx>30</textoffsetx>
+			<textoffsety>10</textoffsety>
+			<visible>true</visible>					
+		</control>	
+			
+	    <control>
+			<description>video preview window</description>
+			<type>videowindow</type>
+			<id>0</id>
+			<posx>50</posx>
+			<posy>430</posy>
+			<width>228</width>
+			<height>220</height>
+			<visible>true</visible>
+		</control>	
+					
+	</controls>
+</window>

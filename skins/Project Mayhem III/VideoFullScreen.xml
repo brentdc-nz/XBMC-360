@@ -1,0 +1,57 @@
+<window id="2005">
+	<defaultcontrol>0</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>		
+	
+		<control>
+			<description>media info background image</description>
+			<type>image</type>
+			<posx>-10</posx>
+			<posy>40</posy>
+			<width>1300</width>
+			<height>145</height>
+			<texture>osd_menu_bg.png</texture>
+			<visible>true</visible>				
+		</control>	
+		
+		<control>
+			<description>row 1 label</description>
+			<type>label</type>
+			<id>10</id>
+			<posx>30</posx>
+			<posy>50</posy>
+			<width>680</width>
+			<label>label1</label>
+			<align>left</align>
+			<font>font10</font>
+			<visible>true</visible>				
+		</control>
+		
+		<control>
+			<description>row 2 label</description>
+			<type>label</type>
+			<id>11</id>			
+			<posx>30</posx>
+			<posy>95</posy>
+			<width>680</width>
+			<label>label2</label>
+			<align>left</align>
+			<font>font10</font>
+			<visible>true</visible>				
+		</control>
+		
+		<control>
+			<description>row 3 label</description>
+			<type>label</type>
+			<id>12</id>			
+			<posx>30</posx>
+			<posy>140</posy>
+			<width>680</width>
+			<label>label3</label>
+			<align>left</align>
+			<font>font10</font>
+			<visible>true</visible>				
+		</control>		
+		
+	</controls>	
+</window>

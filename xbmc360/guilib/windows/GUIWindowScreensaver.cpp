@@ -65,10 +65,12 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
 
 		case GUI_MSG_WINDOW_DEINIT:
 		{
-			m_pScreensaver->Close();
-			delete m_pScreensaver;
-			m_pScreensaver = NULL;
-
+			if(m_pScreensaver)
+			{
+				m_pScreensaver->Close();
+				delete m_pScreensaver;
+				m_pScreensaver = NULL;
+			}
 			return true;
 		}
 		break;
