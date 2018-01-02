@@ -36,6 +36,7 @@ public:
 	void UnloadNotOnDemandWindows();
 	CGUIWindow* GetWindow(int id) const;
 	int GetActiveWindow() const;
+	bool IsWindowActive(int id);
 	void PreviousWindow();
 	void Delete(int id);
 	void Remove(int id);

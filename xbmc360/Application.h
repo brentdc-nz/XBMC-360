@@ -5,6 +5,7 @@
 #include "cores\IPlayer.h"
 #include "guilib\GUIUserMessage.h"
 #include "guilib\IMsgTargetCallback.h"
+#include "utils\Stopwatch.h"
 
 class CApplication: public CXBApplicationEX, public IPlayerCallback, public IMsgTargetCallback
 {
@@ -17,6 +18,7 @@ public:
 	void CancelDelayLoadSkin();
 	void LoadSkin(const CStdString& strSkin);
 	void UnloadSkin();
+
 	virtual bool Initialize();
 	virtual void Process();
 	virtual void FrameMove();
@@ -44,11 +46,25 @@ public:
 	bool IsPlayingAudio() const;
 	bool IsPlayingVideo() const;
 
-	DWORD m_dwSkinTime;
+	void ResetScreenSaver();
+	bool ResetScreenSaverWindow();
+	bool IsInScreenSaver() { return m_bScreenSave; };
+	void CheckScreenSaver(); //TODO Make private?
 
-//protected: //FIXME - Should be protected!
+	DWORD m_dwSkinTime;
 	IPlayer* m_pPlayer;
+
+protected:
+	void FatalErrorHandler(bool InitD3D);
+	void  ActivateScreenSaver();
+
+	bool m_bScreenSave;
+	CStdString m_screenSaverMode;
+	bool m_bInitializing;
 	bool m_bPlaybackStarting;
+
+	// Timer information
+	CStopWatch m_screenSaverTimer;
 };
 
 extern CApplication g_application;

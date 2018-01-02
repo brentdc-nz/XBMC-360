@@ -1,5 +1,5 @@
 #include "XBApplicationEx.h"
-#include "utils\log.h"
+#include "utils\Log.h"
 #include "guilib\GraphicContext.h"
 
 // Deadzone for the gamepad inputs
@@ -27,7 +27,7 @@ CXBApplicationEX::CXBApplicationEX()
     m_d3dpp.EnableAutoDepthStencil = FALSE;
     m_d3dpp.AutoDepthStencilFormat = D3DFMT_D24S8;
     m_d3dpp.SwapEffect             = D3DSWAPEFFECT_COPY;
-    m_d3dpp.PresentationInterval   = D3DPRESENT_INTERVAL_DEFAULT;//D3DPRESENT_INTERVAL_IMMEDIATE;
+    m_d3dpp.PresentationInterval   = D3DPRESENT_INTERVAL_DEFAULT;
 
 	//XUI
 	XUIInitParams m_XUIParams = { 0 };

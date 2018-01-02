@@ -1,5 +1,5 @@
 #include "ButtonTranslator.h"
-#include "utils\log.h"
+#include "utils\Log.h"
 #include "guilib\Key.h"
 #include "utils\StringUtils.h"
 
@@ -35,6 +35,7 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
 	else if (strWindow.Equals("myvideos")) wWindowID = WINDOW_VIDEOS;
 	else if (strWindow.Equals("settings")) wWindowID = WINDOW_SETTINGS;
 	else if (strWindow.Equals("appearancesettings")) wWindowID = WINDOW_SETTINGS_APPEARANCE;
+	else if (strWindow.Equals("screensaver")) wWindowID = WINDOW_SCREENSAVER;
 	else
 		CLog::Log(LOGERROR, "Window Translator: Can't find window %s", strWindow.c_str());
 

@@ -20,7 +20,7 @@
 
 #include "GUIInfoTypes.h"
 #include "GUIInfoManager.h"
-#include "..\utils\log.h"
+#include "..\utils\Log.h"
 #include "..\utils\StringUtils.h"
 
 #include <string>

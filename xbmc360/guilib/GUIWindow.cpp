@@ -1,5 +1,5 @@
 #include "GUIWindow.h"
-#include "..\utils\log.h"
+#include "..\utils\Log.h"
 #include "..\Application.h"
 #include "GUIWindowManager.h"
 #include "GUIControlFactory.h"

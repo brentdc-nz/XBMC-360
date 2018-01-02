@@ -1,7 +1,7 @@
 #include <xtl.h>
 #include "RenderManager.h"
 #include "..\..\Application.h"
-#include "..\..\utils\log.h"
+#include "..\..\utils\Log.h"
 #include "..\..\guilib\GraphicContext.h"
 
 CRenderManager::CRenderManager()

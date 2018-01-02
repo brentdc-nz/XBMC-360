@@ -13,7 +13,7 @@ public:
 
 	const CStdString& GetFontName() const;
 	bool  Load(const CStdString& strFontName,const CStdString& strFilename, int iSize, DWORD dwStyles);
-	bool DrawText( float x, float y, DWORD dwColor, const CStdString strText, DWORD dwFlags = XUI_FONT_STYLE_NORMAL/*, FLOAT fMaxPixelWidth*/ );
+	bool DrawText( float fPosX, float fPosY, DWORD dwColor, const CStdString strText, DWORD dwFlags = XUI_FONT_STYLE_NORMAL/*, FLOAT fMaxPixelWidth*/ );
 
 private:
 	CStdString m_strFontName;

@@ -28,7 +28,7 @@ void CGUISpinControl::Render()
 
 	if (m_iValue >= 0 && m_iValue < (int)m_vecLabels.size() )
 	{
-		if (/*m_bShowRange*/1)
+		if (/*m_bShowRange*/1) //TODO
 		{
 			text.Format("(%i/%i) %s", m_iValue + 1, (int)m_vecLabels.size(), CStdString(m_vecLabels[m_iValue]).c_str() );
 		}
@@ -70,13 +70,13 @@ void CGUISpinControl::Render()
 		}
 
 		float fPosX = (float)(m_posX + m_label.offsetX) - 3;
-		if ( /*!IsDisabled()*/1 /*HasFocus()*/ )
+		if ( /*!IsDisabled()*/1 /*HasFocus()*/ ) //TODO
 		{
-			m_label.font->DrawText(fPosX, fPosY, m_label.dwTextColor, text.c_str(), /*m_label.align*/NULL);
+			m_label.font->DrawText(fPosX, fPosY, m_label.dwTextColor, text.c_str(), m_label.dwAlign);
 		}
 		else
 		{
-			m_label.font->DrawText(fPosX, fPosY, m_label.dwTextColor, text.c_str(), /*m_label.align*/NULL);
+			m_label.font->DrawText(fPosX, fPosY, m_label.dwTextColor, text.c_str(), m_label.dwAlign);
 		}
 	}
 
@@ -86,6 +86,9 @@ void CGUISpinControl::Render()
 void CGUISpinControl::AllocResources()
 {
 	CGUIControl::AllocResources();
+
+	// Correct alignment - We always align the spincontrol on the right.
+	m_label.dwAlign = XUI_FONT_STYLE_RIGHT_ALIGN;
 
 	m_imgspinUp.AllocResources();
 	m_imgspinUpFocus.AllocResources();
@@ -211,7 +214,7 @@ void CGUISpinControl::SetType(int iType)
 void CGUISpinControl::MoveUp(bool bTestReverse)
 {
 /*
-	if (bTestReverse && m_bReverse)
+	if (bTestReverse && m_bReverse)  //TODO
 	{
 		// actually should move down.
 		MoveDown(false);
@@ -238,7 +241,7 @@ void CGUISpinControl::MoveUp(bool bTestReverse)
 void CGUISpinControl::MoveDown(bool bTestReverse)
 {
 /*
-	if (bTestReverse && m_bReverse)
+	if (bTestReverse && m_bReverse)  //TODO
 	{ 
 		// actually should move up.
 		MoveUp(false);

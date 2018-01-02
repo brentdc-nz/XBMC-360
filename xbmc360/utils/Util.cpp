@@ -1,5 +1,5 @@
 #include "Util.h"
-#include "log.h"
+#include "Log.h"
 #include "..\ButtonTranslator.h"
 #include "..\guilib\GUIWindowManager.h"
 

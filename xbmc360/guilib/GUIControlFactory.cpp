@@ -296,8 +296,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
 	CStdString strFont;
 	if (XMLUtils::GetString(pControlNode, "font", strFont))
 		labelInfo.font = g_fontManager.GetFont(strFont);
-/*  GetAlignment(pControlNode, "align", labelInfo.align);
-  uint32_t alignY = 0;
+
+	GetAlignment(pControlNode, "align", labelInfo.dwAlign);
+/*  uint32_t alignY = 0;
   if (GetAlignmentY(pControlNode, "aligny", alignY))
     labelInfo.align |= alignY;
   if (GetFloat(pControlNode, "textwidth", labelInfo.width))
@@ -911,6 +912,19 @@ bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode, const char* strT
 		image.useLarge = true;
 	image.filename = /*(*/pNode->FirstChild()/* && pNode->FirstChild()->ValueStr() != "-")*/ ? pNode->FirstChild()->Value() : ""; //MARTY FIXME WIP
 
+	return true;
+}
+
+bool CGUIControlFactory::GetAlignment(const TiXmlNode* pRootNode, const char* strTag, DWORD& alignment)
+{
+	const TiXmlNode* pNode = pRootNode->FirstChild(strTag);
+	if (!pNode || !pNode->FirstChild()) return false;
+
+	CStdString strAlign = pNode->FirstChild()->Value();
+	if (strAlign == "right" ) alignment = XUI_FONT_STYLE_RIGHT_ALIGN;
+//	else if (strAlign == "center") alignment = XUI_FONT_STYLE_CENTER_ALIGN; //TODO
+//	else if (strAlign == "justify") alignment = XBFONT_JUSTIFIED; //TODO
+	else alignment = NULL;
 	return true;
 }
 

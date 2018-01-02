@@ -78,9 +78,9 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
 /*			if (!m_strNewLanguage.IsEmpty())
 			{
 				g_guiSettings.SetString("LookAndFeel.Language", m_strNewLanguage);
-				g_settings.Save();
+*/				g_settings.Save();
 
-				CStdString strLangInfoPath;
+/*				CStdString strLangInfoPath;
 				strLangInfoPath.Format("Q:\\language\\%s\\langinfo.xml", m_strNewLanguage.c_str());
 				g_langInfo.Load(strLangInfoPath);
 

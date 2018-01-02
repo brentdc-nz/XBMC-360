@@ -22,6 +22,7 @@
 #define WINDOW_SETTINGS                   10007
 
 #define WINDOW_FULLSCREEN_VIDEO           12005
+#define WINDOW_SCREENSAVER                12900
 
 #define WINDOW_SETTINGS_MYPICTURES        10012
 #define WINDOW_SETTINGS_MYPROGRAMS        10013

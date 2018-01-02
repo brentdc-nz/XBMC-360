@@ -4,7 +4,7 @@
 
 #include "..\DVDUtils\memutil.h"
 #include "..\..\..\utils\thread.h"
-#include "..\..\..\utils\log.h"
+#include "..\..\..\utils\Log.h"
 
 // threashold for start values in AV_TIME_BASE units
 #define PTS_START_THREASHOLD 100000

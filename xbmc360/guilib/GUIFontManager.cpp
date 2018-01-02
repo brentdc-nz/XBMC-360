@@ -1,6 +1,6 @@
 #include "GUIFontManager.h"
 #include "tinyxml\tinyxml.h"
-#include "..\utils\log.h"
+#include "..\utils\Log.h"
 
 GUIFontManager g_fontManager;
 

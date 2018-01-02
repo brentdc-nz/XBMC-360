@@ -1,5 +1,5 @@
 #include "LocalizeStrings.h"
-#include "..\utils\log.h"
+#include "..\utils\Log.h"
 #include "tinyxml\tinyxml.h"
 
 CLocalizeStrings g_localizeStrings;

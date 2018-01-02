@@ -1,7 +1,7 @@
 #include "DVDPlayer.h"
 #include "DVDDemuxers\DVDDemuxFFmpeg.h" //Fixme -  need factory
 #include "DVDDemuxers\DVDDemuxUtils.h"
-#include "..\..\utils\log.h"
+#include "..\..\utils\Log.h"
 #include "DVDStreamInfo.h"
 #include "..\..\Application.h"
 

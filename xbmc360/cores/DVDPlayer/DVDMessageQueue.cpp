@@ -1,6 +1,6 @@
 #include "DVDMessageQueue.h"
 #include "DVDDemuxers\DVDDemuxUtils.h"
-#include "..\..\utils\log.h"
+#include "..\..\utils\Log.h"
 
 CDVDMessageQueue::CDVDMessageQueue()
 {

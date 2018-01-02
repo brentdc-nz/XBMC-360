@@ -28,7 +28,7 @@ bool CGUIFont::Load(const CStdString& strFontName,const CStdString& strFilename,
 	return true;
 }
 
-bool CGUIFont::DrawText( float x, float y, DWORD dwColor, const CStdString strText, DWORD dwFlags/* = XUI_FONT_STYLE_NORMAL*//*, FLOAT fMaxPixelWidth*/ )
+bool CGUIFont::DrawText( float fPosX, float fPosY, DWORD dwColor, const CStdString strText, DWORD dwFlags/* = XUI_FONT_STYLE_NORMAL*//*, FLOAT fMaxPixelWidth*/ )
 {
 	//==================================================================
 	// FIXME - WTF!!! 
@@ -82,15 +82,21 @@ bool CGUIFont::DrawText( float x, float y, DWORD dwColor, const CStdString strTe
 	XuiCreateFont( resultstrFontName, m_fSize, dwFlags, 0, &m_Font );
 
     // Measure the text
-	XUIRect clipRect( 0, 0, g_graphicsContext.GetWidth() - x, g_graphicsContext.GetHeight() - y );
+	XUIRect clipRect( 0, 0, g_graphicsContext.GetWidth() - fPosX, g_graphicsContext.GetHeight() - fPosY );
     XuiMeasureText( m_Font, resultstrText, -1, dwFlags, 0, &clipRect );
 
-    // Set the text position in the device context
-    D3DXMATRIX matXForm;
-    D3DXMatrixIdentity( &matXForm );
-    matXForm._41 = x;
-    matXForm._42 = y;
-    XuiRenderSetTransform( g_graphicsContext.GetXUIDevice(), &matXForm );
+	if(dwFlags & XUI_FONT_STYLE_RIGHT_ALIGN) //HACK: Using XUI to do this should be easy, but it's a pain in the butt...
+	{
+		clipRect.right = g_graphicsContext.GetWidth() - fPosX + 131;
+		fPosX = fPosX - clipRect.GetWidth();
+	}
+
+	// Set the text position in the device context
+	D3DXMATRIX matXForm;
+	D3DXMatrixIdentity( &matXForm );
+	matXForm._41 = fPosX;
+	matXForm._42 = fPosY;
+	XuiRenderSetTransform( g_graphicsContext.GetXUIDevice(), &matXForm );
 
 	// Select the font and color into the device context
     XuiSelectFont( g_graphicsContext.GetXUIDevice(), m_Font );
@@ -103,7 +109,7 @@ bool CGUIFont::DrawText( float x, float y, DWORD dwColor, const CStdString strTe
 
     // Draw the text
     XuiDrawText( g_graphicsContext.GetXUIDevice(), resultstrText, dwFlags, 0, &clipRect );
-
+	
 	// release the font
 	XuiReleaseFont( m_Font );
 

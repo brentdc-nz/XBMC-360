@@ -1,5 +1,5 @@
 #include "GUIWindowManager.h"
-#include "..\utils\log.h"
+#include "..\utils\Log.h"
 #include "..\utils\SingleLock.h"
 #include "GraphicContext.h"
 using namespace std;
@@ -148,6 +148,14 @@ int CGUIWindowManager::GetActiveWindow() const
 	if (!m_windowHistory.empty())
 		return m_windowHistory.top();
 	return WINDOW_INVALID;
+}
+
+bool CGUIWindowManager::IsWindowActive(int id)
+{
+	if(GetActiveWindow() == id)
+		return true;
+	else
+		return false;
 }
 
 void CGUIWindowManager::PreviousWindow()

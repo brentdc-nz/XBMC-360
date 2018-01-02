@@ -19,7 +19,7 @@
  */
 
 #include "GUILabel.h"
-#include "..\utils\log.h"
+#include "..\utils\Log.h"
 
 CGUILabel::CGUILabel(float posX, float posY, float width, float height, const CLabelInfo& labelInfo/*, CGUILabel::OVER_FLOW overflow*/)
 {
@@ -53,5 +53,5 @@ void CGUILabel::Render()
 		return;
 	}
 
-	m_label.font->DrawText(m_iPosX + m_label.offsetX, m_iPosY + m_label.offsetY, m_label.dwTextColor, m_strText );
+	m_label.font->DrawText(m_iPosX + m_label.offsetX, m_iPosY + m_label.offsetY, m_label.dwTextColor, m_strText, m_label.dwAlign );
 }

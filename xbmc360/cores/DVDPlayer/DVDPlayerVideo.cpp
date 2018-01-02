@@ -4,7 +4,7 @@
 #include "DVDClock.h"
 #include "DVDCodecs\DVDCodecUtils.h"
 #include "DVDMessage.h"
-#include "..\..\utils\log.h"
+#include "..\..\utils\Log.h"
 
 #include "DVDCodecs\DVDVideoCodecFFmpeg.h" //FIXME - Move to codec factory?
 

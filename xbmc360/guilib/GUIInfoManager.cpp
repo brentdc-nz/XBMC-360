@@ -1,7 +1,7 @@
 #include "GUIInfoManager.h"
 #include "GUIWindowManager.h"
 #include "..\utils\stdafx.h"
-#include "..\utils\log.h"
+#include "..\utils\Log.h"
 #include "..\Application.h"
 #include "LocalizeStrings.h"
 #include <vector>

@@ -1,6 +1,6 @@
 #include "DVDPlayerAudio.h"
 #include "DVDDemuxers\DVDDemuxUtils.h"
-#include "..\..\utils\log.h"
+#include "..\..\utils\Log.h"
 
 #include <assert.h>
 #include "DVDCodecs\DVDAudioCodecFFmpeg.h" //FIXME Move to a codec factory!!

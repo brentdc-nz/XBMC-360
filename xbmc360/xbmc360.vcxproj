@@ -293,12 +293,15 @@
     <ClInclude Include="guilib\IMsgTargetCallback.h" />
     <ClInclude Include="guilib\Key.h" />
     <ClInclude Include="guilib\LocalizeStrings.h" />
+    <ClInclude Include="guilib\screensavers\ScreensaverBase.h" />
+    <ClInclude Include="guilib\screensavers\ScreensaverPlasma.h" />
     <ClInclude Include="guilib\SkinInfo.h" />
     <ClInclude Include="guilib\TextureManager.h" />
     <ClInclude Include="guilib\tinyxml\tinystr.h" />
     <ClInclude Include="guilib\tinyxml\tinyxml.h" />
     <ClInclude Include="guilib\windows\GUIWindowFullScreen.h" />
     <ClInclude Include="guilib\windows\GUIWindowHome.h" />
+    <ClInclude Include="guilib\windows\GUIWindowScreensaver.h" />
     <ClInclude Include="guilib\windows\GUIWindowSettings.h" />
     <ClInclude Include="guilib\windows\GUIWindowSettingsCategory.h" />
     <ClInclude Include="guilib\windows\GUIWindowVideoFiles.h" />
@@ -308,11 +311,12 @@
     <ClInclude Include="SettingsControls.h" />
     <ClInclude Include="utils\CriticalSection.h" />
     <ClInclude Include="utils\Event.h" />
-    <ClInclude Include="utils\log.h" />
+    <ClInclude Include="utils\Log.h" />
     <ClInclude Include="utils\SharedSection.h" />
     <ClInclude Include="utils\SingleLock.h" />
     <ClInclude Include="utils\stdafx.h" />
     <ClInclude Include="utils\StdString.h" />
+    <ClInclude Include="utils\Stopwatch.h" />
     <ClInclude Include="utils\StringUtils.h" />
     <ClInclude Include="utils\Thread.h" />
     <ClInclude Include="utils\TimeUtils.h" />
@@ -365,6 +369,7 @@
     </ClCompile>
     <ClCompile Include="guilib\GUIWindowManager.cpp" />
     <ClCompile Include="guilib\LocalizeStrings.cpp" />
+    <ClCompile Include="guilib\screensavers\ScreensaverPlasma.cpp" />
     <ClCompile Include="guilib\SkinInfo.cpp" />
     <ClCompile Include="guilib\TextureManager.cpp" />
     <ClCompile Include="guilib\tinyxml\tinystr.cpp" />
@@ -373,6 +378,7 @@
     <ClCompile Include="guilib\tinyxml\tinyxmlparser.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowFullScreen.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowHome.cpp" />
+    <ClCompile Include="guilib\windows\GUIWindowScreensaver.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowSettings.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowSettingsCategory.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowVideoFiles.cpp" />
@@ -382,10 +388,11 @@
     <ClCompile Include="SettingsControls.cpp" />
     <ClCompile Include="utils\CriticalSection.cpp" />
     <ClCompile Include="utils\Event.cpp" />
-    <ClCompile Include="utils\log.cpp" />
+    <ClCompile Include="utils\Log.cpp" />
     <ClCompile Include="utils\SharedSection.cpp" />
     <ClCompile Include="utils\SingleLock.cpp" />
     <ClCompile Include="utils\stdafx.cpp" />
+    <ClCompile Include="utils\Stopwatch.cpp" />
     <ClCompile Include="utils\StringUtils.cpp" />
     <ClCompile Include="utils\Thread.cpp" />
     <ClCompile Include="utils\TimeUtils.cpp" />

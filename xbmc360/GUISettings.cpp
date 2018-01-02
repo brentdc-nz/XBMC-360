@@ -1,5 +1,6 @@
 #include "GUISettings.h"
-#include "utils\log.h"
+#include "utils\Log.h"
+#include "utils\StringUtils.h"
 
 using namespace std;
 
@@ -17,15 +18,26 @@ CSettingString::CSettingString(int iOrder, const char *strSetting, int iLabel, c
 	m_strData = strData;
 }
 
+void CSettingString::FromString(const CStdString &strValue)
+{
+	m_strData = strValue;
+}
+
+CStdString CSettingString::ToString()
+{
+	return m_strData;
+}
+
 CGUISettings g_guiSettings;
 
 // Settings are case sensitive
 CGUISettings::CGUISettings()
 {
-	// appearance settings
+	// Appearance settings
 	AddGroup(7, 480);
 	AddCategory(7,"LookAndFeel", 14037);
 	AddString(1, "LookAndFeel.Skin", 166, "Project Mayhem III", SPIN_CONTROL_TEXT);
+	AddString(2, "LookAndFeel.Language", 248, "English", SPIN_CONTROL_TEXT);
 }
 
 CGUISettings::~CGUISettings()
@@ -117,6 +129,69 @@ void CGUISettings::GetSettingsGroup(const char *strGroup, vecSettings &settings)
 	}
 	// now order them...
 	sort(settings.begin(), settings.end(), sortsettings());
+}
+
+void CGUISettings::LoadXML(TiXmlElement *pRootElement)
+{
+	//Load our ssettings...
+	for (mapIter it = m_settingsMap.begin(); it != m_settingsMap.end(); it++)
+	{
+		CStdStringArray strSplit;
+		CStringUtils::SplitString((*it).first, ".", strSplit);
+		if (strSplit.size() > 1)
+		{
+			const TiXmlNode *pChild = pRootElement->FirstChild(strSplit[0].c_str());
+			if (pChild)
+			{
+				const TiXmlNode *pGrandChild = pChild->FirstChild(strSplit[1].c_str());
+				if (pGrandChild && pGrandChild->FirstChild())
+				{
+					CStdString strValue = pGrandChild->FirstChild()->Value();
+					if (strValue.size() )
+					{
+						if (strValue != "-")
+						{ 
+							// update our item
+							(*it).second->FromString(strValue);
+							CLog::Log(LOGDEBUG, "  %s: %s", (*it).first.c_str(), (*it).second->ToString().c_str());
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+void CGUISettings::SaveXML(TiXmlNode *pRootNode)
+{
+	for (mapIter it = m_settingsMap.begin(); it != m_settingsMap.end(); it++)
+	{
+		CStdStringArray strSplit;
+		CStringUtils::SplitString((*it).first, ".", strSplit);
+		
+		if (strSplit.size() > 1)
+		{
+			TiXmlNode *pChild = pRootNode->FirstChild(strSplit[0].c_str());
+			if (!pChild)
+			{
+				// add our group tag
+				TiXmlElement newElement(strSplit[0].c_str());
+				pChild = pRootNode->InsertEndChild(newElement);
+			}
+
+			if (pChild)
+			{
+				// successfully added (or found) our group
+			   TiXmlElement newElement(strSplit[1]);
+				TiXmlNode *pNewNode = pChild->InsertEndChild(newElement);
+				if (pNewNode)
+				{
+					TiXmlText value((*it).second->ToString());
+					pNewNode->InsertEndChild(value);
+				}
+			}
+		}
+	}
 }
 
 void CGUISettings::Clear()

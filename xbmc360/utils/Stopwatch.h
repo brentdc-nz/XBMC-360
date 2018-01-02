@@ -1,5 +1,5 @@
-#ifndef GUILIB_GUILABEL_H
-#define GUILIB_GUILABEL_H
+#ifndef H_CSTOPWATCH
+#define H_CSTOPWATCH
 
 /*
  *      Copyright (C) 2005-2013 Team XBMC
@@ -21,44 +21,28 @@
  *
  */
 
-#include "GUIInfoTypes.h"
-#include "GUIFont.h"
+#include "stdafx.h"
 
-class CLabelInfo
+class CStopWatch
 {
 public:
-	CLabelInfo()
-	{
-		font = NULL;
-		offsetX = 0;
-		offsetY = 0;
-		dwTextColor = D3DCOLOR_ARGB( 255, 255, 255, 255 );
-		dwAlign = NULL;
-	};
+	CStopWatch();
+	~CStopWatch();
 
-	CGUIFont *font;
-	float offsetX;
-	float offsetY;
-	DWORD dwTextColor;
-	DWORD dwAlign;
-};
+	bool IsRunning() const;
+	void StartZero();          ///< Resets clock to zero and starts running
+	void Start();              ///< Sets clock to zero if not running and starts running.
+	void Stop();               ///< Stops clock and sets to zero if running.
+	void Reset();              ///< Resets clock to zero - does not alter running state.
 
-class CGUILabel
-{
-public:
-	CGUILabel(float posX, float posY, float width, float height, const CLabelInfo& labelInfo/*, CGUILabel::OVER_FLOW overflow*/);
-	virtual ~CGUILabel(void);
-
-	void SetText(CStdString strText);
-	void SetPosition(int iPosX, int iPosY);
-	void Render();
+	float GetElapsedSeconds() const;
+	float GetElapsedMilliseconds() const;
 
 private:
-	CLabelInfo m_label;
-
-	CStdString m_strText;
-	float m_iPosX;
-	float m_iPosY;
+	__int64 GetTicks() const;
+	float m_timerPeriod;        // to save division in GetElapsed...()
+	__int64 m_startTick;
+	bool m_isRunning;
 };
 
-#endif //GUILIB_GUILABEL_H
+#endif //H_CSTOPWATCH

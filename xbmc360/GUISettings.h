@@ -2,6 +2,8 @@
 #define H_CGUISETTINGS
 
 #include "utils\StdString.h"
+#include "guilib\tinyxml\tinyxml.h"
+
 #include <map>
 #include <vector>
 
@@ -69,6 +71,8 @@ public:
 	CSetting(int iOrder, const char *strSetting, int iLabel, int iControlType) { m_iOrder = iOrder; m_strSetting = strSetting; m_iLabel = iLabel; m_iControlType = iControlType;};
 	~CSetting() {};
 
+	virtual void FromString(const CStdString &strValue) {};
+	virtual CStdString ToString() { return ""; };
 	const char *GetSetting() { return m_strSetting.c_str(); };
 	int GetControlType() { return m_iControlType; };
 	int GetLabel() { return m_iLabel; };
@@ -87,6 +91,8 @@ public:
 	CSettingString(int iOrder, const char *strSetting, int iLabel, const char *strData, int iControlType);
 	~CSettingString() {};
 
+	virtual void FromString(const CStdString &strValue);
+	virtual CStdString ToString();
 	void SetData(const char *strData) { m_strData = strData; };
 	CStdString GetData() const { return m_strData; };
 
@@ -112,6 +118,9 @@ public:
 
 	void GetSettingsGroup(const char *strGroup, vecSettings &settings);
 	CSetting *GetSetting(const char *strSetting);
+
+	void LoadXML(TiXmlElement *pRootElement);
+	void SaveXML(TiXmlNode *pRootNode);
 
 	void Clear();
 

@@ -20,7 +20,7 @@
 
 #include "TextureManager.h"
 #include "GraphicContext.h"
-#include "..\utils\log.h"
+#include "..\utils\Log.h"
 #include "..\utils\SingleLock.h"
 
 CGUITextureManager g_TextureManager;

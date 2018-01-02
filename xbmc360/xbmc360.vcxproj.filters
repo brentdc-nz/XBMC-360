@@ -81,6 +81,12 @@
     <Filter Include="Source Files\guilib\tinyxml">
       <UniqueIdentifier>{8365e199-d8b6-46a1-8785-ec6532442eaf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\guilib\screensavers">
+      <UniqueIdentifier>{9ef4c86b-af94-4aec-b37b-dde720258f61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\guilib\screensavers">
+      <UniqueIdentifier>{12abb442-dd76-449a-8378-1b29adec4106}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -150,9 +156,6 @@
       <Filter>Header Files\utils</Filter>
     </ClInclude>
     <ClInclude Include="utils\Event.h">
-      <Filter>Header Files\utils</Filter>
-    </ClInclude>
-    <ClInclude Include="utils\log.h">
       <Filter>Header Files\utils</Filter>
     </ClInclude>
     <ClInclude Include="utils\SharedSection.h">
@@ -308,6 +311,21 @@
     <ClInclude Include="Settings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="utils\Log.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\Stopwatch.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\windows\GUIWindowScreensaver.h">
+      <Filter>Header Files\guilib\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\screensavers\ScreensaverBase.h">
+      <Filter>Header Files\guilib\screensavers</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\screensavers\ScreensaverPlasma.h">
+      <Filter>Header Files\guilib\screensavers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -368,9 +386,6 @@
       <Filter>Source Files\utils</Filter>
     </ClCompile>
     <ClCompile Include="utils\Event.cpp">
-      <Filter>Source Files\utils</Filter>
-    </ClCompile>
-    <ClCompile Include="utils\log.cpp">
       <Filter>Source Files\utils</Filter>
     </ClCompile>
     <ClCompile Include="utils\SharedSection.cpp">
@@ -513,6 +528,18 @@
     </ClCompile>
     <ClCompile Include="Settings.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\Log.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\Stopwatch.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\windows\GUIWindowScreensaver.cpp">
+      <Filter>Source Files\guilib\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\screensavers\ScreensaverPlasma.cpp">
+      <Filter>Source Files\guilib\screensavers</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
