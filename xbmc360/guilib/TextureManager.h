@@ -21,7 +21,7 @@
 #ifndef GUILIB_TEXTUREMANAGER_H
 #define GUILIB_TEXTUREMANAGER_H
 
-#include "..\utils\stdafx.h"
+#include "..\utils\Stdafx.h"
 #include "..\utils\stdstring.h"
 #include <vector>
 

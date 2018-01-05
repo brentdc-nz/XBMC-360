@@ -29,7 +29,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "Stdafx.h"
 
 class CCriticalSection
 {

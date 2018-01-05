@@ -1,7 +1,7 @@
 #ifndef GUILIB_CGUIWindowManager_H
 #define GUILIB_CGUIWindowManager_H
 
-#include "..\utils\stdafx.h"
+#include "..\utils\Stdafx.h"
 #include "..\utils\CriticalSection.h"
 #include "IMsgTargetCallback.h"
 #include "GUIWindow.h"

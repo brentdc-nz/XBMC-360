@@ -2,7 +2,7 @@
 #define H_GUILIB_SCREENSAVERPLASMA
 
 #include "ScreensaverBase.h"
-#include "..\..\utils\stdafx.h"
+#include "..\..\utils\Stdafx.h"
 
 class CScreensaverPlasma : public CSceensaverBase
 {

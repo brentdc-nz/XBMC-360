@@ -1,7 +1,7 @@
 #ifndef CXBKERNALEXPORTS_H
 #define CXBKERNALEXPORTS_H
 
-#include "..\utils\stdafx.h"
+#include "..\utils\Stdafx.h"
 
 //Calls to SMC message function in xboxkrnl.lib
 extern "C" VOID HalReturnToFirmware(DWORD mode);

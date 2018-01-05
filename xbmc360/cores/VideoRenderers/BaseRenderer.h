@@ -1,7 +1,7 @@
 #ifndef CBASERENDERER_H
 #define CBASERENDERER_H
 
-#include "..\..\utils\stdafx.h"
+#include "..\..\utils\Stdafx.h"
 
 typedef struct RGB32Image_s
 {

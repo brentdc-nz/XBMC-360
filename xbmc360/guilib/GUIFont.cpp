@@ -87,7 +87,7 @@ bool CGUIFont::DrawText( float fPosX, float fPosY, DWORD dwColor, const CStdStri
 
 	if(dwFlags & XUI_FONT_STYLE_RIGHT_ALIGN) //HACK: Using XUI to do this should be easy, but it's a pain in the butt...
 	{
-		clipRect.right = g_graphicsContext.GetWidth() - fPosX + 131;
+		clipRect.right = g_graphicsContext.GetWidth() - fPosX + clipRect.GetWidth();
 		fPosX = fPosX - clipRect.GetWidth();
 	}
 

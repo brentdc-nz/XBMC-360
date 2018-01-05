@@ -1,5 +1,5 @@
-#ifndef H_CSTOPWATCH
-#define H_CSTOPWATCH
+#ifndef GUILIB_GUILISTITEM_H
+#define GUILIB_GUILISTITEM_H
 
 /*
  *      Copyright (C) 2005-2013 Team XBMC
@@ -21,28 +21,19 @@
  *
  */
 
-#include "Stdafx.h"
+#include "..\utils\StdString.h"
 
-class CStopWatch
+class CGUIListItem
 {
 public:
-	CStopWatch();
-	~CStopWatch();
+	CGUIListItem(void);
+	~CGUIListItem(void);
 
-	bool IsRunning() const;
-	void StartZero();          ///< Resets clock to zero and starts running
-	void Start();              ///< Sets clock to zero if not running and starts running.
-	void Stop();               ///< Stops clock and sets to zero if running.
-	void Reset();              ///< Resets clock to zero - does not alter running state.
+	CStdString GetLabel() { return m_strLabel; };
 
-	float GetElapsedSeconds() const;
-	float GetElapsedMilliseconds() const;
-
-private:
-	__int64 GetTicks() const;
-	float m_timerPeriod;        // to save division in GetElapsed...()
-	__int64 m_startTick;
-	bool m_isRunning;
+	bool m_bIsFolder; // Is item a folder or a file
+protected:
+	CStdString m_strLabel;
 };
 
-#endif //H_CSTOPWATCH
+#endif //GUILIB_GUILISTITEM_H

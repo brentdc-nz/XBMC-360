@@ -31,7 +31,7 @@ public:
 
 	void ClearAll();
 	const CGUIControl* GetControl(int iControl) const;
-	int GetFocusedControl() const;
+	int GetFocusedControlID() const;
 
 	bool GetLoadOnDemand() { return m_loadOnDemand; }
 

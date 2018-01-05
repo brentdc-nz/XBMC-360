@@ -280,7 +280,7 @@ void CGUIWindow::ClearAll()
 	m_dynamicResourceAlloc = true;
 }
 
-int CGUIWindow::GetFocusedControl() const
+int CGUIWindow::GetFocusedControlID() const
 {
 	for (int i = 0;i < (int)m_vecControls.size(); ++i)
 	{
@@ -303,7 +303,7 @@ const CGUIControl* CGUIWindow::GetControl(int iControl) const
 void CGUIWindow::SaveControlStates()
 {
 	if (m_saveLastControl)
-		m_lastControlID = GetFocusedControl();
+		m_lastControlID = GetFocusedControlID();
 }
 
 void CGUIWindow::RestoreControlStates()

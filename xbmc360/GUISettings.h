@@ -3,6 +3,7 @@
 
 #include "utils\StdString.h"
 #include "guilib\tinyxml\tinyxml.h"
+#include "Settings.h"
 
 #include <map>
 #include <vector>

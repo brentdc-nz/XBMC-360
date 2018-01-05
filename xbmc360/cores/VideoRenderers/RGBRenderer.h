@@ -2,7 +2,7 @@
 #define RGB_RENDERER_H
 
 #include "BaseRenderer.h"
-#include "..\..\Utils\stdafx.h"
+#include "..\..\Utils\Stdafx.h"
 
 class CRGBRenderer : public CBaseRenderer
 {

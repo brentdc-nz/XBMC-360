@@ -1,7 +1,7 @@
 #ifndef BUTTONTRANSLATOR_H
 #define BUTTONTRANSLATOR_H
 
-#include "utils\stdafx.h"
+#include "utils\Stdafx.h"
 #include "utils\StdString.h"
 
 struct CButtonAction

@@ -4,7 +4,7 @@
 #include "GUIControl.h"
 #include "GUILabel.h"
 #include "GUIImage.h"
-#include "..\utils\stdafx.h"
+#include "..\utils\Stdafx.h"
 #include "..\utils\StdString.h"
 
 #define SPIN_CONTROL_TYPE_INT    1

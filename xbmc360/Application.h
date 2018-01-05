@@ -17,6 +17,7 @@ public:
 	void DelayLoadSkin();
 	void CancelDelayLoadSkin();
 	void LoadSkin(const CStdString& strSkin);
+	void ReloadSkin();
 	void UnloadSkin();
 
 	virtual bool Initialize();
@@ -49,14 +50,14 @@ public:
 	void ResetScreenSaver();
 	bool ResetScreenSaverWindow();
 	bool IsInScreenSaver() { return m_bScreenSave; };
-	void CheckScreenSaver(); //TODO Make private?
+	void CheckScreenSaver();
 
 	DWORD m_dwSkinTime;
 	IPlayer* m_pPlayer;
 
 protected:
 	void FatalErrorHandler(bool InitD3D);
-	void  ActivateScreenSaver();
+	void ActivateScreenSaver();
 
 	bool m_bScreenSave;
 	CStdString m_screenSaverMode;

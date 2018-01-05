@@ -2,7 +2,7 @@
 #define CGUILIB_GUIFONT_H
 
 #include "..\utils\StdString.h"
-#include "..\utils\stdafx.h"
+#include "..\utils\Stdafx.h"
 #include <xui.h>
 
 class CGUIFont

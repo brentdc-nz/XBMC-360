@@ -36,7 +36,7 @@ CGUISettings::CGUISettings()
 	// Appearance settings
 	AddGroup(7, 480);
 	AddCategory(7,"LookAndFeel", 14037);
-	AddString(1, "LookAndFeel.Skin", 166, "Project Mayhem III", SPIN_CONTROL_TEXT);
+	AddString(1, "LookAndFeel.Skin", 166, DEFAULT_SKIN, SPIN_CONTROL_TEXT);
 	AddString(2, "LookAndFeel.Language", 248, "English", SPIN_CONTROL_TEXT);
 }
 

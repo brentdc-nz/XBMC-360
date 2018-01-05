@@ -1,7 +1,7 @@
 #ifndef GUILIB_MESSAGE_H
 #define GUILIB_MESSAGE_H
 
-#include "..\utils\stdafx.h"
+#include "..\utils\Stdafx.h"
 #include "..\utils\StdString.h"
 #include <string>
 

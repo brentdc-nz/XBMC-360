@@ -24,6 +24,7 @@
 #include "..\..\Application.h"
 #include "..\GUIWindowManager.h"
 #include "..\..\Settings.h"
+#include "..\..\filesystem\HDDirectory.h"
 
 #define CONTROL_GROUP_BUTTONS           0
 #define CONTROL_GROUP_SETTINGS          1
@@ -39,6 +40,8 @@
 #define CONTROL_DEFAULT_SEPARATOR       11
 #define CONTROL_START_BUTTONS           30
 #define CONTROL_START_CONTROL           50
+
+using namespace XFILE;
 
 CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void) : CGUIWindow(WINDOW_SETTINGS_MYPICTURES, "SettingsCategory.xml")
 {
@@ -123,18 +126,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
 				g_guiSettings.SetString("LookAndFeel.SkinTheme", m_strNewSkinTheme);
 				g_settings.Save();
 			}
-*/
-			// Reload the skin.  Save the current focused control, and refocus it
-			// when done.
-			unsigned iCtrlID = GetFocusedControl();
-//			CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iCtrlID, 0, 0, NULL);
-//			g_graphicsContext.SendMessage(msg);
-			g_application.LoadSkin(g_guiSettings.GetString("LookAndFeel.Skin"));
-			g_windowManager.ActivateWindow(/*GetID()*/WINDOW_SETTINGS_APPEARANCE);
-//			SET_CONTROL_FOCUS(iCtrlID, 0);
-//			CGUIMessage msgSelect(GUI_MSG_ITEM_SELECT, GetID(), iCtrlID, msg.GetParam1(), msg.GetParam2());
-//			OnMessage(msgSelect);
-		}
+*/		}
 		break;
 
 		case GUI_MSG_WINDOW_INIT:
@@ -381,20 +373,33 @@ void CGUIWindowSettingsCategory::FillInSkins(CSetting *pSetting)
 
 	m_strNewSkin.Empty();
 
-	//find skins...
-	CStdString strPath = "D:\\skin\\";
+	// Find skins...
+	CHDDirectory directory;
+	CFileItemList items;
+	CStdString strPath = "D:\\skins\\";
 	vector<CStdString> vecSkins;
 
-	//TODO - Search for skins on the HDD
+	directory.GetDirectory(strPath, items);
 
-	//TEST 
-	      vecSkins.push_back("Project Mayhem III");
-	      vecSkins.push_back("PM3");
-	//TEST
+	for (int i = 0; i < items.Size(); ++i)
+	{
+		CFileItem* pItem = items[i];
+		if (pItem->m_bIsFolder)
+		{
+			if (strcmpi(pItem->GetLabel().c_str(), "CVS") == 0) continue;
+			if (strcmpi(pItem->GetLabel().c_str(), "fonts") == 0) continue;
+			if (strcmpi(pItem->GetLabel().c_str(), "media") == 0) continue;
+			//   if (g_SkinInfo.Check(pItem->m_strPath))
+			//   {
+					vecSkins.push_back(pItem->GetLabel());
+			//   }
+		}
+	}
 
 	int iCurrentSkin = 0;
 	int iSkin = 0;
 
+//	sort(vecSkins.begin(), vecSkins.end(), sortstringbyname()); //TODO
 	for (int i = 0; i < (int) vecSkins.size(); ++i)
 	{
 		CStdString strSkin = vecSkins[i];

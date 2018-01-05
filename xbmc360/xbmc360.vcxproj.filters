@@ -87,6 +87,12 @@
     <Filter Include="Source Files\guilib\screensavers">
       <UniqueIdentifier>{12abb442-dd76-449a-8378-1b29adec4106}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\filesystem">
+      <UniqueIdentifier>{69c3ac9a-2ddf-4b08-83e3-d7cf52e274af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filesystem">
+      <UniqueIdentifier>{5705ec4c-21f5-4c09-aca4-83eca12b4818}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -326,6 +332,15 @@
     <ClInclude Include="guilib\screensavers\ScreensaverPlasma.h">
       <Filter>Header Files\guilib\screensavers</Filter>
     </ClInclude>
+    <ClInclude Include="filesystem\HDDirectory.h">
+      <Filter>Header Files\filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="FileItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIListItem.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -540,6 +555,15 @@
     </ClCompile>
     <ClCompile Include="guilib\screensavers\ScreensaverPlasma.cpp">
       <Filter>Source Files\guilib\screensavers</Filter>
+    </ClCompile>
+    <ClCompile Include="filesystem\HDDirectory.cpp">
+      <Filter>Source Files\filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="FileItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIListItem.cpp">
+      <Filter>Source Files\guilib</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

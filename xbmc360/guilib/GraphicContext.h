@@ -1,7 +1,7 @@
 #ifndef GUILIB_GRAPHICCONTEXT_H
 #define GUILIB_GRAPHICCONTEXT_H
 
-#include "..\utils\stdafx.h"
+#include "..\utils\Stdafx.h"
 #include "..\utils\StdString.h"
 #include "..\utils\CriticalSection.h"  // base class
 #include "TextureManager.h"

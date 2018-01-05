@@ -1,7 +1,7 @@
 #ifndef H_CXBAPPLICATIONEX
 #define H_CXBAPPLICATIONEX
 
-#include "utils\stdafx.h"
+#include "utils\Stdafx.h"
 #include "xbox\XBInput.h"
 #include <xui.h>
 

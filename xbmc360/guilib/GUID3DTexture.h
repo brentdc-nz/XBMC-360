@@ -1,7 +1,7 @@
 #ifndef GUILIB_GUID3DTEXTURE_H
 #define GUILIB_GUID3DTEXTURE_H
 
-#include "..\utils\stdafx.h"
+#include "..\utils\Stdafx.h"
 #include "GUITexture.h"
 
 #include <string>

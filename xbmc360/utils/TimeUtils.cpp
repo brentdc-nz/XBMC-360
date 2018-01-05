@@ -18,7 +18,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "Stdafx.h"
 #include "TimeUtils.h"
 
 unsigned int CTimeUtils::frameTime = 0;

@@ -1,6 +1,6 @@
 #include "GUIInfoManager.h"
 #include "GUIWindowManager.h"
-#include "..\utils\stdafx.h"
+#include "..\utils\Stdafx.h"
 #include "..\utils\Log.h"
 #include "..\Application.h"
 #include "LocalizeStrings.h"
@@ -350,7 +350,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow)
         {
 			CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
 			if (window)
-				bReturn = (window->GetFocusedControl() == (int)info.GetData1());
+				bReturn = (window->GetFocusedControlID() == (int)info.GetData1());
         }
         break;
 	}

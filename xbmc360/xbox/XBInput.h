@@ -9,7 +9,7 @@
 #ifndef XBINPUT_H
 #define XBINPUT_H
 
-#include "..\utils\stdafx.h"
+#include "..\utils\Stdafx.h"
 
 //--------------------------------------------------------------------------------------
 // Name: struct ATGGAMEPAD

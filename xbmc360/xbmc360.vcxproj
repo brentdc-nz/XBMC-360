@@ -269,6 +269,8 @@
     <ClInclude Include="cores\VideoRenderers\BaseRenderer.h" />
     <ClInclude Include="cores\VideoRenderers\RenderManager.h" />
     <ClInclude Include="cores\VideoRenderers\RGBRenderer.h" />
+    <ClInclude Include="FileItem.h" />
+    <ClInclude Include="filesystem\HDDirectory.h" />
     <ClInclude Include="guilib\GraphicContext.h" />
     <ClInclude Include="guilib\GUIButtonControl.h" />
     <ClInclude Include="guilib\GUIControl.h" />
@@ -282,6 +284,7 @@
     <ClInclude Include="guilib\GUIInfoTypes.h" />
     <ClInclude Include="guilib\GUILabel.h" />
     <ClInclude Include="guilib\GUILabelControl.h" />
+    <ClInclude Include="guilib\GUIListItem.h" />
     <ClInclude Include="guilib\GUIMessage.h" />
     <ClInclude Include="guilib\GUISpinControl.h" />
     <ClInclude Include="guilib\GUISpinControlEx.h" />
@@ -347,6 +350,8 @@
     <ClCompile Include="cores\DVDPlayer\DVDUtils\memutil.cpp" />
     <ClCompile Include="cores\VideoRenderers\RenderManager.cpp" />
     <ClCompile Include="cores\VideoRenderers\RGBRenderer.cpp" />
+    <ClCompile Include="FileItem.cpp" />
+    <ClCompile Include="filesystem\HDDirectory.cpp" />
     <ClCompile Include="guilib\GraphicContext.cpp" />
     <ClCompile Include="guilib\GUIButtonControl.cpp" />
     <ClCompile Include="guilib\GUIControl.cpp" />
@@ -360,6 +365,7 @@
     <ClCompile Include="guilib\GUIInfoTypes.cpp" />
     <ClCompile Include="guilib\GUILabel.cpp" />
     <ClCompile Include="guilib\GUILabelControl.cpp" />
+    <ClCompile Include="guilib\GUIListItem.cpp" />
     <ClCompile Include="guilib\GUIMessage.cpp" />
     <ClCompile Include="guilib\GUISpinControl.cpp" />
     <ClCompile Include="guilib\GUISpinControlEx.cpp" />

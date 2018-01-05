@@ -1,4 +1,4 @@
-#include "..\..\utils\stdafx.h"
+#include "..\..\utils\Stdafx.h"
 #include "DVDClock.h"
 #include <math.h>
 

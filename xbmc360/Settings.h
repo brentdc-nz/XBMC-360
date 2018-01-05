@@ -4,6 +4,8 @@
 #include "utils\StdString.h"
 #include "guilib\tinyxml\tinyxml.h"
 
+#define DEFAULT_SKIN "Project Mayhem III"
+
 class CSettings
 {
 public:

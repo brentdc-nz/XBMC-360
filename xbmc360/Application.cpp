@@ -191,6 +191,26 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	CLog::Log(LOGINFO, "Skin loaded...");
 }
 
+void CApplication::ReloadSkin()
+{
+	CGUIMessage msg(GUI_MSG_LOAD_SKIN, -1, g_windowManager.GetActiveWindow());
+	g_windowManager.SendMessage(msg);
+	
+	// Reload the skin, restoring the previously focused control.  We need this as
+	// the window unload will reset all control states.
+	CGUIWindow* pWindow = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
+	int iCtrlID = pWindow->GetFocusedControlID();
+	g_application.LoadSkin(g_guiSettings.GetString("LookAndFeel.Skin"));
+	pWindow = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
+
+	g_windowManager.ActivateWindow(/*pWindow->GetID()*/WINDOW_SETTINGS_APPEARANCE);
+/*	if (pWindow && pWindow->HasSaveLastControl())
+	{
+		CGUIMessage msg3(GUI_MSG_SETFOCUS, g_windowManager.GetActiveWindow(), iCtrlID, 0); //TODO
+		pWindow->OnMessage(msg3);
+	}*/
+}
+
 void CApplication::UnloadSkin()
 {
 	g_windowManager.DeInitialize();
@@ -203,8 +223,7 @@ void CApplication::Process()
 	// Check if we need to load a new skin
 	if(m_dwSkinTime && GetTickCount() >= m_dwSkinTime)
 	{
-		CGUIMessage msg(GUI_MSG_LOAD_SKIN, -1, g_windowManager.GetActiveWindow());
-		g_windowManager.SendMessage(msg);
+		ReloadSkin();
 	}
 
 	// Check if we need to activate the screensaver (if enabled)

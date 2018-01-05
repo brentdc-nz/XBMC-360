@@ -1,7 +1,7 @@
 #ifndef GUILIB_LOCALIZESTRINGS_H
 #define GUILIB_LOCALIZESTRINGS_H
 
-#include "..\utils\stdafx.h"
+#include "..\utils\Stdafx.h"
 #include "..\utils\StdString.h"
 #include <string>
 #include <map>
