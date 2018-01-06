@@ -341,6 +341,12 @@
     <ClInclude Include="guilib\GUIListItem.h">
       <Filter>Header Files\guilib</Filter>
     </ClInclude>
+    <ClInclude Include="filesystem\File.h">
+      <Filter>Header Files\filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="filesystem\FileHD.h">
+      <Filter>Header Files\filesystem</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -564,6 +570,12 @@
     </ClCompile>
     <ClCompile Include="guilib\GUIListItem.cpp">
       <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="filesystem\File.cpp">
+      <Filter>Source Files\filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="filesystem\FileHD.cpp">
+      <Filter>Source Files\filesystem</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

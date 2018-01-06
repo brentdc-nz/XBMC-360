@@ -4,7 +4,7 @@
 	<controls>
 	
 		<control>
-			<description>background image </description>
+			<description>background image</description>
 			<type>image</type>				
 			<posx>0</posx>
 			<posy>0</posy>
@@ -15,7 +15,7 @@
 		</control>
 		
 		<control>
-			<description>background image</description>
+			<description>header image</description>
 			<type>image</type>				
 			<posx>-5</posx>
 			<posy>-20</posy>

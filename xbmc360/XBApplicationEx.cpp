@@ -70,7 +70,7 @@ int CXBApplicationEX::Run()
 
 //	Destroy();
 
-//	CLog::Log(LOGNOTICE, "application stopped..." );
+	CLog::Log(LOGNOTICE, "Application stopped..." );
 	return 0;
 }
 

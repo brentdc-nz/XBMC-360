@@ -33,7 +33,8 @@ void CGUISpinControlEx::SetPosition(float posX, float posY)
 
 	int iFocusHeight = 10; //TODO Calculate percent of button hight!
 	int iFocusPosX = 20; //TODO Calc with percent
-	m_focus.Update((int)posX - iFocusPosX, (int)posY - iFocusHeight);
+
+	m_focus.Update(posX - iFocusPosX, posY - iFocusHeight);
 
 	float spinPosX = posX + m_buttonControl.GetWidth() - GetSpinWidth() * 2 - 0/*(m_spinPosX ? m_spinPosX : m_buttonControl.GetLabelInfo().offsetX)*/;
 	float spinPosY = posY; //+ (m_buttonControl.GetHeight() - GetSpinHeight()) * 0.5f;

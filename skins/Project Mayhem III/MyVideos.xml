@@ -1,32 +1,32 @@
 <window id="0">
-	<defaultcontrol>6</defaultcontrol>
+	<defaultcontrol>1</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<controls>
 	
 		<control>
-			<description>background image </description>
+			<description>background image</description>
 			<type>image</type>				
-			<posx>0</posx>
+			<posx>-4</posx>
 			<posy>0</posy>
-			<width>1280</width>
+			<width>1284</width>
 			<height>720</height>
 			<texture>background.png</texture>
 			<visible>true</visible>			
 		</control>
 		
 		<control>
-			<description>background image</description>
+			<description>header image</description>
 			<type>image</type>				
 			<posx>-5</posx>
 			<posy>-20</posy>
 			<width>1288</width>
-			<height>145</height>
+			<height>155</height>
 			<texture>header_videos.png</texture>
 			<visible>true</visible>			
 		</control>		
 		
 		<control>
-			<description>Title</description>
+			<description>title</description>
 			<type>label</type>			
 			<width>255</width>
 			<posx>100</posx>
@@ -46,6 +46,63 @@
 			<height>220</height>
 			<visible>true</visible>
 		</control>	
-					
+			
+		<control>
+			<description>information</description>
+			<type>label</type>			
+			<width>255</width>
+			<posx>545</posx>
+			<posy>200</posy>
+			<label>Select videos in the test videos folder below:</label>
+			<font>special13</font>
+			<visible>true</visible>
+		</control>				
+			
+		<control>
+			<description>Temp video select</description>
+			<type>spincontrolex</type>
+			<id>1</id>
+			<posx>220</posx>
+			<posy>150</posy>
+			<width>800</width>
+			<height>50</height>
+			<spinwidth>50</spinwidth>
+			<spinheight>25</spinheight>
+			<label>My Videos</label>
+			<texturefocus>list_focus.png</texturefocus>
+			<texturenofocus>list_focus.png</texturenofocus>
+			<textureup>scroll_up.png</textureup>
+			<texturedown>scroll_down.png</texturedown>
+			<textureupfocus>scroll_up_focus.png</textureupfocus>
+			<texturedownfocus>scroll_down_focus.png</texturedownfocus>
+			<font>special13</font>
+			<disabledcolor>60d0d0d0</disabledcolor>
+			<textoffsetx>-18</textoffsetx>
+			<reverse>yes</reverse>
+			<visible>true</visible>					
+		</control>
+	
+		<control>
+			<description>Play Button</description>
+			<type>button</type>
+			<id>2</id>
+			<posx>670</posx>
+			<posy>430</posy>
+			<width>35</width>
+			<height>24</height>
+			<label>Play Selected</label>
+			<font>special13</font>
+			<onclick></onclick>
+			<onleft>2</onleft>
+			<onright>2</onright>
+			<onup>1</onup>
+			<ondown>1</ondown>
+			<texturefocus>home-focus.png</texturefocus>
+			<texturenofocus>homebuttonsmall.png</texturenofocus>
+			<textoffsetx>52</textoffsetx>
+			<textoffsety>-2</textoffsety>
+			<visible>true</visible>					
+		</control>
+	
 	</controls>
 </window>

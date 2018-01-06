@@ -10,7 +10,6 @@ public:
 	virtual ~CGUIWindowHome(void);
 
 	virtual void Render();
-	virtual bool OnMessage(CGUIMessage& message);
 
 private:
 };

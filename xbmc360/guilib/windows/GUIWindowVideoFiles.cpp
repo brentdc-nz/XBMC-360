@@ -20,6 +20,10 @@
 
 #include "GUIWindowVideoFiles.h"
 
+#include "..\..\filesystem\HDDirectory.h" //TESTING
+#include "..\..\Application.h"  //TESTING
+#include "..\GUISpinControlEx.h"  //TESTING
+
 CGUIWindowVideoFiles::CGUIWindowVideoFiles(void) : CGUIWindow(WINDOW_VIDEOS, "MyVideos.xml")
 {
 	m_loadOnDemand = false;
@@ -27,4 +31,69 @@ CGUIWindowVideoFiles::CGUIWindowVideoFiles(void) : CGUIWindow(WINDOW_VIDEOS, "My
 
 CGUIWindowVideoFiles::~CGUIWindowVideoFiles(void)
 {
+}
+
+bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
+{
+	switch (message.GetMessage())
+	{
+		case GUI_MSG_WINDOW_INIT:
+		{
+			CGUISpinControlEx *pOriginalSpin;
+			pOriginalSpin = (CGUISpinControlEx*)GetControl(1);
+
+			pOriginalSpin->SetPosition(420, 330);
+			
+			XFILE::CHDDirectory directory;
+			
+			//Find all video in test video folder!
+			directory.GetDirectory("D:\\testvideos\\", m_items);
+			
+			for (int i = 0; i < m_items.Size(); ++i)
+			{
+				CFileItem* pItem = m_items[i];
+				if (!pItem->m_bIsFolder)
+				{
+					CStdString strFileName;
+					strFileName = pItem->GetLabel();
+
+					pOriginalSpin->AddLabel(strFileName.c_str(), i);
+					pOriginalSpin->SetNavigation(2,2,1,1);
+				}
+			}
+
+			break;
+		}
+		case GUI_MSG_WINDOW_DEINIT:
+		{
+			m_items.Clear();
+
+			CGUISpinControlEx *pOriginalSpin;
+			pOriginalSpin = (CGUISpinControlEx*)GetControl(1);
+			pOriginalSpin->Clear();
+
+			break;
+		}
+
+		case GUI_MSG_CLICKED:
+		{
+			if(message.GetControlId() == 2)
+			{
+				//Play button clicked!
+				CGUISpinControlEx *pOriginalSpin;
+				pOriginalSpin = (CGUISpinControlEx*)GetControl(1);
+
+				CStdString strFileName = pOriginalSpin->GetLabel();
+				CStdString strPath = "D:\\testvideos\\";
+
+				strPath += strFileName;
+
+				g_application.PlayFile(strPath);
+
+			}
+			break;
+		}
+	}
+
+	return CGUIWindow::OnMessage(message);
 }

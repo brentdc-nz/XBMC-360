@@ -18,8 +18,8 @@ CRenderManager::~CRenderManager()
 
 void CRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
-  if (m_pRenderer)
-    m_pRenderer->RenderUpdate(clear, flags, alpha);
+	if (m_pRenderer)
+		m_pRenderer->RenderUpdate(clear, flags, alpha);
 }
 
 bool CRenderManager::PreInit()

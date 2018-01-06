@@ -45,8 +45,8 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
 				pItem->m_bIsFolder = true;
 				URIUtils::AddSlashAtEnd(itemPath);
 				pItem->SetPath(itemPath);
-//			    FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime); //TODO
-//				pItem->m_dateTime=localTime;  //TODO
+//			    FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
+//				pItem->m_dateTime=localTime;
 				
 				items.Add(pItem);
 			}
@@ -57,9 +57,9 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
 				CStdString itemPath = strRoot + wfd.cFileName;
 				pItem->SetPath(itemPath);
 				pItem->m_bIsFolder = false;
-//				pItem->m_dwSize = CUtil::ToInt64(wfd.nFileSizeHigh, wfd.nFileSizeLow);  //TODO
-//				FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);  //TODO
-//				pItem->m_dateTime=localTime;  //TODO
+//				pItem->m_dwSize = CUtil::ToInt64(wfd.nFileSizeHigh, wfd.nFileSizeLow);
+//				FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
+//				pItem->m_dateTime=localTime;
 
 				items.Add(pItem);
 			}

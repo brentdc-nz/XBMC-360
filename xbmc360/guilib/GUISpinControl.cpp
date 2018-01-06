@@ -113,13 +113,13 @@ void CGUISpinControl::FreeResources()
 
 void CGUISpinControl::SetPosition(float posX, float posY)
 {
-	CGUIControl::SetPosition(posX, posY);
-
 	m_imgspinDownFocus.SetPosition(posX, posY);
 	m_imgspinDown.SetPosition(posX, posY);
 
 	m_imgspinUp.SetPosition(m_posX + m_imgspinDown.GetWidth(), m_posY);
-	m_imgspinUpFocus.SetPosition(m_posX + m_imgspinDownFocus.GetWidth(), m_posY);
+	m_imgspinUpFocus.SetPosition(m_posX + m_imgspinDownFocus.GetWidth(), m_posY);\
+
+	CGUIControl::SetPosition(posX, posY);
 }
 
 bool CGUISpinControl::OnAction(const CAction &action)

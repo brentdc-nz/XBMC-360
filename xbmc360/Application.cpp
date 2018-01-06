@@ -11,6 +11,7 @@
 #include "cores\DVDPlayer\DVDPlayer.h"
 #include "guilib\LocalizeStrings.h"
 #include "Settings.h"
+#include "filesystem\File.h"
 
 // Window includes
 #include "guilib\windows\GUIWindowHome.h"
@@ -373,7 +374,7 @@ void CApplication::Render()
 				{
 					CSingleLock lock(g_graphicsContext);
 //					extern void xbox_video_render_update(bool);
-//			        xbox_video_render_update(true);
+			        g_renderManager.RenderUpdate(true);
 //					g_windowManager.UpdateModelessVisibility();
 					RenderFullScreen();
 					g_windowManager.Render();
@@ -572,7 +573,7 @@ bool CApplication::PlayFile(const string strFile)
 	m_bPlaybackStarting = false;
 	if(bResult)
 	{
-		// we must have started, otherwise player might send this later
+		// We must have started, otherwise player might send this later
 		if(IsPlaying())
 			OnPlayBackStarted();
 		else
@@ -704,13 +705,13 @@ void CApplication::ActivateScreenSaver()
 void CApplication::Stop()
 {
     // Update the settings information (volume, uptime etc. need saving)
-    if (/*CFile::Exists("D:\\settings.xml")*/1) //TODO
+    if (XFILE::CFile::Exists("D:\\settings.xml"))
     {
 		CLog::Log(LOGNOTICE, "Saving settings");
 		g_settings.Save();
     }
     else
-		CLog::Log(LOGNOTICE, "Not saving settings (settings.xml is not present)");
+		CLog::Log(LOGNOTICE, "Settings not saved (settings.xml is not present)");
 
     m_bStop = true;
     CLog::Log(LOGNOTICE, "Stop all");
@@ -730,7 +731,7 @@ void CApplication::Stop()
 	g_windowManager.Delete(WINDOW_FULLSCREEN_VIDEO);
 	g_windowManager.Delete(WINDOW_VIDEOS);
 	g_windowManager.Delete(WINDOW_SETTINGS);
-	g_windowManager.Delete(WINDOW_SETTINGS_MYPICTURES); // all the settings categories
+	g_windowManager.Delete(WINDOW_SETTINGS_MYPICTURES); // All the settings categories
 	g_windowManager.Delete(WINDOW_SCREENSAVER);
 
 	CLog::Log(LOGNOTICE, "Destroy");

@@ -840,7 +840,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
 		textureDownFocus, labelInfo, iType);
 
 //		((CGUISpinControlEx *)control)->SetSpinPosition(spinPosX);
-//		((CGUISpinControlEx *)control)->SetText(strLabel);
+		((CGUISpinControlEx *)control)->SetText(strLabel);
 //		((CGUISpinControlEx *)control)->SetReverse(bReverse);
 	}
 /*  else if (type == CGUIControl::GUICONTROL_VISUALISATION)

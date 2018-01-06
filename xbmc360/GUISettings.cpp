@@ -33,11 +33,18 @@ CGUISettings g_guiSettings;
 // Settings are case sensitive
 CGUISettings::CGUISettings()
 {
+
+
+
 	// Appearance settings
 	AddGroup(7, 480);
 	AddCategory(7,"LookAndFeel", 14037);
 	AddString(1, "LookAndFeel.Skin", 166, DEFAULT_SKIN, SPIN_CONTROL_TEXT);
 	AddString(2, "LookAndFeel.Language", 248, "English", SPIN_CONTROL_TEXT);
+
+	AddCategory(7, "ScreenSaver", 360);
+	AddString(1, "ScreenSaver.Mode", 356, "Dim", SPIN_CONTROL_TEXT);
+//	AddInt(4, "ScreenSaver.Time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS); //TODO
 }
 
 CGUISettings::~CGUISettings()

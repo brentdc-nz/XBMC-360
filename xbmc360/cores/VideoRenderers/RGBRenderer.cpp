@@ -83,10 +83,10 @@ CRGBRenderer::~CRGBRenderer()
 
 void CRGBRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
-	g_graphicsContext.Lock();
-
 	if(!m_pTexture)
 		return;
+
+	g_graphicsContext.Lock();
 
 	ManageDisplay();
 
@@ -369,7 +369,7 @@ void CRGBRenderer::FlipPage()
 	}
 	m_bPrepared=false;
 
-	if (g_graphicsContext.IsFullScreenVideo() )
+	if ( g_graphicsContext.IsFullScreenVideo() )
 	{   
 		g_graphicsContext.Lock();
 

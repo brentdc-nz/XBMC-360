@@ -270,6 +270,8 @@
     <ClInclude Include="cores\VideoRenderers\RenderManager.h" />
     <ClInclude Include="cores\VideoRenderers\RGBRenderer.h" />
     <ClInclude Include="FileItem.h" />
+    <ClInclude Include="filesystem\File.h" />
+    <ClInclude Include="filesystem\FileHD.h" />
     <ClInclude Include="filesystem\HDDirectory.h" />
     <ClInclude Include="guilib\GraphicContext.h" />
     <ClInclude Include="guilib\GUIButtonControl.h" />
@@ -351,6 +353,8 @@
     <ClCompile Include="cores\VideoRenderers\RenderManager.cpp" />
     <ClCompile Include="cores\VideoRenderers\RGBRenderer.cpp" />
     <ClCompile Include="FileItem.cpp" />
+    <ClCompile Include="filesystem\File.cpp" />
+    <ClCompile Include="filesystem\FileHD.cpp" />
     <ClCompile Include="filesystem\HDDirectory.cpp" />
     <ClCompile Include="guilib\GraphicContext.cpp" />
     <ClCompile Include="guilib\GUIButtonControl.cpp" />

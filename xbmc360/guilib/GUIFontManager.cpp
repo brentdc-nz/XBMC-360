@@ -18,7 +18,7 @@ void GUIFontManager::LoadFonts(const CStdString& strFilename)
 	if ( !xmlDoc.LoadFile(strFilename.c_str()) )
 	{
 		CLog::Log(LOGDEBUG, "Could'nt load font xml: %s\n", strFilename.c_str()); 
-		return ;
+		return;
 	}
 
 	CStdString strFontFileName, strFontName;

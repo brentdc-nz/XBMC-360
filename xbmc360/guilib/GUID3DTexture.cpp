@@ -1,6 +1,7 @@
 #include "GUID3DTexture.h"
 #include "GraphicContext.h"
-#include "TextureManager.h"
+#include "GraphicContext.h"
+#include "..\utils\Log.h"
 
 namespace D3DTextureShaders
 {
@@ -62,7 +63,7 @@ CGUID3DTexture::CGUID3DTexture(float posX, float posY, float width, float height
 
 	m_bVisible = true;
 
-	m_pd3dDevice = g_graphicsContext.Get3DDevice();
+	m_pd3dDevice = NULL;
 	m_pTexture = NULL;
 	m_pVB = NULL;
 	m_pVertexShader = NULL;
@@ -81,6 +82,8 @@ void CGUID3DTexture::SetFileName(const CStdString &strFilename)
 
 bool CGUID3DTexture::AllocResources()
 {
+	m_pd3dDevice = g_graphicsContext.Get3DDevice();
+
 	if(!m_pd3dDevice)
 		return false;
 
@@ -112,6 +115,7 @@ bool CGUID3DTexture::AllocResources()
     // Compile pixel shader.
 	ID3DXBuffer* pPixelShaderCode;
     ID3DXBuffer* pPixelErrorMsg;
+
 	D3DXCompileShader( D3DTextureShaders::g_strPixelShaderProgram,
                             ( UINT )strlen( D3DTextureShaders::g_strPixelShaderProgram ),
                             NULL,
@@ -145,12 +149,17 @@ bool CGUID3DTexture::AllocResources()
                                                   D3DPOOL_MANAGED,
                                                   &m_pVB,
                                                   NULL );
+	if(pVertexShaderCode)
+		pVertexShaderCode->Release();
 
-    // Now we fill the vertex buffer. To do this, we need to Lock() the VB to
-    // gain access to the vertices. This mechanism is required because the
-    // vertex buffer may still be in use by the GPU. This can happen if the
-    // CPU gets ahead of the GPU. The GPU could still be rendering the previous
-    // frame.
+	if(pVertexErrorMsg)
+		pVertexErrorMsg->Release();
+
+	if(pPixelShaderCode)
+		pPixelShaderCode->Release();
+
+	if(pPixelErrorMsg)
+		pPixelErrorMsg->Release();
 
 	COLORVERTEX Vertices[] =
     {
@@ -165,21 +174,16 @@ bool CGUID3DTexture::AllocResources()
     memcpy( pVertices, Vertices, 4 * sizeof( COLORVERTEX ) );
     m_pVB->Unlock();
 
+    // Initialize the world and view matrix
+    D3DXMatrixIdentity( &m_matWorld );
+    D3DXMatrixIdentity( &m_matView );
+
+    // Initialize the projection matrix
+	D3DXMatrixOrthoOffCenterLH(&m_matProj, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight(), 0, 0.0f, 1.0f ); 
+	
 	g_TextureManager.Load(m_strFilename, NULL);
 
 	m_pTexture = g_TextureManager.GetTexture(m_strFilename);
-
-	if(pVertexShaderCode)
-		pVertexShaderCode->Release();
-
-	if(pVertexErrorMsg)
-		pVertexErrorMsg->Release();
-
-	if(pPixelShaderCode)
-		pPixelShaderCode->Release();
-
-	if(pPixelErrorMsg)
-		pPixelErrorMsg->Release();
 
 	m_initialized = true;
 
@@ -239,12 +243,12 @@ void CGUID3DTexture::SetVisible(bool bOnOff)
 	m_bVisible = bOnOff;
 }
 
-void CGUID3DTexture::Update(int iPosX, int iPosY)
+void CGUID3DTexture::Update(float fPosX, float fPosY)
 {
-	m_posY = (float)iPosY;
-	m_posX = (float)iPosX;
+	m_posY = fPosY;
+	m_posX = fPosX;
 
-	if( !m_initialized || !m_pd3dDevice || !m_pVertexShader || !m_pVB )
+	if( !m_pd3dDevice || !m_pVB )
 		return;
 
 	COLORVERTEX Vertices[] =
@@ -270,14 +274,29 @@ void CGUID3DTexture::Update(int iPosX, int iPosY)
 
 void CGUID3DTexture::Render()
 {
-	if( !m_initialized || !m_pd3dDevice || !m_pVertexShader || !m_pVB )
+	if( !m_pd3dDevice || !m_pVertexShader || !m_pVB )
+	{
+		CLog::Log(LOGERROR, "Direct3D rendering objects missing!");
 		return;
-
-	if(!m_bVisible)
-		return;
+	}
 
 	if ( !g_graphicsContext.IsFullScreenVideo() )
 		g_graphicsContext.Lock();
+
+#if 1 //FIXME
+
+	COLORVERTEX Vertices[] =
+    {
+        {(FLOAT)m_posX, (FLOAT)m_posY,  0.0f, 0, 0 ,},
+        {(FLOAT)m_posX+m_width, (FLOAT)m_posY, 0.0f,  1, 0 ,},
+        {(FLOAT)m_posX, (FLOAT)m_height+(FLOAT)m_posY, 0.0f,  0, 1 ,},
+	    {(FLOAT)m_posX+(FLOAT)m_width, (FLOAT)m_posY+(FLOAT)m_height, 0.0f,  1, 1 ,},
+    };
+
+    COLORVERTEX* pVertices;
+    m_pVB->Lock( 0, 0, ( void** )&pVertices, 0 );
+    memcpy( pVertices, Vertices, 4 * sizeof( COLORVERTEX ) );
+    m_pVB->Unlock();
 
     // Initialize the world and view matrix
     D3DXMatrixIdentity( &m_matWorld );
@@ -285,6 +304,8 @@ void CGUID3DTexture::Render()
 
     // Initialize the projection matrix
 	D3DXMatrixOrthoOffCenterLH(&m_matProj, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight(), 0, 0.0f, 1.0f ); 
+
+#endif
 
     // Build the world-view-projection matrix and pass it into the vertex shader
     D3DXMATRIX matWVP = m_matWorld * m_matView * m_matProj;
@@ -294,12 +315,6 @@ void CGUID3DTexture::Render()
     m_pd3dDevice->SetSamplerState( 0, D3DSAMP_MINFILTER, D3DTEXF_ANISOTROPIC );
     m_pd3dDevice->SetSamplerState( 0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR );
 
-    g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FILLMODE,     D3DFILL_SOLID );
-    g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_CULLMODE,     D3DCULL_CCW );
-    g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
-    g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA );
-    g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
-
 	// We are passing the vertices down a "stream", so first we need
     // to specify the source of that stream, which is our vertex buffer. 
     // Then we need to let D3D know what vertex and pixel shaders to use. 
@@ -308,13 +323,12 @@ void CGUID3DTexture::Render()
     m_pd3dDevice->SetVertexShader( m_pVertexShader );
     m_pd3dDevice->SetPixelShader( m_pPixelShader );
 
-	if(m_pTexture)
-		m_pd3dDevice->SetTexture( 0, m_pTexture );
-
+	m_pd3dDevice->SetTexture( 0, m_pTexture );
     // Draw the vertices in the vertex buffer
-    m_pd3dDevice->DrawPrimitive( D3DPT_TRIANGLESTRIP, 0, 2 );
+	m_pd3dDevice->DrawPrimitive( D3DPT_TRIANGLESTRIP, 0, 2 );
+	m_pd3dDevice->SetTexture( 0,  NULL );
 
-    m_pd3dDevice->SetTexture( 0,  NULL );
+	m_pd3dDevice->SetStreamSource( NULL, NULL, NULL, NULL );
 
 	if ( !g_graphicsContext.IsFullScreenVideo() )
 		g_graphicsContext.Unlock();

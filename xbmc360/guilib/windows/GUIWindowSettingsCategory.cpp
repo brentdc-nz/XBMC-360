@@ -70,7 +70,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
 			for (unsigned int i = 0; i < m_vecSettings.size(); i++)
 			{
 				if (m_vecSettings[i]->GetID() == iControl)
-				OnClick(m_vecSettings[i]);
+					OnClick(m_vecSettings[i]);
 			}
 		}
 		break;
@@ -127,6 +127,26 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
 				g_settings.Save();
 			}
 */		}
+		break;
+		
+		case GUI_MSG_SETFOCUS:
+		{
+			unsigned int iControl = message.GetControlId();
+			unsigned int iSender = message.GetSenderId();
+
+		    // If both the sender and the control are within out category range, then we have a change of
+			// category.		
+			if (iControl >= CONTROL_START_BUTTONS && iControl < CONTROL_START_BUTTONS + m_vecSections.size() &&
+				iSender >= CONTROL_START_BUTTONS && iSender < CONTROL_START_BUTTONS + m_vecSections.size())
+			{
+				// change the setting...
+				if (iControl - CONTROL_START_BUTTONS != m_iSection)
+				{
+					m_iSection = iControl - CONTROL_START_BUTTONS;
+					CreateSettings();
+				}
+			}
+		}
 		break;
 
 		case GUI_MSG_WINDOW_INIT:
@@ -252,7 +272,7 @@ void CGUIWindowSettingsCategory::SetupControls()
 
 void CGUIWindowSettingsCategory::CreateSettings()
 {
-//	FreeSettingsControls();
+	FreeSettingsControls();
 //	m_vecGroups.push_back(CControlGroup(1)); // add the control group
 
 	const CGUIControl *pControlArea = GetControl(CONTROL_AREA);
@@ -292,7 +312,7 @@ void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, int iPosX, int &
 
 	if ( pSetting->GetControlType() == SPIN_CONTROL_TEXT )
 	{
-		baseControl = m_pOriginalSpin;
+		baseControl = m_pOriginalSpin; 
 		pControl = new CGUISpinControlEx(*m_pOriginalSpin);
 		if (!pControl) return ;
 		pControl->SetPosition((float)iPosX, (float)iPosY);

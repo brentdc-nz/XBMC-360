@@ -16,7 +16,7 @@ public:
 	bool AllocResources();
 	bool FreeResources();
 	void SetVisible(bool bOnOff);
-	void Update(int iPosX, int iPosY);
+	void Update(float fPosX, float fPosY);
 	void Render();
 	
 private:

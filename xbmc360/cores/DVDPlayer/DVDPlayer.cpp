@@ -593,7 +593,7 @@ void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
     
 		int iFramesDropped = m_dvdPlayerVideo.GetNrOfDroppedFrames();
     
-		strGeneralInfo.Format("DVD Player ad:%6.3f, a/v:%6.3f, dropped:%d, cpu: %i%%", dDelay, dDiff, iFramesDropped, (int)(CThread::GetRelativeUsage()*100));
+		strGeneralInfo.Format("DVDPlayer ad:%6.3f, a/v:%6.3f, dropped:%d, cpu: %i%%", dDelay, dDiff, iFramesDropped, (int)(CThread::GetRelativeUsage()*100));
 	}
 }
 
