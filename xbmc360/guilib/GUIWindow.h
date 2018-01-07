@@ -13,6 +13,7 @@ public:
 	CGUIWindow(int id, const CStdString &xmlFile);
 	virtual ~CGUIWindow(void);
 
+	virtual bool IsDialog() const { return false; };
 	bool Initialize();  // loads the window
 	virtual void DynamicResourceAlloc(bool bOnOff);	
 	

@@ -273,11 +273,13 @@
     <ClInclude Include="filesystem\File.h" />
     <ClInclude Include="filesystem\FileHD.h" />
     <ClInclude Include="filesystem\HDDirectory.h" />
+    <ClInclude Include="guilib\dialogs\GUIDialogButtonMenu.h" />
     <ClInclude Include="guilib\GraphicContext.h" />
     <ClInclude Include="guilib\GUIButtonControl.h" />
     <ClInclude Include="guilib\GUIControl.h" />
     <ClInclude Include="guilib\GUIControlFactory.h" />
     <ClInclude Include="guilib\GUID3DTexture.h" />
+    <ClInclude Include="guilib\GUIDialog.h" />
     <ClInclude Include="guilib\GUIFont.h" />
     <ClInclude Include="guilib\GUIFontManager.h" />
     <ClInclude Include="guilib\GUIImage.h" />
@@ -319,7 +321,7 @@
     <ClInclude Include="utils\Log.h" />
     <ClInclude Include="utils\SharedSection.h" />
     <ClInclude Include="utils\SingleLock.h" />
-    <ClInclude Include="utils\stdafx.h" />
+    <ClInclude Include="utils\Stdafx.h" />
     <ClInclude Include="utils\StdString.h" />
     <ClInclude Include="utils\Stopwatch.h" />
     <ClInclude Include="utils\StringUtils.h" />
@@ -356,11 +358,13 @@
     <ClCompile Include="filesystem\File.cpp" />
     <ClCompile Include="filesystem\FileHD.cpp" />
     <ClCompile Include="filesystem\HDDirectory.cpp" />
+    <ClCompile Include="guilib\dialogs\GUIDialogButtonMenu.cpp" />
     <ClCompile Include="guilib\GraphicContext.cpp" />
     <ClCompile Include="guilib\GUIButtonControl.cpp" />
     <ClCompile Include="guilib\GUIControl.cpp" />
     <ClCompile Include="guilib\GUIControlFactory.cpp" />
     <ClCompile Include="guilib\GUID3DTexture.cpp" />
+    <ClCompile Include="guilib\GUIDialog.cpp" />
     <ClCompile Include="guilib\GUIFont.cpp" />
     <ClCompile Include="guilib\GUIFontManager.cpp" />
     <ClCompile Include="guilib\GUIImage.cpp" />
@@ -401,7 +405,7 @@
     <ClCompile Include="utils\Log.cpp" />
     <ClCompile Include="utils\SharedSection.cpp" />
     <ClCompile Include="utils\SingleLock.cpp" />
-    <ClCompile Include="utils\stdafx.cpp" />
+    <ClCompile Include="utils\Stdafx.cpp" />
     <ClCompile Include="utils\Stopwatch.cpp" />
     <ClCompile Include="utils\StringUtils.cpp" />
     <ClCompile Include="utils\Thread.cpp" />

@@ -39,10 +39,10 @@ void CGUILabel::SetText(CStdString strText)
 	m_strText = strText;
 }
 
-void CGUILabel::SetPosition(int iPosX, int iPosY)
+void CGUILabel::SetPosition(float fPosX, float fPosY)
 {
-	m_iPosX = (float)iPosX;
-	m_iPosY = (float)iPosY;
+	m_iPosX = fPosX;
+	m_iPosY = fPosY;
 }
 
 void CGUILabel::Render()

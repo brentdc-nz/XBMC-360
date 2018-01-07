@@ -51,11 +51,11 @@ void CGUIButtonControl::DynamicResourceAlloc(bool bOnOff)
 
 void CGUIButtonControl::Update()
 {
-	m_imgFocus.Update((int)m_posX, (int)m_posY);
-	m_imgNoFocus.Update((int)m_posX, (int)m_posY);
+	m_imgFocus.Update(m_posX, m_posY);
+	m_imgNoFocus.Update(m_posX, m_posY);
 
-	m_label.SetPosition((int)m_posX, (int)m_posY);
-	m_label2.SetPosition((int)m_posX, (int)m_posY);
+	m_label.SetPosition(m_posX, m_posY);
+	m_label2.SetPosition(m_posX, m_posY);
 }
 
 void CGUIButtonControl::Render()

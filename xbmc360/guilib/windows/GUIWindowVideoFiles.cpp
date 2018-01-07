@@ -21,8 +21,9 @@
 #include "GUIWindowVideoFiles.h"
 
 #include "..\..\filesystem\HDDirectory.h" //TESTING
-#include "..\..\Application.h"  //TESTING
-#include "..\GUISpinControlEx.h"  //TESTING
+#include "..\..\Application.h" //TESTING
+#include "..\GUISpinControlEx.h" //TESTING
+#include "..\..\FileItem.h" //TESTING
 
 CGUIWindowVideoFiles::CGUIWindowVideoFiles(void) : CGUIWindow(WINDOW_VIDEOS, "MyVideos.xml")
 {
@@ -42,35 +43,39 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
 			CGUISpinControlEx *pOriginalSpin;
 			pOriginalSpin = (CGUISpinControlEx*)GetControl(1);
 
-			pOriginalSpin->SetPosition(420, 330);
-			
-			XFILE::CHDDirectory directory;
-			
-			//Find all video in test video folder!
-			directory.GetDirectory("D:\\testvideos\\", m_items);
-			
-			for (int i = 0; i < m_items.Size(); ++i)
+			if(pOriginalSpin)
 			{
-				CFileItem* pItem = m_items[i];
-				if (!pItem->m_bIsFolder)
+				pOriginalSpin->SetPosition(420, 330);
+			
+				XFILE::CHDDirectory directory;
+				CFileItemList items;
+
+				//Find all video in test video folder!
+				directory.GetDirectory("D:\\testvideos\\", items);
+			
+				for (int i = 0; i < items.Size(); ++i)
 				{
-					CStdString strFileName;
-					strFileName = pItem->GetLabel();
+					CFileItem* pItem = items[i];
+					if (!pItem->m_bIsFolder)
+					{
+						CStdString strFileName;
+						strFileName = pItem->GetLabel();
 
-					pOriginalSpin->AddLabel(strFileName.c_str(), i);
-					pOriginalSpin->SetNavigation(2,2,1,1);
+						pOriginalSpin->AddLabel(strFileName.c_str(), i);
+						pOriginalSpin->SetNavigation(2,2,1,1);
+					}
 				}
+				items.Clear();
 			}
-
 			break;
 		}
 		case GUI_MSG_WINDOW_DEINIT:
 		{
-			m_items.Clear();
-
 			CGUISpinControlEx *pOriginalSpin;
 			pOriginalSpin = (CGUISpinControlEx*)GetControl(1);
-			pOriginalSpin->Clear();
+			
+			if(pOriginalSpin)
+				pOriginalSpin->Clear();
 
 			break;
 		}
@@ -83,13 +88,15 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
 				CGUISpinControlEx *pOriginalSpin;
 				pOriginalSpin = (CGUISpinControlEx*)GetControl(1);
 
-				CStdString strFileName = pOriginalSpin->GetLabel();
-				CStdString strPath = "D:\\testvideos\\";
+				if(pOriginalSpin)
+				{
+					CStdString strFileName = pOriginalSpin->GetLabel();
+					CStdString strPath = "D:\\testvideos\\";
 
-				strPath += strFileName;
+					strPath += strFileName;
 
-				g_application.PlayFile(strPath);
-
+					g_application.PlayFile(strPath);
+				}
 			}
 			break;
 		}

@@ -36,6 +36,7 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
 	else if (strWindow.Equals("settings")) wWindowID = WINDOW_SETTINGS;
 	else if (strWindow.Equals("appearancesettings")) wWindowID = WINDOW_SETTINGS_APPEARANCE;
 	else if (strWindow.Equals("screensaver")) wWindowID = WINDOW_SCREENSAVER;
+	else if (strWindow.Equals("shutdownmenu")) wWindowID = WINDOW_DIALOG_BUTTON_MENU;
 	else
 		CLog::Log(LOGERROR, "Window Translator: Can't find window %s", strWindow.c_str());
 

@@ -40,6 +40,8 @@ public:
 	void PreviousWindow();
 	void Delete(int id);
 	void Remove(int id);
+	void RouteToWindow(CGUIWindow* pWindow);
+	void UnRoute(DWORD dwID);
 	void ChangeActiveWindow(int iNewID);
 	void ActivateWindow(int iWindowID, bool swappingWindows = false);
 
@@ -49,6 +51,7 @@ public:
 	bool OnAction(const CAction &action);
 
 	void Render();
+	void RenderDialogs();
 	void Render_Internal();
 	void AddToWindowHistory(int newWindowID);
 
@@ -64,6 +67,7 @@ private:
 
 	std::stack<int> m_windowHistory;
 
+	std::vector <CGUIWindow*> m_activeDialogs;
 	std::vector < std::pair<CGUIMessage*,int> > m_vecThreadMessages;
 
 	CCriticalSection m_critSection;

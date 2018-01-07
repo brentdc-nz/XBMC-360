@@ -315,7 +315,7 @@
 			<height>52</height>
 			<label>-</label>
 			<font>-</font>
-			<onclick>XBMC.Restart()</onclick>
+			<onclick>XBMC.ActivateWindow(shutdownmenu)</onclick>
 			<onleft>8</onleft>
 			<onright>8</onright>
 			<onup>9</onup>

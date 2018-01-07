@@ -6,9 +6,9 @@
 		<control>
 			<description>background image</description>
 			<type>image</type>				
-			<posx>0</posx>
+			<posx>-4</posx>
 			<posy>0</posy>
-			<width>1280</width>
+			<width>1284</width>
 			<height>720</height>
 			<texture>background.png</texture>
 			<visible>true</visible>			
@@ -20,7 +20,7 @@
 			<posx>-5</posx>
 			<posy>-20</posy>
 			<width>1288</width>
-			<height>145</height>
+			<height>155</height>
 			<texture>header_settings.png</texture>
 			<visible>true</visible>			
 		</control>		

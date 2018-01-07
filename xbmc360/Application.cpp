@@ -21,6 +21,9 @@
 #include "guilib\windows\GUIWindowSettingsCategory.h"
 #include "guilib\windows\GUIWindowScreensaver.h"
 
+//Dialog includes
+#include "guilib\dialogs\GUIDialogButtonMenu.h"
+
 CStdString g_LoadErrorStr;
 
 CApplication::CApplication() 
@@ -132,6 +135,9 @@ bool CApplication::Initialize()
 	g_windowManager.Add(new CGUIWindowSettimgs);
 	g_windowManager.Add(new CGUIWindowSettingsCategory);
 	g_windowManager.Add(new CGUIWindowScreensaver);
+
+	//Dialogs
+	g_windowManager.Add(new CGUIDialogButtonMenu); // window id = 111
 
 	g_windowManager.Initialize();
 
@@ -399,9 +405,7 @@ void CApplication::Render()
 	}
 
 	g_graphicsContext.Lock();
-
 	m_pd3dDevice->BeginScene();  
-
 	g_graphicsContext.Unlock();
 
 	// Update our FPS
@@ -409,15 +413,17 @@ void CApplication::Render()
 
 	// Draw GUI
 
-	// Render current window/dialog
+	// Render current windows
 	g_windowManager.Render();
 
-	g_graphicsContext.Lock();
+	// Now render any dialogs
+	g_windowManager.RenderDialogs();
 
+	g_graphicsContext.Lock();
 	m_pd3dDevice->EndScene();
 
+	// Present the backbuffer contents to the display
 	m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
-	
 	g_graphicsContext.Unlock();
 }
 
@@ -727,12 +733,16 @@ void CApplication::Stop()
     CLog::Log(LOGNOTICE, "Unload skin");
     UnloadSkin();
 
+	//Windows
 	g_windowManager.Delete(WINDOW_HOME);
 	g_windowManager.Delete(WINDOW_FULLSCREEN_VIDEO);
 	g_windowManager.Delete(WINDOW_VIDEOS);
 	g_windowManager.Delete(WINDOW_SETTINGS);
 	g_windowManager.Delete(WINDOW_SETTINGS_MYPICTURES); // All the settings categories
 	g_windowManager.Delete(WINDOW_SCREENSAVER);
+
+	//Dialogs
+	g_windowManager.Delete(WINDOW_DIALOG_BUTTON_MENU);
 
 	CLog::Log(LOGNOTICE, "Destroy");
     Destroy();

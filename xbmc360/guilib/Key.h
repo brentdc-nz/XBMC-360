@@ -33,6 +33,9 @@
 #define WINDOW_SETTINGS_NETWORK           10018
 #define WINDOW_SETTINGS_APPEARANCE        10019
 
+//Dialogs
+#define WINDOW_DIALOG_BUTTON_MENU         10111
+
 /*!
   \ingroup actionkeys
   \brief 

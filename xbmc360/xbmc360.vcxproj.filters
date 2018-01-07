@@ -93,6 +93,12 @@
     <Filter Include="Source Files\filesystem">
       <UniqueIdentifier>{5705ec4c-21f5-4c09-aca4-83eca12b4818}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\guilib\dialogs">
+      <UniqueIdentifier>{fba4a9ba-f973-4731-a719-74d83f11fa9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\guilib\dialogs">
+      <UniqueIdentifier>{160f50a0-36a1-4b30-87a3-b166a7ca20ca}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -177,9 +183,6 @@
       <Filter>Header Files\utils</Filter>
     </ClInclude>
     <ClInclude Include="utils\URIUtils.h">
-      <Filter>Header Files\utils</Filter>
-    </ClInclude>
-    <ClInclude Include="utils\stdafx.h">
       <Filter>Header Files\utils</Filter>
     </ClInclude>
     <ClInclude Include="xbox\XBInput.h">
@@ -317,9 +320,6 @@
     <ClInclude Include="Settings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="utils\Log.h">
-      <Filter>Header Files\utils</Filter>
-    </ClInclude>
     <ClInclude Include="utils\Stopwatch.h">
       <Filter>Header Files\utils</Filter>
     </ClInclude>
@@ -346,6 +346,18 @@
     </ClInclude>
     <ClInclude Include="filesystem\FileHD.h">
       <Filter>Header Files\filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\Stdafx.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\Log.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\dialogs\GUIDialogButtonMenu.h">
+      <Filter>Header Files\guilib\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIDialog.h">
+      <Filter>Header Files\guilib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -419,9 +431,6 @@
       <Filter>Source Files\utils</Filter>
     </ClCompile>
     <ClCompile Include="utils\URIUtils.cpp">
-      <Filter>Source Files\utils</Filter>
-    </ClCompile>
-    <ClCompile Include="utils\stdafx.cpp">
       <Filter>Source Files\utils</Filter>
     </ClCompile>
     <ClCompile Include="xbox\XBInput.cpp">
@@ -576,6 +585,15 @@
     </ClCompile>
     <ClCompile Include="filesystem\FileHD.cpp">
       <Filter>Source Files\filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\Stdafx.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\dialogs\GUIDialogButtonMenu.cpp">
+      <Filter>Source Files\guilib\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIDialog.cpp">
+      <Filter>Source Files\guilib</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -36,7 +36,7 @@ void CGUIImage::SetInfo(const CGUIInfoLabel &info)
 
 void CGUIImage::Update()
 {
-	m_texture.Update((int)m_posX, (int)m_posY);
+	m_texture.Update(m_posX, m_posY);
 }
 
 void CGUIImage::Render()

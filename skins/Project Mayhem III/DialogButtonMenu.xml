@@ -1,0 +1,41 @@
+<window id="0">
+	<defaultcontrol>4</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+	
+		<control>
+			<description>sub menu background</description>
+			<type>image</type>			
+			<posx>0</posx>
+			<posy>300</posy>
+			<width>1280</width>
+			<height>90</height>
+			<visible>true</visible>			
+			<texture>sub_background.png</texture>
+		</control>	
+	
+		<control>
+			<description>reboot console button</description>
+			<type>button</type>
+			<id>4</id>
+			<posx>600</posx>
+			<posy>300</posy>
+			<width>150</width>
+			<height>90</height>
+			<label>-</label>
+			<font>special13</font>
+			<onclick>XBMC.Reboot()</onclick>
+			<onleft>9</onleft>
+			<onright>9</onright>
+			<onup>9</onup>
+			<ondown>5</ondown>
+			<texturefocus>sub_reboot_focus.png</texturefocus>
+			<texturenofocus>sub_reboot_nofocus.png</texturenofocus>
+			<textoffsetx>52</textoffsetx>
+			<textoffsety>-2</textoffsety>
+			<visible>true</visible>					
+		</control>		
+	
+	</controls>
+</window>
+
