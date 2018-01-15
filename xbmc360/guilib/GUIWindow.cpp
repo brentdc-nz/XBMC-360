@@ -199,20 +199,31 @@ void CGUIWindow::Render()
 
 bool CGUIWindow::OnAction(const CAction &action)
 {
-	 for (ivecControls i = m_vecControls.begin();i != m_vecControls.end(); ++i)
+	CGUIControl *focusedControl = GetFocusedControl();
+	if (focusedControl)
 	{
-		CGUIControl* pControl = *i;
-		if (pControl->HasFocus())
-		{
-			return pControl->OnAction(action);
-		}
+		if (focusedControl->OnAction(action))
+			return true;
+	}
+	else
+	{
+		// No control has focus?
+		// set focus to the default control then
+		CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), m_dwDefaultFocusControlID);
+		OnMessage(msg);
 	}
 
-	// no control has focus?
-	// set focus to the default control then
-	CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), m_dwDefaultFocusControlID);
-	OnMessage(msg);
-	return false;
+	// Default implementations
+	if (action.GetID() == ACTION_NAV_BACK || action.GetID() == ACTION_PREVIOUS_MENU)
+		return OnBack(action.GetID());
+
+  return false;
+}
+
+bool CGUIWindow::OnBack(int actionID)
+{
+	g_windowManager.PreviousWindow();
+	return true;
 }
 
 void CGUIWindow::ClearBackground()
@@ -288,6 +299,19 @@ int CGUIWindow::GetFocusedControlID() const
 		if (pControl->HasFocus() ) return pControl->GetID();
 	}
 	return -1;
+}
+
+CGUIControl *CGUIWindow::GetFocusedControl() const
+{
+	for (int i = 0;i < (int)m_vecControls.size(); ++i)
+	{
+		const CGUIControl* control = m_vecControls[i];
+		if (control->HasFocus())
+		{
+			return (CGUIControl *)control;
+		}
+	}
+	return NULL;
 }
 
 const CGUIControl* CGUIWindow::GetControl(int iControl) const

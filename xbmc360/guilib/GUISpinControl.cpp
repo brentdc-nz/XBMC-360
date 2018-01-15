@@ -124,7 +124,7 @@ void CGUISpinControl::SetPosition(float posX, float posY)
 
 bool CGUISpinControl::OnAction(const CAction &action)
 {
-	switch (action.wID)
+	switch (action.GetID())
 	{
 		case ACTION_SELECT_ITEM:
 		if (m_iSelect == SPIN_BUTTON_UP)

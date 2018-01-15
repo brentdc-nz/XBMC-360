@@ -2,9 +2,8 @@
 #include "Log.h"
 #include "..\ButtonTranslator.h"
 #include "..\guilib\GUIWindowManager.h"
-
+#include "..\ApplicationMessenger.h"
 #include "..\Application.h"
-#include "..\xbox\XBKernalExports.h"
 
 typedef struct
 {
@@ -94,11 +93,11 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   
 	if (execute.Equals("reboot") || execute.Equals("restart"))  //Will reboot the xbox, aka cold reboot
 	{
-//		g_applicationMessenger.Restart();
+		g_applicationMessenger.Reboot();
 	}
 	else if (execute.Equals("shutdown"))
 	{
-//		g_applicationMessenger.Shutdown();
+		g_applicationMessenger.Shutdown();
 	}
 	else if (execute.Equals("activatewindow") || execute.Equals("replacewindow"))
 	{
@@ -135,7 +134,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
 		if (iWindow != WINDOW_INVALID)
 		{
 			// disable the screensaver
-//			g_application.ResetScreenSaverWindow();
+			g_application.ResetScreenSaverWindow();
 			if (execute.Equals("activatewindow"))
 				g_windowManager.ActivateWindow(iWindow/*, strPath*/);
 			else  

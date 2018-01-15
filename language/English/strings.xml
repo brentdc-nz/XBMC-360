@@ -73,8 +73,8 @@
   <string><id>137</id><value>Search</value></string>
   <string><id>138</id><value>SYSTEM INFORMATION</value></string>
   <string><id>139</id><value>Temperatures:</value></string>
-  <string><id>140</id><value>CPU:</value></string>
-  <string><id>141</id><value>GPU:</value></string>
+  <string><id>140</id><value>CPU Temperature:</value></string>
+  <string><id>141</id><value>GPU Temperature:</value></string>
   <string><id>142</id><value>Time:</value></string>
   <string><id>143</id><value>Current:</value></string>
   <string><id>144</id><value>Build:</value></string>
@@ -1296,4 +1296,6 @@
   <string><id>16109</id><value>Use only PAL-60</value></string>
   <string><id>16110</id><value>For 60hz Games</value></string>
 
+  <string><id>16111</id><value>Current FPS:</value></string>
+  
 </strings>

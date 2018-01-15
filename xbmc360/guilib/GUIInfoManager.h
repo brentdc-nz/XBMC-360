@@ -22,6 +22,11 @@
 #include "..\utils\StdString.h"
 #include <list>
 
+#define KB  (1024)          // 1 KiloByte (1KB)   1024 Byte (2^10 Byte)
+#define MB  (1024*KB)       // 1 MegaByte (1MB)   1024 KB (2^10 KB)
+#define GB  (1024*MB)       // 1 GigaByte (1GB)   1024 MB (2^10 MB)
+#define TB  (1024*GB)       // 1 TerraByte (1TB)  1024 GB (2^10 GB)
+
 #define OPERATOR_NOT  3
 #define OPERATOR_AND  2
 #define OPERATOR_OR   1
@@ -32,8 +37,12 @@
 
 #define SYSTEM_TIME                 110
 #define SYSTEM_DATE                 111
+#define SYSTEM_CPU_TEMPERATURE      112
+#define SYSTEM_GPU_TEMPERATURE      113
+#define SYSTEM_FPS                  123
 #define SYSTEM_ALWAYS_TRUE          125   // useful for <visible fade="10" start="hidden">true</visible>, to fade in a control
 #define SYSTEM_ALWAYS_FALSE         126   // used for <visible fade="10">false</visible>, to fade out a control (ie not particularly useful!)
+#define SYSTEM_FREE_MEMORY          648
 
 // the multiple information vector
 #define MULTI_INFO_START              40000
@@ -93,7 +102,7 @@ protected:
 
 	CStdString GetTime(bool bSeconds = false);
 	CStdString GetDate(bool bNumbersOnly = false);
-
+	CStdString GetSystemHeatInfo(int info);
 private:
 
 	//Fullscreen OSD Stuff

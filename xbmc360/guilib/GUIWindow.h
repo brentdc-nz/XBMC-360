@@ -33,17 +33,26 @@ public:
 	void ClearAll();
 	const CGUIControl* GetControl(int iControl) const;
 	int GetFocusedControlID() const;
+	CGUIControl *GetFocusedControl() const;
 
 	bool GetLoadOnDemand() { return m_loadOnDemand; }
 
 	virtual void Render();
 	
+	/*! \brief Main update function, called every frame prior to rendering
+	Any window that requires updating on a frame by frame basis (such as to maintain
+	timers and the like) should override this function.
+	*/
+	virtual void FrameMove() {};
+
 	// OnAction() is called by our window manager.  We should process any messages
 	// that should be handled at the window level in the derived classes, and any
 	// unhandled messages should be dropped through to here where we send the message
 	// on to the currently focused control.  Returns true if the action has been handled
 	// and does not need to be passed further down the line (to our global action handlers)
 	virtual bool OnAction(const CAction &action);
+
+	virtual bool OnBack(int actionID);
 
 	/*! \brief Clear the background (if necessary) prior to rendering the window
 	*/

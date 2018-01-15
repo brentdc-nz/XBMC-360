@@ -1,0 +1,115 @@
+<window id="10007">
+	<defaultcontrol>1</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+	
+		<control>
+			<description>background image</description>
+			<type>image</type>				
+			<posx>-4</posx>
+			<posy>0</posy>
+			<width>1284</width>
+			<height>720</height>
+			<texture>background.png</texture>
+			<visible>true</visible>			
+		</control>
+		
+		<control>
+			<description>header image</description>
+			<type>image</type>				
+			<posx>-5</posx>
+			<posy>-20</posy>
+			<width>1288</width>
+			<height>155</height>
+			<texture>header_settings.png</texture>
+			<visible>true</visible>			
+		</control>		
+		
+		<control>
+			<description>title</description>
+			<type>label</type>			
+			<width>255</width>
+			<posx>100</posx>
+			<posy>50</posy>
+			<label>System Information</label>
+			<font>special13</font>
+			<visible>true</visible>
+		</control>			
+		
+	    <control>
+			<description>video preview window</description>
+			<type>videowindow</type>
+			<id>0</id>
+			<posx>50</posx>
+			<posy>430</posy>
+			<width>228</width>
+			<height>220</height>
+			<visible>true</visible>
+		</control>	
+
+		<control>
+			<description>information</description>
+			<type>label</type>
+			<id>40</id>			
+			<width>255</width>
+			<posx>375</posx>
+			<posy>150</posy>
+			<label>-</label>
+			<font>special13</font>
+			<visible>true</visible>
+		</control>		
+		
+		<control>
+			<description>label 2</description>
+			<type>label</type>
+			<id>2</id>			
+			<width>255</width>
+			<posx>375</posx>
+			<posy>200</posy>
+			<label>-</label>
+			<font>special13</font>
+			<textcolor>60ffffff</textcolor>			
+			<visible>true</visible>
+		</control>			
+	
+		<control>
+			<description>label 3</description>
+			<type>label</type>
+			<id>3</id>			
+			<width>255</width>
+			<posx>375</posx>
+			<posy>250</posy>
+			<label>-</label>
+			<font>special13</font>
+			<textcolor>60ffffff</textcolor>				
+			<visible>true</visible>
+		</control>	
+
+		<control>
+			<description>label 4</description>
+			<type>label</type>
+			<id>4</id>			
+			<width>255</width>
+			<posx>375</posx>
+			<posy>300</posy>
+			<label>-</label>
+			<font>special13</font>
+			<textcolor>60ffffff</textcolor>				
+			<visible>true</visible>
+		</control>	
+
+		<control>
+			<description>label 5</description>
+			<type>label</type>
+			<id>5</id>			
+			<width>255</width>
+			<posx>375</posx>
+			<posy>350</posy>
+			<label>-</label>
+			<font>special13</font>
+			<textcolor>60ffffff</textcolor>				
+			<visible>true</visible>
+		</control>
+		
+	</controls>
+</window>

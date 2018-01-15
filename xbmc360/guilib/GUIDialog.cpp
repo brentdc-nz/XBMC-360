@@ -84,6 +84,12 @@ void CGUIDialog::Render()
 //		Close(true);
 }
 
+bool CGUIDialog::OnBack(int actionID)
+{
+	Close();
+	return true;
+}
+
 void CGUIDialog::Close(bool forceClose /*= false*/)
 {
 	//Lock graphic context here as it is sometimes called from non rendering threads

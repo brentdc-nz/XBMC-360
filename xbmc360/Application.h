@@ -58,6 +58,7 @@ public:
 protected:
 	void FatalErrorHandler(bool InitD3D);
 	void ActivateScreenSaver();
+	void ProcessSlow();
 
 	bool m_bScreenSave;
 	CStdString m_screenSaverMode;
@@ -66,6 +67,7 @@ protected:
 
 	// Timer information
 	CStopWatch m_screenSaverTimer;
+	CStopWatch m_slowTimer;
 };
 
 extern CApplication g_application;

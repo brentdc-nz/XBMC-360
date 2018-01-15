@@ -247,6 +247,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="ApplicationMessenger.h" />
     <ClInclude Include="ButtonTranslator.h" />
     <ClInclude Include="cores\DVDPlayer\DVDAudioDevice.h" />
     <ClInclude Include="cores\DVDPlayer\DVDClock.h" />
@@ -311,6 +312,7 @@
     <ClInclude Include="guilib\windows\GUIWindowScreensaver.h" />
     <ClInclude Include="guilib\windows\GUIWindowSettings.h" />
     <ClInclude Include="guilib\windows\GUIWindowSettingsCategory.h" />
+    <ClInclude Include="guilib\windows\GUIWindowSystemInfo.h" />
     <ClInclude Include="guilib\windows\GUIWindowVideoFiles.h" />
     <ClInclude Include="guilib\XMLUtils.h" />
     <ClInclude Include="GUISettings.h" />
@@ -337,6 +339,7 @@
     <ClCompile Include="Application.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">..\xbox360 ffmpeg\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <ClCompile Include="ApplicationMessenger.cpp" />
     <ClCompile Include="ButtonTranslator.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDAudioDevice.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDClock.cpp" />
@@ -395,6 +398,7 @@
     <ClCompile Include="guilib\windows\GUIWindowScreensaver.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowSettings.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowSettingsCategory.cpp" />
+    <ClCompile Include="guilib\windows\GUIWindowSystemInfo.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowVideoFiles.cpp" />
     <ClCompile Include="guilib\XMLUtils.cpp" />
     <ClCompile Include="GUISettings.cpp" />

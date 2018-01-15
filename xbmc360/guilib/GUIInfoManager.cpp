@@ -4,6 +4,7 @@
 #include "..\utils\Log.h"
 #include "..\Application.h"
 #include "LocalizeStrings.h"
+#include "..\xbox\XBKernalExports.h"
 #include <vector>
 
 using namespace std;
@@ -105,6 +106,14 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 			ret = SYSTEM_DATE;
 		else if (strTest.Equals("system.time"))
 			ret = SYSTEM_TIME;
+		else if (strTest.Equals("system.fps")) 
+			ret = SYSTEM_FPS;
+		else if (strTest.Equals("system.cputemperature"))
+			ret = SYSTEM_CPU_TEMPERATURE;
+		else if (strTest.Equals("system.gputemperature"))
+			ret = SYSTEM_GPU_TEMPERATURE;
+		else if (strTest.Equals("system.memory(free)") || strTest.Equals("system.freememory")) 
+			ret = SYSTEM_FREE_MEMORY;
 	}
 
 	else if (strCategory.Equals("player"))
@@ -130,137 +139,141 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 
 int CGUIInfoManager::GetOperator(const char ch)
 {
-  if (ch == '[')
-    return 5;
-  else if (ch == ']')
-    return 4;
-  else if (ch == '!')
-    return OPERATOR_NOT;
-  else if (ch == '+')
-    return OPERATOR_AND;
-  else if (ch == '|')
-    return OPERATOR_OR;
-  else
-    return 0;
+	if (ch == '[')
+		return 5;
+	else if (ch == ']')
+		return 4;
+	else if (ch == '!')
+		return OPERATOR_NOT;
+	else if (ch == '+')
+		return OPERATOR_AND;
+	else if (ch == '|')
+		return OPERATOR_OR;
+	else
+		return 0;
 }
 
 bool CGUIInfoManager::EvaluateBooleanExpression(const CCombinedValue &expression, bool &result, int contextWindow)
 {
-  // stack to save our bool state as we go
-  stack<bool> save;
+	// stack to save our bool state as we go
+	stack<bool> save;
 
-  for (list<int>::const_iterator it = expression.m_postfix.begin(); it != expression.m_postfix.end(); ++it)
-  {
-    int expr = *it;
-    if (expr == -OPERATOR_NOT)
-    { // NOT the top item on the stack
-      if (save.size() < 1) return false;
-      bool expr = save.top();
-      save.pop();
-      save.push(!expr);
-    }
-    else if (expr == -OPERATOR_AND)
-    { // AND the top two items on the stack
-      if (save.size() < 2) return false;
-      bool right = save.top(); save.pop();
-      bool left = save.top(); save.pop();
-      save.push(left && right);
-    }
-    else if (expr == -OPERATOR_OR)
-    { // OR the top two items on the stack
-      if (save.size() < 2) return false;
-      bool right = save.top(); save.pop();
-      bool left = save.top(); save.pop();
-      save.push(left || right);
-    }
-    else  // operator
-      save.push(GetBool(expr));
-  }
-  if (save.size() != 1) return false;
-  result = save.top();
-  return true;
+	for (list<int>::const_iterator it = expression.m_postfix.begin(); it != expression.m_postfix.end(); ++it)
+	{
+		int expr = *it;
+		if (expr == -OPERATOR_NOT)
+		{
+			// NOT the top item on the stack
+			if (save.size() < 1) return false;
+			bool expr = save.top();
+			save.pop();
+			save.push(!expr);
+		}
+		else if (expr == -OPERATOR_AND)
+		{
+			// AND the top two items on the stack
+			if (save.size() < 2) return false;
+			bool right = save.top(); save.pop();
+			bool left = save.top(); save.pop();
+			save.push(left && right);
+		}
+		else if (expr == -OPERATOR_OR)
+		{ 
+			// OR the top two items on the stack
+			if (save.size() < 2) return false;
+			bool right = save.top(); save.pop();
+			bool left = save.top(); save.pop();
+			save.push(left || right);
+		}
+		else  // operator
+			save.push(GetBool(expr));
+	}
+	if (save.size() != 1) return false;
+	result = save.top();
+	return true;
 }
 
 int CGUIInfoManager::TranslateBooleanExpression(const CStdString &expression)
 {
-  CCombinedValue comb;
-  comb.m_info = expression;
-  comb.m_id = COMBINED_VALUES_START + m_CombinedValues.size();
+	CCombinedValue comb;
+	comb.m_info = expression;
+	comb.m_id = COMBINED_VALUES_START + m_CombinedValues.size();
 
-  // operator stack
-  stack<char> save;
+	// operator stack
+	stack<char> save;
 
-  CStdString operand;
+	CStdString operand;
 
-  for (unsigned int i = 0; i < expression.size(); i++)
-  {
-    if (GetOperator(expression[i]))
-    {
-      // cleanup any operand, translate and put into our expression list
-      if (!operand.IsEmpty())
-      {
-        int iOp = TranslateSingleString(operand);
-        if (iOp)
-          comb.m_postfix.push_back(iOp);
-        operand.clear();
-      }
-      // handle closing parenthesis
-      if (expression[i] == ']')
-      {
-        while (save.size())
-        {
-          char oper = save.top();
-          save.pop();
+	for (unsigned int i = 0; i < expression.size(); i++)
+	{
+		if (GetOperator(expression[i]))
+		{
+			// cleanup any operand, translate and put into our expression list
+			if (!operand.IsEmpty())
+			{
+				int iOp = TranslateSingleString(operand);
+				if (iOp)
+				comb.m_postfix.push_back(iOp);
+				operand.clear();
+			}
 
-          if (oper == '[')
-            break;
+			// handle closing parenthesis
+			if (expression[i] == ']')
+			{
+				while (save.size())
+				{
+					char oper = save.top();
+					save.pop();
 
-          comb.m_postfix.push_back(-GetOperator(oper));
-        }
-      }
-      else
-      {
-        // all other operators we pop off the stack any operator
-        // that has a higher priority than the one we have.
-        while (!save.empty() && GetOperator(save.top()) > GetOperator(expression[i]))
-        {
-          // only handle parenthesis once they're closed.
-          if (save.top() == '[' && expression[i] != ']')
-            break;
+					if (oper == '[')
+					break;
 
-          comb.m_postfix.push_back(-GetOperator(save.top()));  // negative denotes operator
-          save.pop();
-        }
-        save.push(expression[i]);
-      }
-    }
-    else
-    {
-      operand += expression[i];
-    }
-  }
+					comb.m_postfix.push_back(-GetOperator(oper));
+				}
+			}
+			else
+			{
+				// all other operators we pop off the stack any operator
+				// that has a higher priority than the one we have.
+				while (!save.empty() && GetOperator(save.top()) > GetOperator(expression[i]))
+				{
+					// only handle parenthesis once they're closed.
+					if (save.top() == '[' && expression[i] != ']')
+						break;
 
-  if (!operand.empty())
-  {
-    int op = TranslateSingleString(operand);
-    if (op)
-      comb.m_postfix.push_back(op);
-  }
+					comb.m_postfix.push_back(-GetOperator(save.top()));  // negative denotes operator
+					save.pop();
+				}
+				save.push(expression[i]);
+			}
+		}
+		else
+		{
+			operand += expression[i];
+		}
+	}
 
-  // finish up by adding any operators
-  while (!save.empty())
-  {
-    comb.m_postfix.push_back(-GetOperator(save.top()));
-    save.pop();
-  }
+	if (!operand.empty())
+	{
+		int op = TranslateSingleString(operand);
+		if (op)
+			comb.m_postfix.push_back(op);
+	}
 
-  // test evaluate
-  bool test;
-  if (!EvaluateBooleanExpression(comb, test, WINDOW_INVALID))
-    CLog::Log(LOGERROR, "Error evaluating boolean expression %s", expression.c_str());
-  // success - add to our combined values
-  m_CombinedValues.push_back(comb);
-  return comb.m_id;
+	// finish up by adding any operators
+	while (!save.empty())
+	{
+		comb.m_postfix.push_back(-GetOperator(save.top()));
+		save.pop();
+	}
+
+	// test evaluate
+	bool test;
+	if (!EvaluateBooleanExpression(comb, test, WINDOW_INVALID))
+		CLog::Log(LOGERROR, "Error evaluating boolean expression %s", expression.c_str());
+	// success - add to our combined values
+	m_CombinedValues.push_back(comb);
+	return comb.m_id;
 }
 
 CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
@@ -274,6 +287,20 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
 			break;
 		case SYSTEM_TIME:
 			strLabel = GetTime();
+			break;
+		 case SYSTEM_FPS:
+			strLabel.Format("%02.2f", m_fps);
+			break;
+		case SYSTEM_CPU_TEMPERATURE:
+		case SYSTEM_GPU_TEMPERATURE:
+			return GetSystemHeatInfo(info);
+			break;
+		case SYSTEM_FREE_MEMORY:
+			{
+				MEMORYSTATUS stat;
+				GlobalMemoryStatus(&stat);
+				strLabel.Format("%iMB", stat.dwAvailPhys /MB);
+			}
 			break;
 	}
 
@@ -367,7 +394,7 @@ CStdString CGUIInfoManager::GetDate(bool bNumbersOnly)
 	if (bNumbersOnly)
 	{
 		CStdString strDate;
-		if (/*g_guiSettings.GetInt("XBDateTime.DateFormat") == DATETIME_FORMAT_EU*/1)
+		if (/*g_guiSettings.GetInt("XBDateTime.DateFormat") == DATETIME_FORMAT_EU*/1) //TODO
 		  text.Format("%d-%d-%d", time.wDay, time.wMonth, time.wYear);
 		else
 			text.Format("%d-%d-%d", time.wMonth, time.wDay, time.wYear);
@@ -405,7 +432,7 @@ CStdString CGUIInfoManager::GetDate(bool bNumbersOnly)
 
 		if (day.size() && month.size())
 		{
-			if (/*g_guiSettings.GetInt("XBDateTime.DateFormat") == DATETIME_FORMAT_EU*/1)
+			if (/*g_guiSettings.GetInt("XBDateTime.DateFormat") == DATETIME_FORMAT_EU*/1) //TODO
 				text.Format("%s, %d %s %d", day.c_str(), time.wDay, month.c_str(), time.wYear);
 			else
 				text.Format("%s, %s %d %d", day.c_str(), month.c_str(), time.wDay, time.wYear);
@@ -424,7 +451,7 @@ CStdString CGUIInfoManager::GetTime(bool bSeconds)
 
 	INT iHour = time.wHour;
 
-	if (/*g_guiSettings.GetInt("XBDateTime.TimeFormat") == DATETIME_FORMAT_US*/1)
+	if (/*g_guiSettings.GetInt("XBDateTime.TimeFormat") == DATETIME_FORMAT_US*/1) //TODO
 	{
 		if (iHour > 11)
 		{
@@ -451,4 +478,26 @@ CStdString CGUIInfoManager::GetTime(bool bSeconds)
 			text.Format("%02d:%02d", iHour, time.wMinute);
 	}
 	return text;
+}
+
+CStdString CGUIInfoManager::GetSystemHeatInfo(int info)
+{
+	CStdString strTemp;
+
+	switch (info)
+	{
+		case SYSTEM_CPU_TEMPERATURE:
+			if (/*g_guiSettings.GetInt("Weather.TemperatureUnits") == */0 /*DEGREES_F*/) //TODO
+				strTemp.Format("%3.0i%cF", (9.0f/5.0f) * CXBKernalExports::QueryTemps(CPU) + 32.0f);
+			 else
+				strTemp.Format("%2.0i%cC", CXBKernalExports::QueryTemps(CPU), 176);
+			break;
+		case SYSTEM_GPU_TEMPERATURE:
+			if (/*g_guiSettings.GetInt("Weather.TemperatureUnits") == */0 /*DEGREES_F*/) //TODO
+				strTemp.Format("%3.0i%cF", (9.0f/5.0f) * CXBKernalExports::QueryTemps(GPU) + 32.0f);
+			 else
+				strTemp.Format("%2.0i%cC", CXBKernalExports::QueryTemps(GPU), 176);
+			break;
+	}
+	return strTemp;
 }

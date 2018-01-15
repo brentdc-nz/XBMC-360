@@ -359,6 +359,12 @@
     <ClInclude Include="guilib\GUIDialog.h">
       <Filter>Header Files\guilib</Filter>
     </ClInclude>
+    <ClInclude Include="ApplicationMessenger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\windows\GUIWindowSystemInfo.h">
+      <Filter>Header Files\guilib\windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -594,6 +600,12 @@
     </ClCompile>
     <ClCompile Include="guilib\GUIDialog.cpp">
       <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="ApplicationMessenger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\windows\GUIWindowSystemInfo.cpp">
+      <Filter>Source Files\guilib\windows</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

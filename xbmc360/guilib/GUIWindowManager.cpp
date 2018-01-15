@@ -201,21 +201,6 @@ void CGUIWindowManager::PreviousWindow()
 	// deactivate any window
 	CLog::Log(LOGDEBUG,"CGUIWindowManager::PreviousWindow: Deactivate");
 	
-#if 1
-	if((m_activeDialogs.size() > 0))
-	{
-		for (unsigned int i = 0; i < m_activeDialogs.size(); i++)
-		{
-			CGUIDialog *pDialog = (CGUIDialog *)m_activeDialogs[i];
-			if (pDialog->IsRunning())
-			{
-				CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
-				pDialog->OnMessage(msg);
-			}
-		}
-	}
-#endif	
-
 	int currentWindow = GetActiveWindow();
 	CGUIWindow *pCurrentWindow = GetWindow(currentWindow);
 	if (!pCurrentWindow)
@@ -427,6 +412,19 @@ void CGUIWindowManager::Render_Internal()
 		pWindow->ClearBackground();
 		pWindow->Render();
 	}
+}
+
+void CGUIWindowManager::FrameMove()
+{
+	CSingleLock lock(g_graphicsContext);
+	CGUIWindow* pWindow = GetWindow(GetActiveWindow());
+	
+	if (pWindow)
+		pWindow->FrameMove();
+
+	// Update any dialogs
+	for (iDialog it = m_activeDialogs.begin(); it != m_activeDialogs.end(); ++it)
+		(*it)->FrameMove();
 }
 
 void CGUIWindowManager::AddToWindowHistory(int newWindowID)

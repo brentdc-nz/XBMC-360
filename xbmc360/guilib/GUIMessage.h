@@ -18,6 +18,15 @@
 
 #define GUI_MSG_USER         1000
 
+//Send messgae macros
+
+#define SET_CONTROL_LABEL(dwControlID,label) \
+{ \
+	CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), dwControlID); \
+	msg.SetLabel(label); \
+	OnMessage(msg); \
+}
+
 class CGUIMessage
 {
 public:

@@ -115,7 +115,7 @@ void CGUIButtonControl::RenderText()
 
 bool CGUIButtonControl::OnAction(const CAction &action)
 {
-	if (action.wID == ACTION_SELECT_ITEM)
+	if (action.GetID() == ACTION_SELECT_ITEM)
 	{
 		OnClick();
 		return true;

@@ -26,7 +26,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 	if (g_application.m_pPlayer != NULL && g_application.m_pPlayer->OnAction(action))
 		return true;
 
-	switch (action.wID)
+	switch (action.GetID())
 	{
 		case ACTION_SHOW_GUI:
 		{

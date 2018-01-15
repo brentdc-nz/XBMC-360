@@ -6,10 +6,12 @@
 CButtonTranslator g_buttonTranslator;
 
 CButtonTranslator::CButtonTranslator()
-{}
+{
+}
 
 CButtonTranslator::~CButtonTranslator()
-{}
+{
+}
 
 WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
 {
@@ -30,12 +32,15 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
 		else 
 			wWindowID = WINDOW_HOME + iWindow;
 	}
+	//Windows
 	else if (strWindow.Equals("home")) wWindowID = WINDOW_HOME;
 	else if (strWindow.Equals("myprograms")) wWindowID = WINDOW_PROGRAMS;
 	else if (strWindow.Equals("myvideos")) wWindowID = WINDOW_VIDEOS;
 	else if (strWindow.Equals("settings")) wWindowID = WINDOW_SETTINGS;
 	else if (strWindow.Equals("appearancesettings")) wWindowID = WINDOW_SETTINGS_APPEARANCE;
 	else if (strWindow.Equals("screensaver")) wWindowID = WINDOW_SCREENSAVER;
+	else if (strWindow.Equals("systeminfo")) wWindowID = WINDOW_SYSTEM_INFORMATION;
+	//Dialogs
 	else if (strWindow.Equals("shutdownmenu")) wWindowID = WINDOW_DIALOG_BUTTON_MENU;
 	else
 		CLog::Log(LOGERROR, "Window Translator: Can't find window %s", strWindow.c_str());

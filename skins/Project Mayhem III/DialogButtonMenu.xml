@@ -1,5 +1,5 @@
 <window id="0">
-	<defaultcontrol>4</defaultcontrol>
+	<defaultcontrol>2</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<controls>
 	
@@ -12,28 +12,94 @@
 			<height>90</height>
 			<visible>true</visible>			
 			<texture>sub_background.png</texture>
-		</control>	
+		</control>		
+
+		<control>
+			<description>system info button</description>
+			<type>button</type>
+			<id>1</id>
+			<posx>550</posx>
+			<posy>305</posy>
+			<width>90</width>
+			<height>65</height>
+			<label>-</label>
+			<font>special13</font>
+			<onclick>XBMC.ActivateWindow(systeminfo)</onclick>
+			<onleft>3</onleft>
+			<onright>2</onright>
+			<onup>1</onup>
+			<ondown>1</ondown>
+			<texturefocus>sub_info_focus.png</texturefocus>
+			<texturenofocus>sub_info_nofocus.png</texturenofocus>
+			<textoffsetx>52</textoffsetx>
+			<textoffsety>-2</textoffsety>
+			<visible>true</visible>					
+		</control>		
+	
+		<control>
+			<description>shutdown console button</description>
+			<type>button</type>
+			<id>2</id>
+			<posx>640</posx>
+			<posy>305</posy>			
+			<width>90</width>
+			<height>65</height>
+			<label>-</label>
+			<font>special13</font>
+			<onclick>XBMC.Shutdown()</onclick>
+			<onleft>1</onleft>
+			<onright>3</onright>
+			<onup>2</onup>
+			<ondown>2</ondown>
+			<texturefocus>sub_shutdown_focus.png</texturefocus>
+			<texturenofocus>sub_shutdown_nofocus.png</texturenofocus>
+			<textoffsetx>52</textoffsetx>
+			<textoffsety>-2</textoffsety>
+			<visible>true</visible>					
+		</control>		
 	
 		<control>
 			<description>reboot console button</description>
 			<type>button</type>
-			<id>4</id>
-			<posx>600</posx>
-			<posy>300</posy>
-			<width>150</width>
-			<height>90</height>
+			<id>3</id>
+			<posx>730</posx>
+			<posy>305</posy>			
+			<width>90</width>
+			<height>65</height>
 			<label>-</label>
 			<font>special13</font>
 			<onclick>XBMC.Reboot()</onclick>
-			<onleft>9</onleft>
-			<onright>9</onright>
-			<onup>9</onup>
-			<ondown>5</ondown>
+			<onleft>2</onleft>
+			<onright>1</onright>
+			<onup>3</onup>
+			<ondown>3</ondown>
 			<texturefocus>sub_reboot_focus.png</texturefocus>
 			<texturenofocus>sub_reboot_nofocus.png</texturenofocus>
 			<textoffsetx>52</textoffsetx>
 			<textoffsety>-2</textoffsety>
 			<visible>true</visible>					
+		</control>
+		
+		<control>
+			<description>sub menu label background</description>
+			<type>image</type>			
+			<posx>0</posx>
+			<posy>410</posy>
+			<width>1280</width>
+			<height>50</height>
+			<visible>true</visible>		
+			<texture>sub_background_label.png</texture>
+		</control>	
+	
+		<control>
+			<description>control label</description>
+			<type>label</type>			
+			<posx>650</posx>
+			<posy>415</posy>
+			<width>255</width>
+			<label>Shutdown</label>
+			<font>special13</font>
+			<visible>true</visible>
 		</control>		
 	
 	</controls>

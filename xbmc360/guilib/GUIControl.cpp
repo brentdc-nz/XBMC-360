@@ -155,7 +155,7 @@ void CGUIControl::Render()
 
 bool CGUIControl::OnAction(const CAction &action)
 {
-	switch (action.wID)
+	switch (action.GetID())
 	{
 		case ACTION_MOVE_DOWN:
 		OnDown();

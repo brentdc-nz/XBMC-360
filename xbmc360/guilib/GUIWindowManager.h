@@ -25,12 +25,9 @@ public:
 	\return true if the window manager is initialized, false otherwise.
 	*/
 	bool Initialized() const { return m_initialized; };
-
 	void SendThreadMessage(CGUIMessage& message);
 	void DispatchThreadMessages();
-
 	bool SendMessage(CGUIMessage& message);
-
 	void Add(CGUIWindow* pWindow);
 	void LoadNotOnDemandWindows();
 	void UnloadNotOnDemandWindows();
@@ -52,16 +49,19 @@ public:
 
 	void Render();
 	void RenderDialogs();
-	void Render_Internal();
+
+	/*! \brief Per-frame updating of the current window and any dialogs
+	FrameMove is called every frame to update the current window and any dialogs
+	on screen. It should only be called from the application thread.
+	*/
+	void FrameMove();
 	void AddToWindowHistory(int newWindowID);
-
 	void DeInitialize();
-
 	void ClearWindowHistory();
-
 	void AddMsgTarget( IMsgTargetCallback* pMsgTarget );
-private:
 
+private:
+	void Render_Internal();
 	typedef std::map<int, CGUIWindow *> WindowMap;
 	WindowMap m_mapWindows;
 
@@ -69,6 +69,7 @@ private:
 
 	std::vector <CGUIWindow*> m_activeDialogs;
 	std::vector < std::pair<CGUIMessage*,int> > m_vecThreadMessages;
+	typedef std::vector<CGUIWindow*>::iterator iDialog;
 
 	CCriticalSection m_critSection;
 
