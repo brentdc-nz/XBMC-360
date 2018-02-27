@@ -48,13 +48,13 @@ bool CGUIDialog::OnMessage(CGUIMessage& message)
 			// if we were running, make sure we remove ourselves from the window manager
 			if (m_bRunning)
 			{
-				if (/*m_bModal*/1)
+				if (/*m_bModal*/1) //TODO
 				{
 					g_windowManager.UnRoute(GetID());
 				}
 				else
 				{
-//					g_windowManager.RemoveModeless( GetID() );
+//					g_windowManager.RemoveModeless( GetID() );  //TODO
 				}
 
 //				m_pParentWindow = NULL;
@@ -115,5 +115,9 @@ void CGUIDialog::Close(bool forceClose /*= false*/)
 //	g_audioManager.PlayWindowSound(GetID(), SOUND_DEINIT);
 
 	CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
+
+#if 0 // FIXME : Why is it calling the base class?
 	OnMessage(msg);
+#endif
+	CGUIDialog::OnMessage(msg);
 }

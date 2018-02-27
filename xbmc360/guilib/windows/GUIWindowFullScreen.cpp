@@ -61,6 +61,10 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 
 			CGUIWindow::OnMessage(message);
 
+			g_graphicsContext.Lock();
+			g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET, 0xff000000, 1.0f, 0L );
+			g_graphicsContext.Unlock();
+
 			// switch resolution
 			CSingleLock lock (g_graphicsContext);
 			g_graphicsContext.SetFullScreenVideo(true);
@@ -77,11 +81,14 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 			FreeResources(true);
 
 			CSingleLock lock (g_graphicsContext);
+
 			g_graphicsContext.SetFullScreenVideo(false);
 			lock.Leave();
 
 			// make sure renderer is uptospeed
 //			g_renderManager.Update(false);
+
+			Sleep(100);
 
 			return true;
 		}

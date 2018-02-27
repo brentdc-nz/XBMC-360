@@ -8,3 +8,17 @@ CGUIDialogButtonMenu::CGUIDialogButtonMenu(void)
 CGUIDialogButtonMenu::~CGUIDialogButtonMenu(void)
 {
 }
+
+bool CGUIDialogButtonMenu::OnMessage(CGUIMessage& message)
+{
+	switch (message.GetMessage())
+	{
+		case GUI_MSG_CLICKED:
+		{
+			Close();
+		}
+		break;
+	}
+
+	return CGUIWindow::OnMessage(message);
+}
