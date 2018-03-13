@@ -88,7 +88,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 			// make sure renderer is uptospeed
 //			g_renderManager.Update(false);
 
-			Sleep(100);
+			Sleep(10);
 
 			return true;
 		}

@@ -31,6 +31,7 @@ public:
 	virtual bool OnAction(const CAction &action);
 
 	void SetValue(int iValue);
+	int GetValue() const;
 
 	DWORD GetSpinWidth() const { return m_imgspinUp.GetWidth(); };
 	DWORD GetSpinHeight() const { return m_imgspinUp.GetHeight(); };

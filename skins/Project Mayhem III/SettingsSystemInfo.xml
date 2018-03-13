@@ -40,9 +40,9 @@
 			<description>video preview window</description>
 			<type>videowindow</type>
 			<id>0</id>
-			<posx>50</posx>
+			<posx>45</posx>
 			<posy>430</posy>
-			<width>228</width>
+			<width>260</width>
 			<height>220</height>
 			<visible>true</visible>
 		</control>	

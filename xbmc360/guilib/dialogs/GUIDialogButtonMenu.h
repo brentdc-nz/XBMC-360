@@ -10,6 +10,7 @@ public:
 	virtual ~CGUIDialogButtonMenu(void);
 
 	virtual bool OnMessage(CGUIMessage& message);
+	virtual void Render();
 };
 
 #endif //GUILIB_CGUIDIALOGBUTTONMENU_H

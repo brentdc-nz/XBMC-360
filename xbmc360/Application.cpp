@@ -705,7 +705,7 @@ void CApplication::CheckScreenSaver()
 	if (m_bScreenSave) // Already running the screensaver
 		return;
 
-	if ( m_screenSaverTimer.GetElapsedSeconds() > 10/*g_guiSettings.GetInt("screensaver.time")*/ * 60 ) //TODO - 10min for now
+	if ( m_screenSaverTimer.GetElapsedSeconds() > g_guiSettings.GetInt("ScreenSaver.Time") * 60 )
 		ActivateScreenSaver();
 }
 
@@ -714,7 +714,7 @@ void CApplication::ActivateScreenSaver()
 	m_bScreenSave = true;
 
 	// Get Screensaver Mode
-	m_screenSaverMode = "";//g_guiSettings.GetString("screensaver.mode"); //TODO
+	m_screenSaverMode = g_guiSettings.GetString("screensaver.mode");
 
 	if (m_screenSaverMode != "None")
 	{
@@ -748,7 +748,7 @@ void CApplication::Stop()
     CLog::Log(LOGNOTICE, "Unload skin");
     UnloadSkin();
 
-	//Windows
+	// Windows
 	g_windowManager.Delete(WINDOW_HOME);
 	g_windowManager.Delete(WINDOW_FULLSCREEN_VIDEO);
 	g_windowManager.Delete(WINDOW_VIDEOS);
@@ -757,7 +757,7 @@ void CApplication::Stop()
 	g_windowManager.Delete(WINDOW_SCREENSAVER);
     g_windowManager.Delete(WINDOW_SYSTEM_INFORMATION);
 
-	//Dialogs
+	// Dialogs
 	g_windowManager.Delete(WINDOW_DIALOG_BUTTON_MENU);
 
 	CLog::Log(LOGNOTICE, "Destroy");

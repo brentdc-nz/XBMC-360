@@ -1,4 +1,5 @@
 #include "SettingsControls.h"
+#include "guilib\LocalizeStrings.h"
 
 CBaseSettingControl::CBaseSettingControl(DWORD dwID, CSetting *pSetting)
 {
@@ -18,11 +19,11 @@ CSpinExSettingControl::CSpinExSettingControl(CGUISpinControlEx *pSpin, DWORD dwI
 		m_pSpin->SetFloatRange(pSettingFloat->m_fMin, pSettingFloat->m_fMax);
 		m_pSpin->SetFloatInterval(pSettingFloat->m_fStep);
 	}
-	else if (pSetting->GetControlType() == SPIN_CONTROL_INT_PLUS || pSetting->GetControlType() == SPIN_CONTROL_INT)
+	else*/ if (pSetting->GetControlType() == SPIN_CONTROL_INT_PLUS /*|| pSetting->GetControlType() == SPIN_CONTROL_INT*/)
 	{
 		CSettingInt *pSettingInt = (CSettingInt *)pSetting;
 		m_pSpin->SetType(SPIN_CONTROL_TYPE_TEXT);
-	   m_pSpin->Clear();
+		m_pSpin->Clear();
 		CStdString strLabel;
 		int i = pSettingInt->m_iMin;
 		if (pSettingInt->m_iLabelMin>-1)
@@ -43,7 +44,7 @@ CSpinExSettingControl::CSpinExSettingControl(CGUISpinControlEx *pSpin, DWORD dwI
 			m_pSpin->AddLabel(strLabel, i);
 		}
 	}
-	else*/ // if (pSetting->GetControlType() == SPIN_CONTROL_TEXT)
+	else // if (pSetting->GetControlType() == SPIN_CONTROL_TEXT)
 	{
 		m_pSpin->SetType(SPIN_CONTROL_TYPE_TEXT);
 		m_pSpin->Clear();
@@ -56,16 +57,16 @@ CSpinExSettingControl::~CSpinExSettingControl()
 
 void CSpinExSettingControl::OnClick()
 {
-/*	if (m_pSetting->GetControlType() == SPIN_CONTROL_FLOAT)
+/*	if (m_pSetting->GetControlType() == SPIN_CONTROL_FLOAT) //TODO
 		((CSettingFloat *)m_pSetting)->SetData(m_pSpin->GetFloatValue());
 	else
-	{
-		if (m_pSetting->GetType() != SETTINGS_TYPE_STRING)
+*/	{
+//		if (m_pSetting->GetType() != SETTINGS_TYPE_STRING) //TODO
 		{
 			CSettingInt *pSettingInt = (CSettingInt *)m_pSetting;
 			pSettingInt->SetData(m_pSpin->GetValue());
 		}
-	}*/
+	}
 }
 
 void CSpinExSettingControl::Update()
@@ -75,9 +76,9 @@ void CSpinExSettingControl::Update()
 		CSettingFloat *pSettingFloat = (CSettingFloat *)m_pSetting;
 		m_pSpin->SetFloatValue(pSettingFloat->GetData());
 	}
-	else if (m_pSetting->GetControlType() == SPIN_CONTROL_INT_PLUS || m_pSetting->GetControlType() == SPIN_CONTROL_INT)
+	else*/ if (m_pSetting->GetControlType() == SPIN_CONTROL_INT_PLUS/* || m_pSetting->GetControlType() == SPIN_CONTROL_INT*/)
 	{
 		CSettingInt *pSettingInt = (CSettingInt *)m_pSetting;
 		m_pSpin->SetValue(pSettingInt->GetData());
-	}*/
+	}
 }

@@ -22,8 +22,8 @@
 			<posy>305</posy>
 			<width>90</width>
 			<height>65</height>
-			<label>-</label>
-			<font>special13</font>
+			<label>System Info</label>
+			<font>-</font>
 			<onclick>XBMC.ActivateWindow(systeminfo)</onclick>
 			<onleft>3</onleft>
 			<onright>2</onright>
@@ -44,8 +44,8 @@
 			<posy>305</posy>			
 			<width>90</width>
 			<height>65</height>
-			<label>-</label>
-			<font>special13</font>
+			<label>Shutdown</label>
+			<font>-</font>
 			<onclick>XBMC.Shutdown()</onclick>
 			<onleft>1</onleft>
 			<onright>3</onright>
@@ -66,8 +66,8 @@
 			<posy>305</posy>			
 			<width>90</width>
 			<height>65</height>
-			<label>-</label>
-			<font>special13</font>
+			<label>Reboot</label>
+			<font>-</font>
 			<onclick>XBMC.Reboot()</onclick>
 			<onleft>2</onleft>
 			<onright>1</onright>
@@ -93,11 +93,12 @@
 	
 		<control>
 			<description>control label</description>
-			<type>label</type>			
+			<type>label</type>
+			<id>3100</id>			
 			<posx>650</posx>
 			<posy>415</posy>
 			<width>255</width>
-			<label>Shutdown</label>
+			<label>-</label>
 			<font>special13</font>
 			<visible>true</visible>
 		</control>		

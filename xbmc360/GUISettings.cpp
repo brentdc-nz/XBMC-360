@@ -2,6 +2,15 @@
 #include "utils\Log.h"
 #include "utils\StringUtils.h"
 
+// String id's of the masks
+#define MASK_MINS		14044
+#define MASK_SECS		14045
+#define MASK_MS			14046
+#define MASK_PERCENT	14047
+#define MASK_KBPS		14048
+#define MASK_KB			14049
+#define MASK_DB			14050
+
 using namespace std;
 
 struct sortsettings
@@ -28,14 +37,35 @@ CStdString CSettingString::ToString()
 	return m_strData;
 }
 
+CSettingInt::CSettingInt(int iOrder, const char *strSetting, int iLabel, int iData, int iMin, int iStep, int iMax, int iControlType)
+    : CSetting(iOrder, strSetting, iLabel, iControlType)
+{
+	m_iData = iData;
+	m_iMin = iMin;
+	m_iMax = iMax;
+	m_iStep = iStep;
+	m_iFormat = -1;
+	m_iLabelMin = -1;
+	m_strFormat = "%i";
+}
+
+void CSettingInt::FromString(const CStdString &strValue)
+{
+	SetData(atoi(strValue.c_str()));
+}
+
+CStdString CSettingInt::ToString()
+{
+	CStdString strValue;
+	strValue.Format("%i", m_iData);
+	return strValue;
+}
+
 CGUISettings g_guiSettings;
 
 // Settings are case sensitive
 CGUISettings::CGUISettings()
 {
-
-
-
 	// Appearance settings
 	AddGroup(7, 480);
 	AddCategory(7,"LookAndFeel", 14037);
@@ -44,7 +74,7 @@ CGUISettings::CGUISettings()
 
 	AddCategory(7, "ScreenSaver", 360);
 	AddString(1, "ScreenSaver.Mode", 356, "Dim", SPIN_CONTROL_TEXT);
-//	AddInt(4, "ScreenSaver.Time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS); //TODO
+	AddInt(2, "ScreenSaver.Time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS); //TODO
 }
 
 CGUISettings::~CGUISettings()
@@ -98,6 +128,14 @@ void CGUISettings::AddString(int iOrder, const char *strSetting, int iLabel, con
 	m_settingsMap.insert(pair<CStdString, CSetting*>(strSetting, pSetting));
 }
 
+void CGUISettings::AddInt(int iOrder, const char *strSetting, int iLabel, int iData, int iMin, int iStep, int iMax, int iControlType)
+{
+	CSettingInt* pSetting = new CSettingInt(iOrder, strSetting, iLabel, iData, iMin, iStep, iMax, iControlType);
+
+	if (!pSetting) return ;
+	m_settingsMap.insert(pair<CStdString, CSetting*>(strSetting, pSetting));
+}
+
 CStdString CGUISettings::GetString(const char *strSetting)
 {
 	ASSERT(m_settingsMap.size());
@@ -123,6 +161,20 @@ void CGUISettings::SetString(const char *strSetting, const char *strData)
 	}
 	// Assert here and write debug output
 	CLog::DebugLog("Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
+}
+
+int CGUISettings::GetInt(const char *strSetting)
+{
+	ASSERT(m_settingsMap.size());
+	mapIter it = m_settingsMap.find(strSetting);
+	if (it != m_settingsMap.end())
+	{
+		return ((CSettingInt *)(*it).second)->GetData();
+	}
+	
+	// Assert here and write debug output
+	CLog::DebugLog("Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
+	return 0;
 }
 
 // get all the settings beginning with the term "strGroup"

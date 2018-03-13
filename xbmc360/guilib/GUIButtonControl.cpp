@@ -63,13 +63,13 @@ void CGUIButtonControl::Render()
 	if (!IsVisible()) return;
 
 /*	if (m_bInvalidated)
-  {
-    m_imgFocus.SetWidth(m_width);
-    m_imgFocus.SetHeight(m_height);
+	{
+		m_imgFocus.SetWidth(m_width);
+		m_imgFocus.SetHeight(m_height);
 
-    m_imgNoFocus.SetWidth(m_width);
-    m_imgNoFocus.SetHeight(m_height);
-  }
+		m_imgNoFocus.SetWidth(m_width);
+		m_imgNoFocus.SetHeight(m_height);
+	}
 */
 	if (HasFocus())
 	{
@@ -155,4 +155,9 @@ void CGUIButtonControl::OnClick()
 void CGUIButtonControl::SetLabel(const string &label)
 {	
 	m_label.SetText(label);
+}
+
+const CStdString CGUIButtonControl::GetLabel()
+{
+	return m_label.GetText();
 }

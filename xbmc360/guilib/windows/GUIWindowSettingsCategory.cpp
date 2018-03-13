@@ -59,6 +59,23 @@ CGUIWindowSettingsCategory::~CGUIWindowSettingsCategory(void)
 {
 }
 
+bool CGUIWindowSettingsCategory::OnAction(const CAction &action)
+{
+	if (action.GetID() == ACTION_PREVIOUS_MENU)
+	{
+		g_settings.Save();
+/*		if (m_iWindowBeforeJump!=WINDOW_INVALID) //TODO
+		{
+			JumpToPreviousSection();
+			return true;
+		}
+*/		m_lastControlID = 0; // don't save the control as we go to a different window each time
+		g_windowManager.PreviousWindow();
+		return true;
+	}
+	return CGUIWindow::OnAction(action);
+}
+
 bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
 {
 	switch (message.GetMessage())
@@ -78,10 +95,10 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
 		case GUI_MSG_LOAD_SKIN: //TODO
 		{
 			// Do we need to reload the language file
-/*			if (!m_strNewLanguage.IsEmpty())
+			if (!m_strNewLanguage.IsEmpty())
 			{
 				g_guiSettings.SetString("LookAndFeel.Language", m_strNewLanguage);
-*/				g_settings.Save();
+				g_settings.Save();
 
 /*				CStdString strLangInfoPath;
 				strLangInfoPath.Format("Q:\\language\\%s\\langinfo.xml", m_strNewLanguage.c_str());
@@ -100,13 +117,13 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
 				}
 
 				g_charsetConverter.reset();
-
+*/
 				CStdString strLanguagePath;
-				strLanguagePath.Format("Q:\\language\\%s\\strings.xml", m_strNewLanguage.c_str());
+				strLanguagePath.Format("D:\\language\\%s\\strings.xml", m_strNewLanguage.c_str());
 				g_localizeStrings.Load(strLanguagePath);
 			}
 
-			// Do we need to reload the skin font set
+/*			// Do we need to reload the skin font set
 			if (!m_strNewSkinFontSet.IsEmpty())
 			{
 				g_guiSettings.SetString("LookAndFeel.Font", m_strNewSkinFontSet);
@@ -177,6 +194,9 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
 void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
 {
 	CStdString strSetting = pSettingControl->GetSetting()->GetSetting();
+
+	// Call the control to do it's thing
+	pSettingControl->OnClick();
 
 	if (strSetting == "LookAndFeel.Skin")
 	{ 
@@ -301,6 +321,14 @@ void CGUIWindowSettingsCategory::CreateSettings()
 		{
 			FillInSkins(pSetting);
 		}
+		else if (strSetting == "LookAndFeel.Language")
+		{
+			FillInLanguages(pSetting);
+		}
+		else if (strSetting == "ScreenSaver.Mode")
+		{
+			FillInScreenSavers(pSetting);
+		}
 	}
 }
 
@@ -322,7 +350,19 @@ void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, int iPosX, int &
 		pSettingControl = new CSpinExSettingControl((CGUISpinControlEx *)pControl, iControlID, pSetting);
 		iPosY += iGap;
 	}
-
+	else if (pSetting->GetControlType() == /*SPIN_CONTROL_FLOAT || pSetting->GetControlType() ==*/ SPIN_CONTROL_INT_PLUS /*|| pSetting->GetControlType() == SPIN_CONTROL_TEXT || pSetting->GetControlType() == SPIN_CONTROL_INT*/)
+	{
+		baseControl = m_pOriginalSpin;
+		pControl = new CGUISpinControlEx(*m_pOriginalSpin);
+		if (!pControl) return ;
+		pControl->SetPosition((float)iPosX, (float)iPosY);
+//		pControl->SetWidth(iWidth);
+		((CGUISpinControlEx *)pControl)->SetText(g_localizeStrings.Get(pSetting->GetLabel()));
+//		pControl->SetWidth(iWidth);
+		pSettingControl = new CSpinExSettingControl((CGUISpinControlEx *)pControl, iControlID, pSetting);
+		iPosY += iGap;
+	}
+	
 	if (!pControl) return;
 	
 	pControl->SetNavigation(iControlID - 1,
@@ -432,6 +472,63 @@ void CGUIWindowSettingsCategory::FillInSkins(CSetting *pSetting)
 
 	pControl->SetValue(iCurrentSkin);
 	return ;
+}
+
+void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)
+{
+	CSettingString *pSettingString = (CSettingString*)pSetting;
+	CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+	pControl->Clear();
+	m_strNewLanguage.Empty();
+	//find languages...
+	CHDDirectory directory;
+	CFileItemList items;
+
+	CStdString strPath = "D:\\language\\";
+	directory.GetDirectory(strPath, items);
+
+	int iCurrentLang = 0;
+	int iLanguage = 0;
+	vector<CStdString> vecLanguage;
+	for (int i = 0; i < items.Size(); ++i)
+	{
+		CFileItem* pItem = items[i];
+		if (pItem->m_bIsFolder)
+		{
+			if (strcmpi(pItem->GetLabel().c_str(), "CVS") == 0) continue;
+			if (strcmpi(pItem->GetLabel().c_str(), "fonts") == 0) continue;
+			if (strcmpi(pItem->GetLabel().c_str(), "media") == 0) continue;
+			vecLanguage.push_back(pItem->GetLabel());
+		}
+	}
+
+//	sort(vecLanguage.begin(), vecLanguage.end(), sortstringbyname()); //TODO
+	for (int i = 0; i < (int) vecLanguage.size(); ++i)
+	{
+		CStdString strLanguage = vecLanguage[i];
+
+		if (strcmpi(strLanguage.c_str(), pSettingString->GetData().c_str()) == 0)
+			iCurrentLang = iLanguage;
+
+		pControl->AddLabel(strLanguage, iLanguage++);
+	}
+
+	pControl->SetValue(iCurrentLang);
+}
+
+void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting) //TODO
+{ 
+	// Screensaver mode
+	CSettingString *pSettingString = (CSettingString*)pSetting;
+	CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+	pControl->Clear();
+
+	//TODO - Better way to detect what we have available
+	pControl->AddLabel(g_localizeStrings.Get(351), 0); // Off
+	pControl->AddLabel(g_localizeStrings.Get(352), 1); // Dim
+	pControl->AddLabel("Plasma", 3); // Plasma //TODO
+
+	pControl->SetValue(3);
 }
 
 CBaseSettingControl *CGUIWindowSettingsCategory::GetSetting(const CStdString &strSetting)

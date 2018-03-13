@@ -50,6 +50,7 @@ public:
 	virtual ~CGUILabel(void);
 
 	void SetText(CStdString strText);
+	CStdString GetText();
 	void SetPosition(float fPosX, float fPosY);
 	void Render();
 

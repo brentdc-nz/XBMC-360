@@ -206,6 +206,16 @@ void CGUISpinControl::SetValue(int iValue)
 		m_iValue = iValue;
 }
 
+int CGUISpinControl::GetValue() const
+{
+	if (m_iType == SPIN_CONTROL_TYPE_TEXT)
+	{
+		if (m_iValue >= 0 && m_iValue < (int)m_vecValues.size())
+			return m_vecValues[m_iValue];
+	}
+	return m_iValue;
+}
+
 void CGUISpinControl::SetType(int iType)
 {
 	m_iType = iType;

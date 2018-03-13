@@ -1,4 +1,3 @@
-
 /*
  * XBoxMediaPlayer
  * Copyright (c) 2002 Frodo
@@ -29,82 +28,82 @@ CSingleLock::CSingleLock(CCriticalSection& cs)
     : m_cs( cs )
     , m_bIsOwner( false )
 {
-  Enter();
+	Enter();
 }
 
 CSingleLock::CSingleLock(const CCriticalSection& cs)
     : m_cs( const_cast<CCriticalSection&>(cs) )
     , m_bIsOwner( false )
 {
-  Enter();
+	Enter();
 }
 
 CSingleLock::~CSingleLock()
 {
-  Leave();
+	Leave();
 }
 
 bool CSingleLock::IsOwner() const
 {
-  return m_bIsOwner;
+	return m_bIsOwner;
 }
 
 bool CSingleLock::Enter()
 {
-  // Test if we already own the critical section
-  if ( true == m_bIsOwner )
-  {
-    return true;
-  }
+	// Test if we already own the critical section
+	if ( true == m_bIsOwner )
+	{
+		return true;
+	}
 
-  // Blocking call
-  ::EnterCriticalSection( m_cs );
-  m_bIsOwner = true;
+	// Blocking call
+	::EnterCriticalSection( m_cs );
+	m_bIsOwner = true;
 
-  return m_bIsOwner;
+	return m_bIsOwner;
 }
 
 void CSingleLock::Leave()
 {
-  if ( false == m_bIsOwner )
-  {
-    return ;
-  }
+	if ( false == m_bIsOwner )
+	{
+		return ;
+	}
 
-  ::LeaveCriticalSection( m_cs );
-  m_bIsOwner = false;
+	::LeaveCriticalSection( m_cs );
+	m_bIsOwner = false;
 }
 
 CSingleExit::CSingleExit(CCriticalSection& cs)
     : m_cs( cs )
     , m_count(0)
 {
-  Exit();
+	Exit();
 }
 
  CSingleExit::CSingleExit(const CCriticalSection& cs)
     : m_cs(const_cast<CCriticalSection&>(cs))
     , m_count(0)
 {
-  Exit();
+	Exit();
 }
 
 CSingleExit::~CSingleExit()
 {
-  Restore();
+	Restore();
 }
 
 void CSingleExit::Exit()
 {
-  if(m_count == 0)
-    m_count = ::ExitCriticalSection(m_cs);
+	if(m_count == 0)
+		m_count = ::ExitCriticalSection(m_cs);
 }
 
 void CSingleExit::Restore()
 {
-  if(m_count)
-  {
-    RestoreCriticalSection(m_cs, m_count);
-    m_count = 0;
-  }
+	if(m_count)
+	{
+		RestoreCriticalSection(m_cs, m_count);
+		m_count = 0;
+	}
 }

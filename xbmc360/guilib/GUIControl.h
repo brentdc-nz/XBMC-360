@@ -126,6 +126,7 @@ public:
 		GUICONTAINER_FIXEDLIST,
 		GUICONTAINER_PANEL
 	};
+	GUICONTROLTYPES GetControlType() const { return ControlType; }
 
 protected:
 	void SendWindowMessage(CGUIMessage &message);

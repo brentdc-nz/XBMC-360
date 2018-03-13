@@ -8,7 +8,8 @@
 #include <map>
 #include <vector>
 
-#define SPIN_CONTROL_TEXT    5
+#define SPIN_CONTROL_INT_PLUS	4
+#define SPIN_CONTROL_TEXT		5
 
 class CSettingsCategory
 {
@@ -101,6 +102,29 @@ private:
 	CStdString m_strData;
 };
 
+class CSettingInt : public CSetting
+{
+public:
+	CSettingInt(int iOrder, const char *strSetting, int iLabel, int iData, int iMin, int iStep, int iMax, int iControlType);
+	~CSettingInt() {};
+
+	virtual void FromString(const CStdString &strValue);
+	virtual CStdString ToString();
+
+	void SetData(int iData) { m_iData = iData; if (m_iData < m_iMin) m_iData = m_iMin; if (m_iData > m_iMax) m_iData = m_iMax;};
+	int GetData() const { return m_iData; };
+
+	int m_iMin;
+	int m_iStep;
+	int m_iMax;
+	int m_iFormat;
+	int m_iLabelMin;
+	CStdString m_strFormat;
+
+protected:
+	int m_iData;
+};
+
 typedef std::vector<CSetting *> vecSettings;
 
 class CGUISettings
@@ -116,6 +140,9 @@ public:
 	void AddString(int iOrder, const char *strSetting, int iLabel, const char *strData, int iControlType);
 	CStdString GetString(const char *strSetting);
 	void SetString(const char *strSetting, const char *strData);
+
+	void AddInt(int iOrder, const char *strSetting, int iLabel, int fSetting, int iMin, int iStep, int iMax, int iControlType);
+	int GetInt(const char *strSetting);
 
 	void GetSettingsGroup(const char *strGroup, vecSettings &settings);
 	CSetting *GetSetting(const char *strSetting);

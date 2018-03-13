@@ -41,8 +41,8 @@ void CGUIVideoControl::Render()
 	// locks in the RenderManager.)
 	if (g_application.IsPlayingVideo() && g_renderManager.IsStarted())
 	{
-//		if (!g_application.m_pPlayer->IsPaused())
-//			g_application.ResetScreenSaver();
+		if (!g_application.m_pPlayer->IsPaused())
+			g_application.ResetScreenSaver();
 
 		RECT rc;
 		rc.left = (LONG)m_posX;

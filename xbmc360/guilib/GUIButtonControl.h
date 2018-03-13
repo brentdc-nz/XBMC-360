@@ -39,18 +39,16 @@ public:
 	virtual void Update();
 	virtual void Render();
 	virtual bool OnAction(const CAction &action) ;
- 
+	const CStdString GetLabel();
 	void SetLabel(const string & aLabel);
 	void SetClickActions(const vector<CStdString>& clickActions) { m_clickActions = clickActions; };
-
-	CGUID3DTexture m_imgFocus;
 
 protected:
 	virtual void RenderText();
 
 	void OnClick();
 
-//	CGUID3DTexture m_imgFocus;
+	CGUID3DTexture m_imgFocus;
 	CGUID3DTexture m_imgNoFocus;
 
 	CGUILabel      m_label;

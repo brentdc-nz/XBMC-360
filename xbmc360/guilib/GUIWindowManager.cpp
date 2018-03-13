@@ -47,7 +47,7 @@ void CGUIWindowManager::DispatchThreadMessages()
 		// else the message could be processed more then once
 		it = messages.erase(it);
 
-//		if (window)
+//		if (window) //TODO
   //		SendMessage( *pMsg, window );
  //		else
 			SendMessage( *pMsg );

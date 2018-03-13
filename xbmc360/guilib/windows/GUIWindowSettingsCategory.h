@@ -13,6 +13,7 @@ public:
 	CGUIWindowSettingsCategory(void);
 	virtual ~CGUIWindowSettingsCategory(void);
 
+	virtual bool OnAction(const CAction &action);
 	virtual bool OnMessage(CGUIMessage& message);
 
 protected:
@@ -25,6 +26,8 @@ protected:
 	void FreeSettingsControls();
 
 	void FillInSkins(CSetting *pSetting);
+	void FillInLanguages(CSetting *pSetting);
+	void FillInScreenSavers(CSetting *pSetting);
 
 	CBaseSettingControl* GetSetting(const CStdString &strSetting);
 
@@ -39,6 +42,7 @@ protected:
 
 	// look + feel settings (for delayed loading)
 	CStdString m_strNewSkin;
+	CStdString m_strNewLanguage;
 };
 
 #endif //GUILIB_GUIWINDOWSETTINGSCATEGORY_H
