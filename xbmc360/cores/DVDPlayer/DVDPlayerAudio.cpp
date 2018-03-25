@@ -227,14 +227,14 @@ void CDVDPlayerAudio::Process()
 
 		//Check for discontinuity in the stream, use a moving average to
 		//eliminate highfreq fluctuations of large packet sizes
-		if( ABS(iAvDiff) > 5000 ) // sync clock if average diff is bigger than 5 msec 
+		if( abs(iAvDiff) > 5000 ) // sync clock if average diff is bigger than 5 msec 
 		{
 			//Wait untill only the new audio frame wich triggered the discontinuity is left
 			//then set disc state
 			while (!m_bStop && (unsigned int)m_dvdAudio.GetBytesInBuffer() > audioframe.size ) Sleep(5);
 
 			m_pClock->Discontinuity(CLOCK_DISC_NORMAL, m_audioClock - m_dvdAudio.GetDelay());
-			CLog::("CDVDPlayer:: Detected Audio Discontinuity, syncing clock. diff was: %I64d, %I64d, av: %I64d", iClockDiff, iCurrDiff, iAvDiff);
+			CLog::Log(LOGDEBUG, "CDVDPlayer:: Detected Audio Discontinuity, syncing clock. diff was: %I64d, %I64d, av: %I64d", iClockDiff, iCurrDiff, iAvDiff);
 			iClockDiff = 0;
 		}
 		else

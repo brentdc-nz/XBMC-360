@@ -12,7 +12,10 @@ CGUISpinControl::CGUISpinControl(int parentID, int controlID, float posX, float 
 	ControlType = GUICONTROL_SPIN;
 	m_iSelect = SPIN_BUTTON_DOWN;
 	m_iType = iType;
-
+	m_iStart = 0;
+	m_iEnd = 100;
+	m_fStart = 0.0f;
+	m_fEnd = 1.0f;
 	m_iValue = 0;
 }
 
@@ -193,6 +196,19 @@ void CGUISpinControl::Clear()
 	SetValue(0);
 }
 
+void CGUISpinControl::SetRange(int iStart, int iEnd)
+{
+	m_iStart = iStart;
+	m_iEnd = iEnd;
+}
+
+
+void CGUISpinControl::SetFloatRange(float fStart, float fEnd)
+{
+	m_fStart = fStart;
+	m_fEnd = fEnd;
+}
+
 void CGUISpinControl::SetValue(int iValue)
 {  
 	if (m_iType == SPIN_CONTROL_TYPE_TEXT)
@@ -215,6 +231,45 @@ int CGUISpinControl::GetValue() const
 	}
 	return m_iValue;
 }
+
+int CGUISpinControl::GetMinimum() const
+{
+	switch (m_iType)
+	{
+		case SPIN_CONTROL_TYPE_INT:
+			return m_iStart;
+			break;
+
+		case SPIN_CONTROL_TYPE_TEXT:
+			return 1;
+			break;
+
+		case SPIN_CONTROL_TYPE_FLOAT:
+			return (int)(m_fStart*10.0f);
+		break;
+	}
+	return 0;
+}
+
+int CGUISpinControl::GetMaximum() const
+{
+	switch (m_iType)
+	{
+		case SPIN_CONTROL_TYPE_INT:
+			return m_iEnd;
+			break;
+
+		case SPIN_CONTROL_TYPE_TEXT:
+			return (int)m_vecLabels.size();
+			break;
+
+		case SPIN_CONTROL_TYPE_FLOAT:
+			return (int)(m_fEnd*10.0f);
+			break;
+	}
+	return 100;
+}
+
 
 void CGUISpinControl::SetType(int iType)
 {

@@ -29,12 +29,16 @@ public:
 
 	virtual void SetPosition(float posX, float posY);
 	virtual bool OnAction(const CAction &action);
-
+	void SetRange(int iStart, int iEnd);
+	void SetFloatRange(float fStart, float fEnd);
 	void SetValue(int iValue);
 	int GetValue() const;
 
 	DWORD GetSpinWidth() const { return m_imgspinUp.GetWidth(); };
 	DWORD GetSpinHeight() const { return m_imgspinUp.GetHeight(); };
+
+	int GetMaximum() const;
+	int GetMinimum() const;
 
 	void AddLabel(const string& strLabel, int iValue);
 	const string GetLabel() const;
@@ -44,7 +48,10 @@ public:
 protected:
 	void MoveUp(bool bTestReverse = false);
 	void MoveDown(bool bTestReverse = false);
-	
+	int m_iStart;
+	int m_iEnd;
+	float m_fStart;
+	float m_fEnd;
 	vector<string> m_vecLabels;
 	vector<int> m_vecValues;
 

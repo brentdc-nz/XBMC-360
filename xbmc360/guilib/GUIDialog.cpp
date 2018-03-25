@@ -46,15 +46,15 @@ bool CGUIDialog::OnMessage(CGUIMessage& message)
 			CGUIWindow::OnMessage(message);
 
 			// if we were running, make sure we remove ourselves from the window manager
-			if (m_bRunning)
+			if (/*m_bRunning*/1)
 			{
-				if (/*m_bModal*/1) //TODO
+				if (/*m_bModal*/1)
 				{
 					g_windowManager.UnRoute(GetID());
 				}
 				else
 				{
-//					g_windowManager.RemoveModeless( GetID() );  //TODO
+//					g_windowManager.RemoveModeless( GetID() );
 				}
 
 //				m_pParentWindow = NULL;

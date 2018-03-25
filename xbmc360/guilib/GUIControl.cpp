@@ -54,6 +54,7 @@ CGUIControl::CGUIControl(int parentID, int controlID, float posX, float posY, fl
 	m_parentID = parentID;
 	m_forceHidden = false;
 	m_hasRendered = false;
+	m_bAllocated = false;
 
 	m_posX = posX;
 	m_posY = posY;

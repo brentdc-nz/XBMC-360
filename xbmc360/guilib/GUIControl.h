@@ -71,7 +71,8 @@ public:
 	DWORD GetControlIdLeft() const { return m_dwControlLeft;};
 	DWORD GetControlIdRight() const { return m_dwControlRight;};
 	virtual void DynamicResourceAlloc(bool bOnOff);
-	virtual bool IsDynamicallyAllocated() { return false; };	
+	virtual bool IsDynamicallyAllocated() { return false; };
+	virtual bool IsAllocated() { return m_bAllocated; };
 	virtual void PreAllocResources() {};
 	virtual void AllocResources();
 	virtual void FreeResources();
