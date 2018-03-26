@@ -26,8 +26,6 @@ public:
 	virtual void Render();
 	virtual void Stop();
 
-	bool ProcessGamepad(/*float frameTime*/);
-
 	virtual bool OnMessage(CGUIMessage& message);
 	bool NeedRenderFullScreen();
 	void RenderFullScreen();
@@ -56,6 +54,8 @@ public:
 	IPlayer* m_pPlayer;
 
 protected:
+	bool ProcessGamepad(/*float frameTime*/);
+	bool OnKey(CKey& key);
 	void FatalErrorHandler(bool InitD3D);
 	void ActivateScreenSaver();
 	void ProcessSlow();

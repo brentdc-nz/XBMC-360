@@ -1,7 +1,33 @@
 #ifndef GUIKEY_H
 #define GUIKEY_H
 
+//====================
+//		Keys
+//====================
+
 #define KEY_INVALID         0xFFFF
+
+// Analogue - don't change order
+#define KEY_BUTTON_A                        256
+#define KEY_BUTTON_B                        257
+#define KEY_BUTTON_X                        258
+#define KEY_BUTTON_Y                        259
+#define KEY_BUTTON_BLACK                    260
+#define KEY_BUTTON_WHITE                    261
+#define KEY_BUTTON_LEFT_TRIGGER             262
+#define KEY_BUTTON_RIGHT_TRIGGER            263
+
+#define KEY_BUTTON_DPAD_UP                  270
+#define KEY_BUTTON_DPAD_DOWN                271
+#define KEY_BUTTON_DPAD_LEFT                272
+#define KEY_BUTTON_DPAD_RIGHT               273
+
+#define KEY_BUTTON_START                    274
+#define KEY_BUTTON_BACK                     275
+
+//====================
+//		Actions
+//====================
 
 // Actions that we have defined...
 #define ACTION_NONE                    0
@@ -14,8 +40,16 @@
 #define ACTION_PREVIOUS_MENU          10
 
 #define ACTION_SHOW_GUI               18 // toggle between GUI and movie or GUI and visualisation.
+#define ACTION_STEP_FORWARD           20 // seek +1% in the movie. Can b used in videoFullScreen.xml window id=2005
+#define ACTION_STEP_BACK              21 // seek -1% in the movie. Can b used in videoFullScreen.xml window id=2005
 
 #define ACTION_NAV_BACK				  92
+
+#define ACTION_BUILT_IN_FUNCTION	  122
+
+//====================
+//		Windows
+//====================
 
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                     9999
@@ -44,14 +78,35 @@
   \ingroup actionkeys
   \brief 
   */
+class CKey
+{
+public:
+	CKey(int iButtonCode){ m_iButtonCode = iButtonCode; };
+	CKey::~CKey(void){};
+
+	int GetButtonCode()  const { return m_iButtonCode; };
+
+private:
+	int m_iButtonCode;
+};
+
+/*!
+  \ingroup actionkeys
+  \brief 
+  */
 class CAction
 {
 public:
+	CAction() { m_id = ACTION_NONE; m_strAction = ""; }
 	CAction(int iID) { m_id = iID; }
 	int GetID() const { return m_id; };
+	void SetID(int id) { m_id = id; };
+	CStdString GetActionString() { return m_strAction; };
+	void SetActionString(CStdString strAction) { m_strAction = strAction; };
 
 private:
 	int m_id;
+	CStdString m_strAction;
 };
 
 #endif //GUIKEY_H

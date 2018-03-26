@@ -35,8 +35,22 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 			g_windowManager.PreviousWindow();
 			OutputDebugString("Now in GUI\n");
 			return true;
-			break;
 		}
+		break;
+		
+		case ACTION_STEP_BACK:
+		{
+			g_application.m_pPlayer->SeekTime(5000); //TODO
+			return true;
+		}
+		break;
+
+		case ACTION_STEP_FORWARD:
+		{
+			g_application.m_pPlayer->SeekTime(1000); //TODO
+			return true;
+		}
+		break;
 	}
 
 	return CGUIWindow::OnAction(action);

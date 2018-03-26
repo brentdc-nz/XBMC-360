@@ -13,6 +13,7 @@
 #include "Settings.h"
 #include "filesystem\File.h"
 #include "ApplicationMessenger.h"
+#include "ButtonTranslator.h"
 
 // Window includes
 #include "guilib\windows\GUIWindowHome.h"
@@ -106,8 +107,12 @@ bool CApplication::Create()
 	CStdString strLanguagePath;
 	strLanguagePath.Format("D:\\language\\%s\\strings.xml", g_guiSettings.GetString("LookAndFeel.Language"));
 
-	CLog::Log(LOGINFO, "load language file:%s", strLanguagePath.c_str());
+	CLog::Log(LOGINFO, "Load language file:%s", strLanguagePath.c_str());
 	if (!g_localizeStrings.Load( strLanguagePath ))
+		FatalErrorHandler(true);
+
+	CLog::Log(LOGINFO, "Load keymapping");
+	if (!g_buttonTranslator.Load())
 		FatalErrorHandler(true);
 
 	return CXBApplicationEX::Create();
@@ -259,74 +264,133 @@ void CApplication::Process()
 void CApplication::ProcessSlow()
 {
 	// Check if we need to activate the screensaver (if enabled)
-//	if(g_guiSettings.GetString("ScreenSaver.Mode") != "None") //TODO
+	if(g_guiSettings.GetString("ScreenSaver.Mode") != "None") //TODO
 		CheckScreenSaver();
 }
 
+// Handle the gamepad button presses.  We check for button down,
+// then call OnKey() which handles the translation to actions, and sends the
+// action to our window manager's OnAction() function, which filters the messages
+// to where they're supposed to end up, returning true if the message is successfully
+// processed.  If OnKey() returns false, then the key press wasn't processed at all,
+// and we can safely process the next key (or next check on the same key in the
+// case of the analog sticks which can produce more than 1 key event.)
+
 bool CApplication::ProcessGamepad()
 {
-	//TESTING START
-
-//	ResetScreenSaver(); // TODO Move to OnKey()
-
-	if( m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_X )
+	if( m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_A )
 	{
-		CAction action(ACTION_SHOW_GUI);
-			
-		if(!g_windowManager.OnAction(action))
-			SwitchToFullScreen();
-	}
-
-	if( m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_DPAD_UP )
-	{
-		CAction action(ACTION_MOVE_UP);
-		g_windowManager.OnAction(action);
-	}	
-	
-	if( m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_DPAD_DOWN )
-	{
-		CAction action(ACTION_MOVE_DOWN);
-		g_windowManager.OnAction(action);
-	}
-
-	if( m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_DPAD_LEFT )
-	{
-		CAction action(ACTION_MOVE_LEFT);
-		g_windowManager.OnAction(action);
-	}	
-	
-	if( m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_DPAD_RIGHT )
-	{
-		CAction action(ACTION_MOVE_RIGHT);
-		g_windowManager.OnAction(action);
+		CKey key(KEY_BUTTON_A);		
+		if (OnKey(key)) return true;
 	}
 
 	if( m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_B )
 	{
-		if(m_pPlayer)
-			m_pPlayer->CloseFile();
+		CKey key(KEY_BUTTON_B);		
+		if (OnKey(key)) return true;
 	}
+
+	if( m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_X )
+	{
+		CKey key(KEY_BUTTON_X);		
+		if (OnKey(key)) return true;
+	}
+
+	if( m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_Y )
+	{
+		CKey key(KEY_BUTTON_Y);		
+		if (OnKey(key)) return true;
+	}
+
+	if( m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_Y )
+	{
+		CKey key(KEY_BUTTON_Y);		
+		if (OnKey(key)) return true;
+	}
+
+	if( m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_DPAD_UP )
+	{
+		CKey key(KEY_BUTTON_DPAD_UP);		
+		if (OnKey(key)) return true;
+	}	
+	
+	if( m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_DPAD_DOWN )
+	{
+		CKey key(KEY_BUTTON_DPAD_DOWN);		
+		if (OnKey(key)) return true;
+	}	
+
+	if( m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_DPAD_LEFT )
+	{
+		CKey key(KEY_BUTTON_DPAD_LEFT);		
+		if (OnKey(key)) return true;
+	}	
+	
+	if( m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_DPAD_RIGHT )
+	{
+		CKey key(KEY_BUTTON_DPAD_RIGHT);		
+		if (OnKey(key)) return true;
+	}	
 
 	if( m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_START )
 	{
-		g_infoManager.ToggleShowCodec();
+		CKey key(KEY_BUTTON_START);		
+		if (OnKey(key)) return true;
 	}
 
 	if( m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_BACK )
 	{
-		CAction action(ACTION_PREVIOUS_MENU);
-		g_windowManager.OnAction(action);
+		CKey key(KEY_BUTTON_BACK);		
+		if (OnKey(key)) return true;
 	}
 
-	if( m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_A )
+	return false;
+}
+
+// OnKey() translates the key into a CAction which is sent on to our Window Manager.
+// The window manager will return true if the event is processed, false otherwise.
+// If not already processed, this routine handles global keypresses.  It returns
+// true if the key has been processed, false otherwise.
+
+bool CApplication::OnKey(CKey& key)
+{
+	CAction action;
+
+	// A key has been pressed.
+	// Reset the screensaver timer
+	// but not for the analog thumbsticks/triggers
+
+//	if (!key.IsAnalogButton()) //TODO
 	{
-		CAction action(ACTION_SELECT_ITEM);
-		g_windowManager.OnAction(action);
+		ResetScreenSaver();
+		if (ResetScreenSaverWindow())
+			return true;
 	}
 
-	//TESTING END
+	// Get the current active window
+	int iWin = g_windowManager.GetActiveWindow();
 
-	return true;
+	g_buttonTranslator.GetAction(iWin, key, action);
+
+	// Special case for switching between GUI & fullscreen mode.
+	if (action.GetID() == ACTION_SHOW_GUI)
+	{ 
+		// Switch to fullscreen mode if we can
+		if (SwitchToFullScreen())
+		return true;
+	}
+
+	if (action.GetID() == ACTION_BUILT_IN_FUNCTION)
+	{
+		CUtil::ExecBuiltIn(action.GetActionString());
+		return true;
+	}
+
+	// In normal case
+	// Just pass the action to the current window and let it handle it
+	if (g_windowManager.OnAction(action)) return true;
+
+	return false;
 }
 
 void CApplication::FrameMove()
@@ -765,6 +829,7 @@ void CApplication::Stop()
 
 	g_guiSettings.Clear();
     g_localizeStrings.Clear();
+	g_buttonTranslator.Clear();
 
     CLog::Log(LOGNOTICE, "Stopped");
 }
