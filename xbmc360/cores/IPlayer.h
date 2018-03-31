@@ -26,6 +26,7 @@ public:
 	virtual bool CloseFile(){ return true;};
 
 	virtual void SeekTime(__int64 iTime = 0){};
+	virtual void Seek(bool bPlus, bool bLargeStep) = 0;
 	virtual void GetVideoInfo(CStdString& strVideoInfo) = 0;
 	virtual void GetAudioInfo(CStdString& strAudioInfo) = 0;
 	virtual void GetGeneralInfo(CStdString& strGeneralInfo) = 0;

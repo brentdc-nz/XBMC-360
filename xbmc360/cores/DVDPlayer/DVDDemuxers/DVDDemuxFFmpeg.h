@@ -67,6 +67,7 @@ public:
 	CRITICAL_SECTION m_critSection;
 	CDemuxStream* m_streams[20]; // maximum number of streams that ffmpeg can handle
 
+	virtual int GetStreamLenght();
 	virtual CDemuxStream* GetStream(int iStreamId);
 	virtual int GetNrOfStreams();
 

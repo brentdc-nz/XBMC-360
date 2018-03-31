@@ -102,6 +102,17 @@ void CDVDDemuxFFmpeg::Dispose()
 	//ContextDeInit();
 }
 
+int CDVDDemuxFFmpeg::GetStreamLenght()
+{
+	if (!m_pFormatContext)
+		return 0;
+
+	if (m_pFormatContext->duration < 0)
+		return 0;
+
+	return (int)(m_pFormatContext->duration / (AV_TIME_BASE / 1000));
+}
+
 CDemuxStream* CDVDDemuxFFmpeg::GetStream(int iStreamId)
 {
 	if (iStreamId < 0 || iStreamId >= MAX_STREAMS) return NULL;

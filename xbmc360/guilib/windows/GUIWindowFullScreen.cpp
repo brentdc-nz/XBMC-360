@@ -40,14 +40,28 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 		
 		case ACTION_STEP_BACK:
 		{
-			g_application.m_pPlayer->SeekTime(5000); //TODO
+			g_application.m_pPlayer->Seek(false, false);
 			return true;
 		}
 		break;
 
 		case ACTION_STEP_FORWARD:
 		{
-			g_application.m_pPlayer->SeekTime(1000); //TODO
+			g_application.m_pPlayer->Seek(true, false);
+			return true;
+		}
+		break;
+
+		case ACTION_BIG_STEP_BACK:
+		{
+			g_application.m_pPlayer->Seek(false, true);
+			return true;
+		}
+		break;
+
+		case ACTION_BIG_STEP_FORWARD:
+		{
+			g_application.m_pPlayer->Seek(true, true);
 			return true;
 		}
 		break;

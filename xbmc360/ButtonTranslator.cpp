@@ -123,9 +123,14 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, WORD &wActio
 	else if (strAction.Equals("down")) wAction = ACTION_MOVE_DOWN;
 	else if (strAction.Equals("select")) wAction = ACTION_SELECT_ITEM;
 	else if (strAction.Equals("previousmenu")) wAction = ACTION_PREVIOUS_MENU;
+
 	else if (strAction.Equals("fullscreen")) wAction = ACTION_SHOW_GUI;
+	else if (strAction.Equals("codecinfo")) wAction = ACTION_SHOW_CODEC;
+	else if (strAction.Equals("stop")) wAction = ACTION_STOP;
 	else if (strAction.Equals("stepforward")) wAction = ACTION_STEP_FORWARD;
 	else if (strAction.Equals("stepback")) wAction = ACTION_STEP_BACK;
+	else if (strAction.Equals("bigstepforward")) wAction = ACTION_BIG_STEP_FORWARD;
+	else if (strAction.Equals("bigstepback")) wAction = ACTION_BIG_STEP_BACK;
 
 	else
 		CLog::Log(LOGERROR, "Keymapping error: no such action '%s' defined", strAction.c_str());

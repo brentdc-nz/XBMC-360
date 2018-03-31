@@ -56,7 +56,11 @@ public:
 
 	virtual bool OnAction(const CAction &action);
 
-	void FlushBuffers();
+	virtual void SeekPercentage(float iPercent);
+	virtual void Seek(bool bPlus, bool bLargeStep);
+	virtual float GetPercentage();
+	virtual __int64 GetTotalTimeInMsec();
+	virtual void FlushBuffers();
 
 	bool OpenDefaultAudioStream();
 	bool OpenAudioStream(int iStream);

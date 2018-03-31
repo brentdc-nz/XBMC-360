@@ -929,6 +929,49 @@ bool CDVDPlayer::CloseVideoStream(bool bWaitForBuffers) // bWaitForBuffers curre
 	return true;
 }
 
+void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
+{
+	float percent = (bLargeStep ? 10.0f : 2.0f);
+
+	if (bPlus) percent += GetPercentage();
+	else percent = GetPercentage() - percent;
+
+	if (percent >= 0 && percent <= 100)
+	{
+		// Should be modified to seektime
+		SeekPercentage(percent);
+	}
+}
+
+void CDVDPlayer::SeekPercentage(float iPercent)
+{
+	__int64 iTotalMsec = GetTotalTimeInMsec();
+	__int64 iTime = (__int64)(iTotalMsec * iPercent / 100);
+
+	SeekTime(iTime);
+}
+
+float CDVDPlayer::GetPercentage()
+{
+	__int64 iTotalTime = GetTotalTimeInMsec();
+
+	if (iTotalTime != 0)
+	{
+		return GetTime() * 100 / (float)iTotalTime;
+	}
+
+	return 0.0f;
+}
+
+// Return length in msec
+__int64 CDVDPlayer::GetTotalTimeInMsec()
+{
+	if (m_pDemuxer)
+		return m_pDemuxer->GetStreamLenght();
+  
+	return 0;
+}
+
 void CDVDPlayer::FlushBuffers()
 {
 	m_dvdPlayerAudio.Flush();

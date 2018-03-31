@@ -39,9 +39,14 @@
 #define ACTION_SELECT_ITEM             7
 #define ACTION_PREVIOUS_MENU          10
 
+#define ACTION_STOP                   13
+
 #define ACTION_SHOW_GUI               18 // toggle between GUI and movie or GUI and visualisation.
-#define ACTION_STEP_FORWARD           20 // seek +1% in the movie. Can b used in videoFullScreen.xml window id=2005
-#define ACTION_STEP_BACK              21 // seek -1% in the movie. Can b used in videoFullScreen.xml window id=2005
+#define ACTION_STEP_FORWARD           20 // seek +1% in the movie. Can be used in videoFullScreen.xml window id=2005
+#define ACTION_STEP_BACK              21 // seek -1% in the movie. Can be used in videoFullScreen.xml window id=2005
+#define ACTION_BIG_STEP_FORWARD       22 // seek +10% in the movie. Can be used in videoFullScreen.xml window id=2005
+#define ACTION_BIG_STEP_BACK          23 // seek -10% in the movie. Can be used in videoFullScreen.xml window id=2005
+#define ACTION_SHOW_CODEC             27 // show information about file. Can be used in videoFullScreen.xml window id=2005
 
 #define ACTION_NAV_BACK				  92
 

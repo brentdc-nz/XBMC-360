@@ -390,6 +390,22 @@ bool CApplication::OnKey(CKey& key)
 	// Just pass the action to the current window and let it handle it
 	if (g_windowManager.OnAction(action)) return true;
 
+	/* Handle extra global presses */
+
+	// codec info : Shows the current song, video or picture codec information
+	if (action.GetID() == ACTION_SHOW_CODEC)
+	{
+		g_infoManager.ToggleShowCodec();
+		return true;
+	}
+
+	// Stop : Stops playing current audio song
+	if (action.GetID() == ACTION_STOP)
+	{
+		StopPlaying();
+		return true;
+	}
+
 	return false;
 }
 

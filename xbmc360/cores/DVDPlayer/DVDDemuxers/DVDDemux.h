@@ -117,6 +117,10 @@ public:
 	*/
 	virtual void Dispose() = 0;
 	/*
+	* returns the total time in msec
+	*/
+	virtual int GetStreamLenght() = 0;
+	/*
 	* returns the stream or NULL on error, starting from 0
 	*/
 	virtual CDemuxStream* GetStream(int iStreamId) = 0;  
