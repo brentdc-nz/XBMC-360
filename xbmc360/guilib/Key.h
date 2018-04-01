@@ -38,7 +38,7 @@
 
 #define ACTION_SELECT_ITEM             7
 #define ACTION_PREVIOUS_MENU          10
-
+#define ACTION_PAUSE                  12
 #define ACTION_STOP                   13
 
 #define ACTION_SHOW_GUI               18 // toggle between GUI and movie or GUI and visualisation.

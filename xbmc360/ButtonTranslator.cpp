@@ -126,6 +126,7 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, WORD &wActio
 
 	else if (strAction.Equals("fullscreen")) wAction = ACTION_SHOW_GUI;
 	else if (strAction.Equals("codecinfo")) wAction = ACTION_SHOW_CODEC;
+	else if (strAction.Equals("pause")) wAction = ACTION_PAUSE;
 	else if (strAction.Equals("stop")) wAction = ACTION_STOP;
 	else if (strAction.Equals("stepforward")) wAction = ACTION_STEP_FORWARD;
 	else if (strAction.Equals("stepback")) wAction = ACTION_STEP_BACK;

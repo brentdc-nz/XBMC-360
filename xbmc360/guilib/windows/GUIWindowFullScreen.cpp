@@ -192,5 +192,22 @@ void CGUIWindowFullScreen::RenderFullScreen()
 		}
 	}
 
+	int iSpeed = g_application.GetPlaySpeed();
+
+	if (g_application.m_pPlayer->IsPaused() || iSpeed != 1)
+	{
+		SET_CONTROL_HIDDEN(LABEL_ROW1);
+		SET_CONTROL_HIDDEN(LABEL_ROW2);
+		SET_CONTROL_HIDDEN(LABEL_ROW3);
+		SET_CONTROL_HIDDEN(BLUE_BAR);
+	}
+	else if (g_infoManager.GetBool(PLAYER_SHOWCODEC))
+	{
+		SET_CONTROL_VISIBLE(LABEL_ROW1);
+		SET_CONTROL_VISIBLE(LABEL_ROW2);
+		SET_CONTROL_VISIBLE(LABEL_ROW3);
+		SET_CONTROL_VISIBLE(BLUE_BAR);
+	}
+
 	CGUIWindow::Render();
 }

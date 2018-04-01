@@ -32,6 +32,7 @@ CStdString g_LoadErrorStr;
 CApplication::CApplication() 
 {
 	m_pPlayer = NULL;
+	m_iPlaySpeed = 1;
 	m_bPlaybackStarting = false;
 	m_dwSkinTime = 0;
 	m_bScreenSave = false;
@@ -377,7 +378,7 @@ bool CApplication::OnKey(CKey& key)
 	{ 
 		// Switch to fullscreen mode if we can
 		if (SwitchToFullScreen())
-		return true;
+			return true;
 	}
 
 	if (action.GetID() == ACTION_BUILT_IN_FUNCTION)
@@ -404,6 +405,16 @@ bool CApplication::OnKey(CKey& key)
 	{
 		StopPlaying();
 		return true;
+	}
+
+	if (IsPlaying())
+	{
+		// Pause : Pauses current audio song
+		if (action.GetID() == ACTION_PAUSE)
+		{
+			m_pPlayer->Pause();
+			return true;
+		}
 	}
 
 	return false;
@@ -471,9 +482,9 @@ void CApplication::Render()
 		{
 			if (m_pPlayer)
 			{
-				if (m_pPlayer->IsPaused())
+				if (m_pPlayer->IsPaused()) //TODO
 				{
-					CSingleLock lock(g_graphicsContext);
+/*					CSingleLock lock(g_graphicsContext);
 //					extern void xbox_video_render_update(bool);
 			        g_renderManager.RenderUpdate(true);
 //					g_windowManager.UpdateModelessVisibility();
@@ -482,7 +493,7 @@ void CApplication::Render()
 //					m_pd3dDevice->BlockUntilVerticalBlank();
 					m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
 					return;
-				}
+*/				}
 			}
 			Sleep(10);
 			return;
@@ -726,6 +737,22 @@ bool CApplication::IsPlayingVideo() const
 		return true;
 
 	return false;
+}
+
+void CApplication::SetPlaySpeed(int iSpeed)
+{
+	if (!IsPlayingAudio() && !IsPlayingVideo())
+		return;
+ 
+	if (m_iPlaySpeed == iSpeed)
+		return;
+ 
+	m_iPlaySpeed = iSpeed;
+}
+
+int CApplication::GetPlaySpeed() const
+{
+	return m_iPlaySpeed;
 }
 
 void CApplication::ResetScreenSaver()

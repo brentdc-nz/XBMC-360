@@ -246,6 +246,17 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
 				SetFocus(false);
 				return true;
 				break;
+
+			case GUI_MSG_VISIBLE:
+				m_visible = m_visibleCondition ? g_infoManager.GetBool(m_visibleCondition) : true;
+				m_forceHidden = false;
+				return true;
+				break;
+
+			case GUI_MSG_HIDDEN:
+				m_forceHidden = true;
+				return true;
+				break;
 		}
 	}
 	return false;

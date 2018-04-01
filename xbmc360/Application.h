@@ -41,6 +41,8 @@ public:
 	bool PlayFile(const string strFile);
 	bool IsPlaying() const;
 	bool IsPaused() const;
+	int GetPlaySpeed() const;
+	void SetPlaySpeed(int iSpeed);
 
 	bool IsPlayingAudio() const;
 	bool IsPlayingVideo() const;
@@ -64,6 +66,7 @@ protected:
 	CStdString m_screenSaverMode;
 	bool m_bInitializing;
 	bool m_bPlaybackStarting;
+	int m_iPlaySpeed;
 
 	// Timer information
 	CStopWatch m_screenSaverTimer;
