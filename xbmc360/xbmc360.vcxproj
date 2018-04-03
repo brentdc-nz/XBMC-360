@@ -204,6 +204,8 @@
       <PreprocessorDefinitions>NDEBUG;_XBOX</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\xbox360 ffmpeg\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
+      <PreschedulingOptimization>true</PreschedulingOptimization>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -323,6 +325,7 @@
     <ClInclude Include="utils\Log.h" />
     <ClInclude Include="utils\SharedSection.h" />
     <ClInclude Include="utils\SingleLock.h" />
+    <ClInclude Include="utils\Splash.h" />
     <ClInclude Include="utils\Stdafx.h" />
     <ClInclude Include="utils\StdString.h" />
     <ClInclude Include="utils\Stopwatch.h" />
@@ -383,6 +386,8 @@
     <ClCompile Include="guilib\GUIVideoControl.cpp" />
     <ClCompile Include="guilib\GUIWindow.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">MaxSpeed</Optimization>
+      <PreschedulingOptimization Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">false</PreschedulingOptimization>
+      <InlineAssemblyOptimization Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</InlineAssemblyOptimization>
     </ClCompile>
     <ClCompile Include="guilib\GUIWindowManager.cpp" />
     <ClCompile Include="guilib\LocalizeStrings.cpp" />
@@ -409,6 +414,7 @@
     <ClCompile Include="utils\Log.cpp" />
     <ClCompile Include="utils\SharedSection.cpp" />
     <ClCompile Include="utils\SingleLock.cpp" />
+    <ClCompile Include="utils\Splash.cpp" />
     <ClCompile Include="utils\Stdafx.cpp" />
     <ClCompile Include="utils\Stopwatch.cpp" />
     <ClCompile Include="utils\StringUtils.cpp" />

@@ -365,6 +365,9 @@
     <ClInclude Include="guilib\windows\GUIWindowSystemInfo.h">
       <Filter>Header Files\guilib\windows</Filter>
     </ClInclude>
+    <ClInclude Include="utils\Splash.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -606,6 +609,9 @@
     </ClCompile>
     <ClCompile Include="guilib\windows\GUIWindowSystemInfo.cpp">
       <Filter>Source Files\guilib\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\Splash.cpp">
+      <Filter>Source Files\utils</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -42,6 +42,9 @@ CGraphicContext::~CGraphicContext(void)
 void CGraphicContext::SetD3DDevice(LPDIRECT3DDEVICE9 p3dDevice)
 {
 	m_pd3dDevice = p3dDevice;
+
+	// Release the object for any thread to acquire!
+	m_pd3dDevice->ReleaseThreadOwnership();
 }
 
 void CGraphicContext::SetXUIDevice(HXUIDC pXUIDevice)

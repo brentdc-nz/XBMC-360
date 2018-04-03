@@ -9,3 +9,7 @@
 #include <xboxmath.h>
 
 // TODO: reference additional headers your program requires here
+
+#define SAFE_DELETE(p)       { delete (p);     (p)=NULL; }
+#define SAFE_DELETE_ARRAY(p) { delete[] (p);   (p)=NULL; }
+#define SAFE_RELEASE(p)      { if(p) { (p)->Release(); (p)=NULL; } }

@@ -6,6 +6,7 @@
 #include "guilib\GUIUserMessage.h"
 #include "guilib\IMsgTargetCallback.h"
 #include "utils\Stopwatch.h"
+#include "utils\Splash.h"
 
 class CApplication: public CXBApplicationEX, public IPlayerCallback, public IMsgTargetCallback
 {
@@ -71,6 +72,8 @@ protected:
 	// Timer information
 	CStopWatch m_screenSaverTimer;
 	CStopWatch m_slowTimer;
+
+	CSplash* m_splash;
 };
 
 extern CApplication g_application;

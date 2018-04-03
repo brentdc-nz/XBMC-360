@@ -37,6 +37,7 @@ CApplication::CApplication()
 	m_dwSkinTime = 0;
 	m_bScreenSave = false;
 	m_bInitializing = true;
+	m_splash = NULL;
 }
 
 CApplication::~CApplication()
@@ -68,6 +69,9 @@ bool CApplication::Create()
 	}
 
 	g_graphicsContext.SetD3DDevice(m_pd3dDevice);
+
+	m_splash = new CSplash("D:\\media\\splash.png");
+	m_splash->Start();
 
 	//Initialize the XUI stuff
 	HRESULT hr;
@@ -126,6 +130,9 @@ void CApplication::FatalErrorHandler(bool InitD3D)
 	// g_LoadErrorStr should contain the reason
 	CLog::Log(LOGWARNING, "Emergency recovery console starting...");
 
+	if (m_splash)
+		m_splash->Stop();
+
 	//
 	// TODO
 	//
@@ -153,6 +160,11 @@ bool CApplication::Initialize()
 	g_windowManager.ActivateWindow(WINDOW_HOME);
 	
 	m_slowTimer.StartZero();
+
+	if (m_splash)
+		m_splash->Stop();
+
+	SAFE_DELETE(m_splash);
 
 	CLog::Log(LOGNOTICE, "Initialize done");
 
@@ -294,12 +306,6 @@ bool CApplication::ProcessGamepad()
 	if( m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_X )
 	{
 		CKey key(KEY_BUTTON_X);		
-		if (OnKey(key)) return true;
-	}
-
-	if( m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_Y )
-	{
-		CKey key(KEY_BUTTON_Y);		
 		if (OnKey(key)) return true;
 	}
 
