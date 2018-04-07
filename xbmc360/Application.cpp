@@ -461,7 +461,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
 		case GUI_MSG_EXECUTE:
 		{
-			// user has asked for something to be executed
+			// User has asked for something to be executed
 			if (CUtil::IsBuiltIn(message.GetStringParam()))
 				CUtil::ExecBuiltIn(message.GetStringParam());
 			else
@@ -507,7 +507,7 @@ void CApplication::Render()
 	}
 
 	// Enable/Disable video overlay window
-	if (IsPlayingVideo() && g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO/* && !m_bScreenSave*/)
+	if (IsPlayingVideo() && g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO && !m_bScreenSave)
 	{
 		g_graphicsContext.EnablePreviewWindow(true);
 	}
@@ -663,12 +663,12 @@ bool CApplication::PlayFile(const string strFile)
 
 	if(bResult)
 	{
-//		if (m_iPlaySpeed != 1) //TODO
-//		{
-//			int iSpeed = m_iPlaySpeed;
-//			m_iPlaySpeed = 1;
-//			SetPlaySpeed(iSpeed);
-//		}
+		if (m_iPlaySpeed != 1)
+		{
+			int iSpeed = m_iPlaySpeed;
+			m_iPlaySpeed = 1;
+			SetPlaySpeed(iSpeed);
+		}
 
 		if( IsPlayingAudio() ) //TODO
 		{
@@ -858,7 +858,7 @@ void CApplication::Stop()
 		m_pPlayer = NULL;
     }
 
-    CLog::Log(LOGNOTICE, "Unload skin");
+	CLog::Log(LOGNOTICE, "Unload skin");
     UnloadSkin();
 
 	// Windows
@@ -868,16 +868,16 @@ void CApplication::Stop()
 	g_windowManager.Delete(WINDOW_SETTINGS);
 	g_windowManager.Delete(WINDOW_SETTINGS_MYPICTURES); // All the settings categories
 	g_windowManager.Delete(WINDOW_SCREENSAVER);
-    g_windowManager.Delete(WINDOW_SYSTEM_INFORMATION);
+	g_windowManager.Delete(WINDOW_SYSTEM_INFORMATION);
 
 	// Dialogs
 	g_windowManager.Delete(WINDOW_DIALOG_BUTTON_MENU);
 
 	CLog::Log(LOGNOTICE, "Destroy");
-    Destroy();
+	Destroy();
 
 	g_guiSettings.Clear();
-    g_localizeStrings.Clear();
+	g_localizeStrings.Clear();
 	g_buttonTranslator.Clear();
 
     CLog::Log(LOGNOTICE, "Stopped");

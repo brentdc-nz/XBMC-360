@@ -15,6 +15,8 @@ public:
 	void Destroy();
 	DWORD AddPackets(unsigned char* data, DWORD len);
 	void Flush();
+
+	int GetBytesInBuffer();
 	float GetDelay();
 
 private:
@@ -27,6 +29,9 @@ private:
 
 	IXAudio2SourceVoice* m_pSourceVoice;
 	XAUDIO2_BUFFER m_SoundBuffer;
+
+	int m_iBitrate;
+	int m_iChannels;
 };
 
 #endif //H_CDVDAUDIODEVICE

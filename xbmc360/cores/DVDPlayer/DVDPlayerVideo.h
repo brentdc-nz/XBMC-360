@@ -42,7 +42,7 @@ public:
 	__int64 GetDelay();
     void SetDelay(__int64 delay);
 	__int64 GetDiff();
-	int GetNrOfDroppedFrames()							{ return m_iDroppedFrames; }
+	int GetNrOfDroppedFrames()						  { return m_iDroppedFrames; }
 	 
 	bool InitializedOutputDevice();
 	bool IsStalled()                                  { return m_DetectedStill;  }

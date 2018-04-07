@@ -3,6 +3,7 @@
 #include <math.h>
 
 LARGE_INTEGER CDVDClock::m_systemFrequency;
+
 CDVDClock::CDVDClock()
 {
 	if(!m_systemFrequency.QuadPart)
@@ -34,6 +35,7 @@ __int64 CDVDClock::GetAbsoluteClock()
 __int64 CDVDClock::GetClock()
 {
 	CSharedLock lock(m_critSection);
+
 	LARGE_INTEGER current;
     
 	if (m_bReset)
@@ -82,6 +84,7 @@ void CDVDClock::SetSpeed(int iSpeed)
 void CDVDClock::Discontinuity(ClockDiscontinuityType type, __int64 currentPts, __int64 delay)
 {
 	CExclusiveLock lock(m_critSection);
+
 	switch (type)
 	{
 		case CLOCK_DISC_FULL:
@@ -103,6 +106,7 @@ void CDVDClock::Discontinuity(ClockDiscontinuityType type, __int64 currentPts, _
 void CDVDClock::Pause()
 {
 	CExclusiveLock lock(m_critSection);
+
 	if(!m_pauseClock.QuadPart)
 		QueryPerformanceCounter(&m_pauseClock);
 }
@@ -110,6 +114,7 @@ void CDVDClock::Pause()
 void CDVDClock::Resume()
 {
 	CExclusiveLock lock(m_critSection);
+
 	if( m_pauseClock.QuadPart )
 	{
 		LARGE_INTEGER current;
@@ -123,5 +128,6 @@ void CDVDClock::Resume()
 __int64 CDVDClock::DistanceToDisc()
 {
 	CSharedLock lock(m_critSection);
+
 	return GetClock() - m_iDisc;
 }

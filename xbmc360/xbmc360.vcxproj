@@ -206,6 +206,7 @@
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <PreschedulingOptimization>true</PreschedulingOptimization>
+      <RegisterReservation>true</RegisterReservation>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -354,7 +355,9 @@
     <ClCompile Include="cores\DVDPlayer\DVDMessage.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDMessageQueue.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDPlayer.cpp" />
-    <ClCompile Include="cores\DVDPlayer\DVDPlayerAudio.cpp" />
+    <ClCompile Include="cores\DVDPlayer\DVDPlayerAudio.cpp">
+      <IntrinsicFunctions Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</IntrinsicFunctions>
+    </ClCompile>
     <ClCompile Include="cores\DVDPlayer\DVDPlayerVideo.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDStreamInfo.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDUtils\memutil.cpp" />

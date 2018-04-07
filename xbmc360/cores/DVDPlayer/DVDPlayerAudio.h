@@ -24,6 +24,20 @@ typedef struct stDVDAudioFrame
 	unsigned int size;
 } DVDAudioFrame;
 
+class CPTSQueue
+{
+private:
+	typedef struct {__int64 pts; __int64 timestamp;} TPTSItem;
+	TPTSItem m_currentPTSItem;
+	std::queue<TPTSItem> m_quePTSQueue;
+
+public:
+	CPTSQueue();
+	void Add(__int64 pts, __int64 delay);
+	void Flush();
+	__int64 Current();
+};
+
 class CDVDPlayerAudio : public CThread
 {
 public:
@@ -45,10 +59,12 @@ public:
 	int m_iSourceChannels; // number of audio channels for the current active stream
 
 	CDVDMessageQueue m_messageQueue;
+	CPTSQueue m_ptsQueue;
 
-	__int64 GetCurrentPts();
+	__int64 GetCurrentPts()									{ return m_ptsQueue.Current(); }
 
 	bool IsStalled()										{ return m_Stalled;  }
+
 protected:
 	virtual void OnStartup();
 	virtual void Process();
