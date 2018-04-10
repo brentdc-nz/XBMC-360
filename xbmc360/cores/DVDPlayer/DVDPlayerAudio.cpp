@@ -467,10 +467,10 @@ void CDVDPlayerAudio::SetSpeed(int speed)
 	if (m_speed == DVD_PLAYSPEED_PAUSE)
 	{
 		m_ptsQueue.Flush();
-		m_dvdAudio.Pause();
+//		m_dvdAudio.Pause();
 	}
-	else 
-		m_dvdAudio.Resume();
+//	else 
+//		m_dvdAudio.Resume();
 }
 
 void CDVDPlayerAudio::Flush()
