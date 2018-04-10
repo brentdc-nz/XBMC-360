@@ -2,13 +2,17 @@
 #include "..\..\utils\Log.h"
 #include "DVDClock.h"
 
-CDVDAudio::CDVDAudio()
+CDVDAudio::CDVDAudio() : m_hBufferEndEvent( CreateEvent( NULL, FALSE, FALSE, NULL ) )
 {
+	InitializeCriticalSectionAndSpinCount(&m_CriticalSection, 0x00000400);
+
 	m_bInitialized = false;
 
 	m_pXAudio2 = NULL;
 	m_pMasteringVoice = NULL;
 	m_pSourceVoice = NULL;
+
+	m_iBufferSize = 0;
 
 	m_iBitrate = 0;
 	m_iChannels = 0;
@@ -16,6 +20,8 @@ CDVDAudio::CDVDAudio()
 
 CDVDAudio::~CDVDAudio()
 {
+	CloseHandle( m_hBufferEndEvent );
+	DeleteCriticalSection(&m_CriticalSection);
 }
 
 bool CDVDAudio::Create(int iChannels, int iBitrate, int iBitsPerSample, bool bPasstrough)
@@ -51,7 +57,7 @@ bool CDVDAudio::Create(int iChannels, int iBitrate, int iBitsPerSample, bool bPa
 	m_iChannels = iChannels;
 
 	//Source voice
-	m_pXAudio2->CreateSourceVoice(&m_pSourceVoice,(WAVEFORMATEX*)&wfx, flags , 1.0f, NULL);
+	m_pXAudio2->CreateSourceVoice(&m_pSourceVoice,(WAVEFORMATEX*)&wfx, flags , 1.0f, this);
 
 	//Start sound
 	m_pSourceVoice->Start( 0 );
@@ -63,14 +69,9 @@ bool CDVDAudio::Create(int iChannels, int iBitrate, int iBitsPerSample, bool bPa
 
 void CDVDAudio::Destroy()
 {
-	while(m_quBuffers.size() != 0 )
-	{
-		BYTE * pSnd = m_quBuffers.front();
-		m_quBuffers.pop();
-		
-		if(pSnd)
-			free(pSnd);
-	}
+	// This will stop any leaks, MS docs say that
+	// OnBufferEnd() is called for any queued buffers
+	m_pSourceVoice->FlushSourceBuffers();
 
 	if(m_pSourceVoice)
 		m_pSourceVoice->DestroyVoice();
@@ -80,7 +81,7 @@ void CDVDAudio::Destroy()
 
 	if(m_pXAudio2)
 		m_pXAudio2->Release();
-	
+
 	m_bInitialized = false;
 }
 
@@ -89,62 +90,93 @@ DWORD CDVDAudio::AddPackets(unsigned char* data, DWORD len)
 	if(!m_bInitialized)
 		return 0;
 
-	BYTE * snd = (BYTE *)malloc( len * sizeof(BYTE));
+	EnterCriticalSection(&m_CriticalSection);
 
-	memcpy(snd, data, len * sizeof(BYTE) );
+	XAUDIO2_BUFFER pSoundBuffer;
+
+	SSoundData* pSoundData = NULL;
+	pSoundData = new SSoundData;
+
+	BYTE* pSnd = (BYTE *)malloc( len * sizeof(BYTE));
+	memcpy(pSnd, data, len * sizeof(BYTE) );
 		
-	memset(&m_SoundBuffer,0,sizeof(XAUDIO2_BUFFER));
+	memset(&pSoundBuffer,0,sizeof(XAUDIO2_BUFFER));
+
+	pSoundData->iSize = len;
+	pSoundData->pVoid = (VOID*)pSnd;
 	
-	m_SoundBuffer.AudioBytes = len;
-	m_SoundBuffer.pAudioData = snd;
-	m_SoundBuffer.pContext = (VOID*)snd;
+	pSoundBuffer.AudioBytes = len;
+	pSoundBuffer.pAudioData = pSnd;
+	pSoundBuffer.pContext = (VOID*)pSoundData;
 
 	XAUDIO2_VOICE_STATE state;
 	
-	while( m_pSourceVoice->GetState( &state ), state.BuffersQueued >= 2 )
+	while(m_pSourceVoice->GetState( &state ), state.BuffersQueued >= 64)
 		Sleep(1);
 	
-	m_pSourceVoice->SubmitSourceBuffer( &m_SoundBuffer );
+	m_pSourceVoice->SubmitSourceBuffer(&pSoundBuffer);
+	
+	m_iBufferSize += pSoundData->iSize;
 
-	m_quBuffers.push(snd);
-
-	//HACK HACK! - Marty - Need to redo this properly
-	//					   with XAudio2 callbacks!!
-	if(m_quBuffers.size() >= 3)
-	{
-		while(m_quBuffers.size() >= 3 )
-		{
-			BYTE * pSnd = m_quBuffers.front();
-			m_quBuffers.pop();
-		
-			free(pSnd);
-			pSnd = NULL;
-		}
-	}
+	LeaveCriticalSection(&m_CriticalSection);
 
 	return 0;
+}
+
+void CDVDAudio::OnBufferEnd(void * pBufferContext)
+{
+	EnterCriticalSection(&m_CriticalSection);
+
+	SSoundData* pSoundData = NULL;
+	pSoundData = (SSoundData*)pBufferContext;
+
+	m_iBufferSize -= pSoundData->iSize;
+
+	if(pSoundData->pVoid)
+	{
+		free(pSoundData->pVoid);
+		pSoundData->pVoid = NULL;
+	}
+
+	if(pSoundData)
+	{
+		delete pSoundData;
+		pSoundData = NULL;
+	}
+
+	LeaveCriticalSection(&m_CriticalSection);
 }
 
 void CDVDAudio::Flush()
 {
 	if(m_bInitialized)
-	{
 		m_pSourceVoice->FlushSourceBuffers();
+}
+
+void CDVDAudio::Pause()
+{
+	if(m_bInitialized)
 		m_pSourceVoice->Stop();
+}
+
+void CDVDAudio::Resume()
+{
+	if(m_bInitialized)
 		m_pSourceVoice->Start();
-	}
 }
 
 int CDVDAudio::GetBytesInBuffer()
 {
-	// TODO - Need to research how to do this with
-	//		  XAudio2. It's curently screwing up
-	//		  our syncing a bit!!
-	//        Currently keeping our buffer small as
-	//		  possible to hide the problem until tis
-	//		  function is implemented.
+	int iSize = 0;
 
-	return 0;
+	EnterCriticalSection(&m_CriticalSection);
+
+	if(m_bInitialized)
+		iSize = m_iBufferSize;
+
+	LeaveCriticalSection(&m_CriticalSection);
+
+	return iSize;
 }
 
 float CDVDAudio::GetDelay()
