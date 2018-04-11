@@ -14,6 +14,7 @@
 #include "filesystem\File.h"
 #include "ApplicationMessenger.h"
 #include "ButtonTranslator.h"
+#include "guilib\AudioContext.h"
 
 // Window includes
 #include "guilib\windows\GUIWindowHome.h"
@@ -24,7 +25,7 @@
 #include "guilib\windows\GUIWindowScreensaver.h"
 #include "guilib\windows\GUIWindowSystemInfo.h"
 
-//Dialog includes
+// Dialog includes
 #include "guilib\dialogs\GUIDialogButtonMenu.h"
 
 CStdString g_LoadErrorStr;
@@ -73,7 +74,11 @@ bool CApplication::Create()
 	m_splash = new CSplash("D:\\media\\splash.png");
 	m_splash->Start();
 
-	//Initialize the XUI stuff
+	// Start XAudio2
+	if(!g_audioContext.Initialize())
+		CLog::Log(LOGERROR, "Unable to initialize XAudio2!");
+
+	// Initialize the XUI stuff
 	HRESULT hr;
 
 	// Initialize Xui render library with our D3D device, 
@@ -872,6 +877,9 @@ void CApplication::Stop()
 
 	// Dialogs
 	g_windowManager.Delete(WINDOW_DIALOG_BUTTON_MENU);
+
+	// Shutdown XAudio2
+	g_audioContext.DeInitialize();
 
 	CLog::Log(LOGNOTICE, "Destroy");
 	Destroy();

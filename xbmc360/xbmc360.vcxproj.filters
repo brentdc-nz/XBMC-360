@@ -368,6 +368,9 @@
     <ClInclude Include="utils\Splash.h">
       <Filter>Header Files\utils</Filter>
     </ClInclude>
+    <ClInclude Include="guilib\AudioContext.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -612,6 +615,9 @@
     </ClCompile>
     <ClCompile Include="utils\Splash.cpp">
       <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\AudioContext.cpp">
+      <Filter>Source Files\guilib</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

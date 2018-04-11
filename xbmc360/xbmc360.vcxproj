@@ -277,6 +277,7 @@
     <ClInclude Include="filesystem\File.h" />
     <ClInclude Include="filesystem\FileHD.h" />
     <ClInclude Include="filesystem\HDDirectory.h" />
+    <ClInclude Include="guilib\AudioContext.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogButtonMenu.h" />
     <ClInclude Include="guilib\GraphicContext.h" />
     <ClInclude Include="guilib\GUIButtonControl.h" />
@@ -367,6 +368,7 @@
     <ClCompile Include="filesystem\File.cpp" />
     <ClCompile Include="filesystem\FileHD.cpp" />
     <ClCompile Include="filesystem\HDDirectory.cpp" />
+    <ClCompile Include="guilib\AudioContext.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogButtonMenu.cpp" />
     <ClCompile Include="guilib\GraphicContext.cpp" />
     <ClCompile Include="guilib\GUIButtonControl.cpp" />

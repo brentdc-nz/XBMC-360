@@ -39,7 +39,7 @@ public:
 	virtual void OnPlayBackStopped();
 	virtual void OnQueueNextItem();
 
-	bool PlayFile(const string strFile);
+	bool PlayFile(const std::string strFile);
 	bool IsPlaying() const;
 	bool IsPaused() const;
 	int GetPlaySpeed() const;
