@@ -1,10 +1,11 @@
 #include "GUIInfoManager.h"
 #include "GUIWindowManager.h"
-#include "..\utils\Stdafx.h"
 #include "..\utils\Log.h"
 #include "..\Application.h"
 #include "LocalizeStrings.h"
 #include "..\xbox\XBKernalExports.h"
+#include "..\utils\StringUtils.h"
+
 #include <vector>
 
 using namespace std;
@@ -44,10 +45,10 @@ CGUIInfoManager::~CGUIInfoManager(void)
 {
 }
 
-/// \brief Translates a string as given by the skin into an int that we use for more
-/// efficient retrieval of data. Can handle combined strings on the form
-/// Player.Caching + VideoPlayer.IsFullscreen (Logical and)
-/// Player.HasVideo | Player.HasAudio (Logical or)
+// Translates a string as given by the skin into an int that we use for more
+// efficient retrieval of data. Can handle combined strings on the form
+// Player.Caching + VideoPlayer.IsFullscreen (Logical and)
+// Player.HasVideo | Player.HasAudio (Logical or)
 int CGUIInfoManager::TranslateString(const CStdString &condition)
 {
 	// translate $LOCALIZE as required
@@ -120,6 +121,12 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 	{
 		if (strTest.Equals("player.hasmedia"))
 			ret = PLAYER_HAS_MEDIA;
+		else if (strTest.Equals("player.time"))
+			ret = PLAYER_TIME;
+		else if (strTest.Equals("player.timeremaining"))
+			ret = PLAYER_TIME_REMAINING;
+		else if (strTest.Equals("player.duration"))
+			ret = PLAYER_DURATION;
 	}
 
 	else if (strCategory.Equals("control"))
@@ -282,6 +289,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
 
 	switch (info)
 	{
+		// System Section
 		case SYSTEM_DATE:
 			strLabel = GetDate();
 			break;
@@ -301,6 +309,18 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
 				GlobalMemoryStatus(&stat);
 				strLabel.Format("%iMB", stat.dwAvailPhys /MB);
 			}
+			break;
+
+		// Player Section	
+		case PLAYER_TIME:
+			strLabel = GetCurrentPlayTime();
+			break;
+		case PLAYER_TIME_REMAINING:
+			strLabel = GetCurrentPlayTimeRemaining();
+			break;
+		case PLAYER_DURATION:
+			if (g_application.IsPlaying())
+				strLabel = GetDuration();
 			break;
 	}
 
@@ -324,7 +344,7 @@ bool CGUIInfoManager::GetBool(int condition)
 		// cache return value
 		bool result = GetMultiInfoBool(m_multiInfo[condition - MULTI_INFO_START]);
 //		if (!item)
-//			CacheBool(condition1, contextWindow, result);
+//			CacheBool(condition1, contextWindow, result); //TODO
 		return result;
 	}
 	else if (g_application.IsPlaying())
@@ -500,4 +520,63 @@ CStdString CGUIInfoManager::GetSystemHeatInfo(int info)
 			break;
 	}
 	return strTemp;
+}
+
+__int64 CGUIInfoManager::GetPlayTime() const
+{
+	if (g_application.IsPlaying())
+	{
+		__int64 lPTS = (__int64)(g_application.GetTime() * 1000);
+		if (lPTS < 0) lPTS = 0;
+		return lPTS;
+	}
+
+	return 0;
+}
+
+CStdString CGUIInfoManager::GetCurrentPlayTime(TIME_FORMAT format) const
+{
+	if (format == TIME_FORMAT_GUESS && GetTotalPlayTime() >= 3600)
+		format = TIME_FORMAT_HH_MM_SS;
+
+	if (g_application.IsPlayingAudio() || g_application.IsPlayingVideo())
+		return CStringUtils::SecondsToTimeString((int)(GetPlayTime()/1000), format);
+
+	return "";
+}
+
+int CGUIInfoManager::GetPlayTimeRemaining() const
+{
+	int iReverse = GetTotalPlayTime() - (int)g_application.GetTime();
+	return iReverse > 0 ? iReverse : 0;
+}
+
+CStdString CGUIInfoManager::GetCurrentPlayTimeRemaining(TIME_FORMAT format) const
+{
+	if (format == TIME_FORMAT_GUESS && GetTotalPlayTime() >= 3600)
+		format = TIME_FORMAT_HH_MM_SS;
+
+	int timeRemaining = GetPlayTimeRemaining();
+	
+	if (timeRemaining && (g_application.IsPlayingAudio() || g_application.IsPlayingVideo()))
+		return CStringUtils::SecondsToTimeString(timeRemaining, format);
+
+	return "";
+}
+
+int CGUIInfoManager::GetTotalPlayTime() const
+{
+	int iTotalTime = (int)g_application.GetTotalTime();
+
+	return iTotalTime > 0 ? iTotalTime : 0;
+}
+
+CStdString CGUIInfoManager::GetDuration(TIME_FORMAT format) const
+{
+	unsigned int iTotal = (unsigned int)g_application.GetTotalTime();
+	
+	if (iTotal > 0)
+		return CStringUtils::SecondsToTimeString(iTotal, format);
+
+	return "";
 }

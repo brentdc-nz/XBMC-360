@@ -766,6 +766,33 @@ int CApplication::GetPlaySpeed() const
 	return m_iPlaySpeed;
 }
 
+// Returns the current time in seconds of the currently playing media.
+// Fractional portions of a second are possible.  This returns a double to
+// be consistent with GetTotalTime() and SeekTime().
+double CApplication::GetTime() const
+{
+	double dTime = 0.0;
+
+	if (IsPlaying() && m_pPlayer)
+		dTime = static_cast<double>(m_pPlayer->GetTime() * 0.001f);
+	
+	return dTime;
+}
+
+// Returns the total time in seconds of the current media.  Fractional
+// portions of a second are possible - but not necessarily supported by the
+// player class.  This returns a double to be consistent with GetTime() and
+// SeekTime().
+double CApplication::GetTotalTime() const
+{
+	double dTime = 0.0;
+
+	if (IsPlaying() && m_pPlayer)
+		dTime = m_pPlayer->GetTotalTime();
+	
+	return dTime;
+}
+
 void CApplication::ResetScreenSaver()
 {
 	// Reset our timers

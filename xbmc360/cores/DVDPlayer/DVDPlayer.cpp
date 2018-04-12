@@ -59,7 +59,7 @@ bool CDVDPlayer::OpenFile(const string& strFile)
 
 		CLog::Log(LOGNOTICE, "DVDPlayer: Opening: %s", m_strFilename.c_str());
 
-		// if playing a file close it first
+		// If playing a file close it first
 		// this has to be changed so we won't have to close it.
 		CloseFile();
 
@@ -82,7 +82,7 @@ bool CDVDPlayer::OpenFile(const string& strFile)
 		Create();
 		WaitForSingleObject(m_hReadyEvent, INFINITE);
 
-		// if we are playing a media file with pictures, we should wait for the video output device to be initialized
+		// If we are playing a media file with pictures, we should wait for the video output device to be initialized
 		// if we don't wait, the fullscreen window will init with a picture that is 0 pixels width and high
 		// we also have to wait for the player to be initialized so that we can set and access all settings when playing a dvd
 		bool bProcessThreadIsAlive = true;    
@@ -516,25 +516,6 @@ void CDVDPlayer::SeekTime(__int64 iTime)
 	m_messenger.Put(new CDVDMsgPlayerSeek((int)iTime));
 }
 
-// return the time in milliseconds
-__int64 CDVDPlayer::GetTime()
-{
-	// get timing and seeking from libdvdnav for dvd's
-//	if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-//	{
-//		return ((CDVDInputStreamNavigator*)m_pInputStream)->GetTime(); // we should take our buffers into account
-//	}
-
-	__int64 iMsecs = (m_clock.GetClock() / (DVD_TIME_BASE / 1000));
-	//if (m_pDemuxer)
-	//{
-	//  int iMsecsStart = m_pDemuxer->GetStreamStart();
-	//  if (iMsecs > iMsecsStart) iMsecs -=iMsecsStart;
-	//}
-
-	return iMsecs;
-}
-
 void CDVDPlayer::GetVideoInfo(CStdString& strVideoInfo)
 {
 	if( m_bStop ) return;
@@ -603,16 +584,19 @@ void CDVDPlayer::SyncronizePlayers(DWORD sources)
 	const int timeout = 10*1000; // in milliseconds
 
 	CDVDMsgGeneralSynchronize* message = new CDVDMsgGeneralSynchronize(timeout, sources);
+	
 	if (m_CurrentAudio.id >= 0)
 	{
 		message->Acquire();
 		m_dvdPlayerAudio.SendMessage(message);
 	}
+
 	if (m_CurrentVideo.id >= 0)
 	{
 		message->Acquire();
 		m_dvdPlayerVideo.SendMessage(message);
 	}
+	
 	message->Release();
 }
 
@@ -744,6 +728,7 @@ bool CDVDPlayer::OpenDefaultAudioStream()
 	for (int i = 0; i < m_pDemuxer->GetNrOfStreams(); i++)
 	{
 		CDemuxStream* pStream = m_pDemuxer->GetStream(i);
+
 		if (pStream->type == STREAM_AUDIO)
 		{
 			CDemuxStreamAudio* pStreamAudio = (CDemuxStreamAudio*)pStream;
@@ -927,6 +912,18 @@ bool CDVDPlayer::CloseVideoStream(bool bWaitForBuffers) // bWaitForBuffers curre
 	m_CurrentVideo.id = -1;
 
 	return true;
+}
+
+// Return the time in milliseconds
+__int64 CDVDPlayer::GetTime()
+{
+	return (m_clock.GetClock() / (DVD_TIME_BASE / 1000));
+}
+
+// Return length in seconds.. this should be changed to return in milleseconds throughout xbmc
+int CDVDPlayer::GetTotalTime()
+{
+	return (int)(GetTotalTimeInMsec() / 1000);
 }
 
 void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)

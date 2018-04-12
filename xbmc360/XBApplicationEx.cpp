@@ -68,9 +68,10 @@ int CXBApplicationEX::Run()
 		Render();
 	}
 
-//	Destroy();
+//	Destroy(); // Called in CApplication::Stop()
 
 	CLog::Log(LOGNOTICE, "Application stopped..." );
+
 	return 0;
 }
 

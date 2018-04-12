@@ -19,7 +19,7 @@ bool CAudioContext::Initialize()
 	if(m_bInitialized)
 		return true;
 
-    UINT32 flags = 0;
+	UINT32 flags = 0;
 
 	if(XAudio2Create(&m_pXAudio2, flags ) != S_OK)
 	{

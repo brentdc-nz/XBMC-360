@@ -20,6 +20,9 @@
  *
  */
 #include "..\utils\StdString.h"
+#include "..\utils\Stdafx.h"
+#include "..\utils\TimeUtils.h"
+
 #include <list>
 
 #define KB  (1024)          // 1 KiloByte (1KB)   1024 Byte (2^10 Byte)
@@ -31,8 +34,11 @@
 #define OPERATOR_AND  2
 #define OPERATOR_OR   1
 
-#define PLAYER_HAS_MEDIA              1
+#define PLAYER_HAS_MEDIA			1
 
+#define PLAYER_TIME					27  
+#define PLAYER_TIME_REMAINING		28
+#define PLAYER_DURATION				29
 #define PLAYER_SHOWCODEC			30
 
 #define SYSTEM_TIME                 110
@@ -45,9 +51,9 @@
 #define SYSTEM_FREE_MEMORY          648
 
 // the multiple information vector
-#define MULTI_INFO_START              40000
-#define MULTI_INFO_END                99999
-#define COMBINED_VALUES_START        100000
+#define MULTI_INFO_START			40000
+#define MULTI_INFO_END				99999
+#define COMBINED_VALUES_START		100000
 
 #define CONTROL_HAS_FOCUS           30000
 
@@ -103,8 +109,15 @@ protected:
 	CStdString GetTime(bool bSeconds = false);
 	CStdString GetDate(bool bNumbersOnly = false);
 	CStdString GetSystemHeatInfo(int info);
-private:
 
+	__int64 GetPlayTime() const;  // in ms
+	CStdString GetCurrentPlayTime(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
+	int GetPlayTimeRemaining() const;
+	CStdString GetCurrentPlayTimeRemaining(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
+	int GetTotalPlayTime() const;
+	CStdString GetDuration(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
+
+private:
 	//Fullscreen OSD Stuff
 	bool m_playerShowCodec;
 

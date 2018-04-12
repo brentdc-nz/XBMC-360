@@ -31,9 +31,9 @@ public:
 	bool NeedRenderFullScreen();
 	void RenderFullScreen();
 	bool SwitchToFullScreen();
-
 	void StopPlaying();
 
+	// Player callbacks
 	virtual void OnPlayBackEnded();
 	virtual void OnPlayBackStarted();
 	virtual void OnPlayBackStopped();
@@ -44,6 +44,9 @@ public:
 	bool IsPaused() const;
 	int GetPlaySpeed() const;
 	void SetPlaySpeed(int iSpeed);
+
+	double GetTime() const;
+	double GetTotalTime() const;
 
 	bool IsPlayingAudio() const;
 	bool IsPlayingVideo() const;

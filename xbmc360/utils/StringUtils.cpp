@@ -109,3 +109,29 @@ bool CStringUtils::IsNaturalNumber(const CStdString& str)
 	}
 	return true;
 }
+
+CStdString CStringUtils::SecondsToTimeString(long lSeconds, TIME_FORMAT format)
+{
+	int hh = lSeconds / 3600;
+	lSeconds = lSeconds % 3600;
+	int mm = lSeconds / 60;
+	int ss = lSeconds % 60;
+
+	if (format == TIME_FORMAT_GUESS)
+		format = (hh >= 1) ? TIME_FORMAT_HH_MM_SS : TIME_FORMAT_MM_SS;
+	
+	CStdString strHMS;
+	
+	if (format & TIME_FORMAT_HH)
+		strHMS.AppendFormat("%02.2i", hh);
+	else if (format & TIME_FORMAT_H)
+		strHMS.AppendFormat("%i", hh);
+	
+	if (format & TIME_FORMAT_MM)
+		strHMS.AppendFormat(strHMS.IsEmpty() ? "%02.2i" : ":%02.2i", mm);
+	
+	if (format & TIME_FORMAT_SS)
+		strHMS.AppendFormat(strHMS.IsEmpty() ? "%02.2i" : ":%02.2i", ss);
+	
+	return strHMS;
+}

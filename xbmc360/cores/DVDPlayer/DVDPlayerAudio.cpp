@@ -157,13 +157,13 @@ void CDVDPlayerAudio::Process()
 
 	int result;
 
-	// silence data
+	// Silence data
 	BYTE silence[1024];
 	memset(silence, 0, 1024);
 
 	DVDAudioFrame audioframe;
 
-	__int64 iClockDiff=0;
+	__int64 iClockDiff = 0;
 	while (!m_bStop)
 	{
 		// Make sure player doesn't keep processing data while paused
@@ -482,8 +482,10 @@ void CDVDPlayerAudio::Flush()
 	if (m_pAudioCodec)
 	{
 		EnterCriticalSection(&m_critCodecSection);
+		
 		audio_pkt_size = 0;
 		audio_pkt_data = NULL;
+
 		if( pAudioPacket )
 		{
 			CDVDDemuxUtils::FreeDemuxPacket(pAudioPacket);
@@ -491,6 +493,7 @@ void CDVDPlayerAudio::Flush()
 		}
 
 		m_pAudioCodec->Reset();
+
 		LeaveCriticalSection(&m_critCodecSection);
 	}
 }

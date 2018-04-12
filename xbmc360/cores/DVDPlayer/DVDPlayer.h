@@ -48,7 +48,6 @@ public:
 	virtual void OnExit();
 
 	virtual void SeekTime(__int64 iTime);
-	virtual __int64 GetTime();
 	virtual void GetVideoInfo(CStdString& strVideoInfo);
 	virtual void GetAudioInfo(CStdString& strAudioInfo);
 	virtual void GetGeneralInfo(CStdString& strGeneralInfo);
@@ -58,6 +57,8 @@ public:
 
 	virtual void SeekPercentage(float iPercent);
 	virtual void Seek(bool bPlus, bool bLargeStep);
+	virtual __int64 GetTime();
+	virtual int GetTotalTime();
 	virtual float GetPercentage();
 	virtual __int64 GetTotalTimeInMsec();
 	virtual void FlushBuffers();

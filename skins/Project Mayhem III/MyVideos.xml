@@ -48,6 +48,19 @@
 		</control>	
 			
 		<control>
+			<description>video time label</description>
+			<type>label</type>
+			<id>0</id>
+			<posx>45</posx>
+			<posy>660</posy>
+			<font>font10</font>
+			<label>$INFO[Player.Time] $INFO[Player.Duration,/ ]</label>
+			<width>100</width>
+			<height>16</height>
+			<visible>true</visible> <!-- TODO: implement Player.IsPlaying visible condition -->
+		</control>			
+			
+		<control>
 			<description>information</description>
 			<type>label</type>			
 			<width>255</width>
