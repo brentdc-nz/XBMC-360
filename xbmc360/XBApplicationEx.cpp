@@ -26,7 +26,7 @@ CXBApplicationEX::CXBApplicationEX()
     m_d3dpp.BackBufferCount        = 1;
     m_d3dpp.EnableAutoDepthStencil = FALSE;
     m_d3dpp.AutoDepthStencilFormat = D3DFMT_D24S8;
-    m_d3dpp.SwapEffect             = D3DSWAPEFFECT_COPY;
+    m_d3dpp.SwapEffect             = D3DSWAPEFFECT_DISCARD;
     m_d3dpp.PresentationInterval   = D3DPRESENT_INTERVAL_DEFAULT;
 
 	//XUI

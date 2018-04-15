@@ -1,4 +1,5 @@
-#pragma once
+#ifndef H_CDVDMSG
+#define H_CDVDMSG
 
 // include as less is possible to prevent dependencies
 #include "DVDDemuxers\DVDDemux.h"
@@ -234,3 +235,5 @@ class CDVDMsgVideoNoSkip : public CDVDMsg
 public:
 	CDVDMsgVideoNoSkip() : CDVDMsg(VIDEO_NOSKIP)  {}
 };
+
+#endif //H_CDVDMSG

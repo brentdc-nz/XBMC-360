@@ -21,10 +21,10 @@ DVDInfo;
 
 typedef struct SCurrentStream
 {
-	int              id;     // demuxerid of current playing stream
-	unsigned __int64 dts;    // last dts from demuxer, used to find disncontinuities
-	CDVDStreamInfo      hint;   // stream hints, used to notice stream changes
-	void*            stream; // pointer or integer, identifying stream playing. if it changes stream changed
+	int					id;     // demuxerid of current playing stream
+	unsigned __int64	dts;    // last dts from demuxer, used to find disncontinuities
+	CDVDStreamInfo		hint;   // stream hints, used to notice stream changes
+	void*				stream; // pointer or integer, identifying stream playing. if it changes stream changed
 } SCurrentStream;
 
 #define DVDPLAYER_AUDIO 1
@@ -108,7 +108,7 @@ private:
 
 	CDVDDemux*	m_pDemuxer;
 
-	CDVDMessageQueue m_messenger;     // thread messenger, only the dvdplayer.cpp class itself may send message to this!
+	CDVDMessageQueue m_messenger; // thread messenger, only the dvdplayer.cpp class itself may send messages to this!
 
 	CDVDClock m_clock; // master clock
 

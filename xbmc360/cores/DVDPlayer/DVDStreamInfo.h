@@ -1,4 +1,5 @@
-#pragma once
+#ifndef H_CDVDSTREAMINFO
+#define H_CDVDSTREAMINFO
 
 enum StreamType;
 enum CodecID;
@@ -8,7 +9,7 @@ class CDVDStreamInfo
 {
 public:
 	CDVDStreamInfo();
-	CDVDStreamInfo(const CDemuxStream &right, bool withextradata );
+	CDVDStreamInfo(const CDemuxStream &right, bool withextradata);
 	~CDVDStreamInfo();
 
 	void Clear(); // clears current information
@@ -36,3 +37,5 @@ public:
 
 	void operator=(const CDemuxStream& right)      { Assign(right, true); }
 };
+
+#endif //H_CDVDSTREAMINFO

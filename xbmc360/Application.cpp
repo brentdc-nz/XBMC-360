@@ -47,8 +47,12 @@ CApplication::~CApplication()
 
 bool CApplication::Create()
 {
+	// Rotate the log (xbmc.log -> xbmc.old.log)
+	DeleteFile("D:\\xbmc.old.log");
+	MoveFile("D:\\xbmc.log", "D:\\xbmc.old.log");
+
 	CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
-	CLog::Log(LOGNOTICE, "Starting XBoxMediaCenter.  Built on %s", __DATE__);
+	CLog::Log(LOGNOTICE, "Starting XBox Media Center 360.  Built on %s", __DATE__);
 	CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 
 	CLog::Log(LOGNOTICE, "Setup DirectX");
@@ -150,6 +154,7 @@ bool CApplication::Initialize()
 	CLog::Log(LOGNOTICE, "load default skin:[%s]", g_guiSettings.GetString("LookAndFeel.Skin").c_str());
 	LoadSkin(g_guiSettings.GetString("LookAndFeel.Skin"));
 
+	// Windows
 	g_windowManager.Add(new CGUIWindowFullScreen);
 	g_windowManager.Add(new CGUIWindowVideoFiles);
 	g_windowManager.Add(new CGUIWindowSettimgs);
@@ -157,7 +162,7 @@ bool CApplication::Initialize()
 	g_windowManager.Add(new CGUIWindowScreensaver);
 	g_windowManager.Add(new CGUIWindowSystemInfo);
 
-	//Dialogs
+	// Dialogs
 	g_windowManager.Add(new CGUIDialogButtonMenu); // window id = 111
 
 	g_windowManager.Initialize();
@@ -184,7 +189,7 @@ bool CApplication::Initialize()
 void CApplication::DelayLoadSkin()
 {
 	m_dwSkinTime = GetTickCount() + 2000;
-	return ;
+	return;
 }
 
 void CApplication::CancelDelayLoadSkin()
@@ -282,7 +287,7 @@ void CApplication::Process()
 void CApplication::ProcessSlow()
 {
 	// Check if we need to activate the screensaver (if enabled)
-	if(g_guiSettings.GetString("ScreenSaver.Mode") != "None") //TODO
+	if(g_guiSettings.GetString("ScreenSaver.Mode") != "None")
 		CheckScreenSaver();
 }
 
@@ -553,6 +558,7 @@ bool CApplication::NeedRenderFullScreen()
 		CGUIWindowFullScreen *pFSWin = (CGUIWindowFullScreen *)g_windowManager.GetWindow(WINDOW_FULLSCREEN_VIDEO);
 		if (!pFSWin)
 			 return false;
+
 		return pFSWin->NeedRenderFullScreen();
 	}
 	return false;

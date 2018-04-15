@@ -1,4 +1,5 @@
-#pragma once
+#ifndef H_CDVDCLOCK
+#define H_CDVDCLOCK
 
 #include "..\..\utils\SharedSection.h"
 
@@ -51,3 +52,5 @@ protected:
   
 	static LARGE_INTEGER m_systemFrequency;
 };
+
+#endif //H_CDVDCLOCK
