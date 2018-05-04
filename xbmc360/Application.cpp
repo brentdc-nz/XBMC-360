@@ -15,6 +15,7 @@
 #include "ApplicationMessenger.h"
 #include "ButtonTranslator.h"
 #include "guilib\AudioContext.h"
+#include "cores\PlayerCoreFactory.h"
 
 // Window includes
 #include "guilib\windows\GUIWindowHome.h"
@@ -602,7 +603,7 @@ void CApplication::StopPlaying()
 		 if (m_pPlayer)
 			m_pPlayer->CloseFile();
 
-		// turn off visualization window when stopping
+		// Turn off visualization window when stopping
 		if (iWin == WINDOW_FULLSCREEN_VIDEO)
 			g_windowManager.PreviousWindow();
 	}
@@ -642,20 +643,21 @@ void CApplication::OnPlayBackStopped()
 
 bool CApplication::PlayFile(const string strFile)
 {
-	// tell system we are starting a file
+	// Tell system we are starting a file
 	m_bPlaybackStarting = true;
 
-	// We should restart the player
 	if (m_pPlayer)
 	{
+		// We should restart the player
 		delete m_pPlayer;
 		m_pPlayer = NULL;
 	}
 
 	if (!m_pPlayer)
 	{
-		//m_eCurrentPlayer = eNewCore;
-		m_pPlayer = (CDVDPlayer*)new CDVDPlayer(*this);//CPlayerCoreFactory::CreatePlayer(eNewCore, *this); //TODO Create a factory
+		// We only have DVDPlayer atm..
+		CPlayerCoreFactory factory;
+		m_pPlayer = factory.CreatePlayer("dvdplayer", *this);
 	}
 
 	bool bResult;
@@ -664,11 +666,11 @@ bool CApplication::PlayFile(const string strFile)
 		// don't hold graphicscontext here since player
 		// may wait on another thread, that requires gfx
 //		CSingleExit ex(g_graphicsContext);
-		bResult = m_pPlayer->OpenFile(/*item, options*/strFile.c_str()); //FIXME WIP
+		bResult = m_pPlayer->OpenFile(/*item, options*/strFile.c_str()); // TODO
 	}
 	else
 	{
-		CLog::Log(LOGERROR, "Error creating player for item %s (File doesn't exist?)", /*item.GetPath()*/strFile.c_str());
+		CLog::Log(LOGERROR, "Error creating player for item %s (File doesn't exist?)", /*item.GetPath()*/strFile.c_str()); // TODO
 		bResult = false;
 	}
 
@@ -700,6 +702,7 @@ bool CApplication::PlayFile(const string strFile)
 	}
 
 	m_bPlaybackStarting = false;
+
 	if(bResult)
 	{
 		// We must have started, otherwise player might send this later

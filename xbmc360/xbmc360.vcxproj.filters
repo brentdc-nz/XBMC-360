@@ -371,6 +371,9 @@
     <ClInclude Include="guilib\AudioContext.h">
       <Filter>Header Files\guilib</Filter>
     </ClInclude>
+    <ClInclude Include="cores\PlayerCoreFactory.h">
+      <Filter>Header Files\cores</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -618,6 +621,9 @@
     </ClCompile>
     <ClCompile Include="guilib\AudioContext.cpp">
       <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="cores\PlayerCoreFactory.cpp">
+      <Filter>Source Files\cores</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
