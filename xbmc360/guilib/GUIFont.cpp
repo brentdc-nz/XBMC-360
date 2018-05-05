@@ -4,8 +4,9 @@
 
 CGUIFont::CGUIFont(void)
 {
-	m_strFontName = "";
-	m_strFontFile = "";
+	m_wstrFontName = L"";
+	m_wstrFontFile = L"";
+	m_dwStyle = 0;
 	m_fSize = 0;
 	m_Font = NULL;
 }
@@ -14,76 +15,78 @@ CGUIFont::~CGUIFont(void)
 {
 }
 
-const CStdString& CGUIFont::GetFontName() const
+const CStdString CGUIFont::GetFontName()
 {
-	return m_strFontName;
+	// Convert back no normal string from wide
+	string strFontName( m_wstrFontName.begin(), m_wstrFontName.end() );
+	
+	return strFontName;
 }
 
 bool CGUIFont::Load(const CStdString& strFontName,const CStdString& strFilename, int iSize, DWORD dwStyles)
 {
-	m_strFontName = strFontName;
-	m_strFontFile = strFilename;
+	CStdString strFontPath = g_graphicsContext.GetMediaDir();
+
+#if 1 // Nasty workaround for XUI to work..
+	strFontPath.Replace("D:\\", "file://game:/");
+#endif
+
+	strFontPath += "fonts/" + strFilename;
+
+	// Convert to wide for our wide members
+	CStringUtils::StringtoWString(strFontName, m_wstrFontName);
+	CStringUtils::StringtoWString(strFontPath, m_wstrFontFile);
+
+	m_dwStyle = dwStyles;
 	m_fSize = (float)iSize;
+
+	TypefaceDescriptor typeface = {0};
+	typeface.szTypeface = m_wstrFontName.c_str();
+	typeface.szLocator = m_wstrFontFile.c_str();
+	typeface.szReserved1 = NULL;
+	XuiRegisterTypeface( &typeface, TRUE );
+
+	XuiCreateFont( m_wstrFontName.c_str(), m_fSize, dwStyles, 0, &m_Font );
+
+	return true;
+}
+
+bool CGUIFont::Reload(DWORD dwStyles)
+{
+	TypefaceDescriptor typeface = {0};
+	typeface.szTypeface = m_wstrFontName.c_str();
+	typeface.szLocator = m_wstrFontFile.c_str();
+	typeface.szReserved1 = NULL;
+	XuiRegisterTypeface( &typeface, TRUE );
+
+	XuiCreateFont( m_wstrFontName.c_str(), m_fSize, dwStyles, 0, &m_Font );
 
 	return true;
 }
 
 bool CGUIFont::DrawText( float fPosX, float fPosY, DWORD dwColor, const CStdString strText, DWORD dwFlags/* = XUI_FONT_STYLE_NORMAL*//*, FLOAT fMaxPixelWidth*/ )
 {
-	//==================================================================
-	// FIXME - WTF!!! 
-	// Why does CStringUtils::String2WString() Not work for this!!!! 
-	// Yet it works when put through the below three bloks of same code.		
-	//==================================================================
-
-	char* strTempText1 = (char*)(void*)m_strFontFile.c_str();
-	int num1 = lstrlenA(strTempText1) + 1;
-	int len1 = MultiByteToWideChar(CP_ACP, 0, strTempText1, num1, 0, 0);
-	wchar_t* buf1 = new wchar_t[len1];
-	MultiByteToWideChar(CP_ACP, 0, strTempText1, num1, buf1, len1);
-	std::wstring r1(buf1);
-	delete[] buf1; 
-	LPCWSTR resultstrFontFile = r1.c_str();
-
-	char* strTempText2 = (char*)(void*)m_strFontName.c_str();
-	int num2 = lstrlenA(strTempText2) + 1;
-	int len2 = MultiByteToWideChar(CP_ACP, 0, strTempText2, num2, 0, 0);
-	wchar_t* buf2 = new wchar_t[len2];
-	MultiByteToWideChar(CP_ACP, 0, strTempText2, num2, buf2, len2);
-	std::wstring r2(buf2);
-	delete[] buf2; 
-	LPCWSTR resultstrFontName = r2.c_str();
-
-	char* strTempText3 = (char*)(void*)strText.c_str();
-	int num3 = lstrlenA(strTempText3) + 1;
-	int len3 = MultiByteToWideChar(CP_ACP, 0, strTempText3, num3, 0, 0);
-	wchar_t* buf3 = new wchar_t[len3];
-	MultiByteToWideChar(CP_ACP, 0, strTempText3, num3, buf3, len3);
-	std::wstring r3(buf3);
-	delete[] buf3; 
-	LPCWSTR resultstrText = r3.c_str();
-
-	//==================================================================
-
-	// With XUI don't create the font and store it in vector to render, 
-	// just run the below each frame, seems odd but it works...
-
 	if ( !g_graphicsContext.IsFullScreenVideo() )
 		g_graphicsContext.Lock();
 
+	// Convert out text string to wide
+	wstring wstrText;
+	CStringUtils::StringtoWString(strText, wstrText);
+
 	XuiRenderBegin( g_graphicsContext.GetXUIDevice(), D3DCOLOR_ARGB(255,0,0,0) );
 
-	TypefaceDescriptor typeface = {0};
-	typeface.szTypeface = resultstrFontName;
-	typeface.szLocator = resultstrFontFile;
-	typeface.szReserved1 = NULL;
-	XuiRegisterTypeface( &typeface, TRUE );
-
-	XuiCreateFont( resultstrFontName, m_fSize, dwFlags, 0, &m_Font );
+	// If our font syle changed we need to recreate our font..
+	// Why does XUI make this a pain to do ugh..
+	if(m_dwStyle != dwFlags)
+	{
+		Release();
+		Reload(dwFlags);
+		m_dwStyle = dwFlags;
+	}
 
     // Measure the text
 	XUIRect clipRect( 0, 0, g_graphicsContext.GetWidth() - fPosX, g_graphicsContext.GetHeight() - fPosY );
-    XuiMeasureText( m_Font, resultstrText, -1, dwFlags, 0, &clipRect );
+	XuiMeasureText( m_Font, wstrText.c_str(), -1, dwFlags, 0, &clipRect );
 
 	if(dwFlags & XUI_FONT_STYLE_RIGHT_ALIGN) //HACK: Using XUI to do this should be easy, but it's a pain in the butt...
 	{
@@ -108,11 +111,8 @@ bool CGUIFont::DrawText( float fPosX, float fPosY, DWORD dwColor, const CStdStri
     XuiRenderSetViewTransform( g_graphicsContext.GetXUIDevice(), &matView );
 
     // Draw the text
-    XuiDrawText( g_graphicsContext.GetXUIDevice(), resultstrText, dwFlags, 0, &clipRect );
+	XuiDrawText( g_graphicsContext.GetXUIDevice(), wstrText.c_str(), dwFlags, 0, &clipRect );
 	
-	// release the font
-	XuiReleaseFont( m_Font );
-
 	XuiRenderEnd( g_graphicsContext.GetXUIDevice() );
 	XuiRenderPresent( g_graphicsContext.GetXUIDevice(), NULL, NULL, NULL );
 
@@ -120,4 +120,11 @@ bool CGUIFont::DrawText( float fPosX, float fPosY, DWORD dwColor, const CStdStri
 		g_graphicsContext.Unlock();
 
 	return true;
+}
+
+void CGUIFont::Release()
+{
+	// Release the font
+	XuiReleaseFont( m_Font );
+	m_Font = NULL;
 }

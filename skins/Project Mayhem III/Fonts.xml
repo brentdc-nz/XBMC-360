@@ -2,19 +2,19 @@
 
 	<font>
 		<name>font10</name>
-		<filename>file://game:/skins/Project Mayhem III/fonts/FrancophilSans.ttf</filename>
+		<filename>FrancophilSans.ttf</filename>
 		<size>14</size> 
 	</font>
 
 	<font>
 		<name>special12</name>
-		<filename>file://game:/skins/Project Mayhem III/fonts/FrancophilSans.ttf</filename> <!-- FIXME PATHS ARE WRONG! -->
+		<filename>FrancophilSans.ttf</filename>
 		<size>18</size>
 	</font>
 	
 	<font>
 		<name>special13</name>
-		<filename>file://game:/skins/Project Mayhem III/fonts/FrancophilSans.ttf</filename>
+		<filename>FrancophilSans.ttf</filename>
 		<size>19</size>
 		<style>bold</style>
 	</font>	

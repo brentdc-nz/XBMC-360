@@ -3,18 +3,13 @@
 
 using namespace std;
 
-LPCWSTR CStringUtils::String2WString(CStdString strText)
+// Converts string to wide
+void CStringUtils::StringtoWString(CStdString strText, std::wstring &strResult)
 {
-	char* strTextTmp = (char*)(void*)strText.c_str();
-	int num = lstrlenA(strTextTmp) + 1;
-	int len = MultiByteToWideChar(CP_ACP, 0, strTextTmp, num, 0, 0);
-	wchar_t* buf = new wchar_t[len];
-	MultiByteToWideChar(CP_ACP, 0, strTextTmp, num, buf, len);
-	std::wstring r(buf);
-	delete[] buf; 
-	LPCWSTR result = r.c_str();
-
-	return result;
+	wchar_t* wtext = new wchar_t[strText.size()+1];
+	mbstowcs(wtext, strText.c_str(), strlen(strText.c_str())+1);
+	strResult = wtext;
+	delete wtext;
 }
 
 // Splits the string input into pieces delimited by delimiter.

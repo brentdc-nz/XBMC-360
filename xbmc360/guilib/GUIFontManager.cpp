@@ -1,6 +1,6 @@
 #include "GUIFontManager.h"
-#include "tinyxml\tinyxml.h"
 #include "..\utils\Log.h"
+#include "tinyxml\tinyxml.h"
 
 GUIFontManager g_fontManager;
 
@@ -74,14 +74,14 @@ void GUIFontManager::LoadFonts(const CStdString& strFilename)
 
 CGUIFont* GUIFontManager::Load(const string& strFontName, const string& strFilename, int iSize, DWORD dwStyles)
 {
-	//check if font already exists
+	// Check if font already exists
 	CGUIFont* pFont = GetFont(strFontName);
 	if (pFont) return pFont;
  
 	CGUIFont* pNewFont = new CGUIFont();
 	if (pNewFont->Load(strFontName, strFilename, iSize, dwStyles))
 	{
-		// font is loaded
+		// Font is loaded
 		m_vecFonts.push_back(pNewFont);
 		return pNewFont;
 	}
@@ -105,6 +105,7 @@ void GUIFontManager::Clear()
 	for (int i=0; i < (int)m_vecFonts.size(); ++i)
 	{
 		CGUIFont* pFont=m_vecFonts[i];
+		pFont->Release();
 		delete pFont;
 	}
 	m_vecFonts.erase(m_vecFonts.begin(),m_vecFonts.end());

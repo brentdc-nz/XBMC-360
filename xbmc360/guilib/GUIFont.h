@@ -11,15 +11,17 @@ public:
 	CGUIFont(void);
 	virtual ~CGUIFont(void);
 
-	const CStdString& GetFontName() const;
-	bool  Load(const CStdString& strFontName,const CStdString& strFilename, int iSize, DWORD dwStyles);
+	const CStdString GetFontName();
+	bool Load(const CStdString& strFontName,const CStdString& strFilename, int iSize, DWORD dwStyles);
+	bool Reload(DWORD dwStyles);
 	bool DrawText( float fPosX, float fPosY, DWORD dwColor, const CStdString strText, DWORD dwFlags = XUI_FONT_STYLE_NORMAL/*, FLOAT fMaxPixelWidth*/ );
+	void Release();
 
 private:
-	CStdString m_strFontName;
-	CStdString m_strFontFile;
+	std::wstring m_wstrFontName;
+	std::wstring m_wstrFontFile;
 	float m_fSize;
-
+	DWORD m_dwStyle;
 	HXUIFONT m_Font;
 };
 

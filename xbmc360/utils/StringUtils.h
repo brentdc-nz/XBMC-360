@@ -9,7 +9,7 @@
 class CStringUtils
 {
 public:
-	static LPCWSTR String2WString(CStdString strText);
+	static void StringtoWString(CStdString strText, std::wstring &strResult);
 	static int SplitString(const CStdString& input, const CStdString& delimiter, CStdStringArray &results, unsigned int iMaxStrings = 0);
 	static int FindEndBracket(const CStdString &str, char opener, char closer, int startPos = 0);
 	static bool IsNaturalNumber(const CStdString& str);

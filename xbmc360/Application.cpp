@@ -87,7 +87,7 @@ bool CApplication::Create()
 	HRESULT hr;
 
 	// Initialize Xui render library with our D3D device, 
-    // and use a Xui-provided texture loader.
+	// and use a Xui-provided texture loader.
 	hr = XuiRenderInitShared( m_pd3dDevice, &m_d3dpp, XuiD3DXTextureLoader );
 	if( FAILED( hr ) ) 
 	{
@@ -95,8 +95,8 @@ bool CApplication::Create()
 		FatalErrorHandler(true);
 	}
 
-    // Create a Xui device context. The Xui text renderer uses many attributes
-    // from this device context (position, color, shaders, etc.).
+	// Create a Xui device context. The Xui text renderer uses many attributes
+	// from this device context (position, color, shaders, etc.).
 	hr = XuiRenderCreateDC( &m_hXUIDC );
 	if( FAILED( hr ) ) 
 	{
@@ -104,8 +104,8 @@ bool CApplication::Create()
 		FatalErrorHandler(true);
 	}
 
-    // Initialize the Xui runtime library.  Typeface descriptors are registered
-    // by the runtime library, and consumed by the render library.
+	// Initialize the Xui runtime library.  Typeface descriptors are registered
+	// by the runtime library, and consumed by the render library.
 	hr = XuiInit( &m_XUIParams );
 	if( FAILED( hr ) ) 
 	{
