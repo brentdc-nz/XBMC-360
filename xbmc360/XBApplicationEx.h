@@ -26,12 +26,12 @@ public:
 	bool IsStopping() { return m_bStop; };
 
 protected:
-	//Main Direct3D objects
+	// Main Direct3D objects
 	LPDIRECT3D9						m_pD3D;
 	IDirect3DDevice9*				m_pd3dDevice;	
 	D3DPRESENT_PARAMETERS			m_d3dpp;	
 
-	//XUI objects
+	// XUI objects
 	HXUIDC							m_hXUIDC; // Xui device context
 	XUIInitParams					m_XUIParams;
 

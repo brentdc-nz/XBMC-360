@@ -186,10 +186,10 @@ void CDVDPlayerAudio::Process()
 			break;
 		}
 
-		if( result & DECODE_FLAG_DROP ) //FIXME Marty
+		if( result & DECODE_FLAG_DROP )
 		{
-			// Frame should be dropped. Don't let audio move ahead of the current time thou
-			// we need to be able to start playing at any time
+			// Frame should be dropped. Don't let audio move ahead of the current time
+			// though we need to be able to start playing at any time
 			// when playing backwords, we try to keep as small buffers as possible
 
 			// Set the time at this delay
@@ -216,7 +216,7 @@ void CDVDPlayerAudio::Process()
 		// Store the delay for this pts value so we can calculate the current playing
 		m_ptsQueue.Add(audioframe.pts, m_dvdAudio.GetDelay() - audioframe.duration);
 		
-		// if we where asked to resync on this packet, do so here
+		// If we where asked to resync on this packet, do so here
 		if( result & DECODE_FLAG_RESYNC )
 		{      
 			m_pClock->Discontinuity(CLOCK_DISC_NORMAL, audioframe.pts, m_dvdAudio.GetDelay() - audioframe.duration);
@@ -303,7 +303,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
 				break;
 			}
 
-			// fix for fucked up decoders //FIXME Marty
+			// Fix for fucked up decoders
 			if( len > audio_pkt_size )
 			{        
 				CLog::Log(LOGERROR, "CDVDPlayerAudio:DecodeFrame - Codec tried to consume more data than available. Potential memory corruption");        
@@ -312,7 +312,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
 				assert(0);
 			}
 
-			// get decoded data and the size of it
+			// Get decoded data and the size of it
 			audioframe.size = m_pAudioCodec->GetData(&audioframe.data);
 
 			audio_pkt_data += len;
@@ -322,7 +322,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
 
 			audioframe.pts = m_audioClock;
 
-			// compute duration.
+			// Compute duration.
 			n = m_pAudioCodec->GetChannels() * m_pAudioCodec->GetBitsPerSample() / 8 * m_pAudioCodec->GetSampleRate();
 			if (n > 0)
 			{
@@ -333,9 +333,9 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
 				m_audioClock += audioframe.duration;
 			}
 
-			//If we are asked to drop this packet, return a size of zero. then it won't be played
-			//we currently still decode the audio.. this is needed since we still need to know it's 
-			//duration to make sure clock is updated correctly.
+			// If we are asked to drop this packet, return a size of zero. then it won't be played
+			// we currently still decode the audio.. this is needed since we still need to know it's 
+			// duration to make sure clock is updated correctly.
 			if( bDropPacket )
 			{
 				result |= DECODE_FLAG_DROP;
@@ -343,10 +343,10 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
 			return result;
 		}
 
-		// free the current packet
+		// Free the current packet
 		if (pPacket)
 		{
-			CDVDDemuxUtils::FreeDemuxPacket(pPacket); //Marty FIXME
+			CDVDDemuxUtils::FreeDemuxPacket(pPacket);
 			pPacket = NULL;
 			pAudioPacket = NULL;
 		}
@@ -406,7 +406,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
 		} 
 		else if (pMsg->IsType(CDVDMsg::GENERAL_SET_CLOCK))
 		{ 
-			//player asked us to set dvdclock on this
+			// Player asked us to set dvdclock on this
 			CDVDMsgGeneralSetClock* pMsgGeneralSetClock = (CDVDMsgGeneralSetClock*)pMsg;
 			result |= DECODE_FLAG_RESYNC;
       
@@ -418,7 +418,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
 		} 
 		else if (pMsg->IsType(CDVDMsg::GENERAL_RESYNC))
 		{ 
-			//player asked us to set internal clock
+			// Player asked us to set internal clock
 			CDVDMsgGeneralResync* pMsgGeneralResync = (CDVDMsgGeneralResync*)pMsg;                  
 
 			if( pMsgGeneralResync->GetDts() != DVD_NOPTS_VALUE )
@@ -434,24 +434,24 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
 			{
 				if (first_pkt_size == 0) 
 				{ 
-					//first package
+					// First package
 					m_audioClock = pPacket->pts;        
 				}
 				else if (first_pkt_pts > pPacket->pts)
 				{ 
-					//okey first packet in this continous stream, make sure we use the time here        
+					// Ok first packet in this continous stream, make sure we use the time here        
 					m_audioClock = pPacket->pts;        
 				}
 				else if((unsigned __int64)m_audioClock < pPacket->pts || (unsigned __int64)m_audioClock > pPacket->pts)
 				{
-					//crap, moved outsided correct pts
-					//Use pts from current packet, untill we find a better value for it.
-					//Should be ok after a couple of frames, as soon as it starts clean on a packet
+					// Crap, moved outsided correct pts.
+					// Use pts from current packet, untill we find a better value for it.
+					// Should be ok after a couple of frames, as soon as it starts clean on a packet
 					m_audioClock = pPacket->pts;
 				}
 				else if(first_pkt_size == first_pkt_used)
 				{ 
-					//Nice starting up freshly on the start of a packet, use pts from it
+					// Nice starting up freshly on the start of a packet, use pts from it
 					m_audioClock = pPacket->pts;
 				}
 			}

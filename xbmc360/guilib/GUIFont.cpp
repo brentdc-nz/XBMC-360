@@ -17,7 +17,7 @@ CGUIFont::~CGUIFont(void)
 
 const CStdString CGUIFont::GetFontName()
 {
-	// Convert back no normal string from wide
+	// Convert back to a normal string from wide
 	string strFontName( m_wstrFontName.begin(), m_wstrFontName.end() );
 	
 	return strFontName;
@@ -69,7 +69,7 @@ bool CGUIFont::DrawText( float fPosX, float fPosY, DWORD dwColor, const CStdStri
 	if ( !g_graphicsContext.IsFullScreenVideo() )
 		g_graphicsContext.Lock();
 
-	// Convert out text string to wide
+	// Convert our text string to wide
 	wstring wstrText;
 	CStringUtils::StringtoWString(strText, wstrText);
 
@@ -84,7 +84,7 @@ bool CGUIFont::DrawText( float fPosX, float fPosY, DWORD dwColor, const CStdStri
 		m_dwStyle = dwFlags;
 	}
 
-    // Measure the text
+	// Measure the text
 	XUIRect clipRect( 0, 0, g_graphicsContext.GetWidth() - fPosX, g_graphicsContext.GetHeight() - fPosY );
 	XuiMeasureText( m_Font, wstrText.c_str(), -1, dwFlags, 0, &clipRect );
 
@@ -110,7 +110,7 @@ bool CGUIFont::DrawText( float fPosX, float fPosY, DWORD dwColor, const CStdStri
     D3DXMatrixIdentity( &matView );
     XuiRenderSetViewTransform( g_graphicsContext.GetXUIDevice(), &matView );
 
-    // Draw the text
+	// Draw the text
 	XuiDrawText( g_graphicsContext.GetXUIDevice(), wstrText.c_str(), dwFlags, 0, &clipRect );
 	
 	XuiRenderEnd( g_graphicsContext.GetXUIDevice() );

@@ -290,11 +290,10 @@ void CGUISpinControl::MoveUp(bool bTestReverse)
 	{
 		case SPIN_CONTROL_TYPE_TEXT:
 		{
-			if (m_iValue - 1 >= 0)
-				m_iValue--;
-			else if (m_iValue == 0)
-				m_iValue = (int)m_vecLabels.size() - 1;
-		
+			if (m_iValue + 1 < (int)m_vecLabels.size() )
+				m_iValue++;
+			else if (m_iValue == (int)m_vecLabels.size() - 1)
+			m_iValue = 0;
 			CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
 			g_windowManager.SendMessage(msg);
 			return ;
@@ -317,10 +316,11 @@ void CGUISpinControl::MoveDown(bool bTestReverse)
 	{
 		case SPIN_CONTROL_TYPE_TEXT:
 		{
-			if (m_iValue + 1 < (int)m_vecLabels.size() )
-				m_iValue++;
-			else if (m_iValue == (int)m_vecLabels.size() - 1)
-			m_iValue = 0;
+			if (m_iValue - 1 >= 0)
+				m_iValue--;
+			else if (m_iValue == 0)
+				m_iValue = (int)m_vecLabels.size() - 1;
+		
 			CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
 			g_windowManager.SendMessage(msg);
 			return ;

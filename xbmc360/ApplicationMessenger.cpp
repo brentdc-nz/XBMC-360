@@ -78,6 +78,7 @@ void CApplicationMessenger::ProcessMessages()
 {
 	// Process threadmessages
 	CSingleLock lock (m_critSection);
+
 	while (m_vecMessages.size() > 0)
 	{
 		ThreadMessage* pMsg = m_vecMessages.front();

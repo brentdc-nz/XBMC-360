@@ -976,7 +976,7 @@ void CDVDPlayer::FlushBuffers()
 
 	m_messenger.Flush();
 
-	m_dvd.iFlagSentStart = 0; //We will have a discontinuity here
+	m_dvd.iFlagSentStart = 0; // We will have a discontinuity here
 
 	//m_bReadAgain = true; // XXX
 	// this makes sure a new packet is read

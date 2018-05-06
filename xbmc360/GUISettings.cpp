@@ -210,7 +210,7 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement)
 					{
 						if (strValue != "-")
 						{ 
-							// update our item
+							// Update our item
 							(*it).second->FromString(strValue);
 							CLog::Log(LOGDEBUG, "  %s: %s", (*it).first.c_str(), (*it).second->ToString().c_str());
 						}

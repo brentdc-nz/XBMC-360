@@ -58,10 +58,10 @@ bool CDVDAudio::Create(int iChannels, int iBitrate, int iBitsPerSample, bool bPa
 	m_iBitrate = iBitrate;
 	m_iChannels = iChannels;
 
-	//Source voice
-	m_pXAudio2->CreateSourceVoice(&m_pSourceVoice,(WAVEFORMATEX*)&wfx, NULL , 1.0f, this);
+	// Source voice
+	m_pXAudio2->CreateSourceVoice(&m_pSourceVoice,(WAVEFORMATEX*)&wfx, NULL, 1.0f, this);
 
-	//Start sound
+	// Start sound
 	m_pSourceVoice->Start( 0 );
 
 	m_bInitialized = true;
@@ -186,7 +186,7 @@ float CDVDAudio::GetDelay()
 		delay = (__int64)(0.008f * DVD_TIME_BASE);
   		delay += ((__int64)GetBytesInBuffer() * DVD_TIME_BASE) / (m_iBitrate * m_iChannels * 2);
 
-		return delay;
+		return (float)delay;
 	}
 
 	return 0LL;

@@ -6,6 +6,7 @@
 using namespace std;
 
 CButtonTranslator g_buttonTranslator;
+extern CStdString g_LoadErrorStr;
 
 CButtonTranslator::CButtonTranslator()
 {
@@ -21,10 +22,11 @@ bool CButtonTranslator::Load()
 	TiXmlDocument xmlDoc;
 
 	CLog::Log(LOGINFO, "Loading D:\\keymap.xml");
+
 	// Load the config file
 	if (!xmlDoc.LoadFile("D:\\keymap.xml"))
 	{
-//		g_LoadErrorStr.Format("Q:\\keymap.xml, Line %d\n%s", xmlDoc.ErrorRow(), xmlDoc.ErrorDesc()); //TODO
+		g_LoadErrorStr.Format("D:\\keymap.xml, Line %d\n%s", xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
 		return false;
 	}
 
@@ -32,7 +34,7 @@ bool CButtonTranslator::Load()
 	CStdString strValue = pRoot->Value();
 	if ( strValue != "keymap")
 	{
-//		g_LoadErrorStr.Format("Q:\\keymap.xml Doesn't contain <keymap>"); //TODO
+		g_LoadErrorStr.Format("Q:\\keymap.xml Doesn't contain <keymap>");
 		return false;
 	}
 
@@ -193,7 +195,7 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
 	else
 		CLog::Log(LOGERROR, "Window Translator: Can't find window %s", strWindow.c_str());
 
-	//CLog::Log(LOGDEBUG, "CButtonTranslator::TranslateWindowString(%s) returned Window ID (%i)", szWindow, wWindowID);
+	CLog::Log(LOGDEBUG, "CButtonTranslator::TranslateWindowString(%s) returned Window ID (%i)", szWindow, wWindowID);
 	return wWindowID;
 }
 
