@@ -43,6 +43,14 @@ IXAudio2* CAudioContext::GetXAudio2Device()
 	return m_pXAudio2;
 }
 
+void CAudioContext::SetVolume(int iLevel)
+{
+	if(!m_bInitialized)
+		return;
+	
+	m_pMasteringVoice->SetVolume(iLevel);
+}
+
 void CAudioContext::DeInitialize()
 {
 	if(m_pMasteringVoice)

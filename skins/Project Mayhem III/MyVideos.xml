@@ -110,7 +110,7 @@
 			<onright>2</onright>
 			<onup>1</onup>
 			<ondown>1</ondown>
-			<texturefocus>home-focus.png</texturefocus>
+			<texturefocus>homebuttonsmallfocus.png</texturefocus>
 			<texturenofocus>homebuttonsmall.png</texturenofocus>
 			<textoffsetx>52</textoffsetx>
 			<textoffsety>-2</textoffsety>

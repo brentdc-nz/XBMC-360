@@ -6,10 +6,10 @@
 #include "..\GUIWindowManager.h"
 #include "..\..\cores\VideoRenderers\RenderManager.h"
 
-#define BLUE_BAR                          0
-#define LABEL_ROW1                       10
-#define LABEL_ROW2                       11
-#define LABEL_ROW3                       12
+#define BLUE_BAR		0
+#define LABEL_ROW1		10
+#define LABEL_ROW2		11
+#define LABEL_ROW3		12
 
 CGUIWindowFullScreen::CGUIWindowFullScreen(void)
     : CGUIWindow(WINDOW_FULLSCREEN_VIDEO, "VideoFullScreen.xml")
@@ -21,16 +21,55 @@ CGUIWindowFullScreen::~CGUIWindowFullScreen(void)
 {
 }
 
+void CGUIWindowFullScreen::PreloadDialog(unsigned int windowID)
+{
+	CGUIWindow *pWindow = g_windowManager.GetWindow(windowID);
+	if (pWindow) 
+	{
+		pWindow->Initialize();
+		pWindow->DynamicResourceAlloc(false);
+		pWindow->AllocResources(false);
+	}
+}
+
+void CGUIWindowFullScreen::UnloadDialog(unsigned int windowID)
+{
+	CGUIWindow *pWindow = g_windowManager.GetWindow(windowID);
+	if (pWindow) 
+	{
+		pWindow->FreeResources(pWindow->GetLoadOnDemand());
+	}
+}
+
+void CGUIWindowFullScreen::AllocResources(bool forceLoad)
+{
+	CGUIWindow::AllocResources();
+
+	PreloadDialog(WINDOW_DIALOG_SEEK_BAR);
+}
+
+void CGUIWindowFullScreen::FreeResources(bool forceUnload)
+{
+	DynamicResourceAlloc(true);
+
+	UnloadDialog(WINDOW_DIALOG_SEEK_BAR);
+
+	CGUIWindow::FreeResources();
+}
+
+
 bool CGUIWindowFullScreen::OnAction(const CAction &action)
 {
 	if (g_application.m_pPlayer != NULL && g_application.m_pPlayer->OnAction(action))
 		return true;
 
+	CGUIDialogSeekBar* pDialogSeekBar = (CGUIDialogSeekBar*)g_windowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR);
+
 	switch (action.GetID())
 	{
 		case ACTION_SHOW_GUI:
 		{
-			// switch back to the menu
+			// Switch back to the menu
 			OutputDebugString("Switching to GUI\n");
 			g_windowManager.PreviousWindow();
 			OutputDebugString("Now in GUI\n");
@@ -39,7 +78,10 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 		break;
 		
 		case ACTION_STEP_BACK:
-		{
+		{	
+			pDialogSeekBar->Show();
+			pDialogSeekBar->ResetTimer();
+
 			g_application.m_pPlayer->Seek(false, false);
 			return true;
 		}
@@ -47,6 +89,9 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 
 		case ACTION_STEP_FORWARD:
 		{
+			pDialogSeekBar->Show();
+			pDialogSeekBar->ResetTimer();
+
 			g_application.m_pPlayer->Seek(true, false);
 			return true;
 		}
@@ -54,6 +99,9 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 
 		case ACTION_BIG_STEP_BACK:
 		{
+			pDialogSeekBar->Show();
+			pDialogSeekBar->ResetTimer();
+
 			g_application.m_pPlayer->Seek(false, true);
 			return true;
 		}
@@ -61,6 +109,9 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 
 		case ACTION_BIG_STEP_FORWARD:
 		{
+			pDialogSeekBar->Show();
+			pDialogSeekBar->ResetTimer();
+
 			g_application.m_pPlayer->Seek(true, true);
 			return true;
 		}
@@ -161,7 +212,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
 
 	if (g_infoManager.GetBool(PLAYER_SHOWCODEC))
 	{
-		// show audio codec info
+		// Show audio codec info
 		CStdString strAudio, strVideo, strGeneral;
 		
 		g_application.m_pPlayer->GetAudioInfo(strAudio);
@@ -171,7 +222,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
 			OnMessage(msg);
 		}
 
-		// show video codec info
+		// Show video codec info
 		g_application.m_pPlayer->GetVideoInfo(strVideo);
 		{
 			CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW2);
@@ -179,7 +230,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
 			OnMessage(msg);
 		}
 
-		// show general info
+		// Show general info
 		g_application.m_pPlayer->GetGeneralInfo(strGeneral);
 		{
 			CStdString strGeneralFPS;
@@ -208,6 +259,15 @@ void CGUIWindowFullScreen::RenderFullScreen()
 		SET_CONTROL_VISIBLE(LABEL_ROW3);
 		SET_CONTROL_VISIBLE(BLUE_BAR);
 	}
+	else
+	{
+		SET_CONTROL_HIDDEN(LABEL_ROW1);
+		SET_CONTROL_HIDDEN(LABEL_ROW2);
+		SET_CONTROL_HIDDEN(LABEL_ROW3);
+		SET_CONTROL_HIDDEN(BLUE_BAR);
+	}
 
 	CGUIWindow::Render();
+
+	g_windowManager.RenderDialogs();
 }

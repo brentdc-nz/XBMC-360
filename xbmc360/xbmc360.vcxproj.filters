@@ -374,6 +374,9 @@
     <ClInclude Include="cores\PlayerCoreFactory.h">
       <Filter>Header Files\cores</Filter>
     </ClInclude>
+    <ClInclude Include="guilib\dialogs\GUIDialogSeekBar.h">
+      <Filter>Header Files\guilib\dialogs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -624,6 +627,9 @@
     </ClCompile>
     <ClCompile Include="cores\PlayerCoreFactory.cpp">
       <Filter>Source Files\cores</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\dialogs\GUIDialogSeekBar.cpp">
+      <Filter>Source Files\guilib\dialogs</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -78,11 +78,8 @@
 
 //Dialogs
 #define WINDOW_DIALOG_BUTTON_MENU         10111
+#define WINDOW_DIALOG_SEEK_BAR            10115
 
-/*!
-  \ingroup actionkeys
-  \brief 
-  */
 class CKey
 {
 public:
@@ -95,10 +92,6 @@ private:
 	int m_iButtonCode;
 };
 
-/*!
-  \ingroup actionkeys
-  \brief 
-  */
 class CAction
 {
 public:

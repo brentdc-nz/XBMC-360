@@ -9,6 +9,9 @@ public:
 	CGUIWindowFullScreen(void);
 	virtual ~CGUIWindowFullScreen(void);
 
+	virtual void AllocResources(bool forceLoad = false );
+	virtual void FreeResources(bool forceUnload = false);
+
 	virtual bool OnAction(const CAction &action);
 	virtual bool OnMessage(CGUIMessage& message);
 
@@ -16,6 +19,10 @@ public:
 
 	void RenderFullScreen();
 	bool NeedRenderFullScreen();
+
+private:
+	void PreloadDialog(unsigned int windowID);
+	void UnloadDialog(unsigned int windowID);
 };
 
 #endif //GUILIB_GUIWINDOWFULLSCREEN_H

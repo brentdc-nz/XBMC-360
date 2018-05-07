@@ -8,6 +8,8 @@
 #include "utils\Stopwatch.h"
 #include "utils\Splash.h"
 
+#include "guilib\dialogs\GUIDialogSeekBar.h"
+
 class CApplication: public CXBApplicationEX, public IPlayerCallback, public IMsgTargetCallback
 {
 public:
@@ -58,6 +60,8 @@ public:
 
 	DWORD m_dwSkinTime;
 	IPlayer* m_pPlayer;
+
+	CGUIDialogSeekBar m_guiDialogSeekBar;
 
 protected:
 	bool ProcessGamepad(/*float frameTime*/);

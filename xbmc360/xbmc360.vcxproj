@@ -207,6 +207,7 @@
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <PreschedulingOptimization>true</PreschedulingOptimization>
       <RegisterReservation>true</RegisterReservation>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -280,6 +281,7 @@
     <ClInclude Include="filesystem\HDDirectory.h" />
     <ClInclude Include="guilib\AudioContext.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogButtonMenu.h" />
+    <ClInclude Include="guilib\dialogs\GUIDialogSeekBar.h" />
     <ClInclude Include="guilib\GraphicContext.h" />
     <ClInclude Include="guilib\GUIButtonControl.h" />
     <ClInclude Include="guilib\GUIControl.h" />
@@ -372,6 +374,7 @@
     <ClCompile Include="filesystem\HDDirectory.cpp" />
     <ClCompile Include="guilib\AudioContext.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogButtonMenu.cpp" />
+    <ClCompile Include="guilib\dialogs\GUIDialogSeekBar.cpp" />
     <ClCompile Include="guilib\GraphicContext.cpp" />
     <ClCompile Include="guilib\GUIButtonControl.cpp" />
     <ClCompile Include="guilib\GUIControl.cpp" />

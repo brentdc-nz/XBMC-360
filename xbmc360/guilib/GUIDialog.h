@@ -14,12 +14,17 @@ public:
 
 	virtual bool IsDialog() const { return true; };
 	virtual bool IsRunning() const { return m_bRunning; }
-	void DoModal(DWORD dwParentId, int iWindowID = WINDOW_INVALID); // modal
+
+	void DoModal(DWORD dwParentId, int iWindowID = WINDOW_INVALID); // Modal
+	void Show(); // Modeless
+
 	virtual bool OnBack(int actionID);
 	virtual void Close(bool forceClose = false);
+	virtual bool IsModalDialog() const { return m_bModal; };
 
 protected:
 	bool m_bRunning;
+	bool m_bModal;
 };
 
 #endif //GUILIB_CGUIDIALOG_H

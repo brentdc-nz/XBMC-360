@@ -54,6 +54,8 @@ public:
 
 	virtual bool OnBack(int actionID);
 
+	virtual bool IsModalDialog() const { return false; };
+
 	/*! \brief Clear the background (if necessary) prior to rendering the window
 	*/
 	virtual void ClearBackground();

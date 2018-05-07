@@ -150,7 +150,7 @@
 			<onright>9</onright>
 			<onup>9</onup>
 			<ondown>5</ondown>
-			<texturefocus>home-focus.png</texturefocus>
+			<texturefocus>homebuttonsmallfocus.png</texturefocus>
 			<texturenofocus>homebuttonsmall.png</texturenofocus>
 			<textoffsetx>52</textoffsetx>
 			<textoffsety>-2</textoffsety>
@@ -172,7 +172,7 @@
 			<onright>9</onright>
 			<onup>4</onup>
 			<ondown>6</ondown>
-			<texturefocus>home-focus.png</texturefocus>
+			<texturefocus>homebuttonsmallfocus.png</texturefocus>
 			<texturenofocus>homebuttonsmall.png</texturenofocus>
 			<textoffsetx>52</textoffsetx>
 			<textoffsety>-2</textoffsety>
@@ -194,7 +194,7 @@
 			<onright>9</onright>
 			<onup>5</onup>
 			<ondown>7</ondown>
-			<texturefocus>home-focus.png</texturefocus>
+			<texturefocus>homebuttonsmallfocus.png</texturefocus>
 			<texturenofocus>homebuttonsmall.png</texturenofocus>
 			<textoffsetx>52</textoffsetx>
 			<textoffsety>-2</textoffsety>
@@ -216,7 +216,7 @@
 			<onright>9</onright>
 			<onup>6</onup>
 			<ondown>8</ondown>
-			<texturefocus>home-focus.png</texturefocus>
+			<texturefocus>homebuttonsmallfocus.png</texturefocus>
 			<texturenofocus>homebuttonsmall.png</texturenofocus>
 			<textoffsetx>52</textoffsetx>
 			<textoffsety>-2</textoffsety>
@@ -238,7 +238,7 @@
 			<onright>9</onright>
 			<onup>7</onup>
 			<ondown>9</ondown>
-			<texturefocus>home-focus.png</texturefocus>
+			<texturefocus>homebuttonsmallfocus.png</texturefocus>
 			<texturenofocus>homebuttonsmall.png</texturenofocus>
 			<textoffsetx>52</textoffsetx>
 			<textoffsety>-2</textoffsety>
@@ -298,7 +298,7 @@
 			<onright>10</onright>
 			<onup>8</onup>
 			<ondown>4</ondown>
-			<texturefocus>home-focus.png</texturefocus>
+			<texturefocus>homebuttonsmallfocus.png</texturefocus>
 			<texturenofocus>homebuttonsmall.png</texturenofocus>
 			<textoffsetx>52</textoffsetx>
 			<textoffsety>-2</textoffsety>

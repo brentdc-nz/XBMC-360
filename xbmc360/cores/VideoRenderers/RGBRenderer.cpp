@@ -13,43 +13,43 @@ namespace RGBRendererShaders
 // constant table.
 //-------------------------------------------------------------------------------------
 const char* g_strVertexShaderProgram =
-    " float4x4 matWVP : register(c0);              "
-    "                                              "
-    " struct VS_IN                                 "
-    " {                                            "
-    "     float4 ObjPos   : POSITION;              "  // Object space position 
-    "     float2 TexCoord : TEXCOORD;              "
-    " };                                           "
-    "                                              "
-    " struct VS_OUT                                "
-    " {                                            "
-    "     float4 ProjPos  : POSITION;              "  // Projected space position 
-    "     float2 TexCoord : TEXCOORD;              "
-    " };                                           "
-    "                                              "
-    " VS_OUT main( VS_IN In )                      "
-    " {                                            "
-    "     VS_OUT Out;                              "
-    "     Out.ProjPos = mul( matWVP, In.ObjPos );  "  // Transform vertex into
-    "     Out.TexCoord = In.TexCoord;              "
-    "     return Out;                              "
-    " }                                            ";
+	" float4x4 matWVP : register(c0);              "
+	"                                              "
+	" struct VS_IN                                 "
+	" {                                            "
+	"     float4 ObjPos   : POSITION;              "  // Object space position 
+	"     float2 TexCoord : TEXCOORD;              "
+	" };                                           "
+	"                                              "
+	" struct VS_OUT                                "
+	" {                                            "
+	"     float4 ProjPos  : POSITION;              "  // Projected space position 
+	"     float2 TexCoord : TEXCOORD;              "
+	" };                                           "
+	"                                              "
+	" VS_OUT main( VS_IN In )                      "
+	" {                                            "
+	"     VS_OUT Out;                              "
+	"     Out.ProjPos = mul( matWVP, In.ObjPos );  "  // Transform vertex into
+	"     Out.TexCoord = In.TexCoord;              "
+	"     return Out;                              "
+	" }                                            ";
 
 //-------------------------------------------------------------------------------------
 // Pixel shader
 //-------------------------------------------------------------------------------------
 const char* g_strPixelShaderProgram =
-    " struct PS_IN                                 "
-    " {                                            "
-    "     float2 TexCoord : TEXCOORD;              "
-    " };                                           "  // the vertex shader
-    "                                              "
-    " sampler detail;                              "
-    "                                              "
-    " float4 main( PS_IN In ) : COLOR              "
-    " {                                            "
-    "     return tex2D( detail, In.TexCoord );     "  // Output color
-    " }                                            ";
+	" struct PS_IN                                 "
+	" {                                            "
+	"     float2 TexCoord : TEXCOORD;              "
+	" };                                           "  // the vertex shader
+	"                                              "
+	" sampler detail;                              "
+	"                                              "
+	" float4 main( PS_IN In ) : COLOR              "
+	" {                                            "
+	"     return tex2D( detail, In.TexCoord );     "  // Output color
+	" }                                            ";
 }
 
 CRGBRenderer::CRGBRenderer(LPDIRECT3DDEVICE9 pDevice)
@@ -126,13 +126,13 @@ bool CRGBRenderer::PreInit()
                                     &pVertexErrorMsg,
                                     NULL );
 
-    // Create vertex shader.
-    m_pd3dDevice->CreateVertexShader( ( DWORD* )pVertexShaderCode->GetBufferPointer(),
+	// Create vertex shader.
+	m_pd3dDevice->CreateVertexShader( ( DWORD* )pVertexShaderCode->GetBufferPointer(),
                                       &m_pVertexShader );
 
-    // Compile pixel shader.
+	// Compile pixel shader.
 	ID3DXBuffer* pPixelShaderCode;
-    ID3DXBuffer* pPixelErrorMsg;
+	ID3DXBuffer* pPixelErrorMsg;
 
 	D3DXCompileShader( RGBRendererShaders::g_strPixelShaderProgram,
                             ( UINT )strlen( RGBRendererShaders::g_strPixelShaderProgram ),
@@ -220,23 +220,23 @@ void CRGBRenderer::ManageDisplay()
 	m_iActivePosY = iPosY;
 
 	COLORVERTEX Vertices[] =
-    {
-        {(FLOAT)iPosX, (FLOAT)iPosY,  0.0f, 0, 0 ,},
-        {(FLOAT)iPosX+iWidth, (FLOAT)iPosY, 0.0f,  1, 0 ,},
-        {(FLOAT)iPosX, (FLOAT)iHeight+(FLOAT)iPosY, 0.0f,  0, 1 ,},
-	    {(FLOAT)iPosX+(FLOAT)iWidth, (FLOAT)iPosY+(FLOAT)iHeight, 0.0f,  1, 1 ,},
-    };
+	{
+		{(FLOAT)iPosX, (FLOAT)iPosY,  0.0f, 0, 0 ,},
+		{(FLOAT)iPosX+iWidth, (FLOAT)iPosY, 0.0f,  1, 0 ,},
+		{(FLOAT)iPosX, (FLOAT)iHeight+(FLOAT)iPosY, 0.0f,  0, 1 ,},
+		{(FLOAT)iPosX+(FLOAT)iWidth, (FLOAT)iPosY+(FLOAT)iHeight, 0.0f,  1, 1 ,},
+	};
 
-    COLORVERTEX* pVertices;
-    m_pVB->Lock( 0, 0, ( void** )&pVertices, 0 );
-    memcpy( pVertices, Vertices, 4 * sizeof( COLORVERTEX ) );
-    m_pVB->Unlock();
+	COLORVERTEX* pVertices;
+	m_pVB->Lock( 0, 0, ( void** )&pVertices, 0 );
+	memcpy( pVertices, Vertices, 4 * sizeof( COLORVERTEX ) );
+	   m_pVB->Unlock();
 
-    // Initialize the world and view matrix
-    D3DXMatrixIdentity( &m_matWorld );
-    D3DXMatrixIdentity( &m_matView );
+	// Initialize the world and view matrix
+	D3DXMatrixIdentity( &m_matWorld );
+	D3DXMatrixIdentity( &m_matView );
 
-    // Initialize the projection matrix
+	// Initialize the projection matrix
 	D3DXMatrixOrthoOffCenterLH(&m_matProj, 0, (float)m_iScreenWidth, (float)m_iScreenHeight, 0, 0.0f, 1.0f ); 
 }
 
@@ -310,15 +310,15 @@ void CRGBRenderer::Render()
     m_pd3dDevice->SetSamplerState( 0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR );
 
 	// We are passing the vertices down a "stream", so first we need
-    // to specify the source of that stream, which is our vertex buffer. 
-    // Then we need to let D3D know what vertex and pixel shaders to use. 
-    m_pd3dDevice->SetVertexDeclaration( m_pVertexDecl );
+	// to specify the source of that stream, which is our vertex buffer. 
+	// Then we need to let D3D know what vertex and pixel shaders to use. 
+	m_pd3dDevice->SetVertexDeclaration( m_pVertexDecl );
 	m_pd3dDevice->SetStreamSource( 0, m_pVB, 0, sizeof( COLORVERTEX ) );
-    m_pd3dDevice->SetVertexShader( m_pVertexShader );
-    m_pd3dDevice->SetPixelShader( m_pPixelShader );
+	m_pd3dDevice->SetVertexShader( m_pVertexShader );
+	m_pd3dDevice->SetPixelShader( m_pPixelShader );
 
 	m_pd3dDevice->SetTexture( 0, m_pTexture );
-    // Draw the vertices in the vertex buffer
+	// Draw the vertices in the vertex buffer
 	m_pd3dDevice->DrawPrimitive( D3DPT_TRIANGLESTRIP, 0, 2 );
 	m_pd3dDevice->SetTexture( 0,  NULL );
 

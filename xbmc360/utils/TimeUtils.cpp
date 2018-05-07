@@ -30,7 +30,7 @@ void CTimeUtils::UpdateFrameTime()
 
 unsigned int CTimeUtils::GetFrameTime()
 {
-	// we don't have an actual frametime on Xbox so just return timeGetTime()
+	// We don't have an actual frametime on Xbox so just return timeGetTime()
 #ifdef _XBOX
 	UpdateFrameTime();
 #endif
@@ -39,5 +39,5 @@ unsigned int CTimeUtils::GetFrameTime()
 
 unsigned int CTimeUtils::GetTimeMS()
 {
-	return 0; //timeGetTime(); //MARTY FIXME WIP
+	return GetTickCount();
 }

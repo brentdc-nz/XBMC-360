@@ -33,11 +33,13 @@ public:
 	void UnloadNotOnDemandWindows();
 	CGUIWindow* GetWindow(int id) const;
 	int GetActiveWindow() const;
+	bool HasDialogOnScreen() const;
 	bool IsWindowActive(int id);
 	void PreviousWindow();
 	void Delete(int id);
 	void Remove(int id);
 	void RouteToWindow(CGUIWindow* pWindow);
+	void AddModeless(CGUIWindow* dialog);
 	void UnRoute(DWORD dwID);
 	void ChangeActiveWindow(int iNewID);
 	void ActivateWindow(int iWindowID, bool swappingWindows = false);

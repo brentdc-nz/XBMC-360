@@ -136,6 +136,7 @@ void CGUIWindowManager::Add(CGUIWindow* pWindow)
                 pWindow->GetID());
 			return;
 		}
+
 		m_mapWindows.insert(pair<DWORD, CGUIWindow *>(pWindow->GetID() + i, pWindow));
 	}
 }
@@ -186,6 +187,11 @@ int CGUIWindowManager::GetActiveWindow() const
 	if (!m_windowHistory.empty())
 		return m_windowHistory.top();
 	return WINDOW_INVALID;
+}
+
+bool CGUIWindowManager::HasDialogOnScreen() const
+{
+	return (m_activeDialogs.size() > 0);
 }
 
 bool CGUIWindowManager::IsWindowActive(int id)
@@ -298,6 +304,16 @@ void CGUIWindowManager::RouteToWindow(CGUIWindow* pWindow)
 	m_activeDialogs.push_back(pWindow);
 }
 
+void CGUIWindowManager::AddModeless(CGUIWindow* dialog)
+{
+	CSingleLock lock(g_graphicsContext);
+	// Only add the window if it's not already added
+	for (iDialog it = m_activeDialogs.begin(); it != m_activeDialogs.end(); ++it)
+		if (*it == dialog) return;
+
+	m_activeDialogs.push_back(dialog);
+}
+
 void CGUIWindowManager::UnRoute(DWORD dwID)
 {
 	vector<CGUIWindow*>::iterator it = m_activeDialogs.begin();
@@ -368,19 +384,20 @@ bool CGUIWindowManager::OnAction(const CAction &action)
 	// Have we have routed windows...
 	if (m_activeDialogs.size() > 0)
 	{
-		// ...send the action to the top most.
-		CGUIWindow *pWindow = m_activeDialogs[m_activeDialogs.size() - 1];
-//		if (!pWindow->IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
-		  return pWindow->OnAction(action);
-		
-		  return true; // don't do anything with this action for now
+		// Send the action to the top most.
+		CGUIWindow *dialog = m_activeDialogs[m_activeDialogs.size() - 1];
+		if (dialog->IsModalDialog())
+		{ 
+			// We have the topmost modal dialog
+			return dialog->OnAction(action);
+		}
 	}
-	else
-	{
-		CGUIWindow* pWindow = GetWindow(GetActiveWindow());
-			if (pWindow)
-			  return pWindow->OnAction(action);
-	}
+ 
+	CGUIWindow* window = GetWindow(GetActiveWindow());
+	
+	if (window)
+		return window->OnAction(action);
+
 	return false;
 }
 

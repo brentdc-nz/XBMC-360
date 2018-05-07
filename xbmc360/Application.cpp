@@ -164,8 +164,8 @@ bool CApplication::Initialize()
 	g_windowManager.Add(new CGUIWindowSystemInfo);
 
 	// Dialogs
-	g_windowManager.Add(new CGUIDialogButtonMenu); // window id = 111
-
+	g_windowManager.Add(new CGUIDialogButtonMenu);	// window id = 111
+	g_windowManager.Add(&m_guiDialogSeekBar);		// window id = 115
 	g_windowManager.Initialize();
 
 	g_windowManager.ActivateWindow(WINDOW_HOME);
@@ -554,7 +554,7 @@ bool CApplication::NeedRenderFullScreen()
 {
 	if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
 	{
-//		if (g_windowManager.HasDialogOnScreen()) return true;
+		if (g_windowManager.HasDialogOnScreen()) return true;
  
 		CGUIWindowFullScreen *pFSWin = (CGUIWindowFullScreen *)g_windowManager.GetWindow(WINDOW_FULLSCREEN_VIDEO);
 		if (!pFSWin)

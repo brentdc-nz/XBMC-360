@@ -7,6 +7,7 @@ CGUIDialog::CGUIDialog(int id, const CStdString &xmlFile)
     : CGUIWindow(id, xmlFile)
 {
 	m_bRunning = false;
+	m_bModal = true;
 }
 
 CGUIDialog::~CGUIDialog(void)
@@ -32,6 +33,23 @@ void CGUIDialog::DoModal(DWORD dwParentId, int iWindowID /*= WINDOW_INVALID */)
 
 	lock.Leave();
 }
+
+void CGUIDialog::Show()
+{
+	// Lock graphic context here as it is sometimes called from non rendering threads
+	// maybe we should have a critical section per window instead??
+	CSingleLock lock(g_graphicsContext);
+
+	m_bModal = false;
+ 
+	m_bRunning = true;
+	g_windowManager.AddModeless(this);
+
+	// Activate this window...
+	CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0);
+	OnMessage(msg);
+}
+
 
 bool CGUIDialog::OnMessage(CGUIMessage& message)
 {
