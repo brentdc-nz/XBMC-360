@@ -30,10 +30,8 @@ void CTimeUtils::UpdateFrameTime()
 
 unsigned int CTimeUtils::GetFrameTime()
 {
-	// We don't have an actual frametime on Xbox so just return timeGetTime()
-#ifdef _XBOX
 	UpdateFrameTime();
-#endif
+
 	return frameTime;
 }
 

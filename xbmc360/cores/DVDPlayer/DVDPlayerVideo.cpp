@@ -12,7 +12,7 @@
 #include "..\VideoRenderers\RenderManager.h"
 #include "..\..\utils\SingleLock.h"
 
-#include "DVDUtils\memutil.h"
+#include "DVDUtils\DVDTimeUtils.h"
 
 CDVDPlayerVideo::CDVDPlayerVideo(CDVDClock* pClock/*, CDVDOverlayContainer* pOverlayContainer*/ )
 : CThread()

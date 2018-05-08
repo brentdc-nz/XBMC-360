@@ -161,9 +161,6 @@
     <ClInclude Include="cores\DVDPlayer\DVDDemuxers\DVDDemuxUtils.h">
       <Filter>Header Files\cores\DVDPlayer\DVDDemuxers</Filter>
     </ClInclude>
-    <ClInclude Include="cores\DVDPlayer\DVDUtils\memutil.h">
-      <Filter>Header Files\cores\DVDPlayer\DVDUtils</Filter>
-    </ClInclude>
     <ClInclude Include="utils\CriticalSection.h">
       <Filter>Header Files\utils</Filter>
     </ClInclude>
@@ -377,6 +374,9 @@
     <ClInclude Include="guilib\dialogs\GUIDialogSeekBar.h">
       <Filter>Header Files\guilib\dialogs</Filter>
     </ClInclude>
+    <ClInclude Include="cores\DVDPlayer\DVDUtils\DVDTimeUtils.h">
+      <Filter>Header Files\cores\DVDPlayer\DVDUtils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -429,9 +429,6 @@
     </ClCompile>
     <ClCompile Include="cores\DVDPlayer\DVDDemuxers\DVDDemuxUtils.cpp">
       <Filter>Source Files\cores\DVDPlayer\DVDDemuxers</Filter>
-    </ClCompile>
-    <ClCompile Include="cores\DVDPlayer\DVDUtils\memutil.cpp">
-      <Filter>Source Files\cores\DVDPlayer\DVDUtils</Filter>
     </ClCompile>
     <ClCompile Include="utils\CriticalSection.cpp">
       <Filter>Source Files\utils</Filter>
@@ -630,6 +627,9 @@
     </ClCompile>
     <ClCompile Include="guilib\dialogs\GUIDialogSeekBar.cpp">
       <Filter>Source Files\guilib\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="cores\DVDPlayer\DVDUtils\DVDTimeUtils.cpp">
+      <Filter>Source Files\cores\DVDPlayer\DVDUtils</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

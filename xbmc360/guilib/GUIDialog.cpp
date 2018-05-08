@@ -50,7 +50,6 @@ void CGUIDialog::Show()
 	OnMessage(msg);
 }
 
-
 bool CGUIDialog::OnMessage(CGUIMessage& message)
 {
 	switch ( message.GetMessage() )

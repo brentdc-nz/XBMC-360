@@ -269,7 +269,7 @@
     <ClInclude Include="cores\DVDPlayer\DVDPlayerAudio.h" />
     <ClInclude Include="cores\DVDPlayer\DVDPlayerVideo.h" />
     <ClInclude Include="cores\DVDPlayer\DVDStreamInfo.h" />
-    <ClInclude Include="cores\DVDPlayer\DVDUtils\memutil.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDUtils\DVDTimeUtils.h" />
     <ClInclude Include="cores\IPlayer.h" />
     <ClInclude Include="cores\PlayerCoreFactory.h" />
     <ClInclude Include="cores\VideoRenderers\BaseRenderer.h" />
@@ -364,7 +364,7 @@
     </ClCompile>
     <ClCompile Include="cores\DVDPlayer\DVDPlayerVideo.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDStreamInfo.cpp" />
-    <ClCompile Include="cores\DVDPlayer\DVDUtils\memutil.cpp" />
+    <ClCompile Include="cores\DVDPlayer\DVDUtils\DVDTimeUtils.cpp" />
     <ClCompile Include="cores\PlayerCoreFactory.cpp" />
     <ClCompile Include="cores\VideoRenderers\RenderManager.cpp" />
     <ClCompile Include="cores\VideoRenderers\RGBRenderer.cpp" />

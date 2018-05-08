@@ -2,7 +2,7 @@
 #include "..\DVDClock.h"
 #include "DVDDemuxUtils.h"
 
-#include "..\DVDUtils\memutil.h"
+#include "..\DVDUtils\DVDTimeUtils.h"
 #include "..\..\..\utils\thread.h"
 #include "..\..\..\utils\Log.h"
 
