@@ -16,7 +16,7 @@ public:
 	CDVDAudio();
 	~CDVDAudio();
 
-	bool Create(int iChannels, int iBitrate, int iBitsPerSample, bool bPasstrough);
+	bool Create(int iChannels, int iBitrate, int iBitsPerSample);
 	void Destroy();
 
 	DWORD AddPackets(unsigned char* data, DWORD len);
@@ -24,7 +24,7 @@ public:
 	void Pause();
 	void Resume();
 	int GetBytesInBuffer();
-	float GetDelay();
+	__int64 GetDelay();
 
 	// XAudio2 Callbacks
 	void OnStreamEnd() { SetEvent( m_hBufferEndEvent ); }

@@ -52,6 +52,11 @@ public:
 	* returns the bitspersample for the decoded audio stream (eg 16 bits)
 	*/
 	virtual int GetBitsPerSample() = 0;
+
+	/*
+	* should return codecs name
+	*/
+	virtual const char* GetName() = 0;
 };
 
 #endif //H_CDVDAUDIOCODEC

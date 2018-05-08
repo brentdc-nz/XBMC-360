@@ -36,6 +36,7 @@ public:
 	virtual int GetChannels();
 	virtual int GetSampleRate();
 	virtual int GetBitsPerSample();
+	virtual const char* GetName() { return "FFmpeg"; }
 
 protected:
 	AVCodecContext* m_pCodecContext;

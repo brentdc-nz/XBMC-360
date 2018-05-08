@@ -26,7 +26,7 @@ CDVDAudio::~CDVDAudio()
 	DeleteCriticalSection(&m_CriticalSection);
 }
 
-bool CDVDAudio::Create(int iChannels, int iBitrate, int iBitsPerSample, bool bPasstrough)
+bool CDVDAudio::Create(int iChannels, int iBitrate, int iBitsPerSample)
 {
 	m_pXAudio2 = g_audioContext.GetXAudio2Device();
 
@@ -177,7 +177,7 @@ int CDVDAudio::GetBytesInBuffer()
 	return iSize;
 }
 
-float CDVDAudio::GetDelay()
+__int64 CDVDAudio::GetDelay()
 {
 	__int64 delay;
 
@@ -186,7 +186,7 @@ float CDVDAudio::GetDelay()
 		delay = (__int64)(0.008f * DVD_TIME_BASE);
   		delay += ((__int64)GetBytesInBuffer() * DVD_TIME_BASE) / (m_iBitrate * m_iChannels * 2);
 
-		return (float)delay;
+		return delay;
 	}
 
 	return 0LL;

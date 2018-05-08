@@ -24,20 +24,6 @@ typedef struct stDVDAudioFrame
 	unsigned int size;
 } DVDAudioFrame;
 
-class CPTSQueue
-{
-private:
-	typedef struct {__int64 pts; __int64 timestamp;} TPTSItem;
-	TPTSItem m_currentPTSItem;
-	std::queue<TPTSItem> m_quePTSQueue;
-
-public:
-	CPTSQueue();
-	void Add(__int64 pts, __int64 delay);
-	void Flush();
-	__int64 Current();
-};
-
 class CDVDPlayerAudio : public CThread
 {
 public:
@@ -50,36 +36,36 @@ public:
 	void SetSpeed(int speed);
 	void Flush();
 
-	// waits untill all available data has been rendered  
-//	void WaitForBuffers(); //MARTY FIXME
 	bool AcceptsData()                                    { return !m_messageQueue.IsFull(); }
 	void SendMessage(CDVDMsg* pMsg)                       { m_messageQueue.Put(pMsg); }
 
-	CodecID m_codec;    // codec id of the current active stream
-	int m_iSourceChannels; // number of audio channels for the current active stream
+	// Holds stream information for current playing stream
+	CDVDStreamInfo m_streaminfo;
 
 	CDVDMessageQueue m_messageQueue;
-	CPTSQueue m_ptsQueue;
 
-	__int64 GetCurrentPts()									{ return m_ptsQueue.Current(); }
+	__int64 GetCurrentPts();
 
 	bool IsStalled()										{ return m_Stalled;  }
 
 protected:
 	virtual void OnStartup();
-	virtual void Process();
 	virtual void OnExit();
+	virtual void Process();
 
 	bool InitializeOutputDevice();
 	int DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket);
 
+	// Tries to open a decoder for the given data. 
+	bool OpenDecoder(CDVDStreamInfo &hint);
+
 	bool m_bInitializedOutputDevice;
 	__int64 m_audioClock;
 
-	// for audio decoding
+	// For audio decoding
 	CDVDDemux::DemuxPacket* pAudioPacket;
 	BYTE* audio_pkt_data; // current audio packet
-	int audio_pkt_size; // and current audio packet size
+	int audio_pkt_size; // current audio packet size
 
 	CDVDAudio m_dvdAudio; // audio output device
 	CDVDClock* m_pClock; // dvd master clock

@@ -258,6 +258,7 @@
     <ClInclude Include="cores\DVDPlayer\DVDCodecs\DVDAudioCodec.h" />
     <ClInclude Include="cores\DVDPlayer\DVDCodecs\DVDAudioCodecFFmpeg.h" />
     <ClInclude Include="cores\DVDPlayer\DVDCodecs\DVDCodecUtils.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDCodecs\DVDFactoryCodec.h" />
     <ClInclude Include="cores\DVDPlayer\DVDCodecs\DVDVideoCodec.h" />
     <ClInclude Include="cores\DVDPlayer\DVDCodecs\DVDVideoCodecFFmpeg.h" />
     <ClInclude Include="cores\DVDPlayer\DVDDemuxers\DVDDemux.h" />
@@ -353,6 +354,7 @@
     <ClCompile Include="cores\DVDPlayer\DVDClock.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDCodecs\DVDAudioCodecFFmpeg.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDCodecs\DVDCodecUtils.cpp" />
+    <ClCompile Include="cores\DVDPlayer\DVDCodecs\DVDFactoryCodec.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDCodecs\DVDVideoCodecFFmpeg.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDDemuxers\DVDDemuxFFmpeg.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDDemuxers\DVDDemuxUtils.cpp" />

@@ -377,6 +377,9 @@
     <ClInclude Include="cores\DVDPlayer\DVDUtils\DVDTimeUtils.h">
       <Filter>Header Files\cores\DVDPlayer\DVDUtils</Filter>
     </ClInclude>
+    <ClInclude Include="cores\DVDPlayer\DVDCodecs\DVDFactoryCodec.h">
+      <Filter>Header Files\cores\DVDPlayer\DVDCodecs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -630,6 +633,9 @@
     </ClCompile>
     <ClCompile Include="cores\DVDPlayer\DVDUtils\DVDTimeUtils.cpp">
       <Filter>Source Files\cores\DVDPlayer\DVDUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="cores\DVDPlayer\DVDCodecs\DVDFactoryCodec.cpp">
+      <Filter>Source Files\cores\DVDPlayer\DVDCodecs</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
