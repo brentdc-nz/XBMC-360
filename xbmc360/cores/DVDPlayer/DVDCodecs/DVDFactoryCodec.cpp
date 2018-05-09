@@ -3,20 +3,57 @@
 #include "..\..\..\utils\Log.h"
 
 #include "DVDAudioCodecFFmpeg.h"
+#include "DVDVideoCodecFFmpeg.h"
 
-CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint )
+CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint)
 {
-  CDVDAudioCodec* pCodec = NULL;
+	CDVDVideoCodec* pCodec = NULL;
 
-  // TODO: We only have FFmpeg atm... 
+	// TODO: We only have FFmpeg atm... 
+  
+	pCodec = OpenCodec( new CDVDVideoCodecFFmpeg(), hint ); 
+	if( pCodec ) return pCodec;
 
-  pCodec = OpenCodec( new CDVDAudioCodecFFmpeg(), hint );
-  if( pCodec ) return pCodec;
-
-  return NULL;
+	return NULL;
 }
 
-CDVDAudioCodec* CDVDFactoryCodec::OpenCodec(CDVDAudioCodec* pCodec, CDVDStreamInfo &hint  )
+CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec(CDVDStreamInfo &hint)
+{
+	CDVDAudioCodec* pCodec = NULL;
+
+	// TODO: We only have FFmpeg atm... 
+
+	pCodec = OpenCodec( new CDVDAudioCodecFFmpeg(), hint );
+	if( pCodec ) return pCodec;
+
+	return NULL;
+}
+
+CDVDVideoCodec* CDVDFactoryCodec::OpenCodec(CDVDVideoCodec* pCodec, CDVDStreamInfo &hints)
+{  
+	try
+	{
+		CLog::Log(LOGDEBUG, "FactoryCodec - Video: %s - Opening", pCodec->GetName());
+
+		if( pCodec->Open( hints ) )
+		{
+			CLog::Log(LOGDEBUG, "FactoryCodec - Video: %s - Opened", pCodec->GetName());
+			return pCodec;
+		}
+
+		CLog::Log(LOGDEBUG, "FactoryCodec - Video: %s - Failed", pCodec->GetName());
+		pCodec->Dispose();
+		delete pCodec;
+	}
+	catch(...)
+	{
+		CLog::Log(LOGERROR, "FactoryCodec - Video: Failed with exception");
+	}
+
+	return NULL;
+}
+
+CDVDAudioCodec* CDVDFactoryCodec::OpenCodec(CDVDAudioCodec* pCodec, CDVDStreamInfo &hint)
 {    
 	try
 	{

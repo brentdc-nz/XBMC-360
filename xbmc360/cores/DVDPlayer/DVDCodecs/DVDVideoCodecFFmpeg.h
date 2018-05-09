@@ -21,17 +21,13 @@ public:
 	CDVDVideoCodecFFmpeg();
 	virtual ~CDVDVideoCodecFFmpeg();
 
-	virtual bool Open(CodecID codecID, int iWidth, int iHeight);
-
+	virtual bool Open(CDVDStreamInfo &hints);
 	virtual void Dispose();
-
 	virtual void SetDropState(bool bDrop);
-
 	virtual int Decode(BYTE* pData, int iSize);
-
-	virtual  void Reset();
-
+	virtual void Reset();
 	virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
+	virtual const char* GetName() { return "FFmpeg"; };
 
 private:
 	void GetVideoAspect(AVCodecContext* CodecContext, unsigned int& iWidth, unsigned int& iHeight);

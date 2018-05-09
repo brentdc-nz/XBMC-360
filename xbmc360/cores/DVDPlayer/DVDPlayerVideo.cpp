@@ -5,13 +5,9 @@
 #include "DVDCodecs\DVDCodecUtils.h"
 #include "DVDMessage.h"
 #include "..\..\utils\Log.h"
-
-#include "DVDCodecs\DVDVideoCodecFFmpeg.h" //FIXME - Move to codec factory?
-
-#include <xtl.h>
+#include "DVDCodecs\DVDFactoryCodec.h"
 #include "..\VideoRenderers\RenderManager.h"
 #include "..\..\utils\SingleLock.h"
-
 #include "DVDUtils\DVDTimeUtils.h"
 
 CDVDPlayerVideo::CDVDPlayerVideo(CDVDClock* pClock/*, CDVDOverlayContainer* pOverlayContainer*/ )
@@ -65,7 +61,7 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 		m_autosync = 1; // avoid using frame time as we don't know it accurate
 	}
 
-	// should alway's be NULL!!!!, it will probably crash anyway when deleting m_pVideoCodec here.
+	// Should alway's be NULL!!!!, it will probably crash anyway when deleting m_pVideoCodec here
 	if (m_pVideoCodec)
 	{
 		CLog::Log(LOGFATAL, "CDVDPlayerVideo::OpenStream() m_pVideoCodec != NULL");
@@ -73,18 +69,7 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 	}
 
 	CLog::Log(LOGNOTICE, "Creating video codec with codec id: %i", hint.codec);
-	//MARTY START
-	//m_pVideoCodec = CDVDFactoryCodec::CreateVideoCodec(codecID); //FIXME - Future Expansion past FFMPEG MARTY
-	m_pVideoCodec = new CDVDVideoCodecFFmpeg;
-
-	if (!m_pVideoCodec->Open(hint.codec, hint.width, hint.height))
-	{
-		m_pVideoCodec->Dispose();
-		delete m_pVideoCodec;
-		m_pVideoCodec = NULL;
-		return false;
-	}
-	//MARTY END
+	m_pVideoCodec = CDVDFactoryCodec::CreateVideoCodec( hint );
 
 	if( !m_pVideoCodec )
 	{
@@ -97,7 +82,7 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 	CLog::Log(LOGNOTICE, "Creating video thread");
 	Create();
 
-  return true;
+	return true;
 }
 
 void CDVDPlayerVideo::CloseStream(bool bWaitForBuffers)

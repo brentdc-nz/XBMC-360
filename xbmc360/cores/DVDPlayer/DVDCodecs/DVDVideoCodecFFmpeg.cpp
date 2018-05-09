@@ -22,18 +22,17 @@ CDVDVideoCodecFFmpeg::~CDVDVideoCodecFFmpeg()
 	Dispose();
 }
 
-bool CDVDVideoCodecFFmpeg::Open(CodecID codecID, int iWidth, int iHeight)
+bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints)
 {
 	AVCodec* pCodec;
 
-	/* register all codecs, demux and protocols */
-	//av_log_set_callback(dvdplayer_log); //FIXME MARTY
+	// Register all codecs, demux and protocols
+//	av_log_set_callback(dvdplayer_log); //TODO
 	av_register_all();
 
-	//m_pCodecContext = avcodec_alloc_context();  //Legacy FFMPEG version!
 	m_pCodecContext = avcodec_alloc_context3(NULL);
 
-	pCodec = avcodec_find_decoder(codecID);
+	pCodec = avcodec_find_decoder(hints.codec);
 
 	if (!pCodec)
 	{
@@ -59,9 +58,9 @@ bool CDVDVideoCodecFFmpeg::Open(CodecID codecID, int iWidth, int iHeight)
 	if (m_pCodecContext->time_base.den > 1000 && m_pCodecContext->time_base.num == 1)
     m_pCodecContext->time_base.num = 1000;
 
-	// if we don't do this, then some codecs seem to fail.
-	m_pCodecContext->height = iHeight;
-	m_pCodecContext->width = iWidth;
+	// If we don't do this, then some codecs seem to fail.
+	m_pCodecContext->coded_height = hints.height;
+	m_pCodecContext->coded_width = hints.width;
 
 	// set acceleration
 	//FIXME Works with the 360 PPC CPU??

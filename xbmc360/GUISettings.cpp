@@ -241,7 +241,7 @@ void CGUISettings::SaveXML(TiXmlNode *pRootNode)
 			if (pChild)
 			{
 				// successfully added (or found) our group
-			   TiXmlElement newElement(strSplit[1]);
+				TiXmlElement newElement(strSplit[1]);
 				TiXmlNode *pNewNode = pChild->InsertEndChild(newElement);
 				if (pNewNode)
 				{

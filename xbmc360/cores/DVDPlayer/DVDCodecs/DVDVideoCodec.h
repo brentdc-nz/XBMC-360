@@ -1,6 +1,8 @@
 #ifndef H_DVDVIDEOCODEC
 #define H_DVDVIDEOCODEC
 
+#include "..\DVDStreamInfo.h"
+
 typedef unsigned char BYTE;
 
 // when modifying these structures, make sure you update all codecs accordingly
@@ -57,7 +59,7 @@ public:
 	/*
 	* Open the decoder, returns true on success
 	*/
-	virtual bool Open(CodecID codecID, int iWidth, int iHeight) = 0;
+	virtual bool Open(CDVDStreamInfo &hints) = 0;
 
     /*
 	* Dispose, Free all resources
@@ -87,6 +89,12 @@ public:
 	* the data is valid until the next Decode call
 	*/
 	virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture) = 0;
+
+	/*
+	*
+	* should return codecs name
+	*/
+	virtual const char* GetName() = 0;
 };
 
 #endif //H_DVDVIDEOCODEC
