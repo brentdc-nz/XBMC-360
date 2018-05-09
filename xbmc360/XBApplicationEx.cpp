@@ -52,6 +52,7 @@ bool CXBApplicationEX::Create()
 		CLog::Log(LOGERROR, "XBAppEx: Call to Initialize() failed!" );
 		return false;
 	}
+
 	return true;
 }
 

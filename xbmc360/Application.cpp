@@ -873,7 +873,7 @@ void CApplication::ActivateScreenSaver()
 	if (m_screenSaverMode != "None")
 	{
 		g_windowManager.ActivateWindow(WINDOW_SCREENSAVER);
-		return ;
+		return;
 	}
 }
 
