@@ -380,6 +380,18 @@
     <ClInclude Include="cores\DVDPlayer\DVDCodecs\DVDFactoryCodec.h">
       <Filter>Header Files\cores\DVDPlayer\DVDCodecs</Filter>
     </ClInclude>
+    <ClInclude Include="cores\DVDPlayer\DVDDemuxers\DVDFactoryDemuxer.h">
+      <Filter>Header Files\cores\DVDPlayer\DVDDemuxers</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\DVDPlayer\DVDInputStreams\DVDInputStreamFile.h">
+      <Filter>Header Files\cores\DVDPlayer\DVDInputStreams</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\DVDPlayer\DVDInputStreams\DVDFactoryInputStream.h">
+      <Filter>Header Files\cores\DVDPlayer\DVDInputStreams</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\DVDPlayer\DVDInputStreams\DVDInputStream.h">
+      <Filter>Header Files\cores\DVDPlayer\DVDInputStreams</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -636,6 +648,18 @@
     </ClCompile>
     <ClCompile Include="cores\DVDPlayer\DVDCodecs\DVDFactoryCodec.cpp">
       <Filter>Source Files\cores\DVDPlayer\DVDCodecs</Filter>
+    </ClCompile>
+    <ClCompile Include="cores\DVDPlayer\DVDDemuxers\DVDFactoryDemuxer.cpp">
+      <Filter>Source Files\cores\DVDPlayer\DVDDemuxers</Filter>
+    </ClCompile>
+    <ClCompile Include="cores\DVDPlayer\DVDInputStreams\DVDFactoryInputStream.cpp">
+      <Filter>Source Files\cores\DVDPlayer\DVDInputStreams</Filter>
+    </ClCompile>
+    <ClCompile Include="cores\DVDPlayer\DVDInputStreams\DVDInputStreamFile.cpp">
+      <Filter>Source Files\cores\DVDPlayer\DVDInputStreams</Filter>
+    </ClCompile>
+    <ClCompile Include="cores\DVDPlayer\DVDInputStreams\DVDInputStream.cpp">
+      <Filter>Source Files\cores\DVDPlayer\DVDInputStreams</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

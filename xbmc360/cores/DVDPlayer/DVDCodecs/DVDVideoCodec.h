@@ -91,8 +91,7 @@ public:
 	virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture) = 0;
 
 	/*
-	*
-	* should return codecs name
+	* Should return codecs name
 	*/
 	virtual const char* GetName() = 0;
 };

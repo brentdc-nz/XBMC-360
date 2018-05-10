@@ -1,18 +1,23 @@
 #include "DVDPlayer.h"
-#include "DVDDemuxers\DVDDemuxFFmpeg.h" //Fixme -  need factory
-#include "DVDDemuxers\DVDDemuxUtils.h"
-#include "..\..\utils\Log.h"
 #include "DVDStreamInfo.h"
+#include "..\..\utils\Log.h"
 #include "..\..\Application.h"
 
+#include "DVDInputStreams\DVDInputStream.h"
+#include "DVDInputStreams\DVDFactoryInputStream.h"
+
+#include "DVDDemuxers\DVDDemux.h"
+#include "DVDDemuxers\DVDDemuxUtils.h"
+#include "DVDDemuxers\DVDFactoryDemuxer.h"
+
 CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
-    : IPlayer(callback),
+	: IPlayer(callback),
 	CThread(),	
 	m_dvdPlayerVideo(&m_clock/*, &m_overlayContainer*/),
-    m_dvdPlayerAudio(&m_clock)
+	m_dvdPlayerAudio(&m_clock)
 {
 	m_pDemuxer = NULL;
-//	m_pInputStream = NULL;
+	m_pInputStream = NULL;
   
 	m_hReadyEvent = CreateEvent(NULL, true, false, NULL);
 
@@ -112,19 +117,19 @@ bool CDVDPlayer::CloseFile()
 {
 	CLog::Log(LOGNOTICE, "CDVDPlayer::CloseFile()");
 
-	// set the abort request so that other threads can finish up
+	// Set the abort request so that other threads can finish up
 	m_bAbortRequest = true;
 
-	// unpause the player
+	// Unpause the player
 	SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
 
-	// flush all buffers, and let OnExit do the rest of all the work
+	// Flush all buffers, and let OnExit do the rest of all the work
 	// doing all the closing in OnExit requires less thread synchronisation and locking
 	FlushBuffers();
 
 	CLog::Log(LOGNOTICE, "DVDPlayer: waiting for threads to exit");
 
-	// wait for the main thread to finish up
+	// Wait for the main thread to finish up
 	// since this main thread cleans up all other resources and threads
 	// we are done after the StopThread call
 	StopThread();
@@ -146,7 +151,7 @@ bool CDVDPlayer::IsPaused() const
 
 bool CDVDPlayer::HasVideo()
 {
-//	if (m_pInputStream)
+	if (m_pInputStream)
 	{
 		if ( m_CurrentVideo.id >= 0 ) return true;
 		//if (/*m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) || *\ m_CurrentVideo.id >= 0) return true;
@@ -176,13 +181,39 @@ void CDVDPlayer::Process()
 	int video_index = -1;
 	int audio_index = -1;
 
+	CLog::Log(LOGNOTICE, "Creating InputStream");
+  
+	m_pInputStream = CDVDFactoryInputStream::CreateInputStream((IDVDPlayer*)this, m_strFilename.c_str());
+	
+	if (!m_pInputStream || !m_pInputStream->Open(m_strFilename.c_str()))
+	{
+		CLog::Log(LOGERROR, "InputStream: Error opening, %s", m_strFilename.c_str());
+		// Inputstream will be destroyed in OnExit()
+		return;
+	}
+
+//	if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+//	{
+//		CLog::Log(LOGNOTICE, "DVDPlayer: playing a dvd with menu's");
+//	}
+
 	CLog::Log(LOGNOTICE, "Creating Demuxer");
+  
+	try
+	{
+		m_pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(m_pInputStream);
+		if (!m_pDemuxer || !m_pDemuxer->Open(m_pInputStream))
+		{
+			throw;
+		}
+	}
+	catch(...)
+	{
+		CLog::Log(LOGERROR, __FUNCTION__" - Demuxer: Error opening, demuxer");
+		return;
+	}
 
-	m_pDemuxer = new CDVDDemuxFFmpeg;
-
-	m_pDemuxer->Open(m_strFilename.c_str());
-
-	// find first audio / video streams
+	// Find first audio / video streams
 	for (int i = 0; i < m_pDemuxer->GetNrOfStreams(); i++)
 	{
 		CDemuxStream* pStream = m_pDemuxer->GetStream(i);
@@ -193,11 +224,11 @@ void CDVDPlayer::Process()
 	//m_dvdPlayerSubtitle.Init();
 	//m_dvdPlayerSubtitle.FindSubtitles(m_filename);
 
-	// open the streams
+	// Open the streams
 	if (audio_index >= 0) OpenAudioStream(audio_index);
 	if (video_index >= 0) OpenVideoStream(video_index);
 
-	// we are done initializing now, set the readyevent
+	// We are done initializing now, set the readyevent
 	SetEvent(m_hReadyEvent);
 
 	m_callback.OnPlayBackStarted();
@@ -206,7 +237,7 @@ void CDVDPlayer::Process()
 
 	while (!m_bAbortRequest)
 	{		
-		// if the queues are full, no need to read more
+		// If the queues are full, no need to read more
 		while (!m_bAbortRequest && (!m_dvdPlayerAudio.AcceptsData() || !m_dvdPlayerVideo.AcceptsData()))
 		{
 			Sleep(10);
@@ -217,15 +248,15 @@ void CDVDPlayer::Process()
 
 			if(GetPlaySpeed() != DVD_PLAYSPEED_NORMAL && GetPlaySpeed() != DVD_PLAYSPEED_PAUSE)
 			{
-				bool bMenu = false;//IsInMenu(); //FIXME MARTY
+				bool bMenu = false;//IsInMenu(); //TODO
 
-				// don't allow rewind in menu
+				// Don't allow rewind in menu
 				if (bMenu && GetPlaySpeed() < 0 ) SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
 
 				if (m_CurrentVideo.id >= 0 &&
 					m_dvdPlayerVideo.GetCurrentPts() != DVD_NOPTS_VALUE && !bMenu)
 				{
-					// check how much off clock video is when ff/rw:ing
+					// Check how much off clock video is when ff/rw:ing
 					// a problem here is that seeking isn't very accurate
 					// and since the clock will be resynced after seek
 					// we might actually not really be playing at the wanted
@@ -267,7 +298,7 @@ void CDVDPlayer::Process()
 
 			if (!pPacket)
 			{
-//				if (!m_pInputStream) break;
+				if (!m_pInputStream) break;
 //				if (m_pInputStream->IsEOF()) break;
 //				else if (m_dvd.state == DVDSTATE_WAIT && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
 //				{
@@ -358,20 +389,22 @@ void CDVDPlayer::OnExit()
 	{
 		CLog::Log(LOGNOTICE, "CDVDPlayer::OnExit()");
 
-		// close each stream
+		// Close each stream
 		if (!m_bAbortRequest) CLog::Log(LOGNOTICE, "DVDPlayer: eof, waiting for queues to empty");
+
 		if (m_CurrentAudio.id >= 0)
 		{
 			CLog::Log(LOGNOTICE, "DVDPlayer: closing audio stream");
 			CloseAudioStream(!m_bAbortRequest);
 		}
+
 		if (m_CurrentVideo.id >= 0)
 		{
 			CLog::Log(LOGNOTICE, "DVDPlayer: closing video stream");
 			CloseVideoStream(!m_bAbortRequest);
 		}
 
-		// destroy the demuxer
+		// Destroy the demuxer
 		if (m_pDemuxer)
 		{
 			CLog::Log(LOGNOTICE, "CDVDPlayer::OnExit() deleting demuxer");
@@ -380,19 +413,15 @@ void CDVDPlayer::OnExit()
 		}
 		m_pDemuxer = NULL;
 
-		// destroy the inputstream
-/*		if (m_pInputStream)
+		// Destroy the inputstream
+		if (m_pInputStream)
 		{
 			CLog::Log(LOGNOTICE, "CDVDPlayer::OnExit() deleting input stream");
 			delete m_pInputStream;
 		}
 		m_pInputStream = NULL;
-*/
-		// close subtitle stuff
-		CLog::Log(LOGNOTICE, "CDVDPlayer::OnExit() deiniting subtitle handler");
-//		m_dvdPlayerSubtitle.DeInit();
-  
-		// if we didn't stop playing, advance to the next item in xbmc's playlist
+
+		// If we didn't stop playing, advance to the next item in xbmc's playlist
 		if (!m_bAbortRequest) m_callback.OnPlayBackEnded();
 
 		m_messenger.End();
@@ -400,7 +429,7 @@ void CDVDPlayer::OnExit()
 	catch (...)
 	{
 		CLog::Log(LOGERROR, __FUNCTION__" - Exception thrown when trying to close down player, memory leak will follow");
-//		m_pInputStream = NULL;
+		m_pInputStream = NULL;
 		m_pDemuxer = NULL;   
 	}
 
@@ -409,7 +438,7 @@ void CDVDPlayer::OnExit()
 	if (m_bAbortRequest)
 		m_callback.OnPlayBackStopped();
 
-	// set event to inform openfile something went wrong in case openfile is still waiting for this event
+	// Set event to inform openfile something went wrong in case openfile is still waiting for this event
 	SetEvent(m_hReadyEvent);
 }
 
@@ -478,7 +507,7 @@ void CDVDPlayer::SetPlaySpeed(int speed)
 {
 	m_playSpeed = speed;
 
-	// the clock needs to be paused or unpaused by seperate calls
+	// The clock needs to be paused or unpaused by seperate calls
 	// audio and video part do not
 	if (speed == DVD_PLAYSPEED_NORMAL) m_clock.Resume();
 	else if (speed == DVD_PLAYSPEED_PAUSE) m_clock.Pause();

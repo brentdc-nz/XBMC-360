@@ -6,6 +6,8 @@
 #include "..\..\..\utils\thread.h"
 #include "..\..\..\utils\Log.h"
 
+#include "..\DVDInputStreams\DVDInputStream.h"
+
 // threashold for start values in AV_TIME_BASE units
 #define PTS_START_THREASHOLD 100000
 
@@ -51,18 +53,18 @@ void CDVDDemuxFFmpeg::Unlock()
 	LeaveCriticalSection(&m_critSection);
 }
 
-bool CDVDDemuxFFmpeg::Open(/*CDVDInputStream* pInput*/string strFileParth)
+bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 {
 	AVInputFormat* iformat = NULL;
 	const char* strFile;
 	m_iCurrentPts = 0LL;
 
-	//if (!pInput) return false;
+	if (!pInput) return false;
 
-	// register codecs
-	av_register_all(); // Move to codec classes??
+	// Register codecs
+	av_register_all();
 
-	strFile = strFileParth.c_str();//m_pInput->GetFileName();
+	strFile = pInput->GetFileName();
 
 	if(av_open_input_file(&m_pFormatContext, strFile, NULL, 0, NULL)!=0)
 	{

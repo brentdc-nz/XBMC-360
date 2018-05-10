@@ -55,7 +55,7 @@ public:
 	CDVDDemuxFFmpeg();
 	~CDVDDemuxFFmpeg();
 
-	virtual bool Open(/*CDVDInputStream* pInput*/string strFileParth);
+	virtual bool Open(CDVDInputStream* pInput);
 	virtual void Dispose();
 
 	virtual CDVDDemux::DemuxPacket* Read();

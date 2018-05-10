@@ -2,16 +2,13 @@
 #define H_CDVDPLAYER
 
 #include "..\IPlayer.h"
-
 #include "..\..\utils\Thread.h"
 #include "DVDDemuxers\DVDDemux.h"
-
 #include "DVDStreamInfo.h"
-
 #include "DVDPlayerAudio.h"
 #include "DVDPlayerVideo.h"
 
-using namespace std;
+class CDVDInputStream;
 
 typedef struct DVDInfo
 {
@@ -36,7 +33,7 @@ public:
 	CDVDPlayer(IPlayerCallback& callback);
 	~CDVDPlayer();
 
-	virtual bool OpenFile(const string& strFile);
+	virtual bool OpenFile(const std::string& strFile);
 	virtual bool CloseFile();
 	virtual bool IsPlaying() const;
 	virtual bool IsPaused() const;
@@ -99,18 +96,19 @@ private:
 	
 	int m_playSpeed;
 
-	unsigned int m_packetcount; // packet count from demuxer, may wrap around. used during startup
+	unsigned int m_packetcount; // Packet count from demuxer, may wrap around. used during startup
 
-	string		m_strFilename;
+	std::string		m_strFilename;
 
 	SCurrentStream m_CurrentAudio;
 	SCurrentStream m_CurrentVideo;	
 
-	CDVDDemux*	m_pDemuxer;
+	CDVDInputStream* m_pInputStream;  // Input stream for current playing file
+	CDVDDemux* m_pDemuxer;            // Demuxer for current playing file
 
-	CDVDMessageQueue m_messenger; // thread messenger, only the dvdplayer.cpp class itself may send messages to this!
+	CDVDMessageQueue m_messenger; // Thread messenger, only the dvdplayer.cpp class itself may send messages to this!
 
-	CDVDClock m_clock; // master clock
+	CDVDClock m_clock; // Master clock
 
 	DVDInfo m_dvd;
 

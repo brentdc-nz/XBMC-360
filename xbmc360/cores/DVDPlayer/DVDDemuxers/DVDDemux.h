@@ -3,9 +3,9 @@
 
 #include <string>
 
-typedef unsigned char BYTE;
+class CDVDInputStream;
 
-using namespace std;
+typedef unsigned char BYTE;
 
 // FFMPEG
 extern "C"
@@ -111,7 +111,7 @@ public:
 	/*
 	* Open the demuxer, returns true on success
 	*/
-	virtual bool Open(/*CDVDInputStream* pInput*/string strFileParth) = 0;
+	virtual bool Open(CDVDInputStream* pInput) = 0;
 	/*
 	* Dispose, Free all resources
 	*/

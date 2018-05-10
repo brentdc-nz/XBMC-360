@@ -33,7 +33,7 @@ bool CDVDAudio::Create(int iChannels, int iBitrate, int iBitsPerSample)
 	if(!m_pXAudio2)
 		return false;
 
-	//Create source voice
+	// Create source voice
 	WAVEFORMATEXTENSIBLE wfx;
 	memset(&wfx, 0, sizeof(WAVEFORMATEXTENSIBLE));
 
