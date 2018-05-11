@@ -9,7 +9,7 @@
 
 struct CButtonAction
 {
-	WORD wID;
+	int iID;
 	CStdString strID; // needed for "XBMC.ActivateWindow()" type actions
 };
 
@@ -22,17 +22,17 @@ public:
 
 	bool Load();
 	WORD TranslateWindowString(const char *szWindow);
+	bool TranslateActionString(const char *szAction, int &iAction);
 	void GetAction(WORD wWindow, const CKey &key, CAction &action);
 	void Clear();
 
 private:
-	typedef std::multimap<WORD, CButtonAction> buttonMap; // our button map to fill in
-	std::map<WORD, buttonMap> translatorMap; // mapping of windows to button maps
+	typedef std::multimap<WORD, CButtonAction> buttonMap; // Our button map to fill in
+	std::map<WORD, buttonMap> translatorMap; // Mapping of windows to button maps
 
 	void MapWindowActions(TiXmlNode *pWindow, WORD wWindowID);
 	void MapAction(WORD wButtonCode, const char *szAction, buttonMap &map);
 	WORD TranslateGamepadString(const char *szButton);
-	bool TranslateActionString(const char *szAction, WORD &wAction);
 	WORD GetActionCode(WORD wWindow, const CKey &key, CStdString &strAction);
 };
 

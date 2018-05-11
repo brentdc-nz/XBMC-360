@@ -84,7 +84,7 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
 		{
 			if(message.GetControlId() == 2)
 			{
-				//Play button clicked!
+				// Play button clicked!
 				CGUISpinControlEx *pOriginalSpin;
 				pOriginalSpin = (CGUISpinControlEx*)GetControl(1);
 

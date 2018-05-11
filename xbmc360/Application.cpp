@@ -15,6 +15,7 @@
 #include "ApplicationMessenger.h"
 #include "ButtonTranslator.h"
 #include "guilib\AudioContext.h"
+#include "guilib\GUIAudioManager.h"
 #include "cores\PlayerCoreFactory.h"
 
 // Window includes
@@ -229,6 +230,9 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	CLog::Log(LOGINFO, "Initialize new skin...");
 	g_windowManager.AddMsgTarget(this);
 	g_windowManager.Initialize();
+
+	g_audioManager.Load();
+
 	CLog::Log(LOGINFO, "Skin loaded...");
 }
 
@@ -257,6 +261,7 @@ void CApplication::UnloadSkin()
 	g_windowManager.DeInitialize();
 	g_TextureManager.Cleanup();
 	g_fontManager.Clear();
+	g_audioManager.Cleanup();
 }
 
 void CApplication::Process()
@@ -389,6 +394,9 @@ bool CApplication::OnKey(CKey& key)
 	int iWin = g_windowManager.GetActiveWindow();
 
 	g_buttonTranslator.GetAction(iWin, key, action);
+
+	// Play a sound based on the action
+	g_audioManager.PlayActionSound(action);
 
 	// Special case for switching between GUI & fullscreen mode.
 	if (action.GetID() == ACTION_SHOW_GUI)
@@ -778,6 +786,7 @@ int CApplication::GetPlaySpeed() const
 // Returns the current time in seconds of the currently playing media.
 // Fractional portions of a second are possible.  This returns a double to
 // be consistent with GetTotalTime() and SeekTime().
+
 double CApplication::GetTime() const
 {
 	double dTime = 0.0;
@@ -792,6 +801,7 @@ double CApplication::GetTime() const
 // portions of a second are possible - but not necessarily supported by the
 // player class.  This returns a double to be consistent with GetTime() and
 // SeekTime().
+
 double CApplication::GetTotalTime() const
 {
 	double dTime = 0.0;
@@ -807,7 +817,7 @@ void CApplication::ResetScreenSaver()
 	// Reset our timers
 //	m_shutdownTimer.StartZero(); //TODO
 
-	// screen saver timer is reset only if we're not already in screensaver mode
+	// Screen saver timer is reset only if we're not already in screensaver mode
 	if (!m_bScreenSave)
 		m_screenSaverTimer.StartZero();
 }
@@ -823,9 +833,9 @@ bool CApplication::ResetScreenSaverWindow()
 
 		if (m_screenSaverMode != "None")
 		{
-			// we're in screensaver window
+			// We're in screensaver window
 			if (g_windowManager.GetActiveWindow() == WINDOW_SCREENSAVER)
-				g_windowManager.PreviousWindow();  // show the previous window
+				g_windowManager.PreviousWindow();  // Show the previous window
 		}
 
 		return true;

@@ -288,6 +288,7 @@
     <ClInclude Include="guilib\dialogs\GUIDialogButtonMenu.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogSeekBar.h" />
     <ClInclude Include="guilib\GraphicContext.h" />
+    <ClInclude Include="guilib\GUIAudioManager.h" />
     <ClInclude Include="guilib\GUIButtonControl.h" />
     <ClInclude Include="guilib\GUIControl.h" />
     <ClInclude Include="guilib\GUIControlFactory.h" />
@@ -303,6 +304,7 @@
     <ClInclude Include="guilib\GUILabelControl.h" />
     <ClInclude Include="guilib\GUIListItem.h" />
     <ClInclude Include="guilib\GUIMessage.h" />
+    <ClInclude Include="guilib\GUISound.h" />
     <ClInclude Include="guilib\GUISpinControl.h" />
     <ClInclude Include="guilib\GUISpinControlEx.h" />
     <ClInclude Include="guilib\GUITexture.h" />
@@ -345,6 +347,7 @@
     <ClInclude Include="utils\URIUtils.h" />
     <ClInclude Include="utils\Util.h" />
     <ClInclude Include="XBApplicationEx.h" />
+    <ClInclude Include="xbox\XBAudioUtils.h" />
     <ClInclude Include="xbox\XBInput.h" />
     <ClInclude Include="xbox\XBKernalExports.h" />
   </ItemGroup>
@@ -386,6 +389,7 @@
     <ClCompile Include="guilib\dialogs\GUIDialogButtonMenu.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogSeekBar.cpp" />
     <ClCompile Include="guilib\GraphicContext.cpp" />
+    <ClCompile Include="guilib\GUIAudioManager.cpp" />
     <ClCompile Include="guilib\GUIButtonControl.cpp" />
     <ClCompile Include="guilib\GUIControl.cpp" />
     <ClCompile Include="guilib\GUIControlFactory.cpp" />
@@ -401,6 +405,7 @@
     <ClCompile Include="guilib\GUILabelControl.cpp" />
     <ClCompile Include="guilib\GUIListItem.cpp" />
     <ClCompile Include="guilib\GUIMessage.cpp" />
+    <ClCompile Include="guilib\GUISound.cpp" />
     <ClCompile Include="guilib\GUISpinControl.cpp" />
     <ClCompile Include="guilib\GUISpinControlEx.cpp" />
     <ClCompile Include="guilib\GUIVideoControl.cpp" />
@@ -444,6 +449,7 @@
     <ClCompile Include="utils\Util.cpp" />
     <ClCompile Include="XBApplicationEx.cpp" />
     <ClCompile Include="xbmc.cpp" />
+    <ClCompile Include="xbox\XBAudioUtils.cpp" />
     <ClCompile Include="xbox\XBInput.cpp" />
     <ClCompile Include="xbox\XBKernalExports.cpp" />
   </ItemGroup>

@@ -182,9 +182,6 @@
     <ClInclude Include="utils\URIUtils.h">
       <Filter>Header Files\utils</Filter>
     </ClInclude>
-    <ClInclude Include="xbox\XBInput.h">
-      <Filter>Header Files\xbox</Filter>
-    </ClInclude>
     <ClInclude Include="guilib\GraphicContext.h">
       <Filter>Header Files\guilib</Filter>
     </ClInclude>
@@ -391,6 +388,18 @@
     </ClInclude>
     <ClInclude Include="cores\DVDPlayer\DVDInputStreams\DVDInputStream.h">
       <Filter>Header Files\cores\DVDPlayer\DVDInputStreams</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIAudioManager.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUISound.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="xbox\XBInput.h">
+      <Filter>Header Files\xbox</Filter>
+    </ClInclude>
+    <ClInclude Include="xbox\XBAudioUtils.h">
+      <Filter>Header Files\xbox</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -660,6 +669,15 @@
     </ClCompile>
     <ClCompile Include="cores\DVDPlayer\DVDInputStreams\DVDInputStream.cpp">
       <Filter>Source Files\cores\DVDPlayer\DVDInputStreams</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIAudioManager.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUISound.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="xbox\XBAudioUtils.cpp">
+      <Filter>Source Files\xbox</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

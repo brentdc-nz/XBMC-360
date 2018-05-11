@@ -112,51 +112,51 @@ WORD CButtonTranslator::TranslateGamepadString(const char *szButton)
 	return wButtonCode;
 }
 
-bool CButtonTranslator::TranslateActionString(const char *szAction, WORD &wAction)
+bool CButtonTranslator::TranslateActionString(const char *szAction, int &iAction)
 {
-	wAction = ACTION_NONE;
+	iAction = ACTION_NONE;
 	CStdString strAction = szAction;
 	strAction.ToLower();
 
-	if (CUtil::IsBuiltIn(strAction)) wAction = ACTION_BUILT_IN_FUNCTION;
-	else if (strAction.Equals("left")) wAction = ACTION_MOVE_LEFT;
-	else if (strAction.Equals("right")) wAction = ACTION_MOVE_RIGHT;
-	else if (strAction.Equals("up")) wAction = ACTION_MOVE_UP;
-	else if (strAction.Equals("down")) wAction = ACTION_MOVE_DOWN;
-	else if (strAction.Equals("select")) wAction = ACTION_SELECT_ITEM;
-	else if (strAction.Equals("previousmenu")) wAction = ACTION_PREVIOUS_MENU;
+	if (CUtil::IsBuiltIn(strAction)) iAction = ACTION_BUILT_IN_FUNCTION;
+	else if (strAction.Equals("left")) iAction = ACTION_MOVE_LEFT;
+	else if (strAction.Equals("right")) iAction = ACTION_MOVE_RIGHT;
+	else if (strAction.Equals("up")) iAction = ACTION_MOVE_UP;
+	else if (strAction.Equals("down")) iAction = ACTION_MOVE_DOWN;
+	else if (strAction.Equals("select")) iAction = ACTION_SELECT_ITEM;
+	else if (strAction.Equals("previousmenu")) iAction = ACTION_PREVIOUS_MENU;
 
-	else if (strAction.Equals("fullscreen")) wAction = ACTION_SHOW_GUI;
-	else if (strAction.Equals("codecinfo")) wAction = ACTION_SHOW_CODEC;
-	else if (strAction.Equals("pause")) wAction = ACTION_PAUSE;
-	else if (strAction.Equals("stop")) wAction = ACTION_STOP;
-	else if (strAction.Equals("stepforward")) wAction = ACTION_STEP_FORWARD;
-	else if (strAction.Equals("stepback")) wAction = ACTION_STEP_BACK;
-	else if (strAction.Equals("bigstepforward")) wAction = ACTION_BIG_STEP_FORWARD;
-	else if (strAction.Equals("bigstepback")) wAction = ACTION_BIG_STEP_BACK;
+	else if (strAction.Equals("fullscreen")) iAction = ACTION_SHOW_GUI;
+	else if (strAction.Equals("codecinfo")) iAction = ACTION_SHOW_CODEC;
+	else if (strAction.Equals("pause")) iAction = ACTION_PAUSE;
+	else if (strAction.Equals("stop")) iAction = ACTION_STOP;
+	else if (strAction.Equals("stepforward")) iAction = ACTION_STEP_FORWARD;
+	else if (strAction.Equals("stepback")) iAction = ACTION_STEP_BACK;
+	else if (strAction.Equals("bigstepforward")) iAction = ACTION_BIG_STEP_FORWARD;
+	else if (strAction.Equals("bigstepback")) iAction = ACTION_BIG_STEP_BACK;
 
 	else
 		CLog::Log(LOGERROR, "Keymapping error: no such action '%s' defined", strAction.c_str());
-	return (wAction != ACTION_NONE);
+	return (iAction != ACTION_NONE);
 }
 
 void CButtonTranslator::MapAction(WORD wButtonCode, const char *szAction, buttonMap &map)
 {
-	WORD wAction = ACTION_NONE;
-	if (!TranslateActionString(szAction, wAction) || !wButtonCode)
+	int iAction = ACTION_NONE;
+	if (!TranslateActionString(szAction, iAction) || !wButtonCode)
 		return;   // no valid action, or an invalid buttoncode
 
 	// have a valid action, and a valid button - map it.
 	// check to see if we've already got this (button,action) pair defined
 
 	buttonMap::iterator it = map.find(wButtonCode);
-	if (it == map.end() || (*it).second.wID != wAction)
+	if (it == map.end() || (*it).second.iID != iAction)
 	{
 		//char szTmp[128];
 		//sprintf(szTmp,"  action:%i button:%i\n", wAction,wButtonCode);
 		//OutputDebugString(szTmp);
 		CButtonAction button;
-		button.wID = wAction;
+		button.iID = iAction;
 		button.strID = szAction;
 		map.insert(pair<WORD, CButtonAction>(wButtonCode, button));
 	}
@@ -212,7 +212,7 @@ WORD CButtonTranslator::GetActionCode(WORD wWindow, const CKey &key, CStdString 
 	
 	while (it2 != (*it).second.end())
 	{
-		wAction = (*it2).second.wID;
+		wAction = (*it2).second.iID;
 		strAction = (*it2).second.strID;
 		it2 = (*it).second.end();
 	}

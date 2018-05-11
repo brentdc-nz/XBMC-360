@@ -1,5 +1,6 @@
 #ifndef CGUIINFOMANAGER_H
 #define CGUIINFOMANAGER_H
+
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://xbmc.org
@@ -19,6 +20,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "..\utils\StdString.h"
 #include "..\utils\Stdafx.h"
 #include "..\utils\TimeUtils.h"
@@ -50,14 +52,14 @@
 #define SYSTEM_ALWAYS_FALSE         126   // used for <visible fade="10">false</visible>, to fade out a control (ie not particularly useful!)
 #define SYSTEM_FREE_MEMORY          648
 
-// the multiple information vector
+// The multiple information vector
 #define MULTI_INFO_START			40000
 #define MULTI_INFO_END				99999
 #define COMBINED_VALUES_START		100000
 
 #define CONTROL_HAS_FOCUS           30000
 
-// structure to hold multiple integer data
+// Structure to hold multiple integer data
 // for storage referenced from a single integer
 class GUIInfo
 {
@@ -74,10 +76,12 @@ public:
 	{
 		return (m_info == right.m_info && m_data1 == right.m_data1 && m_data2 == right.m_data2);
 	};
+
 	uint32_t GetInfoFlag() const;
 	uint32_t GetData1() const;
 	int GetData2() const;
 	int m_info;
+
 private:
 	void SetInfoFlag(uint32_t flag);
 	uint32_t m_data1;

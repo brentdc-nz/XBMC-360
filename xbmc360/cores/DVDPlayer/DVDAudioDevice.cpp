@@ -103,6 +103,7 @@ DWORD CDVDAudio::AddPackets(unsigned char* data, DWORD len)
 	
 	SoundBuffer.AudioBytes = len;
 	SoundBuffer.pAudioData = pSnd;
+	SoundBuffer.Flags = XAUDIO2_END_OF_STREAM;
 	SoundBuffer.pContext = (VOID*)pSoundData;
 
 	XAUDIO2_VOICE_STATE state;
