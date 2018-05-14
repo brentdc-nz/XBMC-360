@@ -93,7 +93,7 @@ void CGUIAudioManager::PlayActionSound(const CAction& action)
 //	if (g_guiSettings.GetString("lookandfeel.navsoundplaying")=="OFF") // TODO
 	{
 		if(g_application.IsPlaying() && !g_application.IsPaused())
-		return;
+			return;
 	}
 
 	actionSoundMap::iterator it=m_actionSoundMap.find(action.GetID());

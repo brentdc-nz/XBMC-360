@@ -165,8 +165,8 @@ bool CApplication::Initialize()
 	g_windowManager.Add(new CGUIWindowSystemInfo);
 
 	// Dialogs
-	g_windowManager.Add(new CGUIDialogButtonMenu);	// window id = 111
-	g_windowManager.Add(&m_guiDialogSeekBar);		// window id = 115
+	g_windowManager.Add(new CGUIDialogButtonMenu);		// window id = 111
+	g_windowManager.Add(&m_guiDialogSeekBar);			// window id = 115
 	g_windowManager.Initialize();
 
 	g_windowManager.ActivateWindow(WINDOW_HOME);

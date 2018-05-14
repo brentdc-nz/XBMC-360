@@ -76,7 +76,7 @@ bool CGUISound::LoadWavFile(const CStdString& strFileName)
 	// Calculate how many bytes and samples are in the wave
 	WaveFile.GetDuration(&m_dwWaveSize);
 
-    // Read the sample data into memory
+	// Read the sample data into memory
 	m_pbWaveData = new BYTE[m_dwWaveSize];
 	WaveFile.ReadSample(0, m_pbWaveData, m_dwWaveSize, &m_dwWaveSize);
 
