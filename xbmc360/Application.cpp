@@ -167,11 +167,12 @@ bool CApplication::Initialize()
 	// Dialogs
 	g_windowManager.Add(new CGUIDialogButtonMenu);		// window id = 111
 	g_windowManager.Add(&m_guiDialogSeekBar);			// window id = 115
+
 	g_windowManager.Initialize();
 
-	g_windowManager.ActivateWindow(WINDOW_HOME);
-	
 	m_slowTimer.StartZero();
+
+	g_windowManager.ActivateWindow(WINDOW_HOME);
 
 	if (m_splash)
 		m_splash->Stop();
@@ -889,28 +890,28 @@ void CApplication::ActivateScreenSaver()
 
 void CApplication::Stop()
 {
-    // Update the settings information (volume, uptime etc. need saving)
-    if (XFILE::CFile::Exists("D:\\settings.xml"))
-    {
+	// Update the settings information (volume, uptime etc. need saving)
+	if (XFILE::CFile::Exists("D:\\settings.xml"))
+	{
 		CLog::Log(LOGNOTICE, "Saving settings");
 		g_settings.Save();
-    }
-    else
+	}
+	else
 		CLog::Log(LOGNOTICE, "Settings not saved (settings.xml is not present)");
 
-    m_bStop = true;
-    CLog::Log(LOGNOTICE, "Stop all");
+	m_bStop = true;
+	CLog::Log(LOGNOTICE, "Stop all");
 
-    if (m_pPlayer)
-    {
+	if (m_pPlayer)
+	{
 		CLog::Log(LOGNOTICE, "Stopping DVDPlayer");
 		m_pPlayer->CloseFile();
 		delete m_pPlayer;
 		m_pPlayer = NULL;
-    }
+	}
 
 	CLog::Log(LOGNOTICE, "Unload skin");
-    UnloadSkin();
+	UnloadSkin();
 
 	// Windows
 	g_windowManager.Delete(WINDOW_HOME);
@@ -934,5 +935,5 @@ void CApplication::Stop()
 	g_localizeStrings.Clear();
 	g_buttonTranslator.Clear();
 
-    CLog::Log(LOGNOTICE, "Stopped");
+	CLog::Log(LOGNOTICE, "Stopped");
 }

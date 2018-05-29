@@ -41,9 +41,9 @@ __int64 CDVDClock::GetClock()
 	if (m_bReset)
 	{
 		QueryPerformanceCounter(&m_startClock);
-	   m_systemUsed = m_systemFrequency;
-	   m_pauseClock.QuadPart = 0;
-	   m_iDisc = 0I64;
+		m_systemUsed = m_systemFrequency;
+		m_pauseClock.QuadPart = 0;
+		m_iDisc = 0I64;
 	    m_bReset = false;
 	}
 

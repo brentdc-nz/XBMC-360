@@ -1,6 +1,5 @@
 #include "GUIAudioManager.h"
 #include "GUISound.h"
-#include "tinyxml\tinyxml.h"
 #include "..\utils\Log.h"
 #include "GraphicContext.h"
 #include "..\ButtonTranslator.h"
@@ -30,12 +29,12 @@ bool CGUIAudioManager::Load()
 
 	CStdString strSoundsXml = g_graphicsContext.GetMediaDir() + "sounds\\sounds.xml";
 
-	//  Load our xml file
+	// Load our xml file
 	TiXmlDocument xmlDoc;
 
 	CLog::Log(LOGINFO, "Loading %s", strSoundsXml.c_str());
 
-	//  Load the config file
+	// Load the config file
 	if (!xmlDoc.LoadFile(strSoundsXml))
 	{
 		CLog::Log(LOGNOTICE, "%s, Line %d\n%s", strSoundsXml.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
@@ -81,7 +80,54 @@ bool CGUIAudioManager::Load()
 		}
 	}
 
+	// Load window specific sounds
+	TiXmlElement* pWindows = pRoot->FirstChildElement("windows");
+
+	if (pWindows)
+	{
+		TiXmlNode* pWindow = pWindows->FirstChild("window");
+
+		while (pWindow)
+		{
+			int id = 0;
+
+			TiXmlNode* pIdNode = pWindow->FirstChild("name");
+			
+			if (pIdNode)
+			{
+				if (pIdNode->FirstChild())
+					id = g_buttonTranslator.TranslateWindowString(pIdNode->FirstChild()->Value());
+			}
+
+			CWindowSounds sounds;
+			LoadWindowSound(pWindow, "activate", sounds.strInitFile);
+			LoadWindowSound(pWindow, "deactivate", sounds.strDeInitFile);
+
+			if (id > 0)
+				m_windowSoundMap.insert(pair<int, CWindowSounds>(id, sounds));
+
+			pWindow = pWindow->NextSibling();
+		}
+	}
+
 	return true;
+}
+
+// Load a window node of the config file (sounds.xml)
+bool CGUIAudioManager::LoadWindowSound(TiXmlNode* pWindowNode, const CStdString& strIdentifier, CStdString& strFile)
+{
+	if (!pWindowNode)
+		return false;
+
+	TiXmlNode* pFileNode = pWindowNode->FirstChild(strIdentifier);
+	
+	if (pFileNode && pFileNode->FirstChild())
+	{
+		strFile = pFileNode->FirstChild()->Value();
+		return true;
+	}
+
+	return false;
 }
 
 // Play a sound associated with a CAction
@@ -128,10 +174,66 @@ void CGUIAudioManager::PlayActionSound(const CAction& action)
 	pActionSound->Play();
 }
 
+// Play a sound associated with a window and its event
+// Events: SOUND_INIT, SOUND_DEINIT
+void CGUIAudioManager::PlayWindowSound(int id, WINDOW_SOUND event)
+{
+	CSingleLock lock(m_cs);
+
+	windowSoundMap::iterator it= m_windowSoundMap.find(id);
+
+	if (it==m_windowSoundMap.end())
+		return;
+
+	CWindowSounds sounds=it->second;
+	CStdString strFile;
+
+	switch (event)
+	{
+	case SOUND_INIT:
+		strFile=sounds.strInitFile;
+		break;
+	case SOUND_DEINIT:
+		strFile=sounds.strDeInitFile;
+		break;
+	}
+
+	if (strFile.IsEmpty())
+		return;
+
+	CGUISound* pWindowSound = NULL;
+
+	for(int i = 0; i < (int)m_vecWindowSounds.size(); i++)
+	{
+		pWindowSound = m_vecActionSounds[i];
+
+		if(pWindowSound->GetFileName() == strFile)
+		{
+			pWindowSound->Play();
+			return;
+		}
+	}
+
+	pWindowSound = new CGUISound();
+
+	if (!pWindowSound->Load(strFile))
+	{
+		delete pWindowSound;
+		pWindowSound = NULL;
+		return;
+	}
+
+	m_vecActionSounds.push_back(pWindowSound);
+
+	pWindowSound->Play();
+}
+
+
 void CGUIAudioManager::Cleanup()
 {
 	CSingleLock lock(m_cs);
 
+	// Delete action sounds
 	CGUISound* pActionSound = NULL;
 
 	for(int i = 0; i < (int)m_vecActionSounds.size(); i++)
@@ -147,4 +249,21 @@ void CGUIAudioManager::Cleanup()
 	}
 
 	m_vecActionSounds.clear();
+
+	// Delete window sounds
+	CGUISound* pWindowSound = NULL;
+
+	for(int i = 0; i < (int)m_vecActionSounds.size(); i++)
+	{
+		pWindowSound = m_vecActionSounds[i];
+		
+		if(pWindowSound)
+		{
+			pWindowSound->FreeBuffer();
+			delete pWindowSound;
+			pWindowSound = NULL;
+		}
+	}
+
+	m_vecWindowSounds.clear();
 }

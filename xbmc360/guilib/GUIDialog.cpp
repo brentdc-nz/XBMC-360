@@ -2,6 +2,7 @@
 #include "GUIWindowManager.h"
 #include "..\utils\SingleLock.h"
 #include "..\utils\Log.h"
+#include "GUIAudioManager.h"
 
 CGUIDialog::CGUIDialog(int id, const CStdString &xmlFile)
     : CGUIWindow(id, xmlFile)
@@ -27,6 +28,9 @@ void CGUIDialog::DoModal(DWORD dwParentId, int iWindowID /*= WINDOW_INVALID */)
 	m_bRunning = true;
 	g_windowManager.RouteToWindow(this);
 
+	// Play the window specific init sound
+	g_audioManager.PlayWindowSound(GetID(), SOUND_INIT);
+
 	// Active this window...
 	CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID, iWindowID);
 	OnMessage(msg);
@@ -44,6 +48,9 @@ void CGUIDialog::Show()
  
 	m_bRunning = true;
 	g_windowManager.AddModeless(this);
+
+	// Play the window specific init sound
+	g_audioManager.PlayWindowSound(GetID(), SOUND_INIT);
 
 	// Activate this window...
 	CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0);
@@ -128,8 +135,8 @@ void CGUIDialog::Close(bool forceClose /*= false*/)
 		return;
 	}
 */
-	//  Play the window specific deinit sound
-//	g_audioManager.PlayWindowSound(GetID(), SOUND_DEINIT);
+	// Play the window specific deinit sound
+	g_audioManager.PlayWindowSound(GetID(), SOUND_DEINIT);
 
 	CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
 

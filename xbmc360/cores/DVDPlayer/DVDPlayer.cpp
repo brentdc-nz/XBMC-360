@@ -245,7 +245,6 @@ void CDVDPlayer::Process()
 
 		if (!m_bAbortRequest)
 		{
-
 			if(GetPlaySpeed() != DVD_PLAYSPEED_NORMAL && GetPlaySpeed() != DVD_PLAYSPEED_PAUSE)
 			{
 				bool bMenu = false;//IsInMenu(); //TODO
@@ -284,7 +283,7 @@ void CDVDPlayer::Process()
 			HandleMessages();
 //			m_bReadAgain = false;
 
-			// read a data frame from stream.
+			// Read a data frame from stream.
 			CDVDDemux::DemuxPacket* pPacket = m_pDemuxer->Read();
 
 			// in a read action, the dvd navigator can do certain actions that require
@@ -726,13 +725,13 @@ void CDVDPlayer::ProcessVideoData(CDemuxStream* pStream, CDVDDemux::DemuxPacket*
 		m_bDontSkipNextFrame = false;
 	}
   
-	if( pPacket->iSize != 4) //don't check the EOF_SEQUENCE of stillframes
+	if( pPacket->iSize != 4) // Don't check the EOF_SEQUENCE of stillframes
 	{
 		CheckContinuity( pPacket, DVDPLAYER_VIDEO );
 		m_CurrentVideo.dts = pPacket->dts;
 	}
 
-	//If this is the first packet after a discontinuity, send it as a resync
+	// If this is the first packet after a discontinuity, send it as a resync
 	if (!(m_dvd.iFlagSentStart & DVDPLAYER_VIDEO))
 	{
 		m_dvd.iFlagSentStart |= DVDPLAYER_VIDEO;
@@ -800,7 +799,7 @@ bool CDVDPlayer::OpenAudioStream(int iStream)
 
 	if( m_CurrentAudio.id < 0 &&  m_CurrentVideo.id >= 0 )
 	{
-		// up until now we wheren't playing audio, but we did play video
+		// Up until now we wheren't playing audio, but we did play video
 		// this will change what is used to sync the dvdclock.
 		// since the new audio data doesn't have to have any relation
 		// to the current video data in the packet que, we have to

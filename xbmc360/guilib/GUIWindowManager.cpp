@@ -3,6 +3,7 @@
 #include "GUIDialog.h"
 #include "..\utils\Log.h"
 #include "..\utils\SingleLock.h"
+#include "GUIAudioManager.h"
 
 using namespace std;
 
@@ -204,7 +205,7 @@ bool CGUIWindowManager::IsWindowActive(int id)
 
 void CGUIWindowManager::PreviousWindow()
 {
-	// deactivate any window
+	// Deactivate any window
 	CLog::Log(LOGDEBUG,"CGUIWindowManager::PreviousWindow: Deactivate");
 	
 	int currentWindow = GetActiveWindow();
@@ -248,17 +249,23 @@ void CGUIWindowManager::PreviousWindow()
 		return;
 	}
 
-	// ok to go to the previous window now
+	// Ok to go to the previous window now
 
-	// deinitialize our window
+	// Deinitialize our window
+
+	g_audioManager.PlayWindowSound(pCurrentWindow->GetID(), SOUND_DEINIT);
+
 	CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
 	pCurrentWindow->OnMessage(msg);
 
-	// remove the current window off our window stack
+	// Remove the current window off our window stack
 	m_windowHistory.pop();
 
-	// ok, initialize the new window
+	// Ok, initialize the new window
 	CLog::Log(LOGDEBUG,"CGUIWindowManager::PreviousWindow: Activate new");
+
+	g_audioManager.PlayWindowSound(pNewWindow->GetID(), SOUND_INIT);
+
 	CGUIMessage msg2(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID, GetActiveWindow());
 	pNewWindow->OnMessage(msg2);
 
@@ -360,7 +367,9 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, bool swappingWindows)
 	CGUIWindow *pWindow = GetWindow(currentWindow);
 	if (pWindow)
 	{
-		//  Play the window specific deinit sound
+		// Play the window specific deinit sound
+		g_audioManager.PlayWindowSound(pWindow->GetID(), SOUND_DEINIT);
+
 		CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0, iWindowID);
 		pWindow->OnMessage(msg);
 	}
@@ -371,7 +380,10 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, bool swappingWindows)
 	// off the history stack
 	if (swappingWindows && m_windowHistory.size())
 		m_windowHistory.pop();
+	
 	AddToWindowHistory(iWindowID);
+
+	g_audioManager.PlayWindowSound(pNewWindow->GetID(), SOUND_INIT);
 
 	// Send the init message
 	CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0, currentWindow, iWindowID);
