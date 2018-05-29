@@ -95,7 +95,8 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
 
 					strPath += strFileName;
 
-					g_application.PlayFile(strPath);
+					if(!g_application.IsPlaying())
+						g_application.PlayFile(strPath);
 				}
 			}
 			break;

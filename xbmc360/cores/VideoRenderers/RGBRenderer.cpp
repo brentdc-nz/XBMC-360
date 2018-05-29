@@ -369,7 +369,7 @@ void CRGBRenderer::FlipPage()
 	}
 	m_bPrepared=false;
 
-	if ( g_graphicsContext.IsFullScreenVideo() )
+	if ( g_graphicsContext.IsFullScreenVideo() && !g_application.m_pPlayer->IsPaused())
 	{   
 		g_graphicsContext.Lock();
 

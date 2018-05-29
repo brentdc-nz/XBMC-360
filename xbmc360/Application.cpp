@@ -504,22 +504,26 @@ void CApplication::Render()
 	// Don't show GUI when playing full screen video
 	if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
 	{
-		if ( g_graphicsContext.IsFullScreenVideo() )
+		if (g_graphicsContext.IsFullScreenVideo())
 		{
 			if (m_pPlayer)
 			{
-				if (m_pPlayer->IsPaused()) //TODO
+				if (m_pPlayer->IsPaused())
 				{
-/*					CSingleLock lock(g_graphicsContext);
-//					extern void xbox_video_render_update(bool);
-			        g_renderManager.RenderUpdate(true);
-//					g_windowManager.UpdateModelessVisibility();
-					RenderFullScreen();
+					g_graphicsContext.Lock();
+					m_pd3dDevice->BeginScene();  
+					g_graphicsContext.Unlock();
 					g_windowManager.Render();
-//					m_pd3dDevice->BlockUntilVerticalBlank();
+			        g_renderManager.RenderUpdate(true);
+//					m_gWindowManager.UpdateModelessVisibility(); //TODO
+					g_graphicsContext.Lock();
+					RenderFullScreen();
+//					m_pd3dDevice->BlockUntilVerticalBlank(); //TODO
+					m_pd3dDevice->EndScene();
 					m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
+					g_graphicsContext.Unlock();
 					return;
-*/				}
+				}
 			}
 			Sleep(10);
 			return;
