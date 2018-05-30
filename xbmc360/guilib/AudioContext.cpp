@@ -51,6 +51,15 @@ void CAudioContext::SetVolume(float fLevel)
 	m_pMasteringVoice->SetVolume(fLevel);
 }
 
+float CAudioContext::GetVolume()
+{
+	float fVolume = 0;
+
+	m_pMasteringVoice->GetVolume(&fVolume);
+
+	return fVolume;
+}
+
 void CAudioContext::DeInitialize()
 {
 	if(m_pMasteringVoice)

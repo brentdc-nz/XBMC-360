@@ -4,6 +4,7 @@
 #include "..\GraphicContext.h"
 #include "..\..\Application.h"
 #include "..\GUIWindowManager.h"
+#include "..\AudioContext.h"
 #include "..\..\cores\VideoRenderers\RenderManager.h"
 
 #define BLUE_BAR		0
@@ -82,7 +83,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 			pDialogSeekBar->Show();
 			pDialogSeekBar->ResetTimer();
 
-			g_application.m_pPlayer->Seek(false, false);
+			Seek(false, false);
 			return true;
 		}
 		break;
@@ -92,7 +93,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 			pDialogSeekBar->Show();
 			pDialogSeekBar->ResetTimer();
 
-			g_application.m_pPlayer->Seek(true, false);
+			Seek(true, false);
 			return true;
 		}
 		break;
@@ -102,7 +103,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 			pDialogSeekBar->Show();
 			pDialogSeekBar->ResetTimer();
 
-			g_application.m_pPlayer->Seek(false, true);
+			Seek(false, true);
 			return true;
 		}
 		break;
@@ -112,7 +113,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 			pDialogSeekBar->Show();
 			pDialogSeekBar->ResetTimer();
 
-			g_application.m_pPlayer->Seek(true, true);
+			Seek(true, true);
 			return true;
 		}
 		break;
@@ -270,4 +271,33 @@ void CGUIWindowFullScreen::RenderFullScreen()
 	CGUIWindow::Render();
 
 	g_windowManager.RenderDialogs();
+}
+
+void CGUIWindowFullScreen::Seek(bool bPlus, bool bLargeStep)
+{
+	// Temporary solution
+
+	bool bNeedsPause(false);
+	float fVolume;
+
+	// Unpause the player if necessary
+	if (g_application.m_pPlayer->IsPaused())
+	{
+		fVolume = g_audioContext.GetVolume();
+		g_audioContext.SetVolume(0.0f);
+
+		g_application.m_pPlayer->Pause();
+		bNeedsPause = true;
+	}
+
+	g_application.m_pPlayer->Seek(bPlus, bLargeStep);
+
+	// Re-pause it
+	if (bNeedsPause)
+	{
+		Sleep(300);  // Allow DVDPlayer to finish it's seek (nasty hack!)
+		g_application.m_pPlayer->Pause();
+	
+		g_audioContext.SetVolume(fVolume);
+	}
 }

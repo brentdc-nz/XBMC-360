@@ -514,7 +514,7 @@ void CApplication::Render()
 					m_pd3dDevice->BeginScene();  
 					g_graphicsContext.Unlock();
 					g_windowManager.Render();
-			        g_renderManager.RenderUpdate(true);
+					g_renderManager.RenderUpdate(true);
 //					m_gWindowManager.UpdateModelessVisibility(); //TODO
 					g_graphicsContext.Lock();
 					RenderFullScreen();

@@ -13,6 +13,7 @@ public:
 	bool Initialize();
 	IXAudio2* GetXAudio2Device();
 	void SetVolume(float fLevel);
+	float GetVolume();
 	void DeInitialize();
 
 protected:

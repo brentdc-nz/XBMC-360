@@ -23,6 +23,7 @@ public:
 private:
 	void PreloadDialog(unsigned int windowID);
 	void UnloadDialog(unsigned int windowID);
+	void Seek(bool bPlus, bool bLargeStep);
 };
 
 #endif //GUILIB_GUIWINDOWFULLSCREEN_H
