@@ -8,6 +8,7 @@
 #include "utils\Stopwatch.h"
 #include "utils\Splash.h"
 
+#include "guilib\dialogs\GUIDialogVolumeBar.h"
 #include "guilib\dialogs\GUIDialogSeekBar.h"
 
 class CApplication: public CXBApplicationEX, public IPlayerCallback, public IMsgTargetCallback
@@ -61,6 +62,7 @@ public:
 	DWORD m_dwSkinTime;
 	IPlayer* m_pPlayer;
 
+	CGUIDialogVolumeBar m_guiDialogVolumeBar;
 	CGUIDialogSeekBar m_guiDialogSeekBar;
 
 protected:

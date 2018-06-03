@@ -64,8 +64,6 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 	if (g_application.m_pPlayer != NULL && g_application.m_pPlayer->OnAction(action))
 		return true;
 
-	CGUIDialogSeekBar* pDialogSeekBar = (CGUIDialogSeekBar*)g_windowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR);
-
 	switch (action.GetID())
 	{
 		case ACTION_SHOW_GUI:
@@ -80,9 +78,6 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 		
 		case ACTION_STEP_BACK:
 		{	
-			pDialogSeekBar->Show();
-			pDialogSeekBar->ResetTimer();
-
 			Seek(false, false);
 			return true;
 		}
@@ -90,9 +85,6 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 
 		case ACTION_STEP_FORWARD:
 		{
-			pDialogSeekBar->Show();
-			pDialogSeekBar->ResetTimer();
-
 			Seek(true, false);
 			return true;
 		}
@@ -100,9 +92,6 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 
 		case ACTION_BIG_STEP_BACK:
 		{
-			pDialogSeekBar->Show();
-			pDialogSeekBar->ResetTimer();
-
 			Seek(false, true);
 			return true;
 		}
@@ -110,9 +99,6 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 
 		case ACTION_BIG_STEP_FORWARD:
 		{
-			pDialogSeekBar->Show();
-			pDialogSeekBar->ResetTimer();
-
 			Seek(true, true);
 			return true;
 		}
@@ -275,6 +261,11 @@ void CGUIWindowFullScreen::RenderFullScreen()
 
 void CGUIWindowFullScreen::Seek(bool bPlus, bool bLargeStep)
 {
+	CGUIDialogSeekBar* pDialogSeekBar = (CGUIDialogSeekBar*)g_windowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR);
+
+	pDialogSeekBar->Show();
+	pDialogSeekBar->ResetTimer();
+
 	// Temporary solution
 
 	bool bNeedsPause(false);
