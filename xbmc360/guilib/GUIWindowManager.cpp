@@ -302,27 +302,26 @@ void CGUIWindowManager::Remove(int id)
 	}
 }
 
-void CGUIWindowManager::RouteToWindow(CGUIWindow* pDialog)
+void CGUIWindowManager::RouteToWindow(CGUIWindow* pWindow)
 {
 	// Just to be sure: Unroute this window,
 	// we may have routed to it before
-	RemoveDialog(pDialog->GetID());
+	UnRoute(pWindow->GetID());
 
-	m_activeDialogs.push_back(pDialog);
+	m_activeDialogs.push_back(pWindow);
 }
 
-void CGUIWindowManager::AddModeless(CGUIWindow* pDialog)
+void CGUIWindowManager::AddModeless(CGUIWindow* dialog)
 {
 	CSingleLock lock(g_graphicsContext);
-	
 	// Only add the window if it's not already added
 	for (iDialog it = m_activeDialogs.begin(); it != m_activeDialogs.end(); ++it)
-		if (*it == pDialog) return;
+		if (*it == dialog) return;
 
-	m_activeDialogs.push_back(pDialog);
+	m_activeDialogs.push_back(dialog);
 }
 
-void CGUIWindowManager::RemoveDialog(DWORD dwID)
+void CGUIWindowManager::UnRoute(DWORD dwID)
 {
 	vector<CGUIWindow*>::iterator it = m_activeDialogs.begin();
 	while (it != m_activeDialogs.end())
@@ -406,10 +405,10 @@ bool CGUIWindowManager::OnAction(const CAction &action)
 		}
 	}
  
-	CGUIWindow* pWindow = GetWindow(GetActiveWindow());
+	CGUIWindow* window = GetWindow(GetActiveWindow());
 	
-	if (pWindow)
-		return pWindow->OnAction(action);
+	if (window)
+		return window->OnAction(action);
 
 	return false;
 }

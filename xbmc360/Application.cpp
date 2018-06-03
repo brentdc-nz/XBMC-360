@@ -166,7 +166,6 @@ bool CApplication::Initialize()
 
 	// Dialogs
 	g_windowManager.Add(new CGUIDialogButtonMenu);		// window id = 111
-	g_windowManager.Add(&m_guiDialogVolumeBar);			// window id = 104
 	g_windowManager.Add(&m_guiDialogSeekBar);			// window id = 115
 
 	g_windowManager.Initialize();
@@ -233,8 +232,6 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	g_windowManager.AddMsgTarget(this);
 	g_windowManager.Initialize();
 
-	m_guiDialogVolumeBar.AllocResources(true);
-
 	g_audioManager.Load();
 
 	CLog::Log(LOGINFO, "Skin loaded...");
@@ -262,8 +259,6 @@ void CApplication::ReloadSkin()
 
 void CApplication::UnloadSkin()
 {
-	m_guiDialogVolumeBar.FreeResources();
-
 	g_windowManager.DeInitialize();
 	g_TextureManager.Cleanup();
 	g_fontManager.Clear();
@@ -313,135 +308,6 @@ void CApplication::ProcessSlow()
 
 bool CApplication::ProcessGamepad()
 {
-	// Map all controller & remote actions to their keys
-	if (m_DefaultGamepad.fX1 || m_DefaultGamepad.fY1)
-	{
-		CKey key(KEY_BUTTON_LEFT_THUMB_STICK, m_DefaultGamepad.fX1, m_DefaultGamepad.fY1, m_DefaultGamepad.fX2, m_DefaultGamepad.fY2);
-		if (OnKey(key)) return true;
-	}
-
-	if (m_DefaultGamepad.fX2 || m_DefaultGamepad.fY2)
-	{
-		CKey key(KEY_BUTTON_RIGHT_THUMB_STICK, m_DefaultGamepad.fX1, m_DefaultGamepad.fY1, m_DefaultGamepad.fX2, m_DefaultGamepad.fY2);
-		if (OnKey(key)) return true;
-	}
-
-	// First the right stick
-	static int lastRightStickKey = 0;
-	int newRightStickKey = 0;
-
-	if (lastRightStickKey == KEY_BUTTON_RIGHT_THUMB_STICK_UP || lastRightStickKey == KEY_BUTTON_RIGHT_THUMB_STICK_DOWN)
-	{
-		if (m_DefaultGamepad.fY2 > 0)
-			newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_UP;
-		else if (m_DefaultGamepad.fY2 < 0)
-			newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_DOWN;
-		else if (m_DefaultGamepad.fX2 != 0)
-		{
-		  newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_UP;
-		  //m_DefaultGamepad.fY2 = 0.00001f; // small amount of movement
-		}
-	}
-	else if (lastRightStickKey == KEY_BUTTON_RIGHT_THUMB_STICK_LEFT || lastRightStickKey == KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT)
-	{
-		if (m_DefaultGamepad.fX2 > 0)
-			newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT;
-		else if (m_DefaultGamepad.fX2 < 0)
-			newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_LEFT;
-		else if (m_DefaultGamepad.fY2 != 0)
-		{
-		newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT;
-		//m_DefaultGamepad.fX2 = 0.00001f; // small amount of movement
-		}
-	}
-	else
-	{
-		if (m_DefaultGamepad.fY2 > 0 && m_DefaultGamepad.fX2*2 < m_DefaultGamepad.fY2 && -m_DefaultGamepad.fX2*2 < m_DefaultGamepad.fY2)
-			newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_UP;
-		else if (m_DefaultGamepad.fY2 < 0 && m_DefaultGamepad.fX2*2 < -m_DefaultGamepad.fY2 && -m_DefaultGamepad.fX2*2 < -m_DefaultGamepad.fY2)
-			newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_DOWN;
-		else if (m_DefaultGamepad.fX2 > 0 && m_DefaultGamepad.fY2*2 < m_DefaultGamepad.fX2 && -m_DefaultGamepad.fY2*2 < m_DefaultGamepad.fX2)
-			newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT;
-		else if (m_DefaultGamepad.fX2 < 0 && m_DefaultGamepad.fY2*2 < -m_DefaultGamepad.fX2 && -m_DefaultGamepad.fY2*2 < -m_DefaultGamepad.fX2)
-			newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_LEFT;
-	}
-	if (lastRightStickKey && newRightStickKey != lastRightStickKey)
-	{ 
-		// Was held down last time - and we have a new key now
-		// post old key reset message...
-		CKey key(lastRightStickKey,  0, 0, 0, 0 );
-		lastRightStickKey = newRightStickKey;
-		if (OnKey(key)) return true;
-	}
-
-	lastRightStickKey = newRightStickKey;
-
-	// Post the new key's message
-	if (newRightStickKey)
-	{
-		CKey key(newRightStickKey, m_DefaultGamepad.fX1, m_DefaultGamepad.fY1, m_DefaultGamepad.fX2, m_DefaultGamepad.fY2);
-		if (OnKey(key)) return true;
-	}
-
-	// Now the left stick
-	static int lastLeftStickKey = 0;
-	int newLeftStickKey = 0;
-
-	if (lastLeftStickKey == KEY_BUTTON_LEFT_THUMB_STICK_UP || lastLeftStickKey == KEY_BUTTON_LEFT_THUMB_STICK_DOWN)
-	{
-		if (m_DefaultGamepad.fY1 > 0)
-			newLeftStickKey = KEY_BUTTON_LEFT_THUMB_STICK_UP;
-		else if (m_DefaultGamepad.fY1 < 0)
-			newLeftStickKey = KEY_BUTTON_LEFT_THUMB_STICK_DOWN;
-		/*else if (m_DefaultGamepad.fX1 != 0)
-		{
-			newLeftStickKey = KEY_BUTTON_LEFT_THUMB_STICK_UP;
-			m_DefaultGamepad.fY1 = 0.00001f; // small amount of movement
-		}*/
-	}
-	else if (lastLeftStickKey == KEY_BUTTON_LEFT_THUMB_STICK_LEFT || lastLeftStickKey == KEY_BUTTON_LEFT_THUMB_STICK_RIGHT)
-	{
-		if (m_DefaultGamepad.fX1 > 0)
-			newLeftStickKey = KEY_BUTTON_LEFT_THUMB_STICK_RIGHT;
-		else if (m_DefaultGamepad.fX1 < 0)
-			newLeftStickKey = KEY_BUTTON_LEFT_THUMB_STICK_LEFT;
-		/*else if (m_DefaultGamepad.fY1 != 0)
-		{
-			newLeftStickKey = KEY_BUTTON_LEFT_THUMB_STICK_RIGHT;
-			m_DefaultGamepad.fX1 = 0.00001f; // small amount of movement
-		}*/
-	}
-	else
-	{ 
-		// Check for a new control movement
-		if (m_DefaultGamepad.fY1 > 0 && m_DefaultGamepad.fX1 < m_DefaultGamepad.fY1 && -m_DefaultGamepad.fX1 < m_DefaultGamepad.fY1)
-			newLeftStickKey = KEY_BUTTON_LEFT_THUMB_STICK_UP;
-		else if (m_DefaultGamepad.fY1 < 0 && m_DefaultGamepad.fX1 < -m_DefaultGamepad.fY1 && -m_DefaultGamepad.fX1 < -m_DefaultGamepad.fY1)
-			newLeftStickKey = KEY_BUTTON_LEFT_THUMB_STICK_DOWN;
-		else if (m_DefaultGamepad.fX1 > 0 && m_DefaultGamepad.fY1 < m_DefaultGamepad.fX1 && -m_DefaultGamepad.fY1 < m_DefaultGamepad.fX1)
-			newLeftStickKey = KEY_BUTTON_LEFT_THUMB_STICK_RIGHT;
-		else if (m_DefaultGamepad.fX1 < 0 && m_DefaultGamepad.fY1 < -m_DefaultGamepad.fX1 && -m_DefaultGamepad.fY1 < -m_DefaultGamepad.fX1)
-			newLeftStickKey = KEY_BUTTON_LEFT_THUMB_STICK_LEFT;
-	}
-
-	if (lastLeftStickKey && newLeftStickKey != lastLeftStickKey)
-	{ 
-		// Was held down last time - and we have a new key now
-		// post old key reset message...
-		CKey key(lastLeftStickKey, 0, 0, 0, 0);
-		lastLeftStickKey = newLeftStickKey;
-		if (OnKey(key)) return true;
-	}
-
-	lastLeftStickKey = newLeftStickKey;
-
-	// Post the new key's message
-	if (newLeftStickKey)
-	{
-		CKey key(newLeftStickKey, m_DefaultGamepad.fX1, m_DefaultGamepad.fY1, m_DefaultGamepad.fX2, m_DefaultGamepad.fY2);
-		if (OnKey(key)) return true;
-	}
-
 	if( m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_A )
 	{
 		CKey key(KEY_BUTTON_A);		
@@ -575,33 +441,6 @@ bool CApplication::OnKey(CKey& key)
 			m_pPlayer->Pause();
 			return true;
 		}
-	}
-
-	// Check for global volume control
-	if (action.fAmount1 && (action.GetID() == ACTION_VOLUME_UP || action.GetID() == ACTION_VOLUME_DOWN))
-	{
-		// Increase or decrease the volume
-		static float volume = 100.0f;//g_stSettings.m_nVolumeLevel;
-
-		// Calculate speed so that a full press will equal 1 second from min to max
-		float speed = float(VOLUME_MAXIMUM - VOLUME_MINIMUM);
-
-//		if( action.fRepeat )
-//			speed *= action.fRepeat;
-//		else
-			speed /= 50; //50 fps
-
-		if (action.GetID() == ACTION_VOLUME_UP)
-			volume += (action.fAmount1 * action.fAmount1 * speed);
-		else
-			volume -= (action.fAmount1 * action.fAmount1 * speed);
-    
-//		g_audioContext.SetVolume(volume);
-
-		// Show visual feedback of volume change...
-		m_guiDialogVolumeBar.Show();
-		m_guiDialogVolumeBar.OnAction(action);
-		return true;
 	}
 
 	return false;

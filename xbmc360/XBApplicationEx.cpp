@@ -19,19 +19,19 @@ CXBApplicationEX::CXBApplicationEX()
 	// your derived class as your app requires.
 	ZeroMemory( &m_d3dpp, sizeof(m_d3dpp) );
 	XVIDEO_MODE VideoMode;
-	XGetVideoMode( &VideoMode );
-	m_d3dpp.BackBufferWidth        = 1280;//1920;//min( VideoMode.dwDisplayWidth, 1280 ); //MARTY FIXME WIP
-	m_d3dpp.BackBufferHeight       = 720;//1080;//min( VideoMode.dwDisplayHeight, 720 ); //MARTY FIXME WIP
-	m_d3dpp.BackBufferFormat       = D3DFMT_LIN_X8R8G8B8;
-	m_d3dpp.BackBufferCount        = 1;
-	m_d3dpp.EnableAutoDepthStencil = FALSE;
-	m_d3dpp.AutoDepthStencilFormat = D3DFMT_D24S8;
-	m_d3dpp.SwapEffect             = D3DSWAPEFFECT_DISCARD;
-	m_d3dpp.PresentationInterval   = D3DPRESENT_INTERVAL_DEFAULT;
+    XGetVideoMode( &VideoMode );
+    m_d3dpp.BackBufferWidth        = 1280;//1920;//min( VideoMode.dwDisplayWidth, 1280 ); //MARTY FIXME WIP
+    m_d3dpp.BackBufferHeight       = 720;//1080;//min( VideoMode.dwDisplayHeight, 720 ); //MARTY FIXME WIP
+    m_d3dpp.BackBufferFormat       = D3DFMT_LIN_X8R8G8B8;
+    m_d3dpp.BackBufferCount        = 1;
+    m_d3dpp.EnableAutoDepthStencil = FALSE;
+    m_d3dpp.AutoDepthStencilFormat = D3DFMT_D24S8;
+    m_d3dpp.SwapEffect             = D3DSWAPEFFECT_DISCARD;
+    m_d3dpp.PresentationInterval   = D3DPRESENT_INTERVAL_DEFAULT;
 
 	//XUI
 	XUIInitParams m_XUIParams = { 0 };
-	XUI_INIT_PARAMS( m_XUIParams );
+    XUI_INIT_PARAMS( m_XUIParams );
 
 	m_bStop = false;
 }
@@ -43,7 +43,7 @@ CXBApplicationEX::~CXBApplicationEX()
 
 bool CXBApplicationEX::Create()
 {
-	// Initialize core peripheral port support.
+    // Initialize core peripheral port support.
 	ZeroMemory( m_Gamepads,        sizeof(m_Gamepads) );
 	ZeroMemory( &m_DefaultGamepad, sizeof(m_DefaultGamepad) );
 
@@ -87,23 +87,23 @@ void CXBApplicationEX::Destroy()
 
 	g_graphicsContext.Lock();
 
-	if(m_hXUIDC)
-	{
-		XuiRenderDestroyDC( m_hXUIDC );
-		m_hXUIDC = NULL;
-	}
+    if(m_hXUIDC)
+    {
+        XuiRenderDestroyDC( m_hXUIDC );
+        m_hXUIDC = NULL;
+    }
 
 	if( m_pd3dDevice )
-	{
-		m_pd3dDevice->Release();
-		m_pd3dDevice = NULL;
-	}
+    {
+        m_pd3dDevice->Release();
+        m_pd3dDevice = NULL;
+    }
 
-	if( m_pD3D )
-	{
-		m_pD3D->Release();
-		m_pD3D = NULL;
-	}
+    if( m_pD3D )
+    {
+        m_pD3D->Release();
+        m_pD3D = NULL;
+    }
 
 	g_graphicsContext.Unlock();
 }
@@ -111,11 +111,11 @@ void CXBApplicationEX::Destroy()
 void CXBApplicationEX::ReadInput()
 {
 	//-----------------------------------------
-	// Handle input
-	//-----------------------------------------
+    // Handle input
+    //-----------------------------------------
 
-	// Read the input for all connected gamepads
-	//XBInput_GetInput( m_Gamepad );
+    // Read the input for all connected gamepads
+    //XBInput_GetInput( m_Gamepad );
 	Input::GetInput( m_Gamepads );
 
 	// Lump inputs of all connected gamepads into one common structure.
@@ -226,43 +226,43 @@ void CXBApplicationEX::ReadInput()
     m_DefaultGamepad.sThumbRX = Input::ClampToShort(iThumbRX);
     m_DefaultGamepad.sThumbRY = Input::ClampToShort(iThumbRY);
 
-	// Fill pActiveGamePadsMask
-	if ( NULL != NULL )
-	{
-		DWORD dwActiveGamePadsMask = 0;
-		for( DWORD i=0; i<XUSER_MAX_COUNT; i++ )
-		{
-			if( bActiveButtons[i] || bActiveThumbs[i] || m_Gamepads[i].wPressedButtons )
-			{
-				dwActiveGamePadsMask |= 1 << i;
-			}
-		}
+    // Fill pActiveGamePadsMask
+    if ( NULL != NULL )
+    {
+        DWORD dwActiveGamePadsMask = 0;
+        for( DWORD i=0; i<XUSER_MAX_COUNT; i++ )
+        {
+            if( bActiveButtons[i] || bActiveThumbs[i] || m_Gamepads[i].wPressedButtons )
+            {
+                dwActiveGamePadsMask |= 1 << i;
+            }
+        }
 
-		//*pdwActiveGamePadsMask = dwActiveGamePadsMask; //FIXME
-	}
+        //*pdwActiveGamePadsMask = dwActiveGamePadsMask; //FIXME
+    }
 
-	// Assign an active gamepad
-	for( DWORD i=0; i<XUSER_MAX_COUNT; i++ )
-	{
-		if( bActiveButtons[i] )
-		{
-			m_DefaultGamepad.dwUserIndex = i;
-			break;
-		}
+    // Assign an active gamepad
+    for( DWORD i=0; i<XUSER_MAX_COUNT; i++ )
+    {
+        if( bActiveButtons[i] )
+        {
+            m_DefaultGamepad.dwUserIndex = i;
+            break;
+        }
 
-		if( bActiveThumbs[i] )
-		{
-			m_DefaultGamepad.dwUserIndex = i;
-			break;
-		}
-	}
+        if( bActiveThumbs[i] )
+        {
+            m_DefaultGamepad.dwUserIndex = i;
+            break;
+        }
+    }
 
-	// Handle a convenient reboot sequence for all samples
-	if( ( m_DefaultGamepad.bLeftTrigger  > 128 ) &&
-		( m_DefaultGamepad.bRightTrigger > 128 ) &&
-		( m_DefaultGamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER ) )
-	{
-		// Reboot the dev kit
-		XLaunchNewImage( "", 0 );
-	}
+    // Handle a convenient reboot sequence for all samples
+    if( ( m_DefaultGamepad.bLeftTrigger  > 128 ) &&
+        ( m_DefaultGamepad.bRightTrigger > 128 ) &&
+        ( m_DefaultGamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER ) )
+    {
+        // Reboot the dev kit
+        XLaunchNewImage( "", 0 );
+    }
 }

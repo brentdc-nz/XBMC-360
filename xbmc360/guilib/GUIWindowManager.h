@@ -38,9 +38,9 @@ public:
 	void PreviousWindow();
 	void Delete(int id);
 	void Remove(int id);
-	void RouteToWindow(CGUIWindow* pDialog);
-	void AddModeless(CGUIWindow* pDialog);
-	void RemoveDialog(DWORD dwID);
+	void RouteToWindow(CGUIWindow* pWindow);
+	void AddModeless(CGUIWindow* dialog);
+	void UnRoute(DWORD dwID);
 	void ChangeActiveWindow(int iNewID);
 	void ActivateWindow(int iWindowID, bool swappingWindows = false);
 
