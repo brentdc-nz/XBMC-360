@@ -57,6 +57,12 @@ void CGUIDialog::Show()
 	OnMessage(msg);
 }
 
+bool CGUIDialog::OnBack(int actionID)
+{
+	Close();
+	return true;
+}
+
 bool CGUIDialog::OnMessage(CGUIMessage& message)
 {
 	switch ( message.GetMessage() )
@@ -69,21 +75,12 @@ bool CGUIDialog::OnMessage(CGUIMessage& message)
 
 			CGUIWindow::OnMessage(message);
 
-			// if we were running, make sure we remove ourselves from the window manager
-			if (/*m_bRunning*/1)
+			// If we were running, make sure we remove ourselves from the window manager
+			if (m_bRunning)
 			{
-				if (/*m_bModal*/1)
-				{
-					g_windowManager.UnRoute(GetID());
-				}
-				else
-				{
-//					g_windowManager.RemoveModeless( GetID() );
-				}
-
-//				m_pParentWindow = NULL;
+				g_windowManager.RemoveDialog(GetID());
 				m_bRunning = false;
-//				m_dialogClosing = false;
+//				m_dialogClosing = false; //TODO
 			}
 			return true;
 		}
@@ -97,27 +94,10 @@ bool CGUIDialog::OnMessage(CGUIMessage& message)
 	return CGUIWindow::OnMessage(message);
 }
 
-void CGUIDialog::Render()
-{
-	CGUIWindow::Render();
-	
-	// Check to see if we should close at this point
-	// We check after the controls have finished rendering, as we may have to close due to
-	// the controls rendering after the window has finished it's animation
-//	if (m_dialogClosing && !IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
-//		Close(true);
-}
-
-bool CGUIDialog::OnBack(int actionID)
-{
-	Close();
-	return true;
-}
-
 void CGUIDialog::Close(bool forceClose /*= false*/)
 {
-	//Lock graphic context here as it is sometimes called from non rendering threads
-	//maybe we should have a critical section per window instead??
+	// Lock graphic context here as it is sometimes called from non rendering threads
+	// maybe we should have a critical section per window instead??
 	CSingleLock lock(g_graphicsContext);
 
 	if (!m_bRunning) return;
@@ -144,4 +124,17 @@ void CGUIDialog::Close(bool forceClose /*= false*/)
 	OnMessage(msg);
 #endif
 	CGUIDialog::OnMessage(msg);
+}
+
+void CGUIDialog::Render()
+{
+	CGUIWindow::Render();
+	
+	// TODO:
+
+	// Check to see if we should close at this point
+	// We check after the controls have finished rendering, as we may have to close due to
+	// the controls rendering after the window has finished it's animation
+//	if (m_dialogClosing && !IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
+//		Close(true);
 }
