@@ -392,6 +392,7 @@ void CRGBRenderer::UnInit()
 
 	if(m_pTexture)
 	{
+		m_pTexture->Release();
 		m_pTexture = NULL;
 	}
 
