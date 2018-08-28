@@ -9,8 +9,8 @@ namespace RGBRendererShaders
 //-------------------------------------------------------------------------------------
 // Vertex shader
 // We use the register semantic here to directly define the input register
-// matWVP.  Conversely, we could let the HLSL compiler decide and check the
-// constant table.
+// matWVP. Conversely, we could let the HLSL compiler decide and check the
+// constant table
 //-------------------------------------------------------------------------------------
 const char* g_strVertexShaderProgram =
 	" float4x4 matWVP : register(c0);              "
@@ -42,7 +42,7 @@ const char* g_strPixelShaderProgram =
 	" struct PS_IN                                 "
 	" {                                            "
 	"     float2 TexCoord : TEXCOORD;              "
-	" };                                           "  // the vertex shader
+	" };                                           "  // The vertex shader
 	"                                              "
 	" sampler detail;                              "
 	"                                              "
@@ -111,7 +111,7 @@ bool CRGBRenderer::PreInit()
 	m_iScreenWidth = g_graphicsContext.GetWidth();
 	m_iScreenHeight = g_graphicsContext.GetHeight();
 
-	// Compile vertex shader.
+	// Compile vertex shader
 	ID3DXBuffer* pVertexShaderCode;
 	ID3DXBuffer* pVertexErrorMsg;
    
@@ -126,11 +126,11 @@ bool CRGBRenderer::PreInit()
                                     &pVertexErrorMsg,
                                     NULL );
 
-	// Create vertex shader.
+	// Create vertex shader
 	m_pd3dDevice->CreateVertexShader( ( DWORD* )pVertexShaderCode->GetBufferPointer(),
                                       &m_pVertexShader );
 
-	// Compile pixel shader.
+	// Compile pixel shader
 	ID3DXBuffer* pPixelShaderCode;
 	ID3DXBuffer* pPixelErrorMsg;
 
@@ -150,7 +150,7 @@ bool CRGBRenderer::PreInit()
                                      &m_pPixelShader );
 
     // Define the vertex elements and
-    // Create a vertex declaration from the element descriptions.
+    // create a vertex declaration from the element descriptions
     static const D3DVERTEXELEMENT9 VertexElements[3] =
     {
         { 0,  0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0 },
@@ -230,7 +230,7 @@ void CRGBRenderer::ManageDisplay()
 	COLORVERTEX* pVertices;
 	m_pVB->Lock( 0, 0, ( void** )&pVertices, 0 );
 	memcpy( pVertices, Vertices, 4 * sizeof( COLORVERTEX ) );
-	   m_pVB->Unlock();
+	m_pVB->Unlock();
 
 	// Initialize the world and view matrix
 	D3DXMatrixIdentity( &m_matWorld );
@@ -249,7 +249,7 @@ bool CRGBRenderer::Configure(int iWidth, int iHeight)
 
 	if(!m_pTexture)
 	{
-		//Create Texture
+		// Create Texture
 		m_pd3dDevice->CreateTexture(m_iSourceWidth,
 			m_iSourceHeight,
 			1,
@@ -346,7 +346,7 @@ void CRGBRenderer::PrepareDisplay()
 
 		if (g_application.NeedRenderFullScreen())
 		{ 
-			// render our subtitles and osd
+			// Render our subtitles and OSD
 			g_application.RenderFullScreen();
 		}
     
@@ -363,8 +363,8 @@ void CRGBRenderer::FlipPage()
 //	CSingleLock lock(g_graphicsContext);
 	if( !m_bPrepared )
 	{
-		//This will prepare for rendering, ie swapping buffers and in fullscreen even rendering
-		//it can have been done way earlier
+		// This will prepare for rendering, ie swapping buffers and in fullscreen even rendering
+		// it can have been done way earlier
 		PrepareDisplay();
 	}
 	m_bPrepared=false;
@@ -373,7 +373,7 @@ void CRGBRenderer::FlipPage()
 	{   
 		g_graphicsContext.Lock();
 
-		//Make sure the push buffer is done before waiting for vblank, otherwise we can get tearing
+		// Make sure the push buffer is done before waiting for vblank, otherwise we can get tearing
 		while( m_pd3dDevice->IsBusy() ) Sleep(1);
 
 		// Present the backbuffer contents to the display
