@@ -1,8 +1,9 @@
-#include <xtl.h>
 #include "RenderManager.h"
 #include "..\..\Application.h"
 #include "..\..\utils\Log.h"
 #include "..\..\guilib\GraphicContext.h"
+
+CRenderManager g_renderManager;
 
 CRenderManager::CRenderManager()
 {
@@ -24,7 +25,7 @@ void CRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
 bool CRenderManager::PreInit()
 {
-	//FIXME Lock and release!
+	// FIXME Lock and release!
 
 	m_bIsStarted = false;
 
@@ -98,11 +99,11 @@ void CRenderManager::ReleaseImage()
 void CRenderManager::PrepareDisplay()
 {
     CSharedLock lock(m_sharedSection);
-//    if (m_bPauseDrawing) return;
+
+//	if (m_bPauseDrawing) return;
+
     if (m_pRenderer)
-    {
-      m_pRenderer->PrepareDisplay();
-    }
+		m_pRenderer->PrepareDisplay();
 }
 
 void CRenderManager::FlipPage()
@@ -112,12 +113,14 @@ void CRenderManager::FlipPage()
 		CLog::Log(LOGERROR, "%s called without a valid Renderer object", __FUNCTION__);
 		return;
 	}
+
 	m_pRenderer->FlipPage();
 }
 
 void CRenderManager::UnInit()
 {
 	m_bIsStarted = false;
+
 	if (m_pRenderer)
 	{
 		m_pRenderer->UnInit();
@@ -125,5 +128,3 @@ void CRenderManager::UnInit()
 		m_pRenderer = NULL; 
 	}
 }
-
-CRenderManager g_renderManager;

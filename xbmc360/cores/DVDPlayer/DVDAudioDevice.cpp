@@ -5,7 +5,7 @@
 
 #define MAX_BUFFERS 64
 
-CDVDAudio::CDVDAudio() : m_hBufferEndEvent( CreateEvent( NULL, FALSE, FALSE, NULL ) )
+CDVDAudio::CDVDAudio() : m_hBufferEndEvent(CreateEvent(NULL, FALSE, FALSE, NULL))
 {
 	InitializeCriticalSectionAndSpinCount(&m_CriticalSection, 0x00000400);
 
@@ -22,7 +22,7 @@ CDVDAudio::CDVDAudio() : m_hBufferEndEvent( CreateEvent( NULL, FALSE, FALSE, NUL
 
 CDVDAudio::~CDVDAudio()
 {
-	CloseHandle( m_hBufferEndEvent );
+	CloseHandle(m_hBufferEndEvent);
 	DeleteCriticalSection(&m_CriticalSection);
 }
 
@@ -62,7 +62,7 @@ bool CDVDAudio::Create(int iChannels, int iBitrate, int iBitsPerSample)
 	m_pXAudio2->CreateSourceVoice(&m_pSourceVoice,(WAVEFORMATEX*)&wfx, NULL, 1.0f, this);
 
 	// Start sound
-	m_pSourceVoice->Start( 0 );
+	m_pSourceVoice->Start(0);
 
 	m_bInitialized = true;
 
@@ -108,7 +108,7 @@ DWORD CDVDAudio::AddPackets(unsigned char* data, DWORD len)
 
 	XAUDIO2_VOICE_STATE state;
 	
-	while(m_pSourceVoice->GetState( &state ), state.BuffersQueued >= MAX_BUFFERS)
+	while(m_pSourceVoice->GetState(&state), state.BuffersQueued >= MAX_BUFFERS)
 		Sleep(1);
 	
 	m_pSourceVoice->SubmitSourceBuffer(&SoundBuffer);

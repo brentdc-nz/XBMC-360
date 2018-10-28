@@ -93,13 +93,13 @@ void CXBApplicationEX::Destroy()
 		m_hXUIDC = NULL;
 	}
 
-	if( m_pd3dDevice )
+	if(m_pd3dDevice)
 	{
 		m_pd3dDevice->Release();
 		m_pd3dDevice = NULL;
 	}
 
-	if( m_pD3D )
+	if(m_pD3D)
 	{
 		m_pD3D->Release();
 		m_pD3D = NULL;
@@ -238,7 +238,7 @@ void CXBApplicationEX::ReadInput()
 			}
 		}
 
-		//*pdwActiveGamePadsMask = dwActiveGamePadsMask; //FIXME
+		//*pdwActiveGamePadsMask = dwActiveGamePadsMask; // FIXME
 	}
 
 	// Assign an active gamepad
@@ -257,12 +257,12 @@ void CXBApplicationEX::ReadInput()
 		}
 	}
 
-	// Handle a convenient reboot sequence for all samples
+	// Handle a convenient quit sequence
 	if( ( m_DefaultGamepad.bLeftTrigger  > 128 ) &&
 		( m_DefaultGamepad.bRightTrigger > 128 ) &&
 		( m_DefaultGamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER ) )
 	{
-		// Reboot the dev kit
+		// Quit to dashboard
 		XLaunchNewImage( "", 0 );
 	}
 }
