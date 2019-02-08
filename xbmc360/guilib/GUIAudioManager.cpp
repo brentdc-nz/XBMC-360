@@ -205,7 +205,7 @@ void CGUIAudioManager::PlayWindowSound(int id, WINDOW_SOUND event)
 
 	for(int i = 0; i < (int)m_vecWindowSounds.size(); i++)
 	{
-		pWindowSound = m_vecActionSounds[i];
+		pWindowSound = m_vecWindowSounds[i];
 
 		if(pWindowSound->GetFileName() == strFile)
 		{
@@ -223,7 +223,7 @@ void CGUIAudioManager::PlayWindowSound(int id, WINDOW_SOUND event)
 		return;
 	}
 
-	m_vecActionSounds.push_back(pWindowSound);
+	m_vecWindowSounds.push_back(pWindowSound);
 
 	pWindowSound->Play();
 }
@@ -253,9 +253,9 @@ void CGUIAudioManager::Cleanup()
 	// Delete window sounds
 	CGUISound* pWindowSound = NULL;
 
-	for(int i = 0; i < (int)m_vecActionSounds.size(); i++)
+	for(int i = 0; i < (int)m_vecWindowSounds.size(); i++)
 	{
-		pWindowSound = m_vecActionSounds[i];
+		pWindowSound = m_vecWindowSounds[i];
 		
 		if(pWindowSound)
 		{
