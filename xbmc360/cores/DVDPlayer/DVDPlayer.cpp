@@ -812,11 +812,12 @@ bool CDVDPlayer::OpenAudioStream(int iStream)
 	}
 
 	CDVDStreamInfo hint(*pStream, true);
-//  if( m_CurrentAudio.id >= 0 )
-//  {
-//    CDVDStreamInfo* phint = new CDVDStreamInfo(hint);
-//    m_dvdPlayerAudio.SendMessage(new CDVDMsgGeneralStreamChange(phint));
-//  }
+	if( m_CurrentAudio.id >= 0 )
+	{
+		CDVDStreamInfo* phint = new CDVDStreamInfo(hint);
+		m_dvdPlayerAudio.SendMessage(new CDVDMsgGeneralStreamChange(phint));
+	}
+
 	bool success = false;
 	try
 	{
@@ -923,6 +924,8 @@ bool CDVDPlayer::CloseAudioStream(bool bWaitForBuffers)
 		m_dvdPlayerAudio.CloseStream(bWaitForBuffers);
 
 		m_CurrentAudio.id = -1;
+		m_CurrentAudio.dts = DVD_NOPTS_VALUE;
+		m_CurrentAudio.hint.Clear();
 	}
 	UnlockStreams();
   
@@ -933,11 +936,13 @@ bool CDVDPlayer::CloseVideoStream(bool bWaitForBuffers) // bWaitForBuffers curre
 {
 	CLog::Log(LOGNOTICE, "Closing video stream");
 
-	if (m_CurrentVideo.id < 0) return false; // can't close stream if the stream does not exist
+	if (m_CurrentVideo.id < 0) return false; // Can't close stream if the stream does not exist
 
 	m_dvdPlayerVideo.CloseStream(bWaitForBuffers);
 
 	m_CurrentVideo.id = -1;
+	m_CurrentVideo.dts = DVD_NOPTS_VALUE;
+	m_CurrentVideo.hint.Clear();
 
 	return true;
 }

@@ -96,9 +96,14 @@ void CDVDVideoCodecFFmpeg::Dispose()
 		avcodec_close(m_pCodecContext);
 
 		av_free(m_pCodecContext);
-
-		m_pCodecContext = NULL;
 	}
+	m_pCodecContext = NULL;
+
+	if(m_pSwsContext)
+	{
+		sws_freeContext(m_pSwsContext);
+	}
+	m_pSwsContext = NULL;
 }
 
 void CDVDVideoCodecFFmpeg::SetDropState(bool bDrop)
@@ -217,6 +222,7 @@ void CDVDVideoCodecFFmpeg::Reset()
 		m_pConvertFrame = NULL;
 
 		sws_freeContext(m_pSwsContext);
+		m_pSwsContext = NULL;
 	}
 }
 

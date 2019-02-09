@@ -1,6 +1,6 @@
 #include "DVDMessage.h"
 #include "DVDDemuxers\DVDDemuxUtils.h"
-//#include "DVDStreamInfo.h"
+#include "DVDStreamInfo.h"
 
 /**
  * CDVDMsgGeneralStreamChange --- GENERAL_STREAMCHANGE

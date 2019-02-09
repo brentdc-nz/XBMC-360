@@ -99,9 +99,6 @@ void CDVDDemuxFFmpeg::Dispose()
 	}
 
 	m_pFormatContext = NULL;
-	//m_pInput = NULL;
-
-	//ContextDeInit();
 }
 
 int CDVDDemuxFFmpeg::GetStreamLenght()
