@@ -73,10 +73,11 @@ void CDVDAudio::Destroy()
 {
 	// Flushing the buffers will stop any leaks,
 	// OnBufferEnd() is called for any queued buffers
-	m_pSourceVoice->FlushSourceBuffers();
-
 	if(m_pSourceVoice)
+	{
+		m_pSourceVoice->FlushSourceBuffers();
 		m_pSourceVoice->DestroyVoice();
+	}
 
 	m_bInitialized = false;
 }

@@ -3,10 +3,10 @@
 
 CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream)
 {
-	CDVDDemux* pDemuxer = new CDVDDemuxFFmpeg;
-	
-	if(pDemuxer->Open(pInputStream))
-		return pDemuxer;
-
-	return NULL;
+	//if (pInputStream->IsStreamType(DVDSTREAM_TYPE_HTTP))
+	{
+		// TODO: Add more demuxers for other types
+	}
+  
+	return new CDVDDemuxFFmpeg();
 }
