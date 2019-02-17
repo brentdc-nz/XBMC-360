@@ -77,7 +77,7 @@ bool CScreensaverPlasma::Initialize()
 	if(m_initialized)
 		return false;
 
-	g_graphicsContext.Lock();
+	GRAPHICSCONTEXT_LOCK()
 
 	m_iScreenWidth = g_graphicsContext.GetWidth();
 	m_iScreenHeight = g_graphicsContext.GetHeight();
@@ -152,7 +152,7 @@ bool CScreensaverPlasma::Initialize()
 
 	m_initialized = true;
 
-	g_graphicsContext.Unlock();
+	GRAPHICSCONTEXT_UNLOCK()
 
 	int iPosX = 0;
 	int iPosY = 0;
@@ -257,7 +257,7 @@ bool CScreensaverPlasma::Close()
 	if(!m_initialized)
 		return false;
 
-	g_graphicsContext.Lock();
+	GRAPHICSCONTEXT_LOCK()
 
 	if(m_pTexture)
 	{
@@ -293,14 +293,14 @@ bool CScreensaverPlasma::Close()
 		m_pPixelShader = NULL;
 	}
 
-	g_graphicsContext.Unlock();
+	GRAPHICSCONTEXT_UNLOCK()
 
 	return true;
 }
 
 void CScreensaverPlasma::UpdateTexture()
 {
-	g_graphicsContext.Lock();
+	GRAPHICSCONTEXT_LOCK()
 
     // Build the world-view-projection matrix and pass it into the vertex shader
 	D3DXMATRIX matWVP = m_matWorld * m_matView * m_matProj;
@@ -325,5 +325,5 @@ void CScreensaverPlasma::UpdateTexture()
 
 	m_pd3dDevice->SetStreamSource( NULL, NULL, NULL, NULL );
 
-	g_graphicsContext.Unlock();
+	GRAPHICSCONTEXT_UNLOCK()
 }

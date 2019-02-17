@@ -86,14 +86,14 @@ void CRGBRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 	if(!m_pTexture)
 		return;
 
-	g_graphicsContext.Lock();
+	GRAPHICSCONTEXT_LOCK()
 
 	ManageDisplay();
 
 	if(clear)
 		m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET, 0xff000000, 1.0f, 0L );
 
-	g_graphicsContext.Unlock();
+	GRAPHICSCONTEXT_UNLOCK()
 
 	Render();
 }
@@ -106,7 +106,7 @@ bool CRGBRenderer::PreInit()
 	if(m_initialized)
 		return false;
 
-	g_graphicsContext.Lock();
+	GRAPHICSCONTEXT_LOCK()
 
 	m_iScreenWidth = g_graphicsContext.GetWidth();
 	m_iScreenHeight = g_graphicsContext.GetHeight();
@@ -181,7 +181,7 @@ bool CRGBRenderer::PreInit()
 
 	m_initialized = true;
 
-	g_graphicsContext.Unlock();
+	GRAPHICSCONTEXT_UNLOCK()
 
 	return true;
 }
@@ -242,7 +242,7 @@ void CRGBRenderer::ManageDisplay()
 
 bool CRGBRenderer::Configure(int iWidth, int iHeight)
 {
-	g_graphicsContext.Lock();
+	GRAPHICSCONTEXT_LOCK()
 
 	m_iSourceWidth = iWidth;
 	m_iSourceHeight = iHeight;
@@ -260,14 +260,14 @@ bool CRGBRenderer::Configure(int iWidth, int iHeight)
 			NULL);
 	}
 
-	g_graphicsContext.Unlock();
+	GRAPHICSCONTEXT_UNLOCK()
 
 	return true;
 }
 
 bool CRGBRenderer::GetImage(RGB32Image_t* image)
 {
-	g_graphicsContext.Lock();
+	GRAPHICSCONTEXT_LOCK()
 
 	if (!image) return false;
 
@@ -288,12 +288,12 @@ void CRGBRenderer::ReleaseImage()
 {
 	m_pTexture->UnlockRect(0);
 
-	g_graphicsContext.Unlock();
+	GRAPHICSCONTEXT_UNLOCK()
 }
 
 void CRGBRenderer::Render()
 {
-	g_graphicsContext.Lock();
+	GRAPHICSCONTEXT_LOCK()
 
 	if( !m_pd3dDevice || !m_pVertexShader || !m_pVB )
 	{
@@ -324,25 +324,25 @@ void CRGBRenderer::Render()
 
 	m_pd3dDevice->SetStreamSource( NULL, NULL, NULL, NULL );
 
-	g_graphicsContext.Unlock();
+	GRAPHICSCONTEXT_UNLOCK()
 }
 
 void CRGBRenderer::PrepareDisplay()
 {
-	if (g_graphicsContext.IsFullScreenVideo() )
+	if (g_graphicsContext.IsFullScreenVideo())
 	{    
 //		CSingleLock lock(g_graphicsContext);
-		g_graphicsContext.Lock();
+		GRAPHICSCONTEXT_LOCK()
 		
 		ManageDisplay();
 
 		m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET, 0xff000000, 1.0f, 0L );
 
-		g_graphicsContext.Unlock();
+		GRAPHICSCONTEXT_UNLOCK()
 
 		Render();
 
-		g_graphicsContext.Lock();
+		GRAPHICSCONTEXT_LOCK()
 
 		if (g_application.NeedRenderFullScreen())
 		{ 
@@ -352,7 +352,7 @@ void CRGBRenderer::PrepareDisplay()
     
 //		m_pD3DDevice->KickPushBuffer();
 
-		g_graphicsContext.Unlock();
+		GRAPHICSCONTEXT_UNLOCK()
 	}
 
 	m_bPrepared = true;
@@ -371,7 +371,7 @@ void CRGBRenderer::FlipPage()
 
 	if ( g_graphicsContext.IsFullScreenVideo() && !g_application.m_pPlayer->IsPaused())
 	{   
-		g_graphicsContext.Lock();
+		GRAPHICSCONTEXT_LOCK();
 
 		// Make sure the push buffer is done before waiting for vblank, otherwise we can get tearing
 		while( m_pd3dDevice->IsBusy() ) Sleep(1);
@@ -379,7 +379,7 @@ void CRGBRenderer::FlipPage()
 		// Present the backbuffer contents to the display
 		m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
 
-		g_graphicsContext.Unlock();
+		GRAPHICSCONTEXT_UNLOCK()
 	}
 }
 
@@ -388,7 +388,7 @@ void CRGBRenderer::UnInit()
 	if(!m_initialized)
 		return;
 
-	g_graphicsContext.Lock();
+	GRAPHICSCONTEXT_LOCK()
 
 	if(m_pTexture)
 	{
@@ -424,5 +424,5 @@ void CRGBRenderer::UnInit()
 		m_pPixelShader = NULL;
 	}
 
-	g_graphicsContext.Unlock();
+	GRAPHICSCONTEXT_UNLOCK()
 }

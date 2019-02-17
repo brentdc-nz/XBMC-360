@@ -8,6 +8,15 @@
 
 #include <xui.h>
 
+// Output the function name in debug mode
+#ifdef _DEBUG
+#define GRAPHICSCONTEXT_LOCK()		g_graphicsContext.Lock(__FUNCTION__);
+#define GRAPHICSCONTEXT_UNLOCK()	g_graphicsContext.Unlock(__FUNCTION__);
+#else
+#define GRAPHICSCONTEXT_LOCK()		g_graphicsContext.Lock();
+#define GRAPHICSCONTEXT_UNLOCK()	g_graphicsContext.Unlock();
+#endif
+
 class CGraphicContext : public CCriticalSection
 {
 public:
@@ -30,6 +39,8 @@ public:
 	void SetFullScreenVideo(bool bOnOff);
 	bool IsFullScreenVideo() const;
 
+	void Lock(std::string strFunction);
+	void Unlock(std::string strFunction);
 	void Lock();
 	void Unlock();
 

@@ -49,9 +49,9 @@ void CSplash::Process()
 	D3DGAMMARAMP newRamp;
 	D3DGAMMARAMP oldRamp;
 
-	g_graphicsContext.Lock();
+	GRAPHICSCONTEXT_LOCK()
 	g_graphicsContext.Get3DDevice()->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
-	g_graphicsContext.Unlock();
+	GRAPHICSCONTEXT_UNLOCK()
 
 	float w = g_graphicsContext.GetWidth() * 0.5f;
 	float h = g_graphicsContext.GetHeight() * 0.5f;
@@ -60,9 +60,9 @@ void CSplash::Process()
 	image->AllocResources();
 
 	// Store the old gamma ramp
-	g_graphicsContext.Lock();
+	GRAPHICSCONTEXT_LOCK()
 	g_graphicsContext.Get3DDevice()->GetGammaRamp(NULL, &oldRamp);
-	g_graphicsContext.Unlock();
+	GRAPHICSCONTEXT_UNLOCK()
 
 	float fade = 0.5f;
 	for (int i = 0; i < 256; i++)
@@ -72,7 +72,7 @@ void CSplash::Process()
 		newRamp.blue[i] = (int)((float)oldRamp.red[i] * fade);
 	}
 	
-	g_graphicsContext.Lock();
+	GRAPHICSCONTEXT_LOCK()
 	g_graphicsContext.Get3DDevice()->SetGammaRamp(NULL, D3DSGR_IMMEDIATE, &newRamp);
 	
 	// Render splash image
@@ -83,14 +83,14 @@ void CSplash::Process()
 	g_graphicsContext.Get3DDevice()->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE); 
 	g_graphicsContext.Get3DDevice()->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
 
-	g_graphicsContext.Unlock();
+	GRAPHICSCONTEXT_UNLOCK()
 
 	image->Render();
 	image->FreeResources();
 	delete image;
 
 	// Show it on screen
-	g_graphicsContext.Lock();
+	GRAPHICSCONTEXT_LOCK()
 
 	g_graphicsContext.Get3DDevice()->SetRenderState(D3DRS_ALPHAREF, NULL);
 	g_graphicsContext.Get3DDevice()->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE); 
@@ -99,7 +99,7 @@ void CSplash::Process()
 	g_graphicsContext.Get3DDevice()->EndScene();
 
 	g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
-	g_graphicsContext.Unlock();
+	GRAPHICSCONTEXT_UNLOCK()
 
 	// Fade in and wait untill the thread is stopped
 	while (!m_bStop)
@@ -113,9 +113,9 @@ void CSplash::Process()
 				newRamp.green[i] = (int)((float)oldRamp.green[i] * fade);
 				newRamp.blue[i] = (int)((float)oldRamp.blue[i] * fade);
 			}
-			g_graphicsContext.Lock();
+			GRAPHICSCONTEXT_LOCK()
 			g_graphicsContext.Get3DDevice()->SetGammaRamp(NULL, D3DSGR_IMMEDIATE, &newRamp);
-			g_graphicsContext.Unlock();
+			GRAPHICSCONTEXT_UNLOCK()
 			fade += 0.01f;
 		}
 		else
@@ -124,7 +124,7 @@ void CSplash::Process()
 		}
 	}
 
-	g_graphicsContext.Lock();
+	GRAPHICSCONTEXT_LOCK()
 	
 	// Fade out
 	for (float fadeout = fade - 0.01f; fadeout >= 0.f; fadeout -= 0.01f)
@@ -143,7 +143,7 @@ void CSplash::Process()
 	g_graphicsContext.Get3DDevice()->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
 	g_graphicsContext.Get3DDevice()->SetGammaRamp(NULL, D3DSGR_IMMEDIATE, &oldRamp);
 	g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
-	g_graphicsContext.Unlock();
+	GRAPHICSCONTEXT_UNLOCK()
 }
 
 bool CSplash::Start()

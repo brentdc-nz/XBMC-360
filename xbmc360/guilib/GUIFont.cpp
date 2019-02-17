@@ -64,10 +64,10 @@ bool CGUIFont::Reload(DWORD dwStyles)
 	return true;
 }
 
-bool CGUIFont::DrawText( float fPosX, float fPosY, DWORD dwColor, const CStdString strText, DWORD dwFlags/* = XUI_FONT_STYLE_NORMAL*//*, FLOAT fMaxPixelWidth*/ )
+bool CGUIFont::DrawText(float fPosX, float fPosY, DWORD dwColor, const CStdString strText, DWORD dwFlags/* = XUI_FONT_STYLE_NORMAL*//*, FLOAT fMaxPixelWidth*/ )
 {
-	if ( !g_graphicsContext.IsFullScreenVideo() )
-		g_graphicsContext.Lock();
+	if (!g_graphicsContext.IsFullScreenVideo())
+		GRAPHICSCONTEXT_LOCK()
 
 	// Convert our text string to wide
 	wstring wstrText;
@@ -88,7 +88,7 @@ bool CGUIFont::DrawText( float fPosX, float fPosY, DWORD dwColor, const CStdStri
 	XUIRect clipRect( 0, 0, g_graphicsContext.GetWidth() - fPosX, g_graphicsContext.GetHeight() - fPosY );
 	XuiMeasureText( m_Font, wstrText.c_str(), -1, dwFlags, 0, &clipRect );
 
-	if(dwFlags & XUI_FONT_STYLE_RIGHT_ALIGN) //HACK: Using XUI to do this should be easy, but it's a pain in the butt...
+	if(dwFlags & XUI_FONT_STYLE_RIGHT_ALIGN) // HACK: Using XUI to do this should be easy, but it's a pain in the butt...
 	{
 		clipRect.right = g_graphicsContext.GetWidth() - fPosX + clipRect.GetWidth();
 		fPosX = fPosX - clipRect.GetWidth();
@@ -116,8 +116,8 @@ bool CGUIFont::DrawText( float fPosX, float fPosY, DWORD dwColor, const CStdStri
 	XuiRenderEnd( g_graphicsContext.GetXUIDevice() );
 	XuiRenderPresent( g_graphicsContext.GetXUIDevice(), NULL, NULL, NULL );
 
-	if ( !g_graphicsContext.IsFullScreenVideo() )
-		g_graphicsContext.Unlock();
+	if (!g_graphicsContext.IsFullScreenVideo())
+		GRAPHICSCONTEXT_UNLOCK()
 
 	return true;
 }

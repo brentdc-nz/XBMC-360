@@ -90,8 +90,8 @@ bool CGUID3DTexture::AllocResources()
 	if(m_initialized)
 		return false;
 
-	if ( !g_graphicsContext.IsFullScreenVideo() )
-		g_graphicsContext.Lock();
+	if (!g_graphicsContext.IsFullScreenVideo())
+		GRAPHICSCONTEXT_LOCK()
 
 	// Compile vertex shader.
 	ID3DXBuffer* pVertexShaderCode;
@@ -187,8 +187,8 @@ bool CGUID3DTexture::AllocResources()
 
 	m_initialized = true;
 
-	if ( !g_graphicsContext.IsFullScreenVideo() )
-		g_graphicsContext.Unlock();
+	if (!g_graphicsContext.IsFullScreenVideo())
+		GRAPHICSCONTEXT_UNLOCK()
 
 	return true;
 }
@@ -200,8 +200,8 @@ bool CGUID3DTexture::FreeResources()
 
 	m_initialized = false;
 
-//	if ( !g_graphicsContext.IsFullScreenVideo() )
-		g_graphicsContext.Lock();
+//	if (!g_graphicsContext.IsFullScreenVideo())
+		GRAPHICSCONTEXT_LOCK()
 
 	if(m_pVB)
 	{
@@ -231,8 +231,8 @@ bool CGUID3DTexture::FreeResources()
 		m_pPixelShader = NULL;
 	}
 
-//	if ( !g_graphicsContext.IsFullScreenVideo() )	
-		g_graphicsContext.Unlock();
+//	if (!g_graphicsContext.IsFullScreenVideo())	
+		GRAPHICSCONTEXT_UNLOCK()
 
 
 	return true;
@@ -250,6 +250,9 @@ void CGUID3DTexture::Update(float fPosX, float fPosY)
 
 	if( !m_pd3dDevice || !m_pVB )
 		return;
+
+	if (!g_graphicsContext.IsFullScreenVideo())
+		GRAPHICSCONTEXT_LOCK()
 
 	COLORVERTEX Vertices[] =
     {
@@ -269,7 +272,10 @@ void CGUID3DTexture::Update(float fPosX, float fPosY)
     D3DXMatrixIdentity( &m_matView );
 
     // Initialize the projection matrix
-	D3DXMatrixOrthoOffCenterLH(&m_matProj, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight(), 0, 0.0f, 1.0f ); 
+	D3DXMatrixOrthoOffCenterLH(&m_matProj, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight(), 0, 0.0f, 1.0f );
+
+	if ( !g_graphicsContext.IsFullScreenVideo() )
+		GRAPHICSCONTEXT_UNLOCK()
 }
 
 void CGUID3DTexture::Render()
@@ -280,8 +286,8 @@ void CGUID3DTexture::Render()
 		return;
 	}
 
-	if ( !g_graphicsContext.IsFullScreenVideo() )
-		g_graphicsContext.Lock();
+	if (!g_graphicsContext.IsFullScreenVideo())
+		GRAPHICSCONTEXT_LOCK()
 
 #if 1 //FIXME
 
@@ -330,6 +336,6 @@ void CGUID3DTexture::Render()
 
 	m_pd3dDevice->SetStreamSource( NULL, NULL, NULL, NULL );
 
-	if ( !g_graphicsContext.IsFullScreenVideo() )
-		g_graphicsContext.Unlock();
+	if (!g_graphicsContext.IsFullScreenVideo())
+		GRAPHICSCONTEXT_UNLOCK()
 }

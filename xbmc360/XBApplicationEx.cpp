@@ -85,7 +85,7 @@ void CXBApplicationEX::Destroy()
 	XuiRenderUninit();
 	XuiUninit();
 
-	g_graphicsContext.Lock();
+	GRAPHICSCONTEXT_LOCK()
 
 	if(m_hXUIDC)
 	{
@@ -105,7 +105,7 @@ void CXBApplicationEX::Destroy()
 		m_pD3D = NULL;
 	}
 
-	g_graphicsContext.Unlock();
+	GRAPHICSCONTEXT_UNLOCK()
 }
 
 void CXBApplicationEX::ReadInput()

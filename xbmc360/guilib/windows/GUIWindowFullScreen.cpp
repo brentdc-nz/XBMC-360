@@ -127,9 +127,9 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 
 			CGUIWindow::OnMessage(message);
 
-			g_graphicsContext.Lock();
+			GRAPHICSCONTEXT_LOCK()
 			g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET, 0xff000000, 1.0f, 0L );
-			g_graphicsContext.Unlock();
+			GRAPHICSCONTEXT_UNLOCK()
 
 			// switch resolution
 			CSingleLock lock (g_graphicsContext);

@@ -508,18 +508,18 @@ void CApplication::Render()
 			{
 				if (m_pPlayer->IsPaused())
 				{
-					g_graphicsContext.Lock();
+					GRAPHICSCONTEXT_LOCK()
 					m_pd3dDevice->BeginScene();  
-					g_graphicsContext.Unlock();
+					GRAPHICSCONTEXT_UNLOCK()
 					g_windowManager.Render();
 					g_renderManager.RenderUpdate(true);
 //					m_gWindowManager.UpdateModelessVisibility(); //TODO
-					g_graphicsContext.Lock();
+					GRAPHICSCONTEXT_LOCK()
 					RenderFullScreen();
 //					m_pd3dDevice->BlockUntilVerticalBlank(); //TODO
 					m_pd3dDevice->EndScene();
 					m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
-					g_graphicsContext.Unlock();
+					GRAPHICSCONTEXT_UNLOCK()
 					return;
 				}
 			}
@@ -538,9 +538,9 @@ void CApplication::Render()
 		g_graphicsContext.EnablePreviewWindow(false);
 	}
 
-	g_graphicsContext.Lock();
+	GRAPHICSCONTEXT_LOCK()
 	m_pd3dDevice->BeginScene();  
-	g_graphicsContext.Unlock();
+	GRAPHICSCONTEXT_UNLOCK()
 
 	// Update our FPS
 	g_infoManager.UpdateFPS();
@@ -553,12 +553,12 @@ void CApplication::Render()
 	// Now render any dialogs
 	g_windowManager.RenderDialogs();
 
-	g_graphicsContext.Lock();
+	GRAPHICSCONTEXT_LOCK()
 	m_pd3dDevice->EndScene();
 
 	// Present the backbuffer contents to the display
 	m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
-	g_graphicsContext.Unlock();
+	GRAPHICSCONTEXT_UNLOCK()
 }
 
 bool CApplication::NeedRenderFullScreen()

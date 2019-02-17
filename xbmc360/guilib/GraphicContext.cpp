@@ -105,16 +105,50 @@ void CGraphicContext::SetMediaDir(const CStdString &strMediaDir)
 
 void CGraphicContext::Lock()
 {
+	if(!m_pd3dDevice)
+		return;
+
 	EnterCriticalSection(*this);
 
-	if(m_pd3dDevice)
-		m_pd3dDevice->AcquireThreadOwnership();
+	m_pd3dDevice->AcquireThreadOwnership();
+}
+
+// Overloaded for debugging 
+void CGraphicContext::Lock(std::string strFunction)
+{
+	std::string strTmp = "GFX LOCK CALLER = ";
+	strTmp += strFunction += "\n";
+	OutputDebugString(strTmp.c_str());
+
+	if(!m_pd3dDevice)
+		return;
+
+	EnterCriticalSection(*this);
+
+	m_pd3dDevice->AcquireThreadOwnership();
 }
 
 void CGraphicContext::Unlock()
 {
-	if(m_pd3dDevice)
-		m_pd3dDevice->ReleaseThreadOwnership();
+	if(!m_pd3dDevice)
+		return;
+	
+	m_pd3dDevice->ReleaseThreadOwnership();
+
+	LeaveCriticalSection(*this);
+}
+
+// Overloaded for debugging 
+void CGraphicContext::Unlock(std::string strFunction)
+{
+	std::string strTmp = "GFX UN-LOCK CALLER = ";
+	strTmp += strFunction += "\n";
+	OutputDebugString(strTmp.c_str());
+
+	if(!m_pd3dDevice)
+		return;
+	
+	m_pd3dDevice->ReleaseThreadOwnership();
 
 	LeaveCriticalSection(*this);
 }
@@ -129,11 +163,12 @@ void CGraphicContext::Clear(DWORD color)
 	Lock();
 
 	if (!m_pd3dDevice) return;
+
 	//Not trying to clear the zbuffer when there is none is 7 fps faster (pal resolution)
 	if ((!m_pd3dParams) || (m_pd3dParams->EnableAutoDepthStencil == TRUE))
-		m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, color, 1.0f, 0L );
+		m_pd3dDevice->Clear(0L, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, color, 1.0f, 0L);
 	else
-		m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET, color, 1.0f, 0L );
+		m_pd3dDevice->Clear(0L, NULL, D3DCLEAR_TARGET, color, 1.0f, 0L);
 
 	Unlock();
 }
