@@ -181,31 +181,37 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
 	CStdString strPath = m_strMediaDir;
 	strPath+="media\\";
 	strPath+=strTextureName;
+
 	if (strTextureName.c_str()[1] == ':')
 		strPath=strTextureName;
 
-	// normal picture
+	// Normal picture
 	D3DXIMAGE_INFO info;
-/*	if ( D3DXCreateTextureFromFileEx(g_graphicsContext.Get3DDevice(), strPath.c_str(),
-		 D3DX_DEFAULT, D3DX_DEFAULT, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED,
-		 D3DX_FILTER_NONE , D3DX_FILTER_NONE, dwColorKey, &info, NULL, &pTexture)!=D3D_OK)
+#if 0 //FIXME - We should be using this!
+	if(D3DXCreateTextureFromFileEx(g_graphicsContext.Get3DDevice(), strPath.c_str(),
+	   D3DX_DEFAULT, D3DX_DEFAULT, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED,
+       D3DX_FILTER_NONE , D3DX_FILTER_NONE, dwColorKey, &info, NULL, &pTexture)!=D3D_OK)
 	{
 		CLog::Log(LOGWARNING, "Texture manager unable to find file: %s \n", strPath.c_str());
 		return NULL;
 	}
-*/
-	if ( D3DXCreateTextureFromFile(g_graphicsContext.Get3DDevice(), strPath.c_str(), &pTexture)!=D3D_OK)
+#endif
+
+#if 1
+	if(D3DXCreateTextureFromFile(g_graphicsContext.Get3DDevice(), strPath.c_str(), &pTexture)!=D3D_OK)
 	{
 		CLog::Log(LOGWARNING, "Texture manager unable to find file: %s \n", strPath.c_str());
 		return NULL;
 	}
+#endif
 
 	CTextureMap* pMap = new CTextureMap(strTextureName);
 	CTexture* pclsTexture = new CTexture(pTexture, info.Width, info.Height);
+
 	pMap->Add(pclsTexture);
 	m_vecTextures.push_back(pMap);
 
-	return 1;
+	return TRUE;
 }
 
 void CGUITextureManager::Flush()

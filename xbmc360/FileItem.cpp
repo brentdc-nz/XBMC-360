@@ -32,7 +32,7 @@ CFileItemList::~CFileItemList()
 
 CFileItem* CFileItemList::operator[] (int iItem)
 {
-  return Get(iItem);
+	return Get(iItem);
 }
 
 CFileItem* CFileItemList::Get(int iItem)

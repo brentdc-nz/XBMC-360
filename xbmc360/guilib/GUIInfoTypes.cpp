@@ -170,6 +170,7 @@ CStdString CGUIInfoLabel::GetLabel(int contextWindow, bool preferImage) const
 	}
 	if (label.IsEmpty())  // empty label, use the fallback
 		return m_fallback;
+
 	return label;
 }
 

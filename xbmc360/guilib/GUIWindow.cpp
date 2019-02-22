@@ -89,6 +89,27 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
 			return true;
 		}
 		break;
+
+		case GUI_MSG_NOTIFY_ALL:
+		{
+			// Only process those notifications that come from this window, or those intended for every window
+			if ((GetID() == message.GetSenderId()) || !message.GetSenderId())
+			{
+				if (message.GetParam1() == GUI_MSG_SCROLL_CHANGE)//||
+//					message.GetParam1() == GUI_MSG_REFRESH_THUMBS || // TODO
+//					message.GetParam1() == GUI_MSG_REFRESH_LIST) // TODO
+				{
+					ivecControls it;
+					for (it = m_vecControls.begin(); it != m_vecControls.end(); ++it)
+					{
+						CGUIControl *control = *it;
+						CGUIMessage msg(message.GetParam1(), message.GetControlId(), control->GetID(), message.GetParam2());
+						control->OnMessage(msg);
+					}
+				}
+			}
+		}
+		break;
 	}
 
 	ivecControls i;
@@ -278,7 +299,7 @@ void CGUIWindow::FreeResources(bool forceUnload /*= FALSE */)
 
 void CGUIWindow::ClearAll()
 {
-//	OnWindowUnload();
+	OnWindowUnload();
 
 	for (int i = 0; i < (int)m_vecControls.size(); ++i)
 	{

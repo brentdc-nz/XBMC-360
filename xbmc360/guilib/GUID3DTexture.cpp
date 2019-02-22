@@ -243,10 +243,27 @@ void CGUID3DTexture::SetVisible(bool bOnOff)
 	m_bVisible = bOnOff;
 }
 
-void CGUID3DTexture::Update(float fPosX, float fPosY)
+void CGUID3DTexture::SetWidth(float fWidth)
+{
+	Update(m_posX, m_posY, fWidth, m_height);
+}
+
+void CGUID3DTexture::SetHeight(float fHeight)
+{
+	Update(m_posX, m_posY, m_width, fHeight);
+}
+
+void CGUID3DTexture::SetPosition(float fPosX, float fPosY)
+{
+	Update(fPosX, fPosY, m_width, m_height);
+}
+
+void CGUID3DTexture::Update(float fPosX, float fPosY, float fWidth, float fHeight)
 {
 	m_posY = fPosY;
 	m_posX = fPosX;
+	m_width = fWidth;
+	m_height = fHeight;
 
 	if( !m_pd3dDevice || !m_pVB )
 		return;

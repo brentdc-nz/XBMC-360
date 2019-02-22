@@ -281,7 +281,7 @@ void CApplication::Process()
 	ProcessGamepad();
 
 	// Do any processing that isn't needed on each run
-	if( m_slowTimer.GetElapsedMilliseconds() > 500 )
+	if(m_slowTimer.GetElapsedMilliseconds() > 500)
 	{
 		m_slowTimer.Reset();
 		ProcessSlow();
@@ -306,61 +306,61 @@ void CApplication::ProcessSlow()
 
 bool CApplication::ProcessGamepad()
 {
-	if( m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_A )
+	if(m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_A)
 	{
 		CKey key(KEY_BUTTON_A);		
 		if (OnKey(key)) return true;
 	}
 
-	if( m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_B )
+	if(m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_B)
 	{
 		CKey key(KEY_BUTTON_B);		
 		if (OnKey(key)) return true;
 	}
 
-	if( m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_X )
+	if(m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_X)
 	{
 		CKey key(KEY_BUTTON_X);		
 		if (OnKey(key)) return true;
 	}
 
-	if( m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_Y )
+	if(m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_Y)
 	{
 		CKey key(KEY_BUTTON_Y);		
 		if (OnKey(key)) return true;
 	}
 
-	if( m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_DPAD_UP )
+	if(m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_DPAD_UP)
 	{
 		CKey key(KEY_BUTTON_DPAD_UP);		
 		if (OnKey(key)) return true;
 	}	
 	
-	if( m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_DPAD_DOWN )
+	if(m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_DPAD_DOWN)
 	{
 		CKey key(KEY_BUTTON_DPAD_DOWN);		
 		if (OnKey(key)) return true;
 	}	
 
-	if( m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_DPAD_LEFT )
+	if(m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_DPAD_LEFT)
 	{
 		CKey key(KEY_BUTTON_DPAD_LEFT);		
 		if (OnKey(key)) return true;
 	}	
 	
-	if( m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_DPAD_RIGHT )
+	if(m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_DPAD_RIGHT)
 	{
 		CKey key(KEY_BUTTON_DPAD_RIGHT);		
 		if (OnKey(key)) return true;
 	}	
 
-	if( m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_START )
+	if(m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_START)
 	{
 		CKey key(KEY_BUTTON_START);		
 		if (OnKey(key)) return true;
 	}
 
-	if( m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_BACK )
+	if(m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_BACK)
 	{
 		CKey key(KEY_BUTTON_BACK);		
 		if (OnKey(key)) return true;

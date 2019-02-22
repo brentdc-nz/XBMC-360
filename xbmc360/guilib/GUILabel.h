@@ -32,15 +32,19 @@ public:
 		font = NULL;
 		offsetX = 0;
 		offsetY = 0;
-		dwTextColor = D3DCOLOR_ARGB( 255, 255, 255, 255 );
+		dwTextColor = D3DCOLOR_ARGB(255, 255, 255, 255);
+		dwSelectedTextColor = D3DCOLOR_ARGB(255, 255, 0, 0);
 		dwAlign = NULL;
+		scrollSuffix = " | ";
 	};
 
 	CGUIFont *font;
 	float offsetX;
 	float offsetY;
 	DWORD dwTextColor;
+	DWORD dwSelectedTextColor;
 	DWORD dwAlign;
+	CStdString scrollSuffix;
 };
 
 class CGUILabel

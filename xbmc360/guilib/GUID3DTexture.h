@@ -16,7 +16,10 @@ public:
 	bool AllocResources();
 	bool FreeResources();
 	void SetVisible(bool bOnOff);
-	void Update(float fPosX, float fPosY);
+	void SetWidth(float fWidth);
+	void SetHeight(float fHeight);
+	void Update(float fPosX, float fPosY, float fWidth, float fHeight);
+	void SetPosition(float fPosX, float fPosY);
 	void Render();
 	
 private:

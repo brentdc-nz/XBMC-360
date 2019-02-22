@@ -48,6 +48,8 @@ public:
 class CGUITextureBase
 {
 public:
+	float GetTextureWidth() { return m_width; };
+	float GetTextureHeight() { return m_height; };
 
 protected:
 	bool m_bVisible;

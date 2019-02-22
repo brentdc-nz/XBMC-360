@@ -426,7 +426,7 @@ void CGUIWindowSettingsCategory::FreeSettingsControls()
 void CGUIWindowSettingsCategory::FillInSkins(CSetting *pSetting)
 {
 	CSettingString *pSettingString = (CSettingString*)pSetting;
-	CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+	CGUISpinControlEx *pControl = (CGUISpinControlEx*)GetControl(GetSetting(pSetting->GetSetting())->GetID());
 	pControl->SetType(SPIN_CONTROL_TYPE_TEXT);
 	pControl->Clear();
 //	pControl->SetShowRange(true); //TODO

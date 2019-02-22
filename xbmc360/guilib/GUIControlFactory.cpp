@@ -29,6 +29,8 @@
 #include "GUIInfoManager.h"
 #include "GUISpinControl.h"
 #include "GUISpinControlEx.h"
+#include "GUIThumbnailPanel.h"
+#include "GUIScrollBarControl.h"
 
 typedef struct
 {
@@ -71,7 +73,7 @@ static const ControlMapping controls[] =
     {"list",              CGUIControl::GUICONTAINER_LIST},
     {"wraplist",          CGUIControl::GUICONTAINER_WRAPLIST},
     {"fixedlist",         CGUIControl::GUICONTAINER_FIXEDLIST},
-    {"panel",             CGUIControl::GUICONTAINER_PANEL}};
+    {"thumbnailpanel",    CGUIControl::GUICONTAINER_THUMBNAILPANEL}};
 
 CGUIControlFactory::CGUIControlFactory(void)
 {}
@@ -109,6 +111,12 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
 
 	float spinWidth = 16;
 	float spinHeight = 16;
+
+	float thumbHeight = 120;
+	float thumbWidth = 120;
+	float thumbTexHeight = 90;
+	float thumbTexWidth = 90;
+
 	float spinPosX = 0, spinPosY = 0;
 	float checkWidth = 0, checkHeight = 0;
 	CStdString strSubType;
@@ -121,8 +129,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
 	float fInterval = 0.1f;
 	bool bReverse = true;
 	bool bReveal = false;
-//	CTextureInfo textureBackground, textureLeft, textureRight, textureMid, textureOverlay;
-//	CTextureInfo textureNib, textureNibFocus, textureBar, textureBarFocus;
+	CTextureInfo textureBackground; //, textureLeft, textureRight, textureMid, textureOverlay;
+	CTextureInfo /*textureNib, textureNibFocus,*/ textureBar, textureBarFocus;
 //	CTextureInfo textureLeftFocus, textureRightFocus;
 	CTextureInfo textureUp, textureDown;
 	CTextureInfo textureUpFocus, textureDownFocus;
@@ -276,14 +284,15 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
 
   GetInfoColor(pControlNode, "colordiffuse", colorDiffuse, parentID);*/
 
-  GetConditionalVisibility(pControlNode, iVisibleCondition/*, allowHiddenFocus*/);
+	GetConditionalVisibility(pControlNode, iVisibleCondition/*, allowHiddenFocus*/);
 /*  GetCondition(pControlNode, "enable", enableCondition);
 
   // note: animrect here uses .right and .bottom as width and height respectively (nonstandard)
   FRECT animRect = { posX, posY, width, height };
   GetAnimations(pControlNode, animRect, animations);*/
 
-  XMLUtils::GetHex(pControlNode, "textcolor", labelInfo.dwTextColor);
+	XMLUtils::GetHex(pControlNode, "textcolor", labelInfo.dwTextColor);
+	XMLUtils::GetHex(pControlNode, "selectedcolor", labelInfo.dwSelectedTextColor);
 
 /*  GetInfoColor(pControlNode, "focusedcolor", labelInfo.focusedColor, parentID);
   GetInfoColor(pControlNode, "disabledcolor", labelInfo.disabledColor, parentID);
@@ -342,8 +351,14 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
     spinInfo.font = g_fontManager.GetFont(strFont);
   if (!spinInfo.font) spinInfo.font = labelInfo.font;*/
 
-  GetFloat(pControlNode, "spinwidth", spinWidth);
-  GetFloat(pControlNode, "spinheight", spinHeight);
+	GetFloat(pControlNode, "spinwidth", spinWidth);
+	GetFloat(pControlNode, "spinheight", spinHeight);
+
+	GetFloat(pControlNode, "thumbheight", thumbHeight);
+	GetFloat(pControlNode, "thumbwidth", thumbWidth);
+	GetFloat(pControlNode, "thumbtextureheight", thumbTexHeight);
+	GetFloat(pControlNode, "thumbtexturewidth", thumbTexWidth);
+
  /* GetFloat(pControlNode, "spinposx", spinPosX);
   GetFloat(pControlNode, "spinposy", spinPosY);
 
@@ -356,13 +371,14 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
   GetTexture(pControlNode, "textureradiofocus", textureRadioOn);    // backward compatibility
   GetTexture(pControlNode, "textureradionofocus", textureRadioOff);
   GetTexture(pControlNode, "textureradioon", textureRadioOn);
-  GetTexture(pControlNode, "textureradiooff", textureRadioOff);
+  GetTexture(pControlNode, "textureradiooff", textureRadioOff);*/
 
-  GetTexture(pControlNode, "texturesliderbackground", textureBackground);
-  GetTexture(pControlNode, "texturesliderbar", textureBar);
-  GetTexture(pControlNode, "texturesliderbarfocus", textureBarFocus);
-  GetTexture(pControlNode, "textureslidernib", textureNib);
-  GetTexture(pControlNode, "textureslidernibfocus", textureNibFocus);
+	// Scrollbar textures
+	GetTexture(pControlNode, "texturesliderbackground", textureBackground);
+	GetTexture(pControlNode, "texturesliderbar", textureBar);
+	GetTexture(pControlNode, "texturesliderbarfocus", textureBarFocus);
+ /*	GetTexture(pControlNode, "textureslidernib", textureNib);
+	GetTexture(pControlNode, "textureslidernibfocus", textureNibFocus);
 
   XMLUtils::GetString(pControlNode, "title", strTitle);
   XMLUtils::GetString(pControlNode, "tagset", strRSSTags);
@@ -518,10 +534,10 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
 
   XMLUtils::GetInt(pControlNode, "scrollspeed", labelInfo.scrollSpeed);
   spinInfo.scrollSpeed = labelInfo.scrollSpeed;
-
-  GetString(pControlNode, "scrollsuffix", labelInfo.scrollSuffix);
-  spinInfo.scrollSuffix = labelInfo.scrollSuffix;
 */
+	GetString(pControlNode, "scrollsuffix", labelInfo.scrollSuffix);
+//	spinInfo.scrollSuffix = labelInfo.scrollSuffix;
+
 	/////////////////////////////////////////////////////////////////////////////
 	// Instantiate a new control using the properties gathered above
 	//
@@ -713,13 +729,15 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
     ((CGUISettingsSliderControl *)control)->SetText(strLabel);
     ((CGUISettingsSliderControl *)control)->SetInfo(singleInfo);
   }
-  else if (type == CGUIControl::GUICONTROL_SCROLLBAR)
-  {
-    control = new CGUIScrollBar(
-      parentID, id, posX, posY, width, height,
-      textureBackground, textureBar, textureBarFocus, textureNib, textureNibFocus, orientation, showOnePage);
-  }
-  else if (type == CGUIControl::GUICONTROL_PROGRESS)
+*/	else if (type == CGUIControl::GUICONTROL_SCROLLBAR)
+	{
+		control = new CGUIScrollBar(parentID, dwID, posX, posY, width, height,
+									textureBackground, textureBar, textureBarFocus);
+									//,textureNib, textureNibFocus, orientation, showOnePage);
+
+		((CGUIScrollBar*)control)->SetNavigation(up, down, left, right);
+	}
+ /* else if (type == CGUIControl::GUICONTROL_PROGRESS)
   {
     control = new CGUIProgressControl(
       parentID, id, posX, posY, width, height,
@@ -734,8 +752,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
 
 		// use a bordered texture if we have <bordersize> or <bordertexture> specified.
 		if (borderTexture.filename.IsEmpty() && borderStr.IsEmpty())
-			control = new CGUIImage(
-		parentID, dwID, posX, posY, width, height, texture);
+			control = new CGUIImage(parentID, dwID, posX, posY, width, height, texture);
 //		else
 //			control = new CGUIBorderedImage(  
 //		parentID, id, posX, posY, width, height, texture, borderTexture, borderSize);
@@ -781,17 +798,15 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
     ((CGUIFixedListContainer *)control)->SetType(viewType, viewLabel);
     ((CGUIFixedListContainer *)control)->SetPageControl(pageControl);
     ((CGUIFixedListContainer *)control)->SetRenderOffset(offset);
-  }
-  else if (type == CGUIControl::GUICONTAINER_PANEL)
-  {
-    control = new CGUIPanelContainer(parentID, id, posX, posY, width, height, orientation, scrollTime, preloadItems);
-    ((CGUIPanelContainer *)control)->LoadLayout(pControlNode);
-    ((CGUIPanelContainer *)control)->LoadContent(pControlNode);
-    ((CGUIPanelContainer *)control)->SetType(viewType, viewLabel);
-    ((CGUIPanelContainer *)control)->SetPageControl(pageControl);
-    ((CGUIPanelContainer *)control)->SetRenderOffset(offset);
-  }
-  else if (type == CGUIControl::GUICONTROL_TEXTBOX)
+  }*/
+	else if (type == CGUIControl::GUICONTAINER_THUMBNAILPANEL)
+	{
+		control = new CGUIThumbnailPanel(parentID, dwID, posX, posY, width, height, thumbWidth, thumbHeight, thumbTexWidth, thumbTexHeight, 
+										 textureFocus, textureNoFocus, labelInfo);
+
+		((CGUIThumbnailPanel*)control)->SetNavigation(up, down, left, right);
+	}
+/*  else if (type == CGUIControl::GUICONTROL_TEXTBOX)
   {
     control = new CGUITextBox(
       parentID, id, posX, posY, width, height,

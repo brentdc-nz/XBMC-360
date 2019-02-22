@@ -47,7 +47,7 @@ void CGUILabelControl::Render()
 
 bool CGUILabelControl::OnMessage(CGUIMessage& message)
 {
-	if ( message.GetControlId() == GetID() )
+	if (message.GetControlId() == GetID())
 	{
 		if (message.GetMessage() == GUI_MSG_LABEL_SET)
 		{
@@ -61,7 +61,7 @@ bool CGUILabelControl::OnMessage(CGUIMessage& message)
 
 void CGUILabelControl::SetLabel(CStdString strText)
 {
-	m_label.SetText(strText);
+	m_infoLabel.SetLabel(strText, "", GetParentID());
 }
 
 void CGUILabelControl::SetInfo(const CGUIInfoLabel &infoLabel)

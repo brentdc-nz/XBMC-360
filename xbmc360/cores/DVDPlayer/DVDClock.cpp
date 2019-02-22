@@ -58,7 +58,7 @@ __int64 CDVDClock::GetClock()
 
 void CDVDClock::SetSpeed(int iSpeed)
 {
-	// this will sometimes be a little bit of due to rounding errors, ie clock might jump abit when changing speed
+	// This will sometimes be a little bit off due to rounding errors, i.e. clock might jump abit when changing speed
 	CExclusiveLock lock(m_critSection);
 
 	if(iSpeed == DVD_PLAYSPEED_PAUSE)

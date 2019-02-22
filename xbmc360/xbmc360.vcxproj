@@ -254,6 +254,7 @@
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="ApplicationMessenger.h" />
+    <ClInclude Include="BackgroundInfoLoader.h" />
     <ClInclude Include="ButtonTranslator.h" />
     <ClInclude Include="cores\DVDPlayer\DVDAudioDevice.h" />
     <ClInclude Include="cores\DVDPlayer\DVDClock.h" />
@@ -305,13 +306,17 @@
     <ClInclude Include="guilib\GUILabel.h" />
     <ClInclude Include="guilib\GUILabelControl.h" />
     <ClInclude Include="guilib\GUIListItem.h" />
+    <ClInclude Include="guilib\GUIMediaWindow.h" />
     <ClInclude Include="guilib\GUIMessage.h" />
+    <ClInclude Include="guilib\GUIScrollBarControl.h" />
     <ClInclude Include="guilib\GUISound.h" />
     <ClInclude Include="guilib\GUISpinControl.h" />
     <ClInclude Include="guilib\GUISpinControlEx.h" />
     <ClInclude Include="guilib\GUITexture.h" />
+    <ClInclude Include="guilib\GUIThumbnailPanel.h" />
     <ClInclude Include="guilib\GUIUserMessage.h" />
     <ClInclude Include="guilib\GUIVideoControl.h" />
+    <ClInclude Include="guilib\GUIViewControl.h" />
     <ClInclude Include="guilib\GUIWindow.h" />
     <ClInclude Include="guilib\GUIWindowManager.h" />
     <ClInclude Include="guilib\IMsgTargetCallback.h" />
@@ -334,6 +339,7 @@
     <ClInclude Include="GUISettings.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="SettingsControls.h" />
+    <ClInclude Include="ThumbLoader.h" />
     <ClInclude Include="utils\CriticalSection.h" />
     <ClInclude Include="utils\Event.h" />
     <ClInclude Include="utils\Log.h" />
@@ -358,6 +364,7 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">..\xbox360 ffmpeg\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ClCompile Include="ApplicationMessenger.cpp" />
+    <ClCompile Include="BackgroundInfoLoader.cpp" />
     <ClCompile Include="ButtonTranslator.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDAudioDevice.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDClock.cpp" />
@@ -406,11 +413,15 @@
     <ClCompile Include="guilib\GUILabel.cpp" />
     <ClCompile Include="guilib\GUILabelControl.cpp" />
     <ClCompile Include="guilib\GUIListItem.cpp" />
+    <ClCompile Include="guilib\GUIMediaWindow.cpp" />
     <ClCompile Include="guilib\GUIMessage.cpp" />
+    <ClCompile Include="guilib\GUIScrollBarControl.cpp" />
     <ClCompile Include="guilib\GUISound.cpp" />
     <ClCompile Include="guilib\GUISpinControl.cpp" />
     <ClCompile Include="guilib\GUISpinControlEx.cpp" />
+    <ClCompile Include="guilib\GUIThumbnailPanel.cpp" />
     <ClCompile Include="guilib\GUIVideoControl.cpp" />
+    <ClCompile Include="guilib\GUIViewControl.cpp" />
     <ClCompile Include="guilib\GUIWindow.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">MaxSpeed</Optimization>
       <PreschedulingOptimization Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">false</PreschedulingOptimization>
@@ -436,6 +447,7 @@
     <ClCompile Include="GUISettings.cpp" />
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="SettingsControls.cpp" />
+    <ClCompile Include="ThumbLoader.cpp" />
     <ClCompile Include="utils\CriticalSection.cpp" />
     <ClCompile Include="utils\Event.cpp" />
     <ClCompile Include="utils\Log.cpp" />

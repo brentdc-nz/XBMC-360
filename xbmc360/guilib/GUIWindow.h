@@ -23,9 +23,10 @@ public:
 	void AddControl(CGUIControl* pControl);
 	void InsertControl(CGUIControl *control, const CGUIControl *insertPoint);
 	void RemoveControl(DWORD dwId);
-	virtual void OnInitWindow();
 
+	virtual void OnInitWindow();
 	virtual void OnDeinitWindow();
+	virtual void OnWindowUnload() {};
 
 	virtual void AllocResources(bool forceLoad = false );
 	virtual void FreeResources(bool forceUnload = false);
@@ -75,7 +76,7 @@ protected:
 	bool Load(TiXmlDocument &xmlDoc);   	
 	void LoadControl(TiXmlElement* pControl);
 
-	void OnWindowLoaded();
+	virtual void OnWindowLoaded();
 
 	void SetID(int id) { iWindowID = id; };
 

@@ -22,6 +22,7 @@
  */
 
 #include "..\utils\StdString.h"
+#include "GUIImage.h"
 
 class CGUIListItem
 {
@@ -31,9 +32,14 @@ public:
 
 	CStdString GetLabel() { return m_strLabel; };
 
+	void SetThumbnail(CGUIImage* pImage);
+	CGUIImage* GetThumbnail();
+
 	bool m_bIsFolder; // Is item a folder or a file
+
 protected:
 	CStdString m_strLabel;
+	CGUIImage* m_pThumbnailImage;  // Pointer to CImage containing the thumbnail
 };
 
 #endif //GUILIB_GUILISTITEM_H
