@@ -61,6 +61,7 @@
 #define WINDOW_HOME                       10000
 #define WINDOW_PROGRAMS                   10001
 #define WINDOW_SETTINGS                   10004
+#define WINDOW_MUSIC                      10005
 #define WINDOW_VIDEOS                     10006
 #define WINDOW_SYSTEM_INFORMATION         10007
 

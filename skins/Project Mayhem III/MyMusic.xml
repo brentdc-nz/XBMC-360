@@ -1,0 +1,166 @@
+<window id="0">
+	<defaultcontrol>51</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+	
+		<control>
+			<description>background image</description>
+			<type>image</type>				
+			<posx>-4</posx>
+			<posy>0</posy>
+			<width>1284</width>
+			<height>720</height>
+			<texture>background.png</texture>
+			<visible>true</visible>			
+		</control>
+		
+		<control>
+			<description>header image</description>
+			<type>image</type>				
+			<posx>-5</posx>
+			<posy>-20</posy>
+			<width>1288</width>
+			<height>155</height>
+			<texture>header_music.png</texture>
+			<visible>true</visible>			
+		</control>		
+		
+		<control>
+			<description>title</description>
+			<type>label</type>			
+			<width>255</width>
+			<posx>100</posx>
+			<posy>50</posy>
+			<label>My Videos</label>
+			<font>special13</font>
+			<visible>true</visible>
+		</control>			
+		
+	    <control>
+			<description>video preview window</description>
+			<type>videowindow</type>
+			<id>0</id>
+			<posx>45</posx>
+			<posy>430</posy>
+			<width>260</width>
+			<height>220</height>
+			<visible>true</visible>
+		</control>	
+			
+		<control>
+			<description>video time label</description>
+			<type>label</type>
+			<posx>45</posx>
+			<posy>660</posy>
+			<font>font10</font>
+			<label>$INFO[Player.Time] $INFO[Player.Duration,/ ]</label>
+			<width>100</width>
+			<height>16</height>
+			<textcolor>ffffffff</textcolor>			
+			<visible>true</visible> <!-- TODO: implement Player.IsPlaying visible condition -->
+		</control>			
+
+		<control>
+			<description>view type button</description>
+			<type>button</type>
+			<id>50</id>
+			<posx>5</posx>
+			<posy>140</posy>
+			<width>345</width>
+			<height>50</height>
+			<label>View Type: Thumbnails</label>
+			<font>special13</font>
+			<onleft>52</onleft>
+			<onright>51</onright>
+			<onup>50</onup>
+			<ondown>50</ondown>
+			<texturefocus>button_focus.png</texturefocus>
+			<texturenofocus>button_nofocus.png</texturenofocus>
+			<textoffsetx>38</textoffsetx>
+			<textoffsety>10</textoffsety>
+			<visible>true</visible>					
+		</control>
+
+		<control>
+			<description>thumbnail panel</description>
+			<type>thumbnailpanel</type>
+			<id>51</id>
+			<posx>390</posx>
+			<posy>150</posy>
+			<width>875</width>
+			<height>500</height>	
+			<onleft>50</onleft>
+			<onright>52</onright>
+			<onup>50</onup>
+			<ondown>50</ondown>			
+<!--		<thumbwidth>160</thumbwidth>
+			<thumbheight>160</thumbheight>
+			<thumbtexturewidth>140</thumbtexturewidth>
+			<thumbtextureheight>140</thumbtextureheight>
+-->			<thumbwidth>120</thumbwidth>
+			<thumbheight>120</thumbheight>
+			<thumbtexturewidth>90</thumbtexturewidth>
+			<thumbtextureheight>90</thumbtextureheight>
+			<texturefocus>folder-focus.png</texturefocus>
+			<texturenofocus>folder-nofocus.png</texturenofocus>
+			<font>special13</font>
+			<textcolor>ffffffff</textcolor>			
+			<selectedcolor>60ffffff</selectedcolor>
+			<scrollsuffix> | </scrollsuffix>
+			<visible>true</visible>					
+		</control>
+
+		<control>
+			<description>scrollbar up arrow</description>
+			<type>image</type>		
+			<posx>1225</posx>
+			<posy>158</posy>
+			<width>30</width>
+			<height>30</height>
+			<texture>scrollbar_arrow_up.png</texture>
+			<visible>true</visible>			
+		</control>	
+
+		<control>
+			<description>scrollbar down arrow</description>
+			<type>image</type>				
+			<posx>1225</posx>
+			<posy>598</posy>
+			<width>30</width>
+			<height>30</height>
+			<texture>scrollbar_arrow_down.png</texture>
+			<visible>true</visible>			
+		</control>	
+
+		<control>
+			<description>thumbnail panel scrollbar</description>
+			<type>scrollbar</type>
+			<id>52</id>
+			<posx>1225</posx>
+			<posy>188</posy>
+			<width>30</width>
+			<height>410</height>
+			<onleft>51</onleft>
+			<onright>50</onright>
+			<texturesliderbackground>scrollbar_background.png</texturesliderbackground>			
+			<texturesliderbar>scrollbar_bar.png</texturesliderbar>	
+			<texturesliderbarfocus>scrollbar_bar_focus.png</texturesliderbarfocus>			
+			<visible>true</visible>					
+		</control>
+
+		<control>
+			<description>objct and page count label</description>
+			<type>label</type>
+			<id>53</id>			
+			<posx>880</posx>
+			<posy>670</posy>
+			<font>font10</font>
+			<label>-</label>
+			<width>100</width>
+			<height>16</height>
+			<textcolor>ffffffff</textcolor>			
+			<visible>true</visible>
+		</control>				
+
+	</controls>
+</window>

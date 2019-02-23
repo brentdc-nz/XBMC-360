@@ -419,6 +419,9 @@
     <ClInclude Include="ThumbLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="guilib\windows\GUIWindowMusicFiles.h">
+      <Filter>Header Files\guilib\windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -714,6 +717,9 @@
     </ClCompile>
     <ClCompile Include="ThumbLoader.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\windows\GUIWindowMusicFiles.cpp">
+      <Filter>Source Files\guilib\windows</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

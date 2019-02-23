@@ -22,6 +22,7 @@
 #include "guilib\windows\GUIWindowHome.h"
 #include "guilib\windows\GUIWindowFullScreen.h"
 #include "guilib\windows\GUIWindowVideoFiles.h"
+#include "guilib\windows\GUIWindowMusicFiles.h"
 #include "guilib\windows\GUIWindowSettings.h"
 #include "guilib\windows\GUIWindowSettingsCategory.h"
 #include "guilib\windows\GUIWindowScreensaver.h"
@@ -159,6 +160,7 @@ bool CApplication::Initialize()
 	// Windows
 	g_windowManager.Add(new CGUIWindowFullScreen);
 	g_windowManager.Add(new CGUIWindowVideoFiles);
+	g_windowManager.Add(new CGUIWindowMusicFiles);	
 	g_windowManager.Add(new CGUIWindowSettimgs);
 	g_windowManager.Add(new CGUIWindowSettingsCategory);
 	g_windowManager.Add(new CGUIWindowScreensaver);
@@ -652,7 +654,7 @@ void CApplication::OnPlayBackStopped()
 	g_windowManager.SendThreadMessage(msg);
 }
 
-bool CApplication::PlayFile(const string strFile)
+bool CApplication::PlayFile(const CFileItem& item)
 {
 	// Tell system we are starting a file
 	m_bPlaybackStarting = true;
@@ -677,11 +679,11 @@ bool CApplication::PlayFile(const string strFile)
 		// don't hold graphicscontext here since player
 		// may wait on another thread, that requires gfx
 //		CSingleExit ex(g_graphicsContext);
-		bResult = m_pPlayer->OpenFile(/*item, options*/strFile.c_str()); // TODO
+		bResult = m_pPlayer->OpenFile(item/*, options*/); // TODO
 	}
 	else
 	{
-		CLog::Log(LOGERROR, "Error creating player for item %s (File doesn't exist?)", /*item.GetPath()*/strFile.c_str()); // TODO
+		CLog::Log(LOGERROR, "Error creating player for item %s (File doesn't exist?)", item.GetPath());
 		bResult = false;
 	}
 
@@ -920,6 +922,7 @@ void CApplication::Stop()
 	g_windowManager.Delete(WINDOW_HOME);
 	g_windowManager.Delete(WINDOW_FULLSCREEN_VIDEO);
 	g_windowManager.Delete(WINDOW_VIDEOS);
+	g_windowManager.Delete(WINDOW_MUSIC);
 	g_windowManager.Delete(WINDOW_SETTINGS);
 	g_windowManager.Delete(WINDOW_SETTINGS_MYPICTURES); // All the settings categories
 	g_windowManager.Delete(WINDOW_SCREENSAVER);

@@ -12,6 +12,7 @@ public:
 	CFileItem(const CStdString& strLabel);
 	~CFileItem();
 
+	const CStdString &GetPath() const { return m_strPath; };
 	void SetPath(CStdString strPath) { m_strPath = strPath; };
 
 private:

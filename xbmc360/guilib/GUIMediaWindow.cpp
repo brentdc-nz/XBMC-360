@@ -155,9 +155,9 @@ bool CGUIMediaWindow::OnClick(int iItem)
 // This function is called by OnClick()
 bool CGUIMediaWindow::OnPlayMedia(int iItem)
 {
-	CFileItem* pItem=m_vecItems[iItem];
+	CFileItem* pItem = m_vecItems.Get(iItem);
 
-	return g_application.PlayFile("D:\\testvideos\\" + pItem->GetLabel()); // FIXME: Don't hardcode tempoary test folder
+	return g_application.PlayFile(*pItem);
 }																		   //		 will be removed once settings souces works 
 
 // Prepares and adds the fileitems list/thumb panel

@@ -2,6 +2,7 @@
 #define  IPLAYER_H
 
 #include <string>
+#include "..\FileItem.h"
 #include "..\utils\StdString.h"
 #include "..\guilib\key.h"
 
@@ -20,7 +21,7 @@ public:
 	IPlayer(IPlayerCallback& callback): m_callback(callback) {};
 	virtual ~IPlayer() {};
 	
-	virtual bool OpenFile(const std::string& strFile) { return false; };
+	virtual bool OpenFile(const CFileItem& file) { return false; };
 	virtual bool CloseFile(){ return true;};
 	virtual void SeekTime(__int64 iTime = 0){};
 	virtual void Seek(bool bPlus, bool bLargeStep) = 0;

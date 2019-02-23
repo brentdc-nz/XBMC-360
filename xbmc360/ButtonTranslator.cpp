@@ -186,6 +186,7 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
 	else if (strWindow.Equals("fullscreenvideo")) wWindowID = WINDOW_FULLSCREEN_VIDEO;
 	else if (strWindow.Equals("myprograms")) wWindowID = WINDOW_PROGRAMS;
 	else if (strWindow.Equals("myvideos")) wWindowID = WINDOW_VIDEOS;
+	else if (strWindow.Equals("mymusic")) wWindowID = WINDOW_MUSIC;
 	else if (strWindow.Equals("settings")) wWindowID = WINDOW_SETTINGS;
 	else if (strWindow.Equals("appearancesettings")) wWindowID = WINDOW_SETTINGS_APPEARANCE;
 	else if (strWindow.Equals("screensaver")) wWindowID = WINDOW_SCREENSAVER;

@@ -55,12 +55,11 @@ CDVDPlayer::~CDVDPlayer()
 	DeleteCriticalSection(&m_critStreamSection);
 }
 
-bool CDVDPlayer::OpenFile(const string& strFile)
+bool CDVDPlayer::OpenFile(const CFileItem& file)
 {
 	try
 	{
-		//m_strFilename = file.m_strPath; //TODO: extract from item/file object
-		m_strFilename = strFile; // TODO: Remove
+		m_strFilename = file.GetPath();
 
 		CLog::Log(LOGNOTICE, "DVDPlayer: Opening: %s", m_strFilename.c_str());
 

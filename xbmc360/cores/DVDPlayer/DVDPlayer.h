@@ -33,7 +33,7 @@ public:
 	CDVDPlayer(IPlayerCallback& callback);
 	~CDVDPlayer();
 
-	virtual bool OpenFile(const std::string& strFile);
+	virtual bool OpenFile(const CFileItem& file);
 	virtual bool CloseFile();
 	virtual bool IsPlaying() const;
 	virtual bool IsPaused() const;

@@ -330,6 +330,7 @@
     <ClInclude Include="guilib\tinyxml\tinyxml.h" />
     <ClInclude Include="guilib\windows\GUIWindowFullScreen.h" />
     <ClInclude Include="guilib\windows\GUIWindowHome.h" />
+    <ClInclude Include="guilib\windows\GUIWindowMusicFiles.h" />
     <ClInclude Include="guilib\windows\GUIWindowScreensaver.h" />
     <ClInclude Include="guilib\windows\GUIWindowSettings.h" />
     <ClInclude Include="guilib\windows\GUIWindowSettingsCategory.h" />
@@ -438,6 +439,7 @@
     <ClCompile Include="guilib\tinyxml\tinyxmlparser.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowFullScreen.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowHome.cpp" />
+    <ClCompile Include="guilib\windows\GUIWindowMusicFiles.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowScreensaver.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowSettings.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowSettingsCategory.cpp" />
