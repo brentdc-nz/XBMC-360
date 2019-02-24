@@ -31,7 +31,7 @@
 			<width>255</width>
 			<posx>100</posx>
 			<posy>50</posy>
-			<label>My Videos</label>
+			<label>My Music</label>
 			<font>special13</font>
 			<visible>true</visible>
 		</control>			
