@@ -36,7 +36,9 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
 		pItem->SetThumbnail(m_pThumb);	
 
 	if (pItem->GetThumbnail())
+	{
 		CGUIImage *pImage=pItem->GetThumbnail();
+	}
 
 	// TEST END
 
@@ -64,19 +66,9 @@ bool CProgramThumbLoader::LoadItem(CFileItem *pItem)
 
 	return true;
 }
-*/
 
 CMusicThumbLoader::CMusicThumbLoader()
 {
-	// TEST REMOVE ME
-	CTextureInfo TInfo;
-	TInfo.filename = "DefaultMusicThumb.png";
-	TInfo.useLarge = true;
-	TInfo.orientation = 0;
-
-	m_pThumb = new CGUIImage(0, 0, 0, 0, (float)90, (float)90, TInfo);
-	m_pThumb->AllocResources();
-	//TEST END
 }
 
 CMusicThumbLoader::~CMusicThumbLoader()
@@ -85,21 +77,12 @@ CMusicThumbLoader::~CMusicThumbLoader()
 
 bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
 {
-/*	if (pItem->m_bIsShareOrDrive)
+	if (pItem->m_bIsShareOrDrive)
 		return true;
 
 	if (!pItem->HasThumbnail())
 		pItem->SetUserMusicThumb();
-*/
-	// TEST START - REMOVE BLOCK
-
-	if(!pItem->GetThumbnail())
-		pItem->SetThumbnail(m_pThumb);	
-
-	if (pItem->GetThumbnail())
-		CGUIImage *pImage=pItem->GetThumbnail();
-
-	// TEST END
 
 	return true;
 }
+*/

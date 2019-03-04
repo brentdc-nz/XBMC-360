@@ -37,7 +37,7 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
 		case GUI_MSG_WINDOW_INIT:
 		{
 			//TEST
-			if(!Update("D:\\testvideos\\"))
+			if (!Update("D:\\testvideos\\"))
 			{
 			}
 
