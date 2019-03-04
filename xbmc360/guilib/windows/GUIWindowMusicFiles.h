@@ -16,7 +16,7 @@ public:
 	bool Update(const CStdString &strDirectory);
 
 private:
-	CVideoThumbLoader m_thumbLoader;
+	CMusicThumbLoader m_thumbLoader;
 };
 
 #endif //GUILIB_GUIWINDOWMUSICFILES_H

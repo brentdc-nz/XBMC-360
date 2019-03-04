@@ -25,6 +25,7 @@ public:
 	virtual ~CProgramThumbLoader();
 	virtual bool LoadItem(CFileItem* pItem);
 };
+*/
 
 class CMusicThumbLoader : public CBackgroundInfoLoader
 {
@@ -32,7 +33,9 @@ public:
 	CMusicThumbLoader();
 	virtual ~CMusicThumbLoader();
 	virtual bool LoadItem(CFileItem* pItem);
+
+private:
+	CGUIImage* m_pThumb; // TEST - REMOVE ME
 };
-*/
 
 #endif //H_CTHUMBLOADER

@@ -37,7 +37,7 @@ bool CGUIWindowMusicFiles::OnMessage(CGUIMessage& message)
 		case GUI_MSG_WINDOW_INIT:
 		{
 			//TEST
-			if (!Update("D:\\testmusic\\"))
+			if(!Update("D:\\testmusic\\"))
 			{
 			}
 
