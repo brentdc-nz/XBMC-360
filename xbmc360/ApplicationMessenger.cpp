@@ -24,8 +24,6 @@
 
 using namespace std;
 
-CApplicationMessenger g_applicationMessenger;
-
 CApplicationMessenger::~CApplicationMessenger()
 {
 	Cleanup();
@@ -122,6 +120,12 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 			while(1){Sleep(0);}
 		}
 		break;
+
+		case TMSG_NETWORKMESSAGE:
+		{
+			g_application.getNetwork().NetworkMessage((CNetwork::EMESSAGE)pMsg->dwParam1, pMsg->dwParam2);
+		}
+		break;
 	}
 }
 
@@ -134,5 +138,11 @@ void CApplicationMessenger::Shutdown()
 void CApplicationMessenger::Reboot()
 {
 	ThreadMessage tMsg = {TMSG_REBOOT};
+	SendMessage(tMsg);
+}
+
+void CApplicationMessenger::NetworkMessage(DWORD dwMessage, DWORD dwParam)
+{
+	ThreadMessage tMsg = {TMSG_NETWORKMESSAGE, dwMessage, dwParam};
 	SendMessage(tMsg);
 }

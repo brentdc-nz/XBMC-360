@@ -29,6 +29,7 @@
 #define TMSG_SHUTDOWN             300
 #define TMSG_POWERDOWN            301
 #define TMSG_REBOOT               306
+#define TMSG_NETWORKMESSAGE       500
 
 typedef struct
 {
@@ -54,6 +55,7 @@ public:
 
 	void Shutdown();
 	void Reboot();
+	void NetworkMessage(DWORD dwMessage, DWORD dwParam = 0);
 
 private:
 	void ProcessMessage(ThreadMessage *pMsg);
@@ -61,7 +63,5 @@ private:
 	CCriticalSection m_critSection;
 	std::queue<ThreadMessage*> m_vecMessages;
 };
-
-extern CApplicationMessenger g_applicationMessenger;
 
 #endif //H_CAPPLICATIONMESSENGER

@@ -422,6 +422,12 @@
     <ClInclude Include="guilib\windows\GUIWindowMusicFiles.h">
       <Filter>Header Files\guilib\windows</Filter>
     </ClInclude>
+    <ClInclude Include="utils\NTPClient.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="xbox\Network.h">
+      <Filter>Header Files\xbox</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -720,6 +726,12 @@
     </ClCompile>
     <ClCompile Include="guilib\windows\GUIWindowMusicFiles.cpp">
       <Filter>Source Files\guilib\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\NTPClient.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="xbox\Network.cpp">
+      <Filter>Source Files\xbox</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

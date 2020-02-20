@@ -2,7 +2,6 @@
 #include "Log.h"
 #include "..\ButtonTranslator.h"
 #include "..\guilib\GUIWindowManager.h"
-#include "..\ApplicationMessenger.h"
 #include "..\Application.h"
 
 typedef struct
@@ -93,11 +92,11 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   
 	if (execute.Equals("reboot") || execute.Equals("restart"))  //Will reboot the xbox, aka cold reboot
 	{
-		g_applicationMessenger.Reboot();
+		g_application.getApplicationMessenger().Reboot();
 	}
 	else if (execute.Equals("shutdown"))
 	{
-		g_applicationMessenger.Shutdown();
+		g_application.getApplicationMessenger().Shutdown();
 	}
 	else if (execute.Equals("activatewindow") || execute.Equals("replacewindow"))
 	{

@@ -11,9 +11,12 @@ typedef enum _TEMP_INDEX
     BRD
 } TEMP_INDEX;
 
-//Calls to SMC message function in xboxkrnl.lib
+// Calls to SMC message function in xboxkrnl.lib
 extern "C" VOID HalReturnToFirmware(DWORD mode);
 extern "C" void __stdcall HalSendSMCMessage(void* input, void* output);
+
+// Xex exports
+extern "C" UINT32 __stdcall NtSetSystemTime( __int64*  ,__int64* );
 
 class CXBKernalExports
 {

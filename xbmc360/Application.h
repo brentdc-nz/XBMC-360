@@ -7,6 +7,9 @@
 #include "guilib\IMsgTargetCallback.h"
 #include "utils\Stopwatch.h"
 #include "utils\Splash.h"
+#include "xbox\Network.h"
+#include "utils\NTPClient.h"
+#include "ApplicationMessenger.h"
 
 #include "guilib\dialogs\GUIDialogSeekBar.h"
 
@@ -28,6 +31,9 @@ public:
 	virtual void FrameMove();
 	virtual void Render();
 	virtual void Stop();
+
+	void StartServices();
+	void StopServices();
 
 	virtual bool OnMessage(CGUIMessage& message);
 	bool NeedRenderFullScreen();
@@ -53,6 +59,9 @@ public:
 	bool IsPlayingAudio() const;
 	bool IsPlayingVideo() const;
 
+	void StartTimeServer();
+	void StopTimeServer();
+	
 	void ResetScreenSaver();
 	bool ResetScreenSaverWindow();
 	bool IsInScreenSaver() { return m_bScreenSave; };
@@ -62,6 +71,9 @@ public:
 	IPlayer* m_pPlayer;
 
 	CGUIDialogSeekBar m_guiDialogSeekBar;
+
+	CNetwork& getNetwork() { return m_network; };
+	CApplicationMessenger& getApplicationMessenger() { return m_applicationMessenger; };
 
 protected:
 	bool ProcessGamepad(/*float frameTime*/);
@@ -80,7 +92,11 @@ protected:
 	CStopWatch m_screenSaverTimer;
 	CStopWatch m_slowTimer;
 
-	CSplash* m_splash;
+	CSplash *m_splash;
+	CNTPClient *m_pNTPClient;
+	CNetwork m_network;
+
+	CApplicationMessenger m_applicationMessenger;
 };
 
 extern CApplication g_application;

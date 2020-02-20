@@ -99,7 +99,7 @@ void CThread::Create(bool bAutoDelete)
 {
   if (m_ThreadHandle != NULL)
   {
-    throw 1; //ERROR should not b possible!!!
+    throw 1; //ERROR should not be possible!!!
   }
   m_iLastTime = GetTickCount();
   m_iLastTime *= 10000;

@@ -152,6 +152,12 @@ void CApplication::FatalErrorHandler(bool InitD3D)
 
 bool CApplication::Initialize()
 {
+	// Setup network based on our settings
+	// network will start it's init procedure
+	m_network.SetupNetwork();
+
+	StartServices();
+
 	g_windowManager.Add(new CGUIWindowHome); // window id = 0
 
 	CLog::Log(LOGNOTICE, "load default skin:[%s]", g_guiSettings.GetString("LookAndFeel.Skin").c_str());
@@ -189,6 +195,16 @@ bool CApplication::Initialize()
 	ResetScreenSaver();
 
 	return true;
+}
+
+void CApplication::StartServices()
+{
+	//WIP
+}
+
+void CApplication::StopServices()
+{
+  m_network.NetworkMessage(CNetwork::SERVICES_DOWN, 0);
 }
 
 void CApplication::DelayLoadSkin()
@@ -277,7 +293,7 @@ void CApplication::Process()
 	g_windowManager.DispatchThreadMessages();
 
 	// Process messages, even if a movie is playing
-	g_applicationMessenger.ProcessMessages();
+	m_applicationMessenger.ProcessMessages();
 
 	// Process input actions
 	ProcessGamepad();
@@ -293,6 +309,9 @@ void CApplication::Process()
 // We get called every 500ms
 void CApplication::ProcessSlow()
 {
+	// Check our network state every 15 seconds or when net status changes
+	m_network.CheckNetwork(30);
+
 	// Check if we need to activate the screensaver (if enabled)
 	if(g_guiSettings.GetString("ScreenSaver.Mode") != "None")
 		CheckScreenSaver();
@@ -818,26 +837,49 @@ double CApplication::GetTotalTime() const
 	return dTime;
 }
 
+void CApplication::StartTimeServer()
+{
+	if(/*g_guiSettings.GetBool("locale.timeserver") &&*/ m_network.IsAvailable())
+	{
+		if(!m_pNTPClient)
+		{
+			CLog::Log(LOGNOTICE, "Start timeserver client");
+
+			m_pNTPClient = new CNTPClient();
+			m_pNTPClient->SyncTime();
+		}
+	}
+}
+
+void CApplication::StopTimeServer()
+{
+	if(m_pNTPClient)
+	{
+		CLog::Log(LOGNOTICE, "Stop time server client");
+		SAFE_DELETE(m_pNTPClient);
+	}
+}
+
 void CApplication::ResetScreenSaver()
 {
 	// Reset our timers
 //	m_shutdownTimer.StartZero(); //TODO
 
 	// Screen saver timer is reset only if we're not already in screensaver mode
-	if (!m_bScreenSave)
+	if(!m_bScreenSave)
 		m_screenSaverTimer.StartZero();
 }
 
 bool CApplication::ResetScreenSaverWindow()
 {
 	// If Screen saver is active
-	if (m_bScreenSave)
+	if(m_bScreenSave)
 	{
 		// Disable screensaver
 		m_bScreenSave = false;
 		m_screenSaverTimer.StartZero();
 
-		if (m_screenSaverMode != "None")
+		if(m_screenSaverMode != "None")
 		{
 			// We're in screensaver window
 			if (g_windowManager.GetActiveWindow() == WINDOW_SCREENSAVER)
@@ -906,6 +948,8 @@ void CApplication::Stop()
 
 	m_bStop = true;
 	CLog::Log(LOGNOTICE, "Stop all");
+
+	StopServices();
 
 	if (m_pPlayer)
 	{
