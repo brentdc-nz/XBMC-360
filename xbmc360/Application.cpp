@@ -312,6 +312,10 @@ void CApplication::ProcessSlow()
 	// Check our network state every 15 seconds or when net status changes
 	m_network.CheckNetwork(30);
 
+	// Check for any needed sntp update
+	if(m_pNTPClient && m_pNTPClient->UpdateNeeded())
+		m_pNTPClient->SyncTime();
+
 	// Check if we need to activate the screensaver (if enabled)
 	if(g_guiSettings.GetString("ScreenSaver.Mode") != "None")
 		CheckScreenSaver();

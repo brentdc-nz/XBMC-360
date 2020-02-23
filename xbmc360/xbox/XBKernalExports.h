@@ -16,7 +16,7 @@ extern "C" VOID HalReturnToFirmware(DWORD mode);
 extern "C" void __stdcall HalSendSMCMessage(void* input, void* output);
 
 // Xex exports
-extern "C" UINT32 __stdcall NtSetSystemTime( __int64*  ,__int64* );
+extern "C" UINT32 __stdcall NtSetSystemTime(LPFILETIME, LPFILETIME);
 
 class CXBKernalExports
 {
