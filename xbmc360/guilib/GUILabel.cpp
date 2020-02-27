@@ -52,6 +52,9 @@ void CGUILabel::SetPosition(float fPosX, float fPosY)
 
 void CGUILabel::Render()
 {
+	if(m_strText.IsEmpty()) // Not used for some buttons
+		return;
+
 	if(!m_label.font)
 	{
 		CLog::Log(LOGWARNING, "Font not found!");
