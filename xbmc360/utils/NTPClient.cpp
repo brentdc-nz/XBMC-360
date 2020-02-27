@@ -708,7 +708,11 @@ bool CNTPClient::SetClientTime(const CNtpTime& NewTime)
 	SystemTimeToFileTime(&st, &stNew);
 	SystemTimeToFileTime(&prevTime, &stOld);
 
-	if(NtSetSystemTime(&stNew, &stOld) != /*STATUS_SUCCESS*/0)
+	UINT32 iResult = NtSetSystemTime(&stNew, &stOld);
+
+	CLog::Log(LOGNOTICE, "NTP: NtSetSystemTime() Result: %08x", iResult);
+
+	if(iResult != /*STATUS_SUCCESS*/0)
 	{
 		CLog::Log(LOGERROR, "NTP: Failed to set client time..");
 		return false;
@@ -724,7 +728,7 @@ bool CNTPClient::SetClientTime(const CNtpTime& NewTime)
                         st.wSecond,
                         st.wMilliseconds );
 
-	CLog::Log(LOGNOTICE, "NTP: Time received via NTP: %s", cstrMessage);
+	CLog::Log(LOGNOTICE, "NTP: Set time: %s", cstrMessage);
 
 	return true;
 }
