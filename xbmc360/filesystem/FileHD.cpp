@@ -16,7 +16,7 @@ bool CFileHD::Exists(const CStdString& strPath)
 	if (strPath.size()==0) return false;
 
 	FILE *fd;
-	fd=fopen(strPath.c_str(), "rb");
+	fd = fopen(strPath.c_str(), "rb");
 
 	if (fd != NULL)
 	{

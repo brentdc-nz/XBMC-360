@@ -187,6 +187,8 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey)
 
 	// Normal picture
 	D3DXIMAGE_INFO info;
+	memset(&info, 0, sizeof(D3DXIMAGE_INFO)); // Stop compiler warning
+
 #if 0 //FIXME - We should be using this!
 	if(D3DXCreateTextureFromFileEx(g_graphicsContext.Get3DDevice(), strPath.c_str(),
 	   D3DX_DEFAULT, D3DX_DEFAULT, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED,

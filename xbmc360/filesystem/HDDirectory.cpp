@@ -77,7 +77,7 @@ bool CHDDirectory::Exists(const char* strPath)
 	if (!strPath || !*strPath)
 		return false;
 
-	CStdString strReplaced=strPath;
+	CStdString strReplaced = strPath;
 //	g_charsetConverter.utf8ToStringCharset(strReplaced); //TODO
 	
 	strReplaced.Replace("/","\\");

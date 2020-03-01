@@ -9,7 +9,9 @@
 #include "utils\Splash.h"
 #include "xbox\Network.h"
 #include "utils\NTPClient.h"
+#include "services\FTPServer\FTPServer.h"
 #include "ApplicationMessenger.h"
+#include "filesystem\DrivesManager.h"
 
 #include "guilib\dialogs\GUIDialogSeekBar.h"
 
@@ -61,7 +63,9 @@ public:
 
 	void StartTimeServer();
 	void StopTimeServer();
-	
+	void StartFtpServer();
+	void StopFtpServer();
+
 	void ResetScreenSaver();
 	bool ResetScreenSaverWindow();
 	bool IsInScreenSaver() { return m_bScreenSave; };
@@ -73,6 +77,7 @@ public:
 	CGUIDialogSeekBar m_guiDialogSeekBar;
 
 	CNetwork& getNetwork() { return m_network; };
+	CDrivesManager& getDriveManager() { return m_drivesManager; };
 	CApplicationMessenger& getApplicationMessenger() { return m_applicationMessenger; };
 
 protected:
@@ -94,8 +99,10 @@ protected:
 
 	CSplash *m_splash;
 	CNTPClient *m_pNTPClient;
+	CFTPServer *m_pFTPServer;
+	CDrivesManager m_drivesManager;
 	CNetwork m_network;
-
+	
 	CApplicationMessenger m_applicationMessenger;
 };
 

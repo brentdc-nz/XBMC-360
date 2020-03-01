@@ -99,6 +99,18 @@
     <Filter Include="Source Files\guilib\dialogs">
       <UniqueIdentifier>{160f50a0-36a1-4b30-87a3-b166a7ca20ca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\services">
+      <UniqueIdentifier>{3655b964-213a-4f28-b75d-dde4eaba63d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\services">
+      <UniqueIdentifier>{f21b72cf-8948-4a2f-acf1-8c8ed734816a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\services\FTPServer">
+      <UniqueIdentifier>{b88ab744-45f7-4ba8-80bb-78464ac57123}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\services\FTPServer">
+      <UniqueIdentifier>{bb4a5667-6ff5-428b-8a9d-5cd1f3c07ece}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -428,6 +440,27 @@
     <ClInclude Include="xbox\Network.h">
       <Filter>Header Files\xbox</Filter>
     </ClInclude>
+    <ClInclude Include="services\FTPServer\FTPServer.h">
+      <Filter>Header Files\services\FTPServer</Filter>
+    </ClInclude>
+    <ClInclude Include="services\FTPServer\FTPServerConn.h">
+      <Filter>Header Files\services\FTPServer</Filter>
+    </ClInclude>
+    <ClInclude Include="filesystem\FileBrowser.h">
+      <Filter>Header Files\filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="filesystem\DrivesManager.h">
+      <Filter>Header Files\filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="filesystem\Drive.h">
+      <Filter>Header Files\filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="services\FTPServer\FTPFileWriter.h">
+      <Filter>Header Files\services\FTPServer</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\CRC_32.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -732,6 +765,27 @@
     </ClCompile>
     <ClCompile Include="xbox\Network.cpp">
       <Filter>Source Files\xbox</Filter>
+    </ClCompile>
+    <ClCompile Include="services\FTPServer\FTPServer.cpp">
+      <Filter>Source Files\services\FTPServer</Filter>
+    </ClCompile>
+    <ClCompile Include="services\FTPServer\FTPServerConn.cpp">
+      <Filter>Source Files\services\FTPServer</Filter>
+    </ClCompile>
+    <ClCompile Include="filesystem\DrivesManager.cpp">
+      <Filter>Source Files\filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="filesystem\Drive.cpp">
+      <Filter>Source Files\filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="services\FTPServer\FTPFileWriter.cpp">
+      <Filter>Source Files\services\FTPServer</Filter>
+    </ClCompile>
+    <ClCompile Include="filesystem\FileBrowser.cpp">
+      <Filter>Source Files\filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\CRC_32.cpp">
+      <Filter>Source Files\utils</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

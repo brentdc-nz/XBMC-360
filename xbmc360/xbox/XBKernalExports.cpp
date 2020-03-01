@@ -1,5 +1,7 @@
 #include "XBKernalExports.h"
 
+CONST CHAR* GetLoadedImageName() { return ExLoadedImageName; }
+
 void CXBKernalExports::RebootXbox()
 {
 	HalReturnToFirmware(6);

@@ -81,6 +81,13 @@ bool CApplication::Create()
 	m_splash = new CSplash("D:\\media\\splash.png");
 	m_splash->Start();
 
+	// Mount our drives
+	CLog::Log(LOGNOTICE, "Mounting the drives..");
+	m_drivesManager.Init();
+
+	if(!m_drivesManager.MountAll())
+		CLog::Log(LOGERROR, "Failed to mount..");
+
 	// Start XAudio2
 	if(!g_audioContext.Initialize())
 		CLog::Log(LOGERROR, "Unable to initialize XAudio2!");
@@ -199,12 +206,12 @@ bool CApplication::Initialize()
 
 void CApplication::StartServices()
 {
-	//WIP
+	// WIP
 }
 
 void CApplication::StopServices()
 {
-  m_network.NetworkMessage(CNetwork::SERVICES_DOWN, 0);
+	m_network.NetworkMessage(CNetwork::SERVICES_DOWN, 0);
 }
 
 void CApplication::DelayLoadSkin()
@@ -874,6 +881,47 @@ void CApplication::ResetScreenSaver()
 		m_screenSaverTimer.StartZero();
 }
 
+void CApplication::StartFtpServer()
+{
+	if(/*g_guiSettings.GetBool("services.ftpserver") &&*/ m_network.IsAvailable())
+	{
+		CLog::Log(LOGNOTICE, "FTP Server: Starting...");
+		if(!m_pFTPServer)
+		{
+			m_pFTPServer = new CFTPServer();
+			m_pFTPServer->Start();
+		}
+	}
+}
+
+void CApplication::StopFtpServer()
+{
+	if(m_pFTPServer)
+	{
+		CLog::Log(LOGINFO, "FTP Server: Stopping...");
+
+		std::vector<CFTPServerConn*> vecConnections;
+		m_pFTPServer->GetAllConnections(vecConnections);
+
+		for(int i = 0; i < (int)vecConnections.size(); i++)
+		{
+			CFTPServerConn* pConnection = vecConnections[i];
+
+			if(pConnection)
+			{
+				CLog::Log(LOGNOTICE, "%s - Closing FTP connection %i", pConnection->GetID());
+				m_pFTPServer->CloseConnection(pConnection->GetID());
+			}
+		}
+
+		m_pFTPServer->StopThread();
+		delete m_pFTPServer;
+		m_pFTPServer = NULL;
+
+		CLog::Log(LOGINFO, "FTP Server: Stopped");
+	}
+}
+
 bool CApplication::ResetScreenSaverWindow()
 {
 	// If Screen saver is active
@@ -978,6 +1026,9 @@ void CApplication::Stop()
 
 	// Dialogs
 	g_windowManager.Delete(WINDOW_DIALOG_BUTTON_MENU);
+
+	// Unmount our drives
+	m_drivesManager.Unmount();
 
 	// Shutdown XAudio2
 	g_audioContext.DeInitialize();

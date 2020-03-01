@@ -499,7 +499,6 @@ void CDVDPlayerAudio::Flush()
 	if (m_pAudioCodec)
 	{
 		EnterCriticalSection(&m_critCodecSection);
-		
 		audio_pkt_size = 0;
 		audio_pkt_data = NULL;
 

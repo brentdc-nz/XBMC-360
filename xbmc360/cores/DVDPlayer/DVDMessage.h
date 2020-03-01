@@ -80,7 +80,7 @@ public:
 	long Release()
 	{
 		long count = InterlockedDecrement(&m_references);
-		if (count == 0) delete this;
+		if(count == 0) delete this;
 		return count;
 	}
 

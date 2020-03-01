@@ -31,7 +31,7 @@ public:
   unsigned long ThreadId() const;
   bool WaitForThreadExit(DWORD dwTimeOutSec);
   bool SetPriority(const int iPriority);
-  void SetName( LPCTSTR szThreadName );
+  void SetName(LPCTSTR szThreadName);
   HANDLE ThreadHandle();
   operator HANDLE();
   operator const HANDLE() const;

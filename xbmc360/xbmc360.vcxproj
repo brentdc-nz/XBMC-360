@@ -194,7 +194,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <Optimization>Full</Optimization>
+      <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <StringPooling>true</StringPooling>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -210,6 +210,9 @@
       <RegisterReservation>true</RegisterReservation>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <AdditionalOptions>/EHa %(AdditionalOptions)</AdditionalOptions>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -284,7 +287,10 @@
     <ClInclude Include="cores\VideoRenderers\RenderManager.h" />
     <ClInclude Include="cores\VideoRenderers\RGBRenderer.h" />
     <ClInclude Include="FileItem.h" />
+    <ClInclude Include="filesystem\Drive.h" />
+    <ClInclude Include="filesystem\DrivesManager.h" />
     <ClInclude Include="filesystem\File.h" />
+    <ClInclude Include="filesystem\FileBrowser.h" />
     <ClInclude Include="filesystem\FileHD.h" />
     <ClInclude Include="filesystem\HDDirectory.h" />
     <ClInclude Include="guilib\AudioContext.h" />
@@ -338,9 +344,13 @@
     <ClInclude Include="guilib\windows\GUIWindowVideoFiles.h" />
     <ClInclude Include="guilib\XMLUtils.h" />
     <ClInclude Include="GUISettings.h" />
+    <ClInclude Include="services\FTPServer\FTPFileWriter.h" />
+    <ClInclude Include="services\FTPServer\FTPServer.h" />
+    <ClInclude Include="services\FTPServer\FTPServerConn.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="SettingsControls.h" />
     <ClInclude Include="ThumbLoader.h" />
+    <ClInclude Include="utils\CRC_32.h" />
     <ClInclude Include="utils\CriticalSection.h" />
     <ClInclude Include="utils\Event.h" />
     <ClInclude Include="utils\Log.h" />
@@ -394,7 +404,10 @@
     <ClCompile Include="cores\VideoRenderers\RenderManager.cpp" />
     <ClCompile Include="cores\VideoRenderers\RGBRenderer.cpp" />
     <ClCompile Include="FileItem.cpp" />
+    <ClCompile Include="filesystem\Drive.cpp" />
+    <ClCompile Include="filesystem\DrivesManager.cpp" />
     <ClCompile Include="filesystem\File.cpp" />
+    <ClCompile Include="filesystem\FileBrowser.cpp" />
     <ClCompile Include="filesystem\FileHD.cpp" />
     <ClCompile Include="filesystem\HDDirectory.cpp" />
     <ClCompile Include="guilib\AudioContext.cpp" />
@@ -449,9 +462,13 @@
     <ClCompile Include="guilib\windows\GUIWindowVideoFiles.cpp" />
     <ClCompile Include="guilib\XMLUtils.cpp" />
     <ClCompile Include="GUISettings.cpp" />
+    <ClCompile Include="services\FTPServer\FTPFileWriter.cpp" />
+    <ClCompile Include="services\FTPServer\FTPServer.cpp" />
+    <ClCompile Include="services\FTPServer\FTPServerConn.cpp" />
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="SettingsControls.cpp" />
     <ClCompile Include="ThumbLoader.cpp" />
+    <ClCompile Include="utils\CRC_32.cpp" />
     <ClCompile Include="utils\CriticalSection.cpp" />
     <ClCompile Include="utils\Event.cpp" />
     <ClCompile Include="utils\Log.cpp" />

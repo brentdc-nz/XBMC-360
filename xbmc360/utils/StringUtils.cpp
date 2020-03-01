@@ -75,6 +75,27 @@ int CStringUtils::SplitString(const CStdString& input, const CStdString& delimit
 	return results.size();
 }
 
+void CStringUtils::StringSplit(CStdString str, CStdString delim, std::vector<CStdString>* results, bool bShowEmptyEntries)
+{
+	unsigned int cutAt;
+	
+	while((cutAt = str.find_first_of(delim)) != str.npos)
+	{
+		if(!bShowEmptyEntries)
+		{
+			if(cutAt > 0)
+				results->push_back(str.substr(0,cutAt));
+		}
+		else
+			results->push_back(str.substr(0, cutAt));
+
+		str = str.substr(cutAt+1);
+	}
+
+	if(str.length() > 0)
+		results->push_back(str);
+}
+
 // assumes it is called from after the first open bracket is found
 int CStringUtils::FindEndBracket(const CStdString &str, char opener, char closer, int startPos)
 {
@@ -129,4 +150,40 @@ CStdString CStringUtils::SecondsToTimeString(long lSeconds, TIME_FORMAT format)
 		strHMS.AppendFormat(strHMS.IsEmpty() ? "%02.2i" : ":%02.2i", ss);
 	
 	return strHMS;
+}
+
+CStdString CStringUtils::ReplaceAllA(CStdString s, CStdString sub, CStdString other)
+{
+	size_t b = 0;
+	for(;;)
+	{
+		b = s.find(sub, b);
+		if (b == s.npos) break;
+		s.replace(b, sub.size(), other);
+		b += other.size();
+	}
+	return s;
+}
+
+CStdString CStringUtils::sprintfa(const char *format, ...)
+{
+	char temp[16384];
+
+	va_list ap;
+	va_start (ap, format);
+	vsprintf_s (temp, 16384, format, ap);
+	va_end (ap);
+
+	return temp;
+}
+
+CStdString CStringUtils::MakeLowercase(CStdString strTmp)
+{
+	struct lowercase_func
+	{
+		void operator()(std::string::value_type& v) { v = (char)tolower(v); }
+	};
+
+	for_each(strTmp.begin(), strTmp.end(), lowercase_func());
+	return strTmp;
 }

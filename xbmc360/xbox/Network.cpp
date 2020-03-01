@@ -40,7 +40,7 @@ bool CNetwork::Initialize()
 
 	// Startup Winsock
 	dwState = WSAStartup(MAKEWORD(2, 2), &WsaData);
-	if( NO_ERROR != dwState )
+	if(NO_ERROR != dwState)
 	{
 		CLog::Log(LOGERROR, __FUNCTION__" - WSAStartup failed with error %d", dwState);
 		return false;
@@ -223,6 +223,7 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
 			CLog::Log(LOGDEBUG, "%s - Starting network services",__FUNCTION__);
 
 			g_application.StartTimeServer();
+			g_application.StartFtpServer();
 			// TODO: Add the other services ftp, smb, etc
 		}
 		break;
@@ -232,6 +233,7 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
 			CLog::Log(LOGDEBUG, "%s - Stopping network services",__FUNCTION__);
 
 			g_application.StopTimeServer();
+			g_application.StopFtpServer();
 		}
 		break;
 	}
