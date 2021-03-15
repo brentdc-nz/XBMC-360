@@ -10,13 +10,13 @@
   <string><id>7</id><value>Meus arquivos</value></string>
   <string><id>8</id><value>Clima</value></string>
 
-  <string><id>11</id><value>Monday</value></string>
-  <string><id>12</id><value>Tuesday</value></string>
-  <string><id>13</id><value>Wednesday</value></string>
-  <string><id>14</id><value>Thursday</value></string>
-  <string><id>15</id><value>Friday</value></string>
-  <string><id>16</id><value>Saturday</value></string>
-  <string><id>17</id><value>Sunday</value></string>
+  <string><id>11</id><value>Segunda-feira</value></string>
+  <string><id>12</id><value>Terça-Feira<value></string>
+  <string><id>13</id><value>Quarta-feira</value></string>
+  <string><id>14</id><value>Quinta feira</value></string>
+  <string><id>15</id><value>Sexta-feira</value></string>
+  <string><id>16</id><value>Sábado</value></string>
+  <string><id>17</id><value>Domingo</value></string>
 
   <string><id>21</id><value>Janeiro</value></string>
   <string><id>22</id><value>Fevereiro</value></string>
