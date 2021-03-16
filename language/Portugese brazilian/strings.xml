@@ -31,76 +31,76 @@
   <string><id>31</id><value>Novembro</value></string>
   <string><id>32</id><value>Dezembro</value></string>
 
-  <string><id>98</id><value>View: Auto</value></string>
-  <string><id>99</id><value>View: Auto Big</value></string>
-  <string><id>100</id><value>View: Icons</value></string>
-  <string><id>101</id><value>View: List</value></string>
-  <string><id>102</id><value>Scan</value></string>
-  <string><id>103</id><value>Sort by: Name</value></string>
-  <string><id>104</id><value>Sort by: Date</value></string>
-  <string><id>105</id><value>Sort by: Size</value></string>
-  <string><id>106</id><value>No</value></string>
-  <string><id>107</id><value>Yes</value></string>
-  <string><id>108</id><value>SlideShow</value></string>
-  <string><id>109</id><value>Create Thumbs</value></string>
-  <string><id>110</id><value>Create Thumbnails</value></string>
-  <string><id>111</id><value>Shortcuts</value></string>
-  <string><id>112</id><value>PAUSED</value></string>
-  <string><id>113</id><value>My Files : Source</value></string>
-  <string><id>114</id><value>My Files : Destination</value></string>
-  <string><id>115</id><value>Copy</value></string>
-  <string><id>116</id><value>Move</value></string>
-  <string><id>117</id><value>Delete</value></string>
-  <string><id>118</id><value>Rename</value></string>
-  <string><id>119</id><value>New Folder</value></string>
-  <string><id>120</id><value>Confirm file copy</value></string>
-  <string><id>121</id><value>Confirm file move</value></string>
-  <string><id>122</id><value>Confirm file delete</value></string>
-  <string><id>123</id><value>Copy these files?</value></string>
-  <string><id>124</id><value>Move these files?</value></string>
-  <string><id>125</id><value>Delete these files?</value></string>
+  <string><id>98</id><value>Ver: auto</value></string>
+  <string><id>99</id><value>Ver: Auto Big</value></string>
+  <string><id>100</id><value>Ver: Ícone</value></string>
+  <string><id>101</id><value>Ver: Lista</value></string>
+  <string><id>102</id><value>Escanear</value></string>
+  <string><id>103</id><value>Organizar por: Nome</value></string>
+  <string><id>104</id><value>Organizar por: Data</value></string>
+  <string><id>105</id><value>Organizar por: Tamanho </value></string>
+  <string><id>106</id><value>Não</value></string>
+  <string><id>107</id><value>Sim</value></string>
+  <string><id>108</id><value>Show de slide</value></string>
+  <string><id>109</id><value>Criar Thumbs</value></string>
+  <string><id>110</id><value>Criar thumbnails</value></string>
+  <string><id>111</id><value>Atalhos</value></string>
+  <string><id>112</id><value>PAUSADO</value></string>
+  <string><id>113</id><value>Meus Arquivos : Fonte</value></string>
+  <string><id>114</id><value>Meus Arquivos : Destino</value></string>
+  <string><id>115</id><value>Copiar</value></string>
+  <string><id>116</id><value>Mover</value></string>
+  <string><id>117</id><value>Excluir</value></string>
+  <string><id>118</id><value>Renomear</value></string>
+  <string><id>119</id><value>Nova Pasta</value></string>
+  <string><id>120</id><value>Confirmar arquivo copiado</value></string>
+  <string><id>121</id><value>Confirmar arquivo movido</value></string>
+  <string><id>122</id><value>Confirmar Arquivo excluído</value></string>
+  <string><id>123</id><value>Coipiar esses arquivos?</value></string>
+  <string><id>124</id><value>Mover esses arquivos?</value></string>
+  <string><id>125</id><value>Excluir esses arquivos?</value></string>
   <string><id>126</id><value>Status</value></string>
-  <string><id>127</id><value>Objects</value></string>
-  <string><id>128</id><value>General</value></string>
-  <string><id>129</id><value>Slideshow</value></string>
-  <string><id>130</id><value>System Info</value></string>
-  <string><id>131</id><value>Screen</value></string>
+  <string><id>127</id><value>Objetos</value></string>
+  <string><id>128</id><value>Geral</value></string>
+  <string><id>129</id><value>Show de slide</value></string>
+  <string><id>130</id><value>Informações do sistema</value></string>
+  <string><id>131</id><value>Tela</value></string>
   <string><id>132</id><value>Albums</value></string>
-  <string><id>133</id><value>Artists</value></string>
-  <string><id>134</id><value>Songs</value></string>
-  <string><id>135</id><value>Genres</value></string>
+  <string><id>133</id><value>Artistas</value></string>
+  <string><id>134</id><value>Sons</value></string>
+  <string><id>135</id><value>Gêneros</value></string>
   <string><id>136</id><value>Playlists</value></string>
-  <string><id>137</id><value>Search</value></string>
-  <string><id>138</id><value>SYSTEM INFORMATION</value></string>
-  <string><id>139</id><value>Temperatures:</value></string>
-  <string><id>140</id><value>CPU Temperature:</value></string>
-  <string><id>141</id><value>GPU Temperature:</value></string>
-  <string><id>142</id><value>Time:</value></string>
-  <string><id>143</id><value>Current:</value></string>
-  <string><id>144</id><value>Build:</value></string>
-  <string><id>145</id><value>Network:</value></string>
-  <string><id>146</id><value>Type:</value></string>
-  <string><id>147</id><value>Static</value></string>
+  <string><id>137</id><value>Buscar</value></string>
+  <string><id>138</id><value>INFORMAÇÃO DO SISTEMA</value></string>
+  <string><id>139</id><value>Temperaturas:</value></string>
+  <string><id>140</id><value>Temperatura da CPU:</value></string>
+  <string><id>141</id><value>Temperatura da GPU:</value></string>
+  <string><id>142</id><value>Tempo:</value></string>
+  <string><id>143</id><value>Atualmente:</value></string>
+  <string><id>144</id><value>Construir:</value></string>
+  <string><id>145</id><value>Rede:</value></string>
+  <string><id>146</id><value>Tipo:</value></string>
+  <string><id>147</id><value>Estática</value></string>
   <string><id>148</id><value>DHCP</value></string>
   <string><id>149</id><value>MAC</value></string>
   <string><id>150</id><value>IP</value></string>
-  <string><id>151</id><value>Link: </value></string>
+  <string><id>151</id><value>Link:</value></string>
   <string><id>152</id><value>Half duplex</value></string>
   <string><id>153</id><value>Full duplex</value></string>
-  <string><id>154</id><value>Storage</value></string>
+  <string><id>154</id><value>Armazenamento</value></string>
   <string><id>155</id><value>Drive</value></string>
-  <string><id>156</id><value>Free</value></string>
-  <string><id>157</id><value>Video</value></string>
-  <string><id>158</id><value>Free Memory</value></string>
-  <string><id>159</id><value>No link</value></string>
-  <string><id>160</id><value>Free</value></string>
-  <string><id>161</id><value>Unavailable</value></string>
-  <string><id>162</id><value>Tray Open</value></string>
-  <string><id>163</id><value>Reading</value></string>
-  <string><id>164</id><value>No Disc</value></string>
-  <string><id>165</id><value>Disc Present</value></string>
-  <string><id>166</id><value>Skin</value></string>
-  <string><id>167</id><value>Enable FTP Server</value></string>
+  <string><id>156</id><value>Livre</value></string>
+  <string><id>157</id><value>Vídeo</value></string>
+  <string><id>158</id><value>Memória livre</value></string>
+  <string><id>159</id><value>Sem link</value></string>
+  <string><id>160</id><value>Livre</value></string>
+  <string><id>161</id><value>Indísponivel</value></string>
+  <string><id>162</id><value>Abrir bandeja</value></string>
+  <string><id>163</id><value>Lendo...</value></string>
+  <string><id>164</id><value>Não há disco</value></string>
+  <string><id>165</id><value>Disco presente</value></string>
+  <string><id>166</id><value>tema</value></string>
+  <string><id>167</id><value>Habilitar servidor FTP</value></string>
   <string><id>168</id><value>Enable Internet Time Synchronization</value></string>
   <string><id>169</id><value>Resolution</value></string>
   <string><id>170</id><value>Album:</value></string>
