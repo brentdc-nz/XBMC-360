@@ -1,35 +1,35 @@
-<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <strings>
-  <string><id>0</id><value>Meus programas</value></string>
-  <string><id>1</id><value>Minhas fotos</value></string>
-  <string><id>2</id><value>Minhas músicas</value></string>
-  <string><id>3</id><value>Meus vídeos</value></string>
-  <string><id>4</id><value>Guia da TV</value></string>
-  <string><id>5</id><value>Configurações</value></string>
+  <string><id>0</id><value>My Programs</value></string>
+  <string><id>1</id><value>My Pictures</value></string>
+  <string><id>2</id><value>My Music</value></string>
+  <string><id>3</id><value>My Videos</value></string>
+  <string><id>4</id><value>TV Guide</value></string>
+  <string><id>5</id><value>Settings</value></string>
   <string><id>6</id><value>Xbox Media Center CVS</value></string>
-  <string><id>7</id><value>Meus arquivos</value></string>
-  <string><id>8</id><value>Clima</value></string>
+  <string><id>7</id><value>My Files</value></string>
+  <string><id>8</id><value>Weather</value></string>
 
-  <string><id>11</id><value>Segunda-feira</value></string>
-  <string><id>12</id><value>Terça-Feira<value></string>
-  <string><id>13</id><value>Quarta-feira</value></string>
-  <string><id>14</id><value>Quinta feira</value></string>
-  <string><id>15</id><value>Sexta-feira</value></string>
-  <string><id>16</id><value>Sábado</value></string>
-  <string><id>17</id><value>Domingo</value></string>
+  <string><id>11</id><value>Monday</value></string>
+  <string><id>12</id><value>Tuesday</value></string>
+  <string><id>13</id><value>Wednesday</value></string>
+  <string><id>14</id><value>Thursday</value></string>
+  <string><id>15</id><value>Friday</value></string>
+  <string><id>16</id><value>Saturday</value></string>
+  <string><id>17</id><value>Sunday</value></string>
 
-  <string><id>21</id><value>Janeiro</value></string>
-  <string><id>22</id><value>Fevereiro</value></string>
-  <string><id>23</id><value>Março</value></string>
-  <string><id>24</id><value>Abril</value></string>
-  <string><id>25</id><value>Maio</value></string>
-  <string><id>26</id><value>Junho</value></string>
-  <string><id>27</id><value>Julho</value></string>
-  <string><id>28</id><value>Agosto</value></string>
-  <string><id>29</id><value>Setembro</value></string>
-  <string><id>30</id><value>Outubro</value></string>
-  <string><id>31</id><value>Novembro</value></string>
-  <string><id>32</id><value>Dezembro</value></string>
+  <string><id>21</id><value>January</value></string>
+  <string><id>22</id><value>February</value></string>
+  <string><id>23</id><value>March</value></string>
+  <string><id>24</id><value>April</value></string>
+  <string><id>25</id><value>May</value></string>
+  <string><id>26</id><value>June</value></string>
+  <string><id>27</id><value>July</value></string>
+  <string><id>28</id><value>August</value></string>
+  <string><id>29</id><value>September</value></string>
+  <string><id>30</id><value>October</value></string>
+  <string><id>31</id><value>November</value></string>
+  <string><id>32</id><value>December</value></string>
 
   <string><id>98</id><value>View: Auto</value></string>
   <string><id>99</id><value>View: Auto Big</value></string>
