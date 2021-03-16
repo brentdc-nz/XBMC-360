@@ -199,34 +199,34 @@
   <string><id>263</id><value>Habilitar servidor web</value></string>
   <string><id>264</id><value>Gravar</value></string>
   <string><id>265</id><value>Parar gravação.</value></string>
-  <string><id>266</id><value>Sort by: Track</value></string>
-  <string><id>267</id><value>Sort by: Time</value></string>
-  <string><id>268</id><value>Sort by: Title</value></string>
-  <string><id>269</id><value>Sort by: Artist</value></string>
-  <string><id>270</id><value>Sort by: Album</value></string>
+  <string><id>266</id><value>Classificar por: Faixa</value></string>
+  <string><id>267</id><value>Classificar por: Tempo</value></string>
+  <string><id>268</id><value>Classificar por : Título</value></string>
+  <string><id>269</id><value>Classificar: Artista</value></string>
+  <string><id>270</id><value>Classificar por: Álbum</value></string>
   <string><id>271</id><value>Top 100</value></string>
-  <string><id>272</id><value>Top Left Overscan Compensation</value></string>
-  <string><id>273</id><value>Bottom Right Overscan Compensation</value></string>
-  <string><id>274</id><value>Subtitles Position</value></string>
-  <string><id>275</id><value>Pixel Ratio Adjustment</value></string>
-  <string><id>276</id><value>Move the arrow to change the amount of overscan</value></string>
-  <string><id>277</id><value>Move the bar to change the subtitles position</value></string>
-  <string><id>278</id><value>Change the rectangle so that it is perfectly square</value></string>
-  <string><id>279</id><value>Unable to load settings</value></string>
-  <string><id>280</id><value>Using default fallbacks</value></string>
-  <string><id>281</id><value>Please check the .xml files</value></string>
-  <string><id>282</id><value>found %i items</value></string>
-  <string><id>283</id><value>Search Results</value></string>
-  <string><id>284</id><value>No results found</value></string>
+  <string><id>272</id><value>Compensão das direita acima do Overscan </value></string>
+  <string><id>273</id><value>Compensação do overscan da parte da direita</value></string>
+  <string><id>274</id><value>Posições das legendas</value></string>
+  <string><id>275</id><value>Ajuste na Taxa de pixels</value></string>
+  <string><id>276</id><value>Mova a seta para mudar o tanto de overscan</value></string>
+  <string><id>277</id><value>Mova a barra para Mudar a posição das legendas</value></string>
+  <string><id>278</id><value>Muda o retangulo que então é perfeitamente quadrado</value></string>
+  <string><id>279</id><value>Não foi possível carregar as configurações</value></string>
+  <string><id>280</id><value>Usando por padrão fallbacks</value></string>
+  <string><id>281</id><value>Por favolr verifique o arquivo .xml </value></string>
+  <string><id>282</id><value>Encontrado %i itens</value></string>
+  <string><id>283</id><value>Procurar resultados</value></string>
+  <string><id>284</id><value>Nenhum resultados encontrado</value></string>
   <string><id>285</id><value>Deinterlace Filter</value></string>
-  <string><id>286</id><value>Postprocessing Filter</value></string>
-  <string><id>287</id><value>Subtitles</value></string>
-  <string><id>288</id><value>Font</value></string>
-  <string><id>289</id><value>- Size</value></string>
-  <string><id>290</id><value>Dynamic Range Compression</value></string>
-  <string><id>291</id><value>Video</value></string>
-  <string><id>292</id><value>Audio</value></string>
-  <string><id>293</id><value>Subtitles</value></string>
+  <string><id>286</id><value>Filtro de pós processamento</value></string>
+  <string><id>287</id><valueLegendas</value></string>
+  <string><id>288</id><value>Fonte</value></string>
+  <string><id>289</id><value>- Tamanho/value></string>
+  <string><id>290</id><value>Compressão do alcance dinâmico</value></string>
+  <string><id>291</id><value>Vídeo</value></string>
+  <string><id>292</id><value>Áudio</value></string>
+  <string><id>293</id><value>Legendas</value></string>
   <string><id>294</id><value>Create bookmark</value></string>
   <string><id>295</id><value>Cycle bookmarks</value></string>
   <string><id>296</id><value>Clear bookmarks</value></string>
