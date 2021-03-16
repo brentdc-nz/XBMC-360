@@ -227,37 +227,37 @@
   <string><id>291</id><value>Vídeo</value></string>
   <string><id>292</id><value>Áudio</value></string>
   <string><id>293</id><value>Legendas</value></string>
-  <string><id>294</id><value>Create bookmark</value></string>
-  <string><id>295</id><value>Cycle bookmarks</value></string>
-  <string><id>296</id><value>Clear bookmarks</value></string>
-  <string><id>297</id><value>Audio Delay</value></string>
+  <string><id>294</id><value>Criar bookmark</value></string>
+  <string><id>295</id><value>Cyclar bookmarks</value></string>
+  <string><id>296</id><value> Limpar bookmarks</value></string>
+  <string><id>297</id><value>Delay de áudio</value></string>
   <string><id>298</id><value>Slider</value></string>
-  <string><id>300</id><value>1. Language</value></string>
+  <string><id>300</id><value>1. Línguagem</value></string>
   <string><id>301</id><value>2. Volume</value></string>
   <string><id>302</id><value>3. Stream</value></string>
   <string><id>303</id><value>Delay</value></string>
-  <string><id>304</id><value>Language</value></string>
-  <string><id>305</id><value>Enabled</value></string>
-  <string><id>306</id><value>Non-Interleaved</value></string>
-  <string><id>307</id><value>- Automatic Postprocessing</value></string>
-  <string><id>308</id><value>- Vertical Deblocking Filter</value></string>
-  <string><id>309</id><value>- Horizontal Deblocking Filter</value></string>
-  <string><id>310</id><value>- Auto Brightness/Contrast</value></string>
+  <string><id>304</id><value>Línguagem</value></string>
+  <string><id>305</id><value>Hábilitado</value></string>
+  <string><id>306</id><value>Não-intersaido</value></string>
+  <string><id>307</id><value>-  Pós-processando automáticamente</value></string>
+  <string><id>308</id><value>- Filtro Vertical Deblocking</value></string>
+  <string><id>309</id><value>- filtro horizontal Deblocking</value></string>
+  <string><id>310</id><value>- Auto brilho/Contraste</value></string>
   <string><id>311</id><value>- Dering</value></string>
   <string><id>312</id><value>(0=auto)</value></string>
-  <string><id>313</id><value>Cleaning database</value></string>
-  <string><id>314</id><value>Preparing...</value></string>
-  <string><id>315</id><value>Database error</value></string>
-  <string><id>316</id><value>Searching songs...</value></string>
-  <string><id>317</id><value>Cleaning database successful</value></string>
-  <string><id>318</id><value>Cleaning songs...</value></string>
-  <string><id>319</id><value>Error cleaning songs</value></string>
-  <string><id>320</id><value>Cleaning artists...</value></string>
-  <string><id>321</id><value>Error cleaning artists</value></string>
-  <string><id>322</id><value>Cleaning genres...</value></string>
-  <string><id>323</id><value>Error cleaning genres</value></string>
-  <string><id>324</id><value>Cleaning paths...</value></string>
-  <string><id>325</id><value>Error cleaning paths</value></string>
+  <string><id>313</id><value>Limpando banco de dados</value></string>
+  <string><id>314</id><value>Preparando...</value></string>
+  <string><id>315</id><value>Erro no banco de dados...</value></string>
+  <string><id>316</id><value>Procrurando sons...</value></string>
+  <string><id>317</id><value>Limpeza no banco de dados concluída</value></string>
+  <string><id>318</id><value>Excluíndo sons...</value></string>
+  <string><id>319</id><value>Erro ao Excluír sons</value></string>
+  <string><id>320</id><value>Excluíndo artistas...</value></string>
+  <string><id>321</id><value>Erro ao excluír artistas</value></string>
+  <string><id>322</id><value>Excluíndo gênero...</value></string>
+  <string><id>323</id><value>Erro ao excluír Gêneros</value></string>
+  <string><id>324</id><value>Exclíndo Díretorios...</value></string>
+  <string><id>325</id><value>Erro ao Excluír Díretorios</value></string>
   <string><id>326</id><value>Cleaning albums...</value></string>
   <string><id>327</id><value>Error cleaning albums</value></string>
   <string><id>328</id><value>Writing changes...</value></string>
