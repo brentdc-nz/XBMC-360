@@ -101,92 +101,92 @@
   <string><id>165</id><value>Disco presente</value></string>
   <string><id>166</id><value>tema</value></string>
   <string><id>167</id><value>Habilitar servidor FTP</value></string>
-  <string><id>168</id><value>Enable Internet Time Synchronization</value></string>
-  <string><id>169</id><value>Resolution</value></string>
-  <string><id>170</id><value>Album:</value></string>
-  <string><id>171</id><value>Artist:</value></string>
-  <string><id>172</id><value>Date of Release:</value></string>
-  <string><id>173</id><value>Rating:</value></string>
-  <string><id>174</id><value>Genre:</value></string>
-  <string><id>175</id><value>Tones:</value></string>
-  <string><id>176</id><value>Styles:</value></string>
-  <string><id>177</id><value>Review:</value></string>
-  <string><id>178</id><value>Tracks:</value></string>
-  <string><id>179</id><value>Song</value></string>
-  <string><id>180</id><value>Duration</value></string>
-  <string><id>181</id><value>Select album</value></string>
-  <string><id>182</id><value>Tracks</value></string>
-  <string><id>183</id><value>Review</value></string>
-  <string><id>184</id><value>Refresh</value></string>
-  <string><id>185</id><value>Searching album</value></string>
+  <string><id>168</id><value>Habiliatar sincronização de tempo com a internet</value></string>
+  <string><id>169</id><value>Resolução</value></string>
+  <string><id>170</id><value>Álbum:</value></string>
+  <string><id>171</id><value>Artista:</value></string>
+  <string><id>172</id><value>Data de lançamento:</value></string>
+  <string><id>173</id><value>Classifiação:</value></string>
+  <string><id>174</id><value>Gênero:</value></string>
+  <string><id>175</id><value>Tons:</value></string>
+  <string><id>176</id><value>Estilos:</value></string>
+  <string><id>177</id><value>Rever:</value></string>
+  <string><id>178</id><value>Faixas:</value></string>
+  <string><id>179</id><value>Sons</value></string>
+  <string><id>180</id><value>Duração</value></string>
+  <string><id>181</id><value>Selecionar album</value></string>
+  <string><id>182</id><value>Faixas</value></string>
+  <string><id>183</id><value>Rever</value></string>
+  <string><id>184</id><value>Atualizar</value></string>
+  <string><id>185</id><value>Procurando álbum</value></string>
   <string><id>186</id><value>OK</value></string>
-  <string><id>187</id><value>No albums found!</value></string>
-  <string><id>188</id><value>Select all</value></string>
-  <string><id>189</id><value>Scanning media info</value></string>
-  <string><id>190</id><value>Save</value></string>
-  <string><id>191</id><value>Shuffle</value></string>
-  <string><id>192</id><value>Clear</value></string>
-  <string><id>193</id><value>Scan</value></string>
-  <string><id>194</id><value>Searching...</value></string>
-  <string><id>195</id><value>No IMDB info found!</value></string>
-  <string><id>196</id><value>Select movie:</value></string>
-  <string><id>197</id><value>Querying IMDB info</value></string>
-  <string><id>198</id><value>Loading Movie details</value></string>
-  <string><id>199</id><value>Director:</value></string>
-  <string><id>200</id><value>Writer:</value></string>
-  <string><id>201</id><value>Year:</value></string>
-  <string><id>202</id><value>Tagline:</value></string>
+  <string><id>187</id><value>Nenhum álbum encontrado!</value></string>
+  <string><id>188</id><value>Sekecionar todos</value></string>
+  <string><id>189</id><value>Escaneado as informações da mídia</value></string>
+  <string><id>190</id><value>Salvar</value></string>
+  <string><id>191</id><value>Misturar</value></string>
+  <string><id>192</id><value>Limpar</value></string>
+  <string><id>193</id><value>Escanear</value></string>
+  <string><id>194</id><value>Procurando</value></string>
+  <string><id>195</id><value>Nenhuma informação do IMDB foi encontrada!</value></string>
+  <string><id>196</id><value>Selecionar filme:</value></string>
+  <string><id>197</id><value>Consultando informações do IMDB</value></string>
+  <string><id>198</id><value>Carregando detalhes do filme</value></string>
+  <string><id>199</id><value>Diretor:</value></string>
+  <string><id>200</id><value>Escritor:</value></string>
+  <string><id>201</id><value>Ano:</value></string>
+  <string><id>202</id><value>Slogan:</value></string>
   <string><id>203</id><value>Plot outline:</value></string>
-  <string><id>204</id><value>Rating:</value></string>
-  <string><id>205</id><value>Votes:</value></string>
-  <string><id>206</id><value>Cast</value></string>
-  <string><id>207</id><value>Plot</value></string>
-  <string><id>208</id><value>Play</value></string>
-  <string><id>209</id><value>Next</value></string>
-  <string><id>210</id><value>Previous</value></string>
-  <string><id>211</id><value>Searching for applications</value></string>
-  <string><id>212</id><value>Applications found</value></string>
-  <string><id>213</id><value>Calibrate User Interface...</value></string>
-  <string><id>214</id><value>Video Calibration...</value></string>
-  <string><id>215</id><value>Soften</value></string>
-  <string><id>216</id><value>Zoom Amount</value></string>
-  <string><id>217</id><value>Pixel Ratio</value></string>
-  <string><id>218</id><value>DVD Drive</value></string>
-  <string><id>219</id><value>Please insert disc</value></string>
-  <string><id>220</id><value>Remote Share</value></string>
-  <string><id>221</id><value>Network is not connected</value></string>
-  <string><id>222</id><value>Cancel</value></string>
-  <string><id>223</id><value>Auto Widescreen Switching</value></string>
-  <string><id>224</id><value>Speed</value></string>
-  <string><id>225</id><value>Transition Time</value></string>
-  <string><id>226</id><value>Enable PAL60</value></string>
-  <string><id>227</id><value>Enable CDDB</value></string>
-  <string><id>228</id><value>Shuffle Playlist on Load</value></string>
-  <string><id>229</id><value>HD Spindown Time</value></string>
-  <string><id>230</id><value>Video Filters</value></string>
-  <string><id>231</id><value>None</value></string>
-  <string><id>232</id><value>Point</value></string>
+  <string><id>204</id><value>Classificação:</value></string>
+  <string><id>205</id><value>Votos:</value></string>
+  <string><id>206</id><value>Elenco</value></string>
+  <string><id>207</id><value>Sínopse</value></string>
+  <string><id>208</id><value>Tocar</value></string>
+  <string><id>209</id><value>Próxima</value></string>
+  <string><id>210</id><value>Átras</value></string>
+  <string><id>211</id><value>Procurando por aplicações</value></string>
+  <string><id>212</id><value>Aplicativos encontrados</value></string>
+  <string><id>213</id><value>Calibrando interface de úsuario</value></string>
+  <string><id>214</id><value>Calibração de vídeo</value></string>
+  <string><id>215</id><value>Suavizar</value></string>
+  <string><id>216</id><value>Aumento do zoom</value></string>
+  <string><id>217</id><value>Taxa de pixels</value></string>
+  <string><id>218</id><value>Drive de dvd</value></string>
+  <string><id>219</id><value>Por favor insira o disco</value></string>
+  <string><id>220</id><value>Compartilhamento remoto</value></string>
+  <string><id>221</id><value>Rede não conectada</value></string>
+  <string><id>222</id><value>Cancelar</value></string>
+  <string><id>223</id><value>Troca automatica de tela esticada</value></string>
+  <string><id>224</id><value>Velocidade</value></string>
+  <string><id>225</id><value>Tempo de transição</value></string>
+  <string><id>226</id><value>Habilitar PAL60</value></string>
+  <string><id>227</id><value>Habilitar CDDB</value></string>
+  <string><id>228</id><value> Misturar Playlist no carregamento</value></string>
+  <string><id>229</id><value>Tempo de rotação do HD</value></string>
+  <string><id>230</id><value>Filtros de vídeos</value></string>
+  <string><id>231</id><value>Nenhum</value></string>
+  <string><id>232</id><value>Ponto</value></string>
   <string><id>233</id><value>Linear</value></string>
-  <string><id>234</id><value>Anisotropic</value></string>
-  <string><id>235</id><value>Quincunx</value></string>
-  <string><id>236</id><value>Gaussian Cubic</value></string>
-  <string><id>237</id><value>Minification</value></string>
-  <string><id>238</id><value>Magnification</value></string>
-  <string><id>239</id><value>Clear playlist on finish</value></string>
-  <string><id>240</id><value>Autorun DVD-Video</value></string>
-  <string><id>241</id><value>Autorun VCD/SVCD</value></string>
-  <string><id>242</id><value>Autorun Audio-CD</value></string>
-  <string><id>243</id><value>Autorun XBOX Games</value></string>
-  <string><id>244</id><value>Autorun Videos</value></string>
-  <string><id>245</id><value>Autorun Music</value></string>
-  <string><id>246</id><value>Autorun Pictures</value></string>
+  <string><id>234</id><value>Ansitrópico</value></string>
+  <string><id>235</id><value>Quincunce</value></string>
+  <string><id>236</id><value>Cubo gaussiano</value></string>
+  <string><id>237</id><value>Minificção</value></string>
+  <string><id>238</id><value>Magnificação</value></string>
+  <string><id>239</id><value>Limpar playlist no final</value></string>
+  <string><id>240</id><value>automaticamnete rodar DVD dv vídeo</value></string>
+  <string><id>241</id><value>Automaticamnete rodar VCD/SVCD</value></string>
+  <string><id>242</id><value>Automaticamente rodar Audio-CD</value></string>
+  <string><id>243</id><value>Automaticamente rodar Jogos de XBOX</value></string>
+  <string><id>244</id><value>Automaticamente rodar Vídeos</value></string>
+  <string><id>245</id><value>Automaticamente rodar Música</value></string>
+  <string><id>246</id><value>Automaticamente rodar imagens</value></string>
   <string><id>247</id><value>Scripts</value></string>
-  <string><id>248</id><value>Language</value></string>
-  <string><id>249</id><value>Music</value></string>
-  <string><id>250</id><value>Visualisation</value></string>
-  <string><id>251</id><value>Select destination directory</value></string>
-  <string><id>252</id><value>Output Stereo to all Speakers</value></string>
-  <string><id>253</id><value>Number of channels</value></string>
+  <string><id>248</id><value>Línguagem</value></string>
+  <string><id>249</id><value>Música</value></string>
+  <string><id>250</id><value>Vizualização</value></string>
+  <string><id>251</id><value>Selecionar diretório de destino</value></string>
+  <string><id>252</id><value>Sáida de stereo para todos os speakers</value></string>
+  <string><id>253</id><value>Número de canais</value></string>
   <string><id>254</id><value>- DTS Capable Receiver</value></string>
   <string><id>255</id><value>CDDB</value></string>
   <string><id>256</id><value>Querying freedb for CDDB info</value></string>
