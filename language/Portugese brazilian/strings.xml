@@ -1253,7 +1253,7 @@
   <string><id>15311</id><value>Caminho:</value></string>
 
   <string><id>16000</id><value>Geral</value></string>
-  <string><id>16001</id><value>Configurar hardware de áudio...</value></string>
+  <string><id>16001</id><value>Configurar dispositivo de áudio...</value></string>
   <string><id>16002</id><value>CDDB lookup</value></string>
   <string><id>16003</id><value>Tocador</value></string>
   <string><id>16004</id><value>Rodar mídia a patir do disco</value></string>
@@ -1294,7 +1294,7 @@
   <string><id>16107</id><value>Usar somente NTSC-M</value></string>
   <string><id>16108</id><value>Usar somente NTSC-J</value></string>
   <string><id>16109</id><value>Usar somente PAL-60</value></string>
-  <string><id>16110</id><value>Para jogos com taxa de 60hz </value></string>
+  <string><id>16110</id><value>jogos com taxa de 60hz</value></string>
 
   <string><id>16111</id><value>FPS Atual:</value></string>
   
