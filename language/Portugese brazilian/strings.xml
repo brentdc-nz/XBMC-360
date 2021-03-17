@@ -161,7 +161,7 @@
   <string><id>225</id><value>Tempo de transição</value></string>
   <string><id>226</id><value>Habilitar PAL60</value></string>
   <string><id>227</id><value>Habilitar CDDB</value></string>
-  <string><id>228</id><value> Misturar Playlist no carregamento</value></string>
+  <string><id>228</id><value>Misturar Playlist no carregamento</value></string>
   <string><id>229</id><value>Tempo de rotação do HD</value></string>
   <string><id>230</id><value>Filtros de vídeos</value></string>
   <string><id>231</id><value>Nenhum</value></string>
@@ -175,10 +175,10 @@
   <string><id>239</id><value>Limpar playlist no final</value></string>
   <string><id>240</id><value>automaticamnete rodar DVD dv vídeo</value></string>
   <string><id>241</id><value>Automaticamnete rodar VCD/SVCD</value></string>
-  <string><id>242</id><value>Automaticamente rodar Audio-CD</value></string>
+  <string><id>242</id><value>Automaticamente Tocar Audio-CD</value></string>
   <string><id>243</id><value>Automaticamente rodar Jogos de XBOX</value></string>
   <string><id>244</id><value>Automaticamente rodar Vídeos</value></string>
-  <string><id>245</id><value>Automaticamente rodar Música</value></string>
+  <string><id>245</id><value>Automaticamente Tocar Música</value></string>
   <string><id>246</id><value>Automaticamente rodar imagens</value></string>
   <string><id>247</id><value>Scripts</value></string>
   <string><id>248</id><value>Línguagem</value></string>
@@ -222,7 +222,7 @@
   <string><id>286</id><value>Filtro de pós processamento</value></string>
   <string><id>287</id><valueLegendas</value></string>
   <string><id>288</id><value>Fonte</value></string>
-  <string><id>289</id><value>- Tamanho/value></string>
+  <string><id>289</id><value>- Tamanho</value></string>
   <string><id>290</id><value>Compressão do alcance dinâmico</value></string>
   <string><id>291</id><value>Vídeo</value></string>
   <string><id>292</id><value>Áudio</value></string>
@@ -251,51 +251,51 @@
   <string><id>316</id><value>Procrurando sons...</value></string>
   <string><id>317</id><value>Limpeza no banco de dados concluída</value></string>
   <string><id>318</id><value>Excluíndo sons...</value></string>
-  <string><id>319</id><value>Erro ao Excluír sons</value></string>
+  <string><id>319</id><value>Erro ao Excluir sons</value></string>
   <string><id>320</id><value>Excluíndo artistas...</value></string>
-  <string><id>321</id><value>Erro ao excluír artistas</value></string>
+  <string><id>321</id><value>Erro ao excluir artistas</value></string>
   <string><id>322</id><value>Excluíndo gênero...</value></string>
   <string><id>323</id><value>Erro ao excluír Gêneros</value></string>
   <string><id>324</id><value>Exclíndo Díretorios...</value></string>
-  <string><id>325</id><value>Erro ao Excluír Díretorios</value></string>
-  <string><id>326</id><value>Cleaning albums...</value></string>
-  <string><id>327</id><value>Error cleaning albums</value></string>
-  <string><id>328</id><value>Writing changes...</value></string>
-  <string><id>329</id><value>Error writing changes</value></string>
-  <string><id>330</id><value>This may take some time...</value></string>
-  <string><id>331</id><value>Compressing database...</value></string>
-  <string><id>332</id><value>Error compressing database</value></string>
-  <string><id>333</id><value>Do you want to clean the music library?</value></string>
-  <string><id>334</id><value>Clean Music Library...</value></string>
+  <string><id>325</id><value>Erro ao Excluir Díretorios</value></string>
+  <string><id>326</id><value>Exclíndo Álbuns...</value></string>
+  <string><id>327</id><value>Erro ao excluir Álbuns</value></string>
+  <string><id>328</id><value>Salvando mudanças...</value></string>
+  <string><id>329</id><value>Erro ao salvar mudanças</value></string>
+  <string><id>330</id><value>Isso talvez leve um algum tempo...</value></string>
+  <string><id>331</id><value>Compressando banco de dados ...</value></string>
+  <string><id>332</id><value>Erro ao compressar banco de dados</value></string>
+  <string><id>333</id><value>Você desseja excluir a biblioteca de música?</value></string>
+  <string><id>334</id><value>Excluindo Biblioteca de música...</value></string>
   <string><id>335</id><value>Start</value></string>
-  <string><id>336</id><value>Framerate Conversion</value></string>
-  <string><id>337</id><value>Audio Output</value></string>
-  <string><id>338</id><value>Analog</value></string>
+  <string><id>336</id><value>Conversão de taxas de frames</value></string>
+  <string><id>337</id><value>Saída de audio</value></string>
+  <string><id>338</id><value>Analógico</value></string>
   <string><id>339</id><value>Digital</value></string>
-  <string><id>340</id><value>Various Artists</value></string>
-  <string><id>341</id><value>Play Disc</value></string>
-  <string><id>342</id><value>Movies</value></string>
-  <string><id>343</id><value>Adjust Framerate</value></string>
-  <string><id>344</id><value>Actors</value></string>
-  <string><id>345</id><value>Year</value></string>
-  <string><id>346</id><value>Stack</value></string>
-  <string><id>347</id><value>Unstack</value></string>
-  <string><id>348</id><value>Flatten Directory Hierarchy</value></string>
-  <string><id>349</id><value>Show only Default.xbe</value></string>
-  <string><id>350</id><value>Programs</value></string>
-  <string><id>351</id><value>Off</value></string>
+  <string><id>340</id><value>Varios Artistas</value></string>
+  <string><id>341</id><value>Tocar disco</value></string>
+  <string><id>342</id><value>Filmes</value></string>
+  <string><id>343</id><value>Ajustar taxas de frame</value></string>
+  <string><id>344</id><value>Atores</value></string>
+  <string><id>345</id><value>Ano</value></string>
+  <string><id>346</id><value>Pilha</value></string>
+  <string><id>347</id><value>Desempilhar</value></string>
+  <string><id>348</id><value>Nivelar a hierarquia do diretório</value></string>
+  <string><id>349</id><value>Mostrar apenas Default.xbe</value></string>
+  <string><id>350</id><value>Programas</value></string>
+  <string><id>351</id><value>Desligar</value></string>
   <string><id>352</id><value>Dim</value></string>
-  <string><id>353</id><value>Black</value></string>
+  <string><id>353</id><value>Preto</value></string>
   <string><id>354</id><value>Matrix Trails</value></string>
-  <string><id>355</id><value>Screensaver Idle Timeout</value></string>
-  <string><id>356</id><value>Screensaver Mode</value></string>
-  <string><id>357</id><value>Shutdown Idle Timeout</value></string>
-  <string><id>358</id><value>All albums</value></string>
-  <string><id>359</id><value>Recently Added Albums</value></string>
-  <string><id>360</id><value>Screensaver</value></string>
-  <string><id>361</id><value>R. SlideShow</value></string>
-  <string><id>362</id><value>Screensaver Fade Level</value></string>
-  <string><id>363</id><value>Sort by: File</value></string>
+  <string><id>355</id><value>Tempo limite ocioso do protetor de tela</value></string>
+  <string><id>356</id><value>Modo protetor de tela</value></string>
+  <string><id>357</id><value>Tempo de desligamento ocisoso </value></string>
+  <string><id>358</id><value>Todos os álbums</value></string>
+  <string><id>359</id><value>Recentemente adicionado a álbuns</value></string>
+  <string><id>360</id><value>Protetor de tela</value></string>
+  <string><id>361</id><value>R. Show de slide/value></string>
+  <string><id>362</id><value>Protetor de tela Nível de desvanença</value></string>
+  <string><id>363</id><value>Classificar por: Arquivo</value></string>
   <string><id>364</id><value>- AC3 Capable Receiver</value></string>
   <string><id>365</id><value>Organizar por: Nome</value></string>
   <string><id>366</id><value>Organizar por ano: Ano</value></string>
