@@ -189,7 +189,7 @@
   <string><id>253</id><value>Número de canais</value></string>
   <string><id>254</id><value>- DTS Capable Receiver</value></string>
   <string><id>255</id><value>CDDB</value></string>
-  <string><id>256</id><value>Consultando freedb para Informações do CCDB</value></string>
+  <string><id>256</id><value>Consultando freedb para Informações do CDDB</value></string>
   <string><id>257</id><value>Erro</value></string>
   <string><id>258</id><value>Hábilitar ID3 Tags</value></string>
   <string><id>259</id><value>Abertura</value></string>
@@ -239,7 +239,7 @@
   <string><id>304</id><value>Línguagem</value></string>
   <string><id>305</id><value>Hábilitado</value></string>
   <string><id>306</id><value>Não-intersaido</value></string>
-  <string><id>307</id><value>-  Pós-processando automáticamente</value></string>
+  <string><id>307</id><value>- Pós-processando automaticamente</value></string>
   <string><id>308</id><value>- Filtro Vertical Deblocking</value></string>
   <string><id>309</id><value>- filtro horizontal Deblocking</value></string>
   <string><id>310</id><value>- Auto brilho/Contraste</value></string>
@@ -362,7 +362,7 @@
   <string><id>427</id><value>Disco:</value></string>
   <string><id>428</id><value>Insira corretamente o CD/DVD</value></string>
   <string><id>429</id><value>Por favor insira o CD/DVD</value></string>
-  <string><id>430</id><value>Sort by: DVD#</value></string>
+  <string><id>430</id><value>Classificar por: DVD#</value></string>
   <string><id>431</id><value>Não há cache</value></string>
   <string><id>432</id><value>Desseja Excluir os filmes no banco de dados?</value></string>
   <string><id>433</id><value>Você tem certeza que quer remover</value></string>
@@ -389,7 +389,7 @@
   <string><id>454</id><value>Endereço da fileira 4</value></string>
   <string><id>455</id><value>Fileiras</value></string>
   <string><id>456</id><value>Modo</value></string>
-  <string><id>457</id><value>Mudar a vísta</value></string>
+  <string><id>457</id><value>Mudar a vista</value></string>
   <string><id>458</id><value>B/Mark</value></string>
   <string><id>459</id><value>Subs</value></string>
   <string><id>460</id><value>Audio Stream</value></string>
@@ -405,104 +405,104 @@
   <string><id>470</id><value>Créditos</value></string>
   <string><id>471</id><value>Modchip</value></string>
   <string><id>472</id><value>Limite de tempo do vídeo OSD</value></string>
-  <string><id>473</id><value>High Quality Resampling</value></string>
-  <string><id>474</id><value>Off</value></string>
-  <string><id>475</id><value>Music Only</value></string>
-  <string><id>476</id><value>Music &amp; Video</value></string>
-  <string><id>477</id><value>Unable to load playlist</value></string>
+  <string><id>473</id><value>Reamostragem de alta qualidade</value></string>
+  <string><id>474</id><value>Desligado</value></string>
+  <string><id>475</id><value>Somente múisica</value></string>
+  <string><id>476</id><value>Música &amp; Vídeo</value></string>
+  <string><id>477</id><value>Não foi possível carregar uma playlist</value></string>
   <string><id>478</id><value>OSD</value></string>
-  <string><id>479</id><value>Skin and Language</value></string>
-  <string><id>480</id><value>Appearance</value></string>
-  <string><id>481</id><value>Audio Options</value></string>
-  <string><id>482</id><value>About XBMC</value></string>
-  <string><id>483</id><value>Album</value></string>
-  <string><id>484</id><value>Artist</value></string>
-  <string><id>485</id><value>Delete album</value></string>
-  <string><id>486</id><value>Repeat</value></string>
-  <string><id>487</id><value>Repeat One</value></string>
-  <string><id>488</id><value>Repeat Folders</value></string>
-  <string><id>489</id><value>Auto Play Next Item</value></string>
-  <string><id>490</id><value>Auto switch list and icons in songs</value></string>
-  <string><id>491</id><value>- Use big icons</value></string>
-  <string><id>492</id><value>Resize Vobsubs</value></string>
-  <string><id>493</id><value>Advanced Options (Experts Only!)</value></string>
-  <string><id>494</id><value>Overall Audio Headroom</value></string>
-  <string><id>495</id><value>Upsample Videos to GUI Resolution</value></string>
-  <string><id>496</id><value>Calibration</value></string>
-  <string><id>497</id><value>Hide Media Extensions</value></string>
-  <string><id>498</id><value>Sort by: Type</value></string>
-  <string><id>499</id><value>Unable to connect to www.allmusic.com</value></string>
-  <string><id>500</id><value>Downloading album info failed</value></string>
-  <string><id>501</id><value>Looking for album names...</value></string>
-  <string><id>502</id><value>Open</value></string>
-  <string><id>503</id><value>Busy</value></string>
-  <string><id>504</id><value>Empty</value></string>
-  <string><id>505</id><value>Loading media info from files...</value></string>
-  <string><id>506</id><value>Use Directory Names for Description</value></string>
-  <string><id>507</id><value>Sort by: Usage</value></string>
-  <string><id>508</id><value>Do not use Shortcuts or Scan</value></string>
-  <string><id>509</id><value>Cache Program Thumbnails</value></string>
-  <string><id>510</id><value>Enable Visualisations</value></string>
-  <string><id>511</id><value>Enable video mode switching</value></string>
-  <string><id>512</id><value>Startup Window</value></string>
-  <string><id>513</id><value>Home Window</value></string>
-  <string><id>514</id><value>Manual Settings</value></string>
-  <string><id>515</id><value>Genre</value></string>
-  <string><id>516</id><value>Make archives with one file transparent</value></string>
-  <string><id>517</id><value>Recently Played Albums</value></string>
-  <string><id>518</id><value>Launch</value></string>
-  <string><id>519</id><value>Launch in..</value></string>
-  <string><id>520</id><value>Edit XBE title</value></string>
-  <string><id>521</id><value>Compilations</value></string>
-  <string><id>522</id><value>Remove Source</value></string>
+  <string><id>479</id><value>Temas e linguagem</value></string>
+  <string><id>480</id><value>Aparência</value></string>
+  <string><id>481</id><value>Opções de áudio</value></string>
+  <string><id>482</id><value>Sobre o XBMC</value></string>
+  <string><id>483</id><value>Álbum</value></string>
+  <string><id>484</id><value>Artista</value></string>
+  <string><id>485</id><value>Excluír</value></string>
+  <string><id>486</id><value>Repetir</value></string>
+  <string><id>487</id><value>Repetir uma vez</value></string>
+  <string><id>488</id><value>Repetir pastas</value></string>
+  <string><id>489</id><value>Auto tocar o próximo item</value></string>
+  <string><id>490</id><value>Auto trocar lista e Ícones em sons</value></string>
+  <string><id>491</id><value>- Usar grandes Ícones</value></string>
+  <string><id>492</id><value>Reajustar Vobsubs</value></string>
+  <string><id>493</id><value>Opções avançadas (Sompente para os experientes!)</value></string>
+  <string><id>494</id><value>Espaço livre para áudio geral</value></string>
+  <string><id>495</id><value>Desamonstrar Vídeos Para A Resolução Da UI</value></string>
+  <string><id>496</id><value>Calibração</value></string>
+  <string><id>497</id><value>Esconder extensões de media</value></string>
+  <string><id>498</id><value>Classificar por: Tipo</value></string>
+  <string><id>499</id><value>Não foi possivel connectar o site www.allmusic.com</value></string>
+  <string><id>500</id><value>Erro ao Baixar informção do album</value></string>
+  <string><id>501</id><value>Procurando por nome do álbum...</value></string>
+  <string><id>502</id><value>Abrir</value></string>
+  <string><id>503</id><value>Ocupado</value></string>
+  <string><id>504</id><value>Vazio</value></string>
+  <string><id>505</id><value>Carregando informações da mídia dentro dos arquivos...</value></string>
+  <string><id>506</id><value>Usar Nomes de diretório para a descrição</value></string>
+  <string><id>507</id><value>Classificar por: Ultilidade</value></string>
+  <string><id>508</id><value>Não use atalhos ou Scan</value></string>
+  <string><id>509</id><value>Cache de Programas de thumbnail Cache Program Thumbnails</value></string>
+  <string><id>510</id><value>Habilitar vizualizações</value></string>
+  <string><id>511</id><value>Habilitar alternar modos de vídeos</value></string>
+  <string><id>512</id><valule/>Tela de inicialização</value></string>
+  <string><id>513</id><value>Janela principal</value></string>
+  <string><id>514</id><value>Configurações do manual</value></string>
+  <string><id>515</id><value>Gênero</value></string>
+  <string><id>516</id><value>Fazer arquivos com uma fila transpaarente</value></string>
+  <string><id>517</id><value>Álbuns tocados recentemente</value></string>
+  <string><id>518</id><value>Iniciar</value></string>
+  <string><id>519</id><value>Iniciar em..</value></string>
+  <string><id>520</id><value>Editar Titulo XBE</value></string>
+  <string><id>521</id><value>Compilações</value></string>
+  <string><id>522</id><value>Remover fonte</value></string>
 
-  <string><id>588</id><value>Cancel Party Mode</value></string>
-  <string><id>589</id><value>Party Mode</value></string>
-  <string><id>590</id><value>Random</value></string>
-  <string><id>591</id><value>Off</value></string>
-  <string><id>592</id><value>One</value></string>
-  <string><id>593</id><value>All</value></string>
-  <string><id>594</id><value>Off</value></string>
-  <string><id>595</id><value>Repeat: Off</value></string>
-  <string><id>596</id><value>Repeat: One</value></string>
-  <string><id>597</id><value>Repeat: All</value></string>
+  <string><id>588</id><value>Cancelar modo festa</value></string>
+  <string><id>589</id><value>Modo festa</value></string>
+  <string><id>590</id><value>Aleatório</value></string>
+  <string><id>591</id><value>Desligado</value></string>
+  <string><id>592</id><value>Um</value></string>
+  <string><id>593</id><value>Todos</value></string>
+  <string><id>594</id><value>Desligado</value></string>
+  <string><id>595</id><value>Repetir: Desligado</value></string>
+  <string><id>596</id><value>Repetir: Um</value></string>
+  <string><id>597</id><value>Repetir: Todos</value></string>
 
-  <string><id>600</id><value>Rip CD Audio</value></string>
-  <string><id>601</id><value>Medium</value></string>
-  <string><id>602</id><value>Standard</value></string>
-  <string><id>603</id><value>Extreme</value></string>
-  <string><id>604</id><value>Constant Bit Rate</value></string>
-  <string><id>605</id><value>Ripping...</value></string>
-  <string><id>606</id><value>Track Number:</value></string>
-  <string><id>607</id><value>To:</value></string>
-  <string><id>608</id><value>Could not rip CD or Track</value></string>
-  <string><id>609</id><value>CDDARipPath is not set in XboxMediaCenter.xml</value></string>
+  <string><id>600</id><value>Ripar CD De áudio</value></string>
+  <string><id>601</id><value>Médio</value></string>
+  <string><id>602</id><value>Padrão</value></string>
+  <string><id>603</id><value>Extremo</value></string>
+  <string><id>604</id><value>Taxas de bits constante</value></string>
+  <string><id>605</id><value>Rippando...</value></string>
+  <string><id>606</id><value>Número da faixa:</value></string>
+  <string><id>607</id><value>Para:</value></string>
+  <string><id>608</id><value>Não pode rippar Cd or Faixa</value></string>
+  <string><id>609</id><value>CDDARipPath Não esta configurado em XboxMediaCenter.xml </value></string>
 
-  <string><id>620</id><value>CD Ripping</value></string>
+  <string><id>620</id><value>Rippando CD</value></string>
   <string><id>621</id><value>Encoder</value></string>
-  <string><id>622</id><value>Quality</value></string>
-  <string><id>623</id><value>Bit Rate</value></string>
-  <string><id>624</id><value>Include Track Number</value></string>
-  <string><id>625</id><value>All songs of</value></string>
+  <string><id>622</id><value>Qualidade</value></string>
+  <string><id>623</id><value>Taxa de bits</value></string>
+  <string><id>624</id><value>Incluir número da faixa</value></string>
+  <string><id>625</id><value>Todos os sons de </value></string>
 
-  <string><id>629</id><value>View Mode</value></string>
+  <string><id>629</id><value>Modo de vizulaização</value></string>
   <string><id>630</id><value>Normal</value></string>
   <string><id>631</id><value>Zoom</value></string>
-  <string><id>632</id><value>Stretch 4:3</value></string>
-  <string><id>633</id><value>Stretch 14:9</value></string>
-  <string><id>634</id><value>Stretch 16:9</value></string>
-  <string><id>635</id><value>Original Size</value></string>
-  <string><id>636</id><value>Custom</value></string>
-  <string><id>637</id><value>Replay Gain</value></string>
-  <string><id>638</id><value>Replay Gain Mode</value></string>
-  <string><id>639</id><value>Use Track Levels</value></string>
-  <string><id>640</id><value>Use Album Levels</value></string>
-  <string><id>641</id><value>PreAmp Level - Replay Gained Files</value></string>
-  <string><id>642</id><value>PreAmp Level - Non Replay Gained Files</value></string>
-  <string><id>643</id><value>Avoid Clipping on Replay Gained Files</value></string>
-  <string><id>644</id><value>Crop Black Bars</value></string>
-  <string><id>645</id><value>Need to cache a big file. Continue?</value></string>
-  <string><id>646</id><value>Remove Title</value></string>
+  <string><id>632</id><value>Esticar 4:3</value></string>
+  <string><id>633</id><value>Esticar 14:9</value></string>
+  <string><id>634</id><value>Esticar 16:9</value></string>
+  <string><id>635</id><value>Tamanho original</value></string>
+  <string><id>636</id><value>Customizado</value></string>
+  <string><id>637</id><value>Retroceder ganho</value></string>
+  <string><id>638</id><value>Modo de retroceder ganho</value></string>
+  <string><id>639</id><value>Usar niveis de faixa</value></string>
+  <string><id>640</id><value>Usar níveis de álbum</value></string>
+  <string><id>641</id><value>Nível Préamp - Retroceder Arquivos obitidos</value></string>
+  <string><id>642</id><value>Nível preamp - Não retroceder arquivos obitido</value></string>
+  <string><id>643</id><value>Evite recortar no Retroceder dos arquivos obitidos Files</value></string>
+  <string><id>644</id><value>Recplher barras pretas</value></string>
+  <string><id>645</id><value>Precisa de cache para um arquivo grande. Continuar?</value></string>
+  <string><id>646</id><value>Remover título</value></string>
   
   <string><id>700</id><value>Cleaning up Library</value></string>
   <string><id>701</id><value>Removing old songs from the Library</value></string>
