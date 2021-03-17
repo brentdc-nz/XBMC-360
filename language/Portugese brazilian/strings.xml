@@ -653,18 +653,18 @@
   <string><id>1234</id><value>Programs &amp; Pictures &amp; Music</value></string>
   <string><id>1235</id><value>Programs &amp; Pictures &amp; Video</value></string>
 
-  <string><id>1245</id><value>FTP User Name</value></string>
-  <string><id>1246</id><value>FTP User Password</value></string>
-  <string><id>1247</id><value>FTP Server User Password has been set sucessfully</value></string>
+  <string><id>1245</id><value>Nome de usuário FTP</value></string>
+  <string><id>1246</id><value>Senha do usuário FTP</value></string>
+  <string><id>1247</id><value>Senha do usuário do Servidor FTP Foi configurada com sucesso</value></string>
 
-  <string><id>1250</id><value>Autodetection</value></string>
-  <string><id>1251</id><value>XBOX Autodetection</value></string>
-  <string><id>1252</id><value>Nick Name</value></string>
-  <string><id>1253</id><value>Create FTP Link in My Files</value></string>
-  <string><id>1254</id><value>Ask to Connect</value></string>
-  <string><id>1255</id><value>Send FTP User and Password</value></string>
-  <string><id>1256</id><value>Ping Interval</value></string>
-  <string><id>1257</id><value>Would you like to connect to the Autodetected Xbox?</value></string>
+    <string><id>1250</id><value>Autodetecção</value></string>
+  <string><id>1251</id><value>Autodetecção do XBOX</value></string>
+  <string><id>1252</id><value>Apelido</value></string>
+  <string><id>1253</id><value>Criar link FTP nos meus Arquivos</value></string>
+  <string><id>1254</id><value>Perguntar para connectar</value></string>
+  <string><id>1255</id><value>Mandar usuário e senha FTP</value></string>
+  <string><id>1256</id><value>Intervalo de ping</value></string>
+  <string><id>1257</id><value>Você gostaria de connectar no XBOX 360 detectado</value></string>
 
   <string><id>1396</id><value>Drifting</value></string>
   <string><id>1397</id><value>and</value></string>
@@ -841,23 +841,23 @@
   <string><id>12386</id><value>Month/Day</value></string>
   <string><id>12387</id><value>Rescan database</value></string>
 
-  <string><id>12390</id><value>System Uptime</value></string>
-  <string><id>12391</id><value>Minutes</value></string>
-  <string><id>12392</id><value>Hours</value></string>
-  <string><id>12393</id><value>Days</value></string>
-  <string><id>12394</id><value>Total Uptime</value></string>
+  <string><id>12390</id><value>Tempo do sistema</value></string>
+  <string><id>12391</id><value>Minutos</value></string>
+  <string><id>12392</id><value>Horas</value></string>
+  <string><id>12393</id><value>Dias</value></string>
+  <string><id>12394</id><value>Tempo total</value></string>
   
-  <string><id>12600</id><value>My Weather</value></string>
+  <string><id>12600</id><value>Meu clima</value></string>
 
-  <string><id>12900</id><value>Screensaver</value></string>
-  <string><id>12901</id><value>Fullscreen OSD</value></string>
+  <string><id>12900</id><value>Protetor de tela</value></string>
+  <string><id>12901</id><value>Tela cheia OSD</value></string>
 
-  <string><id>13000</id><value>System</value></string>
+  <string><id>13000</id><value>Sistema</value></string>
   <string><id>13001</id><value>Immediate HD Spindown</value></string>
-  <string><id>13002</id><value>Video Only</value></string>
+  <string><id>13002</id><value>Somente vídeo</value></string>
   <string><id>13003</id><value>- Delay</value></string>
-  <string><id>13004</id><value>- Minimum File Duration</value></string>
-  <string><id>13005</id><value>Shutdown</value></string>
+  <string><id>13004</id><value>- Duração mínima do arquivo</value></string>
+  <string><id>13005</id><value>Desligar</value></string>
   <string><id>13006</id><value>Dashboard</value></string>
 
   <string><id>13100</id><value>Flicker Filter</value></string>
@@ -900,11 +900,11 @@
   <string><id>13212</id><value>Canceled with %im%is left</value></string>
 
 
-  <string><id>13249</id><value>Search for Subtitles in RARs</value></string>
-  <string><id>13250</id><value>Browse for subtitle...</value></string>
-  <string><id>13251</id><value>Move Item</value></string>
-  <string><id>13252</id><value>Move Item Here</value></string>
-  <string><id>13253</id><value>Cancel Move</value></string>
+  <string><id>13249</id><value>Procurar legendas nos arquivos RARs</value></string>
+  <string><id>13250</id><value>Procurar por legendas...</value></string>
+  <string><id>13251</id><value>Mover item</value></string>
+  <string><id>13252</id><value>Mover o item aqui</value></string>
+  <string><id>13253</id><value>Cancelar mover</value></string>
 
   <string><id>13270</id><value>Hardware:</value></string>
   <string><id>13271</id><value>CPU Speed:</value></string>
@@ -1193,21 +1193,21 @@
   <string><id>15112</id><value>Default Theme</value></string>
 
   <string><id>15200</id><value>LastFM</value></string>
-  <string><id>15201</id><value>Submit Songs to LastFM</value></string>
-  <string><id>15202</id><value>LastFM Username</value></string>
-  <string><id>15203</id><value>LastFM Password</value></string>
-  <string><id>15204</id><value>Unable to handshake: sleeping...</value></string>
-  <string><id>15205</id><value>Please Update XBMC</value></string>
-  <string><id>15206</id><value>Submission failed: bad authorization.</value></string>
-  <string><id>15207</id><value>Connected</value></string>
-  <string><id>15208</id><value>Not Connected</value></string>
-  <string><id>15209</id><value>Submit Interval %i</value></string>
-  <string><id>15210</id><value>Cached %i Songs</value></string>
-  <string><id>15211</id><value>Submitting...</value></string>
-  <string><id>15212</id><value>Submitting in %i secs</value></string>
-  <string><id>15213</id><value>Play Using...</value></string>
-  <string><id>15214</id><value>Use Smoothed A/V Syncronization</value></string>
-  <string><id>15215</id><value>Hide File Names in Thumbs View</value></string>
+  <string><id>15201</id><value>Enviar sons para LastFM</value></string>
+  <string><id>15202</id><value>Nome de Usuário da last FM</value></string>
+  <string><id>15203</id><value>Senha de usuário da LastFM</value></string>
+  <string><id>15204</id><value>Não foi possivel mexer as mãos: Descansando...</value></string>
+  <string><id>15205</id><value>Por favor atualize o XBMC</value></string>
+  <string><id>15206</id><value>Envio falhou: Péssima autorização.</value></string>
+  <string><id>15207</id><value>Conectado</value></string>
+  <string><id>15208</id><value>Não connectado</value></string>
+  <string><id>15209</id><value>Intervalo de envio %i</value></string>
+  <string><id>15210</id><value>Sons %i Escondidos</value></string>
+  <string><id>15211</id><value>Enviando...</value></string>
+  <string><id>15212</id><value>Enviando em %i seg</value></string>
+  <string><id>15213</id><value>Tocar usando...</value></string>
+  <string><id>15214</id><value>Usar sincronização A/V</value></string>
+  <string><id>15215</id><value>Esconder nomes de arquivos na visão das thumbs </value></string>
 
   <string><id>15250</id><value>Submit Last.fm Radio to LastFM</value></string>
   <string><id>15251</id><value>Connecting to Last.fm...</value></string>
@@ -1244,19 +1244,19 @@
   <string><id>15282</id><value>Enter a tag name to find similar ones</value></string>
   <string><id>15283</id><value>Tracks recently listened by %name%</value></string>
    
-  <string><id>15300</id><value>Path not found or invalid</value></string>
-  <string><id>15301</id><value>Could not connect to network server</value></string>
-  <string><id>15302</id><value>No servers found</value></string>
-  <string><id>15303</id><value>Workgroup not found</value></string>
+  <string><id>15300</id><value>Caminho não encontrado ou inválido</value></string>
+  <string><id>15301</id><value>Não foi possível connectar ao servidor da internet</value></string>
+  <string><id>15302</id><value>Nenhum servidor encontrado</value></string>
+  <string><id>15303</id><value>Grupo de trabalho não encontrado</value></string>
 
-  <string><id>15310</id><value>Opening multi-path bookmark</value></string>
-  <string><id>15311</id><value>Path:</value></string>
+  <string><id>15310</id><value>Abrindo caminhos múltiplos bookmark</value></string>
+  <string><id>15311</id><value>Caminho:</value></string>
 
-  <string><id>16000</id><value>General</value></string>
-  <string><id>16001</id><value>Configure Audio Hardware...</value></string>
+  <string><id>16000</id><value>Geral</value></string>
+  <string><id>16001</id><value>Configurar hardware de áudio...</value></string>
   <string><id>16002</id><value>CDDB lookup</value></string>
-  <string><id>16003</id><value>Player</value></string>
-  <string><id>16004</id><value>Play media from disc</value></string>
+  <string><id>16003</id><value>Tocador</value></string>
+  <string><id>16004</id><value>Rodar mídia a patir do disco</value></string>
   
   <string><id>16009</id><value>Enter the Movie Name</value></string>
   <string><id>16010</id><value>Enter the Profile Name</value></string>
@@ -1278,24 +1278,24 @@
   <string><id>16026</id><value>Playlist playback aborted</value></string>
   <string><id>16027</id><value>Too many consecutive failed items</value></string>
 
-  <string><id>16030</id><value>Party Mode mode aborted.</value></string>
-  <string><id>16031</id><value>No matching songs in the database.</value></string>
-  <string><id>16032</id><value>Could not initialise database.</value></string>
-  <string><id>16033</id><value>Could not open database.</value></string>
-  <string><id>16034</id><value>Could not get songs from database.</value></string>
+  <string><id>16030</id><value>Modo festa abortado.</value></string>
+  <string><id>16031</id><value>Não encontrdo sons que batem no banco de dados.</value></string>
+  <string><id>16032</id><value>Não pode ser iniciado o banco de dados</value></string>
+  <string><id>16033</id><value>Não pode ser aberto o banco de dados</value></string>
+  <string><id>16034</id><value>Não pode ser encontrado sons dentro do banco de dados.</value></string>
 
-  <string><id>16100</id><value>All Videos</value></string>
-  <string><id>16101</id><value>UnWatched</value></string>
-  <string><id>16102</id><value>Watched</value></string>
-  <string><id>16103</id><value>Mark as Watched</value></string>
-  <string><id>16104</id><value>Mark as UnWatched</value></string>
-  <string><id>16105</id><value>Edit Title</value></string>
-  <string><id>16106</id><value>Use NTSC-M &amp; NTSC-J</value></string>
-  <string><id>16107</id><value>Use only NTSC-M</value></string>
-  <string><id>16108</id><value>Use only NTSC-J</value></string>
-  <string><id>16109</id><value>Use only PAL-60</value></string>
-  <string><id>16110</id><value>For 60hz Games</value></string>
+  <string><id>16100</id><value>Todos os vídeos</value></string>
+  <string><id>16101</id><value>Não assistidos</value></string>
+  <string><id>16102</id><value>Assistidos</value></string>
+  <string><id>16103</id><value>Marcar como assistidos</value></string>
+  <string><id>16104</id><value>Marcar como não assistidos</value></string>
+  <string><id>16105</id><value>Editar título</value></string>
+  <string><id>16106</id><value>Usar NTSC-M &amp; NTSC-J</value></string>
+  <string><id>16107</id><value>Usar somente NTSC-M</value></string>
+  <string><id>16108</id><value>Usar somente NTSC-J</value></string>
+  <string><id>16109</id><value>Usar somente PAL-60</value></string>
+  <string><id>16110</id><value>Para jogos com taxa de 60hz </value></string>
 
-  <string><id>16111</id><value>Current FPS:</value></string>
+  <string><id>16111</id><value>FPS Atual:</value></string>
   
 </strings>
