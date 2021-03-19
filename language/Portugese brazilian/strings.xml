@@ -657,7 +657,7 @@
   <string><id>1246</id><value>Senha do usuário FTP</value></string>
   <string><id>1247</id><value>Senha do usuário do Servidor FTP Foi configurada com sucesso</value></string>
 
-    <string><id>1250</id><value>Autodetecção</value></string>
+  <string><id>1250</id><value>Autodetecção</value></string>
   <string><id>1251</id><value>Autodetecção do XBOX</value></string>
   <string><id>1252</id><value>Apelido</value></string>
   <string><id>1253</id><value>Criar link FTP nos meus Arquivos</value></string>
@@ -666,25 +666,25 @@
   <string><id>1256</id><value>Intervalo de ping</value></string>
   <string><id>1257</id><value>Você gostaria de connectar no XBOX 360 detectado</value></string>
 
-  <string><id>1396</id><value>Drifting</value></string>
-  <string><id>1397</id><value>and</value></string>
-  <string><id>1398</id><value>Freezing</value></string>
-  <string><id>1399</id><value>Late</value></string>
-  <string><id>1400</id><value>Isolated</value></string>
-  <string><id>1401</id><value>T-Showers</value></string>
-  <string><id>1402</id><value>Thunder</value></string>
-  <string><id>1403</id><value>Sun</value></string>
-  <string><id>1404</id><value>Heavy</value></string>
-  <string><id>1405</id><value>in</value></string>
-  <string><id>1406</id><value>the</value></string>
-  <string><id>1407</id><value>Vicinity</value></string>
-  <string><id>1408</id><value>Ice</value></string>
-  <string><id>1409</id><value>Crystals</value></string>
-  <string><id>1410</id><value>Calm</value></string>
+  <string><id>1396</id><value>A Deriva</value></string>
+  <string><id>1397</id><value>e</value></string>
+  <string><id>1398</id><value>Congelando</value></string>
+  <string><id>1399</id><value>Atraso</value></string>
+  <string><id>1400</id><value>Isolado</value></string>
+  <string><id>1401</id><value>T-chuveiros</value></string>
+  <string><id>1402</id><value>Tempestade</value></string>
+  <string><id>1403</id><value>Sol</value></string>
+  <string><id>1404</id><value>pesado</value></string>
+  <string><id>1405</id><value>em</value></string>
+  <string><id>1406</id><value>que</value></string>
+  <string><id>1407</id><value>Proximidade</value></string>
+  <string><id>1408</id><value>Gelo</value></string>
+  <string><id>1409</id><value>Cristais</value></string>
+  <string><id>1410</id><value>Calma</value></string>
 
-  <string><id>2050</id><value>Runtime:</value></string>
+  <string><id>2050</id><value>Tempo rodado:</value></string>
 
-  <string><id>4501</id><value>LCD Type</value></string>
+  <string><id>4501</id><value>Tipo de LCD</value></string>
 
   <string><id>10000</id><value>Home</value></string>
   <string><id>10001</id><value>My Programs</value></string>
@@ -885,19 +885,19 @@
   <string><id>13171</id><value>Immediately</value></string>
   <string><id>13172</id><value>After %i secs</value></string>
 
-  <string><id>13200</id><value>Profiles</value></string>
-  <string><id>13201</id><value>Delete profile '%s'?</value></string>
-  <string><id>13202</id><value>Save current settings as profile...</value></string>
-  <string><id>13203</id><value>Profile '%s' loaded successfully</value></string>
-  <string><id>13204</id><value>Last loaded profile:</value></string>
-  <string><id>13205</id><value>Unknown</value></string>
-  <string><id>13206</id><value>Overwrite</value></string>
-  <string><id>13207</id><value>Overwrite profile '%s'?</value></string>
-  <string><id>13208</id><value>Alarm clock</value></string>
-  <string><id>13209</id><value>Alarm clock interval (in minutes)</value></string>
-  <string><id>13210</id><value>Started, alarm in %im</value></string>
-  <string><id>13211</id><value>Alarm!</value></string>
-  <string><id>13212</id><value>Canceled with %im%is left</value></string>
+  <string><id>13200</id><value>Perfis</value></string>
+  <string><id>13201</id><value>Excluír perfil '%s'?</value></string>
+  <string><id>13202</id><value>Salvar configurações atuais como perfil...</value></string>
+  <string><id>13203</id><value>Perfil '%s' Carregado com sucesso</value></string>
+  <string><id>13204</id><value>último perfil carregado:</value></string>
+  <string><id>13205</id><value>Desconhecido</value></string>
+  <string><id>13206</id><value>Sobrescrever</value></string>
+  <string><id>13207</id><value>Sobrescrever perfil '%s'?</value></string>
+  <string><id>13208</id><value>Alarme do rélogio</value></string>
+  <string><id>13209</id><value>Intervalo do alarme do relógio (em minutos)</value></string>
+  <string><id>13210</id><value>Iniciado, Alarme em %im</value></string>
+  <string><id>13211</id><value>Alarme!</value></string>
+  <string><id>13212</id><value>Cancelado com %im%is restantes</value></string>
 
 
   <string><id>13249</id><value>Procurar legendas nos arquivos RARs</value></string>
@@ -1178,19 +1178,19 @@
   <string><id>15061</id><value>You're invited to play %s.</value></string>
   <string><id>15062</id><value>Use alternate mplayer location</value></string>
 
-  <string><id>15100</id><value>Library</value></string>
-  <string><id>15101</id><value>Database</value></string>
-  <string><id>15102</id><value>* All Albums</value></string>
-  <string><id>15103</id><value>* All Artists</value></string>
-  <string><id>15104</id><value>* All Songs</value></string>
-  <string><id>15105</id><value>* All Genres</value></string>
-  <string><id>15106</id><value>Remember selected file on forward navigation</value></string>
-  <string><id>15107</id><value>Buffering...</value></string>
-  <string><id>15108</id><value>Navigation Sounds</value></string>
-  <string><id>15109</id><value>Skin Default</value></string>
-  <string><id>15110</id><value>Controller Rumble</value></string>
-  <string><id>15111</id><value>Skin Theme</value></string>
-  <string><id>15112</id><value>Default Theme</value></string>
+  <string><id>15100</id><value>Biblioteca</value></string>
+  <string><id>15101</id><value>Banco de dados</value></string>
+  <string><id>15102</id><value>* Todos os álbuns</value></string>
+  <string><id>15103</id><value>* Todos os artistas</value></string>
+  <string><id>15104</id><value>* Todos os sons</value></string>
+  <string><id>15105</id><value>* Todos os  gêneros</value></string>
+  <string><id>15106</id><value>Lembrar arquivo selecionado para navegação frontal</value></string>
+  <string><id>15107</id><value>carregando...</value></string>
+  <string><id>15108</id><value>Sons de navegação</value></string>
+  <string><id>15109</id><value>Tema por padrão</value></string>
+  <string><id>15110</id><value>Vibraão do controle</value></string>
+  <string><id>15111</id><value>Temas</value></string>
+  <string><id>15112</id><value>Tema por padrão</value></string>
 
   <string><id>15200</id><value>LastFM</value></string>
   <string><id>15201</id><value>Enviar sons para LastFM</value></string>
