@@ -581,40 +581,40 @@
   <string><id>774</id><value>Slideshow Folder</value></string>
 
   <string><id>998</id><value>XLink Kai</value></string>
-  <string><id>999</id><value>Online Gaming</value></string>
-  <string><id>1000</id><value>Screensaver Preview</value></string>
-  <string><id>1001</id><value>Unable to connect</value></string>
-  <string><id>1002</id><value>XBMC was unable to connect to the network location.</value></string>
-  <string><id>1003</id><value>This could be due to the network not being connected.</value></string>
-  <string><id>1004</id><value>Would you like to add it anyway?</value></string>
-  <string><id>1005</id><value>Enter a name for this share</value></string>
-  <string><id>1006</id><value>IP Address</value></string>
-  <string><id>1007</id><value>Add Network Location</value></string>
-  <string><id>1008</id><value>Protocol</value></string>
-  <string><id>1009</id><value>Server Address</value></string>
-  <string><id>1010</id><value>Server Name</value></string>
-  <string><id>1011</id><value>Remote Path</value></string>
-  <string><id>1012</id><value>Shared Folder</value></string>
-  <string><id>1013</id><value>Port</value></string>
-  <string><id>1014</id><value>Username</value></string>
-  <string><id>1015</id><value>network server</value></string>
-  <string><id>1016</id><value>Enter the network address of the server</value></string>
-  <string><id>1017</id><value>Enter the path on the server</value></string>
-  <string><id>1018</id><value>Enter the port number</value></string>
-  <string><id>1019</id><value>Enter the username</value></string>
-  <string><id>1020</id><value>Add %s Source</value></string>
-  <string><id>1021</id><value>Enter the path or browse for the media location.</value></string>
-  <string><id>1022</id><value>Enter a name for this Media Source.</value></string>
-  <string><id>1023</id><value>Browse for new share</value></string>
-  <string><id>1024</id><value>Browse</value></string>
-  <string><id>1025</id><value>Could not retrieve directory information.</value></string>
-  <string><id>1026</id><value>Add Source</value></string>
-  <string><id>1027</id><value>Edit Source</value></string>
-  <string><id>1028</id><value>Edit %s Source</value></string>
-  <string><id>1029</id><value>Enter the new label</value></string>
-  <string><id>1030</id><value>an image</value></string>
-  <string><id>1031</id><value>an image folder</value></string>
-  <string><id>1032</id><value>Add Network Location...</value></string>
+  <string><id>999</id><value>Jogos online</value></string>
+  <string><id>1000</id><value>Amostra do Protetor de tela</value></string>
+  <string><id>1001</id><value>Não foi possível conectar</value></string>
+  <string><id>1002</id><value>XBMC Conseguiu conectar na Rede local.</value></string>
+  <string><id>1003</id><value>Isso poderia se a rede que pode não estar conectada.</value></string>
+  <string><id>1004</id><value>Você Gostaria de adicionar de qualquer forma?</value></string>
+  <string><id>1005</id><value>Coloque um nome para esse comparilhamento</value></string>
+  <string><id>1006</id><value>Endereço IP</value></string>
+  <string><id>1007</id><value>Adicionar local de rede</value></string>
+  <string><id>1008</id><value>Protocolo</value></string>
+  <string><id>1009</id><value>Endereço do servidor</value></string>
+  <string><id>1010</id><value>Nome do servidor</value></string>
+  <string><id>1011</id><value>Caminho remoto</value></string>
+  <string><id>1012</id><value>Pasta compartilhada</value></string>
+  <string><id>1013</id><value>Porta</value></string>
+  <string><id>1014</id><value>Nome de usuário</value></string>
+  <string><id>1015</id><value>Servidor de rede</value></string>
+  <string><id>1016</id><value>Coloque o número do endereço da rede do servidor</value></string>
+  <string><id>1017</id><value>Coloque o caminho no servidor</value></string>
+  <string><id>1018</id><value>Coloque o número da porta</value></string>
+  <string><id>1019</id><value>Coloque o nome do usuário</value></string>
+  <string><id>1020</id><value>Adicionar %s Fonte</value></string>
+  <string><id>1021</id><value>Coloque o caminho ou procure pela localização da mídia.</value></string>
+  <string><id>1022</id><value>Coloque o nome para esta fonte de mídia.</value></string>
+  <string><id>1023</id><value>Procure um novo compartilhamento</value></string>
+  <string><id>1024</id><value>Explorar</value></string>
+  <string><id>1025</id><value>Não pode conseguir informações do diretório.</value></string>
+  <string><id>1026</id><value>Adicionar fonte</value></string>
+  <string><id>1027</id><value>Editar fonte</value></string>
+  <string><id>1028</id><value>Editar %s Fonte</value></string>
+  <string><id>1029</id><value>Colocar uma nova tabela</value></string>
+  <string><id>1030</id><value>Uma imagem</value></string>
+  <string><id>1031</id><value>Uma pasta da imagem</value></string>
+  <string><id>1032</id><value>Adicionar o local de rede...</value></string>
 
   <string><id>1200</id><value>Cliente SMB</value></string>
   <string><id>1201</id><value>Compartilhar IP</value></string>
