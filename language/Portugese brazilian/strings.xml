@@ -860,30 +860,30 @@
   <string><id>13005</id><value>Desligar</value></string>
   <string><id>13006</id><value>Dashboard</value></string>
 
-  <string><id>13100</id><value>Flicker Filter</value></string>
-  <string><id>13150</id><value>HDD Key:</value></string>
+  <string><id>13100</id><value>Filtro de tremer </value></string>
+  <string><id>13150</id><value>Key do disco rígido:</value></string>
   <string><id>13151</id><value>HDD Temp:</value></string>
-  <string><id>13152</id><value>DVD Model:</value></string>
-  <string><id>13153</id><value>DVD Firmware:</value></string>
-  <string><id>13154</id><value>HDD Model:</value></string>
-  <string><id>13155</id><value>HDD Serial:</value></string>
-  <string><id>13156</id><value>HDD Firmware:</value></string>
-  <string><id>13157</id><value>HDD Password:</value></string>
-  <string><id>13158</id><value>HDD Lock State:</value></string>
-  <string><id>13159</id><value>Subnet mask:</value></string>
+  <string><id>13152</id><value>Modelo do drive de DVD:</value></string>
+  <string><id>13153</id><value>Firmware do drive de DVD:</value></string>
+  <string><id>13154</id><value>Modelo do disco rígido:</value></string>
+  <string><id>13155</id><value>Serial do disco rígido:</value></string>
+  <string><id>13156</id><value>Firmware do disco rígido:</value></string>
+  <string><id>13157</id><value>Senha do disco rígido:</value></string>
+  <string><id>13158</id><value>Estado de travamento do disco rígido:</value></string>
+  <string><id>13159</id><value>Máscara de sub-rede:</value></string>
   <string><id>13160</id><value>Gateway:</value></string>
   <string><id>13161</id><value>DNS</value></string>
-  <string><id>13162</id><value>Initialize failed</value></string>
-  <string><id>13163</id><value>GamePads On Port:</value></string>
-  <string><id>13164</id><value>Keyboard On Port:</value></string>
-  <string><id>13165</id><value>Mouse On Port:</value></string>
-  <string><id>13166</id><value>Head/MicroPhone On Port:</value></string>
-  <string><id>13167</id><value>MemoryStick On Port:</value></string>
-  <string><id>13168</id><value>IR-Remote On Port:</value></string>
-  <string><id>13169</id><value>Bypass CD Selection</value></string>
-  <string><id>13170</id><value>Never</value></string>
-  <string><id>13171</id><value>Immediately</value></string>
-  <string><id>13172</id><value>After %i secs</value></string>
+  <string><id>13162</id><value>Falha ao inicializar</value></string>
+  <string><id>13163</id><value>GamePads na Porta:</value></string>
+  <string><id>13164</id><value>Teclado na Porta:</value></string>
+  <string><id>13165</id><value>Mouse na Porta:</value></string>
+  <string><id>13166</id><value>Head/MicroPhone na Porta:</value></string>
+  <string><id>13167</id><value>Cartão de memória na Porta:</value></string>
+  <string><id>13168</id><value>IR-Remoto na Porta:</value></string>
+  <string><id>13169</id><value>Passar pela seleção do CD</value></string>
+  <string><id>13170</id><value>Nunca</value></string>
+  <string><id>13171</id><value>Imediatamente</value></string>
+  <string><id>13172</id><value>Depois %i segundos</value></string>
 
   <string><id>13200</id><value>Perfis</value></string>
   <string><id>13201</id><value>Excluír perfil '%s'?</value></string>
@@ -1258,25 +1258,25 @@
   <string><id>16003</id><value>Tocador</value></string>
   <string><id>16004</id><value>Rodar mídia a patir do disco</value></string>
   
-  <string><id>16009</id><value>Enter the Movie Name</value></string>
-  <string><id>16010</id><value>Enter the Profile Name</value></string>
-  <string><id>16011</id><value>Enter the Album Name</value></string>
-  <string><id>16012</id><value>Enter the Playlist Name</value></string>
-  <string><id>16013</id><value>Enter new filename</value></string>
-  <string><id>16014</id><value>Enter folder name</value></string>
-  <string><id>16015</id><value>Enter directory</value></string>
-  <string><id>16016</id><value>Available options: %A, %T, %N, %B, %D, %G, %Y, %F, %S</value></string>
-  <string><id>16017</id><value>Enter Search String</value></string>
-  <string><id>16018</id><value>None</value></string>
-  <string><id>16019</id><value>Auto Select</value></string>
-  <string><id>16020</id><value>DeInterlace</value></string>
-  <string><id>16021</id><value>Sync Odd</value></string>
-  <string><id>16022</id><value>Sync Even</value></string>
-  <string><id>16023</id><value>Interlaced Handling</value></string>
-  <string><id>16024</id><value>Canceling...</value></string>
-  <string><id>16025</id><value>Enter the Artist Name</value></string>
-  <string><id>16026</id><value>Playlist playback aborted</value></string>
-  <string><id>16027</id><value>Too many consecutive failed items</value></string>
+  <string><id>16009</id><value>Entre o nome do filme</value></string>
+  <string><id>16010</id><value>Entre o nome do perfil</value></string>
+  <string><id>16011</id><value>Entre o nome do álbum</value></string>
+  <string><id>16012</id><value>Entre o nome da playlist</value></string>
+  <string><id>16013</id><value>Entre um novo nome do arquivo</value></string>
+  <string><id>16014</id><value>Entre o nome da pasta</value></string>
+  <string><id>16015</id><value>Configure um diretório</value></string>
+  <string><id>16016</id><value>Opções dísponiveis: %A, %T, %N, %B, %D, %G, %Y, %F, %S</value></string>
+  <string><id>16017</id><value>coloque sequência de pesquisa</value></string>
+  <string><id>16018</id><value>Nenhum</value></string>
+  <string><id>16019</id><value>Auto selecionar</value></string>
+  <string><id>16020</id><value>Desentrelaçar</value></string>
+  <string><id>16021</id><value>Sincronização ímpar</value></string>
+  <string><id>16022</id><value>Sincronização até</value></string>
+  <string><id>16023</id><value>Manipulação entrelaçada</value></string>
+  <string><id>16024</id><value>Cancelando..</value></string>
+  <string><id>16025</id><value>Entre o nome do artista</value></string>
+  <string><id>16026</id><value>Retroceder da playlist abortadoPlaylist playback aborted</value></string>
+  <string><id>16027</id><value>Muitas falhas consecutivasToo many consecutive failed items</value></string>
 
   <string><id>16030</id><value>Modo festa abortado.</value></string>
   <string><id>16031</id><value>Não encontrdo sons que batem no banco de dados.</value></string>
