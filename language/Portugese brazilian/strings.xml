@@ -616,42 +616,42 @@
   <string><id>1031</id><value>an image folder</value></string>
   <string><id>1032</id><value>Add Network Location...</value></string>
 
-  <string><id>1200</id><value>SMB Client</value></string>
-  <string><id>1201</id><value>Share IP</value></string>
-  <string><id>1202</id><value>Workgroup</value></string>
-  <string><id>1203</id><value>Default Username</value></string>
-  <string><id>1204</id><value>Default Password</value></string>
-  <string><id>1205</id><value>Share Name</value></string>
-  <string><id>1206</id><value>Share Group</value></string>
-  <string><id>1207</id><value>WINS-Server</value></string>
-  <string><id>1208</id><value>Automatic Bookmarks</value></string>
-  <string><id>1209</id><value>The SMB Client Settings was set succesfully!</value></string>
-  <string><id>1210</id><value>Remove</value></string>
-  <string><id>1211</id><value>Music</value></string>
-  <string><id>1212</id><value>Video</value></string>
-  <string><id>1213</id><value>Pictures</value></string>
-  <string><id>1214</id><value>Files</value></string>
-  <string><id>1215</id><value>Music &amp; Video </value></string>
-  <string><id>1216</id><value>Music &amp; Pictures</value></string>
-  <string><id>1217</id><value>Music &amp; Files</value></string>
-  <string><id>1218</id><value>Video &amp; Pictures</value></string>
-  <string><id>1219</id><value>Video &amp; Files</value></string>
-  <string><id>1220</id><value>Pictures &amp; Files</value></string>
-  <string><id>1221</id><value>Music &amp; Video &amp; Pictures</value></string>
-  <string><id>1222</id><value>Music &amp; Video &amp; Pictures &amp; Files</value></string>
-  <string><id>1223</id><value>Disabled</value></string>
-  <string><id>1224</id><value>Normal User</value></string>
+  <string><id>1200</id><value>Cliente SMB</value></string>
+  <string><id>1201</id><value>Compartilhar IP</value></string>
+  <string><id>1202</id><value>Grupo de trabalho</value></string>
+  <string><id>1203</id><value>Usuário padrão</value></string>
+  <string><id>1204</id><value>Senha padrão</value></string>
+  <string><id>1205</id><value>Compatilhar nome</value></string>
+  <string><id>1206</id><value>Compartilhar grupo</value></string>
+  <string><id>1207</id><value>Servidor-WINS</value></string>
+  <string><id>1208</id><value>Bookmarks Automáticos</value></string>
+  <string><id>1209</id><value>As configurções do servidor SMB Foram salvas com sucesso!</value></string>
+  <string><id>1210</id><value>Remover</value></string>
+  <string><id>1211</id><value>Música</value></string>
+  <string><id>1212</id><value>Vídeo</value></string>
+  <string><id>1213</id><value>Fotos</value></string>
+  <string><id>1214</id><value>Arquivos</value></string>
+  <string><id>1215</id><value>Música &amp; Vídeo </value></string>
+  <string><id>1216</id><value>Música &amp; Fotos</value></string>
+  <string><id>1217</id><value>Música &amp; Arquivos</value></string>
+  <string><id>1218</id><value>Vídeo &amp; Pictures</value></string>
+  <string><id>1219</id><value>Video &amp; Fotos</value></string>
+  <string><id>1220</id><value>Fotos &amp; Arquivos</value></string>
+  <string><id>1221</id><value>Música &amp; Vídeo &amp; Fotos</value></string>
+  <string><id>1222</id><value>Música &amp; Vídeo &amp; Fotos &amp; Arquivos</value></string>
+  <string><id>1223</id><value>Desabilitado</value></string>
+  <string><id>1224</id><value>Úsuario normal</value></string>
   <string><id>1225</id><value>Advanced User</value></string>
-  <string><id>1226</id><value>Files &amp; Music &amp; Video</value></string>
-  <string><id>1227</id><value>Files &amp; Pictures &amp; Music</value></string>
-  <string><id>1228</id><value>Files &amp; Pictures &amp; Video</value></string>
-  <string><id>1229</id><value>Music &amp; Programs</value></string>
-  <string><id>1230</id><value>Video &amp; Programs</value></string>
-  <string><id>1231</id><value>Pictures &amp; Programs</value></string>
-  <string><id>1232</id><value>Music &amp; Video &amp; Pictures &amp; Programs</value></string>
-  <string><id>1233</id><value>Programs &amp; Video &amp; Music</value></string>
-  <string><id>1234</id><value>Programs &amp; Pictures &amp; Music</value></string>
-  <string><id>1235</id><value>Programs &amp; Pictures &amp; Video</value></string>
+  <string><id>1226</id><value>Arquivos &amp; Música &amp; Víeo</value></string>
+  <string><id>1227</id><value>Arquivos &amp; Fotos &amp; Música</value></string>
+  <string><id>1228</id><value>Arquivos &amp; Fotos &amp; Vídeo</value></string>
+  <string><id>1229</id><value>Música &amp; Programas</value></string>
+  <string><id>1230</id><value>Vídeo &amp; Programas</value></string>
+  <string><id>1231</id><value>Fotos &amp; Programas</value></string>
+  <string><id>1232</id><value>Música &amp; Vídeo &amp; Fotos &amp; Programs</value></string>
+  <string><id>1233</id><value>Programas &amp; Vídeo &amp; Música</value></string>
+  <string><id>1234</id><value>Programas &amp; Fotos &amp; Música</value></string>
+  <string><id>1235</id><value>Programas &amp; Fotos &amp; Vídeo</value></string>
 
   <string><id>1245</id><value>Nome de usuário FTP</value></string>
   <string><id>1246</id><value>Senha do usuário FTP</value></string>
