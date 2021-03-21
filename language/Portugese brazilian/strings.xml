@@ -1188,7 +1188,7 @@
   <string><id>15107</id><value>carregando...</value></string>
   <string><id>15108</id><value>Sons de navegação</value></string>
   <string><id>15109</id><value>Tema por padrão</value></string>
-  <string><id>15110</id><value>Vibraão do controle</value></string>
+  <string><id>15110</id><value>Vibração do controle</value></string>
   <string><id>15111</id><value>Temas</value></string>
   <string><id>15112</id><value>Tema por padrão</value></string>
 
@@ -1275,8 +1275,8 @@
   <string><id>16023</id><value>Manipulação entrelaçada</value></string>
   <string><id>16024</id><value>Cancelando..</value></string>
   <string><id>16025</id><value>Entre o nome do artista</value></string>
-  <string><id>16026</id><value>Retroceder da playlist abortadoPlaylist playback aborted</value></string>
-  <string><id>16027</id><value>Muitas falhas consecutivasToo many consecutive failed items</value></string>
+  <string><id>16026</id><value>Retroceder da playlist abortado</value></string>
+  <string><id>16027</id><value>Muitas falhas consecutivas</value></string>
 
   <string><id>16030</id><value>Modo festa abortado.</value></string>
   <string><id>16031</id><value>Não encontrdo sons que batem no banco de dados.</value></string>
