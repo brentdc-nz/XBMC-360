@@ -504,8 +504,8 @@
   <string><id>645</id><value>Precisa de cache para um arquivo grande. Continuar?</value></string>
   <string><id>646</id><value>Remover título</value></string>
   
-  <string><id>700</id><value>Cleaning up Library</value></string>
-  <string><id>701</id><value>Removing old songs from the Library</value></string>
+  <string><id>700</id><value>Limpando biblioteca</value></string>
+  <string><id>701</id><value>Removendo sons antigos da biblioteca</value></string>
   <string><id>702</id><value>This path has been scanned before</value></string>
   <string><id>703</id><value>Press Yes to update all songs in this path</value></string>
   <string><id>704</id><value>Press No to just add new songs</value></string>
