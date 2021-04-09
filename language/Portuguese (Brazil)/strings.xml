@@ -687,82 +687,82 @@
   <string><id>4501</id><value>Tipo de LCD</value></string>
 
   <string><id>10000</id><value>Home</value></string>
-  <string><id>10001</id><value>My Programs</value></string>
-  <string><id>10002</id><value>My Pictures</value></string>
-  <string><id>10003</id><value>My Files</value></string>
-  <string><id>10004</id><value>Settings</value></string>
-  <string><id>10005</id><value>My Music</value></string>
-  <string><id>10006</id><value>My Videos</value></string>
-  <string><id>10007</id><value>System information</value></string>
-  <string><id>10008</id><value>Settings-&gt;General</value></string>
-  <string><id>10009</id><value>Settings-&gt;Screen</value></string>
-  <string><id>10010</id><value>Settings-&gt;Appearance-&gt;GUI Calibration</value></string>
-  <string><id>10011</id><value>Settings-&gt;My Videos-&gt;Screen Calibration</value></string>
-  <string><id>10012</id><value>Settings-&gt;My Pictures</value></string>
-  <string><id>10013</id><value>Settings-&gt;My Programs</value></string>
-  <string><id>10014</id><value>Settings-&gt;Weather</value></string>
-  <string><id>10015</id><value>Settings-&gt;My Music</value></string>
-  <string><id>10016</id><value>Settings-&gt;System</value></string>
-  <string><id>10017</id><value>Settings-&gt;My Videos</value></string>
-  <string><id>10018</id><value>Settings-&gt;Network</value></string>
-  <string><id>10019</id><value>Settings-&gt;Appearance</value></string>
+  <string><id>10001</id><value>Meus programas</value></string>
+  <string><id>10002</id><value>Minhas fotos</value></string>
+  <string><id>10003</id><value>Meus arquivos</value></string>
+  <string><id>10004</id><value>Configurações</value></string>
+  <string><id>10005</id><value>Minhas músicas</value></string>
+  <string><id>10006</id><value>Meus vídeos</value></string>
+  <string><id>10007</id><value>Informação do sistema</value></string>
+  <string><id>10008</id><value>Configurações-&gt;Geral</value></string>
+  <string><id>10009</id><value>Configurações-&gt;Tela</value></string>
+  <string><id>10010</id><value>Configurações-&gt;Aparência-&gt;Calibração da IU</value></string>
+  <string><id>10011</id><value>Configurações-&gt;Meus Vídeos-&gt;Calibração de tela</value></string>
+  <string><id>10012</id><value>Configurações-&gt;Minhas fotos</value></string>
+  <string><id>10013</id><value>Configurações-&gt;Meus programas</value></string>
+  <string><id>10014</id><value>Configurações-&gt;Clima</value></string>
+  <string><id>10015</id><value>Configurações-&gt;Minhas músicas</value></string>
+  <string><id>10016</id><value>Configurações-&gt;Sistema</value></string>
+  <string><id>10017</id><value>Configurações-&gt;Meus vídeos</value></string>
+  <string><id>10018</id><value>Configurações-&gt;Rede</value></string>
+  <string><id>10019</id><value>Configurações-&gt;Aparência</value></string>
   <string><id>10020</id><value>Scripts</value></string>
-  <string><id>10021</id><value>My Videos/Genres</value></string>
-  <string><id>10022</id><value>My Videos/Actors</value></string>
-  <string><id>10023</id><value>My Videos/Years</value></string>
-  <string><id>10025</id><value>My Videos/Titles</value></string>
-  <string><id>10028</id><value>My Videos/Playlist</value></string>
-  <string><id>10034</id><value>Settings-&gt;Profiles</value></string>
-  <string><id>10100</id><value>Yes/no dialog</value></string>
-  <string><id>10101</id><value>Progress dialog</value></string>
-  <string><id>10500</id><value>My Music/Playlist</value></string>
-  <string><id>10501</id><value>My Music/Files</value></string>
-  <string><id>10502</id><value>My Music/Library</value></string>
-  <string><id>10503</id><value>My Music/Top 100</value></string>
-  <string><id>10504</id><value>Top 100 Songs</value></string>
-  <string><id>10505</id><value>Top 100 Albums</value></string>
-  <string><id>10506</id><value>Applications</value></string>
-  <string><id>10507</id><value>Configuration</value></string>
-  <string><id>10508</id><value>Weather Forecast</value></string>
-  <string><id>10509</id><value>Network Gaming</value></string>
-  <string><id>10510</id><value>Extensions</value></string>
-  <string><id>10511</id><value>System Info</value></string>
-  <string><id>10512</id><value>My Music - Albums</value></string>
-  <string><id>10513</id><value>My Music - Artists</value></string>
-  <string><id>10514</id><value>My Music - Genres</value></string>
-  <string><id>10515</id><value>My Music - Top 100</value></string>
-  <string><id>10516</id><value>My Music - Library</value></string>
-  <string><id>10517</id><value>My Music - Now Playing</value></string>
-  <string><id>10518</id><value>My Video - Actors</value></string>
-  <string><id>10519</id><value>My Video - Genres</value></string>
-  <string><id>10520</id><value>My Video - Title</value></string>
-  <string><id>10521</id><value>My Video - Year</value></string>
-  <string><id>10522</id><value>My Video - Now Playing</value></string>
-  <string><id>10523</id><value>Album Info</value></string>
-  <string><id>10524</id><value>Movie Info</value></string>
-  <string><id>12000</id><value>Select dialog</value></string>
-  <string><id>12001</id><value>My Music/info</value></string>
-  <string><id>12002</id><value>Dialog OK</value></string>
-  <string><id>12003</id><value>My Videos/Info</value></string>
-  <string><id>12004</id><value>My Scripts/Info</value></string>
-  <string><id>12005</id><value>Fullscreen video</value></string>
-  <string><id>12006</id><value>Audio visualisation</value></string>
-  <string><id>12007</id><value>My Picture/slideshow</value></string>
-  <string><id>12008</id><value>Filestacking dialog</value></string>
-  <string><id>12009</id><value>Rebuild index...</value></string>
-  <string><id>12010</id><value>Return to My Music</value></string>
-  <string><id>12011</id><value>Return to My Video</value></string>
-  <string><id>12012</id><value>Update trainer list</value></string>
+  <string><id>10021</id><value>Meus Vídeos/Gêneros</value></string>
+  <string><id>10022</id><value>Meus Vídeos/Atores</value></string>
+  <string><id>10023</id><value>Meus Vídeos/Anos</value></string>
+  <string><id>10025</id><value>Meus Vídeos/Titulos</value></string>
+  <string><id>10028</id><value>Meus Vídeos/Playlist</value></string>
+  <string><id>10034</id><value>Configurações-&gt;Perfis</value></string>
+  <string><id>10100</id><value>Sim/não diálogo</value></string>
+  <string><id>10101</id><value>Progressso de diálogo</value></string>
+  <string><id>10500</id><value>Minhas músicas/Playlist</value></string>
+  <string><id>10501</id><value>Minhas músicas/Arquivos</value></string>
+  <string><id>10502</id><value>Minhas músicas/Biblioteca</value></string>
+  <string><id>10503</id><value>Minhas músicas/Top 100</value></string>
+  <string><id>10504</id><value>Top 100 Sons</value></string>
+  <string><id>10505</id><value>Top 100 Álbuns</value></string>
+  <string><id>10506</id><value>Aplicações</value></string>
+  <string><id>10507</id><value>Configurações</value></string>
+  <string><id>10508</id><value>Previsão do tempo</value></string>
+  <string><id>10509</id><value>Jogos na rede</value></string>
+  <string><id>10510</id><value>Extenções</value></string>
+  <string><id>10511</id><value>Informações do sistema</value></string>
+  <string><id>10512</id><value>Minhas músicas - Álbuns</value></string>
+  <string><id>10513</id><value>Minhas músicas - Artistas</value></string>
+  <string><id>10514</id><value>Minhas músicas - Gêneros</value></string>
+  <string><id>10515</id><value>Minhas músicas- Top 100</value></string>
+  <string><id>10516</id><value>Minhas músicas - Biblioteca</value></string>
+  <string><id>10517</id><value>Minhas músicas - Agora tocando</value></string>
+  <string><id>10518</id><value>Meus vídeos - Atores</value></string>
+  <string><id>10519</id><value>Meus vídeos - Gêneros</value></string>
+  <string><id>10520</id><value>Meus vídeos- Título</value></string>
+  <string><id>10521</id><value>Meus vídeos - Ano</value></string>
+  <string><id>10522</id><value>Meus vídeos- Agora tocando</value></string>
+  <string><id>10523</id><value>Informação do álbum</value></string>
+  <string><id>10524</id><value>Informação do filme</value></string>
+  <string><id>12000</id><value>Selecionar diálogo</value></string>
+  <string><id>12001</id><value>Minhas músicas/informações</value></string>
+  <string><id>12002</id><value>Diálogo OK</value></string>
+  <string><id>12003</id><value>Meus vídeos/Informações</value></string>
+  <string><id>12004</id><value>My Scripts/Informações</value></string>
+  <string><id>12005</id><value>Vídeo em tela cheia</value></string>
+  <string><id>12006</id><value>Vizualização do áudio</value></string>
+  <string><id>12007</id><value>Minhas fotos/Show de slides</value></string>
+  <string><id>12008</id><value>Diálogo de rastreamento de arquivos</value></string>
+  <string><id>12009</id><value>Reconstruindo index...</value></string>
+  <string><id>12010</id><value>Retornar para Minhas músicas</value></string>
+  <string><id>12011</id><value>Retornar para Meus vídeos</value></string>
+  <string><id>12012</id><value>Atualizar lista de trainer</value></string>
   <string><id>12013</id><value>Trainer</value></string>
-  <string><id>12014</id><value>No trainers found</value></string>
-  <string><id>12015</id><value>Trainer settings</value></string>
-  <string><id>12016</id><value>All registered trailers are missing. Update your list</value></string>
-  <string><id>12017</id><value>Auto resume from last position</value></string>
-  <string><id>12018</id><value>No</value></string>
-  <string><id>12019</id><value>Yes</value></string>
-  <string><id>12020</id><value>Ask</value></string>
-  <string><id>12021</id><value>Start from beginning</value></string>
-  <string><id>12022</id><value>Resume from last position</value></string>
+  <string><id>12014</id><value>Nenhum trainers encontrado</value></string>
+  <string><id>12015</id><value>Configurações do trainer</value></string>
+  <string><id>12016</id><value>Todos os  trailers registrados estão sumidos. Atualiza sua lista</value></string>
+  <string><id>12017</id><value>Auto resumir da último minuto</value></string>
+  <string><id>12018</id><value>Não</value></string>
+  <string><id>12019</id><value>Sim</value></string>
+  <string><id>12020</id><value>Perguntar</value></string>
+  <string><id>12021</id><value>Começar pelo começo</value></string>
+  <string><id>12022</id><value>Resumir do último minuto</value></string>
 
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
