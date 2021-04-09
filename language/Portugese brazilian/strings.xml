@@ -526,59 +526,59 @@
   <string><id>719</id><value>- Endereço IP</value></string>
   <string><id>720</id><value>- mácara de rede</value></string>
   <string><id>721</id><value>- Gateway padrão</value></string>
-  <string><id>722</id><value>- DNS Server</value></string>
+  <string><id>722</id><value>- Servidor DNS</value></string>
   <string><id>723</id><value>Salvar &amp; Reiniciar</value></string>
-  <string><id>724</id><value>Invalid address specified. Value must be AAA.BBB.CCC.DDD</value></string>
-  <string><id>725</id><value>with numbers between 0 and 255.</value></string>
-  <string><id>726</id><value>Changes not saved. Continue without saving?</value></string>
-  <string><id>727</id><value>Web Server</value></string>
-  <string><id>728</id><value>FTP Server</value></string>
-  <string><id>729</id><value>Internet Time</value></string>
-  <string><id>730</id><value>Web Server Port</value></string>
-  <string><id>731</id><value>Time Server Host</value></string>
-  <string><id>732</id><value>Save &amp; Apply</value></string>
-  <string><id>733</id><value>Web Server Password</value></string>
-  <string><id>734</id><value>No Pass</value></string>
+  <string><id>724</id><value>Endereço especificado inválido. O Valor deve ser obrigatoriamente AAA.BBB.CCC.DDD</value></string>
+  <string><id>725</id><value>com os números entre 0 e 255.</value></string>
+  <string><id>726</id><value>Mudanças não salvas. Continuar sem salvar?</value></string>
+  <string><id>727</id><value>Servidor Web</value></string>
+  <string><id>728</id><value>Servidor FTP</value></string>
+  <string><id>729</id><value>tempo da Rede</value></string>
+  <string><id>730</id><value>Porta do servidor</value></string>
+  <string><id>731</id><value>Tempo do servidor do host </value></string>
+  <string><id>732</id><value>Salvar &amp; Aplicar</value></string>
+  <string><id>733</id><value>Senha do servidor Web</value></string>
+  <string><id>734</id><value>Não passa</value></string>
   <string><id>735</id><value>- Charset</value></string>
-  <string><id>736</id><value>- Style</value></string>
-  <string><id>737</id><value>- Color</value></string>
+  <string><id>736</id><value>- Estilo</value></string>
+  <string><id>737</id><value>- Cor</value></string>
   <string><id>738</id><value>Normal</value></string>
   <string><id>739</id><value>Bold</value></string>
-  <string><id>740</id><value>Italics</value></string>
+  <string><id>740</id><value>Ítalico</value></string>
   <string><id>741</id><value>Bold Italics</value></string>
-  <string><id>742</id><value>White</value></string>
-  <string><id>743</id><value>Yellow</value></string>
-  <string><id>744</id><value>Files</value></string>
-  <string><id>745</id><value>No scanned information for this view</value></string>
-  <string><id>746</id><value>Switch to the Files view</value></string>
-  <string><id>747</id><value>Error loading image</value></string>
-  <string><id>748</id><value>Edit Path</value></string>
-  <string><id>749</id><value>Add Share</value></string>
-  <string><id>750</id><value>Are you sure?</value></string>
-  <string><id>751</id><value>Removing Share</value></string>
-  <string><id>752</id><value>Edit Share Path</value></string>
-  <string><id>753</id><value>Edit Share Name</value></string>
-  <string><id>754</id><value>Add Program Link</value></string>
-  <string><id>755</id><value>Edit Program Path</value></string>
-  <string><id>756</id><value>Edit Program Name</value></string>
-  <string><id>757</id><value>Edit Path Depth</value></string>
-  <string><id>758</id><value>Removing Program Link</value></string>  
-  <string><id>759</id><value>View: Big List</value></string>
-  <string><id>760</id><value>Yellow</value></string>
-  <string><id>761</id><value>White</value></string>
-  <string><id>762</id><value>Blue</value></string>
-  <string><id>763</id><value>Bright Green</value></string>
-  <string><id>764</id><value>Yellow Green</value></string>
-  <string><id>765</id><value>Cyan</value></string>
-  <string><id>766</id><value>Reserved</value></string>
-  <string><id>767</id><value>Reserved</value></string>
-  <string><id>768</id><value>Reserved</value></string>
-  <string><id>769</id><value>Reserved</value></string>
-  <string><id>770</id><value>Error %i: share not available</value></string>
-  <string><id>771</id><value>- Auto Fatx Limiter</value></string>
-  <string><id>772</id><value>Audio Hardware</value></string>
-  <string><id>773</id><value>Seeking</value></string>
-  <string><id>774</id><value>Slideshow Folder</value></string>
+  <string><id>742</id><value>Branco</value></string>
+  <string><id>743</id><value>Amarelo</value></string>
+  <string><id>744</id><value>Arquivos</value></string>
+  <string><id>745</id><value>Não há informação escaneada para essa vizualização</value></string>
+  <string><id>746</id><value>Mudar para a visão dos arquivos</value></string>
+  <string><id>747</id><value>Erro ao abrir a imagem</value></string>
+  <string><id>748</id><value>Editar o caminho</value></string>
+  <string><id>749</id><value>Adicionar compartilhamento</value></string>
+  <string><id>750</id><value>Você tem certeza?</value></string>
+  <string><id>751</id><value>Removendo compartilhamento</value></string>
+  <string><id>752</id><value>Editar o caminho do compartilhamento</value></string>
+  <string><id>753</id><value>Editar o nome do compartilhamento</value></string>
+  <string><id>754</id><value>Adicionar uma conexão de programa</value></string>
+  <string><id>755</id><value>Editar o caminho do programa</value></string>
+  <string><id>756</id><value>Editar o nome do programa</value></string>
+  <string><id>757</id><value>Editar a profundidade do caminho</value></string>
+  <string><id>758</id><value>Removendo conexão do programa</value></string>  
+  <string><id>759</id><value>Vizualizar: Grande lista</value></string>
+  <string><id>760</id><value>Amarelo</value></string>
+  <string><id>761</id><value>Branco</value></string>
+  <string><id>762</id><value>Azul</value></string>
+  <string><id>763</id><value>Verde brilhante</value></string>
+  <string><id>764</id><value>Verde amarelo</value></string>
+  <string><id>765</id><value>Ciano</value></string>
+  <string><id>766</id><value>Reservado</value></string>
+  <string><id>767</id><value>Reservado</value></string>
+  <string><id>768</id><value>Reservado</value></string>
+  <string><id>769</id><value>Reservado</value></string>
+  <string><id>770</id><value>Erro %i: Compartilhamento não dísponivel</value></string>
+  <string><id>771</id><value>- Limitador automático fatx</value></string>
+  <string><id>772</id><value>Dispositivo de áudio</value></string>
+  <string><id>773</id><value>Procurando</value></string>
+  <string><id>774</id><value>Pasta de apresentação de slides</value></string>
 
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>Jogos online</value></string>
