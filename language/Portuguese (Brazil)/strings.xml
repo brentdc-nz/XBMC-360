@@ -240,8 +240,8 @@
   <string><id>305</id><value>Hábilitado</value></string>
   <string><id>306</id><value>Não-intersaido</value></string>
   <string><id>307</id><value>- Pós-processando automaticamente</value></string>
-  <string><id>308</id><value>- Filtro Vertical Deblocking</value></string>
-  <string><id>309</id><value>- filtro horizontal Deblocking</value></string>
+  <string><id>308</id><value>- Filtro vertical deblocking</value></string>
+  <string><id>309</id><value>- Filtro horizontal deblocking</value></string>
   <string><id>310</id><value>- Auto brilho/Contraste</value></string>
   <string><id>311</id><value>- Dering</value></string>
   <string><id>312</id><value>(0=auto)</value></string>
@@ -777,9 +777,9 @@
   <string><id>12320</id><value>c</value></string>
   <string><id>12321</id><value>ok</value></string>
   <string><id>12322</id><value>*</value></string>
-  <string><id>12324</id><value>XBMC Master Lock</value></string>
-  <string><id>12325</id><value>Locked! Enter Code...</value></string>
-  <string><id>12326</id><value>Enter password</value></string>
+  <string><id>12324</id><value>Tranca mestra do XBMC</value></string>
+  <string><id>12325</id><value>Trancado! Entre o código...</value></string>
+  <string><id>12326</id><value>Coloque a senha</value></string>
   <string><id>12327</id><value>Enter Master Code</value></string>
   <string><id>12328</id><value>Enter Unlock Code</value></string> 
   <string><id>12329</id><value>or press C to cancel</value></string>
