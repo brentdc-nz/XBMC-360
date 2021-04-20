@@ -779,17 +779,17 @@
   <string><id>12322</id><value>*</value></string>
   <string><id>12324</id><value>Tranca mestra do XBMC</value></string>
   <string><id>12325</id><value>Trancado! Entre o código...</value></string>
-  <string><id>12326</id><value>Coloque a senha</value></string>
-  <string><id>12327</id><value>Enter Master Code</value></string>
-  <string><id>12328</id><value>Enter Unlock Code</value></string> 
-  <string><id>12329</id><value>or press C to cancel</value></string>
-  <string><id>12330</id><value>Enter Gamepad button combo and press Start</value></string>
-  <string><id>12331</id><value>press Start, or Back to cancel</value></string>
-  <string><id>12332</id><value>Set Lock</value></string>
-  <string><id>12333</id><value>Unlock</value></string>
-  <string><id>12334</id><value>Reset Lock</value></string>
-  <string><id>12335</id><value>Remove Lock</value></string>
-  <string><id>12336</id><value>Select type of lock to use:</value></string>
+  <string><id>12326</id><value>Insira a senha</value></string>
+  <string><id>12327</id><value>Insira o código mestre</value></string>
+  <string><id>12328</id><value>Insira o código de desbloqueio</value></string> 
+  <string><id>12329</id><value>ou aperte C para cancelar</value></string>
+  <string><id>12330</id><value>Insira o botão do gamepad combo e aperte Start</value></string>
+  <string><id>12331</id><value>aperte Start, ou retornar para cancelar</value></string>
+  <string><id>12332</id><value>Configurar trava</value></string>
+  <string><id>12333</id><value>Destrancar</value></string>
+  <string><id>12334</id><value>Reiniciar trava</value></string>
+  <string><id>12335</id><value>Remover trava</value></string>
+  <string><id>12336</id><value>Selecionar tipo de trava para usar:</value></string>
   <string><id>12337</id><value>Numeric Password</value></string>
   <string><id>12338</id><value>Gamepad button combo</value></string>
   <string><id>12339</id><value>Full-text Password</value></string>
