@@ -790,56 +790,56 @@
   <string><id>12334</id><value>Reiniciar trava</value></string>
   <string><id>12335</id><value>Remover trava</value></string>
   <string><id>12336</id><value>Selecionar tipo de trava para usar:</value></string>
-  <string><id>12337</id><value>Numeric Password</value></string>
-  <string><id>12338</id><value>Gamepad button combo</value></string>
-  <string><id>12339</id><value>Full-text Password</value></string>
-  <string><id>12340</id><value>Enter new password</value></string>
-  <string><id>12341</id><value>Re-Enter new password</value></string>
-  <string><id>12342</id><value>Incorrect password,</value></string>
-  <string><id>12343</id><value>retries left </value></string>
-  <string><id>12344</id><value>Passwords entered did not match.</value></string>
-  <string><id>12345</id><value>Access Denied</value></string>
-  <string><id>12346</id><value>Password retry limit exceeded.</value></string>
-  <string><id>12347</id><value>The XBOX will now shut off.</value></string>
-  <string><id>12348</id><value>Item Locked</value></string>
-  <string><id>12349</id><value>Remember Master Code until next boot?</value></string>
-  <string><id>12350</id><value>(Opening any item in Settings will</value></string>
-  <string><id>12351</id><value>automatically re-enable Master Lock.)</value></string>
+  <string><id>12337</id><value>Senha númerica</value></string>
+  <string><id>12338</id><value>Botão de combo do Gamepad</value></string>
+  <string><id>12339</id><value>Senha de texto</value></string>
+  <string><id>12340</id><value>Entre com uma nova senha</value></string>
+  <string><id>12341</id><value>Recoloque a nova senha</value></string>
+  <string><id>12342</id><value>Senha incorreta,</value></string>
+  <string><id>12343</id><value>Tentativas dísponiveis</value></string>
+  <string><id>12344</id><value>Senhas colocadas não se encaixaram.</value></string>
+  <string><id>12345</id><value>Acesso Negado</value></string>
+  <string><id>12346</id><value>O Limite de Tentativas de colocar a senha foram excedidas.</value></string>
+  <string><id>12347</id><value>O XBOXIrá se desligar.</value></string>
+  <string><id>12348</id><value>Item Trancado</value></string>
+  <string><id>12349</id><value>Lembrar o código mestre na próxima inicialização?</value></string>
+  <string><id>12350</id><value>(Abrir qualquer item nas configurações irá</value></string>
+  <string><id>12351</id><value>áutomaticamente rehabilitar a tranca mestre.)</value></string>
   <string><id>12352</id><value>Enter Master Code button combo and press Start</value></string>
-  <string><id>12353</id><value>Reactivate Lock</value></string>
-  <string><id>12354</id><value>Override folder locks until next boot?</value></string>
-  <string><id>12355</id><value>Automatically re-enable folder locks.)</value></string>
-  <string><id>12356</id><value>Change Lock</value></string>
-  <string><id>12357</id><value>Share Lock</value></string>
-  <string><id>12358</id><value>Password entry was blank. Try again.</value></string>
+  <string><id>12353</id><value>Reativar trava</value></string>
+  <string><id>12354</id><value>Sobresrever pasta até a próxima inicialização?</value></string>
+  <string><id>12355</id><value>Automaticamente rehabilitar travas de pastas.)</value></string>
+  <string><id>12356</id><value>Mudar trava</value></string>
+  <string><id>12357</id><value>Compartilhar Lock</value></string>
+  <string><id>12358</id><value>O Lugar para colocar a senha está vazio. Tente de novo.</value></string>
   <string><id>12360</id><value>Master Lock</value></string>
   <string><id>12361</id><value>Max Retry</value></string>
   <string><id>12362</id><value>Enable Shutdown</value></string>
   <string><id>12363</id><value>Protect Shares</value></string>
-  <string><id>12364</id><value>Master Mode</value></string>
-  <string><id>12365</id><value>Master Code</value></string>
-  <string><id>12366</id><value>Master Lock is changed. Master Code is now set to:</value></string>
-  <string><id>12367</id><value>Master Code is not Valid!</value></string>
-  <string><id>12368</id><value>Please Enter a Valid Master Code!</value></string>
-  <string><id>12369</id><value>XBMC Startup Lock</value></string>
-  <string><id>12370</id><value>Master Lock Mode changed, the Master Code wasn't set!</value></string>
-  <string><id>12371</id><value>Please Set a new Master Code!</value></string>
-  <string><id>12372</id><value>Lock Settings &amp; My Files</value></string>
-  <string><id>12373</id><value>Settings &amp;  My Files</value></string>
-  <string><id>12374</id><value>Lock Media</value></string>
-  <string><id>12375</id><value>Master User Mode</value></string>
-  <string><id>12376</id><value>Set as default for all Movies</value></string>
-  <string><id>12377</id><value>This will reset any previously saved values</value></string>
-  <string><id>12378</id><value>Show each image for</value></string>
-  <string><id>12379</id><value>Use Pan and Zoom effects</value></string>
-  <string><id>12380</id><value>Play NTSC videos at PAL rates</value></string>
-  <string><id>12381</id><value>Play PAL videos at NTSC rates</value></string>
-  <string><id>12382</id><value>Play NTSC videos in PAL60</value></string>
-  <string><id>12383</id><value>12 hour clock</value></string>
-  <string><id>12384</id><value>24 hour clock</value></string>
-  <string><id>12385</id><value>Day/Month</value></string>
-  <string><id>12386</id><value>Month/Day</value></string>
-  <string><id>12387</id><value>Rescan database</value></string>
+  <string><id>12364</id><value>Modo mestre</value></string>
+  <string><id>12365</id><value>Código mestre</value></string>
+  <string><id>12366</id><value>Código mestre está mudado. Código mestre está configurtado para:</value></string>
+  <string><id>12367</id><value>Código mestre não válido!</value></string>
+  <string><id>12368</id><value>Por favor entre com um código mestre válido!</value></string>
+  <string><id>12369</id><value>Trava de ínicio do XBMC</value></string>
+  <string><id>12370</id><value>Trava mestra mudada, o código mestre não está configurado!</value></string>
+  <string><id>12371</id><value>Por favor coloque um código mestre!</value></string>
+  <string><id>12372</id><value>Travar configurações &amp; Meus arquivos</value></string>
+  <string><id>12373</id><value>Configurações &amp;  Meus arquivos</value></string>
+  <string><id>12374</id><value>Travar Media</value></string>
+  <string><id>12375</id><value>Modo de úsuario mestre</value></string>
+  <string><id>12376</id><value>Deixar por padrão todos os filmes</value></string>
+  <string><id>12377</id><value>Isso irá resetar todos valores de salvamentos antes feitos</value></string>
+  <string><id>12378</id><value>Mostrar cada imagem para</value></string>
+  <string><id>12379</id><value>Usar Pan e efeitos de zoom </value></string>
+  <string><id>12380</id><value>Tocar vídeos NTSC até as taxas de vídeos PAL</value></string>
+  <string><id>12381</id><value>Tocar vídeos PAL até as taxas de vídeos NTSC </value></string>
+  <string><id>12382</id><value>Tocar vídeos NTSC em PAL60</value></string>
+  <string><id>12383</id><value>Rélogio de 12 horas</value></string>
+  <string><id>12384</id><value>Rélogio de 24 horas</value></string>
+  <string><id>12385</id><value>data/Mês</value></string>
+  <string><id>12386</id><value>Mês/Dia</value></string>
+  <string><id>12387</id><value>Rescanear banco de dados</value></string>
 
   <string><id>12390</id><value>Tempo do sistema</value></string>
   <string><id>12391</id><value>Minutos</value></string>
