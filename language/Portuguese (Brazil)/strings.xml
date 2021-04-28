@@ -1041,78 +1041,78 @@
   <string><id>13404</id><value>Resume</value></string>
   <string><id>13405</id><value>Get Thumb</value></string>
 
-  <string><id>14000</id><value>Stack</value></string>
-  <string><id>14001</id><value>Unstack</value></string>
-  <string><id>14002</id><value>Stacking: Fuzzy</value></string>
-  <string><id>14003</id><value>Downloading playlist file...</value></string>
-  <string><id>14004</id><value>Downloading streams list...</value></string>
-  <string><id>14005</id><value>Parsing streams list...</value></string>
-  <string><id>14006</id><value>Downloading streams list failed</value></string>
-  <string><id>14007</id><value>Downloading playlist file failed</value></string>
-  <string><id>14008</id><value>Enable Kai Notifications</value></string>
-  <string><id>14009</id><value>Games Directory</value></string>
-  <string><id>14010</id><value>Autoswitch to Thumbs based on</value></string>
-  <string><id>14011</id><value>Enable Autoswitching to Thumbs View</value></string>
-  <string><id>14012</id><value>- Use Large Icons</value></string>
-  <string><id>14013</id><value>- Switch Based on</value></string>
-  <string><id>14014</id><value>- Percentage</value></string>
-  <string><id>14015</id><value>No Files and at least one Thumb</value></string>
-  <string><id>14016</id><value>At least one File and Thumb</value></string>
-  <string><id>14017</id><value>Percentage of Thumbs</value></string>
-  <string><id>14018</id><value>View Options</value></string>
-  <string><id>14019</id><value>Change Area Code 1</value></string>
-  <string><id>14020</id><value>Change Area Code 2</value></string>
-  <string><id>14021</id><value>Change Area Code 3</value></string>
-  <string><id>14022</id><value>Library</value></string>
-  <string><id>14023</id><value>No TV</value></string>
-  <string><id>14024</id><value>Enter the nearest large town or US ZIP code</value></string>
-  <string><id>14025</id><value>Video/Audio/DVD Cache - Harddisk</value></string>
+  <string><id>14000</id><value>Compilar</value></string>
+  <string><id>14001</id><value>Descompilar</value></string>
+  <string><id>14002</id><value>Descompilar: Fuzzy</value></string>
+  <string><id>14003</id><value>Baixando arquivo de playlist...</value></string>
+  <string><id>14004</id><value>Baixando lista de streams...</value></string>
+  <string><id>14005</id><value>Analisando lista de stream...</value></string>
+  <string><id>14006</id><value>Baixar lista de streams falhou</value></string>
+  <string><id>14007</id><value>Baixar arquivos de playlist falhou</value></string>
+  <string><id>14008</id><value>Habilitar notificações Kai</value></string>
+  <string><id>14009</id><value>Diretório de jogos</value></string>
+  <string><id>14010</id><value>Auto trocar para Thumbs baseado no</value></string>
+  <string><id>14011</id><value>Hábilitar trocas automáticas para a vizualização de Thumbs</value></string>
+  <string><id>14012</id><value>- Usar ícones largos</value></string>
+  <string><id>14013</id><value>- Trocar baseado no Switch</value></string>
+  <string><id>14014</id><value>- Porcentagem</value></string>
+  <string><id>14015</id><value>Sem arquivos até uma Thumb</value></string>
+  <string><id>14016</id><value>Pelo menos um arquivo e uma Thumb</value></string>
+  <string><id>14017</id><value>Porcentagem de Thumbs</value></string>
+  <string><id>14018</id><value>Vizualizar opções</value></string>
+  <string><id>14019</id><value>Mudar código da área 1</value></string>
+  <string><id>14020</id><value>Mudar código da área 2</value></string>
+  <string><id>14021</id><value>Mudar código da área 3</value></string>
+  <string><id>14022</id><value>Biblioteca</value></string>
+  <string><id>14023</id><value>Sem TV</value></string>
+  <string><id>14024</id><value>Entre o tamnho próximo da cidade ou o código US ZIP</value></string>
+  <string><id>14025</id><value>Vídeo/Áudio/ Cache de DVD - Dísco rígido</value></string>
   <string><id>14026</id><value>Video Cache - DVDRom</value></string>
-  <string><id>14027</id><value>- Local Network</value></string>
+  <string><id>14027</id><value>- Internet Local</value></string>
   <string><id>14028</id><value>- Internet</value></string>
-  <string><id>14030</id><value>Audio Cache - DVDRom</value></string>
-  <string><id>14031</id><value>- Local Network</value></string>
+  <string><id>14030</id><value>Cache de Áudio - DVDRom</value></string>
+  <string><id>14031</id><value>- Internet Local</value></string>
   <string><id>14032</id><value>- Internet</value></string>
   <string><id>14034</id><value>DVD Cache - DVDRom</value></string>
-  <string><id>14035</id><value>- Local Network</value></string>
-  <string><id>14036</id><value>Servers</value></string>
-  <string><id>14037</id><value>Look and Feel</value></string>
-  <string><id>14038</id><value>Network settings changed</value></string>
-  <string><id>14039</id><value>XBMC requires to restart to change your</value></string>
-  <string><id>14040</id><value>network setup.  Would you like to restart now?</value></string>
-  <string><id>14041</id><value>Post Processing</value></string>
-  <string><id>14042</id><value>Engine IP Address</value></string>
-  <string><id>14043</id><value>- Shutdown while playing</value></string>
+  <string><id>14035</id><value>- Internet Local</value></string>
+  <string><id>14036</id><value>Servifores</value></string>
+  <string><id>14037</id><value>OLhar e sentir</value></string>
+  <string><id>14038</id><value>Configurações de rede mudadas</value></string>
+  <string><id>14039</id><value>XBMC requer Reiniciar para mudar sua</value></string>
+  <string><id>14040</id><value>Configuração da rede.  Você reniniciar agora?</value></string>
+  <string><id>14041</id><value>Pós processamento</value></string>
+  <string><id>14042</id><value>Endereço de ip do motor</value></string>
+  <string><id>14043</id><value>- Desligar enquanto tocando</value></string>
   <string><id>14044</id><value>%i mins</value></string>
-  <string><id>14045</id><value>%i secs</value></string>
+  <string><id>14045</id><value>%i segs</value></string>
   <string><id>14046</id><value>%i ms</value></string>
   <string><id>14047</id><value>%i %%</value></string>
   <string><id>14048</id><value>%i kbps</value></string>
   <string><id>14049</id><value>%i kb</value></string>
   <string><id>14050</id><value>%i.0 dB</value></string>
-  <string><id>14051</id><value>Time Format</value></string>
-  <string><id>14052</id><value>Date Format</value></string>
-  <string><id>14053</id><value>GUI Filters</value></string>
-  <string><id>14054</id><value>Enable Internet Lookups</value></string>
-  <string><id>14055</id><value>Use Background Scanning</value></string>
-  <string><id>14056</id><value>Stop Scan</value></string>
-  <string><id>14057</id><value>Not possible while scanning for media info</value></string>
-  <string><id>14058</id><value>Film Grain Effect</value></string>
-  <string><id>14059</id><value>Look for custom thumbnails on remote shares</value></string>
-  <string><id>14060</id><value>Unknown type Cache - Internet</value></string>
+  <string><id>14051</id><value>Formato do tepo</value></string>
+  <string><id>14052</id><value>Formato da data</value></string>
+  <string><id>14053</id><value>Filteros GUI</value></string>
+  <string><id>14054</id><value>Hábilitar pesquisas na Internet</value></string>
+  <string><id>14055</id><value>Usar o escaneamnto do plano de fundo</value></string>
+  <string><id>14056</id><value>Parar de escânear</value></string>
+  <string><id>14057</id><value>Não foi possível escanear por informações de media.</value></string>
+  <string><id>14058</id><value>Efeito de filmagem Grain</value></string>
+  <string><id>14059</id><value>Procurar por thumbnails customizadas nos compartilhamentos remotos</value></string>
+  <string><id>14060</id><value>Tipo desconhecido de Cache - Internet</value></string>
   <string><id>14061</id><value>Auto</value></string>
-  <string><id>14062</id><value>Enter username for</value></string>
-  <string><id>14063</id><value>Date &amp; Time</value></string>
-  <string><id>14064</id><value>Set Date</value></string>
-  <string><id>14065</id><value>Set Time</value></string>
-  <string><id>14066</id><value>Enter the Time in 24 hour HH:MM format</value></string>
-  <string><id>14067</id><value>Enter the Date in DD/MM/YYYY format</value></string>
-  <string><id>14068</id><value>Enter the IP address</value></string>
-  <string><id>14069</id><value>Do you want set these Settings now?</value></string> 	 
-  <string><id>14070</id><value>Apply Changes Now</value></string> 	 
-  <string><id>14071</id><value>Allow File Renaming and Deletion</value></string>
-  <string><id>14072</id><value>Enable XLink Kai</value></string>
-  <string><id>14073</id><value>XLink Kai is not enabled.</value></string>
+  <string><id>14062</id><value>Entrar Nome de usuário para</value></string>
+  <string><id>14063</id><value>Data &amp; Time</value></string>
+  <string><id>14064</id><value>Configurar data</value></string>
+  <string><id>14065</id><value>Configurar hora</value></string>
+  <string><id>14066</id><value>Entrar o formato do  tempo HH:MM em 24 horas</value></string>
+  <string><id>14067</id><value>Ebtrar a data no formato DD/MM/AAAA</value></string>
+  <string><id>14068</id><value>Colcar o endereço ip</value></string>
+  <string><id>14069</id><value>Você quer aplicar essas configurações agora?</value></string> 	 
+  <string><id>14070</id><value>aplicar configurações</value></string> 	 
+  <string><id>14071</id><value>Permitir arquivos faltando e exclusão</value></string>
+  <string><id>14072</id><value>Habilitar XLink Kai</value></string>
+  <string><id>14073</id><value>XLink Kai não está hábilitado.</value></string>
 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>The service is not connected, would you like to attempt</value></string>
