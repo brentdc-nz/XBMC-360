@@ -853,7 +853,7 @@
   <string><id>12901</id><value>Tela cheia OSD</value></string>
 
   <string><id>13000</id><value>Sistema</value></string>
-  <string><id>13001</id><value>Immediate HD Spindown</value></string>
+  <string><id>13001</id><value>Rotação imediata do HD</value></string>
   <string><id>13002</id><value>Somente vídeo</value></string>
   <string><id>13003</id><value>- Delay</value></string>
   <string><id>13004</id><value>- Duração mínima do arquivo</value></string>
