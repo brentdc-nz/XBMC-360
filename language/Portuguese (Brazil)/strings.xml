@@ -804,7 +804,7 @@
   <string><id>12348</id><value>Item Trancado</value></string>
   <string><id>12349</id><value>Lembrar o código mestre na próxima inicialização?</value></string>
   <string><id>12350</id><value>(Abrir qualquer item nas configurações irá</value></string>
-  <string><id>12351</id><value>áutomaticamente rehabilitar a tranca mestre.)</value></string>
+  <string><id>12351</id><value>automaticamente rehabilitar a tranca mestre.)</value></string>
   <string><id>12352</id><value>Enter Master Code button combo and press Start</value></string>
   <string><id>12353</id><value>Reativar trava</value></string>
   <string><id>12354</id><value>Sobresrever pasta até a próxima inicialização?</value></string>
@@ -907,139 +907,139 @@
   <string><id>13253</id><value>Cancelar mover</value></string>
 
   <string><id>13270</id><value>Hardware:</value></string>
-  <string><id>13271</id><value>CPU Speed:</value></string>
-  <string><id>13274</id><value>Xbox is Connected, but no DNS is available.</value></string>
-  <string><id>13275</id><value>Hard Disk</value></string>
+  <string><id>13271</id><value>Velocidade da CPU:</value></string>
+  <string><id>13274</id><value>Xbox está conectado, mas não há dns dísponivel.</value></string>
+  <string><id>13275</id><value>Disco rígido</value></string>
   <string><id>13276</id><value>DVD-ROM</value></string>
-  <string><id>13277</id><value>Storage</value></string>
-  <string><id>13278</id><value>Default</value></string>
-  <string><id>13279</id><value>Network</value></string>
-  <string><id>13280</id><value>Video</value></string>
+  <string><id>13277</id><value>Armazenamento</value></string>
+  <string><id>13278</id><value>Padrão</value></string>
+  <string><id>13279</id><value>Rede</value></string>
+  <string><id>13280</id><value>Vídeo</value></string>
   <string><id>13281</id><value>Hardware</value></string>
   <string><id>13282</id><value>_</value></string>
-  <string><id>13283</id><value>Kernel Version:</value></string>
-  <string><id>13284</id><value>CPU Speed:</value></string>
-  <string><id>13285</id><value>Detected BIOS:</value></string>
-  <string><id>13286</id><value>Video Encoder:</value></string>
-  <string><id>13287</id><value>Screen Resolution:</value></string>
-  <string><id>13288</id><value>Xbox Version:</value></string>
-  <string><id>13289</id><value>Xbox Serial Number:</value></string>
-  <string><id>13290</id><value>XBOX Manufacturer:</value></string>
+  <string><id>13283</id><value>Versão do Kernel:</value></string>
+  <string><id>13284</id><value>Velocidade da CPU:</value></string>
+  <string><id>13285</id><value>BIOS Detectada:</value></string>
+  <string><id>13286</id><value>Enconder de vídeo:</value></string>
+  <string><id>13287</id><value>Resolução da tela:</value></string>
+  <string><id>13288</id><value>Versão do Xbox:</value></string>
+  <string><id>13289</id><value>Número de série do Xbox:</value></string>
+  <string><id>13290</id><value>Manufaturador do XBOX:</value></string>
   <string><id>13291</id><value>ModChip:</value></string>
-  <string><id>13292</id><value>A/V Cable:</value></string>
-  <string><id>13293</id><value>Video &amp; XBE Region:</value></string>
-  <string><id>13294</id><value>DVD Region:</value></string>
+  <string><id>13292</id><value>Cabo AV:</value></string>
+  <string><id>13293</id><value>Vídeo &amp; Região XBE:</value></string>
+  <string><id>13294</id><value>Região do DVD:</value></string>
   <string><id>13295</id><value>Internet:</value></string>
-  <string><id>13296</id><value>Xbox is Connected</value></string>
-  <string><id>13297</id><value>Xbox is not Connected. Check Network Settings.</value></string>
-  <string><id>13298</id><value>XBLIVE Key:</value></string>
-  <string><id>13299</id><value>Target Temperature</value></string>
-  <string><id>13300</id><value>Fan Speed</value></string>
-  <string><id>13301</id><value>Auto Temperature Control</value></string>
-  <string><id>13302</id><value>Fan Speed Override</value></string>
-  <string><id>13303</id><value>Skin Fonts</value></string>
-  <string><id>13304</id><value>Enable Flipping Bi-Directional Strings</value></string>
-  <string><id>13305</id><value>Enable RSS Feeds</value></string>
-  <string><id>13306</id><value>Hide Parent Folder Items</value></string>
-  <string><id>13307</id><value>Track Naming Template</value></string>
-  <string><id>13308</id><value>Do you wish to reboot your xbox</value></string>
-  <string><id>13309</id><value>instead of just XBMC?</value></string>
-  <string><id>13310</id><value>Zoom Effect</value></string>
-  <string><id>13311</id><value>Float Effect</value></string>
-  <string><id>13312</id><value>Black Bar Reduction</value></string>
-  <string><id>13313</id><value>Restart</value></string>
+  <string><id>13296</id><value>Xbox Está conectado</value></string>
+  <string><id>13297</id><value>Xbox não está conectado. Verrifque suas configurações de rede.</value></string>
+  <string><id>13298</id><value>Chave Da XBLIVE:</value></string>
+  <string><id>13299</id><value>Temperatura alvo</value></string>
+  <string><id>13300</id><value>Velocidade do cooler</value></string>
+  <string><id>13301</id><value>Auto controle de Temperatura</value></string>
+  <string><id>13302</id><value>Velocidade do cooler sobrecarregada</value></string>
+  <string><id>13303</id><value>Fontes das skins</value></string>
+  <string><id>13304</id><value>Hábilitar strings de giro Bi-Directional</value></string>
+  <string><id>13305</id><value>Hábilitar Feeds RSS</value></string>
+  <string><id>13306</id><value>Esconder pastas de itens parentais</value></string>
+  <string><id>13307</id><value>Rastrear template com nome</value></string>
+  <string><id>13308</id><value>Você desseja reiniciar seu xbox</value></string>
+  <string><id>13309</id><value>Invés de somente o XBMC?</value></string>
+  <string><id>13310</id><value>Efeitos de Zoom</value></string>
+  <string><id>13311</id><value>Efeiro de flutuar</value></string>
+  <string><id>13312</id><value>Redução das bordas pretas</value></string>
+  <string><id>13313</id><value>Reiniciar</value></string>
   <string><id>13314</id><value>Crossfade</value></string>
-  <string><id>13315</id><value>Regenerate Thumbnails</value></string>
-  <string><id>13316</id><value>Recursive Thumbnails</value></string>
-  <string><id>13317</id><value>View Slideshow</value></string>
-  <string><id>13318</id><value>Recursive Slideshow</value></string>
-  <string><id>13319</id><value>Randomize</value></string>
-  <string><id>13320</id><value>Stereo</value></string>
-  <string><id>13321</id><value>Left Only</value></string>
-  <string><id>13322</id><value>Right Only</value></string>
-  <string><id>13323</id><value>Enable CD+G</value></string>
-  <string><id>13324</id><value>Background Transparency</value></string>
-  <string><id>13325</id><value>Foreground Transparency</value></string>
-  <string><id>13326</id><value>A/V delay</value></string>
+  <string><id>13315</id><value>Regenerar Thumbnails</value></string>
+  <string><id>13316</id><value>Thumbnails Recursivas</value></string>
+  <string><id>13317</id><value>Ver show de slides</value></string>
+  <string><id>13318</id><value>Show de slides recursivo</value></string>
+  <string><id>13319</id><value>Aleatório</value></string>
+  <string><id>13320</id><value>EstéreoStereo</value></string>
+  <string><id>13321</id><value>Esquerda somente</value></string>
+  <string><id>13322</id><value>Direita somente</value></string>
+  <string><id>13323</id><value>Hábilitar CD+G</value></string>
+  <string><id>13324</id><value>Transparência de fundo</value></string>
+  <string><id>13325</id><value>Transparência de primeiro plano</value></string>
+  <string><id>13326</id><value>delay A/V</value></string>
   <string><id>13327</id><value>Karaoke</value></string>
-  <string><id>13328</id><value>%s not found</value></string>
-  <string><id>13329</id><value>Error opening %s</value></string>
-  <string><id>13330</id><value>Unable to load %s</value></string>
-  <string><id>13331</id><value>Error: out of memory</value></string>
-  <string><id>13332</id><value>Move Up</value></string>
-  <string><id>13333</id><value>Move Down</value></string>
-  <string><id>13334</id><value>Edit Label</value></string>
-  <string><id>13335</id><value>Make Default</value></string>
-  <string><id>13336</id><value>Remove Button</value></string>
-  <string><id>13337</id><value>- 2 Channel PCM Passthrough</value></string>
-  <string><id>13338</id><value>Front LED</value></string>
-  <string><id>13339</id><value>Front LED Colour</value></string>
-  <string><id>13340</id><value>Leave As Is</value></string>
-  <string><id>13341</id><value>Green</value></string>
-  <string><id>13342</id><value>Orange</value></string>
-  <string><id>13343</id><value>Red</value></string>
-  <string><id>13344</id><value>Cycle</value></string>
-  <string><id>13345</id><value>Switch LED off on Playback</value></string>
-  <string><id>13346</id><value>Movie Information</value></string>
-  <string><id>13347</id><value>Queue Item</value></string>
-  <string><id>13348</id><value>Search IMDb...</value></string>
-  <string><id>13349</id><value>Query Info For All Files</value></string>
-  <string><id>13350</id><value>Now Playing...</value></string>
-  <string><id>13351</id><value>Album Information</value></string>
-  <string><id>13352</id><value>Scan All to Database</value></string>
-  <string><id>13353</id><value>Stop Scanning</value></string>
-  <string><id>13354</id><value>Render Method</value></string>
-  <string><id>13355</id><value>Low Quality Pixel Shader</value></string>
-  <string><id>13356</id><value>Hardware Overlays</value></string>
-  <string><id>13357</id><value>High Quality Pixel Shader</value></string>
-  <string><id>13358</id><value>Play Item</value></string>
-  <string><id>13359</id><value>Set Artist Thumb</value></string>
-  <string><id>13360</id><value>Generate Thumbs</value></string>
-  <string><id>13361</id><value>Enable Voice</value></string>
-  <string><id>13362</id><value>Voice Mask</value></string>
-  <string><id>13363</id><value>- Enable Spectrum Energy Weight</value></string>
-  <string><id>13364</id><value>-- Spectrum Energy Weight Value</value></string>
-  <string><id>13365</id><value>- Enable Pitch Scaling</value></string>
-  <string><id>13366</id><value>-- Pitch Scaling Value</value></string>
-  <string><id>13367</id><value>- Enable Whisper Factor</value></string>
-  <string><id>13368</id><value>-- Whisper Factor Value</value></string>
-  <string><id>13369</id><value>- Enable Robotic Factor</value></string>
-  <string><id>13370</id><value>-- Robotic Factor Value</value></string>
-  <string><id>13371</id><value>- Port 1 Voice</value></string>
-  <string><id>13372</id><value>- Port 2 Voice</value></string>
-  <string><id>13373</id><value>- Port 3 Voice</value></string>
-  <string><id>13374</id><value>- Port 4 Voice</value></string>
-  <string><id>13375</id><value>Enable Device</value></string>
+  <string><id>13328</id><value>%s Não foi encontrado</value></string>
+  <string><id>13329</id><value>Erro ao abrir %s</value></string>
+  <string><id>13330</id><value>Não foi possível carregar %s</value></string>
+  <string><id>13331</id><value>Erro: fora da mémoria</value></string>
+  <string><id>13332</id><value>Mover para cima</value></string>
+  <string><id>13333</id><value>Mover para baixo</value></string>
+  <string><id>13334</id><value>Editar rotúlo</value></string>
+  <string><id>13335</id><value>Fazer or padrão </value></string>
+  <string><id>13336</id><value>Remover botão</value></string>
+  <string><id>13337</id><value>- Passagem de dois canais PCM</value></string>
+  <string><id>13338</id><value>LED frontal</value></string>
+  <string><id>13339</id><value>Cor da LED Frontal</value></string>
+  <string><id>13340</id><value>Deixar como estar</value></string>
+  <string><id>13341</id><value>Verde</value></string>
+  <string><id>13342</id><value>Laranja</value></string>
+  <string><id>13343</id><value>Vermelho</value></string>
+  <string><id>13344</id><value>Cíclo</value></string>
+  <string><id>13345</id><value>Desligar a LED quando estiver retornando dew qualquer ponto do áudio</value></string>
+  <string><id>13346</id><value>Informação do filme</value></string>
+  <string><id>13347</id><value>Itens na fila</value></string>
+  <string><id>13348</id><value>Procurar no IMDb...</value></string>
+  <string><id>13349</id><value>Fila de informações para todos os arquivos</value></string>
+  <string><id>13350</id><value>Agora tocando...</value></string>
+  <string><id>13351</id><value>Informações do álbum</value></string>
+  <string><id>13352</id><value>Escanear todos os bancos de dados</value></string>
+  <string><id>13353</id><value>Parar de escanear</value></string>
+  <string><id>13354</id><value>Metódo de renderização</value></string>
+  <string><id>13355</id><value>Shader de pixel de baixa qualidade</value></string>
+  <string><id>13356</id><value>Overlays de Hardware</value></string>
+  <string><id>13357</id><value>Shader de pixel de alta qualidade</value></string>
+  <string><id>13358</id><value>Tocar Item</value></string>
+  <string><id>13359</id><value>Configurar thumb de artista</value></string>
+  <string><id>13360</id><value>Gerar thumbs Generate Thumbs</value></string>
+  <string><id>13361</id><value>Hábilitar voz</value></string>
+  <string><id>13362</id><value>Máscara de voz</value></string>
+  <string><id>13363</id><value>- Hábilitar peso de energia Spectrum</value></string>
+  <string><id>13364</id><value>-- Valor da enegia de peso Spectrum</value></string>
+  <string><id>13365</id><value>- Hábilitar escala de Pitch</value></string>
+  <string><id>13366</id><value>-- Valor de escala de Pitch</value></string>
+  <string><id>13367</id><value>- Hábilitar fator de Whisper</value></string>
+  <string><id>13368</id><value>-- Valor de fator de Whisper</value></string>
+  <string><id>13369</id><value>- Hábilitar fator róbotico</value></string>
+  <string><id>13370</id><value>-- Valor do fator róbotico</value></string>
+  <string><id>13371</id><value>- Voz Porta 1</value></string>
+  <string><id>13372</id><value>- voz Porta 2</value></string>
+  <string><id>13373</id><value>- Voz Porta 3</value></string>
+  <string><id>13374</id><value>- Voz Porta 4</value></string>
+  <string><id>13375</id><value>hábilitar dispositivo</value></string>
   <string><id>13376</id><value>Volume</value></string>
-  <string><id>13377</id><value>Default View Mode</value></string>
-  <string><id>13378</id><value>Default Brightness</value></string>
-  <string><id>13379</id><value>Default Contrast</value></string>
-  <string><id>13380</id><value>Default Gamma</value></string>
-  <string><id>13381</id><value>Resume Video</value></string>
-  <string><id>13382</id><value>Voice Mask - Port 1</value></string>
-  <string><id>13383</id><value>Voice Mask - Port 2</value></string>
-  <string><id>13384</id><value>Voice Mask - Port 3</value></string>
-  <string><id>13385</id><value>Voice Mask - Port 4</value></string>
-  <string><id>13386</id><value>Use Time Based Seeking</value></string>
-  <string><id>13387</id><value>Track Naming Template Right</value></string>
-  <string><id>13388</id><value>Presets</value></string>
-  <string><id>13389</id><value>There are no presets available&#10;for this visualisation</value></string>
-  <string><id>13390</id><value>There are no settings available&#10;for this visualisation</value></string>
-  <string><id>13391</id><value>Eject/Load</value></string>
-  <string><id>13392</id><value>Use Visualisation if playing audio</value></string>
-  <string><id>13393</id><value>Calculate Size</value></string>
-  <string><id>13394</id><value>Calculating folder size</value></string>
-  <string><id>13395</id><value>Video Settings</value></string>
-  <string><id>13396</id><value>Audio and Subtitle Settings</value></string>
-  <string><id>13397</id><value>Enable Subtitles</value></string>
+  <string><id>13377</id><value>Modo padrão de vizualização</value></string>
+  <string><id>13378</id><value>Padrão de brilho</value></string>
+  <string><id>13379</id><value>Padrão De Contraste</value></string>
+  <string><id>13380</id><value>Padrão de Gamma</value></string>
+  <string><id>13381</id><value>Resumir o Vídeo</value></string>
+  <string><id>13382</id><value>Máscara de voz - Porta 1</value></string>
+  <string><id>13383</id><value>Máscara de voz - Porta 2</value></string>
+  <string><id>13384</id><value>Máscara de voz - Porta 3</value></string>
+  <string><id>13385</id><value>Máscara de voz - Porta 4</value></string>
+  <string><id>13386</id><value>Usar tempo baseado em procura</value></string>
+  <string><id>13387</id><value>Rastrear nome da direita do Template</value></string>
+  <string><id>13388</id><value>Presetes</value></string>
+  <string><id>13389</id><value>Não há presetes dísponiveis&#10;para essa vizualização</value></string>
+  <string><id>13390</id><value>Não há configurações dísponiveis&#10;para essa vizualização</value></string>
+  <string><id>13391</id><value>Ejetar/Carregar</value></string>
+  <string><id>13392</id><value>Usar vizualização quando estiver tocando áudio</value></string>
+  <string><id>13393</id><value>Calcular tamanho</value></string>
+  <string><id>13394</id><value>Cauculando o tamanho da pasta</value></string>
+  <string><id>13395</id><value>Configurações de Vídeo </value></string>
+  <string><id>13396</id><value>Configurações de Áudio e Legendas</value></string>
+  <string><id>13397</id><value>Hábilitar legendas</value></string>
   <string><id>13398</id><value>Bookmarks</value></string>
-  <string><id>13399</id><value>Ignore "The" when sorting</value></string>
+  <string><id>13399</id><value>Ignorar o "quê" quando estiver ordenando</value></string>
   <string><id>13400</id><value>Crossfade albumtracks</value></string>
   <string><id>13401</id><value>Browse for %s</value></string>
-  <string><id>13402</id><value>Show track position</value></string>
-  <string><id>13403</id><value>Clear Default</value></string>
-  <string><id>13404</id><value>Resume</value></string>
-  <string><id>13405</id><value>Get Thumb</value></string>
+  <string><id>13402</id><value>Mostrar posição de track</value></string>
+  <string><id>13403</id><value>Limpar Padrão</value></string>
+  <string><id>13404</id><value>Resumir</value></string>
+  <string><id>13405</id><value>Pegar Thumb</value></string>
 
   <string><id>14000</id><value>Compilar</value></string>
   <string><id>14001</id><value>Descompilar</value></string>
@@ -1067,7 +1067,7 @@
   <string><id>14023</id><value>Sem TV</value></string>
   <string><id>14024</id><value>Entre o tamnho próximo da cidade ou o código US ZIP</value></string>
   <string><id>14025</id><value>Vídeo/Áudio/ Cache de DVD - Dísco rígido</value></string>
-  <string><id>14026</id><value>Video Cache - DVDRom</value></string>
+  <string><id>14026</id><value>Cache De vídeo - DVDRom</value></string>
   <string><id>14027</id><value>- Internet Local</value></string>
   <string><id>14028</id><value>- Internet</value></string>
   <string><id>14030</id><value>Cache de Áudio - DVDRom</value></string>
