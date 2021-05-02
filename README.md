@@ -1,4 +1,4 @@
-# XBMC-360-PT-BR-
+# XBMC-360
 
 This is a port of XBMC4XBOX to XBox 360 using the Microsoft XBox 360 SDK (not using Linux and Kodi).
 
