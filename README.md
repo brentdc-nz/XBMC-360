@@ -1,4 +1,4 @@
-# XBMC-360
+# XBMC-360 Alpha v1.0
 
 This is a port of XBMC4XBOX to XBox 360 using the Microsoft XBox 360 SDK (not using Linux and Kodi).
 
