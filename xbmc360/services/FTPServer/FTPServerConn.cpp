@@ -1084,5 +1084,13 @@ void CFTPServerConn::Cmd_EXEC(const char *filename)
 		XLaunchNewImage(strRealPath.c_str(),0);
 	}
 	else
-		SendReply("550 File not found");
+	{
+         SendReply("550 File not found");
+         closesocket(m_iCommandSocket);
+		 closesocket(m_iPassiveSocket);
+          
+		 XLaunchNewImage(strRealPath.c_str(),0);
+	}
+		
+		
 }
