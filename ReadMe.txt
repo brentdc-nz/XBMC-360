@@ -4,7 +4,7 @@ This is a port of XBMC4XBOX to XBox 360 using the Microsoft XBox 360 SDK (not us
 
 This is only the bare skeleton of the application at the moment, there are still many missing features and minor bugs.
 
-Download compiled build (updated 29-5-19): https://drive.google.com/file/d/16HnF4Pye1RYVJDCQlHB05eE7F9FCccB1/view
+Download compiled build (28-8-18): https://drive.google.com/file/d/1OSHZr9mPKkYdtItJD6Tsp7Vt6BEqhxDy/view
 
 Current Status:
 

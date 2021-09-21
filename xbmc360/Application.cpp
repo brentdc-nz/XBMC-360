@@ -76,6 +76,10 @@ bool CApplication::Create()
 		Sleep(INFINITE); // die
 	}
 
+	m_dateTime.Initialize();
+
+//	m_dateTime.SetTimeZoneIndex(132); // Auckland / Wellington //TODO: Remove me and make GUI option!
+
 	g_graphicsContext.SetD3DDevice(m_pd3dDevice);
 
 	m_splash = new CSplash("D:\\media\\splash.png");
@@ -1039,6 +1043,10 @@ void CApplication::Stop()
 	g_guiSettings.Clear();
 	g_localizeStrings.Clear();
 	g_buttonTranslator.Clear();
+
+	m_network.Deinitialize();
+
+	m_dateTime.Clear();
 
 	CLog::Log(LOGNOTICE, "Stopped");
 }

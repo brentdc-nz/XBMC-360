@@ -409,7 +409,8 @@ CStdString CGUIInfoManager::GetDate(bool bNumbersOnly)
 {
 	CStdString text;
 	SYSTEMTIME time;
-	GetLocalTime(&time);
+	memset(&time, 0, sizeof(SYSTEMTIME));
+	g_application.getTimeDate().XBGetLocalTime(&time);
 
 	if (bNumbersOnly)
 	{
@@ -467,7 +468,8 @@ CStdString CGUIInfoManager::GetTime(bool bSeconds)
 {
 	CStdString text;
 	SYSTEMTIME time;
-	GetLocalTime(&time);
+	memset(&time, 0, sizeof(SYSTEMTIME));
+	g_application.getTimeDate().XBGetLocalTime(&time);
 
 	INT iHour = time.wHour;
 

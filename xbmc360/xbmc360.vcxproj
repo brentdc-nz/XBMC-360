@@ -110,11 +110,12 @@
       <CallAttributedProfiling>Callcap</CallAttributedProfiling>
       <AdditionalIncludeDirectories>..\libraries\FFmpeg 0.6 Xbox 360\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/EHa %(AdditionalOptions)</AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
-      <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirenderd.lib;xmediad2.lib;xonlined.lib;libavformat.lib;libavfilter.lib;libavutil.lib;libswscale.lib;libavcodec.lib;pthreads.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirenderd.lib;xmediad2.lib;Xonline.lib;libavformat.lib;libavfilter.lib;libavutil.lib;libswscale.lib;libavcodec.lib;pthreads.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\libraries\FFmpeg 0.6 Xbox 360\vcproj\libavcodec\Xbox 360\Debug;..\libraries\FFmpeg 0.6 Xbox 360\vcproj\libswscale\Xbox 360\Debug;..\libraries\FFmpeg 0.6 Xbox 360\vcproj\libavutil\Xbox 360\Debug;..\libraries\FFmpeg 0.6 Xbox 360\vcproj\libavfilter\Xbox 360\Debug;..\libraries\FFmpeg 0.6 Xbox 360\vcproj\libavformat\Xbox 360\Debug;..\libraries\FFmpeg 0.6 Xbox 360\vcproj\pthreads\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Deploy>
@@ -210,6 +211,7 @@
       <RegisterReservation>true</RegisterReservation>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <AdditionalOptions>/EHa %(AdditionalOptions)</AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -220,7 +222,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
       <SetChecksum>true</SetChecksum>
-      <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirenderd.lib;xmediad2.lib;xnet.lib;xonline.lib;libavformat.lib;libavfilter.lib;libavutil.lib;libswscale.lib;libavcodec.lib;pthreads.lib</AdditionalDependencies>
+      <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirender.lib;xmediad2.lib;xonline.lib;libavformat.lib;libavfilter.lib;libavutil.lib;libswscale.lib;libavcodec.lib;pthreads.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\libraries\FFmpeg 0.6 Xbox 360\vcproj\libavcodec\Xbox 360\Release;..\libraries\FFmpeg 0.6 Xbox 360\vcproj\libswscale\Xbox 360\Release;..\libraries\FFmpeg 0.6 Xbox 360\vcproj\libavutil\Xbox 360\Release;..\libraries\FFmpeg 0.6 Xbox 360\vcproj\libavfilter\Xbox 360\Release;..\libraries\FFmpeg 0.6 Xbox 360\vcproj\libavformat\Xbox 360\Release;..\libraries\FFmpeg 0.6 Xbox 360\vcproj\pthreads\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Deploy>
@@ -286,6 +288,7 @@
     <ClInclude Include="cores\VideoRenderers\BaseRenderer.h" />
     <ClInclude Include="cores\VideoRenderers\RenderManager.h" />
     <ClInclude Include="cores\VideoRenderers\RGBRenderer.h" />
+    <ClInclude Include="DateTime.h" />
     <ClInclude Include="FileItem.h" />
     <ClInclude Include="filesystem\Drive.h" />
     <ClInclude Include="filesystem\DrivesManager.h" />
@@ -347,6 +350,7 @@
     <ClInclude Include="services\FTPServer\FTPFileWriter.h" />
     <ClInclude Include="services\FTPServer\FTPServer.h" />
     <ClInclude Include="services\FTPServer\FTPServerConn.h" />
+    <ClInclude Include="services\NTPClient\WinSckNTP.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="SettingsControls.h" />
     <ClInclude Include="ThumbLoader.h" />
@@ -354,7 +358,6 @@
     <ClInclude Include="utils\CriticalSection.h" />
     <ClInclude Include="utils\Event.h" />
     <ClInclude Include="utils\Log.h" />
-    <ClInclude Include="utils\NTPClient.h" />
     <ClInclude Include="utils\SharedSection.h" />
     <ClInclude Include="utils\SingleLock.h" />
     <ClInclude Include="utils\Splash.h" />
@@ -403,6 +406,7 @@
     <ClCompile Include="cores\PlayerCoreFactory.cpp" />
     <ClCompile Include="cores\VideoRenderers\RenderManager.cpp" />
     <ClCompile Include="cores\VideoRenderers\RGBRenderer.cpp" />
+    <ClCompile Include="DateTime.cpp" />
     <ClCompile Include="FileItem.cpp" />
     <ClCompile Include="filesystem\Drive.cpp" />
     <ClCompile Include="filesystem\DrivesManager.cpp" />
@@ -465,6 +469,7 @@
     <ClCompile Include="services\FTPServer\FTPFileWriter.cpp" />
     <ClCompile Include="services\FTPServer\FTPServer.cpp" />
     <ClCompile Include="services\FTPServer\FTPServerConn.cpp" />
+    <ClCompile Include="services\NTPClient\WinSckNTP.cpp" />
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="SettingsControls.cpp" />
     <ClCompile Include="ThumbLoader.cpp" />
@@ -472,7 +477,6 @@
     <ClCompile Include="utils\CriticalSection.cpp" />
     <ClCompile Include="utils\Event.cpp" />
     <ClCompile Include="utils\Log.cpp" />
-    <ClCompile Include="utils\NTPClient.cpp" />
     <ClCompile Include="utils\SharedSection.cpp" />
     <ClCompile Include="utils\SingleLock.cpp" />
     <ClCompile Include="utils\Splash.cpp" />

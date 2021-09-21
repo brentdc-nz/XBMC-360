@@ -8,12 +8,12 @@
 #include "utils\Stopwatch.h"
 #include "utils\Splash.h"
 #include "xbox\Network.h"
-#include "utils\NTPClient.h"
+#include "services\NTPClient\WinSckNTP.h"
 #include "services\FTPServer\FTPServer.h"
 #include "ApplicationMessenger.h"
 #include "filesystem\DrivesManager.h"
-
 #include "guilib\dialogs\GUIDialogSeekBar.h"
+#include "DateTime.h"
 
 class CApplication: public CXBApplicationEX, public IPlayerCallback, public IMsgTargetCallback
 {
@@ -79,6 +79,7 @@ public:
 	CNetwork& getNetwork() { return m_network; };
 	CDrivesManager& getDriveManager() { return m_drivesManager; };
 	CApplicationMessenger& getApplicationMessenger() { return m_applicationMessenger; };
+	CDateTime& getTimeDate() { return m_dateTime; };
 
 protected:
 	bool ProcessGamepad(/*float frameTime*/);
@@ -97,12 +98,12 @@ protected:
 	CStopWatch m_screenSaverTimer;
 	CStopWatch m_slowTimer;
 
+	CDateTime m_dateTime;
 	CSplash *m_splash;
+	CNetwork m_network;
 	CNTPClient *m_pNTPClient;
 	CFTPServer *m_pFTPServer;
 	CDrivesManager m_drivesManager;
-	CNetwork m_network;
-	
 	CApplicationMessenger m_applicationMessenger;
 };
 
