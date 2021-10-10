@@ -17,10 +17,10 @@ enum AVCodecID;
 
 enum StreamType
 {
-	STREAM_NONE,   // if unknown
-	STREAM_AUDIO,  // audio stream
-	STREAM_VIDEO,  // video stream
-	STREAM_DATA   // data stream (eg. dvd spu's)
+	STREAM_NONE,    // Unknown
+	STREAM_AUDIO,   // Audio stream
+	STREAM_VIDEO,   // Video stream
+	STREAM_DATA,    // Data stream (i.e. DVDs and SPUs)
 };
 
 /*
@@ -55,8 +55,7 @@ public:
 	bool disabled; // set when stream is disabled. (when no decoder exists)
 };
 
-
-class CDemuxStreamVideo: public CDemuxStream
+class CDemuxStreamVideo : public CDemuxStream
 {
 public:
 	CDemuxStreamVideo()
@@ -76,8 +75,7 @@ public:
 
 };
 
-
-class CDemuxStreamAudio: public CDemuxStream
+class CDemuxStreamAudio : public CDemuxStream
 {
 public:
 	CDemuxStreamAudio()
@@ -88,10 +86,11 @@ public:
 	}
 	~CDemuxStreamAudio() {};
 
+
+
 	int iChannels;
 	int iSampleRate;
 };
-
 
 class CDVDDemux
 {
@@ -137,6 +136,8 @@ public:
 	*/
 	virtual bool Seek(int iTime) = 0;
 
+protected:
+	CDVDInputStream* m_pInput; // Global stream info
 };
 
 #endif //H_CDVDDEMUX

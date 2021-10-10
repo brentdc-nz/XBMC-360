@@ -118,7 +118,7 @@ void CGraphicContext::Lock(std::string strFunction)
 {
 	std::string strTmp = "GFX LOCK CALLER = ";
 	strTmp += strFunction += "\n";
-	OutputDebugString(strTmp.c_str());
+///	OutputDebugString(strTmp.c_str());
 
 	if(!m_pd3dDevice)
 		return;
@@ -143,7 +143,7 @@ void CGraphicContext::Unlock(std::string strFunction)
 {
 	std::string strTmp = "GFX UN-LOCK CALLER = ";
 	strTmp += strFunction += "\n";
-	OutputDebugString(strTmp.c_str());
+///	OutputDebugString(strTmp.c_str());
 
 	if(!m_pd3dDevice)
 		return;

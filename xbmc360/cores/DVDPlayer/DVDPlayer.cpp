@@ -10,9 +10,10 @@
 #include "DVDDemuxers\DVDDemuxUtils.h"
 #include "DVDDemuxers\DVDFactoryDemuxer.h"
 
+
 CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
 	: IPlayer(callback),
-	CThread(),	
+	CThread(),
 	m_dvdPlayerVideo(&m_clock/*, &m_overlayContainer*/),
 	m_dvdPlayerAudio(&m_clock)
 {
@@ -82,6 +83,7 @@ bool CDVDPlayer::OpenFile(const CFileItem& file)
 		}
 		else strcpy(m_filename, m_strFilename.c_str());
 */
+
 		ResetEvent(m_hReadyEvent);
 		Create();
 		WaitForSingleObject(m_hReadyEvent, INFINITE);
@@ -91,7 +93,7 @@ bool CDVDPlayer::OpenFile(const CFileItem& file)
 		// we also have to wait for the player to be initialized so that we can set and access all settings when playing a dvd
 		bool bProcessThreadIsAlive = true;    
 
-		while ((m_CurrentVideo.id >= 0 || m_packetcount < 10)
+		while((m_CurrentVideo.id >= 0 || m_packetcount < 10)
 			&& bProcessThreadIsAlive 
 			&& !m_bAbortRequest 
 			&& !m_dvdPlayerVideo.InitializedOutputDevice())
@@ -103,7 +105,7 @@ bool CDVDPlayer::OpenFile(const CFileItem& file)
 		// m_bPlaying could be set to false in the meantime, which indicates an error
 		if (!bProcessThreadIsAlive || m_bStop) return false;
 
-		return true;	
+		return true;
 	}
 	catch(...)
 	{
@@ -173,6 +175,7 @@ void CDVDPlayer::OnStartup()
 	m_packetcount = 0;
 
 	m_messenger.Init();
+
 }
 
 void CDVDPlayer::Process()
@@ -182,8 +185,7 @@ void CDVDPlayer::Process()
 
 	CLog::Log(LOGNOTICE, "Creating InputStream");
   
-	m_pInputStream = CDVDFactoryInputStream::CreateInputStream((IDVDPlayer*)this, m_strFilename.c_str());
-	
+	m_pInputStream = CDVDFactoryInputStream::CreateInputStream(this, m_strFilename, "NA");
 	if (!m_pInputStream || !m_pInputStream->Open(m_strFilename.c_str()))
 	{
 		CLog::Log(LOGERROR, "InputStream: Error opening, %s", m_strFilename.c_str());
@@ -197,7 +199,7 @@ void CDVDPlayer::Process()
 //	}
 
 	CLog::Log(LOGNOTICE, "Creating Demuxer");
-  
+
 	try
 	{
 		m_pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(m_pInputStream);
@@ -213,11 +215,14 @@ void CDVDPlayer::Process()
 	}
 
 	// Find first audio / video streams
-	for (int i = 0; i < m_pDemuxer->GetNrOfStreams(); i++)
+	for(int i = 0; i < m_pDemuxer->GetNrOfStreams(); i++)
 	{
 		CDemuxStream* pStream = m_pDemuxer->GetStream(i);
-		if (pStream->type == STREAM_AUDIO && audio_index < 0) audio_index = i;
-		else if (pStream->type == STREAM_VIDEO && video_index < 0) video_index = i;
+		if(pStream)
+		{
+			if(pStream->type == STREAM_AUDIO && audio_index < 0) audio_index = i;
+			else if(pStream->type == STREAM_VIDEO && video_index < 0) video_index = i;
+		}
 	}
 
 	//m_dvdPlayerSubtitle.Init();
@@ -226,6 +231,10 @@ void CDVDPlayer::Process()
 	// Open the streams
 	if (audio_index >= 0) OpenAudioStream(audio_index);
 	if (video_index >= 0) OpenVideoStream(video_index);
+	// It's demuxers job to fail if it can't find any streams in file
+	// if streams can't be found by probing the file, is stram we should still
+	// try to play abit since streams may be found later
+
 
 	// We are done initializing now, set the readyevent
 	SetEvent(m_hReadyEvent);
@@ -234,7 +243,7 @@ void CDVDPlayer::Process()
 	
 	int iErrorCounter = 0;
 
-	while (!m_bAbortRequest)
+	while(!m_bAbortRequest)
 	{		
 		// If the queues are full, no need to read more
 		while (!m_bAbortRequest && (!m_dvdPlayerAudio.AcceptsData() || !m_dvdPlayerVideo.AcceptsData()))
@@ -248,135 +257,189 @@ void CDVDPlayer::Process()
 			{
 				bool bMenu = false;//IsInMenu(); //TODO
 
-				// Don't allow rewind in menu
-				if (bMenu && GetPlaySpeed() < 0 ) SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
+			// don't allow rewind in menu
+			if(bMenu && GetPlaySpeed() < 0 ) SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
 
-				if (m_CurrentVideo.id >= 0 &&
-					m_dvdPlayerVideo.GetCurrentPts() != DVD_NOPTS_VALUE && !bMenu)
-				{
-					// Check how much off clock video is when ff/rw:ing
-					// a problem here is that seeking isn't very accurate
-					// and since the clock will be resynced after seek
-					// we might actually not really be playing at the wanted
-					// speed. we'd need to have some way to not resync the clock
-					// after a seek to remember timing. still need to handle
-					// discontinuities somehow
-					// when seeking, give the player a headstart of 1 second to make sure the time it takes
-					// to seek doesn't make a difference.
-					__int64 iError = m_clock.GetClock() - m_dvdPlayerVideo.GetCurrentPts();
-
-					if(GetPlaySpeed() > 0 && iError > DVD_MSEC_TO_TIME(1 * GetPlaySpeed()) )
-					{
-						CLog::Log(LOGDEBUG, "CDVDPlayer::Process - FF Seeking to catch up");
-						SeekTime( GetTime() + GetPlaySpeed());
-					}
-					else if(GetPlaySpeed() < 0 && iError < DVD_MSEC_TO_TIME(1 * GetPlaySpeed()) )
-					{
-						SeekTime( GetTime() + GetPlaySpeed());
-					}
-					m_bDontSkipNextFrame = true;
-				}
-			}
-
-			// handle messages send to this thread, like seek or demuxer reset requests
-			HandleMessages();
-//			m_bReadAgain = false;
-
-			// Read a data frame from stream.
-			CDVDDemux::DemuxPacket* pPacket = m_pDemuxer->Read();
-
-			// in a read action, the dvd navigator can do certain actions that require
-			// us to read again
-//			if (m_bReadAgain)
-//			{
-//				CDVDDemuxUtils::FreeDemuxPacket(pPacket);
-//				pPacket = NULL;
-//				continue;
-//			}
-
-			if (!pPacket)
+			if(m_CurrentVideo.id >= 0 &&
+				m_dvdPlayerVideo.GetCurrentPts() != DVD_NOPTS_VALUE &&
+				!bMenu &&
+				!m_bDontSkipNextFrame)
 			{
-				if (!m_pInputStream) break;
-//				if (m_pInputStream->IsEOF()) break;
-//				else if (m_dvd.state == DVDSTATE_WAIT && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-//				{
-//					static_cast<CDVDInputStreamNavigator*>(m_pInputStream)->SkipWait();
-//					continue;
-//				}
-//				else if (m_dvd.state == DVDSTATE_STILL && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD)) continue;
-//				else
+
+				// check how much off clock video is when ff/rw:ing
+				// a problem here is that seeking isn't very accurate
+				// and since the clock will be resynced after seek
+				// we might actually not really be playing at the wanted
+				// speed. we'd need to have some way to not resync the clock
+				// after a seek to remember timing. still need to handle
+				// discontinuities somehow
+				// when seeking, give the player a headstart of 1 second to make sure the time it takes
+				// to seek doesn't make a difference.
+				__int64 iError = m_clock.GetClock() - m_dvdPlayerVideo.GetCurrentPts();
+
+				if(GetPlaySpeed() > 0 && iError > DVD_MSEC_TO_TIME(1 * GetPlaySpeed()) )
 				{
-					// keep on trying until user wants us to stop.
-					iErrorCounter++;
-					CLog::Log(LOGERROR, "Error reading data from demuxer");
-
-					// maybe reseting the demuxer at this point would be a good idea, should it have failed in some way.
-					// probably not a good idea, the dvdplayer can get stuck (and it does sometimes) in a loop this way.
-					if (iErrorCounter > 50)
-					{
-						CLog::Log(LOGERROR, "got 50 read errors in a row, quiting");
-						return;
-						//m_pDemuxer->Reset();
-						//iErrorCounter = 0;
-					}
-					continue;
+					CLog::Log(LOGDEBUG, "CDVDPlayer::Process - FF Seeking to catch up");
+					SeekTime( GetTime() + GetPlaySpeed());
 				}
+				else if(GetPlaySpeed() < 0 && iError < DVD_MSEC_TO_TIME(1 * GetPlaySpeed()) )
+				{
+					SeekTime( GetTime() + GetPlaySpeed());
+				}
+				m_bDontSkipNextFrame = true;
 			}
-	
-			iErrorCounter = 0;
-			m_packetcount++;
+		}
 
-			CDemuxStream *pStream = m_pDemuxer->GetStream(pPacket->iStreamId);
+		// handle messages send to this thread, like seek or demuxer reset requests
+		HandleMessages();
+//      m_bReadAgain = false;
 
-			if( !pStream ) 
+		// read a data frame from stream.
+		CDVDDemux::DemuxPacket* pPacket = m_pDemuxer->Read();
+
+		// in a read action, the dvd navigator can do certain actions that require
+		// us to read again
+		if(0)
+		{
+			CDVDDemuxUtils::FreeDemuxPacket(pPacket);
+			pPacket = NULL;
+			continue;
+		}
+
+		if(!pPacket)
+		{
+			if(!m_pInputStream) break;
+			if(m_pInputStream->IsEOF()) break;
+			else if (0)
 			{
-				CLog::Log(LOGERROR, "CDVDPlayer::Process - Error demux packet doesn't belong to any stream");
+  //        	static_cast<CDVDInputStreamNavigator*>(m_pInputStream)->SkipWait();
 				continue;
 			}
-
-			try
+			else if (0) continue;
+			else
 			{
-				// for normal files, just open first stream
-//				if (m_CurrentSubtitle.id < 0 && pStream->type == STREAM_SUBTITLE) OpenSubtitleStream(pStream->iId);
-				if (m_CurrentAudio.id < 0    && pStream->type == STREAM_AUDIO)    OpenAudioStream(pStream->iId);
-				if (m_CurrentVideo.id < 0    && pStream->type == STREAM_VIDEO)    OpenVideoStream(pStream->iId);
+				// Keep on trying until user wants us to stop.
+				iErrorCounter++;
+				CLog::Log(LOGERROR, "Error reading data from demuxer");
 
-				// check so that none of our streams has become invalid
-				if (m_CurrentAudio.id >= 0    && m_pDemuxer->GetStream(m_CurrentAudio.id) == NULL)     CloseAudioStream(false);
-//				if (m_CurrentSubtitle.id >= 0 && m_pDemuxer->GetStream(m_CurrentSubtitle.id) == NULL)  CloseSubtitleStream(false);
-				if (m_CurrentVideo.id >= 0    && m_pDemuxer->GetStream(m_CurrentVideo.id) == NULL)     CloseVideoStream(false);
-			}
-			catch (...)
-			{
-				CLog::Log(LOGERROR, __FUNCTION__" - Exception thrown when attempting to open stream");
-				break;
-			}
-
-			LockStreams();
-
-			try
-			{
-				if (pPacket->iStreamId == m_CurrentAudio.id && pStream->type == STREAM_AUDIO)
+				// Maybe reseting the demuxer at this point would be a good idea, should it have failed in some way.
+				// probably not a good idea, the dvdplayer can get stuck (and it does sometimes) in a loop this way.
+				if (iErrorCounter > 50)
 				{
-					ProcessAudioData(pStream, pPacket);
+					CLog::Log(LOGERROR, "got 50 read errors in a row, quiting");
+					return;
+					//m_pDemuxer->Reset();
+					//iErrorCounter = 0;
 				}
-				else if (pPacket->iStreamId == m_CurrentVideo.id && pStream->type == STREAM_VIDEO)
-				{
-					ProcessVideoData(pStream, pPacket);
-				}
- /*				else if (pPacket->iStreamId == m_CurrentSubtitle.id && pStream->type == STREAM_SUBTITLE)
-				{
-					ProcessSubData(pStream, pPacket);
-  				}
-*/				else CDVDDemuxUtils::FreeDemuxPacket(pPacket); // free it since we won't do anything with it
-			}
-			catch(...)
-			{
-				CLog::Log(LOGERROR, __FUNCTION__" - Exception thrown when processing demux packet");
-				break;
-			}
 
-			UnlockStreams();
+				continue;
+ 			}
+		}
+
+		iErrorCounter = 0;
+		m_packetcount++;
+
+		// Process subtitles, do not remove (it is for external subtitle support in the future)
+		if(pPacket->dts != DVD_NOPTS_VALUE)
+		{
+			//m_dvdPlayerSubtitle.Process(pPacket->dts);
+		}
+
+		CDemuxStream *pStream = m_pDemuxer->GetStream(pPacket->iStreamId);
+
+		if(!pStream) 
+		{
+			CLog::Log(LOGERROR, __FUNCTION__" - Error demux packet doesn't belong to any stream");
+			continue;
+		}
+
+		// It's a valid data packet, add some more information too it
+      
+		// This groupId stuff is getting a bit messy, need to find a better way
+		// currently it is used to determine if a menu overlay is associated with a picture
+		// for dvd's we use as a group id, the current cell and the current title
+		// to be a bit more precise we alse count the number of disc's in case of a pts wrap back in the same cell / title
+//		pPacket->iGroupId = m_pInputStream->GetCurrentGroupId();
+//		pPacket->iGroupId += (10000 * m_dvd.iNrOfExpectedDiscontinuities);
+
+		try
+		{
+			if(0)
+			{
+/*				// Stream selection for DVD's this
+				// should probably come as messages in the packet instead
+
+				if(pStream->type == STREAM_SUBTITLE &&
+					pStream->iPhysicalId == m_dvd.iSelectedSPUStream &&
+					pStream->iId != m_CurrentSubtitle.id)
+				{
+					// DVD subtitle stream changed
+					OpenSubtitleStream( pStream->iId );
+				}
+				else if(pStream->type == STREAM_AUDIO &&
+					pStream->iPhysicalId == m_dvd.iSelectedAudioStream &&
+					pStream->iId != m_CurrentAudio.id)
+				{
+					// DVD audio stream changed,          
+					OpenAudioStream( pStream->iId );
+				}
+				else if(pStream->type == STREAM_VIDEO &&
+					pStream->iPhysicalId == 0 &&
+					pStream->iId != m_CurrentVideo.id)
+				{
+					// DVD video stream changed
+					OpenVideoStream(pStream->iId);
+				}
+
+				// Check so dvdnavigator didn't want us to close stream,
+				// we allow lingering invalid audio/subtitle streams here to let player pass vts/cell borders more cleanly
+				if (m_dvd.iSelectedAudioStream < 0 && m_CurrentAudio.id >= 0) CloseAudioStream( true );
+				if (m_dvd.iSelectedSPUStream < 0 && m_CurrentVideo.id >= 0)   CloseSubtitleStream( true );
+ */			}
+			else
+			{
+				// For normal files, just open first stream
+//				if(m_CurrentSubtitle.id < 0 && pStream->type == STREAM_SUBTITLE) OpenSubtitleStream(pStream->iId);
+				if(m_CurrentAudio.id < 0    && pStream->type == STREAM_AUDIO)    OpenAudioStream(pStream->iId);
+				if(m_CurrentVideo.id < 0    && pStream->type == STREAM_VIDEO)    OpenVideoStream(pStream->iId);
+
+				// Check so that none of our streams has become invalid
+				if(m_CurrentAudio.id >= 0    && m_pDemuxer->GetStream(m_CurrentAudio.id) == NULL)     CloseAudioStream(false);
+//				if(m_CurrentSubtitle.id >= 0 && m_pDemuxer->GetStream(m_CurrentSubtitle.id) == NULL)  CloseSubtitleStream(false);
+				if(m_CurrentVideo.id >= 0    && m_pDemuxer->GetStream(m_CurrentVideo.id) == NULL)     CloseVideoStream(false);
+			}
+		}
+		catch (...)
+		{
+			CLog::Log(LOGERROR, __FUNCTION__" - Exception thrown when attempting to open stream");
+			break;
+		}
+
+		// Process packet if it belongs to selected stream. for dvd's down't allow automatic opening of streams
+		LockStreams();
+
+		try
+		{
+			if(pPacket->iStreamId == m_CurrentAudio.id && pStream->type == STREAM_AUDIO)
+			{
+				ProcessAudioData(pStream, pPacket);
+			}
+			else if(pPacket->iStreamId == m_CurrentVideo.id && pStream->type == STREAM_VIDEO)
+			{
+				ProcessVideoData(pStream, pPacket);
+			}
+//			else if (pPacket->iStreamId == m_CurrentSubtitle.id && pStream->type == STREAM_SUBTITLE)
+//			{
+//				ProcessSubData(pStream, pPacket);
+//			}
+			else CDVDDemuxUtils::FreeDemuxPacket(pPacket); // free it since we won't do anything with it
+		}
+		catch(...)
+		{
+			CLog::Log(LOGERROR, __FUNCTION__" - Exception thrown when processing demux packet");
+			break;
+		}
+		UnlockStreams();
 		}
 	}
 }

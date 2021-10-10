@@ -3,10 +3,10 @@
 #include <time.h>
 #include <math.h>
 
-// This class manages the time and date for the XBMC-360 application 
-// this is due to NtSetSystemTime() being blocked on retail machines
-// it returns "NTSTATUS = STATUS_ACCESS_DENIED". Have tried to patch
-// it out with various different homebrew tools without any luck
+// This class mananges the time and date for the XBMC-360 application 
+// this is due to NtSetSystemTime() been blocked on retail machines
+// it returns NTSTATUS = STATUS_ACCESS_DENIED. Have tried to patch out
+// with various different homebrew tools and applications without luck
 
 #pragma warning(disable:4244)
 
@@ -19,7 +19,7 @@ CDateTime::CDateTime()
 	// UTC time zone by default when not set
 	m_iTimeZoneIndex = -1;
 
-	InitializeCriticalSection(&m_critSection);
+	InitializeCriticalSectionAndSpinCount(&m_CriticalSection, 0x00000400);
 }
 
 CDateTime::~CDateTime()
@@ -180,9 +180,8 @@ void CDateTime::Process() // Keep track using this thread
 		{
 			m_iUnixTime++;
 			m_dwTick = GetTickCount() + 1*1000;
-		}
-		else
 			Sleep(10);
+		}
 	}
 }
 
@@ -212,22 +211,18 @@ const std::string CDateTime::GetTimeZoneString(int iIndex)
 
 void CDateTime::SetUTCUnixTime(__int64 iUnixTime)
 {
-	// Start the time keeping thread as we
-	// are now keeping track of our own time
+	// Start the time keeping thread
+	// as we are now keeping trackof out own time
 	if(!m_bTimeServerSycned)
 	{
 		CLog::Log(LOGNOTICE, "CDateTime: Starting time keeping thread.");	
- 		CThread::Create(false/*, THREAD_MINSTACKSIZE*/);
+		CThread::Create(false/*, THREAD_MINSTACKSIZE*/);
 	}
 
-	EnterCriticalSection(&m_critSection);
-
+	EnterCriticalSection(&m_CriticalSection);
 	m_iUnixTime = iUnixTime;
-
-	LeaveCriticalSection(&m_critSection);
-
-	if(!m_bTimeServerSycned)
-		m_bTimeServerSycned = true;
+	m_bTimeServerSycned = true;
+	LeaveCriticalSection(&m_CriticalSection);
 }
 
 void CDateTime::XBGetLocalTime(SYSTEMTIME* SystemTime)
@@ -235,11 +230,15 @@ void CDateTime::XBGetLocalTime(SYSTEMTIME* SystemTime)
 	__int64 iEpochTime = 0;
 
 	if(m_bTimeServerSycned)
+	{
+		EnterCriticalSection(&m_CriticalSection);
 		iEpochTime = m_iUnixTime; // If we have a NTP sync use our own time
+		LeaveCriticalSection(&m_CriticalSection);
+	}
 	else
 		iEpochTime = GetLocalUTCUnixTime(); // If not just use the system time
 
-	// Now adjust for correct time zone
+	// Now adjust for correct time zone!
 	if (m_iTimeZoneIndex != -1 && m_iTimeZoneIndex < (int)m_vecTimeZones.size())
 		iEpochTime += DecimalHoursToMinutes(m_vecTimeZones[m_iTimeZoneIndex]->GetUTCOffset());
 
@@ -382,6 +381,6 @@ bool CDateTime::UnixToSystemTime(long long t, SYSTEMTIME *st)
 
 int CDateTime::DecimalHoursToMinutes(float fHours)
 {
-	float fMin = fHours * 60;
+    float fMin = fHours * 60;
 	return (fMin * 60);
 }

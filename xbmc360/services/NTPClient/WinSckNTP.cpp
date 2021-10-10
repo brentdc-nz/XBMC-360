@@ -588,16 +588,28 @@ void CNTPClient::Process()
 		NtpServerResponse response;
 		if(DoTimeSync(/*g_guiSettings.GetString("locale.timeserveraddress")*/"pool.ntp.org", response)) // TODO: Make GUI config
 		{
-			if(SetClientTime(response.m_ReceiveTime))
-				CLog::Log(LOGNOTICE, "NTP: Received the time via NTP and set..");
-			else
-				CLog::Log(LOGNOTICE, "NTP: Failed to set client time via NTP..");
+			g_application.getTimeDate().SetUTCUnixTime(response.m_ReceiveTime.AdjustedSeconds());
+
+			SYSTEMTIME sysTm = response.m_ReceiveTime;
+
+			CStdString strMessage;
+			strMessage.Format( "%d-%02d-%02d %02d:%02d:%02d.%03d", 
+                        sysTm.wYear,
+                        sysTm.wMonth, 
+                        sysTm.wDay,                       
+                        sysTm.wHour, 
+                        sysTm.wMinute, 
+                        sysTm.wSecond,
+                        sysTm.wMilliseconds );
+
+			CLog::Log(LOGNOTICE, "NTP: Set time: %s", strMessage);
 
 			// Only set time once
 			return;
 		}
 		nTries++;
 	}
+	CLog::Log(LOGNOTICE, "NTP: Failed to set time..");
 }
 
 bool CNTPClient::DoTimeSync(CStdString strHostName, NtpServerResponse& response, int nPort)
@@ -699,27 +711,4 @@ bool CNTPClient::DoTimeSync(CStdString strHostName, NtpServerResponse& response,
 
 		return true;
 	}
-}
-
-bool CNTPClient::SetClientTime(CNtpTime NewTime)
-{
-	EnterCriticalSection(&g_application.getTimeDate().m_critSection);
-	g_application.getTimeDate().SetUTCUnixTime(NewTime.AdjustedSeconds());
-	LeaveCriticalSection(&g_application.getTimeDate().m_critSection);
-
-	SYSTEMTIME sysTm = NewTime;
-
-	CStdString strMessage;
-    strMessage.Format( "%d-%02d-%02d %02d:%02d:%02d.%03d", 
-                        sysTm.wYear,
-                        sysTm.wMonth, 
-                        sysTm.wDay,                       
-                        sysTm.wHour, 
-                        sysTm.wMinute, 
-                        sysTm.wSecond,
-                        sysTm.wMilliseconds );
-
-	CLog::Log(LOGNOTICE, "NTP: Set time: %s", strMessage);
-
-	return true;
 }

@@ -71,7 +71,7 @@ public:
 	virtual CDemuxStream* GetStream(int iStreamId);
 	virtual int GetNrOfStreams();
 
-private:
+protected:
 	void AddStream(int iId);
 
 	void Lock();

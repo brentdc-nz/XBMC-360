@@ -80,7 +80,6 @@ public:
 private:
 	virtual void Process();
 	bool DoTimeSync(CStdString strHostName, NtpServerResponse& response, int nPort = 123);
-	bool SetClientTime(CNtpTime NewTime);
 
 	DWORD m_dwTimeout; // Next point in time we update
 };

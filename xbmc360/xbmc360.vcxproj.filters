@@ -117,6 +117,30 @@
     <Filter Include="Source Files\services\FTPServer">
       <UniqueIdentifier>{ef3f0c0b-69c3-43ca-a8b7-6503111f63b4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\libraries">
+      <UniqueIdentifier>{5bf95a57-e11f-439c-aa97-2ccc3dd86250}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\libraries">
+      <UniqueIdentifier>{3391fc66-9c9b-4f45-ab31-68d76ffd7d29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\libraries\libsmb2">
+      <UniqueIdentifier>{bc1c793d-6486-4b04-b4e0-3c733da78aae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\libraries\libsmb2">
+      <UniqueIdentifier>{2644e95f-13b2-40ab-8c3e-9e96a29f9c97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\xbox\socket_emu">
+      <UniqueIdentifier>{b53d49bf-70a0-44cb-939a-5e83c4f58948}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\xbox\socket_emu">
+      <UniqueIdentifier>{e042823d-c58d-4cb3-b5b5-eedb867f72f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\filesystem\XBFS_Wrap">
+      <UniqueIdentifier>{a844027f-3395-4e16-832d-a9c0bcf98856}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filesystem\XBFS_Wrap">
+      <UniqueIdentifier>{e8abe415-c964-4b69-b75f-4cbbe62b51a6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -470,6 +494,114 @@
     <ClInclude Include="services\NTPClient\WinSckNTP.h">
       <Filter>Header Files\services\NTPClient</Filter>
     </ClInclude>
+    <ClInclude Include="filesystem\FileBase.h">
+      <Filter>Header Files\filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="filesystem\FileFactory.h">
+      <Filter>Header Files\filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="filesystem\FileSMB.h">
+      <Filter>Header Files\filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\DVDPlayer\IDVDPlayer.h">
+      <Filter>Header Files\cores\DVDPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="xbox\socket_emu\addrinfo.h">
+      <Filter>Header Files\xbox\socket_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="xbox\socket_emu\addrsize.h">
+      <Filter>Header Files\xbox\socket_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="xbox\socket_emu\bittypes.h">
+      <Filter>Header Files\xbox\socket_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="xbox\socket_emu\emu_socket.h">
+      <Filter>Header Files\xbox\socket_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="xbox\socket_emu\sockstorage.h">
+      <Filter>Header Files\xbox\socket_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="xbox\socket_emu\xb_emu_socket.h">
+      <Filter>Header Files\xbox\socket_emu</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\libsmb2\aes.h">
+      <Filter>Header Files\libraries\libsmb2</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\libsmb2\aes128ccm.h">
+      <Filter>Header Files\libraries\libsmb2</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\libsmb2\compat.h">
+      <Filter>Header Files\libraries\libsmb2</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\libsmb2\hmac-md5.h">
+      <Filter>Header Files\libraries\libsmb2</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\libsmb2\libsmb2.h">
+      <Filter>Header Files\libraries\libsmb2</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\libsmb2\libsmb2-dcerpc-srvsvc.h">
+      <Filter>Header Files\libraries\libsmb2</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\libsmb2\libsmb2-private.h">
+      <Filter>Header Files\libraries\libsmb2</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\libsmb2\libsmb2-raw.h">
+      <Filter>Header Files\libraries\libsmb2</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\libsmb2\md4.h">
+      <Filter>Header Files\libraries\libsmb2</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\libsmb2\md5.h">
+      <Filter>Header Files\libraries\libsmb2</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\libsmb2\ntlmssp.h">
+      <Filter>Header Files\libraries\libsmb2</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\libsmb2\portable-endian.h">
+      <Filter>Header Files\libraries\libsmb2</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\libsmb2\sha.h">
+      <Filter>Header Files\libraries\libsmb2</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\libsmb2\sha-private.h">
+      <Filter>Header Files\libraries\libsmb2</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\libsmb2\slist.h">
+      <Filter>Header Files\libraries\libsmb2</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\libsmb2\smb2.h">
+      <Filter>Header Files\libraries\libsmb2</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\libsmb2\smb2-errors.h">
+      <Filter>Header Files\libraries\libsmb2</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\libsmb2\smb2-signing.h">
+      <Filter>Header Files\libraries\libsmb2</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\libsmb2\smb3-seal.h">
+      <Filter>Header Files\libraries\libsmb2</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\libsmb2\socket.h">
+      <Filter>Header Files\libraries\libsmb2</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\libsmb2\xbox_defines.h">
+      <Filter>Header Files\libraries\libsmb2</Filter>
+    </ClInclude>
+    <ClInclude Include="filesystem\XBFS_Wrap\EmuFileWrapper.h">
+      <Filter>Header Files\filesystem\XBFS_Wrap</Filter>
+    </ClInclude>
+    <ClInclude Include="filesystem\XBFS_Wrap\XBFS_Wrap.h">
+      <Filter>Header Files\filesystem\XBFS_Wrap</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\asprintf.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\AutoPtrHandle.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="URL.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -798,6 +930,171 @@
     </ClCompile>
     <ClCompile Include="services\NTPClient\WinSckNTP.cpp">
       <Filter>Source Files\services\NTPClient</Filter>
+    </ClCompile>
+    <ClCompile Include="filesystem\FileBase.cpp">
+      <Filter>Source Files\filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="filesystem\FileFactory.cpp">
+      <Filter>Source Files\filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="filesystem\FileSMB.cpp">
+      <Filter>Source Files\filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="xbox\socket_emu\getaddrinfo.c">
+      <Filter>Source Files\xbox\socket_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="xbox\socket_emu\getnameinfo.c">
+      <Filter>Source Files\xbox\socket_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="xbox\socket_emu\inet_aton.c">
+      <Filter>Source Files\xbox\socket_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="xbox\socket_emu\inet_ntop.c">
+      <Filter>Source Files\xbox\socket_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="xbox\socket_emu\inet_pton.c">
+      <Filter>Source Files\xbox\socket_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="xbox\socket_emu\emu_socket.cpp">
+      <Filter>Source Files\xbox\socket_emu</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\aes.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\aes128ccm.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\alloc.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\compat.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\errors.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\hmac.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\hmac-md5.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\init.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\libsmb2.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\md4c.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\md5.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\ntlmssp.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\pdu.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\sha224-256.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\sha384-512.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-cmd-close.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-cmd-create.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-cmd-echo.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-cmd-error.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-cmd-flush.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-cmd-ioctl.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-cmd-logoff.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-cmd-negotiate.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-cmd-query-directory.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-cmd-query-info.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-cmd-read.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-cmd-session-setup.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-cmd-set-info.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-cmd-tree-connect.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-cmd-tree-disconnect.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-cmd-write.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-data-file-info.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-data-filesystem-info.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-data-reparse-point.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-data-security-descriptor.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-signing.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb3-seal.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\socket.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\sync.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\timestamps.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\unicode.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\usha.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="filesystem\XBFS_Wrap\XBFS_Wrap.cpp">
+      <Filter>Source Files\filesystem\XBFS_Wrap</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\asprintf.c">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\AutoPtrHandle.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="URL.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

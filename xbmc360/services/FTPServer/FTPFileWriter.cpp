@@ -1,6 +1,8 @@
 #include "FTPFileWriter.h"
 #include "..\..\utils\log.h"
 
+#include "stdio.h"
+
 #define WRITINGPACKETMAXSIZE 1024*1024
 
 CFTPFileWriter::CFTPFileWriter(const char * path)

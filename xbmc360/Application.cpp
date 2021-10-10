@@ -78,7 +78,7 @@ bool CApplication::Create()
 
 	m_dateTime.Initialize();
 
-//	m_dateTime.SetTimeZoneIndex(132); // Auckland / Wellington //TODO: Remove me and make GUI option!
+	m_dateTime.SetTimeZoneIndex(132); // Auckland / Wellington
 
 	g_graphicsContext.SetD3DDevice(m_pd3dDevice);
 

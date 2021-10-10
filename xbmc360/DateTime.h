@@ -1,7 +1,9 @@
-#ifndef CDATETIME_H
-#define CDATETIME_H
+#ifndef CDATETIME
+#define CDATETIME
 
 #include "utils\Thread.h"
+
+#include <string>
 #include <vector>
 
 typedef __int64 int64;
@@ -16,7 +18,9 @@ public:
 		m_bHasDST = bHasDST;
 		m_iOffsetDST = iOffsetDST;
 	}
-	~CTimeZone() { }
+	~CTimeZone()
+	{
+	}
 
 	std::string GetString() { return m_strTimeZone; }
 	float GetUTCOffset() { return m_iUTCOffset; }
@@ -42,7 +46,6 @@ public:
 	void SetUTCUnixTime(int64 iUnixTime);
 	void XBGetLocalTime(SYSTEMTIME* SystemTime);
 	void Clear();
-	CRITICAL_SECTION m_critSection;
 
 private:
 	virtual void Process();
@@ -56,6 +59,8 @@ private:
 
 	int m_iTimeZoneIndex;
 	std::vector <CTimeZone*>m_vecTimeZones;
+
+	CRITICAL_SECTION m_CriticalSection;
 };
 
-#endif //CDATETIME_H
+#endif //CDATETIME

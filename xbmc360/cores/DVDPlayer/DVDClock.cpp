@@ -2,12 +2,9 @@
 #include "DVDClock.h"
 #include <math.h>
 
-LARGE_INTEGER CDVDClock::m_systemFrequency;
-
 CDVDClock::CDVDClock()
 {
-	if(!m_systemFrequency.QuadPart)
-		QueryPerformanceFrequency(&m_systemFrequency);
+	QueryPerformanceFrequency(&m_systemFrequency);
 
 	m_systemUsed = m_systemFrequency;
 	m_pauseClock.QuadPart = 0;
@@ -21,23 +18,16 @@ CDVDClock::~CDVDClock()
 
 __int64 CDVDClock::GetAbsoluteClock()
 {
-	if(!m_systemFrequency.QuadPart)
-		QueryPerformanceFrequency(&m_systemFrequency);
-
-	LARGE_INTEGER current;
-	QueryPerformanceCounter(&current);
-
-	__int64 seconds = current.QuadPart / m_systemFrequency.QuadPart;
-	current.QuadPart -= seconds * m_systemFrequency.QuadPart;
-	return seconds*DVD_TIME_BASE + current.QuadPart*DVD_TIME_BASE / m_systemFrequency.QuadPart;
+  LARGE_INTEGER current;
+  QueryPerformanceCounter(&current);
+  
+  return current.QuadPart * DVD_TIME_BASE / m_systemFrequency.QuadPart;  
 }
 
 __int64 CDVDClock::GetClock()
 {
 	CSharedLock lock(m_critSection);
-
-	LARGE_INTEGER current;
-    
+	LARGE_INTEGER current;    
 	if (m_bReset)
 	{
 		QueryPerformanceCounter(&m_startClock);
@@ -61,30 +51,22 @@ void CDVDClock::SetSpeed(int iSpeed)
 	// This will sometimes be a little bit off due to rounding errors, i.e. clock might jump abit when changing speed
 	CExclusiveLock lock(m_critSection);
 
-	if(iSpeed == DVD_PLAYSPEED_PAUSE)
-	{
-		if(!m_pauseClock.QuadPart)
-			QueryPerformanceCounter(&m_pauseClock);
-		return;
-	}
-  
 	LARGE_INTEGER current;
 	__int64 newfreq = m_systemFrequency.QuadPart * DVD_PLAYSPEED_NORMAL / iSpeed;
   
-	if( m_pauseClock.QuadPart )
+	if(m_pauseClock.QuadPart)
 		current = m_pauseClock;
 	else
 		QueryPerformanceCounter(&current);
 
 	m_startClock.QuadPart = current.QuadPart - ( newfreq * (current.QuadPart - m_startClock.QuadPart) ) / m_systemUsed.QuadPart;
 	m_systemUsed.QuadPart = newfreq;    
-	m_pauseClock.QuadPart = 0;
 }
 
 void CDVDClock::Discontinuity(ClockDiscontinuityType type, __int64 currentPts, __int64 delay)
 {
 	CExclusiveLock lock(m_critSection);
-
+	
 	switch (type)
 	{
 		case CLOCK_DISC_FULL:
@@ -106,16 +88,16 @@ void CDVDClock::Discontinuity(ClockDiscontinuityType type, __int64 currentPts, _
 void CDVDClock::Pause()
 {
 	CExclusiveLock lock(m_critSection);
-
-	if(!m_pauseClock.QuadPart)
-		QueryPerformanceCounter(&m_pauseClock);
+	QueryPerformanceCounter(&m_pauseClock);
 }
 
 void CDVDClock::Resume()
 {
 	CExclusiveLock lock(m_critSection);
+  
+	if(m_systemFrequency.QuadPart != m_systemUsed.QuadPart) SetSpeed(DVD_PLAYSPEED_NORMAL);
 
-	if( m_pauseClock.QuadPart )
+	if(m_pauseClock.QuadPart)
 	{
 		LARGE_INTEGER current;
 		QueryPerformanceCounter(&current);
@@ -128,6 +110,5 @@ void CDVDClock::Resume()
 __int64 CDVDClock::DistanceToDisc()
 {
 	CSharedLock lock(m_critSection);
-
 	return GetClock() - m_iDisc;
 }

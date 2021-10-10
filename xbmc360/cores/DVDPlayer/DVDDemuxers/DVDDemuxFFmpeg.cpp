@@ -29,19 +29,14 @@ void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)
 	strInfo = temp;
 }
 
-CDVDDemuxFFmpeg::CDVDDemuxFFmpeg()
-{
-	m_pFormatContext = NULL;
-	InitializeCriticalSection(&m_critSection);
-	for (int i = 0; i < MAX_STREAMS; i++) m_streams[i] = NULL;
-	m_iCurrentPts = 0LL;
-}
+////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////
 
-CDVDDemuxFFmpeg::~CDVDDemuxFFmpeg()
-{
-	Dispose();
-	DeleteCriticalSection(&m_critSection);
-}
+
+
+
+
+
 
 void CDVDDemuxFFmpeg::Lock()
 {
@@ -51,6 +46,23 @@ void CDVDDemuxFFmpeg::Lock()
 void CDVDDemuxFFmpeg::Unlock()
 {
 	LeaveCriticalSection(&m_critSection);
+}
+////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+CDVDDemuxFFmpeg::CDVDDemuxFFmpeg() : CDVDDemux()
+{
+	m_pFormatContext = NULL;
+	m_pInput = NULL;
+	InitializeCriticalSection(&m_critSection);
+	for(int i = 0; i < MAX_STREAMS; i++) m_streams[i] = NULL;
+	m_iCurrentPts = 0LL;
+}
+
+CDVDDemuxFFmpeg::~CDVDDemuxFFmpeg()
+{
+	Dispose();
+	DeleteCriticalSection(&m_critSection);
 }
 
 bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
@@ -64,7 +76,15 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 	// Register codecs
 	av_register_all();
 
-	strFile = pInput->GetFileName();
+	m_pInput = pInput;
+	strFile = m_pInput->GetFileName();
+
+	bool streaminfo; /* set to true if we want to look for streams before playback*/
+	if(m_pInput->IsStreamType(DVDSTREAM_TYPE_FILE))
+		streaminfo = true;
+	else
+		streaminfo = false;
+
 
 	if(av_open_input_file(&m_pFormatContext, strFile, NULL, 0, NULL)!=0)
 	{
@@ -209,7 +229,7 @@ CDVDDemux::DemuxPacket* CDVDDemuxFFmpeg::Read()
 	}
 	Unlock();
 
-	if (!pPacket) return NULL;
+	if(!pPacket) return NULL;
 
 	//FIXME WIP MARTY V
  /* 

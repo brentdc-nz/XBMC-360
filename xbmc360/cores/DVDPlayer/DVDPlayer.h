@@ -3,6 +3,9 @@
 
 #include "..\IPlayer.h"
 #include "..\..\utils\Thread.h"
+
+#include "IDVDPlayer.h"
+
 #include "DVDDemuxers\DVDDemux.h"
 #include "DVDStreamInfo.h"
 #include "DVDPlayerAudio.h"
@@ -27,7 +30,7 @@ typedef struct SCurrentStream
 #define DVDPLAYER_AUDIO 1
 #define DVDPLAYER_VIDEO 2
 
-class CDVDPlayer : public IPlayer, public CThread
+class CDVDPlayer : public IPlayer, public CThread, public IDVDPlayer
 {
 public:
 	CDVDPlayer(IPlayerCallback& callback);

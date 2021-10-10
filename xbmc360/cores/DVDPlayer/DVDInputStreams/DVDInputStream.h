@@ -4,25 +4,25 @@
 enum DVDStreamType
 {
 	DVDSTREAM_TYPE_NONE   = -1,
-	DVDSTREAM_TYPE_FILE   = 1
-	// TODO: More Stream types
+	DVDSTREAM_TYPE_FILE   = 1,
 };
 
 class CDVDInputStream
 {
 public:
-	CDVDInputStream();
+	CDVDInputStream(DVDStreamType m_streamType);
 	virtual ~CDVDInputStream();
 
-	virtual bool Open(const char* strFile);
-	virtual void Close();
+	virtual bool Open(const char* strFileName/*, const std::string& content*/) = 0;
+	virtual void Close() = 0;
 
 	const char* GetFileName();
 	bool IsStreamType(DVDStreamType type) { return m_streamType == type; }
+	virtual bool IsEOF() = 0;  
 
 protected:
+	DVDStreamType m_streamType;
 	char* m_strFileName;
-	DVDStreamType m_streamType; 
 };
 
 #endif //H_CDVDINPUTSTREAM

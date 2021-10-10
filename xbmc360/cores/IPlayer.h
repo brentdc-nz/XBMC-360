@@ -18,9 +18,9 @@ public:
 class IPlayer
 {
 public:
-	IPlayer(IPlayerCallback& callback): m_callback(callback) {};
-	virtual ~IPlayer() {};
-	
+  IPlayer(IPlayerCallback& callback): m_callback(callback){};
+  virtual ~IPlayer(){};
+
 	virtual bool OpenFile(const CFileItem& file) { return false; };
 	virtual bool CloseFile(){ return true;};
 	virtual void SeekTime(__int64 iTime = 0){};

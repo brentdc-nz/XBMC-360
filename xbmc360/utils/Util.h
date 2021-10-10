@@ -11,6 +11,7 @@ public:
 	static void SplitExecFunction(const CStdString &execString, CStdString &strFunction, CStdString &strParam);
 	static int ExecBuiltIn(const CStdString& execString);
 	static bool FileExists(CStdString strFullPath) { return (GetFileAttributes(strFullPath.c_str()) != 0xFFFFFFFF); } // TODO : Remove once filesystem is more sorted out
+	static void Stat64ToStat(struct _stat *result, struct __stat64 *stat);
 };
 
 #endif //CUTIL_H
