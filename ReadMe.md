@@ -1,6 +1,8 @@
-# XBMC-360
+# XBMC-360 Alpha
 
 This is a port of XBMC4XBOX to XBox 360 using the Microsoft XBox 360 SDK (not using Linux and Kodi).
+
+This is early stages and still very much a work in progress.
 
 ### Current Status:
 - GUILib - The main controls are working but still have some missing.
@@ -8,7 +10,7 @@ This is a port of XBMC4XBOX to XBox 360 using the Microsoft XBox 360 SDK (not us
 
 Usable but many features still need reimplementation or improvements.
 
-### Compiled build (last updated 31-1-22):
+### Compiled alpha build (last updated 31-1-22):
 https://drive.google.com/file/d/180zj6LYp5p4hlPaH4ZbYpiW614zKXvN7/view
 
 ### Libraries
