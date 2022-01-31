@@ -99,20 +99,11 @@
     <Filter Include="Source Files\guilib\dialogs">
       <UniqueIdentifier>{160f50a0-36a1-4b30-87a3-b166a7ca20ca}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\services">
-      <UniqueIdentifier>{ed9a228e-d6fb-41e6-be50-ee559147dfc6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\services">
       <UniqueIdentifier>{e4c76007-793c-49ae-801b-481117d01531}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\services\NTPClient">
-      <UniqueIdentifier>{78ae9c5c-275a-43e2-8fb7-cdb41c4b5a35}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\services\NTPClient">
       <UniqueIdentifier>{8920ea7c-bfff-4c5f-a61d-26ea8e5eb6b9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\services\FTPServer">
-      <UniqueIdentifier>{a7f68c5b-a8bd-472b-8dbe-6ded6e1d432c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\services\FTPServer">
       <UniqueIdentifier>{ef3f0c0b-69c3-43ca-a8b7-6503111f63b4}</UniqueIdentifier>
@@ -140,6 +131,21 @@
     </Filter>
     <Filter Include="Source Files\filesystem\XBFS_Wrap">
       <UniqueIdentifier>{e8abe415-c964-4b69-b75f-4cbbe62b51a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\guilib\viewstates">
+      <UniqueIdentifier>{1d56bef1-deff-4dee-84a9-b0043feb9efb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\guilib\viewstates">
+      <UniqueIdentifier>{5e7f2937-bf93-4b10-92cc-e5c4cae2f015}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\services">
+      <UniqueIdentifier>{ed9a228e-d6fb-41e6-be50-ee559147dfc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\services\NTPClient">
+      <UniqueIdentifier>{78ae9c5c-275a-43e2-8fb7-cdb41c4b5a35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\services\FTPServer">
+      <UniqueIdentifier>{a7f68c5b-a8bd-472b-8dbe-6ded6e1d432c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -601,6 +607,81 @@
     </ClInclude>
     <ClInclude Include="URL.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\dialogs\GUIDialogMediaSource.h">
+      <Filter>Header Files\guilib\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIListControl.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\windows\GUIWindowPrograms.h">
+      <Filter>Header Files\guilib\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\dialogs\GUIDialogFileBrowser.h">
+      <Filter>Header Files\guilib\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="MediaManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="filesystem\VirtualDirectory.h">
+      <Filter>Header Files\filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="filesystem\IDirectory.h">
+      <Filter>Header Files\filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\IWindowManagerCallback.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="filesystem\Directory.h">
+      <Filter>Header Files\filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="filesystem\FactoryDirectory.h">
+      <Filter>Header Files\filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="filesystem\IFileDirectory.h">
+      <Filter>Header Files\filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="filesystem\FactoryFileDirectory.h">
+      <Filter>Header Files\filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="filesystem\DirectoryHistory.h">
+      <Filter>Header Files\filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\viewstates\GUIViewState.h">
+      <Filter>Header Files\guilib\viewstates</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\viewstates\GUIViewStatePrograms.h">
+      <Filter>Header Files\guilib\viewstates</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\viewstates\GUIViewStateVideos.h">
+      <Filter>Header Files\guilib\viewstates</Filter>
+    </ClInclude>
+    <ClInclude Include="filesystem\MultiPathDirectory.h">
+      <Filter>Header Files\filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\windows\GUIWindowPictures.h">
+      <Filter>Header Files\guilib\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\viewstates\GUIViewStateMusic.h">
+      <Filter>Header Files\guilib\viewstates</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\viewstates\GUIViewStatePictures.h">
+      <Filter>Header Files\guilib\viewstates</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\XEXUtils.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\DVDPlayer\DVDPerformanceCounter.h">
+      <Filter>Header Files\cores\DVDPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\dialogs\GUIDialogContextMenu.h">
+      <Filter>Header Files\guilib\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\dialogs\GUIDialogYesNo.h">
+      <Filter>Header Files\guilib\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIDialogBoxBase.h">
+      <Filter>Header Files\guilib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1095,6 +1176,72 @@
     </ClCompile>
     <ClCompile Include="URL.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\dialogs\GUIDialogMediaSource.cpp">
+      <Filter>Source Files\guilib\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIListControl.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\windows\GUIWindowPrograms.cpp">
+      <Filter>Source Files\guilib\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\dialogs\GUIDialogFileBrowser.cpp">
+      <Filter>Source Files\guilib\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="MediaManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="filesystem\VirtualDirectory.cpp">
+      <Filter>Source Files\filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="filesystem\IDirectory.cpp">
+      <Filter>Source Files\filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="filesystem\Directory.cpp">
+      <Filter>Source Files\filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="filesystem\FactoryDirectory.cpp">
+      <Filter>Source Files\filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="filesystem\FactoryFileDirectory.cpp">
+      <Filter>Source Files\filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="filesystem\DirectoryHistory.cpp">
+      <Filter>Source Files\filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\viewstates\GUIViewState.cpp">
+      <Filter>Source Files\guilib\viewstates</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\viewstates\GUIViewStatePrograms.cpp">
+      <Filter>Source Files\guilib\viewstates</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\viewstates\GUIViewStateVideos.cpp">
+      <Filter>Source Files\guilib\viewstates</Filter>
+    </ClCompile>
+    <ClCompile Include="filesystem\MultiPathDirectory.cpp">
+      <Filter>Source Files\filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\windows\GUIWindowPictures.cpp">
+      <Filter>Source Files\guilib\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\viewstates\GUIViewStateMusic.cpp">
+      <Filter>Source Files\guilib\viewstates</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\viewstates\GUIViewStatePictures.cpp">
+      <Filter>Source Files\guilib\viewstates</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\XEXUtils.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\dialogs\GUIDialogContextMenu.cpp">
+      <Filter>Source Files\guilib\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\dialogs\GUIDialogYesNo.cpp">
+      <Filter>Source Files\guilib\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIDialogBoxBase.cpp">
+      <Filter>Source Files\guilib</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

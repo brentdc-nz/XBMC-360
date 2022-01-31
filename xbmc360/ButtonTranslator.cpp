@@ -98,8 +98,8 @@ WORD CButtonTranslator::TranslateGamepadString(const char *szButton)
 	else if (strButton.Equals("b")) wButtonCode = KEY_BUTTON_B;
 	else if (strButton.Equals("x")) wButtonCode = KEY_BUTTON_X;
 	else if (strButton.Equals("y")) wButtonCode = KEY_BUTTON_Y;
-	else if (strButton.Equals("white")) wButtonCode = KEY_BUTTON_WHITE;
-	else if (strButton.Equals("black")) wButtonCode = KEY_BUTTON_BLACK;
+	else if (strButton.Equals("rightshoulder")) wButtonCode = KEY_BUTTON_RIGHT_SHOULDER;//KEY_BUTTON_WHITE;
+	else if (strButton.Equals("leftshoulder")) wButtonCode = KEY_BUTTON_LEFT_SHOULDER;//KEY_BUTTON_BLACK;
 	else if (strButton.Equals("start")) wButtonCode = KEY_BUTTON_START;
 	else if (strButton.Equals("back")) wButtonCode = KEY_BUTTON_BACK;
 	else if (strButton.Equals("righttrigger")) wButtonCode = KEY_BUTTON_RIGHT_TRIGGER;
@@ -125,7 +125,7 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, int &iAction
 	else if (strAction.Equals("down")) iAction = ACTION_MOVE_DOWN;
 	else if (strAction.Equals("select")) iAction = ACTION_SELECT_ITEM;
 	else if (strAction.Equals("previousmenu")) iAction = ACTION_PREVIOUS_MENU;
-
+	else if (strAction.Equals("contextmenu")) iAction = ACTION_CONTEXT_MENU;
 	else if (strAction.Equals("fullscreen")) iAction = ACTION_SHOW_GUI;
 	else if (strAction.Equals("codecinfo")) iAction = ACTION_SHOW_CODEC;
 	else if (strAction.Equals("pause")) iAction = ACTION_PAUSE;
@@ -134,9 +134,9 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, int &iAction
 	else if (strAction.Equals("stepback")) iAction = ACTION_STEP_BACK;
 	else if (strAction.Equals("bigstepforward")) iAction = ACTION_BIG_STEP_FORWARD;
 	else if (strAction.Equals("bigstepback")) iAction = ACTION_BIG_STEP_BACK;
-
 	else
 		CLog::Log(LOGERROR, "Keymapping error: no such action '%s' defined", strAction.c_str());
+
 	return (iAction != ACTION_NONE);
 }
 
@@ -181,18 +181,22 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
 		else 
 			wWindowID = WINDOW_HOME + iWindow;
 	}
-	//Windows
+	// Windows
 	else if (strWindow.Equals("home")) wWindowID = WINDOW_HOME;
+	else if (strWindow.Equals("myprograms")) wWindowID = WINDOW_PROGRAMS;
 	else if (strWindow.Equals("fullscreenvideo")) wWindowID = WINDOW_FULLSCREEN_VIDEO;
 	else if (strWindow.Equals("myprograms")) wWindowID = WINDOW_PROGRAMS;
 	else if (strWindow.Equals("myvideos")) wWindowID = WINDOW_VIDEOS;
 	else if (strWindow.Equals("mymusic")) wWindowID = WINDOW_MUSIC;
+	else if (strWindow.Equals("mypictures")) wWindowID = WINDOW_PICTURES;
 	else if (strWindow.Equals("settings")) wWindowID = WINDOW_SETTINGS;
 	else if (strWindow.Equals("appearancesettings")) wWindowID = WINDOW_SETTINGS_APPEARANCE;
 	else if (strWindow.Equals("screensaver")) wWindowID = WINDOW_SCREENSAVER;
 	else if (strWindow.Equals("systeminfo")) wWindowID = WINDOW_SYSTEM_INFORMATION;
-	//Dialogs
+	// Dialogs
 	else if (strWindow.Equals("shutdownmenu")) wWindowID = WINDOW_DIALOG_BUTTON_MENU;
+	else if (strWindow.Equals("seekbar")) wWindowID = WINDOW_DIALOG_SEEK_BAR;
+	else if (strWindow.Equals("mediasource")) wWindowID = WINDOW_DIALOG_MEDIA_SOURCE;
 	else
 		CLog::Log(LOGERROR, "Window Translator: Can't find window %s", strWindow.c_str());
 

@@ -1,5 +1,5 @@
 #include "FTPServer.h"
-#include "..\..\utils\log.h"
+#include "utils\Log.h"
 #include "winsockx.h"
 
 CFTPServer::CFTPServer()

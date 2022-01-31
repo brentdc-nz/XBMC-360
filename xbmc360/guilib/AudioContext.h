@@ -2,7 +2,6 @@
 #define GUILIB_AUDIOCONTEXT_H
 
 #include <xaudio2.h>
-#include "..\utils\stdafx.h"
 
 class CAudioContext
 {
@@ -18,7 +17,6 @@ public:
 
 protected:
 	bool m_bInitialized;
-
 	IXAudio2* m_pXAudio2;
 	IXAudio2MasteringVoice* m_pMasteringVoice;	
 };

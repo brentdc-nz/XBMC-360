@@ -1,5 +1,5 @@
 <window id="0">
-	<defaultcontrol>2</defaultcontrol>
+	<defaultcontrol>3117</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<controls>
 	
@@ -17,7 +17,7 @@
 		<control>
 			<description>system info button</description>
 			<type>button</type>
-			<id>1</id>
+			<id>3116</id>
 			<posx>550</posx>
 			<posy>305</posy>
 			<width>90</width>
@@ -25,10 +25,10 @@
 			<label>System Info</label>
 			<font>-</font>
 			<onclick>XBMC.ActivateWindow(systeminfo)</onclick>
-			<onleft>3</onleft>
-			<onright>2</onright>
-			<onup>1</onup>
-			<ondown>1</ondown>
+			<onleft>3118</onleft>
+			<onright>3117</onright>
+			<onup>3116</onup>
+			<ondown>3116</ondown>
 			<texturefocus>sub_info_focus.png</texturefocus>
 			<texturenofocus>sub_info_nofocus.png</texturenofocus>
 			<textoffsetx>52</textoffsetx>
@@ -39,7 +39,7 @@
 		<control>
 			<description>shutdown console button</description>
 			<type>button</type>
-			<id>2</id>
+			<id>3117</id>
 			<posx>640</posx>
 			<posy>305</posy>			
 			<width>90</width>
@@ -47,10 +47,10 @@
 			<label>Shutdown</label>
 			<font>-</font>
 			<onclick>XBMC.Shutdown()</onclick>
-			<onleft>1</onleft>
-			<onright>3</onright>
-			<onup>2</onup>
-			<ondown>2</ondown>
+			<onleft>3116</onleft>
+			<onright>3118</onright>
+			<onup>3117</onup>
+			<ondown>3117</ondown>
 			<texturefocus>sub_shutdown_focus.png</texturefocus>
 			<texturenofocus>sub_shutdown_nofocus.png</texturenofocus>
 			<textoffsetx>52</textoffsetx>
@@ -61,7 +61,7 @@
 		<control>
 			<description>reboot console button</description>
 			<type>button</type>
-			<id>3</id>
+			<id>3118</id>
 			<posx>730</posx>
 			<posy>305</posy>			
 			<width>90</width>
@@ -69,10 +69,10 @@
 			<label>Reboot</label>
 			<font>-</font>
 			<onclick>XBMC.Reboot()</onclick>
-			<onleft>2</onleft>
-			<onright>1</onright>
-			<onup>3</onup>
-			<ondown>3</ondown>
+			<onleft>3117</onleft>
+			<onright>3116</onright>
+			<onup>3118</onup>
+			<ondown>3118</ondown>
 			<texturefocus>sub_reboot_focus.png</texturefocus>
 			<texturenofocus>sub_reboot_nofocus.png</texturenofocus>
 			<textoffsetx>52</textoffsetx>

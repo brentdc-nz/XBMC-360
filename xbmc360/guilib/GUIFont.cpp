@@ -64,7 +64,7 @@ bool CGUIFont::Reload(DWORD dwStyles)
 	return true;
 }
 
-bool CGUIFont::DrawText(float fPosX, float fPosY, DWORD dwColor, const CStdString strText, DWORD dwFlags/* = XUI_FONT_STYLE_NORMAL*/)
+bool CGUIFont::DrawText(float fPosX, float fPosY, DWORD dwColor, const CStdString strText, float fMaxPixelWidth, float fMaxPixelHeight, DWORD dwFlags/* = XUI_FONT_STYLE_NORMAL*/)
 {
 	if (!g_graphicsContext.IsFullScreenVideo())
 		GRAPHICSCONTEXT_LOCK()
@@ -73,7 +73,7 @@ bool CGUIFont::DrawText(float fPosX, float fPosY, DWORD dwColor, const CStdStrin
 	wstring wstrText;
 	CStringUtils::StringtoWString(strText, wstrText);
 
-	XuiRenderBegin( g_graphicsContext.GetXUIDevice(), D3DCOLOR_ARGB(255,0,0,0) );
+	XuiRenderBegin(g_graphicsContext.GetXUIDevice(), D3DCOLOR_ARGB(255,0,0,0));
 
 	// If our font syle changed we need to recreate our font..
 	// Why does XUI make this a pain to do ugh..
@@ -88,10 +88,25 @@ bool CGUIFont::DrawText(float fPosX, float fPosY, DWORD dwColor, const CStdStrin
 	XUIRect clipRect(0, 0, (float)g_graphicsContext.GetWidth()/* - fPosX*/, (float)g_graphicsContext.GetHeight()/* - fPosY*/);
 	XuiMeasureText(m_Font, wstrText.c_str(), -1, dwFlags, 0, &clipRect);
 
-	if(dwFlags & XUI_FONT_STYLE_RIGHT_ALIGN) // HACK: Using XUI to do this should be easy, but it's a pain in the butt...
+	if(dwFlags & XUI_FONT_STYLE_RIGHT_ALIGN)
 	{
 		clipRect.right = g_graphicsContext.GetWidth() - fPosX + clipRect.GetWidth();
 		fPosX = fPosX - clipRect.GetWidth();
+	}
+	else if(dwFlags & XUI_FONT_STYLE_CENTER_ALIGN)
+	{
+		float fTextCenter = clipRect.right / 2;
+		float fControlCenter = fMaxPixelWidth / 2;
+		fPosX += fControlCenter;
+		fPosX -= fTextCenter;
+	}
+
+	if(dwFlags & XUI_FONT_STYLE_VERTICAL_CENTER)
+	{
+		float fTextCenter = clipRect.bottom / 2;
+		float fControlCenter = fMaxPixelHeight / 2;
+		fPosY += fControlCenter;
+		fPosY -= fTextCenter;
 	}
 
 	// Set the text position in the device context
@@ -146,7 +161,7 @@ bool CGUIFont::DrawTextWidth(float fPosX, float fPosY, DWORD dwColor, const CStd
 	XUIRect clipRect( 0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight());
 	XuiMeasureText( m_Font, wstrText.c_str(), -1, dwFlags, 0, &clipRect );
 
-	if(dwFlags & XUI_FONT_STYLE_RIGHT_ALIGN) // HACK: Using XUI to do this should be easy, but it's a pain in the butt...
+	if(dwFlags & XUI_FONT_STYLE_RIGHT_ALIGN)
 	{
 		clipRect.right = g_graphicsContext.GetWidth() - fPosX + clipRect.GetWidth();
 		fPosX = fPosX - clipRect.GetWidth();

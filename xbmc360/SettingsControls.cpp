@@ -53,7 +53,8 @@ CSpinExSettingControl::CSpinExSettingControl(CGUISpinControlEx *pSpin, DWORD dwI
 }
 
 CSpinExSettingControl::~CSpinExSettingControl()
-{}
+{
+}
 
 void CSpinExSettingControl::OnClick()
 {

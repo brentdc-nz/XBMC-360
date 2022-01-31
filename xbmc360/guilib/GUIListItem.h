@@ -30,16 +30,31 @@ public:
 	CGUIListItem(void);
 	~CGUIListItem(void);
 
-	CStdString GetLabel() { return m_strLabel; };
-
+	virtual void SetLabel(const CStdString& strLabel);
+	const CStdString& GetLabel() const;
+	void SetThumbnailImage(const CStdString& strThumbnail);
+	const CStdString& GetThumbnailImage() const;
 	void SetThumbnail(CGUIImage* pImage);
+	bool HasThumbnail() const;
 	CGUIImage* GetThumbnail();
+	void SetIconImage(const CStdString& strIcon);
+	const CStdString& GetIconImage() const;
+	bool HasIcon() const;
+	void SetIcon(CGUIImage* pImage);
+	CGUIImage* GetIcon();
+	void Select(bool bOnOff);
+	bool IsSelected() const;
 
 	bool m_bIsFolder; // Is item a folder or a file
 
 protected:
 	CStdString m_strLabel;
-	CGUIImage* m_pThumbnailImage;  // Pointer to CImage containing the thumbnail
+	CStdString m_strThumbnailImage; // Filename of thumbnail
+	CStdString m_strIcon; // Filename of icon
+
+	CGUIImage* m_pIconImage; // pointer to CImage containing the icon
+	CGUIImage* m_pThumbnailImage; // Pointer to CImage containing the thumbnail
+	bool m_bSelected; // Item is selected or not
 };
 
 #endif //GUILIB_GUILISTITEM_H

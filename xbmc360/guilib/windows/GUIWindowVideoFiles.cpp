@@ -19,7 +19,12 @@
  */
 
 #include "GUIWindowVideoFiles.h"
-#include "..\..\FileItem.h"
+#include "FileItem.h"
+#include "utils\log.h"
+#include "MediaManager.h"
+#include "utils\Util.h"
+#include "guilib\LocalizeStrings.h"
+#include "guilib\dialogs\GUIDialogMediaSource.h"
 
 CGUIWindowVideoFiles::CGUIWindowVideoFiles(void) : CGUIMediaWindow(WINDOW_VIDEOS, "MyVideos.xml")
 {
@@ -32,25 +37,78 @@ CGUIWindowVideoFiles::~CGUIWindowVideoFiles(void)
 
 bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
 {
-	switch (message.GetMessage())
+	switch(message.GetMessage())
 	{
 		case GUI_MSG_WINDOW_INIT:
 		{
-			//TEST
-			if(!Update("D:\\testvideos\\"))
+			// Check for a passed destination path
+			CStdString strDestination = message.GetStringParam();
+			if(!strDestination.IsEmpty())
 			{
+				message.SetStringParam("");
+//				g_stSettings.m_iVideoStartWindow = GetID();
+				CLog::Log(LOGINFO, "Attempting to quickpath to: %s", strDestination.c_str());
+
+				// Reset directory path, as we have effectively cleared it here
+				m_history.ClearPathHistory();
 			}
 
-			m_viewControl.SetCurrentView(VIEW_METHOD_THUMBS);
-			//TEST END
+			// Is this the first time accessing this window?
+			// A quickpath overrides the a default parameter
+			if(m_vecItems.m_strPath == "?" && strDestination.IsEmpty())
+			{
+				m_vecItems.m_strPath = strDestination;// = g_stSettings.m_szDefaultVideos; //CHECK ME
+				CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
+			}
 
+			// Try to open the destination path
+			if(!strDestination.IsEmpty())
+			{
+				// Open root
+				if(strDestination.Equals("$ROOT"))
+				{
+					m_vecItems.m_strPath = "";
+					CLog::Log(LOGINFO, "  Success! Opening root listing.");
+				}
+				else
+				{
+					// Default parameters if the jump fails
+					m_vecItems.m_strPath = "";
+
+					bool bIsBookmarkName = false;
+
+					SetupShares();
+					VECSOURCES shares;
+					m_rootDir.GetShares(shares);
+
+					int iIndex = -1; // CUtil::GetMatchingShare(strDestination, shares, bIsBookmarkName);// CHECK ME
+
+					if(iIndex > -1)
+					{
+						if(bIsBookmarkName)
+							m_vecItems.m_strPath=shares[iIndex].strPath;
+						else
+							m_vecItems.m_strPath=strDestination;
+
+						CUtil::RemoveSlashAtEnd(m_vecItems.m_strPath);
+						CLog::Log(LOGINFO, "  Success! Opened destination path: %s", strDestination.c_str());
+					}
+					else
+					{
+						CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) does not match a valid share!", strDestination.c_str());
+					}
+				}
+				SetHistoryForPath(m_vecItems.m_strPath);
+			}
 			return CGUIMediaWindow::OnMessage(message);
 		}
+		break;
+
+
 		case GUI_MSG_WINDOW_DEINIT:
 		{
 			return CGUIMediaWindow::OnMessage(message);
 		}
-
 		break;
 	}
 
@@ -59,31 +117,44 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
 
 bool CGUIWindowVideoFiles::OnClick(int iItem)
 {
-	if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return true;
+	if( iItem < 0 || iItem >= (int)m_vecItems.Size()) return true;
 	CFileItem* pItem = m_vecItems[iItem];
 
-	//TODO - Get info from file
-/*	CStdString strExtension;
-	CUtil::GetExtension(pItem->m_strPath, strExtension);
 
-	if (strcmpi(strExtension.c_str(), ".nfo") == 0)
-	{
-		OnInfo(iItem);
-		return true;
-	}
-*/
 	return CGUIMediaWindow::OnClick(iItem);
 }
 
 bool CGUIWindowVideoFiles::Update(const CStdString &strDirectory)
 {
-	if (m_thumbLoader.IsLoading())
+	if(m_thumbLoader.IsLoading())
 		m_thumbLoader.StopThread();
 
-	if (!CGUIMediaWindow::Update(strDirectory))
+	if(!CGUIMediaWindow::Update(strDirectory))
 		return false;
 
 	m_thumbLoader.Load(m_vecItems);
-
 	return true;
+}
+
+// What is done when the user clicks on a file.
+// This function is called by OnClick()
+bool CGUIWindowVideoFiles::OnPlayMedia(int iItem)
+{
+	if( iItem < 0 || iItem >= (int)m_vecItems.Size()) return false;
+	CFileItem* pItem = m_vecItems[iItem];
+
+//	if(pItem->m_bIsShareOrDrive)
+//		return false;
+
+	if(pItem->GetPath() == "add" && pItem->GetLabel() == /*g_localizeStrings.Get(1026)*/"Add source") // 'add source button' in empty root
+	{
+		if(CGUIDialogMediaSource::ShowAndAddMediaSource("videos"))
+		{
+			Update("");
+			return true;
+		}
+		return false;
+	}
+
+	return CGUIMediaWindow::OnPlayMedia(iItem);
 }

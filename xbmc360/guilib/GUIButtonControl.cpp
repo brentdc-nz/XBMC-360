@@ -40,6 +40,14 @@ CGUIButtonControl::~CGUIButtonControl(void)
 {
 }
 
+void CGUIButtonControl::AllocResources()
+{
+	CGUIControl::AllocResources();
+
+	m_imgFocus.AllocResources();
+	m_imgNoFocus.AllocResources();
+}
+
 void CGUIButtonControl::DynamicResourceAlloc(bool bOnOff)
 {
 	CGUIControl::DynamicResourceAlloc(bOnOff);
@@ -53,6 +61,12 @@ void CGUIButtonControl::Update()
 {
 	m_imgFocus.SetPosition(m_posX, m_posY);
 	m_imgNoFocus.SetPosition(m_posX, m_posY);
+
+	m_imgFocus.SetWidth(m_width);
+	m_imgFocus.SetHeight(m_height);
+
+	m_imgNoFocus.SetWidth(m_width);
+	m_imgNoFocus.SetHeight(m_height);
 
 	m_label.SetPosition(m_posX, m_posY);
 	m_label2.SetPosition(m_posX, m_posY);
@@ -110,6 +124,11 @@ void CGUIButtonControl::Render()
 
 void CGUIButtonControl::RenderText()
 {
+	if(IsDisabled())
+		m_label.SetDisabledColor(true);
+	else
+		m_label.SetDisabledColor(false);
+
 	m_label.Render();
 }
 
@@ -123,6 +142,19 @@ bool CGUIButtonControl::OnAction(const CAction &action)
 	return CGUIControl::OnAction(action);
 }
 
+bool CGUIButtonControl::OnMessage(CGUIMessage& message)
+{
+	if(message.GetControlId() == GetID())
+	{
+		if(message.GetMessage() == GUI_MSG_LABEL_SET)
+		{
+			SetLabel(message.GetLabel());
+			return true;
+		}
+	}
+	return CGUIControl::OnMessage(message);
+}
+
 void CGUIButtonControl::OnClick()
 {
 	// Save values, SEND_CLICK_MESSAGE may deactivate the window
@@ -131,8 +163,8 @@ void CGUIButtonControl::OnClick()
 	DWORD dwControlID = GetID();
 	DWORD dwParentID = GetParentID();
 
-	// button selected, send a message
-	CGUIMessage msg(GUI_MSG_CLICKED, m_parentID, m_controlID, 0);
+	// Button selected, send a message
+	CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), 0);
 	g_windowManager.SendMessage(msg); 
 
 	if (clickActions.size())
@@ -145,11 +177,6 @@ void CGUIButtonControl::OnClick()
 		}
 		return;
 	}
-
-//  if (lHyperLinkWindowID != WINDOW_INVALID)
-//  {
- //		g_windowManager.ActivateWindow(lHyperLinkWindowID);
- // }
 }
 
 void CGUIButtonControl::SetLabel(const string &label)

@@ -1,0 +1,57 @@
+<window id="106">
+	<defaultcontrol>1000</defaultcontrol>
+	<controls>
+	
+		<control>
+			<description>background top image</description>
+			<type>image</type>			
+			<posx>575</posx>
+			<posy>240</posy>
+			<width>420</width>
+			<height>26</height>
+			<visible>true</visible>			
+			<texture>dialog-context-top.png</texture>
+		</control>		
+	
+		<control>
+			<description>background image</description>
+			<id>999</id>			
+			<type>image</type>				
+			<posx>575</posx>
+			<posy>266</posy>
+			<width>420</width>
+			<height>250</height>
+			<visible>true</visible>			
+			<texture>dialog-context-middle.png</texture>
+		</control>	
+	
+		<control>
+			<description>background bottom image</description>
+			<id>998</id>
+			<type>image</type>				
+			<posx>575</posx>
+			<posy>516</posy>
+			<width>420</width>
+			<height>26</height>
+			<visible>true</visible>				
+			<texture>dialog-context-bottom.png</texture>
+		</control>	
+	
+		<control>
+			<description>button template</description>
+			<id>1000</id>
+			<type>button</type>
+			<posx>610</posx>
+			<posy>270</posy>
+			<width>365</width>
+			<height>40</height>
+			<font>special13</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>true</visible>	
+			<texturenofocus>keyboard-btn-space.png</texturenofocus>
+			<texturefocus>keyboard-btn-space-focus2.png</texturefocus>
+		</control>	
+
+	</controls>
+</window>

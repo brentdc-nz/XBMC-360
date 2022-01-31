@@ -4,6 +4,7 @@
 #include "..\utils\Stdafx.h"
 #include "..\utils\CriticalSection.h"
 #include "IMsgTargetCallback.h"
+#include "IWindowManagerCallback.h"
 #include "GUIWindow.h"
 #include "GUIMessage.h"
 
@@ -28,10 +29,13 @@ public:
 	void SendThreadMessage(CGUIMessage& message);
 	void DispatchThreadMessages();
 	bool SendMessage(CGUIMessage& message);
+	void AddUniqueInstance(CGUIWindow *window);
 	void Add(CGUIWindow* pWindow);
 	void LoadNotOnDemandWindows();
 	void UnloadNotOnDemandWindows();
 	CGUIWindow* GetWindow(int id) const;
+	void Process(bool renderOnly = false);
+	void SetCallback(IWindowManagerCallback& callback);
 	int GetActiveWindow() const;
 	bool HasDialogOnScreen() const;
 	bool IsWindowActive(int id);
@@ -43,20 +47,12 @@ public:
 	void RemoveDialog(DWORD dwID);
 	void ChangeActiveWindow(int iNewID);
 	void ActivateWindow(int iWindowID, bool swappingWindows = false);
-
 	// OnAction() runs through our active dialogs and windows and sends the message
 	// off to the callbacks (application, python, playlist player) and to the
 	// currently focused window(s).  Returns true only if the message is handled.
 	bool OnAction(const CAction &action);
-
 	void Render();
 	void RenderDialogs();
-
-	/*! \brief Per-frame updating of the current window and any dialogs
-	FrameMove is called every frame to update the current window and any dialogs
-	on screen. It should only be called from the application thread.
-	*/
-	void FrameMove();
 	void AddToWindowHistory(int newWindowID);
 	void DeInitialize();
 	void ClearWindowHistory();
@@ -68,7 +64,7 @@ private:
 	WindowMap m_mapWindows;
 
 	std::stack<int> m_windowHistory;
-
+	IWindowManagerCallback* m_pCallback;
 	std::vector <CGUIWindow*> m_activeDialogs;
 	std::vector < std::pair<CGUIMessage*,int> > m_vecThreadMessages;
 	typedef std::vector<CGUIWindow*>::iterator iDialog;

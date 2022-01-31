@@ -2,7 +2,7 @@
 
 CGUISpinControlEx::CGUISpinControlEx(int parentID, int controlID, float posX, float posY, float width, float height, float spinWidth, float spinHeight, const CLabelInfo& spinInfo, const CTextureInfo &textureFocus, const CTextureInfo &textureNoFocus, const CTextureInfo& textureUp, const CTextureInfo& textureDown, const CTextureInfo& textureUpFocus, const CTextureInfo& textureDownFocus, const CLabelInfo& labelInfo, int iType)
     : CGUISpinControl(parentID, controlID, posX, posY, spinWidth, spinHeight, textureUp, textureDown, textureUpFocus, textureDownFocus, spinInfo, iType)
-    , m_buttonControl(parentID, controlID, posX, posY, width, height, textureFocus, textureNoFocus, labelInfo),
+    , m_buttonControl(parentID, controlID, posX, posY, width, height, /*textureFocus*/textureNoFocus, textureNoFocus, labelInfo), // TODO: Remove null texture and delete m_focus
 	m_focus(posX, posY, width+35, height, textureFocus) //HACK - FIXME
 {
 	ControlType = GUICONTROL_SPINEX;
@@ -17,12 +17,12 @@ void CGUISpinControlEx::Render()
 {
 	if (!IsVisible()) return;
 
-	// make sure the button has focus if it should have...
+	// Make sure the button has focus if it should have...
 	m_buttonControl.SetFocus(HasFocus());
 	m_buttonControl.Render();
 
 	if(HasFocus())
-		m_focus.Render(); //HACK - Remove me and use button class
+		m_focus.Render(); // TODO: Remove me and use button member
 
 	CGUISpinControl::Render();
 }
@@ -47,7 +47,7 @@ void CGUISpinControlEx::AllocResources()
 	CGUISpinControl::AllocResources();
 	m_buttonControl.AllocResources();
 
-	m_focus.SetVisible(true); //HACK - Remove me and use button class
+	m_focus.SetVisible(true);
 	m_focus.AllocResources();
 
 	SetPosition((float)GetXPosition(), (float)GetYPosition());

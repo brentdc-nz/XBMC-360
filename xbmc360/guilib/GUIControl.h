@@ -55,6 +55,9 @@ public:
 	virtual void Render();
 	virtual bool OnMessage(CGUIMessage& message);
 
+	virtual void SetEnabled(bool bEnable);
+	virtual bool CanFocus() const;
+	virtual bool IsDisabled() const;
 	virtual bool IsVisible() const;
 	virtual void SetVisible(bool bVisible);
 	virtual void SetVisibleCondition(int visible/*, const CGUIInfoBool &allowHiddenFocus*/);
@@ -70,6 +73,7 @@ public:
 	DWORD GetControlIdDown() const { return m_dwControlDown;};
 	DWORD GetControlIdLeft() const { return m_dwControlLeft;};
 	DWORD GetControlIdRight() const { return m_dwControlRight;};
+	virtual DWORD GetNextControl(int direction) const;
 	virtual void DynamicResourceAlloc(bool bOnOff);
 	virtual bool IsDynamicallyAllocated() { return false; };
 	virtual bool IsAllocated() { return m_bAllocated; };
@@ -80,10 +84,12 @@ public:
 
 	void SetFocus(bool bOnOff);
 
-	int GetXPosition() const;
-	int GetYPosition() const;
-	int GetWidth() const;
-	int GetHeight() const;
+	float GetXPosition() const;
+	float GetYPosition() const;
+	float GetWidth() const;
+	float GetHeight() const;
+	virtual void SetWidth(float iWidth);
+	virtual void SetHeight(float iHeight);
 
 	enum GUICONTROLTYPES {
 		GUICONTROL_UNKNOWN,
@@ -122,7 +128,6 @@ public:
 		GUICONTROL_SCROLLBAR,
 		GUICONTROL_LISTLABEL,
 		GUICONTROL_MULTISELECT,
-		GUICONTAINER_LIST,
 		GUICONTAINER_WRAPLIST,
 		GUICONTAINER_FIXEDLIST,
 		GUICONTAINER_THUMBNAILPANEL

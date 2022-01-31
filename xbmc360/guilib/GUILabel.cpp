@@ -26,8 +26,12 @@ CGUILabel::CGUILabel(float posX, float posY, float width, float height, const CL
 	m_label = labelInfo;
 	m_strText = "";
 
-	m_iPosX = posX;
-	m_iPosY = posY;
+	m_fWidth = width;
+	m_fHeight = height;
+	m_fPosX = posX;
+	m_fPosY = posY;
+
+	m_bDisabled = false;
 }
 
 CGUILabel::~CGUILabel(void)
@@ -46,13 +50,19 @@ CStdString CGUILabel::GetText()
 
 void CGUILabel::SetPosition(float fPosX, float fPosY)
 {
-	m_iPosX = fPosX;
-	m_iPosY = fPosY;
+	m_fPosX = fPosX;
+	m_fPosY = fPosY;
+}
+
+void CGUILabel::SetDisabledColor(bool bDisabled)
+{
+	m_bDisabled = bDisabled;
 }
 
 void CGUILabel::Render()
 {
-	if(m_strText.IsEmpty()) // Not used for some buttons
+	// Not used for some buttons
+	if(m_strText.IsEmpty())
 		return;
 
 	if(!m_label.font)
@@ -61,5 +71,12 @@ void CGUILabel::Render()
 		return;
 	}
 
-	m_label.font->DrawText(m_iPosX + m_label.offsetX, m_iPosY + m_label.offsetY, m_label.dwTextColor, m_strText, m_label.dwAlign );
+	DWORD dwColor = 0;
+
+	if(m_bDisabled)
+		dwColor = m_label.dwDisabledTextColor;
+	else
+		dwColor = m_label.dwTextColor;
+
+	m_label.font->DrawText(m_fPosX + m_label.offsetX, m_fPosY + m_label.offsetY, dwColor, m_strText, m_fWidth, m_fHeight, m_label.dwAlign);
 }

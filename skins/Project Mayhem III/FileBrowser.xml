@@ -1,0 +1,129 @@
+<window id="126">
+	<defaultcontrol>450</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+	
+		<control>
+			<description>background image</description>
+			<type>image</type>
+			<id>1</id>
+			<posx>20</posx>
+			<posy>20</posy>
+			<width>1240</width>
+			<height>710</height>
+			<texture>dialog-panel2.png</texture>
+			<visible>true</visible>	
+		</control>
+
+		<control>
+			<description>heading label</description>
+			<type>label</type>
+			<id>411</id>
+			<posx>80</posx>
+			<posy>45</posy>
+			<width>420</width>
+			<align>left</align>
+			<font>special13</font>
+			<label>1023</label>
+			<textcolor>DDced8da</textcolor>
+			<visible>true</visible>	
+		</control>
+
+		<control>
+			<description>path label control</description>
+			<type>label</type>
+			<id>412</id>
+			<posx>80</posx>
+			<posy>78</posy>
+			<width>420</width>
+			<align>left</align>
+			<font>font12</font>
+			<visible>true</visible>
+		</control>
+
+		<control>
+			<description>list panel</description>
+			<type>list</type>
+			<id>450</id>
+			<posx>585</posx>
+			<posy>132</posy>
+			<width>610</width>
+			<height>550</height>		
+			<onleft>413</onleft>
+			<onright>413</onright>
+			<onup>450</onup>
+			<ondown>450</ondown>
+			<spacebetweenitems>2</spacebetweenitems>
+			<texturefocus>input-focus.png</texturefocus>
+			<texturenofocus>input-nofocus.png</texturenofocus>		
+			<font>special13</font>
+			<textcolor>ffffffff</textcolor>			
+			<selectedcolor>60ffffff</selectedcolor>
+			<visible>true</visible>	
+		</control>
+	
+		<control>
+			<description>ok button</description>
+			<type>button</type>
+			<id>413</id>
+			<posx>100</posx>
+			<posy>515</posy>
+			<width>455</width>
+			<height>45</height>
+			<align>center</align>
+			<aligny>center</aligny>
+			<label>OK</label>
+			<font>special13</font>
+			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+			<onleft>450</onleft>
+			<onright>450</onright>
+			<onup>415</onup>
+			<ondown>414</ondown>
+			<visible>true</visible>				
+		</control>
+	
+		<control>
+			<description>cancel button</description>
+			<type>button</type>
+			<id>414</id>
+			<posx>100</posx>
+			<posy>563</posy>
+			<width>455</width>
+			<height>45</height>
+			<align>center</align>
+			<aligny>center</aligny>
+			<label>Cancel</label>
+			<font>special13</font>
+			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+			<onleft>450</onleft>
+			<onright>450</onright>
+			<onup>413</onup>
+			<ondown>415</ondown>
+			<visible>true</visible>				
+		</control>
+
+		<control>
+			<description>create folder button</description>
+			<type>button</type>
+			<id>415</id>
+			<posx>100</posx>
+			<posy>611</posy>
+			<width>455</width>
+			<height>45</height>
+			<align>center</align>
+			<aligny>center</aligny>
+			<label>New folder</label>
+			<font>special13</font>
+			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+			<onleft>450</onleft>
+			<onright>450</onright>
+			<onup>414</onup>
+			<ondown>413</ondown>
+			<visible>true</visible>				
+		</control>
+
+	</controls>
+</window>	

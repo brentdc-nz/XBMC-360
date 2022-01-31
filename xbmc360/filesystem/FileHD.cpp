@@ -35,7 +35,7 @@ bool CFileHD::OpenForWrite(const CURL& strURL, bool bOverWrite)
 
 	m_hFile.attach(CreateFile(strPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, bOverWrite ? CREATE_ALWAYS : OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL));
 
-	if(!m_hFile.isValid()) 
+	if(!m_hFile.isValid())
 		return false;
 
 	m_i64FilePos = 0;
@@ -46,7 +46,6 @@ bool CFileHD::OpenForWrite(const CURL& strURL, bool bOverWrite)
 
 	return true;
 }
-
 
 __int64 CFileHD::GetLength()
 {

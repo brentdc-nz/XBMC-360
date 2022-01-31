@@ -30,7 +30,8 @@ CGUIWindow::~CGUIWindow(void)
 bool CGUIWindow::Initialize()
 {
 	if (!g_windowManager.Initialized())
-		return false;     // can't load if we have no skin yet
+		return false; // Can't load if we have no skin yet
+
 	return Load(m_xmlFile);
 }
 
@@ -70,7 +71,7 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
 
 bool CGUIWindow::OnMessage(CGUIMessage& message)
 {
-	switch ( message.GetMessage() )
+	switch(message.GetMessage())
 	{
 		case GUI_MSG_WINDOW_INIT:
 		{
@@ -90,13 +91,41 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
 		}
 		break;
 
+		case GUI_MSG_MOVE:
+		{
+//			if(HasID(message.GetSenderId())) // TODO
+				return OnMove(message.GetControlId(), message.GetParam1());
+			break;
+		}
+
+		case GUI_MSG_SETFOCUS:
+		{
+			// First unfocus the current control
+			CGUIControl *control = GetFocusedControl();
+			if(control)
+			{
+				CGUIMessage msgLostFocus(GUI_MSG_LOSTFOCUS, GetID(), control->GetID(), message.GetControlId());
+				control->OnMessage(msgLostFocus);
+			}
+
+			// Get the control to focus
+			CGUIControl* pFocusedControl = GetFirstFocusableControl(message.GetControlId());
+			if(!pFocusedControl) pFocusedControl = (CGUIControl *)GetControl(message.GetControlId());
+
+			// And focus it
+			if(pFocusedControl)
+				return pFocusedControl->OnMessage(message);
+
+			break;
+		}
+
 		case GUI_MSG_NOTIFY_ALL:
 		{
 			// Only process those notifications that come from this window, or those intended for every window
-			if ((GetID() == message.GetSenderId()) || !message.GetSenderId())
+			if((GetID() == message.GetSenderId()) || !message.GetSenderId())
 			{
-				if (message.GetParam1() == GUI_MSG_SCROLL_CHANGE)//||
-//					message.GetParam1() == GUI_MSG_REFRESH_THUMBS || // TODO
+				if(message.GetParam1() == GUI_MSG_SCROLL_CHANGE)//||
+//				    message.GetParam1() == GUI_MSG_REFRESH_THUMBS || // TODO
 //					message.GetParam1() == GUI_MSG_REFRESH_LIST) // TODO
 				{
 					ivecControls it;
@@ -172,7 +201,7 @@ void CGUIWindow::RemoveControl(DWORD dwId)
 	}
 }
 
-  /// \brief Called on window open.
+/// \brief Called on window open.
 ///  * Restores the control state(s)
 ///  * Sets initial visibility of controls
 ///  * Queue WindowOpen animation
@@ -221,9 +250,9 @@ void CGUIWindow::Render()
 bool CGUIWindow::OnAction(const CAction &action)
 {
 	CGUIControl *focusedControl = GetFocusedControl();
-	if (focusedControl)
+	if(focusedControl)
 	{
-		if (focusedControl->OnAction(action))
+		if(focusedControl->OnAction(action))
 			return true;
 	}
 	else
@@ -235,7 +264,7 @@ bool CGUIWindow::OnAction(const CAction &action)
 	}
 
 	// Default implementations
-	if (action.GetID() == ACTION_NAV_BACK || action.GetID() == ACTION_PREVIOUS_MENU)
+	if(action.GetID() == ACTION_NAV_BACK || action.GetID() == ACTION_PREVIOUS_MENU)
 		return OnBack(action.GetID());
 
   return false;
@@ -312,6 +341,25 @@ void CGUIWindow::ClearAll()
 	m_dynamicResourceAlloc = true;
 }
 
+// Find the first focusable control with this id.
+// if no focusable control exists with this id, return NULL
+CGUIControl *CGUIWindow::GetFirstFocusableControl(int id)
+{
+	for(ivecControls i = m_vecControls.begin();i != m_vecControls.end(); ++i)
+	{
+		CGUIControl* pControl = *i;
+/*		if(pControl->IsGroup())
+		{
+			CGUIControlGroup *group = (CGUIControlGroup *)pControl;
+			CGUIControl *control = group->GetFirstFocusableControl(id);
+			if(control) return control;
+		}
+*/		if(pControl->GetID() == id && pControl->CanFocus())
+			return pControl;
+	}
+	return NULL;
+}
+
 int CGUIWindow::GetFocusedControlID() const
 {
 	for (int i = 0;i < (int)m_vecControls.size(); ++i)
@@ -333,6 +381,51 @@ CGUIControl *CGUIWindow::GetFocusedControl() const
 		}
 	}
 	return NULL;
+}
+
+bool CGUIWindow::OnMove(int fromControl, int moveAction)
+{
+	const CGUIControl *control = GetFirstFocusableControl(fromControl);
+	if(!control) control = GetControl(fromControl);
+	if(!control)
+	{
+		// No current control??
+		CLog::Log(LOGERROR, "Unable to find control %i in window %i", fromControl, GetID());
+		return false;
+	}
+
+	vector<int> moveHistory;
+	int nextControl = fromControl;
+	
+	int iCtrlID = control->GetID();
+
+	while(control)
+	{
+		// Grab the next control direction
+		moveHistory.push_back(nextControl);
+		nextControl = control->GetNextControl(moveAction);
+
+		// Check our history - if the nextControl is in it, we can't focus it
+		for(unsigned int i = 0; i < moveHistory.size(); i++)
+		{
+			if(nextControl == moveHistory[i])
+				return false; // No control to focus so do nothing
+		}
+		
+		control = GetFirstFocusableControl(nextControl);
+		if(control)
+			break; // Found a focusable control
+
+		control = GetControl(nextControl); // Grab the next control and try again
+	}
+
+	if(!control)
+		return false; // no control to focus
+	
+	// If we get here we have our new control so focus it (and unfocus the current control)
+	CGUIMessage msg(GUI_MSG_SETFOCUS, iCtrlID, nextControl, 0);
+	OnMessage(msg);
+	return true;
 }
 
 const CGUIControl* CGUIWindow::GetControl(int iControl) const

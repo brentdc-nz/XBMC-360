@@ -33,10 +33,10 @@ void CLibSMB2Wrap::Init()
 
 #if 1 //TEST DATA - WIP to get from GUI
 		smb2_set_user(m_pLibSMB2Context, "Administrator");		
-		smb2_set_password(m_pLibSMB2Context, "password@123");
+		smb2_set_password(m_pLibSMB2Context, "xyz");
 		smb2_set_domain(m_pLibSMB2Context, "workgroup");
 		
-		m_pUrl = smb2_parse_url(m_pLibSMB2Context, "smb://192.168.178.145:445/Storage/Videos/Movies/Heat/Heat1995.avi");
+		m_pUrl = smb2_parse_url(m_pLibSMB2Context, "smb://192.168.178.145:445/Storage/Videos/Movies/Heat/Heat [1995][Lemavik].avi");
 #endif
 
 		if(m_pUrl == NULL)

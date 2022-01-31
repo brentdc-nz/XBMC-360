@@ -18,11 +18,10 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#pragma once
+#ifndef H_URIUTILS
+#define H_URIUTILS
 
 #include "StdString.h"
-
-//class CURL;
 
 class URIUtils
 {
@@ -47,3 +46,5 @@ public:
 	}
 
 };
+
+#endif //H_URIUTILS

@@ -34,5 +34,4 @@ private:
 };
 
 };
-
 #endif //H_CFILE

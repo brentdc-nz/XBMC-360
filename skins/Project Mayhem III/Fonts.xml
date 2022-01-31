@@ -5,6 +5,13 @@
 		<filename>FrancophilSans.ttf</filename>
 		<size>14</size> 
 	</font>
+	
+	<font>
+		<name>font12</name>
+		<filename>FrancophilSans.ttf</filename>
+		<size>21</size>
+		<style>bold</style>
+	</font>	
 
 	<font>
 		<name>special12</name>

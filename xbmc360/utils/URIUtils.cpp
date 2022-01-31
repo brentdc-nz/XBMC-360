@@ -20,6 +20,7 @@
  */
 
 #include "URIUtils.h"
+#include "Util.h"
 
 bool URIUtils::IsDOSPath(const CStdString &path)
 {
@@ -31,69 +32,73 @@ bool URIUtils::IsDOSPath(const CStdString &path)
 
 void URIUtils::AddSlashAtEnd(CStdString& strFolder)
 {
-  /*if (IsURL(strFolder))
-  {
-    CURL url(strFolder);
-    CStdString file = url.GetFileName();
-    if(!file.IsEmpty() && file != strFolder)
-    {
-      AddSlashAtEnd(file);
-      url.SetFileName(file);
-      strFolder = url.Get();
-      return;
-    }
-  }*/
-
-  if (!HasSlashAtEnd(strFolder))
-  {
-    if (IsDOSPath(strFolder))
-      strFolder += '\\';
-    else
-      strFolder += '/';
-  }
+/*	if(IsURL(strFolder))
+	{
+		CURL url(strFolder);
+		CStdString file = url.GetFileName();
+		if(!file.IsEmpty() && file != strFolder)
+		{
+			AddSlashAtEnd(file);
+			url.SetFileName(file);
+			strFolder = url.Get();
+			return;
+		}
+	}
+*/
+	if(!HasSlashAtEnd(strFolder))
+	{
+		if(CUtil::IsLocalDrive(strFolder, true))
+			strFolder += '\\';
+		else if(IsDOSPath(strFolder))
+			strFolder += '\\';
+		else
+			strFolder += '/';
+	}
 }
 
 bool URIUtils::HasSlashAtEnd(const CStdString& strFile)
 {
-  if (strFile.size() == 0) return false;
-  char kar = strFile.c_str()[strFile.size() - 1];
+	if(strFile.size() == 0)
+		return false;
+	
+	char kar = strFile.c_str()[strFile.size() - 1];
 
-  if (kar == '/' || kar == '\\')
-    return true;
+	if(kar == '/' || kar == '\\')
+		return true;
 
-  return false;
+	return false;
 }
-
 
 void URIUtils::AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult)
 {
 /*
-	if (IsURL(strFolder))
-  {
-    CURL url(strFolder);
-    if (url.GetFileName() != strFolder)
-    {
-      AddFileToFolder(url.GetFileName(), strFile, strResult);
-      url.SetFileName(strResult);
-      strResult = url.Get();
-      return;
-    }
-  }
+	if(IsURL(strFolder))
+	{
+		CURL url(strFolder);
+		if(url.GetFileName() != strFolder)
+		{
+			AddFileToFolder(url.GetFileName(), strFile, strResult);
+			url.SetFileName(strResult);
+			strResult = url.Get();
+			return;
+		}
+	}
 */
+	strResult = strFolder;
+	if(!strResult.IsEmpty())
+		AddSlashAtEnd(strResult);
 
-  strResult = strFolder;
-  if(!strResult.IsEmpty())
-    AddSlashAtEnd(strResult);
+	// Remove any slash at the start of the file
+	if(strFile.size() && (strFile[0] == '/' || strFile[0] == '\\'))
+		strResult += strFile.Mid(1);
+	else
+		strResult += strFile;
 
-  // Remove any slash at the start of the file
-  if (strFile.size() && (strFile[0] == '/' || strFile[0] == '\\'))
-    strResult += strFile.Mid(1);
-  else
-    strResult += strFile;
-
-  // correct any slash directions
-  if (!IsDOSPath(strFolder))
-    strResult.Replace('\\', '/');
-  else
-    strResult.Replace('/', '\\');
+	// Correct any slash directions
+	if(CUtil::IsLocalDrive(strFolder, true))
+		strResult.Replace('\\', '/');
+	else if(IsDOSPath(strFolder))
+		strResult.Replace('\\', '/');
+	else
+		strResult.Replace('/', '\\');
 }

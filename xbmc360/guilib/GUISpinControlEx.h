@@ -19,8 +19,8 @@ public:
 	virtual void AllocResources();
 	virtual void FreeResources();
 
-	virtual int GetXPosition() const { return m_buttonControl.GetXPosition();};
-	virtual int GetYPosition() const { return m_buttonControl.GetYPosition();};
+	virtual float GetXPosition() const { return m_buttonControl.GetXPosition();};
+	virtual float GetYPosition() const { return m_buttonControl.GetYPosition();};
 
 	void SetText(const string & aLabel) { m_buttonControl.SetLabel(aLabel); };
 	const CStdString GetCurrentLabel() const;

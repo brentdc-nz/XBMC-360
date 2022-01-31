@@ -21,6 +21,8 @@
 #include "GUIControlFactory.h"
 #include "XMLUtils.h"
 #include "SkinInfo.h"
+#include "LocalizeStrings.h"
+#include "..\utils\StringUtils.h"
 #include "GUIImage.h"
 #include "GUILabelControl.h"
 #include "GUIFontManager.h"
@@ -31,6 +33,7 @@
 #include "GUISpinControlEx.h"
 #include "GUIThumbnailPanel.h"
 #include "GUIScrollBarControl.h"
+#include "GUIListControl.h"
 
 typedef struct
 {
@@ -39,41 +42,41 @@ typedef struct
 } ControlMapping;
 
 static const ControlMapping controls[] =
-   {{"button",            CGUIControl::GUICONTROL_BUTTON},
-    {"checkmark",         CGUIControl::GUICONTROL_CHECKMARK},
-    {"fadelabel",         CGUIControl::GUICONTROL_FADELABEL},
-    {"image",             CGUIControl::GUICONTROL_IMAGE},
-    {"largeimage",        CGUIControl::GUICONTROL_IMAGE},
-    {"image",             CGUIControl::GUICONTROL_BORDEREDIMAGE},
-    {"label",             CGUIControl::GUICONTROL_LABEL},
-    {"label",             CGUIControl::GUICONTROL_LISTLABEL},
-    {"group",             CGUIControl::GUICONTROL_GROUP},
-    {"group",             CGUIControl::GUICONTROL_LISTGROUP},
-    {"progress",          CGUIControl::GUICONTROL_PROGRESS},
-    {"radiobutton",       CGUIControl::GUICONTROL_RADIO},
-    {"rss",               CGUIControl::GUICONTROL_RSS},
-    {"selectbutton",      CGUIControl::GUICONTROL_SELECTBUTTON},
-    {"slider",            CGUIControl::GUICONTROL_SLIDER},
-    {"sliderex",          CGUIControl::GUICONTROL_SETTINGS_SLIDER},
-    {"spincontrol",       CGUIControl::GUICONTROL_SPIN},
-    {"spincontrolex",     CGUIControl::GUICONTROL_SPINEX},
-    {"textbox",           CGUIControl::GUICONTROL_TEXTBOX},
-    {"togglebutton",      CGUIControl::GUICONTROL_TOGGLEBUTTON},
-    {"videowindow",       CGUIControl::GUICONTROL_VIDEO},
-    {"mover",             CGUIControl::GUICONTROL_MOVER},
-    {"resize",            CGUIControl::GUICONTROL_RESIZE},
-    {"buttonscroller",    CGUIControl::GUICONTROL_BUTTONBAR},
-    {"edit",              CGUIControl::GUICONTROL_EDIT},
-    {"visualisation",     CGUIControl::GUICONTROL_VISUALISATION},
-    {"karvisualisation",  CGUIControl::GUICONTROL_VISUALISATION},
-    {"multiimage",        CGUIControl::GUICONTROL_MULTI_IMAGE},
-    {"grouplist",         CGUIControl::GUICONTROL_GROUPLIST},
-    {"scrollbar",         CGUIControl::GUICONTROL_SCROLLBAR},
-    {"multiselect",       CGUIControl::GUICONTROL_MULTISELECT},
-    {"list",              CGUIControl::GUICONTAINER_LIST},
-    {"wraplist",          CGUIControl::GUICONTAINER_WRAPLIST},
-    {"fixedlist",         CGUIControl::GUICONTAINER_FIXEDLIST},
-    {"thumbnailpanel",    CGUIControl::GUICONTAINER_THUMBNAILPANEL}};
+	{{"button",            CGUIControl::GUICONTROL_BUTTON},
+	{"checkmark",         CGUIControl::GUICONTROL_CHECKMARK},
+	{"fadelabel",         CGUIControl::GUICONTROL_FADELABEL},
+	{"image",             CGUIControl::GUICONTROL_IMAGE},
+	{"largeimage",        CGUIControl::GUICONTROL_IMAGE},
+	{"image",             CGUIControl::GUICONTROL_BORDEREDIMAGE},
+	{"label",             CGUIControl::GUICONTROL_LABEL},
+	{"label",             CGUIControl::GUICONTROL_LISTLABEL},
+	{"group",             CGUIControl::GUICONTROL_GROUP},
+	{"group",             CGUIControl::GUICONTROL_LISTGROUP},
+	{"progress",          CGUIControl::GUICONTROL_PROGRESS},
+	{"radiobutton",       CGUIControl::GUICONTROL_RADIO},
+	{"rss",               CGUIControl::GUICONTROL_RSS},
+	{"selectbutton",      CGUIControl::GUICONTROL_SELECTBUTTON},
+	{"slider",            CGUIControl::GUICONTROL_SLIDER},
+	{"sliderex",          CGUIControl::GUICONTROL_SETTINGS_SLIDER},
+	{"spincontrol",       CGUIControl::GUICONTROL_SPIN},
+	{"spincontrolex",     CGUIControl::GUICONTROL_SPINEX},
+	{"textbox",           CGUIControl::GUICONTROL_TEXTBOX},
+	{"togglebutton",      CGUIControl::GUICONTROL_TOGGLEBUTTON},
+	{"videowindow",       CGUIControl::GUICONTROL_VIDEO},
+	{"mover",             CGUIControl::GUICONTROL_MOVER},
+	{"resize",            CGUIControl::GUICONTROL_RESIZE},
+	{"buttonscroller",    CGUIControl::GUICONTROL_BUTTONBAR},
+	{"edit",              CGUIControl::GUICONTROL_EDIT},
+	{"visualisation",     CGUIControl::GUICONTROL_VISUALISATION},
+	{"karvisualisation",  CGUIControl::GUICONTROL_VISUALISATION},
+	{"multiimage",        CGUIControl::GUICONTROL_MULTI_IMAGE},
+	{"grouplist",         CGUIControl::GUICONTROL_GROUPLIST},
+	{"scrollbar",         CGUIControl::GUICONTROL_SCROLLBAR},
+	{"multiselect",       CGUIControl::GUICONTROL_MULTISELECT},
+	{"list",              CGUIControl::GUICONTROL_LIST},
+	{"wraplist",          CGUIControl::GUICONTAINER_WRAPLIST},
+	{"fixedlist",         CGUIControl::GUICONTAINER_FIXEDLIST},
+	{"thumbnailpanel",    CGUIControl::GUICONTAINER_THUMBNAILPANEL}};
 
 CGUIControlFactory::CGUIControlFactory(void)
 {}
@@ -106,8 +109,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
 	CStdString strTmp;
 	int singleInfo = 0;
 	CStdString strLabel;
-	int iUrlSet=0;
+	int iUrlSet = 0;
 //	int iToggleSelect;
+	int iSpace = 2;
 
 	float spinWidth = 16;
 	float spinHeight = 16;
@@ -255,21 +259,16 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
   GetHitRect(pControlNode, hitRect);*/
 
 	if (!XMLUtils::GetDWORD(pControlNode, "onup" , up ))
-	{
 		up = dwID - 1;
-	}
+
 	if (!XMLUtils::GetDWORD(pControlNode, "ondown" , down))
-	{
 		down = dwID + 1;
-	}
+
 	if (!XMLUtils::GetDWORD(pControlNode, "onleft" , left ))
-	{
 		left = dwID;
-	}
+
 	if (!XMLUtils::GetDWORD(pControlNode, "onright", right))
-	{
 		right = dwID;
-	}
 
  /*
   GetActions(pControlNode, "onback",  backActions);
@@ -293,24 +292,22 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
 
 	XMLUtils::GetHex(pControlNode, "textcolor", labelInfo.dwTextColor);
 	XMLUtils::GetHex(pControlNode, "selectedcolor", labelInfo.dwSelectedTextColor);
+	XMLUtils::GetHex(pControlNode, "disabledcolor", labelInfo.dwDisabledTextColor);
 
-/*  GetInfoColor(pControlNode, "focusedcolor", labelInfo.focusedColor, parentID);
-  GetInfoColor(pControlNode, "disabledcolor", labelInfo.disabledColor, parentID);
-  GetInfoColor(pControlNode, "shadowcolor", labelInfo.shadowColor, parentID);
-  GetInfoColor(pControlNode, "selectedcolor", labelInfo.selectedColor, parentID);*/
-  GetFloat(pControlNode, "textoffsetx", labelInfo.offsetX);
-  GetFloat(pControlNode, "textoffsety", labelInfo.offsetY);
-/*  int angle = 0;  // use the negative angle to compensate for our vertically flipped cartesian plane
-  if (XMLUtils::GetInt(pControlNode, "angle", angle)) labelInfo.angle = (float)-angle;*/
+	GetFloat(pControlNode, "textoffsetx", labelInfo.offsetX);
+	GetFloat(pControlNode, "textoffsety", labelInfo.offsetY);
+
 	CStdString strFont;
-	if (XMLUtils::GetString(pControlNode, "font", strFont))
+	if(XMLUtils::GetString(pControlNode, "font", strFont))
 		labelInfo.font = g_fontManager.GetFont(strFont);
 
 	GetAlignment(pControlNode, "align", labelInfo.dwAlign);
-/*  uint32_t alignY = 0;
-  if (GetAlignmentY(pControlNode, "aligny", alignY))
-    labelInfo.align |= alignY;
-  if (GetFloat(pControlNode, "textwidth", labelInfo.width))
+
+	DWORD alignY = 0;
+	if(GetAlignmentY(pControlNode, "aligny", alignY))
+		labelInfo.dwAlign |= alignY;
+ /* 
+ if (GetFloat(pControlNode, "textwidth", labelInfo.width))
     labelInfo.align |= XBFONT_TRUNCATED;*/
 
 	GetMultipleString(pControlNode, "onclick", clickActions);/*
@@ -428,7 +425,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
 	GetString(pControlNode, "label", strLabel);
 /*  GetString(pControlNode, "altlabel", altLabel);
   GetString(pControlNode, "label2", strLabel2);
-
+*/
+	XMLUtils::GetInt(pControlNode,"spacebetweenitems", iSpace);
+/*
   XMLUtils::GetBoolean(pControlNode, "wrapmultiline", wrapMultiLine);
   XMLUtils::GetInt(pControlNode,"urlset",iUrlSet);
 
@@ -757,10 +756,6 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
 //			control = new CGUIBorderedImage(  
 //		parentID, id, posX, posY, width, height, texture, borderTexture, borderSize);
 
-#ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY
-		if (insideContainer && textureFile.IsConstant())
-			aspect.ratio = CAspectRatio::AR_STRETCH;
-#endif
 		((CGUIImage *)control)->SetInfo(textureFile);
 //		((CGUIImage *)control)->SetAspectRatio(aspect);
 //		((CGUIImage *)control)->SetCrossFade(fadeTime);
@@ -772,16 +767,28 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
     ((CGUIMultiImage *)control)->SetInfo(texturePath);
     ((CGUIMultiImage *)control)->SetAspectRatio(aspect);
   }
-  else if (type == CGUIControl::GUICONTAINER_LIST)
-  {
-    control = new CGUIListContainer(parentID, id, posX, posY, width, height, orientation, scrollTime, preloadItems);
-    ((CGUIListContainer *)control)->LoadLayout(pControlNode);
-    ((CGUIListContainer *)control)->LoadContent(pControlNode);
-    ((CGUIListContainer *)control)->SetType(viewType, viewLabel);
-    ((CGUIListContainer *)control)->SetPageControl(pageControl);
-    ((CGUIListContainer *)control)->SetRenderOffset(offset);
-  }
-  else if (type == CGUIControl::GUICONTAINER_WRAPLIST)
+*/	else if (type == CGUIControl::GUICONTROL_LIST)
+	{
+		control = new CGUIListControl(
+			parentID, dwID, posX, posY, width, height,
+			spinWidth, spinHeight,
+//			strUp, strDown,
+//			strUpFocus, strDownFocus,
+//			spinInfo, iSpinPosX, iSpinPosY,
+			labelInfo, //labelInfo2,
+			textureNoFocus, textureFocus);
+
+		((CGUIListControl *)control)->SetNavigation(up, down, left, right);
+//		((CGUIListControl *)control)->SetColourDiffuse(dwColorDiffuse);
+//		((CGUIListControl *)control)->SetScrollySuffix(strSuffix);
+///		((CGUIListControl *)control)->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
+//		((CGUIListControl *)control)->SetAnimations(animations);
+//		((CGUIListControl *)control)->SetImageDimensions(dwitemWidth, dwitemHeight);
+//		((CGUIListControl *)control)->SetItemHeight(iTextureHeight);
+		((CGUIListControl *)control)->SetSpace(iSpace);
+///		((CGUIListControl *)control)->SetPulseOnSelect(bPulse);
+	}
+/*  else if (type == CGUIControl::GUICONTAINER_WRAPLIST)
   {
     control = new CGUIWrappingListContainer(parentID, id, posX, posY, width, height, orientation, scrollTime, preloadItems, focusPosition);
     ((CGUIWrappingListContainer *)control)->LoadLayout(pControlNode);
@@ -881,6 +888,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
 bool CGUIControlFactory::GetFloat(const TiXmlNode* pRootNode, const char* strTag, float& value)
 {
 	const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
+	
 	if (!pNode || !pNode->FirstChild()) return false;
 
 	return g_SkinInfo.ResolveConstant(pNode->FirstChild()->Value(), value);
@@ -889,12 +897,15 @@ bool CGUIControlFactory::GetFloat(const TiXmlNode* pRootNode, const char* strTag
 bool CGUIControlFactory::GetDimension(const TiXmlNode *pRootNode, const char* strTag, float &value, float &min)
 {
 	const TiXmlElement* pNode = pRootNode->FirstChildElement(strTag);
+	
 	if (!pNode || !pNode->FirstChild()) return false;
+	
 	if (0 == strnicmp("auto", pNode->FirstChild()->Value(), 4))
 	{
 		// auto-width - at least min must be set
 		g_SkinInfo.ResolveConstant(pNode->Attribute("max"), value);
 		g_SkinInfo.ResolveConstant(pNode->Attribute("min"), min);
+		
 		if (!min) min = 1;
 			return true;
 	}
@@ -906,6 +917,7 @@ bool CGUIControlFactory::GetInfoTexture(const TiXmlNode* pRootNode, const char* 
 	GetTexture(pRootNode, strTag, image);
 	image.filename = "";
 	GetInfoLabel(pRootNode, strTag, info, parentID);
+	
 	return true;
 }
 
@@ -936,10 +948,26 @@ bool CGUIControlFactory::GetAlignment(const TiXmlNode* pRootNode, const char* st
 	if (!pNode || !pNode->FirstChild()) return false;
 
 	CStdString strAlign = pNode->FirstChild()->Value();
-	if (strAlign == "right" ) alignment = XUI_FONT_STYLE_RIGHT_ALIGN;
-//	else if (strAlign == "center") alignment = XUI_FONT_STYLE_CENTER_ALIGN; //TODO
-//	else if (strAlign == "justify") alignment = XBFONT_JUSTIFIED; //TODO
+	if (strAlign == "right" )alignment = XUI_FONT_STYLE_RIGHT_ALIGN;
+	else if (strAlign == "center") alignment = XUI_FONT_STYLE_CENTER_ALIGN;
+//	else if (strAlign == "justify") alignment = XBFONT_JUSTIFIED; // TODO
 	else alignment = NULL;
+
+	return true;
+}
+
+bool CGUIControlFactory::GetAlignmentY(const TiXmlNode* pRootNode, const char* strTag, DWORD& alignment)
+{
+	const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
+	if (!pNode || !pNode->FirstChild())
+		return false;
+
+	CStdString strAlign = pNode->FirstChild()->Value();
+
+	alignment = 0;
+	if (strAlign == "center")
+		alignment = XUI_FONT_STYLE_VERTICAL_CENTER;
+
 	return true;
 }
 
@@ -953,9 +981,9 @@ bool CGUIControlFactory::GetInfoLabelFromElement(const TiXmlElement *element, CG
 		return false;
 
 	CStdString fallback = element->Attribute("fallback");
-/*	if (StringUtils::IsNaturalNumber(label))
+	if (CStringUtils::IsNaturalNumber(label))
 		label = g_localizeStrings.Get(atoi(label));
-	else // we assume the skin xml's aren't encoded as UTF-8
+/*	else // we assume the skin xml's aren't encoded as UTF-8
 		g_charsetConverter.unknownToUTF8(label);
 	if (StringUtils::IsNaturalNumber(fallback))
 		fallback = g_localizeStrings.Get(atoi(fallback));
@@ -1071,6 +1099,7 @@ bool CGUIControlFactory::GetString(const TiXmlNode* pRootNode, const char *strTa
 {
 	if (!XMLUtils::GetString(pRootNode, strTag, text))
 		return false;
+
 	if (text == "-")
 		text.Empty();
 

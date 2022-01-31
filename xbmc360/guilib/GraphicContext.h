@@ -46,7 +46,7 @@ public:
 
 	void EnablePreviewWindow(bool bEnable);
 
-	void Clear(DWORD color);
+	void Clear(DWORD color = 0x00010001);
 
 private:
 	HXUIDC					m_XUIDevice;

@@ -15,7 +15,7 @@ CGUIDialog::~CGUIDialog(void)
 {
 }
 
-void CGUIDialog::DoModal(DWORD dwParentId, int iWindowID /*= WINDOW_INVALID */)
+void CGUIDialog::DoModal(int iWindowID /*= WINDOW_INVALID */)
 {
 	// Lock graphic context here as it is sometimes called from non rendering threads
 	// maybe we should have a critical section per window instead??
@@ -36,6 +36,8 @@ void CGUIDialog::DoModal(DWORD dwParentId, int iWindowID /*= WINDOW_INVALID */)
 	OnMessage(msg);
 
 	lock.Leave();
+	while(m_bRunning)
+		g_windowManager.Process();
 }
 
 void CGUIDialog::Show()
@@ -65,7 +67,7 @@ bool CGUIDialog::OnBack(int actionID)
 
 bool CGUIDialog::OnMessage(CGUIMessage& message)
 {
-	switch ( message.GetMessage() )
+	switch(message.GetMessage())
 	{
 		case GUI_MSG_WINDOW_DEINIT:
 		{
@@ -76,7 +78,7 @@ bool CGUIDialog::OnMessage(CGUIMessage& message)
 			CGUIWindow::OnMessage(message);
 
 			// If we were running, make sure we remove ourselves from the window manager
-			if (m_bRunning)
+			if(m_bRunning)
 			{
 				g_windowManager.RemoveDialog(GetID());
 				m_bRunning = false;
@@ -100,7 +102,7 @@ void CGUIDialog::Close(bool forceClose /*= false*/)
 	// maybe we should have a critical section per window instead??
 	CSingleLock lock(g_graphicsContext);
 
-	if (!m_bRunning) return;
+	if(!m_bRunning) return;
 
 	CLog::DebugLog("Dialog::Close called");
 

@@ -1,0 +1,20 @@
+<window id="0">
+	<defaultcontrol>0</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+	
+		<!-- progressbar dialog -->
+		<control>
+			<description>Panel Background</description>
+			<type>image</type>			
+			<posx>750</posx>
+			<posy>22</posy>
+			<width>500</width>
+			<height>50</height>
+			<visible>true</visible>			
+			<texture>volume_panel_bg.png</texture>
+		</control>			
+		
+	</controls>
+</window>
+

@@ -109,10 +109,10 @@ void CGUIScrollBar::UpdateBarSize()
     float percent = (float)m_pageSize / m_numItems;
     float nibSize = GetHeight() * percent;
 
-    if (nibSize < MIN_NIB_SIZE) 
+    if(nibSize < MIN_NIB_SIZE) 
 		nibSize = MIN_NIB_SIZE;
 
-    if (nibSize > GetHeight()) 
+    if(nibSize > GetHeight()) 
 		nibSize = (float)GetHeight();
 
     m_guiBarNoFocus.SetHeight(nibSize);
@@ -123,10 +123,10 @@ void CGUIScrollBar::UpdateBarSize()
 
     float nibPos = GetHeight() * percent;
   
-	if (nibPos < 0)
+	if(nibPos < 0)
 		nibPos = 0;
 
-    if (nibPos > GetHeight() - nibSize)
+    if(nibPos > GetHeight() - nibSize)
 		nibPos = GetHeight() - nibSize;
 
     m_guiBarNoFocus.SetPosition((float)GetXPosition(), (float)GetYPosition() + nibPos);
@@ -151,10 +151,10 @@ void CGUIScrollBar::OnUp()
 {
 	m_offset -= /*numSteps*/1 * m_pageSize;
 
-	if (m_offset > m_numItems - m_pageSize)
+	if(m_offset > m_numItems - m_pageSize)
 		m_offset = m_numItems - m_pageSize;
 	
-	if (m_offset < 0)
+	if(m_offset < 0)
 		m_offset = 0;
 
 	CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetParentID(), GetID(), GUI_MSG_SCROLL_CHANGE, GUI_MSG_SCROLL_UP);
@@ -167,10 +167,10 @@ void CGUIScrollBar::OnDown()
 {
 	m_offset += /*numSteps*/1 * m_pageSize;
 
-	if (m_offset > m_numItems - m_pageSize)
+	if(m_offset > m_numItems - m_pageSize)
 		m_offset = m_numItems - m_pageSize;
 	
-	if (m_offset < 0)
+	if(m_offset < 0)
 		m_offset = 0;
 
 	CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetParentID(), GetID(), GUI_MSG_SCROLL_CHANGE, GUI_MSG_SCROLL_DOWN);

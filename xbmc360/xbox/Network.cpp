@@ -55,6 +55,7 @@ void CNetwork::Deinitialize()
 		NetworkDown();
   
 	m_bInited = false;
+
 	WSACleanup();
 	XNetCleanup();
 }
@@ -232,7 +233,7 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
 			CLog::Log(LOGDEBUG, "%s - Stopping network services",__FUNCTION__);
 
 			g_application.StopTimeServer();
-			g_application.StopFtpServer();
+//			g_application.StopFtpServer();
 		}
 		break;
 	}

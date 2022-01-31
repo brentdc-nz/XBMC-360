@@ -12,6 +12,7 @@ public:
 	CGUID3DTexture(float posX, float posY, float width, float height, const CTextureInfo& texture);
 	~CGUID3DTexture();
 	void SetFileName(const CStdString &strFilename);
+	const CStdString& GetFileName() const;
 
 	bool AllocResources();
 	bool FreeResources();
@@ -19,7 +20,7 @@ public:
 	void SetWidth(float fWidth);
 	void SetHeight(float fHeight);
 	void Update(float fPosX, float fPosY, float fWidth, float fHeight);
-	void SetPosition(float fPosX, float fPosY);
+	void SetPosition(float iPosX, float iPosY);
 	void Render();
 	
 private:

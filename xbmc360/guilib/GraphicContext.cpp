@@ -158,7 +158,7 @@ void CGraphicContext::EnablePreviewWindow(bool bEnable)
 	m_bShowPreviewWindow = bEnable;
 }
 
-void CGraphicContext::Clear(DWORD color)
+void CGraphicContext::Clear(DWORD color /*= 0x00010001*/)
 {
 	Lock();
 

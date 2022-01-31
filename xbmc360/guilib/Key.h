@@ -12,8 +12,8 @@
 #define KEY_BUTTON_B                        257
 #define KEY_BUTTON_X                        258
 #define KEY_BUTTON_Y                        259
-#define KEY_BUTTON_BLACK                    260
-#define KEY_BUTTON_WHITE                    261
+#define KEY_BUTTON_LEFT_SHOULDER            260 // ex-black
+#define KEY_BUTTON_RIGHT_SHOULDER           261 // ex-white
 #define KEY_BUTTON_LEFT_TRIGGER             262
 #define KEY_BUTTON_RIGHT_TRIGGER            263
 
@@ -49,7 +49,7 @@
 #define ACTION_SHOW_CODEC             27 // show information about file. Can be used in videoFullScreen.xml window id=2005
 
 #define ACTION_NAV_BACK				  92
-
+#define ACTION_CONTEXT_MENU           117 // pops up the context menu
 #define ACTION_BUILT_IN_FUNCTION	  122
 
 //====================
@@ -63,7 +63,8 @@
 #define WINDOW_SETTINGS                   10004
 #define WINDOW_MUSIC                      10005
 #define WINDOW_VIDEOS                     10006
-#define WINDOW_SYSTEM_INFORMATION         10007
+#define WINDOW_PICTURES                   10007
+#define WINDOW_SYSTEM_INFORMATION         10008
 
 #define WINDOW_SETTINGS_MYPICTURES        10012
 #define WINDOW_SETTINGS_MYPROGRAMS        10013
@@ -77,9 +78,13 @@
 #define WINDOW_FULLSCREEN_VIDEO           12005
 #define WINDOW_SCREENSAVER                12900
 
-//Dialogs
+// Dialogs
+#define WINDOW_DIALOG_YES_NO              10100
+#define WINDOW_DIALOG_CONTEXT_MENU        10106
 #define WINDOW_DIALOG_BUTTON_MENU         10111
 #define WINDOW_DIALOG_SEEK_BAR            10115
+#define WINDOW_DIALOG_MEDIA_SOURCE        10116
+#define WINDOW_DIALOG_FILE_BROWSER        10126
 
 class CKey
 {

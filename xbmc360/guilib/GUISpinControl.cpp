@@ -8,6 +8,7 @@ CGUISpinControl::CGUISpinControl(int parentID, int controlID, float posX, float 
     , m_imgspinUpFocus(parentID, controlID, posX, posY, width, height, textureUpFocus)
     , m_imgspinDownFocus(parentID, controlID, posX, posY, width, height, textureDownFocus)
 {
+	m_width = width;
 	m_label = labelInfo;
 	ControlType = GUICONTROL_SPIN;
 	m_iSelect = SPIN_BUTTON_DOWN;
@@ -75,11 +76,11 @@ void CGUISpinControl::Render()
 		float fPosX = (float)(m_posX + m_label.offsetX) - 3;
 		if ( /*!IsDisabled()*/1 /*HasFocus()*/ ) //TODO
 		{
-			m_label.font->DrawText(fPosX, fPosY, m_label.dwTextColor, text.c_str(), m_label.dwAlign);
+			m_label.font->DrawText(fPosX, fPosY, m_label.dwTextColor, text.c_str(), m_width, m_height, m_label.dwAlign);
 		}
 		else
 		{
-			m_label.font->DrawText(fPosX, fPosY, m_label.dwTextColor, text.c_str(), m_label.dwAlign);
+			m_label.font->DrawText(fPosX, fPosY, m_label.dwTextColor, text.c_str(), m_width, m_height, m_label.dwAlign);
 		}
 	}
 

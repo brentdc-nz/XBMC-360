@@ -27,9 +27,8 @@ class CGUIWindowSystemInfo : public CGUIWindow
 public:
 	CGUIWindowSystemInfo(void);
 	virtual ~CGUIWindowSystemInfo(void);
-
 	virtual bool OnMessage(CGUIMessage& message);
-	virtual void FrameMove();
+	virtual void Render();
 
 private:
 	unsigned int iControl;

@@ -34,8 +34,8 @@ public:
 	void SetValue(int iValue);
 	int GetValue() const;
 
-	DWORD GetSpinWidth() const { return m_imgspinUp.GetWidth(); };
-	DWORD GetSpinHeight() const { return m_imgspinUp.GetHeight(); };
+	float GetSpinWidth() const { return m_imgspinUp.GetWidth(); };
+	float GetSpinHeight() const { return m_imgspinUp.GetHeight(); };
 
 	int GetMaximum() const;
 	int GetMinimum() const;

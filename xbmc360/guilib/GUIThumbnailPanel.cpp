@@ -22,7 +22,7 @@
 #include "GUIImage.h"
 #include "GUIWindowManager.h"
 #include "GUILabelControl.h"
-#include "..\utils\StringUtils.h"
+#include "utils\StringUtils.h"
 #include "GUIWindowManager.h"
 #include "GUIScrollBarControl.h"
 
@@ -54,60 +54,147 @@ CGUIThumbnailPanel::CGUIThumbnailPanel(int parentID, int controlID, float posX, 
 	m_iItemWidth = (int)thumbWidth;
 	m_iItemHeight = (int)thumbHeight;
 
-	m_iThumbTexWidth = (int)thumbTexWidth;
-	m_iThumbTexHeight = (int)thumbTexHeight;
+	m_fThumbTexWidth = thumbTexWidth;
+	m_fThumbTexHeight = thumbTexHeight;
 
 	m_iScrollBar = 0;
-	m_iObjectCounterLabel = 0;
+	m_iObjectCounterLabel = -1;
 }
 
 CGUIThumbnailPanel::~CGUIThumbnailPanel(void)
 {
 }
 
-void CGUIThumbnailPanel::RenderItem(bool bFocus, float iPosX, float iPosY, CGUIListItem* pItem)
+void CGUIThumbnailPanel::RenderItem(bool bFocus, float fPosX, float fPosY, CGUIListItem* pItem, int iStage)
 {
-	float fTextHeight, fTextWidth;
-	m_label.font->GetTextExtent(L"W", &fTextWidth, &fTextHeight);
-	WCHAR wszText[1024];
-	float fTextPosY = (float)iPosY + (float)m_iThumbTexHeight;
-	swprintf(wszText, L"%S", pItem->GetLabel().c_str());
-	DWORD dwColor = m_label.dwTextColor;
+	float fTextPosY = fPosY + m_fThumbTexHeight;
+	float fCenteredPosX = fPosX + (m_iItemWidth - m_fThumbTexWidth) / 2;
+
+	if(iStage == 0) // Render images
+	{
+		if(bFocus && HasFocus()/* && m_iSelect == CONTROL_LIST*/)
+		{
+			m_imgFocus.SetPosition(fCenteredPosX, fPosY);
+
+			if(/*m_bShowTexture*/1)
+				m_imgFocus.Render();
+		}
+		else
+		{
+			m_imgNoFocus.SetPosition(fCenteredPosX, fPosY);
+
+			if(/*m_bShowTexture*/1)
+				m_imgNoFocus.Render();
+		}
+		
+		CStdString strThumb = pItem->GetThumbnailImage();
+		
+		if(strThumb.IsEmpty() && pItem->HasIcon())
+		{
+			// No thumbnail, but it does have an icon
+			strThumb = pItem->GetIconImage();
+			strThumb.Insert(strThumb.Find("."), "Big");
+		}
 	
-#if 0
-	if(pItem->IsSelected()) 
-		dwColor = m_dwSelectedColor;
-#endif
+		if(!strThumb.IsEmpty())
+		{
+			CGUIImage *thumb = pItem->GetThumbnail();
+			if(!thumb)
+			{
+				CTextureInfo TInfo;
+				TInfo.filename = strThumb;
+				TInfo.useLarge = true;
+				TInfo.orientation = 0;
 
-#if 1 // TEST
-	if(bFocus && HasFocus())
-		dwColor = m_label.dwSelectedTextColor;
-#endif
+				thumb = new CGUIImage(0, 0, /*m_iThumbXPos +*/ fCenteredPosX, /*m_iThumbYPos +*/ fPosY, /*m_iThumbWidth*/m_fThumbTexWidth, /*m_iThumbHeight*/m_fThumbTexHeight, TInfo);
+//				thumb->SetAspectRatio(m_aspectRatio);
+				pItem->SetThumbnail(thumb);
+			}
 
-	if(bFocus && HasFocus())
-	{
-		m_imgFocus.SetPosition((float)iPosX, (float)iPosY);
-		m_imgFocus.Render();
-    
-		RenderText((float)iPosX, (float)fTextPosY, dwColor, wszText, true);
+			if(thumb)
+			{
+				int xOff = 0;//((m_iThumbWidth - pImage->GetRenderWidth()) / 2);
+				int yOff = 0;//((m_iThumbHeight - pImage->GetRenderHeight()) / 2);
+			
+				// Only supports center yet, 0 is default meaning use x/y position
+//				if(m_iThumbAlign != 0)
+				{
+//					xOff += ((m_iTextureWidth - m_iThumbWidth) / 2);
+//					yOff += ((m_iTextureHeight - m_iThumbHeight) / 2);
+					//if thumbPosX or thumbPosX != 0 the thumb will be bumped off-center
+				}
+		
+				// Set file name to make sure it's always up to date (does nothing if it is)
+				thumb->SetFileName(strThumb);
+				
+				if(!thumb->IsAllocated())
+					thumb->AllocResources();
+			
+				thumb->SetPosition(/*m_iThumbXPos +*/ fCenteredPosX/* + xOff*/,/* m_iThumbYPos + */fPosY/* + yOff*/);
+				thumb->Render();
+
+/*				// Add the overlay image
+				CGUIImage *overlay = pItem->GetOverlay();
+				if(!overlay && pItem->HasOverlay())
+				{
+					overlay = new CGUIImage(0, 0, 0, 0, 0, 0, pItem->GetOverlayImage(), 0x0);
+					overlay->SetAspectRatio(m_aspectRatio);
+					overlay->AllocResources();
+					pItem->SetOverlay(overlay);
+				}
+				
+				// Render the image
+				if(overlay)
+				{
+					float x, y;
+					thumb->GetBottomRight(x, y);
+					if(m_usingBigIcons)
+					{
+						overlay->SetWidth(overlay->GetTextureWidth());
+						overlay->SetHeight(overlay->GetTextureWidth());
+					}
+					else
+					{
+						float scale = (m_iThumbHeightBig) ? (float)m_iThumbHeight / m_iThumbHeightBig : 1.0f;
+						overlay->SetWidth((int)(overlay->GetTextureWidth() * scale));
+						overlay->SetHeight((int)(overlay->GetTextureHeight() * scale));
+					}
+					
+					// If we haven't yet rendered, make sure we update our sizing
+					if(!overlay->HasRendered())
+					overlay->CalculateSize();
+					
+					overlay->SetPosition((int)x - overlay->GetRenderWidth(), (int)y - overlay->GetRenderHeight());
+					overlay->Render();
+				}*/
+			}
+		}
 	}
-	else
-	{
-		m_imgNoFocus.SetPosition((float)iPosX, (float)iPosY);
-		m_imgNoFocus.Render();
-    
-		RenderText((float)iPosX, (float)fTextPosY, dwColor, wszText, false); 
-	}
 
-	// TEST START - REMOVE BLOCK
-	CGUIImage *pImage = pItem->GetThumbnail();
-
-	if(pImage)
+	if(iStage == 1) // Render text
 	{
-		pImage->SetPosition((float)iPosX, (float)iPosY);
-		pImage->Render();
+		// Hide filenames in thumbnail panel
+//		if(m_labelState == HIDE_ALL)
+//			return;
+//		if(m_labelState == HIDE_FILES && !pItem->m_bIsFolder)
+//			return;
+//		if(m_labelState == HIDE_FOLDERS && pItem->m_bIsFolder)
+//			return;
+
+		CStdStringW strItemLabelUnicode;
+		strItemLabelUnicode = pItem->GetLabel().c_str();
+//		g_charsetConverter.utf8ToUTF16(pItem->GetLabel().c_str(), strItemLabelUnicode);
+
+		DWORD dwColor = m_label.dwTextColor;
+
+		if(pItem->IsSelected()) 
+			dwColor = m_label.dwSelectedTextColor;
+
+		if(bFocus && HasFocus()/* && m_iSelect == CONTROL_LIST*/)
+			RenderText((float)fPosX, (float)fTextPosY, dwColor, (WCHAR*) strItemLabelUnicode.c_str(), true);
+		else
+			RenderText((float)fPosX, (float)fTextPosY, dwColor, (WCHAR*) strItemLabelUnicode.c_str(), false);
 	}
-	// TEST END
 }
 
 void CGUIThumbnailPanel::RenderText(float fPosX, float fPosY, DWORD dwTextColor, WCHAR* wszText, bool bScroll)
@@ -206,8 +293,7 @@ void CGUIThumbnailPanel::RenderText(float fPosX, float fPosY, DWORD dwTextColor,
 				}
 				
 				if(fPosY >= 0.0)
-					m_label.font->DrawTextWidth(fPosX - iScrollX, fPosY, dwTextColor, szText, fMaxWidth);
-						
+					m_label.font->DrawTextWidth(fPosX - iScrollX, fPosY, dwTextColor, szText, fMaxWidth);			
 			}
 			else
 			{
@@ -258,96 +344,99 @@ void CGUIThumbnailPanel::Render()
 
 	GRAPHICSCONTEXT_UNLOCK()
 
-	if(m_bScrollUp)
-	{
-		// Render item on top
-		float dwPosY = m_posY - m_iItemHeight + iScrollYOffset;
-		m_iOffset -= m_iColumns;
-		
-		for(int iCol = 0; iCol < m_iColumns; iCol++)
+	for (int iStage = 0; iStage <= 1; iStage++)
+    {
+		if(m_bScrollUp)
 		{
-			float dwPosX = m_posX + iCol * m_iItemWidth;
-			int iItem = iCol + m_iOffset;
-			
-			if(iItem >= 0 && iItem < (int)m_vecItems.size())
-			{
-				CGUIListItem *pItem = m_vecItems[iItem];
-				RenderItem(false, dwPosX, dwPosY, pItem);
-			}
-		}
-		m_iOffset += m_iColumns;
-	}
-
-	// Render main panel
-	for(int iRow = 0; iRow < m_iRows; iRow++)
-	{
-		float dwPosY = m_posY + iRow * m_iItemHeight + iScrollYOffset;
-		for(int iCol = 0; iCol < m_iColumns; iCol++)
-		{
-			float dwPosX = m_posX + iCol * m_iItemWidth;
-			int iItem = iRow * m_iColumns + iCol + m_iOffset;
-			
-			if(iItem < (int)m_vecItems.size())
-			{
-				CGUIListItem *pItem = m_vecItems[iItem];
-				bool bFocus = (m_iCursorX == iCol && m_iCursorY == iRow );
-				RenderItem(bFocus, dwPosX, dwPosY, pItem);
-			}
-		}
-	}
-
-	if(m_bScrollDown)
-	{
-		// Render item on bottom
-		float fPosY = m_posY + m_iRows * m_iItemHeight + iScrollYOffset;
-		
-		for(int iCol = 0; iCol < m_iColumns; iCol++)
-		{
-			float fPosX = m_posX + iCol * m_iItemWidth;
-			int iItem = m_iRows * m_iColumns + iCol + m_iOffset;
-			
-			if(iItem < (int)m_vecItems.size())
-			{
-				CGUIListItem *pItem = m_vecItems[iItem];
-				RenderItem(false, fPosX, fPosY, pItem);
-			}
-		}
-	}
-
-	int iFrames = 12;
-	int iStep = m_iItemHeight / iFrames;
-	
-	if(!iStep) iStep = 1;
-	
-	if(m_bScrollDown)
-	{
-		m_iScrollCounter -= iStep;
-		if(m_iScrollCounter <= 0 )
-		{
-			m_bScrollDown = false;
-			m_iOffset += m_iColumns;
-			m_iPage = m_iOffset / (m_iRows * m_iColumns);
-
-			m_iPage += 1;
-			UpdateCounterLabel();
-		}
-	}
-
-	if(m_bScrollUp)
-	{
-		m_iScrollCounter -= iStep;
-
-		if(m_iScrollCounter <= 0)
-		{
-			m_bScrollUp = false;
+			// Render item on top
+			float dwPosY = m_posY - m_iItemHeight + iScrollYOffset;
 			m_iOffset -= m_iColumns;
-			m_iPage = m_iOffset / (m_iRows * m_iColumns);
-
-			m_iPage += 1;
-			UpdateCounterLabel();
+		
+			for(int iCol = 0; iCol < m_iColumns; iCol++)
+			{
+				float dwPosX = m_posX + iCol * m_iItemWidth;
+				int iItem = iCol + m_iOffset;
+			
+				if(iItem >= 0 && iItem < (int)m_vecItems.size())
+				{
+					CGUIListItem *pItem = m_vecItems[iItem];
+					RenderItem(false, dwPosX, dwPosY, pItem, iStage);
+				}
+			}
+			m_iOffset += m_iColumns;
 		}
-	}
+
+		// Render main panel
+		for(int iRow = 0; iRow < m_iRows; iRow++)
+		{
+			float dwPosY = m_posY + iRow * m_iItemHeight + iScrollYOffset;
+			for(int iCol = 0; iCol < m_iColumns; iCol++)
+			{
+				float dwPosX = m_posX + iCol * m_iItemWidth;
+				int iItem = iRow * m_iColumns + iCol + m_iOffset;
+			
+				if(iItem < (int)m_vecItems.size())
+				{
+					CGUIListItem *pItem = m_vecItems[iItem];
+					bool bFocus = (m_iCursorX == iCol && m_iCursorY == iRow );
+					RenderItem(bFocus, dwPosX, dwPosY, pItem, iStage);
+				}
+			}
+		}
+
+		if(m_bScrollDown)
+		{
+			// Render item on bottom
+			float fPosY = m_posY + m_iRows * m_iItemHeight + iScrollYOffset;
+		
+			for(int iCol = 0; iCol < m_iColumns; iCol++)
+			{
+				float fPosX = m_posX + iCol * m_iItemWidth;
+				int iItem = m_iRows * m_iColumns + iCol + m_iOffset;
+			
+				if(iItem < (int)m_vecItems.size())
+				{
+					CGUIListItem *pItem = m_vecItems[iItem];
+					RenderItem(false, fPosX, fPosY, pItem, iStage);
+				}
+			}
+		}
+
+		int iFrames = 12;
+		int iStep = m_iItemHeight / iFrames;
 	
+		if(!iStep) iStep = 1;
+	
+		if(m_bScrollDown)
+		{
+			m_iScrollCounter -= iStep;
+			if(m_iScrollCounter <= 0 )
+			{
+				m_bScrollDown = false;
+				m_iOffset += m_iColumns;
+				m_iPage = m_iOffset / (m_iRows * m_iColumns);
+
+				m_iPage += 1;
+				UpdateCounterLabel();
+			}
+		}
+
+		if(m_bScrollUp)
+		{
+			m_iScrollCounter -= iStep;
+
+			if(m_iScrollCounter <= 0)
+			{
+				m_bScrollUp = false;
+				m_iOffset -= m_iColumns;
+				m_iPage = m_iOffset / (m_iRows * m_iColumns);
+
+				m_iPage += 1;
+				UpdateCounterLabel();
+			}
+		}
+	}	
+
 	GRAPHICSCONTEXT_LOCK()
 
 	// Now disable the scissor test again
@@ -355,7 +444,7 @@ void CGUIThumbnailPanel::Render()
 
 	GRAPHICSCONTEXT_UNLOCK()
 
-	// FIXME - We should not be sending this each frame!
+	// FIXME: We should not be sending this each frame!
 	CGUIMessage msg(GUI_MSG_ITEM_SELECT, 0, m_iScrollBar, m_iOffset);
 	g_windowManager.SendMessage(msg);
 }
@@ -368,8 +457,8 @@ bool CGUIThumbnailPanel::OnMessage(CGUIMessage& message)
 		{
 			m_vecItems.push_back((CGUIListItem*) message.GetLPVOID());
 			int iItemsPerPage = m_iRows*m_iColumns;
-//			m_iTotalPages = m_vecItems.size() / iItemsPerPage;
-//			if(m_vecItems.size() % iItemsPerPage) m_iTotalPages++;
+			m_iTotalPages = m_vecItems.size() / iItemsPerPage;
+			if(m_vecItems.size() % iItemsPerPage) m_iTotalPages++;
 
 //			m_upDown.SetRange(1,iPages);
 //			m_upDown.SetValue(1);
@@ -386,6 +475,19 @@ bool CGUIThumbnailPanel::OnMessage(CGUIMessage& message)
 			m_iPage = 1;
 			UpdateCounterLabel();
 
+			m_iCursorX = m_iCursorY = 0;
+			// Don't reset our row offset here - it's taken care of in SELECT
+			//m_iRowOffset = 0;
+			m_bScrollUp = false;
+			m_bScrollDown = false;
+			return true;
+		}
+
+		if(message.GetMessage() == GUI_MSG_LABEL_RESET)
+		{
+			m_vecItems.erase(m_vecItems.begin(), m_vecItems.end());
+//			m_upDown.SetRange(1, 1);
+//			m_upDown.SetValue(1);
 			m_iCursorX = m_iCursorY = 0;
 			// Don't reset our row offset here - it's taken care of in SELECT
 			//m_iRowOffset = 0;
@@ -504,7 +606,7 @@ void CGUIThumbnailPanel::UpdateCounterLabel()
 	const CGUILabelControl* pLabelControl = NULL;
 	pLabelControl = (CGUILabelControl*)g_windowManager.GetWindow(g_windowManager.GetActiveWindow())->GetControl(m_iObjectCounterLabel);
 	
-	if(pLabelControl)
+	if(pLabelControl && (m_iObjectCounterLabel != -1))
 	{
 		CStdString strTemp;
 		strTemp.Format("%i Objects - Pages %i / %i", m_vecItems.size(), m_iPage, m_iTotalPages); // TODO: Call localization object
@@ -515,7 +617,6 @@ void CGUIThumbnailPanel::UpdateCounterLabel()
 	}
 
 	// TODO: Move setting the range to the correct location
-
 	CGUIScrollBar* pScrollbarControl = NULL;
 	pScrollbarControl = (CGUIScrollBar*)g_windowManager.GetWindow(g_windowManager.GetActiveWindow())->GetControl(m_iScrollBar);
 
@@ -669,5 +770,14 @@ bool CGUIThumbnailPanel::OnAction(const CAction &action)
 		break;
 	}
 
-	return CGUIControl::OnAction(action);
+	CGUIControl::OnAction(action);
+
+	if(action.GetID())
+	{ 
+		// Don't know what to do, so send to our parent window.
+		CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), action.GetID());
+		return g_windowManager.SendMessage(msg);
+	}
+
+	return false;
 }

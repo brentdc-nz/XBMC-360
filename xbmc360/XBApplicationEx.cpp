@@ -63,7 +63,6 @@ int CXBApplicationEX::Run()
 	// Run the game loop, animating and rendering frames
 	while(!m_bStop)
 	{
-		ReadInput();
 		Process();
 		FrameMove();
 		Render();

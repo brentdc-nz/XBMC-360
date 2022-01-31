@@ -22,9 +22,7 @@
 #define H_CXMLUTILS
 
 #include "../utils/StdString.h"
-//#include "../xbmc/xbox/PlatformDefs.h"
 
-// forward
 class TiXmlDocument;
 class TiXmlNode;
 
@@ -37,6 +35,9 @@ public:
 	static bool GetInt(const TiXmlNode* pRootNode, const char* strTag, int& iIntValue, const int min, const int max);
 	static bool GetHex(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwHexValue);
 	static bool GetBoolean(const TiXmlNode* pRootNode, const char* strTag, bool& bBoolValue);
+
+	static void SetString(TiXmlNode* pRootNode, const char *strTag, const CStdString& strValue);
+	static void SetPath(TiXmlNode* pRootNode, const char *strTag, const CStdString& strValue);
 };
 
 #endif // H_CXMLUTILS

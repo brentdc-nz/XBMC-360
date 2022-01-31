@@ -1,11 +1,11 @@
 #include "GUIWindowFullScreen.h"
-#include "..\GUIInfoManager.h"
-#include "..\..\utils\SingleLock.h"
-#include "..\GraphicContext.h"
-#include "..\..\Application.h"
-#include "..\GUIWindowManager.h"
-#include "..\AudioContext.h"
-#include "..\..\cores\VideoRenderers\RenderManager.h"
+#include "guilib\GUIInfoManager.h"
+#include "utils\SingleLock.h"
+#include "guilib\GraphicContext.h"
+#include "Application.h"
+#include "guilib\GUIWindowManager.h"
+#include "guilib\AudioContext.h"
+#include "cores\VideoRenderers\RenderManager.h"
 
 #define BLUE_BAR		0
 #define LABEL_ROW1		10
@@ -25,6 +25,7 @@ CGUIWindowFullScreen::~CGUIWindowFullScreen(void)
 void CGUIWindowFullScreen::PreloadDialog(unsigned int windowID)
 {
 	CGUIWindow *pWindow = g_windowManager.GetWindow(windowID);
+
 	if (pWindow) 
 	{
 		pWindow->Initialize();

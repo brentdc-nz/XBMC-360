@@ -1,5 +1,5 @@
 #include "FTPFileWriter.h"
-#include "..\..\utils\log.h"
+#include "utils\log.h"
 
 #include "stdio.h"
 

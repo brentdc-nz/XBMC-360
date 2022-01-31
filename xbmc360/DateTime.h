@@ -1,5 +1,5 @@
-#ifndef CDATETIME
-#define CDATETIME
+#ifndef H_CDATETIME
+#define H_CDATETIME
 
 #include "utils\Thread.h"
 
@@ -63,4 +63,4 @@ private:
 	CRITICAL_SECTION m_CriticalSection;
 };
 
-#endif //CDATETIME
+#endif //H_CDATETIME
