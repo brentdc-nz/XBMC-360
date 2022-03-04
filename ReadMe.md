@@ -11,7 +11,7 @@ This is early stages and still very much a work in progress.
 Usable but many features still need reimplementation or improvements.
 
 ### Compiled alpha build (last updated 31-1-22):
-https://drive.google.com/file/d/180zj6LYp5p4hlPaH4ZbYpiW614zKXvN7/view
+https://drive.google.com/file/d/1Tp8abNFoqlyWspB05b_JSJEsu_ExqzzL/view
 
 ### Libraries
 - LibSMB2 - Ported and working (currently not mappable from UI, this is my next task).
