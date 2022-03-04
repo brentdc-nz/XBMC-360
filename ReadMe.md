@@ -6,11 +6,11 @@ This is early stages and still very much a work in progress.
 
 ### Current Status:
 - GUILib - The main controls are working but still have some missing.
-- VideoPlayer/DVDPlayer - Works ok but needs improvement to prevent stalls, etc.
+- VideoPlayer/DVDPlayer - Works well but needs improvements/features.
 
 Usable but many features still need reimplementation or improvements.
 
-### Compiled alpha build (last updated 31-1-22):
+### Compiled alpha build (last updated 4-3-22):
 https://drive.google.com/file/d/1Tp8abNFoqlyWspB05b_JSJEsu_ExqzzL/view
 
 ### Libraries
