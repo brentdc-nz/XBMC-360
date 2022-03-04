@@ -20,6 +20,7 @@ public:
 	bool IsConfirmed() { return m_bConfirmed; };
 	static bool ShowAndGetShare(CStdString &path, bool allowNetworkShares/*, VECSHARES* additionalShare = NULL*/);
 	void SetShares(VECSOURCES &shares);
+	void OnAddNetworkLocation();
 
 protected:
 	void OnClick(int iItem);

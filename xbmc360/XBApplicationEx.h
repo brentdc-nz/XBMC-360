@@ -19,7 +19,7 @@ public:
 	virtual void FrameMove() = 0;
 	virtual void Render() = 0;
 	virtual void Stop() = 0;
-	virtual void Cleanup() {};
+	virtual void Cleanup() = 0;
 
 	int Run();
 	void Destroy();

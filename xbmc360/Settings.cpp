@@ -4,9 +4,11 @@
 #include "GUISettings.h"
 #include "guilib\XMLUtils.h"
 #include "utils\URIUtils.h"
+#include "AdvancedSettings.h"
 #include "URL.h"
 
 CSettings g_settings;
+struct CSettings::stSettings g_stSettings;
 
 extern CStdString g_LoadErrorStr;
 
@@ -94,6 +96,9 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 //	(pRootElement, "loglevel", g_stSettings.m_iLogLevel, LOGWARNING, LOGDEBUG, LOGNONE); //TODO
 
 	g_guiSettings.LoadXML(pRootElement);	
+
+	// Advanced settings
+	g_advancedSettings.Load();
 
 	return true;
 }

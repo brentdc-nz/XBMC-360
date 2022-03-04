@@ -4,6 +4,8 @@
 #include "..\utils\StdString.h"
 #include "..\URL.h"
 
+#define SEEK_POSSIBLE 0x10 // flag used to check if protocol allows seeks
+
 namespace XFILE
 {
 
@@ -27,15 +29,15 @@ public:
 	virtual int64_t GetLength() = 0;/*
   virtual void Flush() { }
 */
-  /* Returns the minium size that can be read from input stream.   *
-   * For example cdrom access where access could be sector based.  *
-   * This will cause file system to buffer read requests, to       *
-   * to meet the requirement of CFile.                             *
-   * It can also be used to indicate a file system is non buffered *
-   * but accepts any read size, have it return the value 1         */
- /* virtual int  GetChunkSize() {return 0;}
+	/* Returns the minium size that can be read from input stream.   *
+	* For example cdrom access where access could be sector based.   *
+	* This will cause file system to buffer read requests, to        *
+	* to meet the requirement of CFile.                              *
+	* It can also be used to indicate a file system is non buffered  *
+	* but accepts any read size, have it return the value 1          */
+	virtual int  GetChunkSize() { return 0; }
 
-  virtual bool SkipNext(){return false;}
+ /* virtual bool SkipNext(){return false;}
 
   virtual bool Delete(const CURL& url) { return false; }
   virtual bool Rename(const CURL& url, const CURL& urlnew) { return false; }

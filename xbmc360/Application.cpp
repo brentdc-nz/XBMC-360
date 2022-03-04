@@ -17,6 +17,7 @@
 #include "guilib\AudioContext.h"
 #include "guilib\GUIAudioManager.h"
 #include "cores\PlayerCoreFactory.h"
+#include "AdvancedSettings.h"
 
 // Window includes
 #include "guilib\windows\GUIWindowHome.h"
@@ -32,6 +33,7 @@
 
 // Dialog includes
 #include "guilib\dialogs\GUIDialogButtonMenu.h"
+#include "guilib\dialogs\GUIDialogNetworkSetup.h"
 #include "guilib\dialogs\GUIDialogMediaSource.h"
 #include "guilib\dialogs\GUIDialogContextMenu.h"
 #include "guilib\dialogs\GUIDialogYesNo.h"
@@ -195,6 +197,7 @@ bool CApplication::Initialize()
 	g_windowManager.Add(new CGUIDialogContextMenu);     // window id = 106
 	g_windowManager.Add(new CGUIDialogButtonMenu);      // window id = 111
 	g_windowManager.Add(&m_guiDialogSeekBar);           // window id = 115
+	g_windowManager.Add(new CGUIDialogNetworkSetup);    // window id = 128
 	g_windowManager.Add(new CGUIDialogMediaSource);     // window id = 129
 
 	g_windowManager.SetCallback(*this);
@@ -652,7 +655,7 @@ bool CApplication::SwitchToFullScreen()
 	// See if we're playing a video, and are in GUI mode
 	if ( IsPlayingVideo() && g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
 	{
-		// then switch to fullscreen mode
+		// Then switch to fullscreen mode
 		g_windowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
 //		g_TextureManager.Flush();
 		return true;
@@ -664,7 +667,7 @@ bool CApplication::SwitchToFullScreen()
 void CApplication::StopPlaying()
 {
 	int iWin = g_windowManager.GetActiveWindow();
-	if ( IsPlaying() )
+	if (IsPlaying())
 	{
 		 if (m_pPlayer)
 			m_pPlayer->CloseFile();
@@ -711,7 +714,7 @@ bool CApplication::PlayFile(const CFileItem& item)
 {
 	// Tell system we are starting a file
 	m_bPlaybackStarting = true;
-//	CPlayerOptions options;
+	CPlayerOptions options;
 
 	if(m_pPlayer)
 	{
@@ -733,8 +736,8 @@ bool CApplication::PlayFile(const CFileItem& item)
 		// Don't hold graphicscontext here since player
 		// may wait on another thread, that requires gfx
 //		CSingleExit ex(g_graphicsContext);
-//		options.fullscreen = true;
-		bResult = m_pPlayer->OpenFile(item/*, options*/);
+		options.fullscreen = true;
+		bResult = m_pPlayer->OpenFile(item, options);
 	}
 	else
 	{
@@ -764,7 +767,7 @@ bool CApplication::PlayFile(const CFileItem& item)
 
 			// if player didn't manage to switch to fullscreen by itself do it here
 			if(g_renderManager.IsStarted()
-				&& g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO )
+				&& g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
 			
 			SwitchToFullScreen();
 		}
@@ -1021,6 +1024,19 @@ void CApplication::ActivateScreenSaver()
 	}
 }
 
+void CApplication::Cleanup()
+{
+	try
+	{
+		//TODO - Move items in Stop() into here
+		g_advancedSettings.Clear();
+	}
+	catch (...)
+	{
+		CLog::Log(LOGERROR, "Exception in CApplication::Cleanup()");
+	}
+}
+
 void CApplication::Stop()
 {
 	// Update the settings information (volume, uptime etc. need saving)
@@ -1065,6 +1081,7 @@ void CApplication::Stop()
 	g_windowManager.Delete(WINDOW_DIALOG_CONTEXT_MENU);
 	g_windowManager.Delete(WINDOW_DIALOG_BUTTON_MENU);
 	g_windowManager.Delete(WINDOW_DIALOG_MEDIA_SOURCE);
+	g_windowManager.Delete(WINDOW_DIALOG_NETWORK_SETUP);
 
 	// Unmount our drives
 //	m_drivesManager.Unmount(); //FIXME - Causes crash

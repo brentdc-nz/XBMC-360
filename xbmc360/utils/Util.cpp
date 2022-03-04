@@ -6,6 +6,28 @@
 #include "..\URL.h"
 #include "..\filesystem\MultiPathDirectory.h"
 
+namespace MathUtils
+{
+	inline int round_int(double x)
+	{
+		return (x > 0) ? (int)floor(x + 0.5) : (int)ceil(x - 0.5);
+	}
+
+	inline double rint(double x)
+	{
+		return floor(x+.5);
+	}
+
+	void hack()
+	{
+		// Stupid hack to keep compiler from dropping these
+		// functions as unused
+		MathUtils::round_int(0.0);
+		MathUtils::rint(0.0);
+	}
+
+} // CMathUtils namespace
+
 typedef struct
 {
 	char command[20];
@@ -477,6 +499,28 @@ void CUtil::Stat64ToStat(struct _stat *result, struct __stat64 *stat)
 	result->st_ctime = (time_t)(stat->st_ctime & 0xFFFFFFFF);
 }
 
+void CUtil::URLEncode(CStdString& strURLData)
+{
+	CStdString strResult;
+
+	// Wonder what a good value is here is, depends on how often it occurs
+	strResult.reserve( strURLData.length() * 2 );
+
+	for(int i = 0; i < (int)strURLData.size(); ++i)
+	{
+		int kar = (unsigned char)strURLData[i];
+		if(isalnum(kar))
+			strResult += kar;
+		else
+		{
+			CStdString strTmp;
+			strTmp.Format("%%%02.2x", kar);
+			strResult += strTmp;
+		}
+	}
+	strURLData = strResult;
+}
+
 bool CUtil::IsLocalDrive(const CStdString& strPath, bool bFullPath /*= false*/)
 {
 	VECSOURCES sources;
@@ -501,4 +545,69 @@ bool CUtil::IsLocalDrive(const CStdString& strPath, bool bFullPath /*= false*/)
 			return true;
 	}
 	return false;
+}
+
+void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult)
+{
+	strResult = strFolder;
+	
+	// Remove the stack:// as it screws up the logic below
+	if(IsStack(strFolder))
+		strResult = strResult.Mid(8);
+
+	// Add a slash to the end of the path if necessary
+	if(!CUtil::HasSlashAtEnd(strResult))
+	{
+		if(strResult.Find("//") >= 0 )
+			strResult += "/";
+		else
+			strResult += "\\";
+	}
+
+	// Remove any slash at the start of the file
+	if(strFile.size() && strFile[0] == '/' || strFile[0] == '\\')
+		strResult += strFile.Mid(1);
+	else
+		strResult += strFile;
+
+	// Re-add the stack:// protocol
+	if(IsStack(strFolder))
+		strResult = "stack://" + strResult;
+}
+
+bool CUtil::IsStack(const CStdString& strFile)
+{
+	if(strFile.Left(8).Equals("stack://")) return true;
+	return false;
+}
+
+void CUtil::UrlDecode(CStdString& strURLData)
+{
+	CStdString strResult;
+
+	// Resulet will always be less than source */
+	strResult.reserve( strURLData.length() );
+
+	for(unsigned int i = 0; i < (int)strURLData.size(); ++i)
+	{
+		int kar = (unsigned char)strURLData[i];
+		if (kar == '+') strResult += ' ';
+
+		else if(kar == '%')
+		{
+			if(i < strURLData.size() - 2)
+			{
+				CStdString strTmp;
+				strTmp.assign(strURLData.substr(i + 1, 2));
+				int dec_num;
+				sscanf(strTmp,"%x",&dec_num);
+				strResult += (char)dec_num;
+				i += 2;
+			}
+			else
+				strResult += kar;
+		}
+		else strResult += kar;
+	}
+	strURLData = strResult;
 }

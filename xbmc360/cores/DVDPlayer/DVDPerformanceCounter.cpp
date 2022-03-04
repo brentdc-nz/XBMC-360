@@ -1,11 +1,15 @@
 #include "DVDPerformanceCounter.h"
 #include "DVDMessageQueue.h"
 
+#ifdef DVDDEBUG_WITH_PERFORMANCE_COUNTER
+#include <xbdm.h>
+#endif
+
 HRESULT __stdcall DVDPerformanceCounterAudioQueue(PLARGE_INTEGER numerator, PLARGE_INTEGER demoninator)
 {
 	numerator->QuadPart = 0LL;
 
-	if (g_dvdPerformanceCounter.m_pAudioQueue)
+	if(g_dvdPerformanceCounter.m_pAudioQueue)
 	{
 		int iSize     = g_dvdPerformanceCounter.m_pAudioQueue->GetDataSize();
 		int iMaxSize  = g_dvdPerformanceCounter.m_pAudioQueue->GetMaxDataSize();
@@ -13,8 +17,9 @@ HRESULT __stdcall DVDPerformanceCounterAudioQueue(PLARGE_INTEGER numerator, PLAR
 		if(iMaxSize > 0)
 		{
 			int iPercent  = (iSize * 100) / iMaxSize;
-			if (iPercent > 100) iPercent = 100;
-			numerator->QuadPart = iPercent;
+
+			if(iPercent > 100) iPercent = 100;
+				numerator->QuadPart = iPercent;
 		}
 	}
 
@@ -25,15 +30,17 @@ HRESULT __stdcall DVDPerformanceCounterVideoQueue(PLARGE_INTEGER numerator, PLAR
 {
 	numerator->QuadPart = 0LL;
 
-	if (g_dvdPerformanceCounter.m_pAudioQueue)
+	if(g_dvdPerformanceCounter.m_pAudioQueue)
 	{
 		int iSize     = g_dvdPerformanceCounter.m_pVideoQueue->GetDataSize();
 		int iMaxSize  = g_dvdPerformanceCounter.m_pVideoQueue->GetMaxDataSize();
-		if (iMaxSize > 0)
+
+		if(iMaxSize > 0)
 		{
 			int iPercent  = (iSize * 100) / iMaxSize;
-			if (iPercent > 100) iPercent = 100;
-			numerator->QuadPart = iPercent;
+
+			if(iPercent > 100) iPercent = 100;
+				numerator->QuadPart = iPercent;
 		}
 	}
 
@@ -42,7 +49,7 @@ HRESULT __stdcall DVDPerformanceCounterVideoQueue(PLARGE_INTEGER numerator, PLAR
 
 inline __int64 get_thread_cpu_usage(ProcessPerformance* p)
 {
-	if (p->hThread)
+	if(p->hThread)
 	{
 		FILETIME dummy;
 		FILETIME current_time_thread;
@@ -62,7 +69,7 @@ inline __int64 get_thread_cpu_usage(ProcessPerformance* p)
 		__int64 threadTime = (p->timer_thread.QuadPart - old_time_thread.QuadPart);
 		__int64 systemTime = (p->timer_system.QuadPart - old_time_system.QuadPart);
 
-		if (systemTime > 0 && threadTime > 0) return ((threadTime * 100) / systemTime);
+		if(systemTime > 0 && threadTime > 0) return ((threadTime * 100) / systemTime);
 	}
 	return 0LL;
 }
@@ -92,9 +99,9 @@ CDVDPerformanceCounter::CDVDPerformanceCounter()
 	m_pAudioQueue = NULL;
 	m_pVideoQueue = NULL;
   
-	memset(&m_videoDecodePerformance, 0, sizeof(m_videoDecodePerformance)); // video decoding
-	memset(&m_audioDecodePerformance, 0, sizeof(m_audioDecodePerformance)); // audio decoding + output to audio device
-	memset(&m_mainPerformance,        0, sizeof(m_mainPerformance));        // reading files, demuxing, decoding of subtitles + menu overlays
+	memset(&m_videoDecodePerformance, 0, sizeof(m_videoDecodePerformance)); // Video decoding
+	memset(&m_audioDecodePerformance, 0, sizeof(m_audioDecodePerformance)); // Audio decoding + output to audio device
+	memset(&m_mainPerformance,        0, sizeof(m_mainPerformance));        // Reading files, demuxing, decoding of subtitles + menu overlays
   
 	InitializeCriticalSection(&m_critSection);
   
@@ -127,6 +134,6 @@ bool CDVDPerformanceCounter::Initialize()
 void CDVDPerformanceCounter::DeInitialize()
 {
 	Lock();
-  
 	Unlock();
 }
+

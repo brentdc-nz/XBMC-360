@@ -126,6 +126,7 @@
       <AdditionalOptions>/EHa %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <CompileAs>CompileAsCpp</CompileAs>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -259,6 +260,7 @@
       <AdditionalOptions>/EHa %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -301,18 +303,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AdvancedSettings.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="ApplicationMessenger.h" />
     <ClInclude Include="BackgroundInfoLoader.h" />
     <ClInclude Include="ButtonTranslator.h" />
-    <ClInclude Include="cores\DVDPlayer\DVDAudioDevice.h" />
+    <ClInclude Include="cores\AudioRenderers\IAudioCallback.h" />
+    <ClInclude Include="cores\AudioRenderers\IAudioRenderer.h" />
+    <ClInclude Include="cores\AudioRenderers\NullSound.h" />
+    <ClInclude Include="cores\AudioRenderers\XAudio2.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDAudio.h" />
     <ClInclude Include="cores\DVDPlayer\DVDClock.h" />
-    <ClInclude Include="cores\DVDPlayer\DVDCodecs\DVDAudioCodec.h" />
-    <ClInclude Include="cores\DVDPlayer\DVDCodecs\DVDAudioCodecFFmpeg.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDCodecs\Audio\DVDAudioCodec.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDCodecs\Audio\DVDAudioCodecFFmpeg.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDCodecs\DVDCodecs.h" />
     <ClInclude Include="cores\DVDPlayer\DVDCodecs\DVDCodecUtils.h" />
     <ClInclude Include="cores\DVDPlayer\DVDCodecs\DVDFactoryCodec.h" />
-    <ClInclude Include="cores\DVDPlayer\DVDCodecs\DVDVideoCodec.h" />
-    <ClInclude Include="cores\DVDPlayer\DVDCodecs\DVDVideoCodecFFmpeg.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDCodecs\video\DVDVideoCodec.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDCodecs\Video\DVDVideoCodecFFmpeg.h" />
     <ClInclude Include="cores\DVDPlayer\DVDDemuxers\DVDDemux.h" />
     <ClInclude Include="cores\DVDPlayer\DVDDemuxers\DVDDemuxFFmpeg.h" />
     <ClInclude Include="cores\DVDPlayer\DVDDemuxers\DVDDemuxUtils.h" />
@@ -320,6 +328,7 @@
     <ClInclude Include="cores\DVDPlayer\DVDInputStreams\DVDFactoryInputStream.h" />
     <ClInclude Include="cores\DVDPlayer\DVDInputStreams\DVDInputStream.h" />
     <ClInclude Include="cores\DVDPlayer\DVDInputStreams\DVDInputStreamFile.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDInputStreams\DVDInputStreamSMB.h" />
     <ClInclude Include="cores\DVDPlayer\DVDMessage.h" />
     <ClInclude Include="cores\DVDPlayer\DVDMessageQueue.h" />
     <ClInclude Include="cores\DVDPlayer\DVDPerformanceCounter.h" />
@@ -327,7 +336,7 @@
     <ClInclude Include="cores\DVDPlayer\DVDPlayerAudio.h" />
     <ClInclude Include="cores\DVDPlayer\DVDPlayerVideo.h" />
     <ClInclude Include="cores\DVDPlayer\DVDStreamInfo.h" />
-    <ClInclude Include="cores\DVDPlayer\DVDUtils\DVDTimeUtils.h" />
+    <ClInclude Include="cores\DVDPlayer\Edl.h" />
     <ClInclude Include="cores\DVDPlayer\IDVDPlayer.h" />
     <ClInclude Include="cores\IPlayer.h" />
     <ClInclude Include="cores\PlayerCoreFactory.h" />
@@ -352,6 +361,7 @@
     <ClInclude Include="filesystem\IDirectory.h" />
     <ClInclude Include="filesystem\IFileDirectory.h" />
     <ClInclude Include="filesystem\MultiPathDirectory.h" />
+    <ClInclude Include="filesystem\SMBDirectory.h" />
     <ClInclude Include="filesystem\VirtualDirectory.h" />
     <ClInclude Include="filesystem\XBFS_Wrap\EmuFileWrapper.h" />
     <ClInclude Include="filesystem\XBFS_Wrap\XBFS_Wrap.h" />
@@ -360,6 +370,7 @@
     <ClInclude Include="guilib\dialogs\GUIDialogContextMenu.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogFileBrowser.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogMediaSource.h" />
+    <ClInclude Include="guilib\dialogs\GUIDialogNetworkSetup.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogSeekBar.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogYesNo.h" />
     <ClInclude Include="guilib\GraphicContext.h" />
@@ -440,6 +451,7 @@
     <ClInclude Include="libraries\libsmb2\smb2.h" />
     <ClInclude Include="libraries\libsmb2\smb3-seal.h" />
     <ClInclude Include="libraries\libsmb2\socket.h" />
+    <ClInclude Include="libraries\libsmb2\XBLibSmb2.h" />
     <ClInclude Include="libraries\libsmb2\xbox_defines.h" />
     <ClInclude Include="MediaManager.h" />
     <ClInclude Include="services\FTPServer\FTPFileWriter.h" />
@@ -452,6 +464,7 @@
     <ClInclude Include="URL.h" />
     <ClInclude Include="utils\asprintf.h" />
     <ClInclude Include="utils\AutoPtrHandle.h" />
+    <ClInclude Include="utils\BitstreamStats.h" />
     <ClInclude Include="utils\CRC_32.h" />
     <ClInclude Include="utils\CriticalSection.h" />
     <ClInclude Include="utils\Event.h" />
@@ -467,7 +480,9 @@
     <ClInclude Include="utils\TimeUtils.h" />
     <ClInclude Include="utils\URIUtils.h" />
     <ClInclude Include="utils\Util.h" />
+    <ClInclude Include="utils\Win32Exception.h" />
     <ClInclude Include="utils\XEXUtils.h" />
+    <ClInclude Include="VideoSettings.h" />
     <ClInclude Include="XBApplicationEx.h" />
     <ClInclude Include="xbox\Network.h" />
     <ClInclude Include="xbox\socket_emu\addrinfo.h" />
@@ -481,33 +496,37 @@
     <ClInclude Include="xbox\XBKernalExports.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AdvancedSettings.cpp" />
     <ClCompile Include="Application.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">..\xbox360 ffmpeg\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ClCompile Include="ApplicationMessenger.cpp" />
     <ClCompile Include="BackgroundInfoLoader.cpp" />
     <ClCompile Include="ButtonTranslator.cpp" />
-    <ClCompile Include="cores\DVDPlayer\DVDAudioDevice.cpp" />
+    <ClCompile Include="cores\AudioRenderers\NullSound.cpp" />
+    <ClCompile Include="cores\AudioRenderers\XAudio2.cpp" />
+    <ClCompile Include="cores\DVDPlayer\DVDAudio.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDClock.cpp" />
-    <ClCompile Include="cores\DVDPlayer\DVDCodecs\DVDAudioCodecFFmpeg.cpp" />
+    <ClCompile Include="cores\DVDPlayer\DVDCodecs\Audio\DVDAudioCodecFFmpeg.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDCodecs\DVDCodecUtils.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDCodecs\DVDFactoryCodec.cpp" />
-    <ClCompile Include="cores\DVDPlayer\DVDCodecs\DVDVideoCodecFFmpeg.cpp" />
+    <ClCompile Include="cores\DVDPlayer\DVDCodecs\Video\DVDVideoCodecFFmpeg.cpp" />
+    <ClCompile Include="cores\DVDPlayer\DVDDemuxers\DVDDemux.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDDemuxers\DVDDemuxFFmpeg.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDDemuxers\DVDDemuxUtils.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDDemuxers\DVDFactoryDemuxer.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDInputStreams\DVDFactoryInputStream.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDInputStreams\DVDInputStream.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDInputStreams\DVDInputStreamFile.cpp" />
+    <ClCompile Include="cores\DVDPlayer\DVDInputStreams\DVDInputStreamSMB.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDMessage.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDMessageQueue.cpp" />
+    <ClCompile Include="cores\DVDPlayer\DVDPerformanceCounter.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDPlayer.cpp" />
-    <ClCompile Include="cores\DVDPlayer\DVDPlayerAudio.cpp">
-      <IntrinsicFunctions Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</IntrinsicFunctions>
-    </ClCompile>
+    <ClCompile Include="cores\DVDPlayer\DVDPlayerAudio.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDPlayerVideo.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDStreamInfo.cpp" />
-    <ClCompile Include="cores\DVDPlayer\DVDUtils\DVDTimeUtils.cpp" />
+    <ClCompile Include="cores\DVDPlayer\Edl.cpp" />
     <ClCompile Include="cores\PlayerCoreFactory.cpp" />
     <ClCompile Include="cores\VideoRenderers\RenderManager.cpp" />
     <ClCompile Include="cores\VideoRenderers\RGBRenderer.cpp" />
@@ -528,6 +547,7 @@
     <ClCompile Include="filesystem\HDDirectory.cpp" />
     <ClCompile Include="filesystem\IDirectory.cpp" />
     <ClCompile Include="filesystem\MultiPathDirectory.cpp" />
+    <ClCompile Include="filesystem\SMBDirectory.cpp" />
     <ClCompile Include="filesystem\VirtualDirectory.cpp" />
     <ClCompile Include="filesystem\XBFS_Wrap\XBFS_Wrap.cpp" />
     <ClCompile Include="guilib\AudioContext.cpp" />
@@ -535,6 +555,7 @@
     <ClCompile Include="guilib\dialogs\GUIDialogContextMenu.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogFileBrowser.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogMediaSource.cpp" />
+    <ClCompile Include="guilib\dialogs\GUIDialogNetworkSetup.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogSeekBar.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogYesNo.cpp" />
     <ClCompile Include="guilib\GraphicContext.cpp" />
@@ -805,6 +826,7 @@
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
     </ClCompile>
+    <ClCompile Include="libraries\libsmb2\XBLibSmb2.cpp" />
     <ClCompile Include="MediaManager.cpp" />
     <ClCompile Include="services\FTPServer\FTPFileWriter.cpp" />
     <ClCompile Include="services\FTPServer\FTPServer.cpp" />
@@ -820,6 +842,7 @@
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
     </ClCompile>
     <ClCompile Include="utils\AutoPtrHandle.cpp" />
+    <ClCompile Include="utils\BitstreamStats.cpp" />
     <ClCompile Include="utils\CRC_32.cpp" />
     <ClCompile Include="utils\CriticalSection.cpp" />
     <ClCompile Include="utils\Event.cpp" />
@@ -834,7 +857,9 @@
     <ClCompile Include="utils\TimeUtils.cpp" />
     <ClCompile Include="utils\URIUtils.cpp" />
     <ClCompile Include="utils\Util.cpp" />
+    <ClCompile Include="utils\Win32Exception.cpp" />
     <ClCompile Include="utils\XEXUtils.cpp" />
+    <ClCompile Include="VideoSettings.cpp" />
     <ClCompile Include="XBApplicationEx.cpp" />
     <ClCompile Include="xbmc.cpp" />
     <ClCompile Include="xbox\Network.cpp" />

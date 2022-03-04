@@ -14,7 +14,8 @@ public:
 	virtual bool PreInit();
 	virtual void ManageDisplay();
 	virtual bool Configure(int iWidth, int iHeight);
-	virtual bool GetImage(RGB32Image_t *image);
+	virtual bool IsConfigured() { return m_bConfigured; } 
+	virtual bool GetImage(YV12Image *image);
 	virtual void ReleaseImage();
 	virtual void Render();
 	virtual void PrepareDisplay();
@@ -34,7 +35,9 @@ private:
 	IDirect3DVertexDeclaration9*	m_pVertexDecl;   // Vertex format decl
 	IDirect3DVertexShader9*			m_pVertexShader; // Vertex Shader
 	IDirect3DPixelShader9*			m_pPixelShader;  // Pixel Shader
-	LPDIRECT3DTEXTURE9				m_pTexture;
+	IDirect3DTexture9*				m_pFrameU;
+	IDirect3DTexture9*				m_pFrameV;
+	IDirect3DTexture9*				m_pFrameY;
 
 	D3DXMATRIX						m_matWorld;
 	D3DXMATRIX						m_matProj;

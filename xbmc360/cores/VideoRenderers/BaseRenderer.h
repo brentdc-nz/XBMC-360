@@ -3,13 +3,16 @@
 
 #include "..\..\utils\Stdafx.h"
 
-typedef struct RGB32Image_s
+#define MAX_PLANES 3
+#define MAX_FIELDS 3
+
+typedef struct YV12Image_s
 {
-	BYTE *plane;
-	unsigned int stride;
+	BYTE *   plane[MAX_PLANES];
+	unsigned stride[MAX_PLANES];
 	unsigned int width;
 	unsigned int height;
-} RGB32Image_t;
+} YV12Image;
 
 class CBaseRenderer
 {
@@ -21,7 +24,8 @@ public:
 	virtual bool PreInit() = 0;
 	virtual void ManageDisplay() = 0;
 	virtual bool Configure(int iWidth, int iHeight) = 0;
-	virtual bool GetImage(RGB32Image_t *image) = 0;
+	virtual bool IsConfigured() = 0;
+	virtual bool GetImage(YV12Image* image) = 0;
 	virtual void ReleaseImage() = 0;
 	virtual void Render() = 0;
 	virtual void FlipPage() = 0;
@@ -36,8 +40,8 @@ protected:
 	
 	LPDIRECT3DDEVICE9 m_pd3dDevice;
 
-	bool m_initialized;
-
+	bool m_bInitialized;
+	bool m_bConfigured;
 	int m_iSourceWidth;
 	int m_iSourceHeight;
 

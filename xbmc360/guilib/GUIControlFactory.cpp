@@ -861,9 +861,10 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
 		labelInfo, textureFocus, textureNoFocus, textureUp, textureDown, textureUpFocus,
 		textureDownFocus, labelInfo, iType);
 
-//		((CGUISpinControlEx *)control)->SetSpinPosition(spinPosX);
-		((CGUISpinControlEx *)control)->SetText(strLabel);
-//		((CGUISpinControlEx *)control)->SetReverse(bReverse);
+		((CGUISpinControlEx*)control)->SetNavigation(up, down, left, right);
+//		((CGUISpinControlEx*)control)->SetSpinPosition(spinPosX);
+		((CGUISpinControlEx*)control)->SetText(strLabel);
+//		((CGUISpinControlEx*)control)->SetReverse(bReverse);
 	}
 /*  else if (type == CGUIControl::GUICONTROL_VISUALISATION)
   {

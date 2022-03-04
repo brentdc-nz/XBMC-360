@@ -5,6 +5,7 @@
 #include "..\Application.h"
 
 #include "HDDirectory.h"
+#include "SMBDirectory.h"
 #include "MultiPathDirectory.h"
 
 using namespace DIRECTORY;
@@ -40,7 +41,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 */
 	if(g_application.getNetwork().IsAvailable())
 	{
-//		if(strProtocol == "smb") return new CSMBDirectory();
+		if(strProtocol == "smb") return new CSMBDirectory();
 //		if(strProtocol == "daap") return new CDAAPDirectory();
 //		if(strProtocol == "upnp") return new CUPnPDirectory();
 //		if(strProtocol == "shout") return new CShoutcastDirectory();

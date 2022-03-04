@@ -1,13 +1,16 @@
 #ifndef H_CDVDCLOCK
 #define H_CDVDCLOCK
 
-#include "..\..\utils\SharedSection.h"
+#include "utils\SharedSection.h"
+#include "utils\CriticalSection.h"
 
 #define DVD_TIME_BASE 1000000
-#define DVD_NOPTS_VALUE (0x8000000000000000 ## i64)
+#define DVD_NOPTS_VALUE    (-1LL<<52) // Should be possible to represent in both double and __int64
 
-#define DVD_SEC_TO_TIME(x) ((x) * DVD_TIME_BASE)
-#define DVD_MSEC_TO_TIME(x) ((x) * (DVD_TIME_BASE / 1000))
+#define DVD_TIME_TO_SEC(x)  ((int)((double)(x) / DVD_TIME_BASE))
+#define DVD_TIME_TO_MSEC(x) ((int)((double)(x) * 1000 / DVD_TIME_BASE))
+#define DVD_SEC_TO_TIME(x)  ((double)(x) * DVD_TIME_BASE)
+#define DVD_MSEC_TO_TIME(x) ((double)(x) * DVD_TIME_BASE / 1000)
 
 #define DVD_PLAYSPEED_RW_2X       -2000
 #define DVD_PLAYSPEED_REVERSE     -1000
@@ -17,8 +20,8 @@
 
 enum ClockDiscontinuityType
 {
-  CLOCK_DISC_FULL,  // pts is starting form 0 again
-  CLOCK_DISC_NORMAL // after a pause
+	CLOCK_DISC_FULL,  // pts is starting form 0 again
+	CLOCK_DISC_NORMAL // After a pause
 };
 
 class CDVDClock
@@ -27,29 +30,29 @@ public:
 	CDVDClock();
 	~CDVDClock();
 
-	__int64 GetClock();
-  __int64 GetAbsoluteClock();
-  __int64 GetFrequency() { return (__int64)m_systemFrequency.QuadPart ; }
+	double GetClock();
 
-	/* delay should say how long in the future we expect to display this frame */
-	void Discontinuity(ClockDiscontinuityType type, __int64 currentPts = 0LL, __int64 delay = 0LL);
+	// Delay should say how long in the future we expect to display this frame
+	void Discontinuity(ClockDiscontinuityType type, double currentPts = 0LL, double delay = 0LL);
   
-	/* will return how close we are to a discontinuity */
-	__int64 CDVDClock::DistanceToDisc();
+	// Will return how close we are to a discontinuity
+	double DistanceToDisc();
 
 	void Pause();
 	void Resume();
 	void SetSpeed(int iSpeed);
 
+	static double GetAbsoluteClock();
+	static double GetFrequency() { return (double)m_systemFrequency.QuadPart ; }
 protected:
-  CSharedSection m_critSection;
-  LARGE_INTEGER m_systemUsed;
-  LARGE_INTEGER m_systemFrequency;
-  LARGE_INTEGER m_startClock;
-  LARGE_INTEGER m_pauseClock;
-  __int64 m_iDisc;
-  bool m_bReset;
-
+	CSharedSection m_critSection;
+	LARGE_INTEGER m_systemUsed;  
+	LARGE_INTEGER m_startClock;
+	LARGE_INTEGER m_pauseClock;
+	double m_iDisc;
+	bool m_bReset;
+  
+	static LARGE_INTEGER m_systemFrequency;
 };
 
 #endif //H_CDVDCLOCK

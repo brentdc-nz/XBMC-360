@@ -5,6 +5,12 @@
 #include "stdafx.h"
 #include "..\MediaManager.h"
 
+namespace MathUtils
+{
+	inline int round_int(double x);
+	inline double rint(double x);
+}
+
 class CUtil
 {
 public:
@@ -24,6 +30,10 @@ public:
 	static int GetMatchingShare(const CStdString& strPath, VECSOURCES& vecShares, bool& bIsBookmarkName);
 	static void ForceForwardSlashes(CStdString& strPath);
 	static void Stat64ToStat(struct _stat *result, struct __stat64 *stat);
+	static void URLEncode(CStdString& strURLData);
+	static void AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult);
+	static bool IsStack(const CStdString& strFile);
+	static void UrlDecode(CStdString& strURLData);
 };
 
 #endif //CUTIL_H

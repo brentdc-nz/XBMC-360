@@ -32,6 +32,7 @@ public:
 	virtual void Process();
 	virtual void FrameMove();
 	virtual void Render();
+	virtual void Cleanup();
 	virtual void Stop();
 
 	void StartServices();

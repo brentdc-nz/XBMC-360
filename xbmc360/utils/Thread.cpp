@@ -242,3 +242,13 @@ float CThread::GetRelativeUsage()
   }    
   return 0.0f; 
 }
+
+bool CThread::IsCurrentThread() const
+{
+  return IsCurrentThread(ThreadId());
+}
+
+bool CThread::IsCurrentThread(const ThreadIdentifier tid)
+{
+  return (::GetCurrentThreadId() == tid);
+}

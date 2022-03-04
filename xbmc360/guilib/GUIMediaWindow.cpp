@@ -250,7 +250,7 @@ bool CGUIMediaWindow::OnPopupMenu(int iItem)
 
 	if(m_vecItems.IsVirtualDirectoryRoot())
 	{
-		if (iItem < 0)
+		if(iItem < 0)
 		{
 			// TODO: Add option to add shares in this case
 			return false;

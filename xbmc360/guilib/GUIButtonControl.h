@@ -43,6 +43,7 @@ public:
 	virtual bool OnMessage(CGUIMessage& message);
 	const CStdString GetLabel();
 	void SetLabel(const string & aLabel);
+	void SetLabel2(const string & aLabel);
 	void SetClickActions(const vector<CStdString>& clickActions) { m_clickActions = clickActions; };
 
 protected:

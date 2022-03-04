@@ -7,6 +7,26 @@
 
 using namespace XFILE;
 
+CFile::CFile()
+{
+	m_pFile = NULL;
+//	m_pBuffer = NULL;
+//	m_flags = 0;
+	m_bitStreamStats = NULL;
+}
+
+CFile::~CFile()
+{
+	if(m_pFile)
+		SAFE_DELETE(m_pFile);
+
+//	if(m_pBuffer)
+//		SAFE_DELETE(m_pBuffer);
+
+	if(m_bitStreamStats)
+		SAFE_DELETE(m_bitStreamStats);
+}
+
 bool CFile::Open(const CStdString& strURLFile, unsigned int iFlags)
 {
 	m_iFlags = iFlags;

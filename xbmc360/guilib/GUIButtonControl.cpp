@@ -28,7 +28,7 @@ CGUIButtonControl::CGUIButtonControl(int parentID, int controlID, float posX, fl
     , m_imgFocus(posX, posY, width, height, textureFocus)
     , m_imgNoFocus(posX, posY, width, height, textureNoFocus)
     , m_label(posX, posY, width, height, labelInfo)
-    , m_label2(posX, posY, width, height, labelInfo)
+    , m_label2(posX + 350, posY, width, height, labelInfo) // TEST: REMOVE ME
 {
 	m_bSelected = false;
 //	m_alpha = 255;
@@ -130,6 +130,7 @@ void CGUIButtonControl::RenderText()
 		m_label.SetDisabledColor(false);
 
 	m_label.Render();
+	m_label2.Render();
 }
 
 bool CGUIButtonControl::OnAction(const CAction &action)
@@ -182,6 +183,11 @@ void CGUIButtonControl::OnClick()
 void CGUIButtonControl::SetLabel(const string &label)
 {	
 	m_label.SetText(label);
+}
+
+void CGUIButtonControl::SetLabel2(const string &label)
+{	
+	m_label2.SetText(label);
 }
 
 const CStdString CGUIButtonControl::GetLabel()

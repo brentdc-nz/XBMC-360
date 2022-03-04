@@ -269,27 +269,8 @@ void CGUIWindowFullScreen::Seek(bool bPlus, bool bLargeStep)
 
 	// Temporary solution
 
-	bool bNeedsPause(false);
-	float fVolume;
-
-	// Unpause the player if necessary
-	if (g_application.m_pPlayer->IsPaused())
-	{
-		fVolume = g_audioContext.GetVolume();
-		g_audioContext.SetVolume(0.0f);
-
-		g_application.m_pPlayer->Pause();
-		bNeedsPause = true;
-	}
-
 	g_application.m_pPlayer->Seek(bPlus, bLargeStep);
 
-	// Re-pause it
-	if (bNeedsPause)
-	{
-		Sleep(300);  // Allow DVDPlayer to finish it's seek (nasty hack!)
-		g_application.m_pPlayer->Pause();
-	
-		g_audioContext.SetVolume(fVolume);
-	}
+	// Make sure gui items are visible
+//	g_infoManager.SetDisplayAfterSeek(); //TODO
 }

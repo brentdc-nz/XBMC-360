@@ -7,6 +7,8 @@
 #include "..\..\URL.h"
 #include "..\..\MediaManager.h"
 #include "..\..\utils\Util.h"
+#include "GUIDialogNetworkSetup.h"
+#include  "..\..\filesystem\Directory.h"
 
 #define CONTROL_LIST          450
 #define CONTROL_THUMBS        451
@@ -204,7 +206,7 @@ void CGUIDialogFileBrowser::OnClick(int iItem)
 		if(pItem->GetPath() == "net://")
 		{
 			// Special "Add Network Location" item
-//			OnAddNetworkLocation();
+			OnAddNetworkLocation();
 			return;
 		}
 //		if(pItem->m_bIsShareOrDrive)
@@ -315,6 +317,30 @@ void CGUIDialogFileBrowser::SetShares(VECSOURCES &shares)
 {
 	m_shares = shares;
 	m_rootDir.SetShares(shares);
+}
+
+void CGUIDialogFileBrowser::OnAddNetworkLocation()
+{
+	// Ok, fire up the network location dialog
+	CStdString path;
+	if(CGUIDialogNetworkSetup::ShowAndGetNetworkAddress(path))
+	{
+		// Verify the path by doing a GetDirectory.
+		CFileItemList items;
+		if(DIRECTORY::CDirectory::GetDirectory(path, items, "", false, true)/* || CGUIDialogYesNo::ShowAndGetInput(1001,1002,1003,1004)*/)
+		{
+			// Add the network location to the shares list
+			CMediaSource share;
+			share.strPath = path;
+			CURL url(path);
+			url.GetURLWithoutUserDetails(share.strName);
+			m_shares.push_back(share);
+			// Add to our location manager...
+//			g_mediaManager.AddNetworkLocation(path);
+		}
+	}
+	m_rootDir.SetShares(m_shares);
+	Update(m_vecItems.m_strPath);
 }
 
 void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)

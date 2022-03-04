@@ -11,6 +11,8 @@
 
 #include "Event.h"
 
+typedef unsigned long ThreadIdentifier;
+
 class IRunnable
 {
 public:
@@ -39,8 +41,10 @@ public:
   bool IsRunning();
   virtual void StopThread();
 
-  // returns the relative cpu usage of this thread since last call
+  // Returns the relative cpu usage of this thread since last call
   float GetRelativeUsage();
+  bool IsCurrentThread() const;
+  static bool IsCurrentThread(const ThreadIdentifier tid);
 
 protected:
   virtual void OnStartup(){};

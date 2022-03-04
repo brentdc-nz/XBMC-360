@@ -4,6 +4,7 @@
 #include "utils\StdString.h"
 #include "guilib\tinyxml\tinyxml.h"
 #include "MediaManager.h"
+#include "VideoSettings.h"
 
 #define DEFAULT_SKIN "Project Mayhem III"
 #define SETTINGS_FILE "D:\\settings.xml"
@@ -28,6 +29,12 @@ public:
 	CStdString GetAudioExtensions() { return m_strAudioExtensions; };
 	CStdString GetPictureExtensions() { return m_strPictureExtensions; };
 
+	struct stSettings
+	{
+		public:
+		CVideoSettings m_currentVideoSettings;
+	};
+
 protected:
 	void GetSources(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSOURCES& items);
 	bool GetSource(const CStdString &category, const TiXmlNode *source, CMediaSource &share);
@@ -47,5 +54,6 @@ protected:
 };
 
 extern CSettings g_settings;
+extern struct CSettings::stSettings g_stSettings;
 
 #endif //H_CSETTINGS

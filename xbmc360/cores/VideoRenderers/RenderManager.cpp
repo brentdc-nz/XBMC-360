@@ -1,14 +1,17 @@
 #include "RenderManager.h"
-#include "..\..\Application.h"
-#include "..\..\utils\Log.h"
-#include "..\..\guilib\GraphicContext.h"
+#include "Application.h"
+#include "utils\Log.h"
+#include "guilib\GraphicContext.h"
 
 CRenderManager g_renderManager;
+
+#define MAXPRESENTDELAY 500
 
 CRenderManager::CRenderManager()
 {
 	m_pRenderer = NULL;
 	m_bIsStarted = false;
+	m_dwPresentTime = 0;
 }
 
 CRenderManager::~CRenderManager()
@@ -46,14 +49,14 @@ bool CRenderManager::PreInit()
 	return m_pRenderer->PreInit();
 }
 
-bool CRenderManager::Configure(int width, int height)
+bool CRenderManager::Configure(int width, int height, unsigned flags)
 {
-//	DWORD locks = ExitCriticalSection(g_graphicsContext);
-//	CExclusiveLock lock(m_sharedSection);      
+	DWORD locks = ExitCriticalSection(g_graphicsContext);
+	CExclusiveLock lock(m_sharedSection);      
 
 	if(!m_pRenderer) 
 	{
-//		RestoreCriticalSection(g_graphicsContext, locks);
+		RestoreCriticalSection(g_graphicsContext, locks);
 		CLog::Log(LOGERROR, "%s called without a valid Renderer object", __FUNCTION__);
 		return false;
 	}
@@ -61,22 +64,30 @@ bool CRenderManager::Configure(int width, int height)
 	bool result = m_pRenderer->Configure(width, height/*, d_width, d_height, fps, flags*/);
 	if(result)
 	{
-		if( /*flags & CONF_FLAGS_FULLSCREEN*/1 ) //Marty - Always true atm
+		if(flags & CONF_FLAGS_FULLSCREEN)
 		{
-//			lock.Leave();
+			lock.Leave();
 			g_application./*getApplicationMessenger().*/SwitchToFullScreen();
-//			lock.Enter();
+			lock.Enter();
 		}
 //		m_pRenderer->Update(false);
 		m_bIsStarted = true;
 	}
   
-//	RestoreCriticalSection(g_graphicsContext, locks);
+	RestoreCriticalSection(g_graphicsContext, locks);
 
 	return result;
 }
 
-bool CRenderManager::GetImage(RGB32Image_t* image)
+bool CRenderManager::IsConfigured()
+{
+	if(!m_pRenderer)
+		return false;
+
+	return m_pRenderer->IsConfigured();
+}
+
+bool CRenderManager::GetImage(YV12Image* image)
 {
 	if(!m_pRenderer) 
 	{
@@ -106,13 +117,24 @@ void CRenderManager::PrepareDisplay()
 		m_pRenderer->PrepareDisplay();
 }
 
-void CRenderManager::FlipPage()
+void CRenderManager::FlipPage(DWORD delay /* = 0LL*/, int source /*= -1*/, EFIELDSYNC sync /*= FS_NONE*/)
 {
+	DWORD timestamp = 0;
+
+	if(delay > MAXPRESENTDELAY) delay = MAXPRESENTDELAY;
+
+	if(delay > 0)
+		timestamp = GetTickCount() + delay;
+
+
 	if(!m_pRenderer) 
 	{
 		CLog::Log(LOGERROR, "%s called without a valid Renderer object", __FUNCTION__);
 		return;
 	}
+
+	while(timestamp > GetTickCount()/* && !CThread::m_bStop*/)
+		Sleep(1);
 
 	m_pRenderer->FlipPage();
 }
@@ -128,3 +150,4 @@ void CRenderManager::UnInit()
 		m_pRenderer = NULL; 
 	}
 }
+

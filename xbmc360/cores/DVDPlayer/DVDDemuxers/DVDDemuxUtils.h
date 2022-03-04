@@ -1,10 +1,14 @@
-#pragma once
+#ifndef H_CDVDDEMUXUTILS
+#define H_CDVDDEMUXUTILS
 
 #include "DVDDemux.h"
 
 class CDVDDemuxUtils
 {
 public:
-	static void FreeDemuxPacket(CDVDDemux::DemuxPacket* pPacket);
-	static CDVDDemux::DemuxPacket* AllocateDemuxPacket(int iDataSize);
+	static void FreeDemuxPacket(DemuxPacket* pPacket);
+	static DemuxPacket* AllocateDemuxPacket(int iDataSize = 0);
 };
+
+
+#endif //H_CDVDDEMUXUTILS

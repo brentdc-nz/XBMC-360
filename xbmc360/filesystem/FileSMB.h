@@ -10,29 +10,6 @@
 namespace XFILE
 {
 
-class CLibSMB2Wrap : public CCriticalSection
-{
-public:
-	CLibSMB2Wrap();
-	~CLibSMB2Wrap();
-
-	void Init();
-	bool OpenFile();
-	__int64 Seek(__int64 iFilePosition, int iWhence);
-	unsigned int Read(void *lpBuf, __int64 uiBufSize);
-	__int64 GetLength();
-	__int64 GetPosition();
-	void Close();
-
-private:
-	struct smb2_context*	m_pLibSMB2Context;
-	struct smb2fh*			m_pLibSMB2FH;
-	struct smb2_url*		m_pUrl;
-	__int64 m_iFileSize;
-};
-
-
-
 class CFileSMB : public CFileBase
 {
 public:
