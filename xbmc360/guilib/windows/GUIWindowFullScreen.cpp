@@ -7,7 +7,7 @@
 #include "guilib\AudioContext.h"
 #include "cores\VideoRenderers\RenderManager.h"
 
-#define BLUE_BAR		0
+#define BLUE_BAR		100
 #define LABEL_ROW1		10
 #define LABEL_ROW2		11
 #define LABEL_ROW3		12
