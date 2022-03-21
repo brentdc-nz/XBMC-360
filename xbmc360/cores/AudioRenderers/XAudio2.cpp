@@ -158,6 +158,9 @@ HRESULT CXAudio2::Pause()
 	if(!m_pSourceVoice) return S_FALSE;
 
 	m_bPaused = true;
+
+	// We flush on pause
+	m_pSourceVoice->FlushSourceBuffers();
 	m_pSourceVoice->Stop();
 
 	return S_OK;
