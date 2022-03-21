@@ -328,7 +328,7 @@ bool CDVDPlayer::IsPlaying() const
 
 bool CDVDPlayer::IsPaused() const
 {
-	return (m_playSpeed == DVD_PLAYSPEED_PAUSE) || m_caching == CACHESTATE_FULL;
+	return false;
 }
 
 bool CDVDPlayer::HasVideo() const

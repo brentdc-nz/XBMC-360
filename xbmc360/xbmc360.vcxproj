@@ -256,13 +256,12 @@
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <PreschedulingOptimization>true</PreschedulingOptimization>
       <RegisterReservation>true</RegisterReservation>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
       <AdditionalOptions>/EHa %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <WholeProgramOptimization>true</WholeProgramOptimization>
-      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>false</GenerateDebugInformation>
