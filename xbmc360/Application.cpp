@@ -439,7 +439,7 @@ bool CApplication::OnKey(CKey& key)
 	// Reset the screensaver timer
 	// but not for the analog thumbsticks/triggers
 
-//	if (!key.IsAnalogButton()) //TODO
+//	if(!key.IsAnalogButton()) //TODO
 	{
 		ResetScreenSaver();
 		if (ResetScreenSaverWindow())
@@ -560,32 +560,12 @@ void CApplication::Render()
 	// that stuff should go into renderfullscreen instead as that is called from the rendering thread
 
 	// Don't show GUI when playing full screen video
-	if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+	if (g_graphicsContext.IsFullScreenVideo() && IsPlaying()/* && !IsPaused()*/)
 	{
-		if (g_graphicsContext.IsFullScreenVideo())
-		{
-			if (m_pPlayer)
-			{
-				if (m_pPlayer->IsPaused())
-				{
-					GRAPHICSCONTEXT_LOCK()
-					m_pd3dDevice->BeginScene();  
-					GRAPHICSCONTEXT_UNLOCK()
-					g_windowManager.Render();
-					g_renderManager.RenderUpdate(true);
-//					m_gWindowManager.UpdateModelessVisibility(); //TODO
-					GRAPHICSCONTEXT_LOCK()
-					RenderFullScreen();
-//					m_pd3dDevice->BlockUntilVerticalBlank(); //TODO
-					m_pd3dDevice->EndScene();
-					m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
-					GRAPHICSCONTEXT_UNLOCK()
-					return;
-				}
-			}
-			Sleep(10);
-			return;
-		}
+		Sleep(10);
+		ResetScreenSaver();
+//		g_infoManager.ResetCache();
+		return;
 	}
 
 	// Enable/Disable video overlay window
@@ -638,12 +618,12 @@ void CApplication::RenderFullScreen()
 {
 	if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
 	{
-//		m_guiVideoOverlay.Close(true);
-//		m_guiMusicOverlay.Close(true);
+//		m_guiVideoOverlay.Close(true); //TODO
+//		m_guiMusicOverlay.Close(true); //TODO
 
 		CGUIWindowFullScreen *pFSWin = (CGUIWindowFullScreen *)g_windowManager.GetWindow(WINDOW_FULLSCREEN_VIDEO);
-		if (!pFSWin)
-			return ;
+		if(!pFSWin)
+			return;
 	
 		pFSWin->RenderFullScreen();
 	}

@@ -402,9 +402,8 @@ void CRGBRenderer::Render()
 
 void CRGBRenderer::PrepareDisplay()
 {
-	if (g_graphicsContext.IsFullScreenVideo())
+	if(g_graphicsContext.IsFullScreenVideo())
 	{    
-//		CSingleLock lock(g_graphicsContext);
 		GRAPHICSCONTEXT_LOCK()
 		
 		ManageDisplay();
@@ -417,7 +416,7 @@ void CRGBRenderer::PrepareDisplay()
 
 		GRAPHICSCONTEXT_LOCK()
 
-		if (g_application.NeedRenderFullScreen())
+		if(g_application.NeedRenderFullScreen())
 		{ 
 			// Render our subtitles and OSD
 			g_application.RenderFullScreen();
@@ -433,21 +432,21 @@ void CRGBRenderer::PrepareDisplay()
 
 void CRGBRenderer::FlipPage()
 {
-//	CSingleLock lock(g_graphicsContext);
-	if( !m_bPrepared )
+	if(!m_bPrepared)
 	{
 		// This will prepare for rendering, ie swapping buffers and in fullscreen even rendering
 		// it can have been done way earlier
 		PrepareDisplay();
 	}
-	m_bPrepared=false;
 
-	if ( g_graphicsContext.IsFullScreenVideo() && !g_application.m_pPlayer->IsPaused())
+	m_bPrepared = false;
+
+	if(g_graphicsContext.IsFullScreenVideo() && !g_application.m_pPlayer->IsPaused())
 	{   
 		GRAPHICSCONTEXT_LOCK();
 
 		// Make sure the push buffer is done before waiting for vblank, otherwise we can get tearing
-		while( m_pd3dDevice->IsBusy() ) Sleep(1);
+		while(m_pd3dDevice->IsBusy()) Sleep(1);
 
 		// Present the backbuffer contents to the display
 		m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
