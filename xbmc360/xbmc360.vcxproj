@@ -469,6 +469,7 @@
     <ClInclude Include="utils\CRC_32.h" />
     <ClInclude Include="utils\CriticalSection.h" />
     <ClInclude Include="utils\Event.h" />
+    <ClInclude Include="utils\Idle.h" />
     <ClInclude Include="utils\Log.h" />
     <ClInclude Include="utils\SharedSection.h" />
     <ClInclude Include="utils\SingleLock.h" />
@@ -847,6 +848,7 @@
     <ClCompile Include="utils\CRC_32.cpp" />
     <ClCompile Include="utils\CriticalSection.cpp" />
     <ClCompile Include="utils\Event.cpp" />
+    <ClCompile Include="utils\Idle.cpp" />
     <ClCompile Include="utils\Log.cpp" />
     <ClCompile Include="utils\SharedSection.cpp" />
     <ClCompile Include="utils\SingleLock.cpp" />

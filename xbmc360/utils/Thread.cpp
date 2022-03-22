@@ -95,25 +95,26 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
   return 0;
 }
 
-void CThread::Create(bool bAutoDelete)
+void CThread::Create(bool bAutoDelete, unsigned stacksize)
 {
-  if (m_ThreadHandle != NULL)
-  {
-    throw 1; //ERROR should not be possible!!!
-  }
-  m_iLastTime = GetTickCount();
-  m_iLastTime *= 10000;
-  m_bAutoDelete = bAutoDelete;
-  m_eventStop.Reset();
-  m_bStop = false;
-  m_ThreadHandle = (HANDLE)_beginthreadex(NULL, 0, (PBEGINTHREADEX_THREADFUNC)staticThread, (void*)this, 0, (unsigned*) & m_dwThreadId);
-  //m_ThreadHandle = CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)staticThread,(LPVOID)this,0,&m_dwThreadId);
+	if(m_ThreadHandle != NULL)
+	{
+		throw 1; //ERROR should not be possible!!!
+	}
+
+	m_iLastTime = GetTickCount();
+	m_iLastTime *= 10000;
+	m_bAutoDelete = bAutoDelete;
+	m_eventStop.Reset();
+	m_bStop = false;
+	
+	m_ThreadHandle = (HANDLE)_beginthreadex(NULL, stacksize, (PBEGINTHREADEX_THREADFUNC)staticThread, (void*)this, 0, (unsigned*) & m_dwThreadId);
 }
 
 
 bool CThread::IsAutoDelete() const
 {
-  return m_bAutoDelete;
+	return m_bAutoDelete;
 }
 
 bool CThread::IsRunning()

@@ -224,12 +224,14 @@ bool CApplication::Initialize()
 
 void CApplication::StartServices()
 {
-	// WIP
+	StartIdleThread();
 }
 
 void CApplication::StopServices()
 {
 	m_network.NetworkMessage(CNetwork::SERVICES_DOWN, 0);
+
+	StopIdleThread();
 }
 
 void CApplication::DelayLoadSkin()
@@ -861,6 +863,16 @@ double CApplication::GetTotalTime() const
 		dTime = m_pPlayer->GetTotalTime();
 	
 	return dTime;
+}
+
+void CApplication::StartIdleThread()
+{
+	m_idleThread.Create(false, 0x100);
+}
+
+void CApplication::StopIdleThread()
+{
+	m_idleThread.StopThread();
 }
 
 void CApplication::StartTimeServer()

@@ -611,3 +611,8 @@ void CUtil::UrlDecode(CStdString& strURLData)
 	}
 	strURLData = strResult;
 }
+
+float CUtil::CurrentCpuUsage()
+{
+	return (1.0f - g_application.GetIdleThread().GetRelativeUsage())*100;
+}

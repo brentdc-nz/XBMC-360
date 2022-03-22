@@ -34,6 +34,7 @@ public:
 	static void AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult);
 	static bool IsStack(const CStdString& strFile);
 	static void UrlDecode(CStdString& strURLData);
+	static float CurrentCpuUsage();
 };
 
 #endif //CUTIL_H

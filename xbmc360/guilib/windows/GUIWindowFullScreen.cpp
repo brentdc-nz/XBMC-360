@@ -6,6 +6,7 @@
 #include "guilib\GUIWindowManager.h"
 #include "guilib\AudioContext.h"
 #include "cores\VideoRenderers\RenderManager.h"
+#include "utils\Util.h"
 
 #define BLUE_BAR		100
 #define LABEL_ROW1		10
@@ -194,7 +195,7 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
 
 void CGUIWindowFullScreen::RenderFullScreen()
 {
-	if (!g_application.m_pPlayer) return;
+	if(!g_application.m_pPlayer) return;
 
 	g_infoManager.UpdateFPS();
 
@@ -222,9 +223,9 @@ void CGUIWindowFullScreen::RenderFullScreen()
 		g_application.m_pPlayer->GetGeneralInfo(strGeneral);
 		{
 			CStdString strGeneralFPS;
-			float fCpuUsage = 0.0f;//CUtil::CurrentCpuUsage(); //TODO - How to do on PPC?
+			float fCpuUsage = CUtil::CurrentCpuUsage();
 
-			strGeneralFPS.Format("fps:%02.2f cpu:%02.2f %s", g_infoManager.GetFPS(), fCpuUsage, strGeneral.c_str() );
+			strGeneralFPS.Format("fps:%02.2f cpu:%02.2f %s", g_infoManager.GetFPS(), fCpuUsage, strGeneral.c_str());
 			CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3);
 			msg.SetLabel(strGeneralFPS);
 			OnMessage(msg);

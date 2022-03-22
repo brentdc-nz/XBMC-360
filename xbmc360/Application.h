@@ -14,6 +14,7 @@
 #include "filesystem\DrivesManager.h"
 #include "guilib\dialogs\GUIDialogSeekBar.h"
 #include "DateTime.h"
+#include "utils\Idle.h"
 
 class CApplication: public CXBApplicationEX, public IPlayerCallback, public IMsgTargetCallback
 {
@@ -62,6 +63,8 @@ public:
 	bool IsPlayingAudio() const;
 	bool IsPlayingVideo() const;
 
+	void StartIdleThread();
+	void StopIdleThread();
 	void StartTimeServer();
 	void StopTimeServer();
 	void StartFtpServer();
@@ -77,6 +80,7 @@ public:
 
 	CGUIDialogSeekBar m_guiDialogSeekBar;
 
+	CIdleThread& GetIdleThread() { return m_idleThread; };
 	CNetwork& getNetwork() { return m_network; };
 	CDrivesManager& getDriveManager() { return m_drivesManager; };
 	CApplicationMessenger& getApplicationMessenger() { return m_applicationMessenger; };
@@ -99,6 +103,7 @@ protected:
 	CStopWatch m_screenSaverTimer;
 	CStopWatch m_slowTimer;
 
+	CIdleThread m_idleThread;
 	CDateTime m_dateTime;
 	CSplash *m_splash;
 	CNetwork m_network;

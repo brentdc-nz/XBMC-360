@@ -29,7 +29,7 @@ public:
   CThread();
   CThread(IRunnable* pRunnable);
   virtual ~CThread();
-  void Create(bool bAutoDelete = false);
+  void Create(bool bAutoDelete = false, unsigned stacksize = 0);
   unsigned long ThreadId() const;
   bool WaitForThreadExit(DWORD dwTimeOutSec);
   bool SetPriority(const int iPriority);
