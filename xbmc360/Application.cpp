@@ -649,13 +649,14 @@ bool CApplication::SwitchToFullScreen()
 void CApplication::StopPlaying()
 {
 	int iWin = g_windowManager.GetActiveWindow();
-	if (IsPlaying())
+
+	if(IsPlaying())
 	{
-		 if (m_pPlayer)
+		 if(m_pPlayer)
 			m_pPlayer->CloseFile();
 
 		// Turn off visualization window when stopping
-		if (iWin == WINDOW_FULLSCREEN_VIDEO)
+		if(iWin == WINDOW_FULLSCREEN_VIDEO)
 			g_windowManager.PreviousWindow();
 	}
 }
@@ -851,7 +852,7 @@ double CApplication::GetTime() const
 	return dTime;
 }
 
-// Returns the total time in seconds of the current media.  Fractional
+// Returns the total time in seconds of the current media. Fractional
 // portions of a second are possible - but not necessarily supported by the
 // player class.  This returns a double to be consistent with GetTime() and
 // SeekTime().
@@ -1020,10 +1021,32 @@ void CApplication::Cleanup()
 {
 	try
 	{
-		//TODO - Move items in Stop() into here
+		// Windows
+		g_windowManager.Delete(WINDOW_HOME);
+		g_windowManager.Delete(WINDOW_FULLSCREEN_VIDEO);
+		g_windowManager.Delete(WINDOW_PROGRAMS);
+		g_windowManager.Delete(WINDOW_VIDEOS);
+		g_windowManager.Delete(WINDOW_MUSIC);
+		g_windowManager.Delete(WINDOW_PICTURES);
+		g_windowManager.Delete(WINDOW_SETTINGS);
+		g_windowManager.Delete(WINDOW_SETTINGS_MYPICTURES); // All the settings categories
+		g_windowManager.Delete(WINDOW_SCREENSAVER);
+		g_windowManager.Delete(WINDOW_SYSTEM_INFORMATION);
+
+		// Dialogs
+		g_windowManager.Delete(WINDOW_DIALOG_YES_NO);
+		g_windowManager.Delete(WINDOW_DIALOG_CONTEXT_MENU);
+		g_windowManager.Delete(WINDOW_DIALOG_BUTTON_MENU);
+		g_windowManager.Delete(WINDOW_DIALOG_MEDIA_SOURCE);
+		g_windowManager.Delete(WINDOW_DIALOG_NETWORK_SETUP);
+
+		g_localizeStrings.Clear();
+		g_guiSettings.Clear();
 		g_advancedSettings.Clear();
+		m_dateTime.Clear();
+		g_buttonTranslator.Clear();
 	}
-	catch (...)
+	catch(...)
 	{
 		CLog::Log(LOGERROR, "Exception in CApplication::Cleanup()");
 	}
@@ -1031,66 +1054,51 @@ void CApplication::Cleanup()
 
 void CApplication::Stop()
 {
-	// Update the settings information (volume, uptime etc. need saving)
-	if(XFILE::CFile::Exists("D:\\settings.xml"))
+	try
 	{
-		CLog::Log(LOGNOTICE, "Saving settings");
-		g_settings.Save();
+//		CLog::Log(LOGNOTICE, "Storing total System Uptime");
+//		g_stSettings.m_iSystemTimeTotalUp = g_stSettings.m_iSystemTimeTotalUp + (int)(CTimeUtils::GetFrameTime() / 60000); //TODO
+		
+		// Update the settings information (volume, uptime etc. need saving)
+		if(XFILE::CFile::Exists("D:\\settings.xml"))
+		{
+			CLog::Log(LOGNOTICE, "Saving settings");
+			g_settings.Save();
+		}
+		else
+			CLog::Log(LOGNOTICE, "Not saving settings (settings.xml is not present)");
+
+		m_bStop = true;
+
+		if(m_pPlayer)
+		{
+			CLog::Log(LOGNOTICE, "Stop player");
+			delete m_pPlayer;
+			m_pPlayer = NULL;
+		}
+
+		CLog::Log(LOGNOTICE, "Stop all services");
+		StopServices();
+
+		m_applicationMessenger.Cleanup();
+
+		CLog::Log(LOGNOTICE, "Unload skin");
+		UnloadSkin();
+
+		m_network.Deinitialize();
+
+		// Shutdown XAudio2
+		g_audioContext.DeInitialize();
+
+		// Unmount our drives
+//		m_drivesManager.Unmount(); //FIXME - Causes a crash atm
+
+		CLog::Log(LOGNOTICE, "Stopped");
 	}
-	else
-		CLog::Log(LOGNOTICE, "Settings not saved (settings.xml is not present)");
-
-	m_bStop = true;
-	CLog::Log(LOGNOTICE, "Stop all");
-
-	StopServices();
-
-	if(m_pPlayer)
+	catch(...)
 	{
-		CLog::Log(LOGNOTICE, "Stopping DVDPlayer");
-		m_pPlayer->CloseFile();
-		delete m_pPlayer;
-		m_pPlayer = NULL;
+		CLog::Log(LOGERROR, "Exception in CApplication::Stop()");
 	}
 
-	CLog::Log(LOGNOTICE, "Unload skin");
-	UnloadSkin();
-
-	// Windows
-	g_windowManager.Delete(WINDOW_HOME);
-	g_windowManager.Delete(WINDOW_FULLSCREEN_VIDEO);
-	g_windowManager.Delete(WINDOW_PROGRAMS);
-	g_windowManager.Delete(WINDOW_VIDEOS);
-	g_windowManager.Delete(WINDOW_MUSIC);
-	g_windowManager.Delete(WINDOW_PICTURES);
-	g_windowManager.Delete(WINDOW_SETTINGS);
-	g_windowManager.Delete(WINDOW_SETTINGS_MYPICTURES); // All the settings categories
-	g_windowManager.Delete(WINDOW_SCREENSAVER);
-	g_windowManager.Delete(WINDOW_SYSTEM_INFORMATION);
-
-	// Dialogs
-	g_windowManager.Delete(WINDOW_DIALOG_YES_NO);
-	g_windowManager.Delete(WINDOW_DIALOG_CONTEXT_MENU);
-	g_windowManager.Delete(WINDOW_DIALOG_BUTTON_MENU);
-	g_windowManager.Delete(WINDOW_DIALOG_MEDIA_SOURCE);
-	g_windowManager.Delete(WINDOW_DIALOG_NETWORK_SETUP);
-
-	// Unmount our drives
-//	m_drivesManager.Unmount(); //FIXME - Causes crash
-
-	// Shutdown XAudio2
-	g_audioContext.DeInitialize();
-
-	CLog::Log(LOGNOTICE, "Destroy");
 	Destroy();
-
-	g_guiSettings.Clear();
-	g_localizeStrings.Clear();
-	g_buttonTranslator.Clear();
-
-	m_network.Deinitialize();
-
-	m_dateTime.Clear();
-
-	CLog::Log(LOGNOTICE, "Stopped");
 }

@@ -68,8 +68,6 @@ int CXBApplicationEX::Run()
 		Render();
 	}
 
-//	Destroy(); // Called in CApplication::Stop()
-
 	CLog::Log(LOGNOTICE, "Application stopped..." );
 
 	return 0;
@@ -88,7 +86,7 @@ void CXBApplicationEX::Destroy()
 
 	if(m_hXUIDC)
 	{
-		XuiRenderDestroyDC( m_hXUIDC );
+		XuiRenderDestroyDC(m_hXUIDC);
 		m_hXUIDC = NULL;
 	}
 
