@@ -49,6 +49,7 @@ public:
 	virtual void Seek(bool bPlus, bool bLargeStep) = 0;
 	virtual __int64 GetTime(){ return 0;};
 	virtual int GetTotalTime(){ return 0;};
+	virtual float GetPercentage(){ return 0;}
 	virtual void GetVideoInfo(CStdString& strVideoInfo) = 0;
 	virtual void GetAudioInfo(CStdString& strAudioInfo) = 0;
 	virtual void GetGeneralInfo(CStdString& strGeneralInfo) = 0;

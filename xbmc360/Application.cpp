@@ -866,6 +866,14 @@ double CApplication::GetTotalTime() const
 	return dTime;
 }
 
+float CApplication::GetPercentage() const
+{
+	if(IsPlaying() && m_pPlayer)
+		return m_pPlayer->GetPercentage();
+
+	return 0.0f;
+}
+
 void CApplication::StartIdleThread()
 {
 	m_idleThread.Create(false, 0x100);

@@ -59,6 +59,7 @@ public:
 
 	double GetTime() const;
 	double GetTotalTime() const;
+	float GetPercentage() const;
 
 	bool IsPlayingAudio() const;
 	bool IsPlayingVideo() const;

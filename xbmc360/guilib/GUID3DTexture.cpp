@@ -250,11 +250,17 @@ void CGUID3DTexture::SetVisible(bool bOnOff)
 
 void CGUID3DTexture::SetWidth(float fWidth)
 {
+	if(fWidth == m_width)
+		return;
+
 	Update(m_posX, m_posY, fWidth, m_height);
 }
 
 void CGUID3DTexture::SetHeight(float fHeight)
 {
+	if(fHeight == m_height)
+		return;
+
 	Update(m_posX, m_posY, m_width, fHeight);
 }
 

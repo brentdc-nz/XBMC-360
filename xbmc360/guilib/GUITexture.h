@@ -50,6 +50,8 @@ class CGUITextureBase
 public:
 	float GetTextureWidth() { return m_width; };
 	float GetTextureHeight() { return m_height; };
+	float GetXPosition() const { return m_posX; };
+	float GetYPosition() const { return m_posY; };
 
 protected:
 	bool m_bVisible;

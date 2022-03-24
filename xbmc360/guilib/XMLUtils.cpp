@@ -41,17 +41,23 @@ bool XMLUtils::GetString(const TiXmlNode* pRootNode, const char* strTag, CStdStr
 
 bool XMLUtils::GetDWORD(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwDWORDValue)
 {
-	const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
-	if (!pNode || !pNode->FirstChild()) return false;
+	const TiXmlNode* pNode = pRootNode->FirstChild(strTag);
+
+	if(!pNode || !pNode->FirstChild())
+		return false;
+
 	dwDWORDValue = atol(pNode->FirstChild()->Value());
 	return true;
 }
 
 bool XMLUtils::GetInt(const TiXmlNode* pRootNode, const char* strTag, int& iIntValue)
 {
-	const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
-	if (!pNode || !pNode->FirstChild()) return false;
-		iIntValue = atoi(pNode->FirstChild()->Value());
+	const TiXmlNode* pNode = pRootNode->FirstChild(strTag);
+
+	if(!pNode || !pNode->FirstChild())
+		return false;
+
+	iIntValue = atoi(pNode->FirstChild()->Value());
   
 	return true;
 }

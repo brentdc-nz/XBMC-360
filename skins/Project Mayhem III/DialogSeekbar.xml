@@ -10,7 +10,7 @@
 			<posx>750</posx>
 			<posy>22</posy>
 			<width>500</width>
-			<height>50</height>
+			<height>58</height>
 			<visible>true</visible>			
 			<texture>volume_panel_bg.png</texture>
 		</control>		
@@ -41,6 +41,19 @@
 			<height>16</height>
 			<visible>true</visible> <!-- TODO: implement Player.IsPlaying visible condition -->
 		</control>				
+		
+		<control type="progress">
+			<id>23</id>		
+			<description>Progressbar</description>
+			<posx>770</posx>
+			<posy>58</posy>
+			<width>462</width>
+			<height>8</height>
+			<texturebg>progress-back.png</texturebg>
+			<midtexture>progress-front.png</midtexture>	
+			<info>Player.Progress</info>
+			<visible>true</visible>
+		</control>		
 		
 	</controls>
 </window>

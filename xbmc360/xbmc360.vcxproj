@@ -394,6 +394,7 @@
     <ClInclude Include="guilib\GUIListItem.h" />
     <ClInclude Include="guilib\GUIMediaWindow.h" />
     <ClInclude Include="guilib\GUIMessage.h" />
+    <ClInclude Include="guilib\GUIProgressControl.h" />
     <ClInclude Include="guilib\GUIScrollBarControl.h" />
     <ClInclude Include="guilib\GUISound.h" />
     <ClInclude Include="guilib\GUISpinControl.h" />
@@ -580,6 +581,7 @@
     <ClCompile Include="guilib\GUIListItem.cpp" />
     <ClCompile Include="guilib\GUIMediaWindow.cpp" />
     <ClCompile Include="guilib\GUIMessage.cpp" />
+    <ClCompile Include="guilib\GUIProgressControl.cpp" />
     <ClCompile Include="guilib\GUIScrollBarControl.cpp" />
     <ClCompile Include="guilib\GUISound.cpp" />
     <ClCompile Include="guilib\GUISpinControl.cpp" />
