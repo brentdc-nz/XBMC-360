@@ -144,9 +144,6 @@ DWORD CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
 	DWORD total = len;
 	DWORD copied;
 
-		Resume();  //FIXME REMOVE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
 	// When paused, we need to buffer all data as renderers don't need to accept it
 	if(m_bPaused)
 	{

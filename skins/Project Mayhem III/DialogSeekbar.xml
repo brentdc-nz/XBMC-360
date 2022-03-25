@@ -4,9 +4,8 @@
 	<controls>
 	
 		<!-- progressbar dialog -->
-		<control>
-			<description>Panel Background</description>
-			<type>image</type>			
+		<control type="image">
+			<description>Panel Background</description>		
 			<posx>750</posx>
 			<posy>22</posy>
 			<width>500</width>
@@ -15,10 +14,8 @@
 			<texture>volume_panel_bg.png</texture>
 		</control>		
 		
-		<control>
+		<control type="label">
 			<description>Elapsed Time Label</description>
-			<type>label</type>
-			<id>0</id>
 			<posx>770</posx>
 			<posy>30</posy>
 			<font>font10</font>
@@ -28,10 +25,8 @@
 			<visible>true</visible> <!-- TODO: implement Player.IsPlaying visible condition -->
 		</control>			
 
-		<control>
+		<control type="label">
 			<description>Duration Time Label</description>
-			<type>label</type>
-			<id>0</id>
 			<posx>1230</posx>
 			<posy>30</posy>
 			<font>font10</font>

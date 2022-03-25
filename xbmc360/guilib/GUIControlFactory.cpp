@@ -324,7 +324,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
 
 		((CGUIScrollBar*)control)->SetNavigation(up, down, left, right);
 	}
-	else if(strType == "progress")
+	else if(type == CGUIControl::GUICONTROL_PROGRESS)
 	{
 		control = new CGUIProgressControl(
 			parentID, dwID, posX, posY, width, height,

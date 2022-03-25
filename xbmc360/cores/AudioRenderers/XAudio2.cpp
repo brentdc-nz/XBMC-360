@@ -235,10 +235,7 @@ DWORD CXAudio2::GetSpace()
 
 DWORD CXAudio2::AddPackets(unsigned char* data, DWORD len)
 {
-	if(m_bPaused || GetSpace() == 0)
-		return 0;
-
-	if(len == 0)
+	if(m_bPaused || GetSpace() == 0 || len == 0)
 		return 0;
 
 	EnterCriticalSection(&m_CriticalSection);
@@ -268,8 +265,7 @@ DWORD CXAudio2::AddPackets(unsigned char* data, DWORD len)
 
 	LeaveCriticalSection(&m_CriticalSection);
 
-
-	int add = ( len / GetChunkLen() ) * GetChunkLen();
+	int add = (len / GetChunkLen()) * GetChunkLen();
 	m_packetsSent += add;
 
 	return add;
