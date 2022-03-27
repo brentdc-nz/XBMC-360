@@ -13,7 +13,6 @@
 #include "ApplicationMessenger.h"
 #include "filesystem\DrivesManager.h"
 #include "guilib\dialogs\GUIDialogSeekBar.h"
-#include "DateTime.h"
 #include "utils\Idle.h"
 
 class CApplication: public CXBApplicationEX, public IPlayerCallback, public IMsgTargetCallback
@@ -85,7 +84,6 @@ public:
 	CNetwork& getNetwork() { return m_network; };
 	CDrivesManager& getDriveManager() { return m_drivesManager; };
 	CApplicationMessenger& getApplicationMessenger() { return m_applicationMessenger; };
-	CDateTime& getTimeDate() { return m_dateTime; };
 
 protected:
 	bool ProcessGamepad(/*float frameTime*/);
@@ -105,7 +103,6 @@ protected:
 	CStopWatch m_slowTimer;
 
 	CIdleThread m_idleThread;
-	CDateTime m_dateTime;
 	CSplash *m_splash;
 	CNetwork m_network;
 	CNTPClient *m_pNTPClient;

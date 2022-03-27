@@ -21,13 +21,14 @@
 
 #include "URIUtils.h"
 #include "Util.h"
+#include "URL.h"
 
 bool URIUtils::IsDOSPath(const CStdString &path)
 {
-  if (path.size() > 1 && path[1] == ':' && isalpha(path[0]))
-    return true;
+	if(path.size() > 1 && path[1] == ':' && isalpha(path[0]))
+		return true;
 
-  return false;
+	return false;
 }
 
 void URIUtils::AddSlashAtEnd(CStdString& strFolder)
@@ -56,6 +57,11 @@ void URIUtils::AddSlashAtEnd(CStdString& strFolder)
 	}
 }
 
+bool URIUtils::IsURL(const CStdString& strFile)
+{
+	return strFile.Find("://") >= 0;
+}
+
 bool URIUtils::HasSlashAtEnd(const CStdString& strFile)
 {
 	if(strFile.size() == 0)
@@ -71,7 +77,6 @@ bool URIUtils::HasSlashAtEnd(const CStdString& strFile)
 
 void URIUtils::AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult)
 {
-/*
 	if(IsURL(strFolder))
 	{
 		CURL url(strFolder);
@@ -83,7 +88,7 @@ void URIUtils::AddFileToFolder(const CStdString& strFolder, const CStdString& st
 			return;
 		}
 	}
-*/
+
 	strResult = strFolder;
 	if(!strResult.IsEmpty())
 		AddSlashAtEnd(strResult);
@@ -95,9 +100,7 @@ void URIUtils::AddFileToFolder(const CStdString& strFolder, const CStdString& st
 		strResult += strFile;
 
 	// Correct any slash directions
-	if(CUtil::IsLocalDrive(strFolder, true))
-		strResult.Replace('\\', '/');
-	else if(IsDOSPath(strFolder))
+	if(!IsDOSPath(strFolder))
 		strResult.Replace('\\', '/');
 	else
 		strResult.Replace('/', '\\');

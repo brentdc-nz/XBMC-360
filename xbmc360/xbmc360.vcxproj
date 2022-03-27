@@ -351,7 +351,6 @@
     <ClInclude Include="cores\VideoRenderers\BaseRenderer.h" />
     <ClInclude Include="cores\VideoRenderers\RenderManager.h" />
     <ClInclude Include="cores\VideoRenderers\RGBRenderer.h" />
-    <ClInclude Include="DateTime.h" />
     <ClInclude Include="FileItem.h" />
     <ClInclude Include="filesystem\Directory.h" />
     <ClInclude Include="filesystem\DirectoryHistory.h" />
@@ -540,7 +539,6 @@
     <ClCompile Include="cores\PlayerCoreFactory.cpp" />
     <ClCompile Include="cores\VideoRenderers\RenderManager.cpp" />
     <ClCompile Include="cores\VideoRenderers\RGBRenderer.cpp" />
-    <ClCompile Include="DateTime.cpp" />
     <ClCompile Include="FileItem.cpp" />
     <ClCompile Include="filesystem\Directory.cpp" />
     <ClCompile Include="filesystem\DirectoryHistory.cpp" />

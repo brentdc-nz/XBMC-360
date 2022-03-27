@@ -18,6 +18,7 @@
 #include "guilib\GUIAudioManager.h"
 #include "cores\PlayerCoreFactory.h"
 #include "AdvancedSettings.h"
+#include "utils\URIUtils.h"
 
 // Window includes
 #include "guilib\windows\GUIWindowHome.h"
@@ -57,9 +58,23 @@ CApplication::~CApplication()
 
 bool CApplication::Create()
 {
+#ifdef _DEBUG
+	g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG;
+#else
+	g_advancedSettings.m_logLevel = LOG_LEVEL_NORMAL;
+#endif
+	CLog::SetLogLevel(g_advancedSettings.m_logLevel);
+	g_settings.Initialize(); // Initialize default Settings
+
+	// Check logpath
+	CStdString strLogFile, strLogFileOld;
+	URIUtils::AddSlashAtEnd(g_settings.m_logFolder);
+	strLogFile.Format("%sxbmc.log", g_settings.m_logFolder);
+	strLogFileOld.Format("%sxbmc.old.log", g_settings.m_logFolder);
+
 	// Rotate the log (xbmc.log -> xbmc.old.log)
-	DeleteFile("D:\\xbmc.old.log");
-	MoveFile("D:\\xbmc.log", "D:\\xbmc.old.log");
+	::DeleteFile(strLogFileOld.c_str());
+	::MoveFile(strLogFile.c_str(), strLogFileOld.c_str());
 
 	CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 	CLog::Log(LOGNOTICE, "Starting XBox Media Center 360.  Built on %s", __DATE__);
@@ -68,7 +83,7 @@ bool CApplication::Create()
 	CLog::Log(LOGNOTICE, "Setup DirectX");
 
 	// Create the Direct3D object
-	if (!(m_pD3D = Direct3DCreate9(D3D_SDK_VERSION)))
+	if(!(m_pD3D = Direct3DCreate9(D3D_SDK_VERSION)))
 	{
 		CLog::Log(LOGFATAL, "Unable to create Direct3D!");
 		Sleep(INFINITE); // die
@@ -77,15 +92,11 @@ bool CApplication::Create()
 	// Transfer the resolution information to our graphics context
 	g_graphicsContext.SetD3DParameters(&m_d3dpp);
 
-	if (m_pD3D->CreateDevice(0, D3DDEVTYPE_HAL, NULL, D3DCREATE_HARDWARE_VERTEXPROCESSING, &m_d3dpp, &m_pd3dDevice) != S_OK)
+	if(m_pD3D->CreateDevice(0, D3DDEVTYPE_HAL, NULL, D3DCREATE_HARDWARE_VERTEXPROCESSING, &m_d3dpp, &m_pd3dDevice) != S_OK)
 	{
 		CLog::Log(LOGFATAL, "Unable to create D3D Device!");
 		Sleep(INFINITE); // die
 	}
-
-	m_dateTime.Initialize();
-
-	m_dateTime.SetTimeZoneIndex(132); // Auckland / Wellington
 
 	g_graphicsContext.SetD3DDevice(m_pd3dDevice);
 
@@ -207,7 +218,7 @@ bool CApplication::Initialize()
 
 	g_windowManager.ActivateWindow(WINDOW_HOME);
 
-	if (m_splash)
+	if(m_splash)
 		m_splash->Stop();
 
 	SAFE_DELETE(m_splash);
@@ -562,7 +573,7 @@ void CApplication::Render()
 	// that stuff should go into renderfullscreen instead as that is called from the rendering thread
 
 	// Don't show GUI when playing full screen video
-	if (g_graphicsContext.IsFullScreenVideo() && IsPlaying()/* && !IsPaused()*/)
+	if(g_graphicsContext.IsFullScreenVideo() /*&& IsPlaying() && !IsPaused()*/)
 	{
 		Sleep(10);
 		ResetScreenSaver();
@@ -597,7 +608,7 @@ void CApplication::Render()
 	m_pd3dDevice->EndScene();
 
 	// Present the backbuffer contents to the display
-	m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
+	m_pd3dDevice->Present(NULL, NULL, NULL, NULL);
 	GRAPHICSCONTEXT_UNLOCK()
 }
 
@@ -607,7 +618,7 @@ bool CApplication::NeedRenderFullScreen()
 	{
 		if(g_windowManager.HasDialogOnScreen()) return true;
  
-		CGUIWindowFullScreen *pFSWin = (CGUIWindowFullScreen *)g_windowManager.GetWindow(WINDOW_FULLSCREEN_VIDEO);
+		CGUIWindowFullScreen *pFSWin = (CGUIWindowFullScreen*)g_windowManager.GetWindow(WINDOW_FULLSCREEN_VIDEO);
 		if(!pFSWin)
 			 return false;
 
@@ -886,7 +897,6 @@ void CApplication::StopIdleThread()
 
 void CApplication::StartTimeServer()
 {
-#if 0
 	if(/*g_guiSettings.GetBool("locale.timeserver") &&*/ m_network.IsAvailable())
 	{
 		if(!m_pNTPClient)
@@ -897,7 +907,6 @@ void CApplication::StartTimeServer()
 			m_pNTPClient->SyncTime();
 		}
 	}
-#endif
 }
 
 void CApplication::StopTimeServer()
@@ -1051,7 +1060,6 @@ void CApplication::Cleanup()
 		g_localizeStrings.Clear();
 		g_guiSettings.Clear();
 		g_advancedSettings.Clear();
-		m_dateTime.Clear();
 		g_buttonTranslator.Clear();
 	}
 	catch(...)

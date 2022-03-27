@@ -380,6 +380,35 @@ const char CURL::GetDirectorySeparator() const
 		return '/';
 }
 
+CStdString CURL::Get() const
+{
+	unsigned int sizeneed = m_strProtocol.length()
+							+ m_strDomain.length()
+							+ m_strUserName.length()
+							+ m_strPassword.length()
+							+ m_strHostName.length()
+							+ m_strFileName.length()
+							+ m_strOptions.length()
+							+ m_strProtocolOptions.length()
+							+ 10;
+
+	if(m_strProtocol == "")
+		return m_strFileName;
+
+	CStdString strURL;
+	strURL.reserve(sizeneed);
+
+	strURL = GetWithoutFilename();
+	strURL += m_strFileName;
+
+	if(m_strOptions.length() > 0 )
+		strURL += m_strOptions;
+	if(m_strProtocolOptions.length() > 0)
+		strURL += "|"+m_strProtocolOptions;
+
+	return strURL;
+}
+
 void CURL::GetURL(CStdString& strURL) const
 {
 	unsigned int sizeneed = m_strProtocol.length()
@@ -453,6 +482,61 @@ void CURL::GetURLWithoutUserDetails(CStdString& strURL) const
 
 	if(m_strOptions.length() > 0)
 		strURL += m_strOptions;
+}
+
+CStdString CURL::GetWithoutFilename() const
+{
+	if(m_strProtocol == "")
+		return "";
+
+	unsigned int sizeneed = m_strProtocol.length()
+						+ m_strDomain.length()
+						+ m_strUserName.length()
+						+ m_strPassword.length()
+						+ m_strHostName.length()
+						+ 10;
+
+	CStdString strURL;
+	strURL.reserve(sizeneed);
+
+	strURL = m_strProtocol;
+	strURL += "://";
+
+	if(m_strDomain != "")
+	{
+		strURL += m_strDomain;
+		strURL += ";";
+	}
+	else if(m_strUserName != "")
+	{
+		strURL += URLEncodeInline(m_strUserName);
+		if(m_strPassword != "")
+		{
+			strURL += ":";
+			strURL += URLEncodeInline(m_strPassword);
+		}
+		strURL += "@";
+	}
+	else if (m_strDomain != "")
+		strURL += "@";
+
+	if(m_strHostName != "")
+	{
+		if(m_strProtocol.Equals("rar") || m_strProtocol.Equals("zip") || m_strProtocol.Equals("musicsearch"))
+			strURL += URLEncodeInline(m_strHostName);
+		else
+			strURL += m_strHostName;
+		
+		if(HasPort())
+		{
+			CStdString strPort;
+			strPort.Format("%i", m_iPort);
+			strURL += ":";
+			strURL += strPort;
+		}
+		strURL += "/";
+	}
+	return strURL;
 }
 
 void CURL::GetURLWithoutFilename(CStdString& strURL) const

@@ -32,6 +32,7 @@ public:
 	static bool IsDOSPath(const CStdString &path);
 
 	static void AddSlashAtEnd(CStdString& strFolder);
+	static bool IsURL(const CStdString& strFile);
 	static bool HasSlashAtEnd(const CStdString& strFile);
 
 	static void AddFileToFolder(const CStdString& strFolder,

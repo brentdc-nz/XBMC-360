@@ -422,9 +422,6 @@
     <ClInclude Include="xbox\Network.h">
       <Filter>Header Files\xbox</Filter>
     </ClInclude>
-    <ClInclude Include="DateTime.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="services\FTPServer\FTPFileWriter.h">
       <Filter>Header Files\services\FTPServer</Filter>
     </ClInclude>
@@ -987,9 +984,6 @@
     </ClCompile>
     <ClCompile Include="xbox\Network.cpp">
       <Filter>Source Files\xbox</Filter>
-    </ClCompile>
-    <ClCompile Include="DateTime.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="services\FTPServer\FTPFileWriter.cpp">
       <Filter>Source Files\services\FTPServer</Filter>

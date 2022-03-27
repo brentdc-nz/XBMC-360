@@ -10,6 +10,8 @@ CAdvancedSettings g_advancedSettings;
 
 CAdvancedSettings::CAdvancedSettings()
 {
+	m_logLevel = LOG_LEVEL_NORMAL;
+
 	m_videoUseTimeSeeking = true;
 	m_videoTimeSeekForwardBig = 600;
 	m_videoTimeSeekBackwardBig = -600;
@@ -56,7 +58,24 @@ bool CAdvancedSettings::Load()
 	// Succeeded - tell the user it worked
 	CLog::Log(LOGNOTICE, "Loaded advancedsettings.xml from %s", advancedSettingsXML.c_str());
 
-	TiXmlElement *pElement = pRootElement->FirstChildElement("audio");
+	TiXmlElement *pElement = pRootElement->FirstChildElement("loglevel");
+/*	if(pElement)
+	{
+		// Read the loglevel setting, so set the setting advanced to hide it in GUI
+		// as altering it will do nothing - we don't write to advancedsettings.xml
+		XMLUtils::GetInt(pRootElement, "loglevel", m_logLevelHint, LOG_LEVEL_NONE, LOG_LEVEL_MAX);
+		CSettingBool *setting = (CSettingBool *)g_guiSettings.GetSetting("debug.showloginfo");
+		if(setting)
+		{
+			const char* hide;
+			if(!((hide = pElement->Attribute("hide")) && strnicmp("false", hide, 4) == 0))
+				setting->SetAdvanced();
+		}
+		g_advancedSettings.m_logLevel = std::max(g_advancedSettings.m_logLevel, g_advancedSettings.m_logLevelHint);
+		CLog::SetLogLevel(g_advancedSettings.m_logLevel);
+	}
+*/
+	pElement = pRootElement->FirstChildElement("audio");
 	if(pElement)
 	{
 		// WIP

@@ -534,6 +534,7 @@ void CDVDPlayer::Process()
 		CDemuxStream *pStream = NULL;
 
 		ReadPacket(pPacket, pStream);
+
 		if(pPacket && !pStream)
 		{
 			// Probably a empty packet, just free it and move on
@@ -738,6 +739,7 @@ void CDVDPlayer::ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket)
 	}
 
 	bool drop = false;
+
 	if(CheckPlayerInit(m_CurrentVideo, DVDPLAYER_VIDEO))
 		drop = true;
 
@@ -759,7 +761,9 @@ void CDVDPlayer::OnExit()
 		SetCaching(CACHESTATE_DONE);
 
 		// Close each stream
-		if(!m_bAbortRequest) CLog::Log(LOGNOTICE, "DVDPlayer: eof, waiting for queues to empty");
+		if(!m_bAbortRequest)
+			CLog::Log(LOGNOTICE, "DVDPlayer: eof, waiting for queues to empty");
+	
 		if(m_CurrentAudio.id >= 0)
 		{
 			CLog::Log(LOGNOTICE, "DVDPlayer: closing audio stream");
@@ -771,6 +775,7 @@ void CDVDPlayer::OnExit()
 			CLog::Log(LOGNOTICE, "DVDPlayer: closing video stream");
 			CloseVideoStream(!m_bAbortRequest);
 		}
+
 #ifdef _ENABLE_SUBTITLES
 		if(m_CurrentSubtitle.id >= 0)
 		{
@@ -791,7 +796,6 @@ void CDVDPlayer::OnExit()
 			CLog::Log(LOGNOTICE, "CDVDPlayer::OnExit() deleting subtitle demuxer");
 			delete m_pSubtitleDemuxer;
 		}
-
 		m_pSubtitleDemuxer = NULL;
 
 		// Destroy the inputstream
@@ -800,7 +804,6 @@ void CDVDPlayer::OnExit()
 			CLog::Log(LOGNOTICE, "CDVDPlayer::OnExit() deleting input stream");
 			delete m_pInputStream;
 		}
-
 		m_pInputStream = NULL;
 
 		// Clean up all selection streams
@@ -826,7 +829,8 @@ void CDVDPlayer::OnExit()
 			m_callback.OnPlayBackEnded();
 	}
 
-	// Set event to inform openfile something went wrong in case openfile is still waiting for this event
+	// Set event to inform openfile something went wrong 
+	// in case openfile is still waiting for this event
 	SetEvent(m_hReadyEvent);
 }
 
@@ -1677,7 +1681,7 @@ bool CDVDPlayer::OpenInputStream()
 #endif
 	}
 
-	SetAVDelay(g_stSettings.m_currentVideoSettings.m_AudioDelay);
+	SetAVDelay(g_settings.m_currentVideoSettings.m_AudioDelay);
 #ifdef _ENABLE_SUBTITLES
 	SetSubTitleDelay(g_stSettings.m_currentVideoSettings.m_SubtitleDelay);
 #endif
@@ -1687,7 +1691,6 @@ bool CDVDPlayer::OpenInputStream()
 
 	return true;
 }
-
 
 bool CDVDPlayer::OpenDemuxStream()
 {
@@ -1762,14 +1765,14 @@ void CDVDPlayer::OpenDefaultStreams()
 		// Open audio stream
 		count = m_SelectionStreams.Count(STREAM_AUDIO);
 		valid = false;
-		if(g_stSettings.m_currentVideoSettings.m_AudioStream >= 0
-		   && g_stSettings.m_currentVideoSettings.m_AudioStream < count)
+		if(g_settings.m_currentVideoSettings.m_AudioStream >= 0
+		   && g_settings.m_currentVideoSettings.m_AudioStream < count)
 		{
-			SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, g_stSettings.m_currentVideoSettings.m_AudioStream);
+			SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, g_settings.m_currentVideoSettings.m_AudioStream);
 			if(OpenAudioStream(s.id, s.source))
 				valid = true;
 			else
-				CLog::Log(LOGWARNING, "%s - failed to restore selected audio stream (%d)", __FUNCTION__, g_stSettings.m_currentVideoSettings.m_AudioStream);
+				CLog::Log(LOGWARNING, "%s - failed to restore selected audio stream (%d)", __FUNCTION__, g_settings.m_currentVideoSettings.m_AudioStream);
 		}
 
 		if(!valid && m_SelectionStreams.Get(STREAM_AUDIO, CDemuxStream::FLAG_DEFAULT, st))
@@ -1789,7 +1792,6 @@ void CDVDPlayer::OpenDefaultStreams()
 		if(!valid)
 			CloseAudioStream(true);
 	}
-
 
 #ifdef _ENABLE_SUBTITLES
 	// Open subtitle stream
@@ -2207,6 +2209,7 @@ bool CDVDPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
 			return true;
 
 		stream = m_pDemuxer->GetStream(packet->iStreamId);
+
 		if(!stream)
 		{
 			CLog::Log(LOGERROR, "%s - Error demux packet doesn't belong to a valid stream", __FUNCTION__);

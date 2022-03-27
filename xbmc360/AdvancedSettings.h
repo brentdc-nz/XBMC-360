@@ -11,6 +11,8 @@ public:
 	bool Load();
 	void Clear();
 
+	int m_logLevel;
+
 	bool m_videoUseTimeSeeking;
 	int m_videoTimeSeekForwardBig;
 	int m_videoTimeSeekBackwardBig;

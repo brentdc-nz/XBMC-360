@@ -138,8 +138,8 @@ bool CRGBRenderer::PreInit()
 	ID3DXBuffer* pVertexShaderCode;
 	ID3DXBuffer* pVertexErrorMsg;
    
-	D3DXCompileShader( RGBRendererShaders::g_strVertexShaderProgram,
-                                    ( UINT )strlen( RGBRendererShaders::g_strVertexShaderProgram ),
+	D3DXCompileShader(RGBRendererShaders::g_strVertexShaderProgram,
+                                    (UINT)strlen(RGBRendererShaders::g_strVertexShaderProgram),
                                     NULL,
                                     NULL,
                                     "main",
@@ -147,18 +147,18 @@ bool CRGBRenderer::PreInit()
                                     0,
                                     &pVertexShaderCode,
                                     &pVertexErrorMsg,
-                                    NULL );
+                                    NULL);
 
 	// Create vertex shader
-	m_pd3dDevice->CreateVertexShader( ( DWORD* )pVertexShaderCode->GetBufferPointer(),
-                                      &m_pVertexShader );
+	m_pd3dDevice->CreateVertexShader((DWORD*)pVertexShaderCode->GetBufferPointer(),
+                                      &m_pVertexShader);
 
 	// Compile pixel shader
 	ID3DXBuffer* pPixelShaderCode;
 	ID3DXBuffer* pPixelErrorMsg;
 
-	D3DXCompileShader( RGBRendererShaders::g_strPixelShaderProgram,
-                            ( UINT )strlen( RGBRendererShaders::g_strPixelShaderProgram ),
+	D3DXCompileShader(RGBRendererShaders::g_strPixelShaderProgram,
+                            (UINT)strlen( RGBRendererShaders::g_strPixelShaderProgram),
                             NULL,
                             NULL,
                             "main",
@@ -166,11 +166,11 @@ bool CRGBRenderer::PreInit()
                             0,
                             &pPixelShaderCode,
                             &pPixelErrorMsg,
-                            NULL );
+                            NULL);
 
     // Create pixel shader.
-    m_pd3dDevice->CreatePixelShader( ( DWORD* )pPixelShaderCode->GetBufferPointer(),
-                                     &m_pPixelShader );
+    m_pd3dDevice->CreatePixelShader((DWORD*)pPixelShaderCode->GetBufferPointer(),
+                                     &m_pPixelShader);
 
     // Define the vertex elements and
     // create a vertex declaration from the element descriptions
@@ -184,12 +184,12 @@ bool CRGBRenderer::PreInit()
 
     // Create the vertex buffer. Here we are allocating enough memory
     // (from the default pool) to hold all our 3 custom vertices. 
-    m_pd3dDevice->CreateVertexBuffer( 4 * sizeof( COLORVERTEX ),
+    m_pd3dDevice->CreateVertexBuffer(4 * sizeof(COLORVERTEX),
                                                   D3DUSAGE_WRITEONLY,
                                                   NULL,
                                                   D3DPOOL_MANAGED,
                                                   &m_pVB,
-                                                  NULL );
+                                                  NULL);
 	if(pVertexShaderCode)
 		pVertexShaderCode->Release();
 
@@ -251,8 +251,8 @@ void CRGBRenderer::ManageDisplay()
 	};
 
 	COLORVERTEX* pVertices;
-	m_pVB->Lock( 0, 0, ( void** )&pVertices, 0 );
-	memcpy( pVertices, Vertices, 4 * sizeof( COLORVERTEX ) );
+	m_pVB->Lock(0, 0, ( void** )&pVertices, 0);
+	memcpy(pVertices, Vertices, 4 * sizeof(COLORVERTEX));
 	m_pVB->Unlock();
 
 	// Initialize the world and view matrix
@@ -362,40 +362,40 @@ void CRGBRenderer::Render()
 
     // Build the world-view-projection matrix and pass it into the vertex shader
     D3DXMATRIX matWVP = m_matWorld * m_matView * m_matProj;
-    m_pd3dDevice->SetVertexShaderConstantF( 0, ( FLOAT* )&matWVP, 4 );
+	m_pd3dDevice->SetVertexShaderConstantF(0, (FLOAT*)&matWVP, 4);
 
 	// We are passing the vertices down a "stream", so first we need
 	// to specify the source of that stream, which is our vertex buffer. 
 	// Then we need to let D3D know what vertex and pixel shaders to use. 
-	m_pd3dDevice->SetVertexDeclaration( m_pVertexDecl );
-	m_pd3dDevice->SetStreamSource( 0, m_pVB, 0, sizeof( COLORVERTEX ) );
-	m_pd3dDevice->SetVertexShader( m_pVertexShader );
-	m_pd3dDevice->SetPixelShader( m_pPixelShader );
+	m_pd3dDevice->SetVertexDeclaration(m_pVertexDecl);
+	m_pd3dDevice->SetStreamSource(0, m_pVB, 0, sizeof(COLORVERTEX));
+	m_pd3dDevice->SetVertexShader(m_pVertexShader);
+	m_pd3dDevice->SetPixelShader(m_pPixelShader);
 
-	m_pd3dDevice->SetTexture(0, m_pFrameY );
-	m_pd3dDevice->SetTexture(1, m_pFrameU );
-	m_pd3dDevice->SetTexture(2, m_pFrameV );
+	m_pd3dDevice->SetTexture(0, m_pFrameY);
+	m_pd3dDevice->SetTexture(1, m_pFrameU);
+	m_pd3dDevice->SetTexture(2, m_pFrameV);
 
-	m_pd3dDevice->SetSamplerState( 0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR );
-	m_pd3dDevice->SetSamplerState( 0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR );
-	m_pd3dDevice->SetSamplerState( 0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR );
+	m_pd3dDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+	m_pd3dDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+	m_pd3dDevice->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
 
-	m_pd3dDevice->SetSamplerState( 1, D3DSAMP_MINFILTER, D3DTEXF_LINEAR );
-	m_pd3dDevice->SetSamplerState( 1, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR );
-	m_pd3dDevice->SetSamplerState( 1, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR );
+	m_pd3dDevice->SetSamplerState(1, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+	m_pd3dDevice->SetSamplerState(1, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+	m_pd3dDevice->SetSamplerState(1, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
 
-	m_pd3dDevice->SetSamplerState( 2, D3DSAMP_MINFILTER, D3DTEXF_LINEAR );
-	m_pd3dDevice->SetSamplerState( 2, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR );
-	m_pd3dDevice->SetSamplerState( 2, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR );
+	m_pd3dDevice->SetSamplerState(2, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+	m_pd3dDevice->SetSamplerState(2, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+	m_pd3dDevice->SetSamplerState(2, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
 
 	// Draw the vertices in the vertex buffer
-	m_pd3dDevice->DrawPrimitive( D3DPT_TRIANGLESTRIP, 0, 2 );
+	m_pd3dDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 	
-	m_pd3dDevice->SetTexture(0,  NULL );
-	m_pd3dDevice->SetTexture(1,  NULL );
-	m_pd3dDevice->SetTexture(2,  NULL );
+	m_pd3dDevice->SetTexture(0, NULL);
+	m_pd3dDevice->SetTexture(1, NULL);
+	m_pd3dDevice->SetTexture(2, NULL);
 
-	m_pd3dDevice->SetStreamSource( NULL, NULL, NULL, NULL );
+	m_pd3dDevice->SetStreamSource(NULL, NULL, NULL, NULL);
 
 	GRAPHICSCONTEXT_UNLOCK()
 }
@@ -408,7 +408,7 @@ void CRGBRenderer::PrepareDisplay()
 		
 		ManageDisplay();
 
-		m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET, 0xff000000, 1.0f, 0L );
+		m_pd3dDevice->Clear(0L, NULL, D3DCLEAR_TARGET, 0xff000000, 1.0f, 0L);
 
 		GRAPHICSCONTEXT_UNLOCK()
 
@@ -422,7 +422,7 @@ void CRGBRenderer::PrepareDisplay()
 			g_application.RenderFullScreen();
 		}
     
-//		m_pD3DDevice->KickPushBuffer();
+//		m_pd3dDevice->KickPushBuffer();
 
 		GRAPHICSCONTEXT_UNLOCK()
 	}
@@ -449,7 +449,7 @@ void CRGBRenderer::FlipPage()
 		while(m_pd3dDevice->IsBusy()) Sleep(1);
 
 		// Present the backbuffer contents to the display
-		m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
+		m_pd3dDevice->Present(NULL, NULL, NULL, NULL);
 
 		GRAPHICSCONTEXT_UNLOCK()
 	}

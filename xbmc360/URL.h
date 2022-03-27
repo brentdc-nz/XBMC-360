@@ -33,9 +33,11 @@ public:
 
 	inline const char GetDirectorySeparator() const;
 
+	CStdString Get() const;
 	void GetURL(CStdString& strURL) const;
 	void GetURLPath(CStdString& strPath) const;
 	void GetURLWithoutUserDetails(CStdString& strURL) const;
+	CStdString GetWithoutFilename() const;
 	void GetURLWithoutFilename(CStdString& strURL) const;
 	CURL& operator= (const CURL& source);
 	bool IsLocal() const;
@@ -51,6 +53,7 @@ protected:
 	CStdString m_strProtocol;
 	CStdString m_strFileType;
 	CStdString m_strOptions;
+	CStdString m_strProtocolOptions;
 };
 
 #endif //H_CURL

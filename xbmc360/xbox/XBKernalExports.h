@@ -80,8 +80,7 @@ extern "C" // Calls to SMC message function in xboxkrnl.lib
 	void __stdcall HalSendSMCMessage(void* input, void* output);
 	DWORD XeKeysGetKey(DWORD keyNum, VOID* buffer, DWORD* bufferSize);
 	void RtlInitAnsiString(PSTRING DestinationString, const char*  SourceString);
-	// Xex exports
-	UINT32 __stdcall NtSetSystemTime(LPFILETIME, LPFILETIME);
+	UINT32 __stdcall NtSetSystemTime(__int64*  ,__int64*);
 
 	VOID XeCryptSha(BYTE * pbInp1, DWORD cbInp1, 
 		BYTE * pbInp2, DWORD cbInp2, 

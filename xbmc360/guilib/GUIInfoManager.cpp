@@ -116,7 +116,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 		if(strTest.Equals("player.hasmedia")) ret = PLAYER_HAS_MEDIA;
 		else if(strTest.Equals("player.time")) ret = PLAYER_TIME;
 		else if(strTest.Equals("player.timeremaining")) ret = PLAYER_TIME_REMAINING;
-		else if(strTest.Equals("player.duration"))	ret = PLAYER_DURATION;
+		else if(strTest.Equals("player.duration")) ret = PLAYER_DURATION;
 		else if(strTest.Equals("player.progress")) ret = PLAYER_PROGRESS;
 	}
 
@@ -421,7 +421,7 @@ CStdString CGUIInfoManager::GetDate(bool bNumbersOnly)
 	CStdString text;
 	SYSTEMTIME time;
 	memset(&time, 0, sizeof(SYSTEMTIME));
-	g_application.getTimeDate().XBGetLocalTime(&time);
+	GetLocalTime(&time);
 
 	if (bNumbersOnly)
 	{
@@ -480,7 +480,7 @@ CStdString CGUIInfoManager::GetTime(bool bSeconds)
 	CStdString text;
 	SYSTEMTIME time;
 	memset(&time, 0, sizeof(SYSTEMTIME));
-	g_application.getTimeDate().XBGetLocalTime(&time);
+	GetLocalTime(&time);
 
 	INT iHour = time.wHour;
 

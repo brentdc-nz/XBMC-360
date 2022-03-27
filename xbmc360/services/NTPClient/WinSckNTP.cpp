@@ -1,13 +1,13 @@
 #include "WinSckNTP.h"
-#include "..\..\utils\log.h"
-#include "..\..\Application.h"
+#include "utils\Log.h"
+#include "winsockx.h"
 #include <math.h>
+#include "xbox\XBKernalExports.h"
+#include "Application.h"
 
 const long JAN_1ST_1900 = 2415021;
 const double NTP_TO_SECOND = (((double)1.0) / 0xFFFFFFFF);
 const double NTP_FRACTIONAL_TO_MS = (((double)1000.0) / 0xFFFFFFFF);
-
-#define NTP_TIMESTAMP_DELTA 2208988800ull
 
 // Lookup table to convert from Milliseconds (hence 1000 Entries)
 // to fractions of a second expressed as a DWORD
@@ -187,11 +187,6 @@ CNtpTime::CNtpTime()
 	m_Time = 0;
 }
 
-CNtpTime::CNtpTime(__int64 iTime)
-{
-	m_Time =iTime;
-}
-
 CNtpTime::CNtpTime(const CNtpTime& time)
 {
 	*this = time;
@@ -209,7 +204,6 @@ CNtpTime::CNtpTime(const SYSTEMTIME& st)
 {
 	// Currently this function only operates correctly in
 	// the 1900 - 2036 primary epoch defined by NTP
-
 	long JD = GetJulianDay(st.wYear, st.wMonth, st.wDay);
 	JD -= JAN_1ST_1900;
 
@@ -347,12 +341,6 @@ DWORD CNtpTime::Seconds() const
 	return (DWORD) ((m_Time & 0xFFFFFFFF00000000) >> 32);
 }
 
-__int64 CNtpTime::AdjustedSeconds()
-{
-	__int64 iRslt = ((m_Time & 0xFFFFFFFF00000000) >> 32);
-	return iRslt - NTP_TIMESTAMP_DELTA;
-}
-
 DWORD CNtpTime::Fraction() const
 {
 	return (DWORD) (m_Time & 0xFFFFFFFF);
@@ -459,7 +447,7 @@ bool CNtpSocket::Connect(CStdString strHostAddress, int nPort)
 	if(setsockopt(m_hSocket, SOL_SOCKET, 0x5801, (PCSTR)&bBroadcast, sizeof(BOOL) ) != 0 )
 	{
 		CLog::Log(LOGERROR, "NTP: Failed to set debug send socket to 5801, error");
-//		return false;
+		return false;
 	}
 
 	SOCKADDR_IN debugSendSocketAddr;
@@ -588,28 +576,23 @@ void CNTPClient::Process()
 		NtpServerResponse response;
 		if(DoTimeSync(/*g_guiSettings.GetString("locale.timeserveraddress")*/"pool.ntp.org", response)) // TODO: Make GUI config
 		{
-			g_application.getTimeDate().SetUTCUnixTime(response.m_ReceiveTime.AdjustedSeconds());
+			SYSTEMTIME st1 = response.m_OriginateTime;
+			SYSTEMTIME st2 = response.m_ReceiveTime;
+			SYSTEMTIME st3 = response.m_TransmitTime;
+			SYSTEMTIME st4 = response.m_DestinationTime;
 
-			SYSTEMTIME sysTm = response.m_ReceiveTime;
-
-			CStdString strMessage;
-			strMessage.Format( "%d-%02d-%02d %02d:%02d:%02d.%03d", 
-                        sysTm.wYear,
-                        sysTm.wMonth, 
-                        sysTm.wDay,                       
-                        sysTm.wHour, 
-                        sysTm.wMinute, 
-                        sysTm.wSecond,
-                        sysTm.wMilliseconds );
-
-			CLog::Log(LOGNOTICE, "NTP: Set time: %s", strMessage);
+			CNtpTime newTime(CNtpTime::GetCurrentTime() + response.m_LocalClockOffset);
+			
+			if(SetClientTime(newTime))
+				CLog::Log(LOGNOTICE, "NTP: Received the time via NTP and set..");
+			else
+				CLog::Log(LOGNOTICE, "NTP: Failed to set client time via NTP..");
 
 			// Only set time once
 			return;
 		}
 		nTries++;
 	}
-	CLog::Log(LOGNOTICE, "NTP: Failed to set time..");
 }
 
 bool CNTPClient::DoTimeSync(CStdString strHostName, NtpServerResponse& response, int nPort)
@@ -711,4 +694,38 @@ bool CNTPClient::DoTimeSync(CStdString strHostName, NtpServerResponse& response,
 
 		return true;
 	}
+}
+
+bool CNTPClient::SetClientTime(const CNtpTime& NewTime)
+{
+	SYSTEMTIME st = NewTime;
+	SYSTEMTIME prevTime;
+	GetSystemTime(&prevTime);
+
+	FILETIME stNew, stOld;
+	SystemTimeToFileTime(&st, &stNew);
+	SystemTimeToFileTime(&prevTime, &stOld);
+
+	if(NtSetSystemTime((__int64*)&stNew, (__int64*)&stOld) != STATUS_SUCCESS)
+	{
+		CLog::Log(LOGERROR, "NTP: Failed to set client time..");
+		return false;
+	}
+
+	std::stringstream strMsg;
+	strMsg << st.wDay;
+	strMsg << "-";
+	strMsg << st.wMonth;
+	strMsg << "-";
+	strMsg << st.wYear;
+	strMsg << " ";
+	strMsg << st.wHour;
+	strMsg << ".";
+	strMsg << st.wMinute;
+	strMsg << ".";
+	strMsg << st.wSecond;
+
+	CLog::Log(LOGNOTICE, "NTP: Time received (UTC): %s", strMsg.str().c_str());
+
+	return true;
 }

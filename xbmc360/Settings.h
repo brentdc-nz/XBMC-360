@@ -16,6 +16,7 @@ public:
 	CSettings();
 	virtual ~CSettings();
 
+	void Initialize();
 	bool LoadSettings(const CStdString& strSettingsFile);
 	bool Load();
 	bool SaveSettings(const CStdString& strSettingsFile) const;
@@ -29,11 +30,9 @@ public:
 	CStdString GetAudioExtensions() { return m_strAudioExtensions; };
 	CStdString GetPictureExtensions() { return m_strPictureExtensions; };
 
-	struct stSettings
-	{
-		public:
-		CVideoSettings m_currentVideoSettings;
-	};
+	CStdString m_logFolder;
+
+	CVideoSettings m_currentVideoSettings;
 
 protected:
 	void GetSources(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSOURCES& items);
@@ -53,7 +52,6 @@ protected:
 	CStdString m_strPictureExtensions;
 };
 
-extern CSettings g_settings;
-extern struct CSettings::stSettings g_stSettings;
+extern class CSettings g_settings;
 
 #endif //H_CSETTINGS

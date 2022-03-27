@@ -1,8 +1,8 @@
 #ifndef CNTPCLIENT_H
 #define CNTPCLIENT_H
 
-#include "..\..\utils\Thread.h"
-#include "..\..\utils\StdString.h"
+#include "utils\Thread.h"
+#include "utils\StdString.h"
 
 // Representation of an NTP timestamp
 struct CNtpTimePacket
@@ -16,7 +16,6 @@ class CNtpTime
 {
 public:
 	CNtpTime();
-	CNtpTime(__int64 iTime);
 	CNtpTime(const CNtpTime& time);
 	CNtpTime(CNtpTimePacket& packet);
 	CNtpTime(const SYSTEMTIME& st);
@@ -29,7 +28,6 @@ public:
 	operator CNtpTimePacket() const;
 	operator unsigned __int64() const { return m_Time; };
 	DWORD Seconds() const;
-	__int64 AdjustedSeconds();
 	DWORD Fraction() const;
 
 	// Static functions
@@ -80,6 +78,7 @@ public:
 private:
 	virtual void Process();
 	bool DoTimeSync(CStdString strHostName, NtpServerResponse& response, int nPort = 123);
+	bool SetClientTime(const CNtpTime& NewTime);
 
 	DWORD m_dwTimeout; // Next point in time we update
 };
