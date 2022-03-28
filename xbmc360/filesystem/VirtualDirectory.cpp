@@ -59,6 +59,7 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
 		// return false so the calling window can deal with the error accordingly
 		// otherwise the root bookmark listing is returned which seems incorrect but was the previous behaviour
 		CLog::Log(LOGERROR,"CVirtualDirectory::GetDirectory(%s) matches no valid bookmark, getting root bookmark list instead", strPath.c_str());
+
 		return false;
 	}
 
@@ -74,22 +75,22 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
 		CStdString strPathUpper = pItem->GetPath();
 		strPathUpper.ToUpper();
 
-		CStdString strIcon;// = share.m_strThumbnailImage; //TODO
+		CStdString strIcon;// = share.m_strThumbnailImage; // TODO
 /*		if(share.m_strThumbnailImage.IsEmpty())
 */		{
 			// We have the real DVD-ROM, set icon on disktype
 /*			if(share.m_iDriveType == CMediaSource::SOURCE_TYPE_DVD)
 				CUtil::GetDVDDriveIcon(pItem->m_strPath, strIcon);
-			else if(pItem->IsRemote())
+			else*/ if(pItem->IsRemote())
 				strIcon = "defaultNetwork.png";
-			else if(pItem->IsISO9660())
+/*			else if(pItem->IsISO9660())
 				strIcon = "defaultDVDRom.png";
 			else if(pItem->IsDVD())
 				strIcon = "defaultDVDRom.png";
 			else if(pItem->IsCDDA())
 				strIcon = "defaultCDDA.png";
-			else
-*/				strIcon = "defaultHardDisk.png";
+*/			else
+				strIcon = "defaultHardDisk.png";
 		}
 
 		pItem->SetIconImage(strIcon);

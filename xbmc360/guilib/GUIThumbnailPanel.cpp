@@ -93,7 +93,6 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus, float fPosX, float fPosY, CGUIL
 		{
 			// No thumbnail, but it does have an icon
 			strThumb = pItem->GetIconImage();
-			strThumb.Insert(strThumb.Find("."), "Big");
 		}
 	
 		if(!strThumb.IsEmpty())

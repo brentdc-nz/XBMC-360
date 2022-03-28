@@ -851,7 +851,7 @@ int CApplication::GetPlaySpeed() const
 }
 
 // Returns the current time in seconds of the currently playing media.
-// Fractional portions of a second are possible.  This returns a double to
+// Fractional portions of a second are possible. This returns a double to
 // be consistent with GetTotalTime() and SeekTime().
 double CApplication::GetTime() const
 {
@@ -982,7 +982,7 @@ bool CApplication::ResetScreenSaverWindow()
 		{
 			// We're in screensaver window
 			if (g_windowManager.GetActiveWindow() == WINDOW_SCREENSAVER)
-				g_windowManager.PreviousWindow();  // Show the previous window
+				g_windowManager.PreviousWindow(); // Show the previous window
 		}
 
 		return true;
@@ -994,29 +994,29 @@ bool CApplication::ResetScreenSaverWindow()
 void CApplication::CheckScreenSaver()
 {
 	// If the screen saver window is active, then clearly we are already active
-	if (g_windowManager.IsWindowActive(WINDOW_SCREENSAVER))
+	if(g_windowManager.IsWindowActive(WINDOW_SCREENSAVER))
 	{
 		m_bScreenSave = true;
 		return;
 	}
 
 	bool resetTimer = false;
-	if (IsPlayingVideo() && !m_pPlayer->IsPaused()) // Are we playing video and it is not paused?
+	if(IsPlayingVideo() && !m_pPlayer->IsPaused()) // Are we playing video and it is not paused?
 		resetTimer = true;
 
 //	if (IsPlayingAudio() && g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION) // Are we playing some music in fullscreen vis?  // TODO
 //		resetTimer = true;
 
-	if (resetTimer)
+	if(resetTimer)
 	{
 		m_screenSaverTimer.StartZero();
 		return;
 	}
 
-	if (m_bScreenSave) // Already running the screensaver
+	if(m_bScreenSave) // Already running the screensaver
 		return;
 
-	if ( m_screenSaverTimer.GetElapsedSeconds() > g_guiSettings.GetInt("ScreenSaver.Time") * 60 )
+	if(m_screenSaverTimer.GetElapsedSeconds() > g_guiSettings.GetInt("ScreenSaver.Time") * 60)
 		ActivateScreenSaver();
 }
 
@@ -1027,7 +1027,7 @@ void CApplication::ActivateScreenSaver()
 	// Get Screensaver Mode
 	m_screenSaverMode = g_guiSettings.GetString("screensaver.mode");
 
-	if (m_screenSaverMode != "None")
+	if(m_screenSaverMode != "None")
 	{
 		g_windowManager.ActivateWindow(WINDOW_SCREENSAVER);
 		return;

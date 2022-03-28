@@ -144,7 +144,7 @@ void CFile::Close()
 
 bool CFile::Exists(const CStdString& strFileName)
 {
-	if (strFileName.IsEmpty()) return false;
+	if(strFileName.IsEmpty()) return false;
 		
 	//
 	// TODO - Check other future protocols i.e. ftp, http, etc
@@ -153,7 +153,7 @@ bool CFile::Exists(const CStdString& strFileName)
 	//Check HDD
 	if(CFileHD::Exists(strFileName)) return true;
 
-	CLog::Log(LOGERROR, __FUNCTION__" - Unhandled exception checking %s", strFileName.c_str());
+	CLog::Log(LOGERROR, "%s - Error checking for %s", __FUNCTION__, strFileName.c_str());
 	return false;
 }
 

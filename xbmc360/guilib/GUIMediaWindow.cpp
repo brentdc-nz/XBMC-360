@@ -506,7 +506,7 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
 		CStdString strLabel = "Add source";//g_localizeStrings.Get(1026); //FIXME
 		CFileItem *pItem = new CFileItem(strLabel);
 		pItem->SetPath("add");
-		pItem->SetThumbnailImage("DefaultAddSource.png");
+		pItem->SetThumbnailImage("defaultAddSource.png");
 		pItem->SetLabel(strLabel);
 //		pItem->SetLabelPreformated(true);
 		m_vecItems.Add(pItem);

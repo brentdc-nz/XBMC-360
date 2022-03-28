@@ -1,6 +1,7 @@
 #include "FileItem.h"
 #include "utils\log.h"
 #include "utils\Util.h"
+#include "utils\URIUtils.h"
 #include "Settings.h"
 
 CFileItem::CFileItem(void)
@@ -54,6 +55,11 @@ void CFileItem::Reset()
 bool CFileItem::IsXEX() const
 {
 	return CUtil::GetExtension(m_strPath).Equals(".xex", false);
+}
+
+bool CFileItem::IsRemote() const
+{
+	return URIUtils::IsRemote(m_strPath);
 }
 
 bool CFileItem::IsVideo() const
@@ -121,6 +127,11 @@ bool CFileItem::IsVirtualDirectoryRoot() const
 	return (m_bIsFolder && m_strPath.IsEmpty());
 }
 
+bool CFileItem::IsMultiPath() const
+{
+	return URIUtils::IsMultiPath(m_strPath);
+}
+
 const CStdString &CFileItem::GetPath() const
 {
 	return m_strPath;
@@ -157,7 +168,6 @@ void CFileItem::FillInDefaultIcon()
 	// for folders
 	// for .. folders the default picture for parent folder
 	// for other folders the defaultFolder.png
-
 	CStdString strThumb;
 	CStdString strExtension;
 	if(GetIconImage() == "")
@@ -187,7 +197,7 @@ void CFileItem::FillInDefaultIcon()
 			else
 			{
 				// Default icon for unknown file type
-				SetIconImage("DefaultFile.png");
+				SetIconImage("defaultFile.png");
 			}
 		}
 		else

@@ -1,27 +1,10 @@
-/*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://www.xbmc.org
- *
- *  This Program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2, or (at your option)
- *  any later version.
- *
- *  This Program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
- *
- */
-
 #include "URIUtils.h"
 #include "Util.h"
 #include "URL.h"
+#include "filesystem\MultiPathDirectory.h"
+
+using namespace std;
+using namespace DIRECTORY;
 
 bool URIUtils::IsDOSPath(const CStdString &path)
 {
@@ -60,6 +43,45 @@ void URIUtils::AddSlashAtEnd(CStdString& strFolder)
 bool URIUtils::IsURL(const CStdString& strFile)
 {
 	return strFile.Find("://") >= 0;
+}
+
+bool URIUtils::IsRemote(const CStdString& strFile) //TODO: finish other type checks
+{
+/*	if(IsMemCard(strFile) || IsCDDA(strFile) || IsISO9660(strFile) || IsPlugin(strFile) || IsMusicDb(strFile) || IsVideoDb(strFile))
+		return false;
+
+	if(IsSpecial(strFile))
+		return IsRemote(CSpecialProtocol::TranslatePath(strFile));
+
+	if(IsStack(strFile))
+		return IsRemote(CStackDirectory::GetFirstStackedFile(strFile));
+*/
+	if(IsMultiPath(strFile))
+	{
+		// Virtual paths need to be checked separately
+		vector<CStdString> paths;
+		if(CMultiPathDirectory::GetPaths(strFile, paths))
+		{
+			for(unsigned int i = 0; i < paths.size(); i++)
+				if(IsRemote(paths[i])) return true;
+		}
+		return false;
+	}
+
+	CURL url(strFile);
+/*	
+	if(IsInArchive(strFile))
+		return IsRemote(url.GetHostName());
+*/
+	if(!url.IsLocal())
+		return true;
+
+	return false;
+}
+
+bool URIUtils::IsMultiPath(const CStdString& strPath)
+{
+	return strPath.Left(10).Equals("multipath:");
 }
 
 bool URIUtils::HasSlashAtEnd(const CStdString& strFile)

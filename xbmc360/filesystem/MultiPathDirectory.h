@@ -15,7 +15,7 @@ public:
 	virtual ~CMultiPathDirectory(void);
 
 	virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
-	bool GetPaths(const CStdString& strPath, vector<CStdString>& vecPaths);
+	static bool GetPaths(const CStdString& strPath, vector<CStdString>& vecPaths);
 	static CStdString GetFirstPath(const CStdString &strPath);
 	void MergeItems(CFileItemList &items);
 	static CStdString ConstructMultiPath(const vector<CStdString> &vecPaths);

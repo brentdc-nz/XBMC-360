@@ -30,8 +30,6 @@ void CSettings::Initialize()
 bool CSettings::Load()
 {
 	// Load settings file...
-	CLog::Log(LOGNOTICE, "loading D:\\settings.xml");
-
 	CLog::Log(LOGNOTICE, "loading %s", SETTINGS_FILE);
 
 	if(!LoadSettings(SETTINGS_FILE))

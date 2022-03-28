@@ -186,76 +186,72 @@ void CGUIListControl::Render()
 			if(pItem->HasIcon())
 			{
 				CStdString image = pItem->GetIconImage();
-				bool bigImage(m_iImageWidth * m_iImageHeight > 1024); // bigger than 32x32
-				
-				if(bigImage && !pItem->HasThumbnail())
-					image.Insert(image.Find("."), "Big");
-
-			// Show icon
-			CGUIImage* pImage = pItem->GetIcon();
-			if(!pImage)
-			{
-				CTextureInfo TInfo;
-				TInfo.filename = image;
-				TInfo.useLarge = true;
-				TInfo.orientation = 0;
-				
-				pImage = new CGUIImage(0, 0, 0, 0, m_iImageWidth, m_iImageHeight, TInfo/*, 0x0*/);
-//				pImage->SetAspectRatio(CGUIImage::ASPECT_RATIO_KEEP);
-				pItem->SetIcon(pImage);
-			}
-
-			if(pImage)
-			{
-				// Setting the filename will update the image if the thumb changes
-				pImage->SetFileName(image);
-
-				if(!pImage->IsAllocated())
-					pImage->AllocResources();
-
-				pImage->SetWidth(m_iImageWidth);
-				pImage->SetHeight(m_iImageHeight);
-
-				// Center vertically
-				pImage->SetPosition(iPosX + 8 + (m_iImageWidth - /*pImage->GetRenderWidth()*/pImage->GetWidth()) / 2, iPosY + (m_iItemHeight - /*pImage->GetRenderHeight()*/pImage->GetHeight()) / 2);
-				pImage->Render();
-
-				if(bigImage)
+	
+				// Show icon
+				CGUIImage* pImage = pItem->GetIcon();
+				if(!pImage)
 				{
-					// Add the overlay image if we're a big list
-/*					CGUIImage *overlay = pItem->GetOverlay();
+					CTextureInfo TInfo;
+					TInfo.filename = image;
+					TInfo.useLarge = true;
+					TInfo.orientation = 0;
+				
+					pImage = new CGUIImage(0, 0, 0, 0, m_iImageWidth, m_iImageHeight, TInfo/*, 0x0*/);
+	//				pImage->SetAspectRatio(CGUIImage::ASPECT_RATIO_KEEP);
+					pItem->SetIcon(pImage);
+				}
 
-					if(!overlay && pItem->HasOverlay())
+				if(pImage)
+				{
+					// Setting the filename will update the image if the thumb changes
+					pImage->SetFileName(image);
+
+					if(!pImage->IsAllocated())
+						pImage->AllocResources();
+
+					pImage->SetWidth(m_iImageWidth);
+					pImage->SetHeight(m_iImageHeight);
+
+					// Center vertically
+					pImage->SetPosition(iPosX + 8 + (m_iImageWidth - /*pImage->GetRenderWidth()*/pImage->GetWidth()) / 2, iPosY + (m_iItemHeight - /*pImage->GetRenderHeight()*/pImage->GetHeight()) / 2);
+					pImage->Render();
+/*
+					if(bigImage)
 					{
-						overlay = new CGUIImage(0, 0, 0, 0, 0, 0, pItem->GetOverlayImage(), 0x0);
-						overlay->SetAspectRatio(CGUIImage::ASPECT_RATIO_KEEP);
-						overlay->AllocResources();
-						pItem->SetOverlay(overlay);
-					}
+						// Add the overlay image if we're a big list
+						CGUIImage *overlay = pItem->GetOverlay();
+
+						if(!overlay && pItem->HasOverlay())
+						{
+							overlay = new CGUIImage(0, 0, 0, 0, 0, 0, pItem->GetOverlayImage(), 0x0);
+							overlay->SetAspectRatio(CGUIImage::ASPECT_RATIO_KEEP);
+							overlay->AllocResources();
+							pItem->SetOverlay(overlay);
+						}
 					
-					// Render the image
-					if(overlay)
-					{
-						float x, y;
-						pImage->GetBottomRight(x, y);
+						// Render the image
+						if(overlay)
+						{
+							float x, y;
+							pImage->GetBottomRight(x, y);
 						
-						// FIXME: fixed scaling to try and get it a similar size on MOST skins as
-						//        small thumbs view
+							// FIXME: fixed scaling to try and get it a similar size on MOST skins as
+							//        small thumbs view
             
-						float scale = 0.75f;
-						overlay->SetWidth((int)(overlay->GetTextureWidth() * scale));
-						overlay->SetHeight((int)(overlay->GetTextureHeight() * scale));
+							float scale = 0.75f;
+							overlay->SetWidth((int)(overlay->GetTextureWidth() * scale));
+							overlay->SetHeight((int)(overlay->GetTextureHeight() * scale));
 						
-						// If we haven't yet rendered, make sure we update our sizing
-						if(!overlay->HasRendered())
-							overlay->CalculateSize();
+							// If we haven't yet rendered, make sure we update our sizing
+							if(!overlay->HasRendered())
+								overlay->CalculateSize();
 
-						overlay->SetPosition((int)x - overlay->GetRenderWidth(), (int)y - overlay->GetRenderHeight());
-						overlay->Render();
+							overlay->SetPosition((int)x - overlay->GetRenderWidth(), (int)y - overlay->GetRenderHeight());
+							overlay->Render();
+						}
 					}
-	*/			}
+*/				}
 			}
-		}
 			iPosY += m_iItemHeight + m_iSpaceBetweenItems;
 		}
 	}

@@ -18,13 +18,12 @@ CGUIAudioManager::~CGUIAudioManager()
 // Load the config file (sounds.xml) for nav sounds
 // Can be located in a folder "sounds" in the skin or from a
 // subfolder of the folder "sounds" in the root directory of XBMC
-
 bool CGUIAudioManager::Load()
 {
 	m_actionSoundMap.clear();
 	Cleanup(); // Cleanup incase a new skin is loaded
 
-//	if (g_guiSettings.GetString("lookandfeel.soundskin")=="OFF") // TODO
+//	if(g_guiSettings.GetString("lookandfeel.soundskin")=="OFF") // TODO
 //		return true;
 
 	CStdString strSoundsXml = g_graphicsContext.GetMediaDir() + "sounds\\sounds.xml";
@@ -44,7 +43,7 @@ bool CGUIAudioManager::Load()
 	TiXmlElement* pRoot = xmlDoc.RootElement();
 	CStdString strValue = pRoot->Value();
 
-	if ( strValue != "sounds")
+	if (strValue != "sounds")
 	{
 		CLog::Log(LOGNOTICE, "%s Doesn't contain <sounds>", strSoundsXml.c_str());
 		return false;
@@ -103,7 +102,7 @@ bool CGUIAudioManager::Load()
 			LoadWindowSound(pWindow, "activate", sounds.strInitFile);
 			LoadWindowSound(pWindow, "deactivate", sounds.strDeInitFile);
 
-			if (id > 0)
+			if(id > 0)
 				m_windowSoundMap.insert(pair<int, CWindowSounds>(id, sounds));
 
 			pWindow = pWindow->NextSibling();
@@ -182,19 +181,19 @@ void CGUIAudioManager::PlayWindowSound(int id, WINDOW_SOUND event)
 
 	windowSoundMap::iterator it= m_windowSoundMap.find(id);
 
-	if (it==m_windowSoundMap.end())
+	if(it == m_windowSoundMap.end())
 		return;
 
 	CWindowSounds sounds=it->second;
 	CStdString strFile;
 
-	switch (event)
+	switch(event)
 	{
 	case SOUND_INIT:
-		strFile=sounds.strInitFile;
+		strFile = sounds.strInitFile;
 		break;
 	case SOUND_DEINIT:
-		strFile=sounds.strDeInitFile;
+		strFile = sounds.strDeInitFile;
 		break;
 	}
 

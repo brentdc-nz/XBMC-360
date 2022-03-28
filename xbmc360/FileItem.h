@@ -16,12 +16,14 @@ public:
 	~CFileItem();
 
 	bool IsXEX() const;
+	bool IsRemote() const;
 	bool IsVideo() const;
 	bool IsAudio() const;
 	bool IsPicture() const;
 	bool IsParentFolder() const;
 	bool IsFileFolder() const;
 	bool IsVirtualDirectoryRoot() const;
+	bool IsMultiPath() const;
 
 	void Reset();
 	const CStdString &GetPath() const;
