@@ -99,7 +99,7 @@
   <string><id>163</id><value>Lendo...</value></string>
   <string><id>164</id><value>Não há disco</value></string>
   <string><id>165</id><value>Disco presente</value></string>
-  <string><id>166</id><value>tema</value></string>
+  <string><id>166</id><value>Tema</value></string>
   <string><id>167</id><value>Habilitar servidor FTP</value></string>
   <string><id>168</id><value>Habiliatar sincronização de tempo com a internet</value></string>
   <string><id>169</id><value>Resolução</value></string>
@@ -173,7 +173,7 @@
   <string><id>237</id><value>Minificção</value></string>
   <string><id>238</id><value>Magnificação</value></string>
   <string><id>239</id><value>Limpar playlist no final</value></string>
-  <string><id>240</id><value>automaticamnete rodar DVD dv vídeo</value></string>
+  <string><id>240</id><value>Automaticamnete rodar DVD dv vídeo</value></string>
   <string><id>241</id><value>Automaticamnete rodar VCD/SVCD</value></string>
   <string><id>242</id><value>Automaticamente Tocar Audio-CD</value></string>
   <string><id>243</id><value>Automaticamente rodar Jogos de XBOX</value></string>
@@ -187,7 +187,7 @@
   <string><id>251</id><value>Selecionar diretório de destino</value></string>
   <string><id>252</id><value>Sáida de stereo para todos os speakers</value></string>
   <string><id>253</id><value>Número de canais</value></string>
-  <string><id>254</id><value>- DTS Capable Receiver</value></string>
+  <string><id>254</id><value>- Recebidor DTS Capacitado</value></string>
   <string><id>255</id><value>CDDB</value></string>
   <string><id>256</id><value>Consultando freedb para Informações do CDDB</value></string>
   <string><id>257</id><value>Erro</value></string>
@@ -220,7 +220,7 @@
   <string><id>284</id><value>Nenhum resultados encontrado</value></string>
   <string><id>285</id><value>Deinterlace Filter</value></string>
   <string><id>286</id><value>Filtro de pós processamento</value></string>
-  <string><id>287</id><valueLegendas</value></string>
+  <string><id>287</id><value>Legendas</string>
   <string><id>288</id><value>Fonte</value></string>
   <string><id>289</id><value>- Tamanho</value></string>
   <string><id>290</id><value>Compressão do alcance dinâmico</value></string>
@@ -229,14 +229,14 @@
   <string><id>293</id><value>Legendas</value></string>
   <string><id>294</id><value>Criar bookmark</value></string>
   <string><id>295</id><value>Cyclar bookmarks</value></string>
-  <string><id>296</id><value> Limpar bookmarks</value></string>
+  <string><id>296</id><value>Limpar bookmarks</value></string>
   <string><id>297</id><value>Delay de áudio</value></string>
   <string><id>298</id><value>Slider</value></string>
-  <string><id>300</id><value>1. Línguagem</value></string>
+  <string><id>300</id><value>1. Linguagem</value></string>
   <string><id>301</id><value>2. Volume</value></string>
   <string><id>302</id><value>3. Stream</value></string>
   <string><id>303</id><value>Delay</value></string>
-  <string><id>304</id><value>Línguagem</value></string>
+  <string><id>304</id><value>Linguagem</value></string>
   <string><id>305</id><value>Hábilitado</value></string>
   <string><id>306</id><value>Não-intersaido</value></string>
   <string><id>307</id><value>- Pós-processando automaticamente</value></string>
@@ -251,14 +251,14 @@
   <string><id>316</id><value>Procrurando sons...</value></string>
   <string><id>317</id><value>Limpeza no banco de dados concluída</value></string>
   <string><id>318</id><value>Excluíndo sons...</value></string>
-  <string><id>319</id><value>Erro ao Excluir sons</value></string>
+  <string><id>319</id><value>Erro ao excluir sons</value></string>
   <string><id>320</id><value>Excluíndo artistas...</value></string>
   <string><id>321</id><value>Erro ao excluir artistas</value></string>
   <string><id>322</id><value>Excluíndo gênero...</value></string>
   <string><id>323</id><value>Erro ao excluír Gêneros</value></string>
-  <string><id>324</id><value>Exclíndo Díretorios...</value></string>
-  <string><id>325</id><value>Erro ao Excluir Díretorios</value></string>
-  <string><id>326</id><value>Exclíndo Álbuns...</value></string>
+  <string><id>324</id><value>Excluíndo Díretorios...</value></string>
+  <string><id>325</id><value>Erro ao excluir Díretorios</value></string>
+  <string><id>326</id><value>Excluindo Álbuns...</value></string>
   <string><id>327</id><value>Erro ao excluir Álbuns</value></string>
   <string><id>328</id><value>Salvando mudanças...</value></string>
   <string><id>329</id><value>Erro ao salvar mudanças</value></string>
@@ -314,7 +314,7 @@
   <string><id>379</id><value>PM</value></string>
   <string><id>380</id><value>Chuveiros</value></string>
   <string><id>381</id><value>Alguns</value></string>
-  <string><id>382</id><value>Scattered</value></string>
+  <string><id>382</id><value>Chuva</value></string>
   <string><id>383</id><value>Vento</value></string>
   <string><id>384</id><value>Forte</value></string>
   <string><id>385</id><value>Justo</value></string>
@@ -392,8 +392,8 @@
   <string><id>457</id><value>Mudar a vista</value></string>
   <string><id>458</id><value>B/Mark</value></string>
   <string><id>459</id><value>Subs</value></string>
-  <string><id>460</id><value>Audio Stream</value></string>
-  <string><id>461</id><value>[active]</value></string>
+  <string><id>460</id><value>Stream de Áudio</value></string>
+  <string><id>461</id><value>[ativada]</value></string>
   <string><id>462</id><value>Legendas</value></string>
   <string><id>463</id><value>Luz traseira</value></string>
   <string><id>464</id><value>Brilho</value></string>
@@ -524,7 +524,7 @@
   <string><id>717</id><value>Manual (Estático)</value></string>
   <string><id>718</id><value>Padrão (Dashboard)</value></string>
   <string><id>719</id><value>- Endereço IP</value></string>
-  <string><id>720</id><value>- mácara de rede</value></string>
+  <string><id>720</id><value>- Máscara de rede</value></string>
   <string><id>721</id><value>- Gateway padrão</value></string>
   <string><id>722</id><value>- Servidor DNS</value></string>
   <string><id>723</id><value>Salvar &amp; Reiniciar</value></string>
@@ -533,8 +533,8 @@
   <string><id>726</id><value>Mudanças não salvas. Continuar sem salvar?</value></string>
   <string><id>727</id><value>Servidor Web</value></string>
   <string><id>728</id><value>Servidor FTP</value></string>
-  <string><id>729</id><value>tempo da Rede</value></string>
-  <string><id>730</id><value>Porta do servidor</value></string>
+  <string><id>729</id><value>Tempo da Rede</value></string>
+  <string><id>730</id><value>Porta do servidor web</value></string>
   <string><id>731</id><value>Tempo do servidor do host </value></string>
   <string><id>732</id><value>Salvar &amp; Aplicar</value></string>
   <string><id>733</id><value>Senha do servidor Web</value></string>
@@ -555,7 +555,7 @@
   <string><id>748</id><value>Editar o caminho</value></string>
   <string><id>749</id><value>Adicionar compartilhamento</value></string>
   <string><id>750</id><value>Você tem certeza?</value></string>
-  <string><id>751</id><value>Removendo compartilhamento</value></string>
+  <string><id>751</id><value>Removendo Fonte</value></string>
   <string><id>752</id><value>Editar o caminho do compartilhamento</value></string>
   <string><id>753</id><value>Editar o nome do compartilhamento</value></string>
   <string><id>754</id><value>Adicionar uma conexão de programa</value></string>
@@ -778,7 +778,7 @@
   <string><id>12321</id><value>ok</value></string>
   <string><id>12322</id><value>*</value></string>
   <string><id>12324</id><value>Tranca mestra do XBMC</value></string>
-  <string><id>12325</id><value>Trancado! Entre o código...</value></string>
+  <string><id>12325</id><value>Trancado! Coloque o código...</value></string>
   <string><id>12326</id><value>Insira a senha</value></string>
   <string><id>12327</id><value>Insira o código mestre</value></string>
   <string><id>12328</id><value>Insira o código de desbloqueio</value></string> 
@@ -800,7 +800,7 @@
   <string><id>12344</id><value>Senhas colocadas não se encaixaram.</value></string>
   <string><id>12345</id><value>Acesso Negado</value></string>
   <string><id>12346</id><value>O Limite de Tentativas de colocar a senha foram excedidas.</value></string>
-  <string><id>12347</id><value>O XBOXIrá se desligar.</value></string>
+  <string><id>12347</id><value>O XBOX Irá se desligar.</value></string>
   <string><id>12348</id><value>Item Trancado</value></string>
   <string><id>12349</id><value>Lembrar o código mestre na próxima inicialização?</value></string>
   <string><id>12350</id><value>(Abrir qualquer item nas configurações irá</value></string>
@@ -837,7 +837,7 @@
   <string><id>12382</id><value>Tocar vídeos NTSC em PAL60</value></string>
   <string><id>12383</id><value>Rélogio de 12 horas</value></string>
   <string><id>12384</id><value>Rélogio de 24 horas</value></string>
-  <string><id>12385</id><value>data/Mês</value></string>
+  <string><id>12385</id><value>Data/Mês</value></string>
   <string><id>12386</id><value>Mês/Dia</value></string>
   <string><id>12387</id><value>Rescanear banco de dados</value></string>
 
@@ -886,10 +886,10 @@
   <string><id>13172</id><value>Depois %i segundos</value></string>
 
   <string><id>13200</id><value>Perfis</value></string>
-  <string><id>13201</id><value>Excluír perfil '%s'?</value></string>
+  <string><id>13201</id><value>Excluir perfil '%s'?</value></string>
   <string><id>13202</id><value>Salvar configurações atuais como perfil...</value></string>
   <string><id>13203</id><value>Perfil '%s' Carregado com sucesso</value></string>
-  <string><id>13204</id><value>último perfil carregado:</value></string>
+  <string><id>13204</id><value>Último perfil carregado:</value></string>
   <string><id>13205</id><value>Desconhecido</value></string>
   <string><id>13206</id><value>Sobrescrever</value></string>
   <string><id>13207</id><value>Sobrescrever perfil '%s'?</value></string>
@@ -960,7 +960,7 @@
   <string><id>13323</id><value>Hábilitar CD+G</value></string>
   <string><id>13324</id><value>Transparência de fundo</value></string>
   <string><id>13325</id><value>Transparência de primeiro plano</value></string>
-  <string><id>13326</id><value>delay A/V</value></string>
+  <string><id>13326</id><value>Delay A/V</value></string>
   <string><id>13327</id><value>Karaoke</value></string>
   <string><id>13328</id><value>%s Não foi encontrado</value></string>
   <string><id>13329</id><value>Erro ao abrir %s</value></string>
@@ -979,7 +979,7 @@
   <string><id>13342</id><value>Laranja</value></string>
   <string><id>13343</id><value>Vermelho</value></string>
   <string><id>13344</id><value>Cíclo</value></string>
-  <string><id>13345</id><value>Desligar a LED quando estiver retornando dew qualquer ponto do áudio</value></string>
+  <string><id>13345</id><value>Desligar a LED quando estiver retornando de qualquer ponto do áudio</value></string>
   <string><id>13346</id><value>Informação do filme</value></string>
   <string><id>13347</id><value>Itens na fila</value></string>
   <string><id>13348</id><value>Procurar no IMDb...</value></string>
@@ -1076,7 +1076,7 @@
   <string><id>14034</id><value>DVD Cache - DVDRom</value></string>
   <string><id>14035</id><value>- Internet Local</value></string>
   <string><id>14036</id><value>Servifores</value></string>
-  <string><id>14037</id><value>OLhar e sentir</value></string>
+  <string><id>14037</id><value>Olhar e sentir</value></string>
   <string><id>14038</id><value>Configurações de rede mudadas</value></string>
   <string><id>14039</id><value>XBMC requer Reiniciar para mudar sua</value></string>
   <string><id>14040</id><value>Configuração da rede.  Você reniniciar agora?</value></string>
@@ -1217,19 +1217,19 @@
   <string><id>15255</id><value>Seu perfil (%name%)</value></string>
   <string><id>15256</id><value>Overall top tags</value></string>
   <string><id>15257</id><value>Artistas tops por tag  %name%</value></string>
-  <string><id>15258</id><value>álbum tops portag %name%</value></string>
-  <string><id>15259</id><value>Top tracks for tag %name%</value></string>
+  <string><id>15258</id><value>Melhores Álbums por tag %name%</value></string>
+  <string><id>15259</id><value>Melhores Faixas por tag %name%</value></string>
   <string><id>15260</id><value>Escutar para a tag %name% na rádio Last.fm</value></string>
   <string><id>15261</id><value>Artitas similaresd como %name%</value></string>
-  <string><id>15262</id><value>Top %name% Álbums</value></string>
-  <string><id>15263</id><value>Top %name% Músicas</value></string>
-  <string><id>15264</id><value>Top %name% tags</value></string>
+  <string><id>15262</id><value>Melhor %name% Álbums</value></string>
+  <string><id>15263</id><value>Melhor %name% Músicas</value></string>
+  <string><id>15264</id><value>Melhor %name% tags</value></string>
   <string><id>15265</id><value>Grandes fãs de %name%</value></string>
-  <string><id>15266</id><value>Escutar para %name% fans na rádio last.fm</value></string>
+  <string><id>15266</id><value>Escutar para fans de %name% na rádio last.fm</value></string>
   <string><id>15267</id><value>Escutar para %name% artistas similares na rádio</value></string>
-  <string><id>15268</id><value>artistas tops por for usuário %name%</value></string>
-  <string><id>15269</id><value>álbums tops por usuários %name%</value></string>
-  <string><id>15270</id><value>Músicas tops por usuários for user %name%</value></string>
+  <string><id>15268</id><value>Melhores Artistas por for usuário %name%</value></string>
+  <string><id>15269</id><value>Melhores Álbums por usuários %name%</value></string>
+  <string><id>15270</id><value>Melhores Músicas por usuários %name%</value></string>
   <string><id>15271</id><value>Amigos do usuário %name%</value></string>
   <string><id>15272</id><value>Vizinho do usuário %name%</value></string>
   <string><id>15273</id><value>Semanalmente gráficos de artistas por %name%</value></string>
@@ -1238,7 +1238,7 @@
   <string><id>15276</id><value>Escutar para %name%'s vizinhos na rádio neighbours</value></string>
   <string><id>15277</id><value>Escutar %name%'s rádio pessoal last.fm</value></string>
   <string><id>15278</id><value>Escutar %name%'s músicas amadas na rádio last.fm</value></string>
-  <string><id>15279</id><value>conseguindo lista de last.fm...</value></string>
+  <string><id>15279</id><value>Pegando... lista da last.fm...</value></string>
   <string><id>15280</id><value>Não pode conseguir a lista de last.fm...</value></string>
   <string><id>15281</id><value>Coloque o nome de um artista para achar artistas similares</value></string>
   <string><id>15282</id><value>Colque uma taque para achar tags similares</value></string>
