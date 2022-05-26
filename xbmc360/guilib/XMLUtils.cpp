@@ -18,11 +18,7 @@
  *
  */
 
-//#include "include.h"
 #include "XMLUtils.h"
-//#include "URL.h"
-//#include "FileSystem/SpecialProtocol.h"
-//#include "utils/StringUtils.h"
 
 #include "tinyxml\tinyxml.h"
 
@@ -35,7 +31,7 @@ bool XMLUtils::GetString(const TiXmlNode* pRootNode, const char* strTag, CStdStr
 	if (pNode != NULL)
 	{
 		strStringValue = pNode->Value();
-//		if (encoded && stricmp(encoded,"yes") == 0) FIXME - MARTY
+//		if (encoded && stricmp(encoded,"yes") == 0) FIXME
 //			CURL::Decode(strStringValue);
 		return true;
 	}
@@ -45,17 +41,23 @@ bool XMLUtils::GetString(const TiXmlNode* pRootNode, const char* strTag, CStdStr
 
 bool XMLUtils::GetDWORD(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwDWORDValue)
 {
-	const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
-	if (!pNode || !pNode->FirstChild()) return false;
+	const TiXmlNode* pNode = pRootNode->FirstChild(strTag);
+
+	if(!pNode || !pNode->FirstChild())
+		return false;
+
 	dwDWORDValue = atol(pNode->FirstChild()->Value());
 	return true;
 }
 
 bool XMLUtils::GetInt(const TiXmlNode* pRootNode, const char* strTag, int& iIntValue)
 {
-	const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
-	if (!pNode || !pNode->FirstChild()) return false;
-		iIntValue = atoi(pNode->FirstChild()->Value());
+	const TiXmlNode* pNode = pRootNode->FirstChild(strTag);
+
+	if(!pNode || !pNode->FirstChild())
+		return false;
+
+	iIntValue = atoi(pNode->FirstChild()->Value());
   
 	return true;
 }
@@ -94,4 +96,28 @@ bool XMLUtils::GetBoolean(const TiXmlNode* pRootNode, const char* strTag, bool& 
 			return false; // invalid bool switch - it's probably some other string.
 	}
 	return true;
+}
+
+void XMLUtils::SetString(TiXmlNode* pRootNode, const char *strTag, const CStdString& strValue)
+{
+	TiXmlElement newElement(strTag);
+	TiXmlNode *pNewNode = pRootNode->InsertEndChild(newElement);
+
+	if(pNewNode)
+	{
+		TiXmlText value(strValue);
+		pNewNode->InsertEndChild(value);
+	}
+}
+
+void XMLUtils::SetPath(TiXmlNode* pRootNode, const char *strTag, const CStdString& strValue)
+{
+	TiXmlElement newElement(strTag);
+	TiXmlNode *pNewNode = pRootNode->InsertEndChild(newElement);
+
+	if(pNewNode)
+	{
+		TiXmlText value(strValue);
+		pNewNode->InsertEndChild(value);
+	}
 }

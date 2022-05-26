@@ -20,14 +20,14 @@ void GUIInfo::SetInfoFlag(uint32_t flag)
 
 uint32_t GUIInfo::GetInfoFlag() const
 {
-	// we strip out the bottom 24 bits, where we keep data
+	// We strip out the bottom 24 bits, where we keep data
 	// and return the flag only
 	return m_data1 & 0xff000000;
 }
 
 uint32_t GUIInfo::GetData1() const
 {
-	// we strip out the top 8 bits, where we keep flags
+	// We strip out the top 8 bits, where we keep flags
 	// and return the unflagged data
 	return m_data1 & ((1 << 24) -1);
 }
@@ -51,7 +51,7 @@ CGUIInfoManager::~CGUIInfoManager(void)
 // Player.HasVideo | Player.HasAudio (Logical or)
 int CGUIInfoManager::TranslateString(const CStdString &condition)
 {
-	// translate $LOCALIZE as required
+	// Translate $LOCALIZE as required
 	CStdString strCondition;//(CGUIInfoLabel::ReplaceLocalize(condition));
 	strCondition = condition;//CGUIInfoLabel::ReplaceAddonStrings(strCondition);
 
@@ -70,15 +70,15 @@ int CGUIInfoManager::TranslateString(const CStdString &condition)
 		}
 		return TranslateBooleanExpression(strCondition);
 	}
-	//Just single command.
+	// Just single command.
 	return TranslateSingleString(strCondition);
 }
 
-/// \brief Translates a string as given by the skin into an int that we use for more
-/// efficient retrieval of data.
+// Translates a string as given by the skin into an int that we e
+// use for morefficient retrieval of data
 int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 {
-	// trim whitespace, and convert to lowercase
+	// Trim whitespace, and convert to lowercase
 	CStdString strTest = strCondition;
 	strTest.TrimLeft(" \t\r\n");
 	strTest.TrimRight(" \t\r\n");
@@ -95,46 +95,37 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 
 	CStdString strCategory = strTest.Left(strTest.Find("."));
 
-	// translate conditions...
-	if (strTest.Equals("false") || strTest.Equals("no") || strTest.Equals("off")) 
+	// Translate conditions...
+	if(strTest.Equals("false") || strTest.Equals("no") || strTest.Equals("off")) 
 		ret = SYSTEM_ALWAYS_FALSE;
-	else if (strTest.Equals("true") || strTest.Equals("yes") || strTest.Equals("on")) 
+	else if(strTest.Equals("true") || strTest.Equals("yes") || strTest.Equals("on")) 
 		ret = SYSTEM_ALWAYS_TRUE;
 
-	else if (strCategory.Equals("system"))
+	else if(strCategory.Equals("system"))
 	{
-		if (strTest.Equals("system.date")) 
-			ret = SYSTEM_DATE;
-		else if (strTest.Equals("system.time"))
-			ret = SYSTEM_TIME;
-		else if (strTest.Equals("system.fps")) 
-			ret = SYSTEM_FPS;
-		else if (strTest.Equals("system.cputemperature"))
-			ret = SYSTEM_CPU_TEMPERATURE;
-		else if (strTest.Equals("system.gputemperature"))
-			ret = SYSTEM_GPU_TEMPERATURE;
-		else if (strTest.Equals("system.memory(free)") || strTest.Equals("system.freememory")) 
-			ret = SYSTEM_FREE_MEMORY;
+		if(strTest.Equals("system.date")) ret = SYSTEM_DATE;
+		else if(strTest.Equals("system.time")) ret = SYSTEM_TIME;
+		else if(strTest.Equals("system.fps")) ret = SYSTEM_FPS;
+		else if(strTest.Equals("system.cputemperature")) ret = SYSTEM_CPU_TEMPERATURE;
+		else if(strTest.Equals("system.gputemperature")) ret = SYSTEM_GPU_TEMPERATURE;
+		else if(strTest.Equals("system.memory(free)") || strTest.Equals("system.freememory")) ret = SYSTEM_FREE_MEMORY;
 	}
 
-	else if (strCategory.Equals("player"))
+	else if(strCategory.Equals("player"))
 	{
-		if (strTest.Equals("player.hasmedia"))
-			ret = PLAYER_HAS_MEDIA;
-		else if (strTest.Equals("player.time"))
-			ret = PLAYER_TIME;
-		else if (strTest.Equals("player.timeremaining"))
-			ret = PLAYER_TIME_REMAINING;
-		else if (strTest.Equals("player.duration"))
-			ret = PLAYER_DURATION;
+		if(strTest.Equals("player.hasmedia")) ret = PLAYER_HAS_MEDIA;
+		else if(strTest.Equals("player.time")) ret = PLAYER_TIME;
+		else if(strTest.Equals("player.timeremaining")) ret = PLAYER_TIME_REMAINING;
+		else if(strTest.Equals("player.duration")) ret = PLAYER_DURATION;
+		else if(strTest.Equals("player.progress")) ret = PLAYER_PROGRESS;
 	}
 
-	else if (strCategory.Equals("control"))
+	else if(strCategory.Equals("control"))
 	{
-		if (strTest.Left(17).Equals("control.hasfocus("))
+		if(strTest.Left(17).Equals("control.hasfocus("))
 		{
 			int controlID = atoi(strTest.Mid(17, strTest.GetLength() - 18).c_str());
-			if (controlID)
+			if(controlID)
 			{
 				return AddMultiInfo(GUIInfo(bNegate ? -CONTROL_HAS_FOCUS : CONTROL_HAS_FOCUS, controlID, 0));
 			}
@@ -146,15 +137,15 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 
 int CGUIInfoManager::GetOperator(const char ch)
 {
-	if (ch == '[')
+	if(ch == '[')
 		return 5;
-	else if (ch == ']')
+	else if(ch == ']')
 		return 4;
-	else if (ch == '!')
+	else if(ch == '!')
 		return OPERATOR_NOT;
-	else if (ch == '+')
+	else if(ch == '+')
 		return OPERATOR_AND;
-	else if (ch == '|')
+	else if(ch == '|')
 		return OPERATOR_OR;
 	else
 		return 0;
@@ -162,7 +153,7 @@ int CGUIInfoManager::GetOperator(const char ch)
 
 bool CGUIInfoManager::EvaluateBooleanExpression(const CCombinedValue &expression, bool &result, int contextWindow)
 {
-	// stack to save our bool state as we go
+	// Stack to save our bool state as we go
 	stack<bool> save;
 
 	for (list<int>::const_iterator it = expression.m_postfix.begin(); it != expression.m_postfix.end(); ++it)
@@ -327,8 +318,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
 	return strLabel;
 }
 
-// checks the condition and returns it as necessary.  Currently used
-// for toggle button controls and visibility of images.
+// Checks the condition and returns it as necessary.
 bool CGUIInfoManager::GetBool(int condition)
 {
 	bool bReturn = false;
@@ -358,6 +348,27 @@ bool CGUIInfoManager::GetBool(int condition)
 	}
 
 	return bReturn;
+}
+
+// Tries to get a integer value for use in progressbars/sliders and such
+int CGUIInfoManager::GetInt(int info, int contextWindow) const
+{
+	switch(info)
+	{
+		case PLAYER_PROGRESS:
+		{
+			if(g_application.IsPlaying() && g_application.m_pPlayer)
+			{
+				switch(info)
+				{
+					case PLAYER_PROGRESS:
+						return (int)(g_application.GetPercentage());
+				}
+			}
+		}
+		break;
+	}
+	return 0; // Not found
 }
 
 void CGUIInfoManager::UpdateFPS()
@@ -409,6 +420,7 @@ CStdString CGUIInfoManager::GetDate(bool bNumbersOnly)
 {
 	CStdString text;
 	SYSTEMTIME time;
+	memset(&time, 0, sizeof(SYSTEMTIME));
 	GetLocalTime(&time);
 
 	if (bNumbersOnly)
@@ -467,6 +479,7 @@ CStdString CGUIInfoManager::GetTime(bool bSeconds)
 {
 	CStdString text;
 	SYSTEMTIME time;
+	memset(&time, 0, sizeof(SYSTEMTIME));
 	GetLocalTime(&time);
 
 	INT iHour = time.wHour;

@@ -1,0 +1,116 @@
+<window id="100">
+	<defaultcontrol>10</defaultcontrol>
+	<controls>
+
+		<control>
+			<description>background image</description>
+			<id>0</id>			
+			<type>image</type>				
+			<posx>370</posx>
+			<posy>270</posy>
+			<width>600</width>
+			<height>218</height>
+			<visible>true</visible>			
+			<texture>dialog-panel.png</texture>
+		</control>	
+
+		<control>
+			<description>dialog heading</description>
+			<id>1</id>				
+			<type>label</type>				
+			<posx>410</posx>
+			<posy>287</posy>
+			<width>500</width>
+			<align>left</align>
+			<font>special13</font>
+			<label>-</label>
+			<textcolor>DDced8da</textcolor>		
+			<visible>true</visible>		
+		</control>
+
+		<control>
+			<description>dialog line 1</description>
+			<id>2</id>				
+			<type>label</type>				
+			<posx>415</posx>
+			<posy>330</posy>
+			<width>500</width>
+			<align>left</align>
+			<font>font10</font>
+			<label>-</label>
+			<textcolor>DDced8da</textcolor>		
+			<visible>true</visible>		
+		</control>
+
+		<control>
+			<description>dialog line 2</description>
+			<id>3</id>				
+			<type>label</type>				
+			<posx>415</posx>
+			<posy>352</posy>
+			<width>500</width>
+			<align>left</align>
+			<font>font10</font>
+			<label>-</label>
+			<textcolor>DDced8da</textcolor>		
+			<visible>true</visible>		
+		</control>
+		
+		<control>
+			<description>dialog line 3</description>
+			<id>4</id>				
+			<type>label</type>				
+			<posx>415</posx>
+			<posy>375</posy>
+			<width>500</width>
+			<align>left</align>
+			<font>font10</font>
+			<label>-</label>
+			<textcolor>DDced8da</textcolor>		
+			<visible>true</visible>		
+		</control>		
+
+		<control>
+			<description>no button</description>
+			<id>10</id>
+			<type>button</type>
+			<posx>690</posx>
+			<posy>410</posy>
+			<width>168</width>
+			<height>40</height>
+			<font>font10</font>
+			<label>No</label> <!-- TODO Fix localisation <label>106</label>  -->
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>true</visible>	
+			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+			<onleft>11</onleft>
+			<onright>11</onright>
+			<onup>10</onup>
+			<ondown>10</ondown>			
+		</control>		
+
+		<control>
+			<description>yes button</description>
+			<id>11</id>
+			<type>button</type>
+			<posx>490</posx>
+			<posy>410</posy>
+			<width>168</width>
+			<height>40</height>
+			<font>font10</font>
+			<label>Yes</label> <!-- TODO Fix localisation <label>107</label>  -->
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>true</visible>	
+			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+			<onleft>10</onleft>
+			<onright>10</onright>
+			<onup>11</onup>
+			<ondown>11</ondown>	
+		</control>	
+
+	</controls>
+</window>

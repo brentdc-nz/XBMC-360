@@ -3,9 +3,10 @@
 
 #include "utils\Stdafx.h"
 #include "xbox\XBInput.h"
+#include "guilib\IWindowManagerCallback.h"
 #include <xui.h>
 
-class CXBApplicationEX
+class CXBApplicationEX : public IWindowManagerCallback
 {
 public:
 	CXBApplicationEX();
@@ -18,7 +19,7 @@ public:
 	virtual void FrameMove() = 0;
 	virtual void Render() = 0;
 	virtual void Stop() = 0;
-	virtual void Cleanup() {};
+	virtual void Cleanup() = 0;
 
 	int Run();
 	void Destroy();
@@ -41,7 +42,6 @@ protected:
 
 	bool m_bStop;
 
-private:
  	void ReadInput();
 };
 

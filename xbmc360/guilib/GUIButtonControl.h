@@ -36,11 +36,14 @@ public:
 
 	virtual ~CGUIButtonControl(void);
 	virtual void DynamicResourceAlloc(bool bOnOff);
+	virtual void AllocResources();
 	virtual void Update();
 	virtual void Render();
-	virtual bool OnAction(const CAction &action) ;
+	virtual bool OnAction(const CAction &action);
+	virtual bool OnMessage(CGUIMessage& message);
 	const CStdString GetLabel();
 	void SetLabel(const string & aLabel);
+	void SetLabel2(const string & aLabel);
 	void SetClickActions(const vector<CStdString>& clickActions) { m_clickActions = clickActions; };
 
 protected:

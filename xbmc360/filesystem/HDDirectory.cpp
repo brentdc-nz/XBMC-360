@@ -2,7 +2,7 @@
 #include "..\utils\Stdafx.h"
 #include "..\utils\URIUtils.h"
 
-using namespace XFILE;
+using namespace DIRECTORY;
 
 CHDDirectory::CHDDirectory(void)
 {
@@ -17,7 +17,7 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
 	WIN32_FIND_DATA wfd;
 	HANDLE hFind;
 
-	CStdString strPath=strPath1;
+	CStdString strPath = strPath1;
 	CStdString strRoot = strPath;
 
 	memset(&wfd, 0, sizeof(wfd));
@@ -29,8 +29,9 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
 
 	hFind = FindFirstFile(strSearchMask.c_str(), &wfd);
 
+	// On error, check if path exists at all, this will return true if empty folder
 	if (INVALID_HANDLE_VALUE == hFind) 
-		return false;
+		return Exists(strPath1);
    
 	// List all the files in the directory with some info about them.
 	do
@@ -61,7 +62,8 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
 //				FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
 //				pItem->m_dateTime=localTime;
 
-				items.Add(pItem);
+				if(IsAllowed(wfd.cFileName))
+					items.Add(pItem);
 			}
 		}
 	}

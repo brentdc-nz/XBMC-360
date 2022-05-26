@@ -1,4 +1,4 @@
-<window id="0">
+<window id="10006">
 	<defaultcontrol>51</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<controls>
@@ -63,7 +63,7 @@
 		<control>
 			<description>view type button</description>
 			<type>button</type>
-			<id>50</id>
+			<id>2</id>
 			<posx>5</posx>
 			<posy>140</posy>
 			<width>345</width>
@@ -82,22 +82,38 @@
 		</control>
 
 		<control>
-			<description>thumbnail panel</description>
+			<description>videos list panel</description>
+			<type>list</type>
+			<id>50</id>
+			<posx>385</posx>
+			<posy>165</posy>
+			<width>820</width>
+			<height>500</height>			
+			<onleft>2</onleft>
+			<onright>52</onright>
+			<onup>50</onup>
+			<ondown>50</ondown>
+			<texturefocus>list_focus.png</texturefocus>
+			<texturenofocus>list_nofocus.png</texturenofocus>			
+			<font>special13</font>
+			<textcolor>ffffffff</textcolor>			
+			<selectedcolor>FFe2ff43</selectedcolor>
+			<visible>true</visible>	
+		</control>
+
+		<control>
+			<description>videos thumbnail panel</description>
 			<type>thumbnailpanel</type>
 			<id>51</id>
 			<posx>390</posx>
 			<posy>150</posy>
 			<width>875</width>
-			<height>500</height>	
-			<onleft>50</onleft>
+			<height>500</height>
+			<onleft>2</onleft>
 			<onright>52</onright>
 			<onup>50</onup>
 			<ondown>50</ondown>			
-<!--		<thumbwidth>160</thumbwidth>
-			<thumbheight>160</thumbheight>
-			<thumbtexturewidth>140</thumbtexturewidth>
-			<thumbtextureheight>140</thumbtextureheight>
--->			<thumbwidth>120</thumbwidth>
+			<thumbwidth>120</thumbwidth>
 			<thumbheight>120</thumbheight>
 			<thumbtexturewidth>90</thumbtexturewidth>
 			<thumbtextureheight>90</thumbtextureheight>
@@ -105,7 +121,7 @@
 			<texturenofocus>folder-nofocus.png</texturenofocus>
 			<font>special13</font>
 			<textcolor>ffffffff</textcolor>			
-			<selectedcolor>60ffffff</selectedcolor>
+			<selectedcolor>FFe2ff43</selectedcolor>
 			<scrollsuffix> | </scrollsuffix>
 			<visible>true</visible>					
 		</control>
@@ -149,7 +165,7 @@
 		</control>
 
 		<control>
-			<description>objct and page count label</description>
+			<description>object and page count label</description>
 			<type>label</type>
 			<id>53</id>			
 			<posx>880</posx>

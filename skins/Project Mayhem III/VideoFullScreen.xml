@@ -6,20 +6,21 @@
 		<control>
 			<description>media info background image</description>
 			<type>image</type>
+			<id>100</id>
 			<posx>-10</posx>
 			<posy>40</posy>
 			<width>1300</width>
 			<height>145</height>
 			<texture>osd_menu_bg.png</texture>
 			<visible>true</visible>				
-		</control>	
+		</control>
 		
 		<control>
 			<description>row 1 label</description>
 			<type>label</type>
 			<id>10</id>
 			<posx>30</posx>
-			<posy>50</posy>
+			<posy>55</posy>
 			<width>680</width>
 			<label>label1</label>
 			<align>left</align>
@@ -32,7 +33,7 @@
 			<type>label</type>
 			<id>11</id>			
 			<posx>30</posx>
-			<posy>95</posy>
+			<posy>100</posy>
 			<width>680</width>
 			<label>label2</label>
 			<align>left</align>
@@ -45,7 +46,7 @@
 			<type>label</type>
 			<id>12</id>			
 			<posx>30</posx>
-			<posy>140</posy>
+			<posy>145</posy>
 			<width>680</width>
 			<label>label3</label>
 			<align>left</align>

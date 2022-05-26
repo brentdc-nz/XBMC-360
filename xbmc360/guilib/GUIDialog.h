@@ -15,7 +15,7 @@ public:
 	virtual bool IsDialog() const { return true; };
 	virtual bool IsRunning() const { return m_bRunning; }
 
-	void DoModal(DWORD dwParentId, int iWindowID = WINDOW_INVALID); // Modal
+	virtual void DoModal(int iWindowID = WINDOW_INVALID); // Modal
 	void Show(); // Modeless
 
 	virtual bool OnBack(int actionID);

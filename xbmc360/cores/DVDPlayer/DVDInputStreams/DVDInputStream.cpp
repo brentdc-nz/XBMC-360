@@ -1,34 +1,29 @@
 #include "DVDInputStream.h"
-#include "..\..\..\utils\stdafx.h"
 
-CDVDInputStream::CDVDInputStream()
+CDVDInputStream::CDVDInputStream(DVDStreamType streamType)
 {
-	m_strFileName = NULL;
+	m_streamType = streamType;
 }
 
 CDVDInputStream::~CDVDInputStream()
 {
 }
 
-bool CDVDInputStream::Open(const char* strFile)
+bool CDVDInputStream::Open(const char* strFile, const std::string &content)
 {
-	if (m_strFileName)
-		delete m_strFileName;
-	
-	m_strFileName = strdup(strFile);
-	
+	m_strFileName = strFile;
+	m_content = content;
 	return true;
 }
 
 void CDVDInputStream::Close()
 {
-	if (m_strFileName)
-		delete m_strFileName;
-	
-	m_strFileName = NULL;
+	m_strFileName = "";
+	m_item.Reset();
 }
 
-const char* CDVDInputStream::GetFileName()
+void CDVDInputStream::SetFileItem(const CFileItem& item)
 {
-	return m_strFileName;
+	m_item = item;
 }
+	

@@ -1,9 +1,9 @@
 #include "FTPServerConn.h"
 #include "FTPFileWriter.h"
-#include "..\..\utils\log.h"
-#include "..\..\utils\StringUtils.h"
-#include "..\..\utils\Util.h"
-#include "..\..\utils\CRC_32.h"
+#include "utils\log.h"
+#include "utils\StringUtils.h"
+#include "utils\Util.h"
+#include "utils\CRC_32.h"
 #include <direct.h>
 
 CFTPServerConn::CFTPServerConn()
@@ -110,7 +110,7 @@ void CFTPServerConn::Process()
 				SendReply(repbuf);
 				break;
 #endif
-#if 0 //FIXME
+#if 0 // TODO
 			case PASV:
 				if(!m_bIsLoggedIn)
 				{

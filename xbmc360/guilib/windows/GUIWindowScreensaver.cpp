@@ -19,10 +19,10 @@
  */
 
 #include "GUIWindowScreensaver.h"
-#include "..\GUIWindowManager.h"
-#include "..\..\Application.h"
+#include "guilib\GUIWindowManager.h"
+#include "Application.h"
 
-//Screensaver
+// Screensaver
 #include "..\screensavers\ScreensaverPlasma.h"
 
 CGUIWindowScreensaver::CGUIWindowScreensaver(void) : CGUIWindow(WINDOW_SCREENSAVER, "")

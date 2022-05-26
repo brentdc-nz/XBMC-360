@@ -18,11 +18,10 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#pragma once
+#ifndef H_URIUTILS
+#define H_URIUTILS
 
 #include "StdString.h"
-
-//class CURL;
 
 class URIUtils
 {
@@ -33,6 +32,10 @@ public:
 	static bool IsDOSPath(const CStdString &path);
 
 	static void AddSlashAtEnd(CStdString& strFolder);
+	static bool IsURL(const CStdString& strFile);
+	static bool IsRemote(const CStdString& strFile);
+	static bool IsMultiPath(const CStdString& strPath);
+
 	static bool HasSlashAtEnd(const CStdString& strFile);
 
 	static void AddFileToFolder(const CStdString& strFolder,
@@ -47,3 +50,5 @@ public:
 	}
 
 };
+
+#endif //H_URIUTILS

@@ -90,7 +90,7 @@
 			<spinwidth>50</spinwidth>
 			<spinheight>25</spinheight>
 			<texturefocus>list_focus.png</texturefocus>
-			<texturenofocus>list_focus.png</texturenofocus>
+			<texturenofocus>list_nofocus.png</texturenofocus>
 			<textureup>scroll_up.png</textureup>
 			<texturedown>scroll_down.png</texturedown>
 			<textureupfocus>scroll_up_focus.png</textureupfocus>

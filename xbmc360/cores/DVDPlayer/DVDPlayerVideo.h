@@ -1,152 +1,112 @@
 #ifndef H_CDVDPLAYERVIDEO
 #define H_CDVDPLAYERVIDEO
 
-#include "..\..\utils\Thread.h"
-#include "DVDCodecs\DVDVideoCodec.h"
-#include "DVDMessageQueue.h"
+#include "utils\Thread.h"
 #include "DVDClock.h"
 #include "DVDStreamInfo.h"
+#include "DVDMessageQueue.h"
+#include "DVDCodecs\Video\DVDVideoCodec.h"
+#include "utils\BitstreamStats.h"
 
-#include "..\..\utils\Event.h"
-#include "..\..\utils\CriticalSection.h"
+#if 1//def HAS_VIDEO_PLAYBACK
+#include "../VideoRenderers/RenderManager.h"
+#endif
+
+enum CodecID;
+class CDemuxStreamVideo;
+class CDVDOverlayCodecCC;
+
+#define VIDEO_PICTURE_QUEUE_SIZE 1
 
 class CDVDPlayerVideo : public CThread
 {
 public:
-	CDVDPlayerVideo(CDVDClock* pClock/*, CDVDOverlayContainer* pOverlayContainer*/);
+	CDVDPlayerVideo(CDVDClock* pClock/* 
+                 , CDVDOverlayContainer* pOverlayContainer*/
+                 , CDVDMessageQueue& parent);
 	virtual ~CDVDPlayerVideo();
 
-	bool OpenStream( CDVDStreamInfo &hint );
+	bool OpenStream(CDVDStreamInfo &hint);
+	void OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec);
 	void CloseStream(bool bWaitForBuffers);
 
-	void Pause();
-	void Resume();
 	void Flush();
-
-	// waits untill all available data has been rendered
-	// just waiting for packetqueue should be enough for video
-	void WaitForBuffers()                             { m_messageQueue.WaitUntilEmpty(); }
+	void SendMessage(CDVDMsg* pMsg, int priority = 0) { m_messageQueue.Put(pMsg, priority); }
 	bool AcceptsData()                                { return !m_messageQueue.IsFull(); }
-	void SendMessage(CDVDMsg* pMsg)                   { m_messageQueue.Put(pMsg); }
-  
-//	void Update(bool bPauseDrawing)                   { g_renderManager.Update(bPauseDrawing); } //MARTY
-//	void UpdateMenuPicture();
- 
-//	void EnableSubtitle(bool bEnable)                 { m_bRenderSubs = bEnable; }//MARTY
-//	void GetVideoRect(RECT& SrcRect, RECT& DestRect)  { g_renderManager.GetVideoRect(SrcRect, DestRect); }//MARTY
-//	float GetAspectRatio()                            { return g_renderManager.GetAspectRatio(); }//MARTY
+	bool IsStalled()                                  { return m_stalled; }
+	double GetCurrentPts()                            { return m_iCurrentPts; }
+	void SetDelay(double delay)                       { m_iVideoDelay = delay; }
+	double GetDelay()                                 { return m_iVideoDelay; }
+	void EnableFullscreen(bool bEnable)               { m_bAllowFullscreen = bEnable; }
 
-	//Set a forced aspect ratio
-//	void SetAspectRatio(float fAspectRatio);
+	std::string GetPlayerInfo();
+	int GetVideoBitrate();
 
-	__int64 GetDelay();
-    void SetDelay(__int64 delay);
-	__int64 GetDiff();
-	int GetNrOfDroppedFrames()						  { return m_iDroppedFrames; }
-	 
-	bool InitializedOutputDevice();
-	bool IsStalled()                                  { return m_DetectedStill;  }
-  
-	__int64 GetCurrentPts()                           { return m_iCurrentPts; }
+	// Classes
+	CDVDMessageQueue m_messageQueue;
+	CDVDMessageQueue& m_messageParent;
 
 	void SetSpeed(int iSpeed);
-
-	// classes
-	CDVDMessageQueue m_messageQueue;
-//	CDVDOverlayContainer* m_pOverlayContainer; //MARTY
-  
-	CDVDClock* m_pClock;
 
 protected:
 	virtual void OnStartup();
 	virtual void OnExit();
 	virtual void Process();
 
-	enum EOUTPUTSTATUS
-	{
-		EOS_OK=0,
-		EOS_ABORT=1,
-		EOS_DROPPED_VERYLATE=2,
-		EOS_DROPPED=3,
-	};
+	int OutputPicture(DVDVideoPicture* pPicture, double pts);
 
-	EOUTPUTSTATUS OutputPicture(DVDVideoPicture* pPicture, __int64 pts);
-//	void ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest, __int64 pts); //MARTY
+	#define EOS_ABORT 1
+	#define EOS_DROPPED 2
+	#define EOS_VERYLATE 4
 
-	__int64 m_iCurrentPts; // last pts displayed
-	__int64 m_iVideoDelay; // not really needed to be an __int64  
-	__int64 m_iFlipTimeStamp; // time stamp of last flippage. used to play at a forced framerate
-
-	int m_iDroppedFrames;
-	bool m_bInitializedOutputDevice;
-	float m_fFrameRate;
-  
-	bool m_bRenderSubs;
-  
-	float m_fForcedAspectRatio;
-  
 	int m_iNrOfPicturesNotToSkip;
-	int m_speed;
-  
-	bool m_DetectedStill;
+	double m_iCurrentPts; // Last pts displayed
+	double m_iVideoDelay;
+	double m_iSubtitleDelay;
+	double m_FlipTimeStamp; // Time stamp of last flippage. used to play at a forced framerate
 
-	/* autosync decides on how much of clock we should use when deciding sleep time */
-	/* the value is the same as 63% timeconstant, ie that the step response of */
-	/* iSleepTime will be at 63% of iClockSleep after autosync frames */
+	int m_iLateFrames;
+	int m_iDroppedFrames;
+	bool m_bDropFrames;
+	int m_iDroppedRequest;
+
+	struct SOutputConfiguration
+	{
+		unsigned int width;
+		unsigned int height;
+		unsigned int dwidth;
+		unsigned int dheight;
+		unsigned int color_matrix : 4;
+		unsigned int color_range  : 1;
+		float        framerate;
+		bool         inited;
+	} m_output; // Holds currently configured output
+
+	bool m_bAllowFullscreen;
+	bool m_bRenderSubs;
+	float m_fForcedAspectRatio;
+	float m_fFrameRate;
+
+	// Autosync decides on how much of clock we should use when deciding sleep time
+	// the value is the same as 63% timeconstant, ie that the step response of
+	// iSleepTime will be at 63% of iClockSleep after autosync frames
 	unsigned int m_autosync;
 
-	// classes
-//	CDVDDemuxSPU* m_pDVDSpu; //MARTY
+	CDVDClock* m_pClock;
+
+	// Classes
+	CDVDStreamInfo m_hints;
 	CDVDVideoCodec* m_pVideoCodec;
-  
-	DVDVideoPicture* m_pTempOverlayPicture;
-  
-	CRITICAL_SECTION m_critCodecSection;
 
-public:
-	class CPresentThread : public CThread
-	{
-	public:
-		CPresentThread( CDVDClock *pClock )
-		{           
-			m_pClock = pClock;
-			m_iTimestamp = 0i64;
-			m_iDelay = 0;
-			CThread::Create();
-			CThread::SetPriority(THREAD_PRIORITY_TIME_CRITICAL);      
-			CThread::SetName("CPresentThread");
-		}
+	BitstreamStats m_videoStats;
 
-		virtual ~CPresentThread() { StopThread(); }
+	int m_speed;
+	double m_droptime;
+	double m_dropbase;
 
-		virtual void StopThread()
-		{
-			CThread::m_bStop = true;
- 			m_eventFrame.Set();
-
-			CThread::StopThread();
-		}
-
-		// aborts any pending displays.
-		void AbortPresent() { m_iTimestamp = 0i64; } 
-
-		//delay before we want to present this picture
-		void Present(__int64 iTimeStamp/*, EFIELDSYNC m_OnField*/); //MARTY 
-
-		// delay between when we wanted frame to be presented and it acually was
-		__int64 GetDelay() { return m_iDelay; }
-
-  protected:
-
-		virtual void Process();
-
-  private:
-		__int64 m_iTimestamp;
-		__int64 m_iDelay;
-		CCriticalSection m_critSection;
-		CEvent m_eventFrame;
-		CDVDClock *m_pClock;
-	} m_PresentThread;
+	bool m_stalled;
+	bool m_started;
+	std::string m_codecname;
 };
 
 #endif //H_CDVDPLAYERVIDEO

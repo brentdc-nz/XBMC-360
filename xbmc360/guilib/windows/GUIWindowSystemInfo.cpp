@@ -19,8 +19,8 @@
  */
 
 #include "GUIWindowSystemInfo.h"
-#include "..\LocalizeStrings.h"
-#include "..\GUIInfoManager.h"
+#include "guilib\LocalizeStrings.h"
+#include "guilib\GUIInfoManager.h"
 
 CGUIWindowSystemInfo::CGUIWindowSystemInfo(void)
 :CGUIWindow(WINDOW_SYSTEM_INFORMATION, "SettingsSystemInfo.xml")
@@ -30,6 +30,21 @@ CGUIWindowSystemInfo::CGUIWindowSystemInfo(void)
 
 CGUIWindowSystemInfo::~CGUIWindowSystemInfo(void)
 {
+}
+
+void CGUIWindowSystemInfo::Render()
+{
+	if(/*iControl == CONTROL_BT_DEFAULT*/1) //TODO
+	{
+		SET_CONTROL_LABEL(40, "General Info");
+		int i = 2;
+		SetControlLabel(i++, "%s %s", 16111, SYSTEM_FPS);
+		SetControlLabel(i++, "%s %s", 140, SYSTEM_CPU_TEMPERATURE);
+		SetControlLabel(i++, "%s %s", 141, SYSTEM_GPU_TEMPERATURE);
+		SetControlLabel(i++, "%s %s", 158, SYSTEM_FREE_MEMORY);
+	}
+
+	CGUIWindow::Render();
 }
 
 bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
@@ -52,19 +67,6 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 	}
 
 	return CGUIWindow::OnMessage(message);
-}
-
-void CGUIWindowSystemInfo::FrameMove()
-{
-	if(/*iControl == CONTROL_BT_DEFAULT*/1) //TODO
-	{
-		SET_CONTROL_LABEL(40, "General Info");
-		int i = 2;
-		SetControlLabel(i++, "%s %s", 16111, SYSTEM_FPS);
-		SetControlLabel(i++, "%s %s", 140, SYSTEM_CPU_TEMPERATURE);
-		SetControlLabel(i++, "%s %s", 141, SYSTEM_GPU_TEMPERATURE);
-		SetControlLabel(i++, "%s %s", 158, SYSTEM_FREE_MEMORY);
-	}
 }
 
 void CGUIWindowSystemInfo::SetLabelDummy()

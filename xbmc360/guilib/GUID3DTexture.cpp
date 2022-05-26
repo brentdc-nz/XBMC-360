@@ -80,6 +80,11 @@ void CGUID3DTexture::SetFileName(const CStdString &strFilename)
 	m_strFilename = strFilename;
 }
 
+const CStdString& CGUID3DTexture::GetFileName() const
+{
+	return m_strFilename;
+}
+
 bool CGUID3DTexture::AllocResources()
 {
 	m_pd3dDevice = g_graphicsContext.Get3DDevice();
@@ -245,17 +250,23 @@ void CGUID3DTexture::SetVisible(bool bOnOff)
 
 void CGUID3DTexture::SetWidth(float fWidth)
 {
+	if(fWidth == m_width)
+		return;
+
 	Update(m_posX, m_posY, fWidth, m_height);
 }
 
 void CGUID3DTexture::SetHeight(float fHeight)
 {
+	if(fHeight == m_height)
+		return;
+
 	Update(m_posX, m_posY, m_width, fHeight);
 }
 
-void CGUID3DTexture::SetPosition(float fPosX, float fPosY)
+void CGUID3DTexture::SetPosition(float iPosX, float iPosY)
 {
-	Update(fPosX, fPosY, m_width, m_height);
+	Update(iPosX, iPosY, m_width, m_height);
 }
 
 void CGUID3DTexture::Update(float fPosX, float fPosY, float fWidth, float fHeight)

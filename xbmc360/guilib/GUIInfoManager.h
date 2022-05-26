@@ -1,26 +1,6 @@
 #ifndef CGUIINFOMANAGER_H
 #define CGUIINFOMANAGER_H
 
-/*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
- *
- *  This Program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2, or (at your option)
- *  any later version.
- *
- *  This Program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
- *  <http://www.gnu.org/licenses/>.
- *
- */
-
 #include "..\utils\StdString.h"
 #include "..\utils\Stdafx.h"
 #include "..\utils\TimeUtils.h"
@@ -36,26 +16,26 @@
 #define OPERATOR_AND  2
 #define OPERATOR_OR   1
 
-#define PLAYER_HAS_MEDIA			1
-
-#define PLAYER_TIME					27  
-#define PLAYER_TIME_REMAINING		28
-#define PLAYER_DURATION				29
-#define PLAYER_SHOWCODEC			30
+#define PLAYER_HAS_MEDIA            1
+#define PLAYER_PROGRESS             22
+#define PLAYER_TIME                 27  
+#define PLAYER_TIME_REMAINING       28
+#define PLAYER_DURATION             29
+#define PLAYER_SHOWCODEC            30
 
 #define SYSTEM_TIME                 110
 #define SYSTEM_DATE                 111
 #define SYSTEM_CPU_TEMPERATURE      112
 #define SYSTEM_GPU_TEMPERATURE      113
 #define SYSTEM_FPS                  123
-#define SYSTEM_ALWAYS_TRUE          125   // useful for <visible fade="10" start="hidden">true</visible>, to fade in a control
-#define SYSTEM_ALWAYS_FALSE         126   // used for <visible fade="10">false</visible>, to fade out a control (ie not particularly useful!)
+#define SYSTEM_ALWAYS_TRUE          125   // Useful for <visible fade="10" start="hidden">true</visible>, to fade in a control
+#define SYSTEM_ALWAYS_FALSE         126   // Used for <visible fade="10">false</visible>, to fade out a control (i.e not particularly useful!)
 #define SYSTEM_FREE_MEMORY          648
 
 // The multiple information vector
-#define MULTI_INFO_START			40000
-#define MULTI_INFO_END				99999
-#define COMBINED_VALUES_START		100000
+#define MULTI_INFO_START            40000
+#define MULTI_INFO_END              99999
+#define COMBINED_VALUES_START       100000
 
 #define CONTROL_HAS_FOCUS           30000
 
@@ -99,6 +79,7 @@ public:
 
 	CStdString GetLabel(int info, int contextWindow = 0);
 	bool GetBool(int condition1);
+	int GetInt(int info, int contextWindow = 0) const;
 	void UpdateFPS();
 
 	void SetShowCodec(bool showcodec) { m_playerShowCodec = showcodec; };
@@ -114,7 +95,7 @@ protected:
 	CStdString GetDate(bool bNumbersOnly = false);
 	CStdString GetSystemHeatInfo(int info);
 
-	__int64 GetPlayTime() const;  // in ms
+	__int64 GetPlayTime() const; // In ms
 	CStdString GetCurrentPlayTime(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
 	int GetPlayTimeRemaining() const;
 	CStdString GetCurrentPlayTimeRemaining(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
@@ -122,7 +103,7 @@ protected:
 	CStdString GetDuration(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
 
 private:
-	//Fullscreen OSD Stuff
+	// Fullscreen OSD Stuff
 	bool m_playerShowCodec;
 
 	// FPS counters
@@ -133,9 +114,9 @@ private:
 	class CCombinedValue
 	{
 	public:
-		CStdString m_info;    // the text expression
-		int m_id;             // the id used to identify this expression
-		std::list<int> m_postfix;  // the postfix binary expression
+		CStdString m_info; // The text expression
+		int m_id; // The id used to identify this expression
+		std::list<int> m_postfix; // The postfix binary expression
 		CCombinedValue& operator=(const CCombinedValue& mSrc);
 	};
 	

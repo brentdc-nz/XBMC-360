@@ -14,8 +14,10 @@ public:
 	virtual void AllocResources();
 	virtual void FreeResources();
 	virtual void SetInfo(const CGUIInfoLabel &info);
+	void SetFileName(const CStdString strFileName);
 	virtual void Update();
 	virtual void Render();
+
 protected:
 	CGUIInfoLabel m_info;
 	CTextureInfo m_image;

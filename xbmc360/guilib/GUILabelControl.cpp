@@ -47,9 +47,9 @@ void CGUILabelControl::Render()
 
 bool CGUILabelControl::OnMessage(CGUIMessage& message)
 {
-	if (message.GetControlId() == GetID())
+	if(message.GetControlId() == GetID())
 	{
-		if (message.GetMessage() == GUI_MSG_LABEL_SET)
+		if(message.GetMessage() == GUI_MSG_LABEL_SET)
 		{
 			SetLabel(message.GetLabel());
 			return true;

@@ -49,6 +49,7 @@ public:
 	static bool GetInfoTexture(const TiXmlNode* pRootNode, const char* strTag, CTextureInfo &image, CGUIInfoLabel &info, int parentID);
 	static bool GetTexture(const TiXmlNode* pRootNode, const char* strTag, CTextureInfo &image);
 	static bool GetAlignment(const TiXmlNode* pRootNode, const char* strTag, DWORD& alignment);
+	static bool GetAlignmentY(const TiXmlNode* pRootNode, const char* strTag, DWORD& alignment);
 
 	/*! \brief Create an info label from an XML element
 	Processes XML elements of the form

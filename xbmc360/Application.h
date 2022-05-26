@@ -8,12 +8,12 @@
 #include "utils\Stopwatch.h"
 #include "utils\Splash.h"
 #include "xbox\Network.h"
-#include "utils\NTPClient.h"
+#include "services\NTPClient\WinSckNTP.h"
 #include "services\FTPServer\FTPServer.h"
 #include "ApplicationMessenger.h"
 #include "filesystem\DrivesManager.h"
-
 #include "guilib\dialogs\GUIDialogSeekBar.h"
+#include "utils\Idle.h"
 
 class CApplication: public CXBApplicationEX, public IPlayerCallback, public IMsgTargetCallback
 {
@@ -32,6 +32,7 @@ public:
 	virtual void Process();
 	virtual void FrameMove();
 	virtual void Render();
+	virtual void Cleanup();
 	virtual void Stop();
 
 	void StartServices();
@@ -57,10 +58,13 @@ public:
 
 	double GetTime() const;
 	double GetTotalTime() const;
+	float GetPercentage() const;
 
 	bool IsPlayingAudio() const;
 	bool IsPlayingVideo() const;
 
+	void StartIdleThread();
+	void StopIdleThread();
 	void StartTimeServer();
 	void StopTimeServer();
 	void StartFtpServer();
@@ -76,6 +80,7 @@ public:
 
 	CGUIDialogSeekBar m_guiDialogSeekBar;
 
+	CIdleThread& GetIdleThread() { return m_idleThread; };
 	CNetwork& getNetwork() { return m_network; };
 	CDrivesManager& getDriveManager() { return m_drivesManager; };
 	CApplicationMessenger& getApplicationMessenger() { return m_applicationMessenger; };
@@ -97,12 +102,12 @@ protected:
 	CStopWatch m_screenSaverTimer;
 	CStopWatch m_slowTimer;
 
+	CIdleThread m_idleThread;
 	CSplash *m_splash;
+	CNetwork m_network;
 	CNTPClient *m_pNTPClient;
 	CFTPServer *m_pFTPServer;
 	CDrivesManager m_drivesManager;
-	CNetwork m_network;
-	
 	CApplicationMessenger m_applicationMessenger;
 };
 

@@ -1,7 +1,7 @@
 #ifndef H_CBACKGROUNDINFOLOADER
 #define H_CBACKGROUNDINFOLOADER
 
-#include "utils/Thread.h"
+#include "utils\Thread.h"
 #include "FileItem.h"
 
 class IBackgroundLoaderObserver

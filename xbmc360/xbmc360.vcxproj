@@ -17,6 +17,10 @@
       <Configuration>Profile_FastCap</Configuration>
       <Platform>Xbox 360</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_New|Xbox 360">
+      <Configuration>Release_New</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Xbox 360">
       <Configuration>Release</Configuration>
       <Platform>Xbox 360</Platform>
@@ -36,6 +40,10 @@
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -65,6 +73,9 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Profile|Xbox 360'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
@@ -80,6 +91,9 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">
     <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">
+    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='CodeAnalysis|Xbox 360'">
     <LinkIncremental>true</LinkIncremental>
@@ -108,14 +122,51 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PreprocessorDefinitions>_DEBUG;_XBOX</PreprocessorDefinitions>
       <CallAttributedProfiling>Callcap</CallAttributedProfiling>
-      <AdditionalIncludeDirectories>..\libraries\FFmpeg 0.6 Xbox 360\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\xbmc360\;..\ffmpeg lib\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/EHa %(AdditionalOptions)</AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
-      <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirenderd.lib;xmediad2.lib;xonlined.lib;libavformat.lib;libavfilter.lib;libavutil.lib;libswscale.lib;libavcodec.lib;pthreads.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\libraries\FFmpeg 0.6 Xbox 360\vcproj\libavcodec\Xbox 360\Debug;..\libraries\FFmpeg 0.6 Xbox 360\vcproj\libswscale\Xbox 360\Debug;..\libraries\FFmpeg 0.6 Xbox 360\vcproj\libavutil\Xbox 360\Debug;..\libraries\FFmpeg 0.6 Xbox 360\vcproj\libavfilter\Xbox 360\Debug;..\libraries\FFmpeg 0.6 Xbox 360\vcproj\libavformat\Xbox 360\Debug;..\libraries\FFmpeg 0.6 Xbox 360\vcproj\pthreads\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirenderd.lib;xmediad2.lib;Xonline.lib;libavformat.lib;libavfilter.lib;libavutil.lib;libswscale.lib;libavcodec.lib;pthreads.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\ffmpeg lib\vcproj\libavcodec\Xbox 360\Debug;..\ffmpeg lib\vcproj\libswscale\Xbox 360\Debug;..\ffmpeg lib\vcproj\libavutil\Xbox 360\Debug;..\ffmpeg lib\vcproj\libavfilter\Xbox 360\Debug;..\ffmpeg lib\vcproj\libavformat\Xbox 360\Debug;..\ffmpeg lib\vcproj\pthreads\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <Deploy>
+      <DeploymentType>CopyToHardDrive</DeploymentType>
+    </Deploy>
+    <ImageXex>
+      <ConfigurationFile>xex.xml</ConfigurationFile>
+    </ImageXex>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <Optimization>Full</Optimization>
+      <ExceptionHandling>false</ExceptionHandling>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PreprocessorDefinitions>_XBOX</PreprocessorDefinitions>
+      <CallAttributedProfiling>Callcap</CallAttributedProfiling>
+      <AdditionalIncludeDirectories>..\libraries\FFmpeg 0.6 Xbox 360\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/EHa %(AdditionalOptions)</AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <StringPooling>true</StringPooling>
+      <TrapIntegerDividesOptimization>true</TrapIntegerDividesOptimization>
+      <PreschedulingOptimization>true</PreschedulingOptimization>
+      <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
+      <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirender.lib;xmediad2.lib;xonline.lib;libavformat.lib;libavfilter.lib;libavutil.lib;libswscale.lib;libavcodec.lib;pthreads.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\libraries\FFmpeg 0.6 Xbox 360\vcproj\libavcodec\Xbox 360\Release;..\libraries\FFmpeg 0.6 Xbox 360\vcproj\libswscale\Xbox 360\Release;..\libraries\FFmpeg 0.6 Xbox 360\vcproj\libavutil\Xbox 360\Release;..\libraries\FFmpeg 0.6 Xbox 360\vcproj\libavfilter\Xbox 360\Release;..\libraries\FFmpeg 0.6 Xbox 360\vcproj\libavformat\Xbox 360\Release;..\libraries\FFmpeg 0.6 Xbox 360\vcproj\pthreads\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Deploy>
       <DeploymentType>CopyToHardDrive</DeploymentType>
@@ -165,6 +216,9 @@
       <SetChecksum>true</SetChecksum>
       <AdditionalDependencies>xapilibi.lib;d3d9i.lib;d3dx9.lib;xgraphics.lib;xboxkrnl.lib;xnet.lib;xaudio2.lib;xact3i.lib;x3daudioi.lib;xmcorei.lib;xbdm.lib;vcomp.lib</AdditionalDependencies>
     </Link>
+    <ImageXex>
+      <ConfigurationFile>xex.xml</ConfigurationFile>
+    </ImageXex>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile_FastCap|Xbox 360'">
     <ClCompile>
@@ -194,7 +248,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <StringPooling>true</StringPooling>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -203,16 +257,17 @@
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PreprocessorDefinitions>NDEBUG;_XBOX</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\libraries\FFmpeg 0.6 Xbox 360\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\xbmc360\;..\ffmpeg lib\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <PreschedulingOptimization>true</PreschedulingOptimization>
       <RegisterReservation>true</RegisterReservation>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <AdditionalOptions>/EHa %(AdditionalOptions)</AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
-      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -220,8 +275,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
       <SetChecksum>true</SetChecksum>
-      <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirenderd.lib;xmediad2.lib;xnet.lib;xonline.lib;libavformat.lib;libavfilter.lib;libavutil.lib;libswscale.lib;libavcodec.lib;pthreads.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\libraries\FFmpeg 0.6 Xbox 360\vcproj\libavcodec\Xbox 360\Release;..\libraries\FFmpeg 0.6 Xbox 360\vcproj\libswscale\Xbox 360\Release;..\libraries\FFmpeg 0.6 Xbox 360\vcproj\libavutil\Xbox 360\Release;..\libraries\FFmpeg 0.6 Xbox 360\vcproj\libavfilter\Xbox 360\Release;..\libraries\FFmpeg 0.6 Xbox 360\vcproj\libavformat\Xbox 360\Release;..\libraries\FFmpeg 0.6 Xbox 360\vcproj\pthreads\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirender.lib;xmediad2.lib;xonline.lib;libavformat.lib;libavfilter.lib;libavutil.lib;libswscale.lib;libavcodec.lib;pthreads.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\ffmpeg lib\vcproj\libavcodec\Xbox 360\Release;..\ffmpeg lib\vcproj\libswscale\Xbox 360\Release;..\ffmpeg lib\vcproj\libavutil\Xbox 360\Release;..\ffmpeg lib\vcproj\libavfilter\Xbox 360\Release;..\ffmpeg lib\vcproj\libavformat\Xbox 360\Release;..\ffmpeg lib\vcproj\pthreads\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Deploy>
       <DeploymentType>CopyToHardDrive</DeploymentType>
@@ -229,6 +284,7 @@
     <ImageXex>
       <HeapSize>
       </HeapSize>
+      <ConfigurationFile>xex.xml</ConfigurationFile>
     </ImageXex>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">
@@ -255,18 +311,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AdvancedSettings.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="ApplicationMessenger.h" />
     <ClInclude Include="BackgroundInfoLoader.h" />
     <ClInclude Include="ButtonTranslator.h" />
-    <ClInclude Include="cores\DVDPlayer\DVDAudioDevice.h" />
+    <ClInclude Include="cores\AudioRenderers\IAudioCallback.h" />
+    <ClInclude Include="cores\AudioRenderers\IAudioRenderer.h" />
+    <ClInclude Include="cores\AudioRenderers\NullSound.h" />
+    <ClInclude Include="cores\AudioRenderers\XAudio2.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDAudio.h" />
     <ClInclude Include="cores\DVDPlayer\DVDClock.h" />
-    <ClInclude Include="cores\DVDPlayer\DVDCodecs\DVDAudioCodec.h" />
-    <ClInclude Include="cores\DVDPlayer\DVDCodecs\DVDAudioCodecFFmpeg.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDCodecs\Audio\DVDAudioCodec.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDCodecs\Audio\DVDAudioCodecFFmpeg.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDCodecs\DVDCodecs.h" />
     <ClInclude Include="cores\DVDPlayer\DVDCodecs\DVDCodecUtils.h" />
     <ClInclude Include="cores\DVDPlayer\DVDCodecs\DVDFactoryCodec.h" />
-    <ClInclude Include="cores\DVDPlayer\DVDCodecs\DVDVideoCodec.h" />
-    <ClInclude Include="cores\DVDPlayer\DVDCodecs\DVDVideoCodecFFmpeg.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDCodecs\video\DVDVideoCodec.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDCodecs\Video\DVDVideoCodecFFmpeg.h" />
     <ClInclude Include="cores\DVDPlayer\DVDDemuxers\DVDDemux.h" />
     <ClInclude Include="cores\DVDPlayer\DVDDemuxers\DVDDemuxFFmpeg.h" />
     <ClInclude Include="cores\DVDPlayer\DVDDemuxers\DVDDemuxUtils.h" />
@@ -274,28 +336,50 @@
     <ClInclude Include="cores\DVDPlayer\DVDInputStreams\DVDFactoryInputStream.h" />
     <ClInclude Include="cores\DVDPlayer\DVDInputStreams\DVDInputStream.h" />
     <ClInclude Include="cores\DVDPlayer\DVDInputStreams\DVDInputStreamFile.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDInputStreams\DVDInputStreamSMB.h" />
     <ClInclude Include="cores\DVDPlayer\DVDMessage.h" />
     <ClInclude Include="cores\DVDPlayer\DVDMessageQueue.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDPerformanceCounter.h" />
     <ClInclude Include="cores\DVDPlayer\DVDPlayer.h" />
     <ClInclude Include="cores\DVDPlayer\DVDPlayerAudio.h" />
     <ClInclude Include="cores\DVDPlayer\DVDPlayerVideo.h" />
     <ClInclude Include="cores\DVDPlayer\DVDStreamInfo.h" />
-    <ClInclude Include="cores\DVDPlayer\DVDUtils\DVDTimeUtils.h" />
+    <ClInclude Include="cores\DVDPlayer\Edl.h" />
+    <ClInclude Include="cores\DVDPlayer\IDVDPlayer.h" />
     <ClInclude Include="cores\IPlayer.h" />
     <ClInclude Include="cores\PlayerCoreFactory.h" />
     <ClInclude Include="cores\VideoRenderers\BaseRenderer.h" />
     <ClInclude Include="cores\VideoRenderers\RenderManager.h" />
     <ClInclude Include="cores\VideoRenderers\RGBRenderer.h" />
     <ClInclude Include="FileItem.h" />
+    <ClInclude Include="filesystem\Directory.h" />
+    <ClInclude Include="filesystem\DirectoryHistory.h" />
     <ClInclude Include="filesystem\Drive.h" />
     <ClInclude Include="filesystem\DrivesManager.h" />
+    <ClInclude Include="filesystem\FactoryDirectory.h" />
+    <ClInclude Include="filesystem\FactoryFileDirectory.h" />
     <ClInclude Include="filesystem\File.h" />
+    <ClInclude Include="filesystem\FileBase.h" />
     <ClInclude Include="filesystem\FileBrowser.h" />
+    <ClInclude Include="filesystem\FileFactory.h" />
     <ClInclude Include="filesystem\FileHD.h" />
+    <ClInclude Include="filesystem\FileSMB.h" />
     <ClInclude Include="filesystem\HDDirectory.h" />
+    <ClInclude Include="filesystem\IDirectory.h" />
+    <ClInclude Include="filesystem\IFileDirectory.h" />
+    <ClInclude Include="filesystem\MultiPathDirectory.h" />
+    <ClInclude Include="filesystem\SMBDirectory.h" />
+    <ClInclude Include="filesystem\VirtualDirectory.h" />
+    <ClInclude Include="filesystem\XBFS_Wrap\EmuFileWrapper.h" />
+    <ClInclude Include="filesystem\XBFS_Wrap\XBFS_Wrap.h" />
     <ClInclude Include="guilib\AudioContext.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogButtonMenu.h" />
+    <ClInclude Include="guilib\dialogs\GUIDialogContextMenu.h" />
+    <ClInclude Include="guilib\dialogs\GUIDialogFileBrowser.h" />
+    <ClInclude Include="guilib\dialogs\GUIDialogMediaSource.h" />
+    <ClInclude Include="guilib\dialogs\GUIDialogNetworkSetup.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogSeekBar.h" />
+    <ClInclude Include="guilib\dialogs\GUIDialogYesNo.h" />
     <ClInclude Include="guilib\GraphicContext.h" />
     <ClInclude Include="guilib\GUIAudioManager.h" />
     <ClInclude Include="guilib\GUIButtonControl.h" />
@@ -303,6 +387,7 @@
     <ClInclude Include="guilib\GUIControlFactory.h" />
     <ClInclude Include="guilib\GUID3DTexture.h" />
     <ClInclude Include="guilib\GUIDialog.h" />
+    <ClInclude Include="guilib\GUIDialogBoxBase.h" />
     <ClInclude Include="guilib\GUIFont.h" />
     <ClInclude Include="guilib\GUIFontManager.h" />
     <ClInclude Include="guilib\GUIImage.h" />
@@ -311,9 +396,11 @@
     <ClInclude Include="guilib\GUIInfoTypes.h" />
     <ClInclude Include="guilib\GUILabel.h" />
     <ClInclude Include="guilib\GUILabelControl.h" />
+    <ClInclude Include="guilib\GUIListControl.h" />
     <ClInclude Include="guilib\GUIListItem.h" />
     <ClInclude Include="guilib\GUIMediaWindow.h" />
     <ClInclude Include="guilib\GUIMessage.h" />
+    <ClInclude Include="guilib\GUIProgressControl.h" />
     <ClInclude Include="guilib\GUIScrollBarControl.h" />
     <ClInclude Include="guilib\GUISound.h" />
     <ClInclude Include="guilib\GUISpinControl.h" />
@@ -326,6 +413,7 @@
     <ClInclude Include="guilib\GUIWindow.h" />
     <ClInclude Include="guilib\GUIWindowManager.h" />
     <ClInclude Include="guilib\IMsgTargetCallback.h" />
+    <ClInclude Include="guilib\IWindowManagerCallback.h" />
     <ClInclude Include="guilib\Key.h" />
     <ClInclude Include="guilib\LocalizeStrings.h" />
     <ClInclude Include="guilib\screensavers\ScreensaverBase.h" />
@@ -334,9 +422,16 @@
     <ClInclude Include="guilib\TextureManager.h" />
     <ClInclude Include="guilib\tinyxml\tinystr.h" />
     <ClInclude Include="guilib\tinyxml\tinyxml.h" />
+    <ClInclude Include="guilib\viewstates\GUIViewState.h" />
+    <ClInclude Include="guilib\viewstates\GUIViewStateMusic.h" />
+    <ClInclude Include="guilib\viewstates\GUIViewStatePictures.h" />
+    <ClInclude Include="guilib\viewstates\GUIViewStatePrograms.h" />
+    <ClInclude Include="guilib\viewstates\GUIViewStateVideos.h" />
     <ClInclude Include="guilib\windows\GUIWindowFullScreen.h" />
     <ClInclude Include="guilib\windows\GUIWindowHome.h" />
     <ClInclude Include="guilib\windows\GUIWindowMusicFiles.h" />
+    <ClInclude Include="guilib\windows\GUIWindowPictures.h" />
+    <ClInclude Include="guilib\windows\GUIWindowPrograms.h" />
     <ClInclude Include="guilib\windows\GUIWindowScreensaver.h" />
     <ClInclude Include="guilib\windows\GUIWindowSettings.h" />
     <ClInclude Include="guilib\windows\GUIWindowSettingsCategory.h" />
@@ -344,17 +439,45 @@
     <ClInclude Include="guilib\windows\GUIWindowVideoFiles.h" />
     <ClInclude Include="guilib\XMLUtils.h" />
     <ClInclude Include="GUISettings.h" />
+    <ClInclude Include="libraries\libsmb2\aes.h" />
+    <ClInclude Include="libraries\libsmb2\aes128ccm.h" />
+    <ClInclude Include="libraries\libsmb2\compat.h" />
+    <ClInclude Include="libraries\libsmb2\hmac-md5.h" />
+    <ClInclude Include="libraries\libsmb2\libsmb2-dcerpc-srvsvc.h" />
+    <ClInclude Include="libraries\libsmb2\libsmb2-private.h" />
+    <ClInclude Include="libraries\libsmb2\libsmb2-raw.h" />
+    <ClInclude Include="libraries\libsmb2\libsmb2.h" />
+    <ClInclude Include="libraries\libsmb2\md4.h" />
+    <ClInclude Include="libraries\libsmb2\md5.h" />
+    <ClInclude Include="libraries\libsmb2\ntlmssp.h" />
+    <ClInclude Include="libraries\libsmb2\portable-endian.h" />
+    <ClInclude Include="libraries\libsmb2\sha-private.h" />
+    <ClInclude Include="libraries\libsmb2\sha.h" />
+    <ClInclude Include="libraries\libsmb2\slist.h" />
+    <ClInclude Include="libraries\libsmb2\smb2-errors.h" />
+    <ClInclude Include="libraries\libsmb2\smb2-signing.h" />
+    <ClInclude Include="libraries\libsmb2\smb2.h" />
+    <ClInclude Include="libraries\libsmb2\smb3-seal.h" />
+    <ClInclude Include="libraries\libsmb2\socket.h" />
+    <ClInclude Include="libraries\libsmb2\XBLibSmb2.h" />
+    <ClInclude Include="libraries\libsmb2\xbox_defines.h" />
+    <ClInclude Include="MediaManager.h" />
     <ClInclude Include="services\FTPServer\FTPFileWriter.h" />
     <ClInclude Include="services\FTPServer\FTPServer.h" />
     <ClInclude Include="services\FTPServer\FTPServerConn.h" />
+    <ClInclude Include="services\NTPClient\WinSckNTP.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="SettingsControls.h" />
     <ClInclude Include="ThumbLoader.h" />
+    <ClInclude Include="URL.h" />
+    <ClInclude Include="utils\asprintf.h" />
+    <ClInclude Include="utils\AutoPtrHandle.h" />
+    <ClInclude Include="utils\BitstreamStats.h" />
     <ClInclude Include="utils\CRC_32.h" />
     <ClInclude Include="utils\CriticalSection.h" />
     <ClInclude Include="utils\Event.h" />
+    <ClInclude Include="utils\Idle.h" />
     <ClInclude Include="utils\Log.h" />
-    <ClInclude Include="utils\NTPClient.h" />
     <ClInclude Include="utils\SharedSection.h" />
     <ClInclude Include="utils\SingleLock.h" />
     <ClInclude Include="utils\Splash.h" />
@@ -366,53 +489,83 @@
     <ClInclude Include="utils\TimeUtils.h" />
     <ClInclude Include="utils\URIUtils.h" />
     <ClInclude Include="utils\Util.h" />
+    <ClInclude Include="utils\Win32Exception.h" />
+    <ClInclude Include="utils\XEXUtils.h" />
+    <ClInclude Include="VideoSettings.h" />
     <ClInclude Include="XBApplicationEx.h" />
     <ClInclude Include="xbox\Network.h" />
+    <ClInclude Include="xbox\socket_emu\addrinfo.h" />
+    <ClInclude Include="xbox\socket_emu\addrsize.h" />
+    <ClInclude Include="xbox\socket_emu\bittypes.h" />
+    <ClInclude Include="xbox\socket_emu\emu_socket.h" />
+    <ClInclude Include="xbox\socket_emu\sockstorage.h" />
+    <ClInclude Include="xbox\socket_emu\xb_emu_socket.h" />
     <ClInclude Include="xbox\XBAudioUtils.h" />
     <ClInclude Include="xbox\XBInput.h" />
     <ClInclude Include="xbox\XBKernalExports.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AdvancedSettings.cpp" />
     <ClCompile Include="Application.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">..\xbox360 ffmpeg\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ClCompile Include="ApplicationMessenger.cpp" />
     <ClCompile Include="BackgroundInfoLoader.cpp" />
     <ClCompile Include="ButtonTranslator.cpp" />
-    <ClCompile Include="cores\DVDPlayer\DVDAudioDevice.cpp" />
+    <ClCompile Include="cores\AudioRenderers\NullSound.cpp" />
+    <ClCompile Include="cores\AudioRenderers\XAudio2.cpp" />
+    <ClCompile Include="cores\DVDPlayer\DVDAudio.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDClock.cpp" />
-    <ClCompile Include="cores\DVDPlayer\DVDCodecs\DVDAudioCodecFFmpeg.cpp" />
+    <ClCompile Include="cores\DVDPlayer\DVDCodecs\Audio\DVDAudioCodecFFmpeg.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDCodecs\DVDCodecUtils.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDCodecs\DVDFactoryCodec.cpp" />
-    <ClCompile Include="cores\DVDPlayer\DVDCodecs\DVDVideoCodecFFmpeg.cpp" />
+    <ClCompile Include="cores\DVDPlayer\DVDCodecs\Video\DVDVideoCodecFFmpeg.cpp" />
+    <ClCompile Include="cores\DVDPlayer\DVDDemuxers\DVDDemux.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDDemuxers\DVDDemuxFFmpeg.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDDemuxers\DVDDemuxUtils.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDDemuxers\DVDFactoryDemuxer.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDInputStreams\DVDFactoryInputStream.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDInputStreams\DVDInputStream.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDInputStreams\DVDInputStreamFile.cpp" />
+    <ClCompile Include="cores\DVDPlayer\DVDInputStreams\DVDInputStreamSMB.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDMessage.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDMessageQueue.cpp" />
+    <ClCompile Include="cores\DVDPlayer\DVDPerformanceCounter.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDPlayer.cpp" />
-    <ClCompile Include="cores\DVDPlayer\DVDPlayerAudio.cpp">
-      <IntrinsicFunctions Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</IntrinsicFunctions>
-    </ClCompile>
+    <ClCompile Include="cores\DVDPlayer\DVDPlayerAudio.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDPlayerVideo.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDStreamInfo.cpp" />
-    <ClCompile Include="cores\DVDPlayer\DVDUtils\DVDTimeUtils.cpp" />
+    <ClCompile Include="cores\DVDPlayer\Edl.cpp" />
     <ClCompile Include="cores\PlayerCoreFactory.cpp" />
     <ClCompile Include="cores\VideoRenderers\RenderManager.cpp" />
     <ClCompile Include="cores\VideoRenderers\RGBRenderer.cpp" />
     <ClCompile Include="FileItem.cpp" />
+    <ClCompile Include="filesystem\Directory.cpp" />
+    <ClCompile Include="filesystem\DirectoryHistory.cpp" />
     <ClCompile Include="filesystem\Drive.cpp" />
     <ClCompile Include="filesystem\DrivesManager.cpp" />
+    <ClCompile Include="filesystem\FactoryDirectory.cpp" />
+    <ClCompile Include="filesystem\FactoryFileDirectory.cpp" />
     <ClCompile Include="filesystem\File.cpp" />
+    <ClCompile Include="filesystem\FileBase.cpp" />
     <ClCompile Include="filesystem\FileBrowser.cpp" />
+    <ClCompile Include="filesystem\FileFactory.cpp" />
     <ClCompile Include="filesystem\FileHD.cpp" />
+    <ClCompile Include="filesystem\FileSMB.cpp" />
     <ClCompile Include="filesystem\HDDirectory.cpp" />
+    <ClCompile Include="filesystem\IDirectory.cpp" />
+    <ClCompile Include="filesystem\MultiPathDirectory.cpp" />
+    <ClCompile Include="filesystem\SMBDirectory.cpp" />
+    <ClCompile Include="filesystem\VirtualDirectory.cpp" />
+    <ClCompile Include="filesystem\XBFS_Wrap\XBFS_Wrap.cpp" />
     <ClCompile Include="guilib\AudioContext.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogButtonMenu.cpp" />
+    <ClCompile Include="guilib\dialogs\GUIDialogContextMenu.cpp" />
+    <ClCompile Include="guilib\dialogs\GUIDialogFileBrowser.cpp" />
+    <ClCompile Include="guilib\dialogs\GUIDialogMediaSource.cpp" />
+    <ClCompile Include="guilib\dialogs\GUIDialogNetworkSetup.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogSeekBar.cpp" />
+    <ClCompile Include="guilib\dialogs\GUIDialogYesNo.cpp" />
     <ClCompile Include="guilib\GraphicContext.cpp" />
     <ClCompile Include="guilib\GUIAudioManager.cpp" />
     <ClCompile Include="guilib\GUIButtonControl.cpp" />
@@ -420,6 +573,7 @@
     <ClCompile Include="guilib\GUIControlFactory.cpp" />
     <ClCompile Include="guilib\GUID3DTexture.cpp" />
     <ClCompile Include="guilib\GUIDialog.cpp" />
+    <ClCompile Include="guilib\GUIDialogBoxBase.cpp" />
     <ClCompile Include="guilib\GUIFont.cpp" />
     <ClCompile Include="guilib\GUIFontManager.cpp" />
     <ClCompile Include="guilib\GUIImage.cpp" />
@@ -428,9 +582,11 @@
     <ClCompile Include="guilib\GUIInfoTypes.cpp" />
     <ClCompile Include="guilib\GUILabel.cpp" />
     <ClCompile Include="guilib\GUILabelControl.cpp" />
+    <ClCompile Include="guilib\GUIListControl.cpp" />
     <ClCompile Include="guilib\GUIListItem.cpp" />
     <ClCompile Include="guilib\GUIMediaWindow.cpp" />
     <ClCompile Include="guilib\GUIMessage.cpp" />
+    <ClCompile Include="guilib\GUIProgressControl.cpp" />
     <ClCompile Include="guilib\GUIScrollBarControl.cpp" />
     <ClCompile Include="guilib\GUISound.cpp" />
     <ClCompile Include="guilib\GUISpinControl.cpp" />
@@ -452,9 +608,16 @@
     <ClCompile Include="guilib\tinyxml\tinyxml.cpp" />
     <ClCompile Include="guilib\tinyxml\tinyxmlerror.cpp" />
     <ClCompile Include="guilib\tinyxml\tinyxmlparser.cpp" />
+    <ClCompile Include="guilib\viewstates\GUIViewState.cpp" />
+    <ClCompile Include="guilib\viewstates\GUIViewStateMusic.cpp" />
+    <ClCompile Include="guilib\viewstates\GUIViewStatePictures.cpp" />
+    <ClCompile Include="guilib\viewstates\GUIViewStatePrograms.cpp" />
+    <ClCompile Include="guilib\viewstates\GUIViewStateVideos.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowFullScreen.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowHome.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowMusicFiles.cpp" />
+    <ClCompile Include="guilib\windows\GUIWindowPictures.cpp" />
+    <ClCompile Include="guilib\windows\GUIWindowPrograms.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowScreensaver.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowSettings.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowSettingsCategory.cpp" />
@@ -462,17 +625,238 @@
     <ClCompile Include="guilib\windows\GUIWindowVideoFiles.cpp" />
     <ClCompile Include="guilib\XMLUtils.cpp" />
     <ClCompile Include="GUISettings.cpp" />
+    <ClCompile Include="libraries\libsmb2\aes.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\aes128ccm.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\alloc.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\compat.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\errors.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\hmac-md5.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\hmac.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\init.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\libsmb2.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\md4c.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\md5.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\ntlmssp.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\pdu.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\sha224-256.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\sha384-512.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-cmd-close.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-cmd-create.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-cmd-echo.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-cmd-error.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-cmd-flush.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-cmd-ioctl.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-cmd-logoff.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-cmd-negotiate.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-cmd-query-directory.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-cmd-query-info.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-cmd-read.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-cmd-session-setup.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-cmd-set-info.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-cmd-tree-connect.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-cmd-tree-disconnect.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-cmd-write.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-data-file-info.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-data-filesystem-info.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-data-reparse-point.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-data-security-descriptor.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb2-signing.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\smb3-seal.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\socket.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\sync.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\timestamps.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\unicode.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\usha.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\XBLibSmb2.cpp" />
+    <ClCompile Include="MediaManager.cpp" />
     <ClCompile Include="services\FTPServer\FTPFileWriter.cpp" />
     <ClCompile Include="services\FTPServer\FTPServer.cpp" />
     <ClCompile Include="services\FTPServer\FTPServerConn.cpp" />
+    <ClCompile Include="services\NTPClient\WinSckNTP.cpp" />
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="SettingsControls.cpp" />
     <ClCompile Include="ThumbLoader.cpp" />
+    <ClCompile Include="URL.cpp" />
+    <ClCompile Include="utils\asprintf.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="utils\AutoPtrHandle.cpp" />
+    <ClCompile Include="utils\BitstreamStats.cpp" />
     <ClCompile Include="utils\CRC_32.cpp" />
     <ClCompile Include="utils\CriticalSection.cpp" />
     <ClCompile Include="utils\Event.cpp" />
+    <ClCompile Include="utils\Idle.cpp" />
     <ClCompile Include="utils\Log.cpp" />
-    <ClCompile Include="utils\NTPClient.cpp" />
     <ClCompile Include="utils\SharedSection.cpp" />
     <ClCompile Include="utils\SingleLock.cpp" />
     <ClCompile Include="utils\Splash.cpp" />
@@ -483,9 +867,38 @@
     <ClCompile Include="utils\TimeUtils.cpp" />
     <ClCompile Include="utils\URIUtils.cpp" />
     <ClCompile Include="utils\Util.cpp" />
+    <ClCompile Include="utils\Win32Exception.cpp" />
+    <ClCompile Include="utils\XEXUtils.cpp" />
+    <ClCompile Include="VideoSettings.cpp" />
     <ClCompile Include="XBApplicationEx.cpp" />
     <ClCompile Include="xbmc.cpp" />
     <ClCompile Include="xbox\Network.cpp" />
+    <ClCompile Include="xbox\socket_emu\emu_socket.cpp" />
+    <ClCompile Include="xbox\socket_emu\getaddrinfo.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="xbox\socket_emu\getnameinfo.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="xbox\socket_emu\inet_aton.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="xbox\socket_emu\inet_ntop.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="xbox\socket_emu\inet_pton.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
+    </ClCompile>
     <ClCompile Include="xbox\XBAudioUtils.cpp" />
     <ClCompile Include="xbox\XBInput.cpp" />
     <ClCompile Include="xbox\XBKernalExports.cpp" />

@@ -17,12 +17,16 @@
 #include "guilib\AudioContext.h"
 #include "guilib\GUIAudioManager.h"
 #include "cores\PlayerCoreFactory.h"
+#include "AdvancedSettings.h"
+#include "utils\URIUtils.h"
 
 // Window includes
 #include "guilib\windows\GUIWindowHome.h"
+#include "guilib\windows\GUIWindowPrograms.h"
 #include "guilib\windows\GUIWindowFullScreen.h"
 #include "guilib\windows\GUIWindowVideoFiles.h"
 #include "guilib\windows\GUIWindowMusicFiles.h"
+#include "guilib\windows\GUIWindowPictures.h"
 #include "guilib\windows\GUIWindowSettings.h"
 #include "guilib\windows\GUIWindowSettingsCategory.h"
 #include "guilib\windows\GUIWindowScreensaver.h"
@@ -30,6 +34,10 @@
 
 // Dialog includes
 #include "guilib\dialogs\GUIDialogButtonMenu.h"
+#include "guilib\dialogs\GUIDialogNetworkSetup.h"
+#include "guilib\dialogs\GUIDialogMediaSource.h"
+#include "guilib\dialogs\GUIDialogContextMenu.h"
+#include "guilib\dialogs\GUIDialogYesNo.h"
 
 CStdString g_LoadErrorStr;
 
@@ -50,9 +58,23 @@ CApplication::~CApplication()
 
 bool CApplication::Create()
 {
+#ifdef _DEBUG
+	g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG;
+#else
+	g_advancedSettings.m_logLevel = LOG_LEVEL_NORMAL;
+#endif
+	CLog::SetLogLevel(g_advancedSettings.m_logLevel);
+	g_settings.Initialize(); // Initialize default Settings
+
+	// Check logpath
+	CStdString strLogFile, strLogFileOld;
+	URIUtils::AddSlashAtEnd(g_settings.m_logFolder);
+	strLogFile.Format("%sxbmc.log", g_settings.m_logFolder);
+	strLogFileOld.Format("%sxbmc.old.log", g_settings.m_logFolder);
+
 	// Rotate the log (xbmc.log -> xbmc.old.log)
-	DeleteFile("D:\\xbmc.old.log");
-	MoveFile("D:\\xbmc.log", "D:\\xbmc.old.log");
+	::DeleteFile(strLogFileOld.c_str());
+	::MoveFile(strLogFile.c_str(), strLogFileOld.c_str());
 
 	CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 	CLog::Log(LOGNOTICE, "Starting XBox Media Center 360.  Built on %s", __DATE__);
@@ -61,7 +83,7 @@ bool CApplication::Create()
 	CLog::Log(LOGNOTICE, "Setup DirectX");
 
 	// Create the Direct3D object
-	if (!(m_pD3D = Direct3DCreate9(D3D_SDK_VERSION)))
+	if(!(m_pD3D = Direct3DCreate9(D3D_SDK_VERSION)))
 	{
 		CLog::Log(LOGFATAL, "Unable to create Direct3D!");
 		Sleep(INFINITE); // die
@@ -70,7 +92,7 @@ bool CApplication::Create()
 	// Transfer the resolution information to our graphics context
 	g_graphicsContext.SetD3DParameters(&m_d3dpp);
 
-	if (m_pD3D->CreateDevice(0, D3DDEVTYPE_HAL, NULL, D3DCREATE_HARDWARE_VERTEXPROCESSING, &m_d3dpp, &m_pd3dDevice) != S_OK)
+	if(m_pD3D->CreateDevice(0, D3DDEVTYPE_HAL, NULL, D3DCREATE_HARDWARE_VERTEXPROCESSING, &m_d3dpp, &m_pd3dDevice) != S_OK)
 	{
 		CLog::Log(LOGFATAL, "Unable to create D3D Device!");
 		Sleep(INFINITE); // die
@@ -98,7 +120,7 @@ bool CApplication::Create()
 	// Initialize Xui render library with our D3D device, 
 	// and use a Xui-provided texture loader.
 	hr = XuiRenderInitShared( m_pd3dDevice, &m_d3dpp, XuiD3DXTextureLoader );
-	if( FAILED( hr ) ) 
+	if(FAILED(hr)) 
 	{
 		CLog::Log(LOGFATAL, "Unable to Initialize Xui render library!");
 		FatalErrorHandler(true);
@@ -107,7 +129,7 @@ bool CApplication::Create()
 	// Create a Xui device context. The Xui text renderer uses many attributes
 	// from this device context (position, color, shaders, etc.).
 	hr = XuiRenderCreateDC( &m_hXUIDC );
-	if( FAILED( hr ) ) 
+	if(FAILED(hr)) 
 	{
 		CLog::Log(LOGFATAL, "Unable to create Xui device context!");
 		FatalErrorHandler(true);
@@ -115,8 +137,8 @@ bool CApplication::Create()
 
 	// Initialize the Xui runtime library.  Typeface descriptors are registered
 	// by the runtime library, and consumed by the render library.
-	hr = XuiInit( &m_XUIParams );
-	if( FAILED( hr ) ) 
+	hr = XuiInit(&m_XUIParams);
+	if(FAILED(hr))
 	{
 		CLog::Log(LOGFATAL, "Unable to initialize the Xui runtime library!");
 		FatalErrorHandler(true);
@@ -125,18 +147,18 @@ bool CApplication::Create()
 	g_graphicsContext.SetXUIDevice(m_hXUIDC);
 
 	CLog::Log(LOGNOTICE, "Load settings...");	
-	if (!g_settings.Load())
+	if(!g_settings.Load())
 		FatalErrorHandler(true);
 
 	CStdString strLanguagePath;
 	strLanguagePath.Format("D:\\language\\%s\\strings.xml", g_guiSettings.GetString("LookAndFeel.Language"));
 
 	CLog::Log(LOGINFO, "Load language file:%s", strLanguagePath.c_str());
-	if (!g_localizeStrings.Load( strLanguagePath ))
+	if(!g_localizeStrings.Load( strLanguagePath ))
 		FatalErrorHandler(true);
 
 	CLog::Log(LOGINFO, "Load keymapping");
-	if (!g_buttonTranslator.Load())
+	if(!g_buttonTranslator.Load())
 		FatalErrorHandler(true);
 
 	return CXBApplicationEX::Create();
@@ -149,7 +171,7 @@ void CApplication::FatalErrorHandler(bool InitD3D)
 	// g_LoadErrorStr should contain the reason
 	CLog::Log(LOGWARNING, "Emergency recovery console starting...");
 
-	if (m_splash)
+	if(m_splash)
 		m_splash->Stop();
 
 	//
@@ -172,24 +194,31 @@ bool CApplication::Initialize()
 
 	// Windows
 	g_windowManager.Add(new CGUIWindowFullScreen);
+	g_windowManager.Add(new CGUIWindowPrograms);
 	g_windowManager.Add(new CGUIWindowVideoFiles);
-	g_windowManager.Add(new CGUIWindowMusicFiles);	
+	g_windowManager.Add(new CGUIWindowMusicFiles);
+	g_windowManager.Add(new CGUIWindowPictures);	
 	g_windowManager.Add(new CGUIWindowSettimgs);
 	g_windowManager.Add(new CGUIWindowSettingsCategory);
 	g_windowManager.Add(new CGUIWindowScreensaver);
 	g_windowManager.Add(new CGUIWindowSystemInfo);
 
 	// Dialogs
-	g_windowManager.Add(new CGUIDialogButtonMenu);		// window id = 111
-	g_windowManager.Add(&m_guiDialogSeekBar);			// window id = 115
+	g_windowManager.Add(new CGUIDialogYesNo);           // window id = 100
+	g_windowManager.Add(new CGUIDialogContextMenu);     // window id = 106
+	g_windowManager.Add(new CGUIDialogButtonMenu);      // window id = 111
+	g_windowManager.Add(&m_guiDialogSeekBar);           // window id = 115
+	g_windowManager.Add(new CGUIDialogNetworkSetup);    // window id = 128
+	g_windowManager.Add(new CGUIDialogMediaSource);     // window id = 129
 
+	g_windowManager.SetCallback(*this);
 	g_windowManager.Initialize();
 
 	m_slowTimer.StartZero();
 
 	g_windowManager.ActivateWindow(WINDOW_HOME);
 
-	if (m_splash)
+	if(m_splash)
 		m_splash->Stop();
 
 	SAFE_DELETE(m_splash);
@@ -206,12 +235,14 @@ bool CApplication::Initialize()
 
 void CApplication::StartServices()
 {
-	// WIP
+	StartIdleThread();
 }
 
 void CApplication::StopServices()
 {
 	m_network.NetworkMessage(CNetwork::SERVICES_DOWN, 0);
+
+	StopIdleThread();
 }
 
 void CApplication::DelayLoadSkin()
@@ -302,9 +333,6 @@ void CApplication::Process()
 	// Process messages, even if a movie is playing
 	m_applicationMessenger.ProcessMessages();
 
-	// Process input actions
-	ProcessGamepad();
-
 	// Do any processing that isn't needed on each run
 	if(m_slowTimer.GetElapsedMilliseconds() > 500)
 	{
@@ -335,7 +363,6 @@ void CApplication::ProcessSlow()
 // processed.  If OnKey() returns false, then the key press wasn't processed at all,
 // and we can safely process the next key (or next check on the same key in the
 // case of the analog sticks which can produce more than 1 key event.)
-
 bool CApplication::ProcessGamepad()
 {
 	if(m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_A)
@@ -398,6 +425,18 @@ bool CApplication::ProcessGamepad()
 		if (OnKey(key)) return true;
 	}
 
+	if(m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)
+	{
+		CKey key(KEY_BUTTON_LEFT_SHOULDER);		
+		if (OnKey(key)) return true;
+	}
+
+	if(m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)
+	{
+		CKey key(KEY_BUTTON_RIGHT_SHOULDER);		
+		if (OnKey(key)) return true;
+	}
+
 	return false;
 }
 
@@ -405,7 +444,6 @@ bool CApplication::ProcessGamepad()
 // The window manager will return true if the event is processed, false otherwise.
 // If not already processed, this routine handles global keypresses.  It returns
 // true if the key has been processed, false otherwise.
-
 bool CApplication::OnKey(CKey& key)
 {
 	CAction action;
@@ -414,7 +452,7 @@ bool CApplication::OnKey(CKey& key)
 	// Reset the screensaver timer
 	// but not for the analog thumbsticks/triggers
 
-//	if (!key.IsAnalogButton()) //TODO
+//	if(!key.IsAnalogButton()) //TODO
 	{
 		ResetScreenSaver();
 		if (ResetScreenSaverWindow())
@@ -478,7 +516,10 @@ bool CApplication::OnKey(CKey& key)
 
 void CApplication::FrameMove()
 {
-	g_windowManager.FrameMove();
+	ReadInput(); // Read raw inputs
+
+	// Process input actions
+	ProcessGamepad();
 }
 
 bool CApplication::OnMessage(CGUIMessage& message)
@@ -488,7 +529,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
 		case GUI_MSG_PLAYBACK_STOPPED:
 		case GUI_MSG_PLAYBACK_ENDED:
 		{
-			if (/*message.GetMessage() == GUI_MSG_PLAYBACK_ENDED*/0) //MARTY FIXME WIP - Always delete the player on close atm
+			if (/*message.GetMessage() == GUI_MSG_PLAYBACK_ENDED*/0) // WIP: Always delete the player on close atm
 			{
 				// sending true to PlayNext() effectively passes bRestart to PlayFile()
 				// which is not generally what we want (except for stacks, which are
@@ -512,7 +553,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
 		case GUI_MSG_EXECUTE:
 		{
 			// User has asked for something to be executed
-			if (CUtil::IsBuiltIn(message.GetStringParam()))
+			if(CUtil::IsBuiltIn(message.GetStringParam()))
 				CUtil::ExecBuiltIn(message.GetStringParam());
 			else
 				return false;
@@ -532,43 +573,19 @@ void CApplication::Render()
 	// that stuff should go into renderfullscreen instead as that is called from the rendering thread
 
 	// Don't show GUI when playing full screen video
-	if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+	if(g_graphicsContext.IsFullScreenVideo() /*&& IsPlaying() && !IsPaused()*/)
 	{
-		if (g_graphicsContext.IsFullScreenVideo())
-		{
-			if (m_pPlayer)
-			{
-				if (m_pPlayer->IsPaused())
-				{
-					GRAPHICSCONTEXT_LOCK()
-					m_pd3dDevice->BeginScene();  
-					GRAPHICSCONTEXT_UNLOCK()
-					g_windowManager.Render();
-					g_renderManager.RenderUpdate(true);
-//					m_gWindowManager.UpdateModelessVisibility(); //TODO
-					GRAPHICSCONTEXT_LOCK()
-					RenderFullScreen();
-//					m_pd3dDevice->BlockUntilVerticalBlank(); //TODO
-					m_pd3dDevice->EndScene();
-					m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
-					GRAPHICSCONTEXT_UNLOCK()
-					return;
-				}
-			}
-			Sleep(10);
-			return;
-		}
+		Sleep(10);
+		ResetScreenSaver();
+//		g_infoManager.ResetCache();
+		return;
 	}
 
 	// Enable/Disable video overlay window
-	if (IsPlayingVideo() && g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO && !m_bScreenSave)
-	{
+	if(IsPlayingVideo() && g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO && !m_bScreenSave)
 		g_graphicsContext.EnablePreviewWindow(true);
-	}
 	else
-	{
 		g_graphicsContext.EnablePreviewWindow(false);
-	}
 
 	GRAPHICSCONTEXT_LOCK()
 	m_pd3dDevice->BeginScene();  
@@ -578,6 +595,8 @@ void CApplication::Render()
 	g_infoManager.UpdateFPS();
 
 	// Draw GUI
+
+	g_graphicsContext.Clear();
 
 	// Render current windows
 	g_windowManager.Render();
@@ -589,18 +608,18 @@ void CApplication::Render()
 	m_pd3dDevice->EndScene();
 
 	// Present the backbuffer contents to the display
-	m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
+	m_pd3dDevice->Present(NULL, NULL, NULL, NULL);
 	GRAPHICSCONTEXT_UNLOCK()
 }
 
 bool CApplication::NeedRenderFullScreen()
 {
-	if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+	if(g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
 	{
-		if (g_windowManager.HasDialogOnScreen()) return true;
+		if(g_windowManager.HasDialogOnScreen()) return true;
  
-		CGUIWindowFullScreen *pFSWin = (CGUIWindowFullScreen *)g_windowManager.GetWindow(WINDOW_FULLSCREEN_VIDEO);
-		if (!pFSWin)
+		CGUIWindowFullScreen *pFSWin = (CGUIWindowFullScreen*)g_windowManager.GetWindow(WINDOW_FULLSCREEN_VIDEO);
+		if(!pFSWin)
 			 return false;
 
 		return pFSWin->NeedRenderFullScreen();
@@ -612,12 +631,12 @@ void CApplication::RenderFullScreen()
 {
 	if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
 	{
-//		m_guiVideoOverlay.Close(true);
-//		m_guiMusicOverlay.Close(true);
+//		m_guiVideoOverlay.Close(true); //TODO
+//		m_guiMusicOverlay.Close(true); //TODO
 
 		CGUIWindowFullScreen *pFSWin = (CGUIWindowFullScreen *)g_windowManager.GetWindow(WINDOW_FULLSCREEN_VIDEO);
-		if (!pFSWin)
-			return ;
+		if(!pFSWin)
+			return;
 	
 		pFSWin->RenderFullScreen();
 	}
@@ -629,7 +648,7 @@ bool CApplication::SwitchToFullScreen()
 	// See if we're playing a video, and are in GUI mode
 	if ( IsPlayingVideo() && g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
 	{
-		// then switch to fullscreen mode
+		// Then switch to fullscreen mode
 		g_windowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
 //		g_TextureManager.Flush();
 		return true;
@@ -641,13 +660,14 @@ bool CApplication::SwitchToFullScreen()
 void CApplication::StopPlaying()
 {
 	int iWin = g_windowManager.GetActiveWindow();
-	if ( IsPlaying() )
+
+	if(IsPlaying())
 	{
-		 if (m_pPlayer)
+		 if(m_pPlayer)
 			m_pPlayer->CloseFile();
 
 		// Turn off visualization window when stopping
-		if (iWin == WINDOW_FULLSCREEN_VIDEO)
+		if(iWin == WINDOW_FULLSCREEN_VIDEO)
 			g_windowManager.PreviousWindow();
 	}
 }
@@ -688,15 +708,16 @@ bool CApplication::PlayFile(const CFileItem& item)
 {
 	// Tell system we are starting a file
 	m_bPlaybackStarting = true;
+	CPlayerOptions options;
 
-	if (m_pPlayer)
+	if(m_pPlayer)
 	{
 		// We should restart the player
 		delete m_pPlayer;
 		m_pPlayer = NULL;
 	}
 
-	if (!m_pPlayer)
+	if(!m_pPlayer)
 	{
 		// We only have DVDPlayer atm..
 		CPlayerCoreFactory factory;
@@ -704,12 +725,13 @@ bool CApplication::PlayFile(const CFileItem& item)
 	}
 
 	bool bResult;
-	if (m_pPlayer)
+	if(m_pPlayer)
 	{
-		// don't hold graphicscontext here since player
+		// Don't hold graphicscontext here since player
 		// may wait on another thread, that requires gfx
 //		CSingleExit ex(g_graphicsContext);
-		bResult = m_pPlayer->OpenFile(item/*, options*/); // TODO
+		options.fullscreen = true;
+		bResult = m_pPlayer->OpenFile(item, options);
 	}
 	else
 	{
@@ -719,7 +741,7 @@ bool CApplication::PlayFile(const CFileItem& item)
 
 	if(bResult)
 	{
-		if (m_iPlaySpeed != 1)
+		if(m_iPlaySpeed != 1)
 		{
 			int iSpeed = m_iPlaySpeed;
 			m_iPlaySpeed = 1;
@@ -739,7 +761,7 @@ bool CApplication::PlayFile(const CFileItem& item)
 
 			// if player didn't manage to switch to fullscreen by itself do it here
 			if(g_renderManager.IsStarted()
-				&& g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO )
+				&& g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
 			
 			SwitchToFullScreen();
 		}
@@ -761,31 +783,38 @@ bool CApplication::PlayFile(const CFileItem& item)
 
 bool CApplication::IsPlaying() const
 {
-	if (!m_pPlayer)
+	if(!m_pPlayer)
 		return false;
-	if (!m_pPlayer->IsPlaying())
+
+	if(!m_pPlayer->IsPlaying())
 		return false;
+
 	return true;
 }
 
 bool CApplication::IsPaused() const
 {
-	if (!m_pPlayer)
+	if(!m_pPlayer)
 		return false;
-	if (!m_pPlayer->IsPlaying())
+
+	if(!m_pPlayer->IsPlaying())
 		return false;
+	
 	return m_pPlayer->IsPaused();
 }
 
 bool CApplication::IsPlayingAudio() const
 {
-	if (!m_pPlayer)
+	if(!m_pPlayer)
 		return false;
-	if (!m_pPlayer->IsPlaying())
+
+	if(!m_pPlayer->IsPlaying())
 		return false;
-	if (m_pPlayer->HasVideo())
+	
+	if(m_pPlayer->HasVideo())
 		return false;
-	if (m_pPlayer->HasAudio())
+	
+	if(m_pPlayer->HasAudio())
 		return true;
 	
 	return false;
@@ -793,11 +822,13 @@ bool CApplication::IsPlayingAudio() const
 
 bool CApplication::IsPlayingVideo() const
 {
-	if (!m_pPlayer)
+	if(!m_pPlayer)
 		return false;
-	if (!m_pPlayer->IsPlaying())
+
+	if(!m_pPlayer->IsPlaying())
 		return false;
-	if (m_pPlayer->HasVideo())
+
+	if(m_pPlayer->HasVideo())
 		return true;
 
 	return false;
@@ -805,10 +836,10 @@ bool CApplication::IsPlayingVideo() const
 
 void CApplication::SetPlaySpeed(int iSpeed)
 {
-	if (!IsPlayingAudio() && !IsPlayingVideo())
+	if(!IsPlayingAudio() && !IsPlayingVideo())
 		return;
  
-	if (m_iPlaySpeed == iSpeed)
+	if(m_iPlaySpeed == iSpeed)
 		return;
  
 	m_iPlaySpeed = iSpeed;
@@ -820,32 +851,48 @@ int CApplication::GetPlaySpeed() const
 }
 
 // Returns the current time in seconds of the currently playing media.
-// Fractional portions of a second are possible.  This returns a double to
+// Fractional portions of a second are possible. This returns a double to
 // be consistent with GetTotalTime() and SeekTime().
-
 double CApplication::GetTime() const
 {
 	double dTime = 0.0;
 
-	if (IsPlaying() && m_pPlayer)
+	if(IsPlaying() && m_pPlayer)
 		dTime = static_cast<double>(m_pPlayer->GetTime() * 0.001f);
 	
 	return dTime;
 }
 
-// Returns the total time in seconds of the current media.  Fractional
+// Returns the total time in seconds of the current media. Fractional
 // portions of a second are possible - but not necessarily supported by the
 // player class.  This returns a double to be consistent with GetTime() and
 // SeekTime().
-
 double CApplication::GetTotalTime() const
 {
 	double dTime = 0.0;
 
-	if (IsPlaying() && m_pPlayer)
+	if(IsPlaying() && m_pPlayer)
 		dTime = m_pPlayer->GetTotalTime();
 	
 	return dTime;
+}
+
+float CApplication::GetPercentage() const
+{
+	if(IsPlaying() && m_pPlayer)
+		return m_pPlayer->GetPercentage();
+
+	return 0.0f;
+}
+
+void CApplication::StartIdleThread()
+{
+	m_idleThread.Create(false, 0x100);
+}
+
+void CApplication::StopIdleThread()
+{
+	m_idleThread.StopThread();
 }
 
 void CApplication::StartTimeServer()
@@ -869,16 +916,6 @@ void CApplication::StopTimeServer()
 		CLog::Log(LOGNOTICE, "Stop time server client");
 		SAFE_DELETE(m_pNTPClient);
 	}
-}
-
-void CApplication::ResetScreenSaver()
-{
-	// Reset our timers
-//	m_shutdownTimer.StartZero(); //TODO
-
-	// Screen saver timer is reset only if we're not already in screensaver mode
-	if(!m_bScreenSave)
-		m_screenSaverTimer.StartZero();
 }
 
 void CApplication::StartFtpServer()
@@ -922,6 +959,16 @@ void CApplication::StopFtpServer()
 	}
 }
 
+void CApplication::ResetScreenSaver()
+{
+	// Reset our timers
+//	m_shutdownTimer.StartZero(); //TODO
+
+	// Screen saver timer is reset only if we're not already in screensaver mode
+	if(!m_bScreenSave)
+		m_screenSaverTimer.StartZero();
+}
+
 bool CApplication::ResetScreenSaverWindow()
 {
 	// If Screen saver is active
@@ -935,7 +982,7 @@ bool CApplication::ResetScreenSaverWindow()
 		{
 			// We're in screensaver window
 			if (g_windowManager.GetActiveWindow() == WINDOW_SCREENSAVER)
-				g_windowManager.PreviousWindow();  // Show the previous window
+				g_windowManager.PreviousWindow(); // Show the previous window
 		}
 
 		return true;
@@ -947,29 +994,29 @@ bool CApplication::ResetScreenSaverWindow()
 void CApplication::CheckScreenSaver()
 {
 	// If the screen saver window is active, then clearly we are already active
-	if (g_windowManager.IsWindowActive(WINDOW_SCREENSAVER))
+	if(g_windowManager.IsWindowActive(WINDOW_SCREENSAVER))
 	{
 		m_bScreenSave = true;
 		return;
 	}
 
 	bool resetTimer = false;
-	if (IsPlayingVideo() && !m_pPlayer->IsPaused()) // Are we playing video and it is not paused?
+	if(IsPlayingVideo() && !m_pPlayer->IsPaused()) // Are we playing video and it is not paused?
 		resetTimer = true;
 
 //	if (IsPlayingAudio() && g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION) // Are we playing some music in fullscreen vis?  // TODO
 //		resetTimer = true;
 
-	if (resetTimer)
+	if(resetTimer)
 	{
 		m_screenSaverTimer.StartZero();
 		return;
 	}
 
-	if (m_bScreenSave) // Already running the screensaver
+	if(m_bScreenSave) // Already running the screensaver
 		return;
 
-	if ( m_screenSaverTimer.GetElapsedSeconds() > g_guiSettings.GetInt("ScreenSaver.Time") * 60 )
+	if(m_screenSaverTimer.GetElapsedSeconds() > g_guiSettings.GetInt("ScreenSaver.Time") * 60)
 		ActivateScreenSaver();
 }
 
@@ -980,65 +1027,94 @@ void CApplication::ActivateScreenSaver()
 	// Get Screensaver Mode
 	m_screenSaverMode = g_guiSettings.GetString("screensaver.mode");
 
-	if (m_screenSaverMode != "None")
+	if(m_screenSaverMode != "None")
 	{
 		g_windowManager.ActivateWindow(WINDOW_SCREENSAVER);
 		return;
 	}
 }
 
+void CApplication::Cleanup()
+{
+	try
+	{
+		// Windows
+		g_windowManager.Delete(WINDOW_HOME);
+		g_windowManager.Delete(WINDOW_FULLSCREEN_VIDEO);
+		g_windowManager.Delete(WINDOW_PROGRAMS);
+		g_windowManager.Delete(WINDOW_VIDEOS);
+		g_windowManager.Delete(WINDOW_MUSIC);
+		g_windowManager.Delete(WINDOW_PICTURES);
+		g_windowManager.Delete(WINDOW_SETTINGS);
+		g_windowManager.Delete(WINDOW_SETTINGS_MYPICTURES); // All the settings categories
+		g_windowManager.Delete(WINDOW_SCREENSAVER);
+		g_windowManager.Delete(WINDOW_SYSTEM_INFORMATION);
+
+		// Dialogs
+		g_windowManager.Delete(WINDOW_DIALOG_YES_NO);
+		g_windowManager.Delete(WINDOW_DIALOG_CONTEXT_MENU);
+		g_windowManager.Delete(WINDOW_DIALOG_BUTTON_MENU);
+		g_windowManager.Delete(WINDOW_DIALOG_MEDIA_SOURCE);
+		g_windowManager.Delete(WINDOW_DIALOG_NETWORK_SETUP);
+
+		g_localizeStrings.Clear();
+		g_guiSettings.Clear();
+		g_advancedSettings.Clear();
+		g_buttonTranslator.Clear();
+	}
+	catch(...)
+	{
+		CLog::Log(LOGERROR, "Exception in CApplication::Cleanup()");
+	}
+}
+
 void CApplication::Stop()
 {
-	// Update the settings information (volume, uptime etc. need saving)
-	if (XFILE::CFile::Exists("D:\\settings.xml"))
+	try
 	{
-		CLog::Log(LOGNOTICE, "Saving settings");
-		g_settings.Save();
+//		CLog::Log(LOGNOTICE, "Storing total System Uptime");
+//		g_stSettings.m_iSystemTimeTotalUp = g_stSettings.m_iSystemTimeTotalUp + (int)(CTimeUtils::GetFrameTime() / 60000); //TODO
+		
+		// Update the settings information (volume, uptime etc. need saving)
+		if(XFILE::CFile::Exists("D:\\settings.xml"))
+		{
+			CLog::Log(LOGNOTICE, "Saving settings");
+			g_settings.Save();
+		}
+		else
+			CLog::Log(LOGNOTICE, "Not saving settings (settings.xml is not present)");
+
+		m_bStop = true;
+
+		if(m_pPlayer)
+		{
+			CLog::Log(LOGNOTICE, "Stop player");
+			delete m_pPlayer;
+			m_pPlayer = NULL;
+		}
+
+		CLog::Log(LOGNOTICE, "Stop all services");
+		StopServices();
+
+		m_applicationMessenger.Cleanup();
+
+		CLog::Log(LOGNOTICE, "Unload skin");
+		UnloadSkin();
+
+		m_network.Deinitialize();
+
+		// Shutdown XAudio2
+		g_audioContext.DeInitialize();
+
+		// Unmount our drives
+//		m_drivesManager.Unmount(); //FIXME - Causes a crash atm
+
+		CLog::Log(LOGNOTICE, "Stopped");
 	}
-	else
-		CLog::Log(LOGNOTICE, "Settings not saved (settings.xml is not present)");
-
-	m_bStop = true;
-	CLog::Log(LOGNOTICE, "Stop all");
-
-	StopServices();
-
-	if (m_pPlayer)
+	catch(...)
 	{
-		CLog::Log(LOGNOTICE, "Stopping DVDPlayer");
-		m_pPlayer->CloseFile();
-		delete m_pPlayer;
-		m_pPlayer = NULL;
+		CLog::Log(LOGERROR, "Exception in CApplication::Stop()");
 	}
 
-	CLog::Log(LOGNOTICE, "Unload skin");
-	UnloadSkin();
-
-	// Windows
-	g_windowManager.Delete(WINDOW_HOME);
-	g_windowManager.Delete(WINDOW_FULLSCREEN_VIDEO);
-	g_windowManager.Delete(WINDOW_VIDEOS);
-	g_windowManager.Delete(WINDOW_MUSIC);
-	g_windowManager.Delete(WINDOW_SETTINGS);
-	g_windowManager.Delete(WINDOW_SETTINGS_MYPICTURES); // All the settings categories
-	g_windowManager.Delete(WINDOW_SCREENSAVER);
-	g_windowManager.Delete(WINDOW_SYSTEM_INFORMATION);
-
-	// Dialogs
-	g_windowManager.Delete(WINDOW_DIALOG_BUTTON_MENU);
-
-	// Unmount our drives
-	m_drivesManager.Unmount();
-
-	// Shutdown XAudio2
-	g_audioContext.DeInitialize();
-
-	CLog::Log(LOGNOTICE, "Destroy");
 	Destroy();
-
-	g_guiSettings.Clear();
-	g_localizeStrings.Clear();
-	g_buttonTranslator.Clear();
-
-	CLog::Log(LOGNOTICE, "Stopped");
 }

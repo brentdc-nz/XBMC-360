@@ -1,7 +1,6 @@
 #include "GUIWindowSettings.h"
-#include "..\GUIUserMessage.h"
-#include "..\..\Application.h"
-#include "..\GUIWindowManager.h"
+#include "guilib\GUIUserMessage.h"
+#include "guilib\GUIWindowManager.h"
 
 CGUIWindowSettimgs::CGUIWindowSettimgs(void) : CGUIWindow(WINDOW_SETTINGS, "Settings.xml")
 {

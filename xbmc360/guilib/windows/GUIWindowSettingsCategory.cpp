@@ -19,12 +19,11 @@
  */
 
 #include "GUIWindowSettingsCategory.h"
-#include "..\..\GUISettings.h"
-#include "..\LocalizeStrings.h"
-#include "..\..\Application.h"
-#include "..\GUIWindowManager.h"
-#include "..\..\Settings.h"
-#include "..\..\filesystem\HDDirectory.h"
+#include "GUISettings.h"
+#include "Application.h"
+#include "guilib\GUIWindowManager.h"
+#include "filesystem\HDDirectory.h"
+#include "guilib\LocalizeStrings.h"
 
 #define CONTROL_GROUP_BUTTONS           0
 #define CONTROL_GROUP_SETTINGS          1
@@ -41,7 +40,7 @@
 #define CONTROL_START_BUTTONS           30
 #define CONTROL_START_CONTROL           50
 
-using namespace XFILE;
+using namespace DIRECTORY;
 
 CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void) : CGUIWindow(WINDOW_SETTINGS_MYPICTURES, "SettingsCategory.xml")
 {
@@ -264,7 +263,7 @@ void CGUIWindowSettingsCategory::SetupControls()
 		pButton->SetLabel(g_localizeStrings.Get(m_vecSections[i]->m_dwLabelID));
 		pButton->SetID(CONTROL_START_BUTTONS + i);
 //		pButton->SetGroup(CONTROL_GROUP_BUTTONS); //TODO
-		pButton->SetPosition((float)pButtonArea->GetXPosition(), (float)pButtonArea->GetYPosition() + i*(float)pControlGap->GetHeight());
+		pButton->SetPosition(pButtonArea->GetXPosition(), pButtonArea->GetYPosition() + i*pControlGap->GetHeight());
 		pButton->SetNavigation(CONTROL_START_BUTTONS + (int)i - 1, CONTROL_START_BUTTONS + i + 1, CONTROL_START_CONTROL, CONTROL_START_CONTROL);
 		pButton->SetVisible(true);
 		pButton->AllocResources();
@@ -293,7 +292,7 @@ void CGUIWindowSettingsCategory::SetupControls()
 void CGUIWindowSettingsCategory::CreateSettings()
 {
 	FreeSettingsControls();
-//	m_vecGroups.push_back(CControlGroup(1)); // add the control group
+//	m_vecGroups.push_back(CControlGroup(1)); // Add the control group
 
 	const CGUIControl *pControlArea = GetControl(CONTROL_AREA);
 	const CGUIControl *pControlGap = GetControl(CONTROL_GAP);
@@ -301,10 +300,10 @@ void CGUIWindowSettingsCategory::CreateSettings()
 	if (!pControlArea || !pControlGap)
 		return ;
 
-	int iPosX = pControlArea->GetXPosition();
-	int iWidth = pControlArea->GetWidth();
-	int iPosY = pControlArea->GetYPosition();
-	int iGapY = pControlGap->GetHeight();
+	int iPosX = (int)pControlArea->GetXPosition();
+	int iWidth = (int)pControlArea->GetWidth();
+	int iPosY = (int)pControlArea->GetYPosition();
+	int iGapY = (int)pControlGap->GetHeight();
 
 	vecSettings settings;
 	g_guiSettings.GetSettingsGroup(m_vecSections[m_iSection]->m_strCategory, settings);

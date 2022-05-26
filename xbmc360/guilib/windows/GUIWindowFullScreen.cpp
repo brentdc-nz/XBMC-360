@@ -1,13 +1,14 @@
 #include "GUIWindowFullScreen.h"
-#include "..\GUIInfoManager.h"
-#include "..\..\utils\SingleLock.h"
-#include "..\GraphicContext.h"
-#include "..\..\Application.h"
-#include "..\GUIWindowManager.h"
-#include "..\AudioContext.h"
-#include "..\..\cores\VideoRenderers\RenderManager.h"
+#include "guilib\GUIInfoManager.h"
+#include "utils\SingleLock.h"
+#include "guilib\GraphicContext.h"
+#include "Application.h"
+#include "guilib\GUIWindowManager.h"
+#include "guilib\AudioContext.h"
+#include "cores\VideoRenderers\RenderManager.h"
+#include "utils\Util.h"
 
-#define BLUE_BAR		0
+#define BLUE_BAR		100
 #define LABEL_ROW1		10
 #define LABEL_ROW2		11
 #define LABEL_ROW3		12
@@ -25,6 +26,7 @@ CGUIWindowFullScreen::~CGUIWindowFullScreen(void)
 void CGUIWindowFullScreen::PreloadDialog(unsigned int windowID)
 {
 	CGUIWindow *pWindow = g_windowManager.GetWindow(windowID);
+
 	if (pWindow) 
 	{
 		pWindow->Initialize();
@@ -193,7 +195,7 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
 
 void CGUIWindowFullScreen::RenderFullScreen()
 {
-	if (!g_application.m_pPlayer) return;
+	if(!g_application.m_pPlayer) return;
 
 	g_infoManager.UpdateFPS();
 
@@ -221,9 +223,9 @@ void CGUIWindowFullScreen::RenderFullScreen()
 		g_application.m_pPlayer->GetGeneralInfo(strGeneral);
 		{
 			CStdString strGeneralFPS;
-			float fCpuUsage = 0.0f;//CUtil::CurrentCpuUsage(); //TODO - How to do on PPC?
+			float fCpuUsage = CUtil::CurrentCpuUsage();
 
-			strGeneralFPS.Format("fps:%02.2f cpu:%02.2f %s", g_infoManager.GetFPS(), fCpuUsage, strGeneral.c_str() );
+			strGeneralFPS.Format("fps:%02.2f cpu:%02.2f %s", g_infoManager.GetFPS(), fCpuUsage, strGeneral.c_str());
 			CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3);
 			msg.SetLabel(strGeneralFPS);
 			OnMessage(msg);
@@ -268,27 +270,8 @@ void CGUIWindowFullScreen::Seek(bool bPlus, bool bLargeStep)
 
 	// Temporary solution
 
-	bool bNeedsPause(false);
-	float fVolume;
-
-	// Unpause the player if necessary
-	if (g_application.m_pPlayer->IsPaused())
-	{
-		fVolume = g_audioContext.GetVolume();
-		g_audioContext.SetVolume(0.0f);
-
-		g_application.m_pPlayer->Pause();
-		bNeedsPause = true;
-	}
-
 	g_application.m_pPlayer->Seek(bPlus, bLargeStep);
 
-	// Re-pause it
-	if (bNeedsPause)
-	{
-		Sleep(300);  // Allow DVDPlayer to finish it's seek (nasty hack!)
-		g_application.m_pPlayer->Pause();
-	
-		g_audioContext.SetVolume(fVolume);
-	}
+	// Make sure gui items are visible
+//	g_infoManager.SetDisplayAfterSeek(); //TODO
 }

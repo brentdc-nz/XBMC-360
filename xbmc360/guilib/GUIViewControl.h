@@ -3,14 +3,8 @@
 
 #include "GUIControl.h"
 #include "..\FileItem.h"
+#include "viewstates\GUIViewState.h"
 #include <map>
-
-typedef enum
-{
-	VIEW_METHOD_NONE=-1,
-	VIEW_METHOD_LIST,
-	VIEW_METHOD_THUMBS
-} VIEW_METHOD;
 
 typedef std::map<VIEW_METHOD, CGUIControl *>::const_iterator map_iter;
 
@@ -24,11 +18,16 @@ public:
 	void SetParentWindow(int window);
 	void SetCurrentView(VIEW_METHOD viewMode);
 	void SetItems(CFileItemList &items);
+	void SetSelectedItem(const CStdString &itemPath);
+	void SetSelectedItem(int item);
 	void AddView(VIEW_METHOD type, const CGUIControl *control);
+	void SetViewControlID(int control);
+	void SetFocused();
 	bool HasControl(int viewControlID);
 	int GetSelectedItem() const;
 	int GetSelectedItem(const CGUIControl *control) const;
-
+	bool HasViewMode(VIEW_METHOD viewMode);
+	int GetCurrentControl();
 	void Clear();
 
 protected:

@@ -29,14 +29,30 @@ void CGUIImage::FreeResources()
 void CGUIImage::SetInfo(const CGUIInfoLabel &info)
 {
 	m_info = info;
-	// a constant image never needs updating
+	// A constant image never needs updating
 	if (m_info.IsConstant())
 		m_texture.SetFileName(m_info.GetLabel(0));
+}
+
+void CGUIImage::SetFileName(const CStdString strFileName)
+{
+	CStdString strTexture = m_texture.GetFileName();
+
+	if(strFileName == strTexture)
+		return;
+
+	// Don't completely free resources here - we may be just changing
+	// Filenames mid-animation
+	m_texture.FreeResources();
+	m_texture.SetFileName(strFileName);
+	// Don't allocate resources here as this is done at render time
 }
 
 void CGUIImage::Update()
 {
 	m_texture.SetPosition(m_posX, m_posY);
+	m_texture.SetHeight(m_height);
+	m_texture.SetWidth(m_width);
 }
 
 void CGUIImage::Render()

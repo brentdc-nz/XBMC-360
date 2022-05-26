@@ -6,8 +6,14 @@
 #pragma once
 
 #include <xtl.h>
-#include <xboxmath.h>
-#include <assert.h>
+#include <xonline.h>
+#include <XGraphics.h>
+#include <vector>
+#include <list>
+#include <map>
+#include <set>
+#include <memory>
+#include "StringUtils.h"
 
 // TODO: reference additional headers your program requires here
 

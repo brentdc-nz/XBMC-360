@@ -1,13 +1,13 @@
 #ifndef H_CHDDDIRECTORY
 #define H_CHDDDIRECTORY
 
-#include "..\utils\StdString.h"
+#include "IDirectory.h"
 #include "..\FileItem.h"
 
-namespace XFILE
+namespace DIRECTORY
 {
 
-class CHDDirectory
+class CHDDirectory : public IDirectory
 {
 public:
 	CHDDirectory(void);
@@ -17,6 +17,5 @@ public:
 	bool Exists(const char* strPath);
 };
 
-}
-
+};
 #endif //H_CHDDDIRECTORY

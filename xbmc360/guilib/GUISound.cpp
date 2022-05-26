@@ -23,7 +23,7 @@ bool CGUISound::Load(const CStdString& strFile)
 
 	bool bReady = LoadWavFile(strFile);
 
-	if (!bReady)
+	if(!bReady)
 		FreeBuffer();
 
 	return bReady;
@@ -80,7 +80,7 @@ bool CGUISound::LoadWavFile(const CStdString& strFileName)
 	m_pbWaveData = new BYTE[m_dwWaveSize];
 	WaveFile.ReadSample(0, m_pbWaveData, m_dwWaveSize, &m_dwWaveSize);
 
-	if( FAILED( hr = pXAudio2->CreateSourceVoice(&m_pSourceVoice, ( WAVEFORMATEX* )&wfx)))
+	if(FAILED(hr = pXAudio2->CreateSourceVoice(&m_pSourceVoice, ( WAVEFORMATEX* )&wfx)))
 		return false;
 
 	return true;

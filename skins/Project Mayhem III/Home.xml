@@ -211,7 +211,7 @@
 			<height>24</height>
 			<label>Pictures</label>
 			<font>special13</font>
-			<onclick></onclick>
+			<onclick>XBMC.ActivateWindow(MyPictures)</onclick>
 			<onleft>9</onleft>
 			<onright>9</onright>
 			<onup>6</onup>

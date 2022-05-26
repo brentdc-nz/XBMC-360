@@ -63,13 +63,10 @@ int CXBApplicationEX::Run()
 	// Run the game loop, animating and rendering frames
 	while(!m_bStop)
 	{
-		ReadInput();
 		Process();
 		FrameMove();
 		Render();
 	}
-
-//	Destroy(); // Called in CApplication::Stop()
 
 	CLog::Log(LOGNOTICE, "Application stopped..." );
 
@@ -89,7 +86,7 @@ void CXBApplicationEX::Destroy()
 
 	if(m_hXUIDC)
 	{
-		XuiRenderDestroyDC( m_hXUIDC );
+		XuiRenderDestroyDC(m_hXUIDC);
 		m_hXUIDC = NULL;
 	}
 

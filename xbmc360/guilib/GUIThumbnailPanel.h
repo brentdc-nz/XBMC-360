@@ -12,14 +12,14 @@ public:
 	CGUIThumbnailPanel(int parentID, int controlID, float posX, float posY, float width, float height, float thumbWidth, float thumbHeight, float thumbTexWidth, float thumbTexHeight, const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus, const CLabelInfo& labelInfo);
 	virtual ~CGUIThumbnailPanel(void);
 	
-	void RenderItem(bool bFocus, float iPosX, float iPosY, CGUIListItem* pItem);
+	void RenderItem(bool bFocus, float fPosX, float fPosY, CGUIListItem* pItem, int iStage);
 	void RenderText(float fPosX, float fPosY, DWORD dwTextColor, WCHAR* wszText, bool bScroll);
 	virtual void Render();
 	virtual bool OnMessage(CGUIMessage& message);
 
 	virtual void AllocResources();
 	virtual void FreeResources();
-	virtual bool CGUIThumbnailPanel::OnAction(const CAction &action);
+	virtual bool OnAction(const CAction &action);
 
 	virtual void OnUp();
 	virtual void OnDown();
@@ -52,20 +52,20 @@ private:
 
 	RECT m_RCScissorRect;
 
-	CGUID3DTexture m_imgFocus;
-	CGUID3DTexture m_imgNoFocus;
-
 	int m_iItemWidth;
 	int m_iItemHeight;
 
-	int m_iThumbTexWidth;
-	int m_iThumbTexHeight;
+	float m_fThumbTexWidth;
+	float m_fThumbTexHeight;
 
 	CLabelInfo m_label;
 	std::wstring m_strSuffix;
 
 	int m_iScrollBar;
 	int m_iObjectCounterLabel;
+
+	CGUID3DTexture m_imgFocus;
+	CGUID3DTexture m_imgNoFocus;
 
 	std::vector<CGUIListItem*> m_vecItems;
 };

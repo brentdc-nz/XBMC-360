@@ -21,6 +21,7 @@
 #include "GUIControl.h"
 #include "GUIWindowManager.h"
 #include "GUIInfoManager.h"
+#include "..\utils\log.h"
 
 using namespace std;
 
@@ -28,6 +29,7 @@ CGUIControl::CGUIControl()
 {
 	m_hasRendered = false;
 	m_bHasFocus = false;
+	m_enabled = true;
 	m_controlID = 0;
 	m_parentID = 0;
 	m_visible = true;
@@ -62,6 +64,7 @@ CGUIControl::CGUIControl(int parentID, int controlID, float posX, float posY, fl
 	m_height = height;
 
 	m_bHasFocus = false;
+	m_enabled = true;
 
 	m_dwControlLeft = 0;
 	m_dwControlRight = 0;
@@ -104,6 +107,23 @@ void CGUIControl::SetNavigation(DWORD dwUp, DWORD dwDown, DWORD dwLeft, DWORD dw
 	m_dwControlDown = dwDown;
 	m_dwControlLeft = dwLeft;
 	m_dwControlRight = dwRight;
+}
+
+DWORD CGUIControl::GetNextControl(int direction) const
+{
+	switch(direction)
+	{
+		case ACTION_MOVE_UP:
+			return m_dwControlUp;
+		case ACTION_MOVE_DOWN:
+			return m_dwControlDown;
+		case ACTION_MOVE_LEFT:
+			return m_dwControlLeft;
+		case ACTION_MOVE_RIGHT:
+			return m_dwControlRight;
+		default:
+			return -1;
+	}
 }
 
 void CGUIControl::DynamicResourceAlloc(bool bOnOff)
@@ -178,6 +198,7 @@ bool CGUIControl::OnAction(const CAction &action)
 		return true;
 		break;
 	}
+
 	return false;
 }
 
@@ -186,18 +207,18 @@ void CGUIControl::OnUp()
 {
 	if (HasFocus() && m_controlID != m_dwControlUp)
 	{
-		SetFocus(false);
-		CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), m_dwControlUp, ACTION_MOVE_UP);
+		// Send a message to the window with the sender set as the window
+		CGUIMessage msg(GUI_MSG_MOVE, GetParentID(), GetID(), ACTION_MOVE_UP);
 		SendWindowMessage(msg);
 	}
 }
 
 void CGUIControl::OnDown()
 {
-	if (HasFocus() &&m_controlID != m_dwControlDown)
+	if (HasFocus() && m_controlID != m_dwControlDown)
 	{
-		SetFocus(false);
-		CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), m_dwControlDown, ACTION_MOVE_DOWN);
+		// Send a message to the window with the sender set as the window
+		CGUIMessage msg(GUI_MSG_MOVE, GetParentID(), GetID(), ACTION_MOVE_DOWN);
 		SendWindowMessage(msg);
 	}
 }
@@ -206,8 +227,8 @@ void CGUIControl::OnLeft()
 {
 	if (HasFocus() && m_controlID != m_dwControlLeft)
 	{
-		SetFocus(false);
-		CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), m_dwControlLeft, ACTION_MOVE_LEFT);
+		// Send a message to the window with the sender set as the window
+		CGUIMessage msg(GUI_MSG_MOVE, GetParentID(), GetID(), ACTION_MOVE_LEFT);
 		SendWindowMessage(msg);
 	}
 }
@@ -216,8 +237,8 @@ void CGUIControl::OnRight()
 {
 	if (HasFocus() && m_controlID != m_dwControlRight)
 	{
-		SetFocus(false);
-		CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), m_dwControlRight, ACTION_MOVE_RIGHT);
+		// Send a message to the window with the sender set as the window
+		CGUIMessage msg(GUI_MSG_MOVE, GetParentID(), GetID(), ACTION_MOVE_RIGHT);
 		SendWindowMessage(msg);
 	}
 }
@@ -233,12 +254,19 @@ void CGUIControl::SendWindowMessage(CGUIMessage &message)
 
 bool CGUIControl::OnMessage(CGUIMessage& message)
 {
-	if ( message.GetControlId() == GetID() )
+	if(message.GetControlId() == GetID())
 	{
-		switch (message.GetMessage() )
+		switch(message.GetMessage())
 		{
 			case GUI_MSG_SETFOCUS:
+				// If control is disabled then move 2 the next control
+				if (!CanFocus())
+				{
+					CLog::Log(LOGERROR, "Control %d in window %d has been asked to focus, but it can't", GetID(), GetParentID());
+					return false;
+				}
 				SetFocus(true);
+
 				return true;
 				break;
 
@@ -257,14 +285,41 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
 				m_forceHidden = true;
 				return true;
 				break;
+
+			// Note that the skin <enable> tag will override these messages
+			case GUI_MSG_ENABLED:
+				SetEnabled(true);
+				return true;
+
+			case GUI_MSG_DISABLED:
+				SetEnabled(false);
+				return true;
 		}
 	}
 	return false;
 }
 
+void CGUIControl::SetEnabled(bool bEnable)
+{
+	m_enabled = bEnable;
+}
+
+bool CGUIControl::CanFocus() const
+{
+	if (!IsVisible()) return false;
+	if (IsDisabled()) return false;
+
+	return true;
+}
+
+bool CGUIControl::IsDisabled() const
+{
+	return !m_enabled;
+}
+
 bool CGUIControl::IsVisible() const
 {
-	if (m_forceHidden) return false;
+	if(m_forceHidden) return false;
 	return m_visible;
 }
 
@@ -281,7 +336,7 @@ void CGUIControl::SetVisibleCondition(int visible/*, const CGUIInfoBool &allowHi
 
 void CGUIControl::SetPosition(float posX, float posY)
 {
-	 if ((m_posX != posX) || (m_posY != posY))
+	if ((m_posX != posX) || (m_posY != posY))
 	{
 		m_posX = posX;
 		m_posY = posY;
@@ -289,22 +344,40 @@ void CGUIControl::SetPosition(float posX, float posY)
 	}
 }
 
-int CGUIControl::GetXPosition() const
+float CGUIControl::GetXPosition() const
 {
-	return (int)m_posX;
+	return m_posX;
 }
 
-int CGUIControl::GetYPosition() const
+float CGUIControl::GetYPosition() const
 {
-	return (int)m_posY;
+	return m_posY;
 }
 
-int CGUIControl::GetWidth() const
+float CGUIControl::GetWidth() const
 {
-	return (int)m_width;
+	return m_width;
 }
 
-int CGUIControl::GetHeight() const
+float CGUIControl::GetHeight() const
 {
-	return (int)m_height;
+	return m_height;
+}
+
+void CGUIControl::SetWidth(float iWidth)
+{
+	if(m_width != iWidth)
+	{
+		m_width = iWidth;
+		Update();
+	}
+}
+
+void CGUIControl::SetHeight(float iHeight)
+{
+	if (m_height != iHeight)
+	{
+		m_height = iHeight;
+		Update();
+	}
 }

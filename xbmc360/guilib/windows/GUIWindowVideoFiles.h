@@ -14,6 +14,7 @@ public:
 	virtual bool OnMessage(CGUIMessage& message);
 	virtual bool OnClick(int iItem);
 	bool Update(const CStdString &strDirectory);
+	bool OnPlayMedia(int iItem);
 
 private:
 	CVideoThumbLoader m_thumbLoader;

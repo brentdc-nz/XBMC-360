@@ -37,12 +37,13 @@ public:
 		dwAlign = NULL;
 		scrollSuffix = " | ";
 	};
-
+	 
 	CGUIFont *font;
 	float offsetX;
 	float offsetY;
 	DWORD dwTextColor;
 	DWORD dwSelectedTextColor;
+	DWORD dwDisabledTextColor;
 	DWORD dwAlign;
 	CStdString scrollSuffix;
 };
@@ -56,14 +57,18 @@ public:
 	void SetText(CStdString strText);
 	CStdString GetText();
 	void SetPosition(float fPosX, float fPosY);
+	void SetDisabledColor(bool bDisabled);
 	void Render();
 
-private:
 	CLabelInfo m_label;
 
+private:
 	CStdString m_strText;
-	float m_iPosX;
-	float m_iPosY;
+	float m_fWidth;
+	float m_fHeight;
+	float m_fPosX;
+	float m_fPosY;
+	bool m_bDisabled;
 };
 
 #endif //GUILIB_GUILABEL_H

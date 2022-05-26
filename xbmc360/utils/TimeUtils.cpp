@@ -23,6 +23,20 @@
 
 unsigned int CTimeUtils::frameTime = 0;
 
+int64_t CurrentHostCounter(void)
+{
+	LARGE_INTEGER PerformanceCount;
+	QueryPerformanceCounter(&PerformanceCount);
+	return((int64_t)PerformanceCount.QuadPart);
+}
+
+int64_t CurrentHostFrequency(void)
+{
+	LARGE_INTEGER Frequency;
+	QueryPerformanceFrequency(&Frequency);
+	return((int64_t)Frequency.QuadPart);
+}
+
 void CTimeUtils::UpdateFrameTime()
 {
 	frameTime = GetTimeMS();

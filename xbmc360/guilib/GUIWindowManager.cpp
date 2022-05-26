@@ -61,13 +61,13 @@ bool CGUIWindowManager::SendMessage(CGUIMessage& message)
 	bool handled = false;
 
 	// Send the message to all none window targets
-	for (int i = 0; i < (int) m_vecMsgTargets.size(); i++)
+	for(int i = 0; i < (int) m_vecMsgTargets.size(); i++)
 	{
 		IMsgTargetCallback* pMsgTarget = m_vecMsgTargets[i];
 
-		if (pMsgTarget)
+		if(pMsgTarget)
 		{
-			if (pMsgTarget->OnMessage( message )) handled = true;
+			if(pMsgTarget->OnMessage( message )) handled = true;
 		}
 	}
 
@@ -82,7 +82,7 @@ bool CGUIWindowManager::SendMessage(CGUIMessage& message)
 	// which will invalidate any iterator
 	CSingleLock lock(g_graphicsContext);
 	unsigned int topWindow = m_activeDialogs.size();
-	while (topWindow)
+	while(topWindow)
 	{
 		CGUIWindow* dialog = m_activeDialogs[--topWindow];
 		lock.Leave();
@@ -90,36 +90,48 @@ bool CGUIWindowManager::SendMessage(CGUIMessage& message)
 		{
 			// modal window
 			hasModalDialog = true;
-			if (!modalAcceptedMessage && dialog->OnMessage( message ))
+			if(!modalAcceptedMessage && dialog->OnMessage( message ))
 			{
 				modalAcceptedMessage = handled = true;
 			}
 		}
-		else if (!dialog->IsModalDialog())
+		else if(!dialog->IsModalDialog())
 */		{
 			// modeless
 			if (dialog->OnMessage( message ))
 			handled = true;
 		}
 		lock.Enter();
-		if (topWindow > m_activeDialogs.size())
+		if(topWindow > m_activeDialogs.size())
 			topWindow = m_activeDialogs.size();
 	}
 	lock.Leave();
 
 	// now send to the underlying window
 	CGUIWindow* window = GetWindow(GetActiveWindow());
-	if (window)
+	if(window)
 	{
-		if (window->OnMessage(message)) handled = true;
+		if(window->OnMessage(message)) handled = true;
     }
 
 	return handled;
 }
 
+void CGUIWindowManager::AddUniqueInstance(CGUIWindow *window)
+{
+	// Increment our instance (upper word of windowID)
+	// until we get a window we don't have
+	DWORD instance = 0;
+
+	while(GetWindow(window->GetID()))
+		window->SetID(window->GetID() + (++instance << 16));
+
+	Add(window);
+}
+
 void CGUIWindowManager::Add(CGUIWindow* pWindow)
 {
-	if (!pWindow)
+	if(!pWindow)
 	{
 		CLog::Log(LOGERROR, "Attempted to add a NULL window pointer to the window manager.");
 		return;
@@ -183,6 +195,24 @@ CGUIWindow* CGUIWindowManager::GetWindow(int id) const
 	return NULL;
 }
 
+void CGUIWindowManager::Process(bool renderOnly /*= false*/)
+{
+	if(m_pCallback)
+	{
+		if(!renderOnly)
+		{
+			m_pCallback->Process();
+			m_pCallback->FrameMove();
+		}
+		m_pCallback->Render();
+	}
+}
+
+void CGUIWindowManager::SetCallback(IWindowManagerCallback& callback)
+{
+	m_pCallback = &callback;
+}
+
 int CGUIWindowManager::GetActiveWindow() const
 {
 	if (!m_windowHistory.empty())
@@ -226,7 +256,7 @@ void CGUIWindowManager::PreviousWindow()
 	}
 */
 	// get the previous window in our stack
-	if (m_windowHistory.size() < 2)
+	if(m_windowHistory.size() < 2)
 	{
 		// no previous window history yet - check if we should just activate home
 		if (GetActiveWindow() != WINDOW_INVALID && GetActiveWindow() != WINDOW_HOME)
@@ -307,7 +337,6 @@ void CGUIWindowManager::RouteToWindow(CGUIWindow* pDialog)
 	// Just to be sure: Unroute this window,
 	// we may have routed to it before
 	RemoveDialog(pDialog->GetID());
-
 	m_activeDialogs.push_back(pDialog);
 }
 
@@ -325,10 +354,10 @@ void CGUIWindowManager::AddModeless(CGUIWindow* pDialog)
 void CGUIWindowManager::RemoveDialog(DWORD dwID)
 {
 	vector<CGUIWindow*>::iterator it = m_activeDialogs.begin();
-	while (it != m_activeDialogs.end())
+	while(it != m_activeDialogs.end())
 	{
 		CGUIWindow* pWindow = *it;
-		if (pWindow->GetID() == dwID)
+		if(pWindow->GetID() == dwID)
 		{
 			m_activeDialogs.erase(it);
 			it = m_activeDialogs.end();
@@ -349,7 +378,7 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, bool swappingWindows)
 
 	// First check existence of the window we wish to activate.
 	CGUIWindow *pNewWindow = GetWindow(iWindowID);
-	if (!pNewWindow)
+	if(!pNewWindow)
 	{ 
 		// Nothing to see here - move along
 		CLog::Log(LOGERROR, "Unable to locate window with id %d.  Check skin files", iWindowID - WINDOW_HOME);
@@ -359,7 +388,7 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, bool swappingWindows)
 	{ 
 		// If we have a dialog, we do a DoModal() rather than activate the window
 		if (!((CGUIDialog *)pNewWindow)->IsRunning())
-				((CGUIDialog *)pNewWindow)->DoModal(GetActiveWindow(), iWindowID);
+				((CGUIDialog *)pNewWindow)->DoModal(iWindowID);
 		return;
 	}
 
@@ -391,9 +420,7 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, bool swappingWindows)
 //	msg.SetStringParams(params);
 	pNewWindow->OnMessage(msg);
 }
-
-bool CGUIWindowManager::OnAction(const CAction &action)
-{
+/*
 	// Have we have routed windows...
 	if (m_activeDialogs.size() > 0)
 	{
@@ -411,6 +438,24 @@ bool CGUIWindowManager::OnAction(const CAction &action)
 	if (pWindow)
 		return pWindow->OnAction(action);
 
+	return false;
+*/
+bool CGUIWindowManager::OnAction(const CAction &action)
+{
+	// Have we have routed windows
+	if(m_activeDialogs.size() > 0)
+	{
+		// ...send the action to the top most.
+		CGUIWindow *window = m_activeDialogs[m_activeDialogs.size() - 1];
+
+		return window->OnAction(action);
+	}
+	else
+	{
+		CGUIWindow* pWindow = GetWindow(GetActiveWindow());
+		if(pWindow)
+			return pWindow->OnAction(action);
+	}
 	return false;
 }
 
@@ -442,19 +487,6 @@ void CGUIWindowManager::Render_Internal()
 		pWindow->ClearBackground();
 		pWindow->Render();
 	}
-}
-
-void CGUIWindowManager::FrameMove()
-{
-	CSingleLock lock(g_graphicsContext);
-	CGUIWindow* pWindow = GetWindow(GetActiveWindow());
-	
-	if (pWindow)
-		pWindow->FrameMove();
-
-	// Update any dialogs
-	for (iDialog it = m_activeDialogs.begin(); it != m_activeDialogs.end(); ++it)
-		(*it)->FrameMove();
 }
 
 void CGUIWindowManager::AddToWindowHistory(int newWindowID)
