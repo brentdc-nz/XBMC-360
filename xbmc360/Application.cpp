@@ -1072,8 +1072,8 @@ void CApplication::Stop()
 {
 	try
 	{
-//		CLog::Log(LOGNOTICE, "Storing total System Uptime");
-//		g_stSettings.m_iSystemTimeTotalUp = g_stSettings.m_iSystemTimeTotalUp + (int)(CTimeUtils::GetFrameTime() / 60000); //TODO
+		CLog::Log(LOGNOTICE, "Storing total System Uptime");
+		g_settings.m_iSystemTimeTotalUp = g_settings.m_iSystemTimeTotalUp + (int)(CTimeUtils::GetFrameTime() / 60000);
 		
 		// Update the settings information (volume, uptime etc. need saving)
 		if(XFILE::CFile::Exists("D:\\settings.xml"))

@@ -6,6 +6,7 @@
 #include "utils\URIUtils.h"
 #include "AdvancedSettings.h"
 #include "URL.h"
+#include "filesystem\File.h"
 
 class CSettings g_settings;
 extern CStdString g_LoadErrorStr;
@@ -25,6 +26,7 @@ void CSettings::Initialize()
 	m_strPictureExtensions = ".png|.jpg|.jpeg|.bmp|.gif|.ico|.tif|.tiff|.tga|.pcx|.cbz|.zip|.cbr|.rar|.m3u";
 
 	m_logFolder = "D:\\"; // Log file location //TODO: Set in App:Create
+	m_iSystemTimeTotalUp = 0;
 }
 
 bool CSettings::Load()
@@ -62,8 +64,8 @@ bool CSettings::Load()
 		if(strValue != "sources")
 			CLog::Log(LOGERROR, "%s sources.xml file does not contain <sources>", __FUNCTION__);
 	}
-//	else if(CFile::Exists(strXMLFile))
-//		CLog::Log(LOGERROR, "%s Error loading %s: Line %d, %s", __FUNCTION__, strXMLFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+	else if(XFILE::CFile::Exists(strXMLFile))
+		CLog::Log(LOGERROR, "%s Error loading %s: Line %d, %s", __FUNCTION__, strXMLFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
 
 	if(pRootElement)
 	{
@@ -96,6 +98,13 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 	}
 
 //	(pRootElement, "loglevel", g_stSettings.m_iLogLevel, LOGWARNING, LOGDEBUG, LOGNONE); //TODO
+
+	// General settings
+	TiXmlElement *pElement = pRootElement->FirstChildElement("general");
+	if (pElement)
+	{
+		GetInteger(pElement, "systemtotaluptime", m_iSystemTimeTotalUp, 0, 0, INT_MAX);
+	}
 
 	g_guiSettings.LoadXML(pRootElement);	
 
@@ -130,9 +139,11 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 
 	// Write our tags one by one, just a big list for now (can be flashed up later)
 
-	//
-	//TODO
-	//
+	// General settings
+	TiXmlElement generalNode("general");
+	TiXmlNode *pNode = pRoot->InsertEndChild(generalNode);
+	if(!pNode) return false;
+	XMLUtils::SetInt(pNode, "systemtotaluptime", m_iSystemTimeTotalUp);
 
 	g_guiSettings.SaveXML(pRoot);
 

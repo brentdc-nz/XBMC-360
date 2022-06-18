@@ -31,6 +31,7 @@ public:
 	CStdString GetPictureExtensions() { return m_strPictureExtensions; };
 
 	CStdString m_logFolder;
+	int m_iSystemTimeTotalUp; // Uptime in minutes!
 
 	CVideoSettings m_currentVideoSettings;
 
