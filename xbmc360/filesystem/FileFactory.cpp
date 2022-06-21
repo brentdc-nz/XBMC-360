@@ -4,6 +4,7 @@
 
 #include "FileHD.h"
 #include "FileSMB.h"
+#include "FileFTP.h"
 
 using namespace XFILE;
 
@@ -30,8 +31,11 @@ CFileBase* CFileFactory::CreateLoader(const CURL& url)
 
 	if(g_application.getNetwork().IsAvailable())
 	{
-		if(strProtocol == "smb") return new CFileSMB();
+		if(strProtocol == "smb") 
+			return new CFileSMB();
 
+		else if(strProtocol == "ftp") 
+			return new CFileFTP();
 		// TODO: Add more types, ftp, etc
 	}
 
