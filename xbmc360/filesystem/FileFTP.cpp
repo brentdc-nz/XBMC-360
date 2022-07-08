@@ -1,5 +1,4 @@
 //Copyright Wolf3s 2022
-
 #include "FileFTP.h"
 #include "..\utils\log.h"
 
@@ -20,6 +19,7 @@ CFileFTP::~CFileFTP()
 
 bool CFileFTP::Open(const CURL &strURL, bool bBinarry)
 {
+	xbftp_f->Process();
 	return false; //TODO
 }
 
@@ -50,9 +50,10 @@ __int64 CFileFTP::Seek(__int64 iFilePosition, int iWhence)
 		return 0;
 	}
 	
-	  fseek(m_pFile, NULL, iWhence);
-	  return 0;
-	
+	else
+	{
+	   fseek(m_pFile, NULL, iWhence);	
+	}
 	return 0;
 }
 
