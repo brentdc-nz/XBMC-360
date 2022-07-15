@@ -362,6 +362,7 @@
     <ClInclude Include="filesystem\FileBase.h" />
     <ClInclude Include="filesystem\FileBrowser.h" />
     <ClInclude Include="filesystem\FileFactory.h" />
+    <ClInclude Include="filesystem\FileFTP.h" />
     <ClInclude Include="filesystem\FileHD.h" />
     <ClInclude Include="filesystem\FileSMB.h" />
     <ClInclude Include="filesystem\HDDirectory.h" />
@@ -550,6 +551,7 @@
     <ClCompile Include="filesystem\FileBase.cpp" />
     <ClCompile Include="filesystem\FileBrowser.cpp" />
     <ClCompile Include="filesystem\FileFactory.cpp" />
+    <ClCompile Include="filesystem\FileFTP.cpp" />
     <ClCompile Include="filesystem\FileHD.cpp" />
     <ClCompile Include="filesystem\FileSMB.cpp" />
     <ClCompile Include="filesystem\HDDirectory.cpp" />
