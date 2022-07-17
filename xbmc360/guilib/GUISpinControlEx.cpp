@@ -30,13 +30,14 @@ void CGUISpinControlEx::Render()
 void CGUISpinControlEx::SetPosition(float posX, float posY)
 {
 	int iFocusHeight = 10; 
-	int iFocusWidth = 10; 
-	int iFocusPosY = 20; 
-	int iFocusPosX = 20; 
+	int iFocusWidth = 10;  
 
-	m_buttonControl.SetPosition(posX - iFocusHeight, posY - iFocusWidth);
-	CLog::Log(LOGNOTICE, "Width Position: %", iFocusWidth - iFocusPosX, 
-	"Height Position: %", iFocusPosX);
+	m_buttonControl.SetPosition(posX - iFocusWidth, posY - iFocusHeight);
+	
+	//TODO + NOTES: Use CLog to calculate focus width and height with porcentage(WIP).
+	//For now use the integer number for results
+	CLog::Log(LOGNOTICE, "Width Position: %d", posX - iFocusWidth, 
+	"Height Position: %d", posY - iFocusHeight);
 
 	float spinPosX = posX + m_buttonControl.GetWidth() - GetSpinWidth() * 2 - 0/*(m_spinPosX ? m_spinPosX : m_buttonControl.GetLabelInfo().offsetX)*/;
 	float spinPosY = posY; //+ (m_buttonControl.GetHeight() - GetSpinHeight()) * 0.5f;
