@@ -29,8 +29,6 @@ private:
 	static int        m_repeatCount;
 	static int        m_repeatLogLevel;
 	static CStdString m_repeatLine;
-	CStdString m_logFolder;
-
 
 public:
 	CLog();
