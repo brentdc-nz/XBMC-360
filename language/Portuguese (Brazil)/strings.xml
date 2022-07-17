@@ -13,7 +13,7 @@
   <string><id>11</id><value>Segunda-feira</value></string>
   <string><id>12</id><value>Terça-Feira<value></string>
   <string><id>13</id><value>Quarta-feira</value></string>
-  <string><id>14</id><value>Quinta feira</value></string>
+  <string><id>14</id><value>Quinta-feira</value></string>
   <string><id>15</id><value>Sexta-feira</value></string>
   <string><id>16</id><value>Sábado</value></string>
   <string><id>17</id><value>Domingo</value></string>
@@ -31,7 +31,7 @@
   <string><id>31</id><value>Novembro</value></string>
   <string><id>32</id><value>Dezembro</value></string>
 
-  <string><id>98</id><value>Ver: auto</value></string>
+  <string><id>98</id><value>Ver: Auto</value></string>
   <string><id>99</id><value>Ver: Auto Big</value></string>
   <string><id>100</id><value>Ver: Ícone</value></string>
   <string><id>101</id><value>Ver: Lista</value></string>
@@ -53,9 +53,9 @@
   <string><id>117</id><value>Excluir</value></string>
   <string><id>118</id><value>Renomear</value></string>
   <string><id>119</id><value>Nova Pasta</value></string>
-  <string><id>120</id><value>Confirmar arquivo copiado</value></string>
-  <string><id>121</id><value>Confirmar arquivo movido</value></string>
-  <string><id>122</id><value>Confirmar Arquivo excluído</value></string>
+  <string><id>120</id><value>Confirmar arquivo copiado?</value></string>
+  <string><id>121</id><value>Confirmar arquivo movido?</value></string>
+  <string><id>122</id><value>Confirmar arquivo excluído?</value></string>
   <string><id>123</id><value>Coipiar esses arquivos?</value></string>
   <string><id>124</id><value>Mover esses arquivos?</value></string>
   <string><id>125</id><value>Excluir esses arquivos?</value></string>
@@ -173,9 +173,9 @@
   <string><id>237</id><value>Minificção</value></string>
   <string><id>238</id><value>Magnificação</value></string>
   <string><id>239</id><value>Limpar playlist no final</value></string>
-  <string><id>240</id><value>Automaticamnete rodar DVD dv vídeo</value></string>
+  <string><id>240</id><value>Automaticamnete rodar DVD de vídeo</value></string>
   <string><id>241</id><value>Automaticamnete rodar VCD/SVCD</value></string>
-  <string><id>242</id><value>Automaticamente Tocar Audio-CD</value></string>
+  <string><id>242</id><value>Automaticamente tocar Audio-CD</value></string>
   <string><id>243</id><value>Automaticamente rodar Jogos de XBOX</value></string>
   <string><id>244</id><value>Automaticamente rodar Vídeos</value></string>
   <string><id>245</id><value>Automaticamente Tocar Música</value></string>
@@ -211,10 +211,10 @@
   <string><id>275</id><value>Ajuste na Taxa de pixels</value></string>
   <string><id>276</id><value>Mova a seta para mudar o tanto de overscan</value></string>
   <string><id>277</id><value>Mova a barra para Mudar a posição das legendas</value></string>
-  <string><id>278</id><value>Muda o retangulo que então é perfeitamente quadrado</value></string>
+  <string><id>278</id><value>Mude o retângulo que então é perfeitamente quadrado</value></string>
   <string><id>279</id><value>Não foi possível carregar as configurações</value></string>
   <string><id>280</id><value>Usando por padrão fallbacks</value></string>
-  <string><id>281</id><value>Por favolr verifique o arquivo .xml </value></string>
+  <string><id>281</id><value>Por favor verifique o arquivo .xml </value></string>
   <string><id>282</id><value>Encontrado %i itens</value></string>
   <string><id>283</id><value>Procurar resultados</value></string>
   <string><id>284</id><value>Nenhum resultados encontrado</value></string>
@@ -228,11 +228,11 @@
   <string><id>292</id><value>Áudio</value></string>
   <string><id>293</id><value>Legendas</value></string>
   <string><id>294</id><value>Criar bookmark</value></string>
-  <string><id>295</id><value>Cyclar bookmarks</value></string>
+  <string><id>295</id><value>Ciclar bookmarks</value></string>
   <string><id>296</id><value>Limpar bookmarks</value></string>
   <string><id>297</id><value>Delay de áudio</value></string>
   <string><id>298</id><value>Slider</value></string>
-  <string><id>300</id><value>1. Linguagem</value></string>
+  <string><id>300</id><value>1. Línguagem</value></string>
   <string><id>301</id><value>2. Volume</value></string>
   <string><id>302</id><value>3. Stream</value></string>
   <string><id>303</id><value>Delay</value></string>
@@ -250,12 +250,12 @@
   <string><id>315</id><value>Erro no banco de dados...</value></string>
   <string><id>316</id><value>Procrurando sons...</value></string>
   <string><id>317</id><value>Limpeza no banco de dados concluída</value></string>
-  <string><id>318</id><value>Excluíndo sons...</value></string>
+  <string><id>318</id><value>Excluindo sons...</value></string>
   <string><id>319</id><value>Erro ao excluir sons</value></string>
   <string><id>320</id><value>Excluíndo artistas...</value></string>
   <string><id>321</id><value>Erro ao excluir artistas</value></string>
   <string><id>322</id><value>Excluíndo gênero...</value></string>
-  <string><id>323</id><value>Erro ao excluír Gêneros</value></string>
+  <string><id>323</id><value>Erro ao excluir Gêneros</value></string>
   <string><id>324</id><value>Excluíndo Díretorios...</value></string>
   <string><id>325</id><value>Erro ao excluir Díretorios</value></string>
   <string><id>326</id><value>Excluindo Álbuns...</value></string>
@@ -269,10 +269,10 @@
   <string><id>334</id><value>Excluindo Biblioteca de música...</value></string>
   <string><id>335</id><value>Start</value></string>
   <string><id>336</id><value>Conversão de taxas de frames</value></string>
-  <string><id>337</id><value>Saída de audio</value></string>
+  <string><id>337</id><value>Saída de áudio</value></string>
   <string><id>338</id><value>Analógico</value></string>
   <string><id>339</id><value>Digital</value></string>
-  <string><id>340</id><value>Varios Artistas</value></string>
+  <string><id>340</id><value>Vários Artistas</value></string>
   <string><id>341</id><value>Tocar disco</value></string>
   <string><id>342</id><value>Filmes</value></string>
   <string><id>343</id><value>Ajustar taxas de frame</value></string>
@@ -784,7 +784,7 @@
   <string><id>12328</id><value>Insira o código de desbloqueio</value></string> 
   <string><id>12329</id><value>ou aperte C para cancelar</value></string>
   <string><id>12330</id><value>Insira o botão do gamepad combo e aperte Start</value></string>
-  <string><id>12331</id><value>aperte Start, ou retornar para cancelar</value></string>
+  <string><id>12331</id><value>Aperte Start, ou retornar para cancelar</value></string>
   <string><id>12332</id><value>Configurar trava</value></string>
   <string><id>12333</id><value>Destrancar</value></string>
   <string><id>12334</id><value>Reiniciar trava</value></string>
@@ -1009,7 +1009,7 @@
   <string><id>13372</id><value>- voz Porta 2</value></string>
   <string><id>13373</id><value>- Voz Porta 3</value></string>
   <string><id>13374</id><value>- Voz Porta 4</value></string>
-  <string><id>13375</id><value>hábilitar dispositivo</value></string>
+  <string><id>13375</id><value>Habilitar dispositivo</value></string>
   <string><id>13376</id><value>Volume</value></string>
   <string><id>13377</id><value>Modo padrão de vizualização</value></string>
   <string><id>13378</id><value>Padrão de brilho</value></string>
