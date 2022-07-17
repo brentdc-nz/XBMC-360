@@ -17,6 +17,7 @@ public:
 	virtual ~CSettings();
 
 	void Initialize();
+	void LoadExtensions();
 	bool LoadSettings(const CStdString& strSettingsFile);
 	bool Load();
 	bool SaveSettings(const CStdString& strSettingsFile) const;
@@ -30,11 +31,10 @@ public:
 	CStdString GetAudioExtensions() { return m_strAudioExtensions; };
 	CStdString GetPictureExtensions() { return m_strPictureExtensions; };
 
-	CStdString m_logFolder;
 	int m_iSystemTimeTotalUp; // Uptime in minutes!
 
 	CVideoSettings m_currentVideoSettings;
-
+	CStdString m_logFolder;
 protected:
 	void GetSources(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSOURCES& items);
 	bool GetSource(const CStdString &category, const TiXmlNode *source, CMediaSource &share);

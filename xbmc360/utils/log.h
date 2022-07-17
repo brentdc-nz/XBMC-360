@@ -23,11 +23,14 @@
 
 class CLog
 {
+private:
 	static FILE*      m_fd;
 	static int        m_logLevel;
 	static int        m_repeatCount;
 	static int        m_repeatLogLevel;
 	static CStdString m_repeatLine;
+	CStdString m_logFolder;
+
 
 public:
 	CLog();

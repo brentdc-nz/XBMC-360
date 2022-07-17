@@ -46,8 +46,6 @@ void CGUIWindowScreensaver::Render()
 bool CGUIWindowScreensaver::OnAction(const CAction &action)
 {
 	//Return if somthing is pressed
-	g_application.ResetScreenSaverWindow(); //TODO Move call back to CApplication::OnKey()
-
 	return CGUIWindow::OnAction(action);
 }
 

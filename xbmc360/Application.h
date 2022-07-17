@@ -101,7 +101,6 @@ protected:
 	// Timer information
 	CStopWatch m_screenSaverTimer;
 	CStopWatch m_slowTimer;
-
 	CIdleThread m_idleThread;
 	CSplash *m_splash;
 	CNetwork m_network;

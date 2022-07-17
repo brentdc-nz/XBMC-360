@@ -266,7 +266,7 @@ void CGUID3DTexture::SetHeight(float fHeight)
 
 void CGUID3DTexture::SetPosition(float iPosX, float iPosY)
 {
-	Update(iPosX, iPosY, m_width, m_height);
+	CGUID3DTexture::Update(iPosX, iPosY, m_width, m_height);
 }
 
 void CGUID3DTexture::Update(float fPosX, float fPosY, float fWidth, float fHeight)

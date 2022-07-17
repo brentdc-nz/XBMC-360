@@ -1,9 +1,8 @@
 #include "GUISpinControlEx.h"
 
 CGUISpinControlEx::CGUISpinControlEx(int parentID, int controlID, float posX, float posY, float width, float height, float spinWidth, float spinHeight, const CLabelInfo& spinInfo, const CTextureInfo &textureFocus, const CTextureInfo &textureNoFocus, const CTextureInfo& textureUp, const CTextureInfo& textureDown, const CTextureInfo& textureUpFocus, const CTextureInfo& textureDownFocus, const CLabelInfo& labelInfo, int iType)
-    : CGUISpinControl(parentID, controlID, posX, posY, spinWidth, spinHeight, textureUp, textureDown, textureUpFocus, textureDownFocus, spinInfo, iType)
-    , m_buttonControl(parentID, controlID, posX, posY, width, height, /*textureFocus*/textureNoFocus, textureNoFocus, labelInfo), // TODO: Remove null texture and delete m_focus
-	m_focus(posX, posY, width+35, height, textureFocus) //HACK - FIXME
+: CGUISpinControl(parentID, controlID, posX, posY, spinWidth, spinHeight, textureUp, textureDown, textureUpFocus, textureDownFocus, spinInfo, iType)
+,m_buttonControl(parentID, controlID, posX, posY, width, height, textureNoFocus, textureNoFocus, labelInfo) // TODO: Remove null texture and delete m_focus
 {
 	ControlType = GUICONTROL_SPINEX;
 	m_spinPosX = 0;
@@ -11,6 +10,7 @@ CGUISpinControlEx::CGUISpinControlEx(int parentID, int controlID, float posX, fl
 
 CGUISpinControlEx::~CGUISpinControlEx(void)
 {
+
 }
 
 void CGUISpinControlEx::Render()
@@ -22,23 +22,24 @@ void CGUISpinControlEx::Render()
 	m_buttonControl.Render();
 
 	if(HasFocus())
-		m_focus.Render(); // TODO: Remove me and use button member
+		m_buttonControl.Render();
 
 	CGUISpinControl::Render();
 }
 
 void CGUISpinControlEx::SetPosition(float posX, float posY)
 {
-	m_buttonControl.SetPosition(posX, posY);
+	int iFocusHeight = 10; 
+	int iFocusWidth = 10; 
+	int iFocusPosY = 20; 
+	int iFocusPosX = 20; 
 
-	int iFocusHeight = 10; //TODO Calculate percent of button hight!
-	int iFocusPosX = 20; //TODO Calc with percent
-
-	m_focus.SetPosition(posX - iFocusPosX, posY - iFocusHeight);
+	m_buttonControl.SetPosition(posX - iFocusHeight, posY - iFocusWidth);
+	CLog::Log(LOGNOTICE, "Width Position: %", iFocusWidth - iFocusPosX, 
+	"Height Position: %", iFocusPosX);
 
 	float spinPosX = posX + m_buttonControl.GetWidth() - GetSpinWidth() * 2 - 0/*(m_spinPosX ? m_spinPosX : m_buttonControl.GetLabelInfo().offsetX)*/;
 	float spinPosY = posY; //+ (m_buttonControl.GetHeight() - GetSpinHeight()) * 0.5f;
-	
 	CGUISpinControl::SetPosition(spinPosX, spinPosY);
 }
 
@@ -47,9 +48,11 @@ void CGUISpinControlEx::AllocResources()
 	CGUISpinControl::AllocResources();
 	m_buttonControl.AllocResources();
 
-	m_focus.SetVisible(true);
-	m_focus.AllocResources();
+	m_buttonControl.SetVisible(true);
+	m_buttonControl.AllocResources();
 
+	CLog::Log(LOGNOTICE, "Alloc resources");
+	
 	SetPosition((float)GetXPosition(), (float)GetYPosition());
 }
 
@@ -57,8 +60,7 @@ void CGUISpinControlEx::FreeResources()
 {
 	CGUISpinControl::FreeResources();
 	m_buttonControl.FreeResources();
-
-//	m_focus.FreeResources();
+	CLog::Log(LOGNOTICE, "Freeing resources");
 }
 
 const CStdString CGUISpinControlEx::GetCurrentLabel() const
