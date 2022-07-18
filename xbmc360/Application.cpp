@@ -77,7 +77,7 @@ bool CApplication::Create()
 	::MoveFile(strLogFile.c_str(), strLogFileOld.c_str());
 
 	CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
-	CLog::Log(LOGNOTICE, "          Starting Xbox Media Center 360.  Built on %s", __DATE__       );
+	CLog::Log(LOGNOTICE, "          Starting XBox Media Center 360.  Built on %s", __DATE__       );
 	CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 
 	CLog::Log(LOGNOTICE, "Setup DirectX");
