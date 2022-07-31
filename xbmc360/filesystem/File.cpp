@@ -1,6 +1,7 @@
 #include "File.h"
 #include "FileHD.h"
 #include "FileFactory.h"
+//#include "FileSMB.h"
 #include "..\utils\Log.h"
 #include "..\utils\Stdafx.h"
 #include "..\utils\AutoPtrHandle.h"
@@ -152,6 +153,9 @@ bool CFile::Exists(const CStdString& strFileName)
 
 	//Check HDD
 	if(CFileHD::Exists(strFileName)) return true;
+
+	//TODO: if(CFileSMB::Exists(strFileName)) return true;
+	//TODO: if(CFileFTP::Exists(strFileName)) return true;
 
 	CLog::Log(LOGERROR, "%s - Error checking for %s", __FUNCTION__, strFileName.c_str());
 	return false;

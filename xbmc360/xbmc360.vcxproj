@@ -276,7 +276,7 @@
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
       <SetChecksum>true</SetChecksum>
       <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirender.lib;xmediad2.lib;xonline.lib;libavformat.lib;libavfilter.lib;libavutil.lib;libswscale.lib;libavcodec.lib;pthreads.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\ffmpeg lib\vcproj\libavcodec\Xbox 360\Release;..\ffmpeg lib\vcproj\libswscale\Xbox 360\Release;..\ffmpeg lib\vcproj\libavutil\Xbox 360\Release;..\ffmpeg lib\vcproj\libavfilter\Xbox 360\Release;..\ffmpeg lib\vcproj\libavformat\Xbox 360\Release;..\ffmpeg lib\vcproj\pthreads\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\xbmc360\libraries\libffmpeg\vcproj\libavcodec\Xbox 360\Release;..\xbmc360\libraries\libffmpeg\vcproj\libswscale\Xbox 360\Release;..\xbmc360\libraries\libffmpeg\vcproj\libavutil\Xbox 360\Release;..\xbmc360\libraries\libffmpeg\vcproj\libavfilter\Xbox 360\Release;..\xbmc360\libraries\libffmpeg\vcproj\libavformat\Xbox 360\Release;..\xbmc360\libraries\libffmpeg\vcproj\pthreads\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Deploy>
       <DeploymentType>CopyToHardDrive</DeploymentType>

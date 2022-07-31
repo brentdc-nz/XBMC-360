@@ -36,7 +36,7 @@ void CSettings::Initialize()
 
 bool CSettings::Load()
 {
-	//TODO Probably Move This on CApplication::Create();
+	// TODO: Probably Move This on CApplication::Create();
 	// Load settings file...
 	CLog::Log(LOGNOTICE, "loading %s", SETTINGS_FILE);
 
