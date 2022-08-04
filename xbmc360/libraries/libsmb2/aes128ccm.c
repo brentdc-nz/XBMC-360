@@ -32,12 +32,12 @@
 
 #include "compat.h"
 
-#include "portable-endian.h"
-#include "aes.h"
-
 #ifdef _XBOX
 #include "xbox_defines.h"
 #endif
+
+#include "portable-endian.h"
+#include "aes.h"
 
 static void aes_ccm_generate_b0(unsigned char *nonce, int nlen,
                                 int alen, int plen, int mlen,

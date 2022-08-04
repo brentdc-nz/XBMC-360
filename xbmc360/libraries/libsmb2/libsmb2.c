@@ -56,11 +56,6 @@
 #include <errno.h>
 #include <stdio.h>
 
-#ifndef PS2_IOP_PLATFORM
-#include <time.h>
-#include <fcntl.h>
-#endif
-
 #if !defined(PS2_EE_PLATFORM) && !defined(_XBOX) && !defined(PS2_IOP_PLATFORM)
 #include <sys/socket.h>
 #endif
@@ -68,7 +63,6 @@
 #if defined(PS2_EE_PLATFORM) || !defined(_XBOX)
 #include "asprintf.h"
 #endif
-
 #include "compat.h"
 
 #ifdef _XBOX
@@ -85,6 +79,9 @@
 #include "libsmb2-private.h"
 #include "portable-endian.h"
 #include "ntlmssp.h"
+
+#include <time.h>
+#include <fcntl.h>
 
 #ifdef HAVE_LIBKRB5
 #include "krb5-wrapper.h"
@@ -112,6 +109,7 @@ static const char SMB2APP[] = "SMB2APP";
 static const char SmbRpc[] = "SmbRpc";
 static const char SMBAppKey[] = "SMBAppKey";
 */
+#pragma warning (disable :4244)
 
 #ifndef O_SYNC
 #ifndef O_DSYNC
@@ -120,8 +118,6 @@ static const char SMBAppKey[] = "SMBAppKey";
 #define __O_SYNC	020000000
 #define O_SYNC		(__O_SYNC|O_DSYNC)
 #endif // !O_SYNC
-
-#pragma warning (disable :4244)
 
 const smb2_file_id compound_file_id = {
         0xff, 0xff, 0xff, 0xff,  0xff, 0xff, 0xff, 0xff,
@@ -1172,7 +1168,7 @@ smb2_open_async(struct smb2_context *smb2, const char *path, int flags,
                         SMB2_FILE_WRITE_EA |
                         SMB2_FILE_WRITE_ATTRIBUTES;
         }
-        if (flags & O_RDWR || !(flags & O_WRONLY)) {
+        if (!(flags & O_WRONLY)) {
                 desired_access |= SMB2_FILE_READ_DATA |
                         SMB2_FILE_READ_EA |
                         SMB2_FILE_READ_ATTRIBUTES;

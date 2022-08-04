@@ -16,122 +16,108 @@
    along with this program; if not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _LIBSMB2_DCERPC_SRVSVC_H_
-#define _LIBSMB2_DCERPC_SRVSVC_H_
+#ifndef _LIBSMB2_DCERPC_H_
+#define _LIBSMB2_DCERPC_H_
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define SRVSVC_NETRSHAREENUM      0x0f
-#define SRVSVC_NETRSHAREGETINFO   0x10
+/* Data representation */
+/* Integer */
+#define DCERPC_DR_BIG_ENDIAN                    0x00
+#define DCERPC_DR_LITTLE_ENDIAN                 0x10
+/* Character */
+#define DCERPC_DR_ASCII                         0x00
+#define DCERPC_DR_EBCDIC                        0x01
 
 struct dcerpc_context;
 struct dcerpc_pdu;
 
+/* Encoder/Decoder for a DCERPC object */
+typedef int (*dcerpc_coder)(struct dcerpc_context *dce, struct dcerpc_pdu *pdu,
+                            struct smb2_iovec *iov, int offset,
+                            void *ptr);
 
-/* Low 2 bits desctibe the type */
-#define SHARE_TYPE_DISKTREE  0
-#define SHARE_TYPE_PRINTQ    1
-#define SHARE_TYPE_DEVICE    2
-#define SHARE_TYPE_IPC       3
-
-#define SHARE_TYPE_TEMPORARY 0x40000000
-#define SHARE_TYPE_HIDDEN    0x80000000
-
-struct srvsvc_netshareinfo1 {
-        const char *name;
-        uint32_t type;
-	const char *comment;
+enum ptr_type {
+        PTR_REF    = 0,
+        PTR_UNIQUE = 1,
+        PTR_FULL   = 2
 };
 
-struct srvsvc_netsharectr1 {
-        uint32_t count;
-        struct srvsvc_netshareinfo1 *array;
+typedef struct dcerpc_uuid {
+        uint32_t v1;
+        uint16_t v2;
+        uint16_t v3;
+        uint64_t v4;
+} dcerpc_uuid_t;
+
+typedef struct p_syntax_id {
+        dcerpc_uuid_t uuid;
+        uint16_t vers;
+        uint16_t vers_minor;
+} p_syntax_id_t;
+
+struct ndr_transfer_syntax {
+        dcerpc_uuid_t uuid;
+        uint16_t vers;
 };
 
-struct srvsvc_netsharectr {
-        uint32_t level;
-        union {
-                struct srvsvc_netsharectr1 ctr1;
-        };
+struct ndr_context_handle {
+        uint32_t context_handle_attributes;
+        dcerpc_uuid_t context_handle_uuid;
 };
 
-struct srvsvc_netshareenumall_req {
-        const char *server;
-        uint32_t level;
-        struct srvsvc_netsharectr *ctr;
-        uint32_t max_buffer;
-        uint32_t resume_handle;
-};
+extern p_syntax_id_t lsa_interface;
+extern p_syntax_id_t srvsvc_interface;
+        
+typedef void (*dcerpc_cb)(struct dcerpc_context *dce, int status,
+                          void *command_data, void *cb_data);
 
-struct srvsvc_netshareenumall_rep {
-        uint32_t status;
+struct dcerpc_context *dcerpc_create_context(struct smb2_context *smb2);
+void dcerpc_free_data(struct dcerpc_context *dce, void *data);
+const char *dcerpc_get_error(struct dcerpc_context *dce);
+int dcerpc_connect_context_async(struct dcerpc_context *dce,
+                                 const char *path, p_syntax_id_t *syntax,
+                                 dcerpc_cb cb, void *cb_data);
+void dcerpc_destroy_context(struct dcerpc_context *dce);
 
-        uint32_t level;
-        struct srvsvc_netsharectr *ctr;
-        uint32_t total_entries;
-        uint32_t resume_handle;
-};
+struct smb2_context *dcerpc_get_smb2_context(struct dcerpc_context *dce);
+void *dcerpc_get_pdu_payload(struct dcerpc_pdu *pdu);
 
-struct srvsvc_netshareinfo {
-        uint32_t level;
-        union {
-                struct srvsvc_netshareinfo1 info1;
-        };
-};
+int dcerpc_open_async(struct dcerpc_context *dce, dcerpc_cb cb, void *cb_data);
+int dcerpc_call_async(struct dcerpc_context *dce, int opnum,
+                      dcerpc_coder req_coder, void *req,
+                      dcerpc_coder rep_coder, int rep_size,
+                      dcerpc_cb cb, void *cb_data);
 
-struct srvsvc_netrsharegetinfo_req {
-        const char *ServerName;
-        const char *NetName;
-        uint32_t Level;
-};
+int dcerpc_ptr_coder(struct dcerpc_context *dce, struct dcerpc_pdu *pdu,
+                     struct smb2_iovec *iov, int offset, void *ptr,
+                     enum ptr_type type, dcerpc_coder coder);
+int dcerpc_uint8_coder(struct dcerpc_context *ctx, struct dcerpc_pdu *pdu,
+                    struct smb2_iovec *iov, int offset, void *ptr);
+int dcerpc_uint16_coder(struct dcerpc_context *ctx, struct dcerpc_pdu *pdu,
+                     struct smb2_iovec *iov, int offset, void *ptr);
+int dcerpc_uint32_coder(struct dcerpc_context *ctx, struct dcerpc_pdu *pdu,
+                     struct smb2_iovec *iov, int offset, void *ptr);
+int dcerpc_uint3264_coder(struct dcerpc_context *ctx, struct dcerpc_pdu *pdu,
+                       struct smb2_iovec *iov, int offset, void *ptr);
+int dcerpc_utf16_coder(struct dcerpc_context *ctx, struct dcerpc_pdu *pdu,
+                      struct smb2_iovec *iov, int offset, void *ptr);
+int dcerpc_utf16z_coder(struct dcerpc_context *ctx, struct dcerpc_pdu *pdu,
+                        struct smb2_iovec *iov, int offset, void *ptr);
+int dcerpc_context_handle_coder(struct dcerpc_context *dce,
+                                struct dcerpc_pdu *pdu,
+                                struct smb2_iovec *iov, int offset,
+                                void *ptr);
+#define DCERPC_DECODE 0
+#define DCERPC_ENCODE 1
+struct dcerpc_pdu *dcerpc_allocate_pdu(struct dcerpc_context *dce,
+                                       int direction, int payload_size);
+void dcerpc_free_pdu(struct dcerpc_context *dce, struct dcerpc_pdu *pdu);
 
-struct srvsvc_netrsharegetinfo_rep {
-        uint32_t status;
-
-        struct srvsvc_netshareinfo info;
-};
-
-struct srvsvc_rep {
-        uint32_t status;
-};
-
-/*
- * Async share_enum()
- * This function only works when connected to the IPC$ share.
- *
- * Returns
- *  0     : The operation was initiated. Result of the operation will be
- *          reported through the callback function.
- * -errno : There was an error. The callback function will not be invoked.
- *
- * When the callback is invoked, status indicates the result:
- *      0 : Success. Command_data is struct srvsvc_netshareenumall_rep *
- *          This pointer must be freed using smb2_free_data().
- * -errno : An error occured.
- */
-int smb2_share_enum_async(struct smb2_context *smb2,
-                          smb2_command_cb cb, void *cb_data);
-
-int srvsvc_NetrShareEnum_rep_coder(struct dcerpc_context *dce,
-                                   struct dcerpc_pdu *pdu,
-                                   struct smb2_iovec *iov, int offset,
-                                   void *ptr);
-int srvsvc_NetrShareEnum_req_coder(struct dcerpc_context *ctx,
-                                   struct dcerpc_pdu *pdu,
-                                   struct smb2_iovec *iov, int offset,
-                                   void *ptr);
-int srvsvc_NetrShareGetInfo_rep_coder(struct dcerpc_context *dce,
-                                      struct dcerpc_pdu *pdu,
-                                      struct smb2_iovec *iov, int offset,
-                                      void *ptr);
-int srvsvc_NetrShareGetInfo_req_coder(struct dcerpc_context *ctx,
-                                      struct dcerpc_pdu *pdu,
-                                      struct smb2_iovec *iov, int offset,
-                                      void *ptr);
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* !_LIBSMB2_DCERPC_SRVSVC_H_ */
+#endif /* !_LIBSMB2_DCERPC_H_ */

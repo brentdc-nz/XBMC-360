@@ -3,7 +3,10 @@
 
 #include "url.h"
 #include "utils\CriticalSection.h"
-extern "C" {
+#include "utils\Log.h"
+
+extern "C" 
+{
 #include "libsmb2.h"
 #include "smb2.h"
 }
@@ -25,13 +28,14 @@ public:
 	__int64 GetLength();
 	__int64 GetPosition();
 	void Close();
-
+	unsigned int Write(void *lpBuf, __int64 uiBufSize);
+	int Stat(const CURL &url);
 private:
 	struct smb2_context*	m_pLibSMB2Context;
 	struct smb2dir*			m_pLibSMB2H;
 	struct smb2_url*		m_pLibSMB2Url;
 	struct smb2fh*			m_pLibSMB2FH;
-
+	struct smb2_stat_64*    m_pLibSMB2ST;
 	UINT64 m_FileSize;
 };
 

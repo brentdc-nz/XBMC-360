@@ -47,15 +47,15 @@
 #include <unistd.h>
 #endif
 
+#ifdef _XBOX
+#include "xbox_defines.h"
+#endif
+
 #include "compat.h"
 
 #include "smb2.h"
 #include "libsmb2.h"
 #include "libsmb2-private.h"
-
-#ifdef _XBOX
-#include "xbox_defines.h"
-#endif
 
 #define container_of(ptr, type, member) ({                      \
         const typeof( ((type *)0)->member ) *__mptr = (ptr);    \

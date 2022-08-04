@@ -1066,9 +1066,6 @@
     <ClCompile Include="libraries\libsmb2\libsmb2.c">
       <Filter>Source Files\libraries\libsmb2</Filter>
     </ClCompile>
-    <ClCompile Include="libraries\libsmb2\md4c.c">
-      <Filter>Source Files\libraries\libsmb2</Filter>
-    </ClCompile>
     <ClCompile Include="libraries\libsmb2\md5.c">
       <Filter>Source Files\libraries\libsmb2</Filter>
     </ClCompile>
@@ -1341,6 +1338,9 @@
     </ClCompile>
     <ClCompile Include="filesystem\FileFTP.cpp">
       <Filter>Source Files\filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\md4.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
