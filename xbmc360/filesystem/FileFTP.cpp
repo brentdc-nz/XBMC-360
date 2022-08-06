@@ -5,7 +5,9 @@
 #include <fcntl.h>
 
 using namespace XFILE;
-CFTPFileWriter *xbftp_f;
+
+CFTPFileWriter *xbftp_w; //Write 
+CFTPFileReader *xbftp_r; //Read
 
 CFileFTP::CFileFTP()
 {
@@ -19,13 +21,36 @@ CFileFTP::~CFileFTP()
 
 bool CFileFTP::Open(const CURL &strURL, bool bBinarry)
 {
-	xbftp_f->Process();
-	return false; //TODO
+	//Only Open for read
+	if(bBinarry == 0)
+	{
+		xbftp_r->OpenFile(strURL.Get());
+		xbftp_r->Process();
+		return false;
+	}
+
+	//Only Open For Write!!!
+	else if(bBinarry == 1)
+	{
+		xbftp_w->Open(strURL.Get());
+		xbftp_w->Process();
+	    return true;
+	}
+
+	else
+	{
+		CLog::Log(LOGERROR, "Invalid argument to read");	
+	}
+	return bBinarry; 
 }
 
 bool CFileFTP::OpenForWrite(const CURL& strURL, bool bOverWrite)
 {
-	return false; //TODO
+	
+	xbftp_w->Open(strURL.Get());
+	xbftp_w->Process();
+	
+	return true; //TODO
 }
 
 int CFileFTP::Stat(const CURL &strURL, struct __stat64* buffer)
@@ -35,31 +60,25 @@ int CFileFTP::Stat(const CURL &strURL, struct __stat64* buffer)
 
 unsigned int CFileFTP::Read(void* lpBuf, int64_t uiBufSize)
 {
-	return 0; //TODO
+    xbftp_r->Process();
+	return NULL;
 }
 
 int CFileFTP::Write(const void* lpBuf, int64_t uiBufSize)
 {
-	return 0; //TODO
+	xbftp_w->Process();
+	return NULL;
 }
 
 __int64 CFileFTP::Seek(__int64 iFilePosition, int iWhence)
 {
-	if(iFilePosition == NULL)
-	{
-		return 0;
-	}
-	
-	else
-	{
-	   fseek(m_pFile, NULL, iWhence);	
-	}
+	fseek(m_pFile, NULL, iWhence);	
 	return 0;
 }
 
 int64_t CFileFTP::GetLength()
 {
-  return 0;
+  return 0; //WIP
 }
 
 int64_t CFileFTP::GetPosition()
@@ -69,5 +88,6 @@ int64_t CFileFTP::GetPosition()
 
 void CFileFTP::Close()
 {
-	xbftp_f->Close();
+	xbftp_w->CloseWrite();
+	xbftp_r->CloseRead();
 }

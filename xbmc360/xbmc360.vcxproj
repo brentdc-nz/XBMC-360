@@ -463,7 +463,7 @@
     <ClInclude Include="libraries\libsmb2\XBLibSmb2.h" />
     <ClInclude Include="libraries\libsmb2\xbox_defines.h" />
     <ClInclude Include="MediaManager.h" />
-    <ClInclude Include="services\FTPServer\FTPFileWriter.h" />
+    <ClInclude Include="services\FTPServer\FTPFile.h" />
     <ClInclude Include="services\FTPServer\FTPServer.h" />
     <ClInclude Include="services\FTPServer\FTPServerConn.h" />
     <ClInclude Include="services\NTPClient\WinSckNTP.h" />
@@ -839,7 +839,7 @@
     </ClCompile>
     <ClCompile Include="libraries\libsmb2\XBLibSmb2.cpp" />
     <ClCompile Include="MediaManager.cpp" />
-    <ClCompile Include="services\FTPServer\FTPFileWriter.cpp" />
+    <ClCompile Include="services\FTPServer\FTPFile.cpp" />
     <ClCompile Include="services\FTPServer\FTPServer.cpp" />
     <ClCompile Include="services\FTPServer\FTPServerConn.cpp" />
     <ClCompile Include="services\NTPClient\WinSckNTP.cpp" />
