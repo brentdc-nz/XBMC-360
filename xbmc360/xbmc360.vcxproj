@@ -386,6 +386,7 @@
     <ClInclude Include="guilib\GUIButtonControl.h" />
     <ClInclude Include="guilib\GUIControl.h" />
     <ClInclude Include="guilib\GUIControlFactory.h" />
+    <ClInclude Include="guilib\GUIControlGroup.h" />
     <ClInclude Include="guilib\GUID3DTexture.h" />
     <ClInclude Include="guilib\GUIDialog.h" />
     <ClInclude Include="guilib\GUIDialogBoxBase.h" />
@@ -573,6 +574,7 @@
     <ClCompile Include="guilib\GUIButtonControl.cpp" />
     <ClCompile Include="guilib\GUIControl.cpp" />
     <ClCompile Include="guilib\GUIControlFactory.cpp" />
+    <ClCompile Include="guilib\GUIControlGroup.cpp" />
     <ClCompile Include="guilib\GUID3DTexture.cpp" />
     <ClCompile Include="guilib\GUIDialog.cpp" />
     <ClCompile Include="guilib\GUIDialogBoxBase.cpp" />

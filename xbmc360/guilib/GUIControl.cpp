@@ -81,6 +81,11 @@ int CGUIControl::GetID(void) const
 	return m_controlID;
 }
 
+bool CGUIControl::HasVisibleID(int id) const
+{
+  return GetID() == id && IsVisible();
+}
+
 DWORD CGUIControl::GetParentID(void) const
 {
 	return (DWORD)m_parentID;
@@ -99,6 +104,11 @@ void CGUIControl::SetFocus(bool bOnOff)
 bool CGUIControl::HasID(int id) const
 {
 	return GetID() == id;
+}
+
+void CGUIControl::SaveStates(vector<CControlState> &states)
+{
+  // empty for now - do nothing with the majority of controls
 }
 
 void CGUIControl::SetNavigation(DWORD dwUp, DWORD dwDown, DWORD dwLeft, DWORD dwRight)

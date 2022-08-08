@@ -4,6 +4,7 @@
 #include "..\utils\StdString.h"
 #include "tinyXML\tinyxml.h"
 #include "GUIControl.h"
+#include "GUIControlGroup.h"
 #include "GUIMessage.h"
 #include "key.h"
 
@@ -56,6 +57,9 @@ public:
 	int GetID() { return iWindowID; };
 	DWORD GetIDRange() const { return m_dwIDRange; };
 	void SetID(int id) { iWindowID = id; };
+	virtual bool HasID(int id) { return (id >= m_controlID && id < m_controlID + m_idRange); };
+
+
 
 protected:
 	// Control state saving on window close
@@ -88,7 +92,8 @@ protected:
 
 	bool m_WindowAllocated;
 	bool m_dynamicResourceAlloc;
-
+	int m_idRange;
+	int m_controlID;
 	// Control states
 	bool m_saveLastControl;
 	int m_lastControlID;

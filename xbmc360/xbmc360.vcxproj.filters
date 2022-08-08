@@ -740,6 +740,9 @@
     <ClInclude Include="filesystem\FileFTP.h">
       <Filter>Header Files\filesystem</Filter>
     </ClInclude>
+    <ClInclude Include="guilib\GUIControlGroup.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -1341,6 +1344,9 @@
     </ClCompile>
     <ClCompile Include="filesystem\FileFTP.cpp">
       <Filter>Source Files\filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIControlGroup.cpp">
+      <Filter>Source Files\guilib</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
