@@ -1,6 +1,6 @@
 /* From RFC1320 */
 
-/* MD4C.C - RSA Data Security, Inc., MD4 message-digest algorithm
+/* MD4.C - RSA Data Security, Inc., MD4 message-digest algorithm
  */
 
 /* Copyright (C) 1990-2, RSA Data Security, Inc. All rights reserved.

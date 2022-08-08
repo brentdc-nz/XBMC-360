@@ -1,5 +1,5 @@
 #include "FTPServerConn.h"
-#include "FTPFileWriter.h"
+#include "FTPFile.h"
 #include "utils\log.h"
 #include "utils\StringUtils.h"
 #include "utils\Util.h"
@@ -939,7 +939,8 @@ void CFTPServerConn::Cmd_STOR(const char *filename)
 		CLog::Log(LOGNOTICE, "FTPServerConn : Writingto flash");
 	}
 
-	CFTPFileWriter writer(strFullPath.c_str());
+	CFTPFileWriter writer;
+	writer.Open(strPath.c_str());
 
     // Transfer file
     for(iSize = 1; iSize >= 0;)
@@ -974,7 +975,7 @@ void CFTPServerConn::Cmd_STOR(const char *filename)
 		SendReply("226 Transfer Complete");
 
     closesocket(iXfer_sock);
-	writer.Close();
+	writer.CloseWrite();
     // For some reason, the file ends up readonly - should fix that
     //fclose(file);
 }

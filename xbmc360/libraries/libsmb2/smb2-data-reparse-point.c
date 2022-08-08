@@ -45,8 +45,6 @@
 #include "libsmb2.h"
 #include "libsmb2-private.h"
 
-#pragma warning (disable : 4018)
-
 int
 smb2_decode_reparse_data_buffer(struct smb2_context *smb2,
                                 void *memctx,

@@ -18,6 +18,80 @@
 
 #include "compat.h"
 
+#ifdef _XBOX //NEED_POLL
+int poll(struct pollfd *fds, nfds_t numfds, int timeout)
+{
+    fd_set read_set;
+    fd_set write_set;
+    fd_set exception_set;
+    nfds_t i;
+    int n;
+    int rc;
+
+#if 0
+    if (numfds >= FD_SETSIZE) {
+        errno = EINVAL;
+        return -1;
+    }
+#endif
+
+    FD_ZERO(&read_set);
+    FD_ZERO(&write_set);
+    FD_ZERO(&exception_set);
+
+    n = 0;
+    for (i = 0; i < numfds; i++) {
+        if (fds[i].fd < 0)
+            continue;
+#if 0
+        if (fds[i].fd >= FD_SETSIZE) {
+            errno = EINVAL;
+            return -1;
+        }
+#endif
+
+        if (fds[i].events & POLLIN)
+            FD_SET(fds[i].fd, &read_set);
+        if (fds[i].events & POLLOUT)
+            FD_SET(fds[i].fd, &write_set);
+        if (fds[i].events & POLLERR)
+            FD_SET(fds[i].fd, &exception_set);
+
+        if (fds[i].fd >= n)
+            n = fds[i].fd + 1;
+    }
+
+    if (n == 0)
+        /* Hey!? Nothing to poll, in fact!!! */
+        return 0;
+
+    if (timeout < 0) {
+        rc = select(n, &read_set, &write_set, &exception_set, NULL);
+    } else {
+        struct timeval tv;
+        tv.tv_sec  = timeout / 1000;
+        tv.tv_usec = 1000 * (timeout % 1000);
+        rc         = select(n, &read_set, &write_set, &exception_set, &tv);
+    }
+
+    if (rc < 0)
+        return rc;
+
+    for (i = 0; i < numfds; i++) {
+        fds[i].revents = 0;
+
+        if (FD_ISSET(fds[i].fd, &read_set))
+            fds[i].revents |= POLLIN;
+        if (FD_ISSET(fds[i].fd, &write_set))
+            fds[i].revents |= POLLOUT;
+        if (FD_ISSET(fds[i].fd, &exception_set))
+            fds[i].revents |= POLLERR;
+    }
+
+    return rc;
+}
+#endif
+
 #ifdef ESP_PLATFORM
 
 #define NEED_READV
@@ -144,7 +218,7 @@ int asprintf(char **strp, const char *fmt, ...)
 
 int errno;
 
-int iop_connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen)
+int iop_connect(int sockfd, struct sockaddr *addr, socklen_t addrlen)
 {
         int rc;
         int err = 0;
@@ -254,77 +328,58 @@ ssize_t readv(int fd, const struct iovec *iov, int iovcnt)
 }
 #endif
 
-#ifdef _XBOX //NEED_POLL
-int poll(struct pollfd *fds, nfds_t numfds, int timeout)
+#ifdef NEED_POLL
+int poll(struct pollfd *fds, unsigned int nfds, int timo)
 {
-    fd_set read_set;
-    fd_set write_set;
-    fd_set exception_set;
-    nfds_t i;
-    int n;
-    int rc;
+        struct timeval timeout, *toptr;
+        fd_set ifds, ofds, efds, *ip, *op;
+        unsigned int i, maxfd = 0;
+        int  rc;
 
-#if 0
-    if (numfds >= FD_SETSIZE) {
-        errno = EINVAL;
-        return -1;
-    }
-#endif
+        FD_ZERO(&ifds);
+        FD_ZERO(&ofds);
+        FD_ZERO(&efds);
+        for (i = 0, op = ip = 0; i < nfds; ++i) {
+                fds[i].revents = 0;
+                if(fds[i].events & (POLLIN|POLLPRI)) {
+                        ip = &ifds;
+                        FD_SET(fds[i].fd, ip);
+                }
+                if(fds[i].events & POLLOUT)  {
+                        op = &ofds;
+                        FD_SET(fds[i].fd, op);
+                }
+                FD_SET(fds[i].fd, &efds);
+                if (fds[i].fd > maxfd) {
+                        maxfd = fds[i].fd;
+                }
+        } 
 
-    FD_ZERO(&read_set);
-    FD_ZERO(&write_set);
-    FD_ZERO(&exception_set);
-
-    n = 0;
-    for (i = 0; i < numfds; i++) {
-        if (fds[i].fd < 0)
-            continue;
-#if 0
-        if (fds[i].fd >= FD_SETSIZE) {
-            errno = EINVAL;
-            return -1;
+        if(timo < 0) {
+                toptr = 0;
+        } else {
+                toptr = &timeout;
+                timeout.tv_sec = timo / 1000;
+                timeout.tv_usec = (timo - timeout.tv_sec * 1000) * 1000;
         }
-#endif
 
-        if (fds[i].events & POLLIN)
-            FD_SET(fds[i].fd, &read_set);
-        if (fds[i].events & POLLOUT)
-            FD_SET(fds[i].fd, &write_set);
-        if (fds[i].events & POLLERR)
-            FD_SET(fds[i].fd, &exception_set);
+        rc = select(maxfd + 1, ip, op, &efds, toptr);
 
-        if (fds[i].fd >= n)
-            n = fds[i].fd + 1;
-    }
+        if(rc <= 0)
+                return rc;
 
-    if (n == 0)
-        /* Hey!? Nothing to poll, in fact!!! */
-        return 0;
-
-    if (timeout < 0) {
-        rc = select(n, &read_set, &write_set, &exception_set, NULL);
-    } else {
-        struct timeval tv;
-        tv.tv_sec  = timeout / 1000;
-        tv.tv_usec = 1000 * (timeout % 1000);
-        rc         = select(n, &read_set, &write_set, &exception_set, &tv);
-    }
-
-    if (rc < 0)
+        if(rc > 0)  {
+                for (i = 0; i < nfds; ++i) {
+                        int fd = fds[i].fd;
+                        if(fds[i].events & (POLLIN|POLLPRI) && FD_ISSET(fd, &ifds))
+                                fds[i].revents |= POLLIN;
+                        if(fds[i].events & POLLOUT && FD_ISSET(fd, &ofds))
+                                fds[i].revents |= POLLOUT;
+                        if(FD_ISSET(fd, &efds))
+                                fds[i].revents |= POLLHUP;
+                }
+        }
         return rc;
-
-    for (i = 0; i < numfds; i++) {
-        fds[i].revents = 0;
-
-        if (FD_ISSET(fds[i].fd, &read_set))
-            fds[i].revents |= POLLIN;
-        if (FD_ISSET(fds[i].fd, &write_set))
-            fds[i].revents |= POLLOUT;
-        if (FD_ISSET(fds[i].fd, &exception_set))
-            fds[i].revents |= POLLERR;
-    }
-
-    return rc;
 }
 #endif
 

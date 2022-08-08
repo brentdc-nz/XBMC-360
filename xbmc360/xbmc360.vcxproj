@@ -464,7 +464,7 @@
     <ClInclude Include="libraries\libsmb2\XBLibSmb2.h" />
     <ClInclude Include="libraries\libsmb2\xbox_defines.h" />
     <ClInclude Include="MediaManager.h" />
-    <ClInclude Include="services\FTPServer\FTPFileWriter.h" />
+    <ClInclude Include="services\FTPServer\FTPFile.h" />
     <ClInclude Include="services\FTPServer\FTPServer.h" />
     <ClInclude Include="services\FTPServer\FTPServerConn.h" />
     <ClInclude Include="services\NTPClient\WinSckNTP.h" />
@@ -674,7 +674,7 @@
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
     </ClCompile>
-    <ClCompile Include="libraries\libsmb2\md4c.c">
+    <ClCompile Include="libraries\libsmb2\md4.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
@@ -841,7 +841,7 @@
     </ClCompile>
     <ClCompile Include="libraries\libsmb2\XBLibSmb2.cpp" />
     <ClCompile Include="MediaManager.cpp" />
-    <ClCompile Include="services\FTPServer\FTPFileWriter.cpp" />
+    <ClCompile Include="services\FTPServer\FTPFile.cpp" />
     <ClCompile Include="services\FTPServer\FTPServer.cpp" />
     <ClCompile Include="services\FTPServer\FTPServerConn.cpp" />
     <ClCompile Include="services\NTPClient\WinSckNTP.cpp" />

@@ -44,10 +44,6 @@
 #include <stdint.h>
 #endif
 
-#ifdef _XBOX
-#include "xbox_defines.h"
-#endif
-
 /*
  * If you do not have the ISO standard stdint.h header file, then you
  * must typedef the following:
@@ -329,6 +325,6 @@ extern int hmacInput (HMACContext * ctx, const unsigned char *text,
 
 extern int hmacFinalBits (HMACContext * ctx, const uint8_t bits,
 			  unsigned int bitcount);
-extern int hmacResult (HMACContext * ctx, uint8_t digest[USHAMaxHashSize]);
+extern int hmacResult (HMACContext * ctx, uint8_t *digest);
 
 #endif /* _SHA_H_ */

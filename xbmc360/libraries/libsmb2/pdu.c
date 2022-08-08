@@ -574,3 +574,4 @@ void smb2_timeout_pdus(struct smb2_context *smb2)
                 pdu = next;
         }
 }
+

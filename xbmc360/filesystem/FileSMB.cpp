@@ -2,7 +2,6 @@
 #include "..\utils\SingleLock.h"
 #include "..\utils\log.h"
 #include <fcntl.h>
-#include "libraries\libsmb2\XBLibSmb2.h"
 
 using namespace XFILE;
 
@@ -10,10 +9,12 @@ CXBLibSMB2 xbsmb_f;
 
 CFileSMB::CFileSMB()
 {
+
 }
 
 CFileSMB::~CFileSMB()
 {
+
 }
 
 bool CFileSMB::Open(const CURL& strURL, bool bBinary)
@@ -28,10 +29,35 @@ bool CFileSMB::Open(const CURL& strURL, bool bBinary)
 	return true;
 }
 
+bool CFileSMB::OpenDir(const CURL& strURL, bool bIsOk)
+{
+	CSingleLock lock(xbsmb_f);
+
+	xbsmb_f.Init();
+
+	xbsmb_f.OpenDir(strURL);
+
+	return true;
+}
+
 bool CFileSMB::OpenForWrite(const CURL& strURL, bool bOverWrite)
 {
-	CLog::Log(LOGERROR, "CFileSMB OpenForWrite not yet supported.");
-	return false; // TODO!!
+	CSingleLock lock(xbsmb_f);
+	void *lpBuf;
+	__int64 uiBufSize;
+	try
+	{
+		xbsmb_f.Init();
+		xbsmb_f.OpenFile(strURL);
+		xbsmb_f.Write(static_cast<uint8_t*>(lpBuf), (unsigned int)uiBufSize);
+		return bOverWrite;
+	}
+	catch(...)
+	{
+	 CLog::Log(LOGERROR, "CFileSMB::OpenForWrite: Failed to Open to write");
+	 return bOverWrite = false;
+	}
+	return false; 
 }
 
 __int64 CFileSMB::GetLength()
@@ -69,20 +95,39 @@ __int64 CFileSMB::Seek(__int64 iFilePosition, int iWhence)
 	return xbsmb_f.Seek(iFilePosition, iWhence);
 }
 
-int CFileSMB::Write(const void* lpBuf, __int64 uiBufSize)
+int CFileSMB::Write(void* lpBuf, __int64 uiBufSize)
 {
-	// TODO!
-	return 0;
+	CSingleLock lock(xbsmb_f);
+
+	return xbsmb_f.Write(lpBuf, uiBufSize);
 }
 
 int CFileSMB::Stat(const CURL& url, struct __stat64* buffer)
 {
-	// TODO!!
-	return 0;
+	CSingleLock lock(xbsmb_f);
+
+	return xbsmb_f.Stat(url);
 }
 
 bool CFileSMB::Exists(const CStdString& strPath)
-{
-	// TODO!!
+{	
+#ifdef WIP
+	CSingleLock lock(xbsmb_f);
+
+	if(strPath.size() == 0)
+	{
+	 return 0;
+	}
+
+	switch('read')
+	{
+	case 1:
+			CLog::Log(LOGNOTICE, "Reading dir");
+			xbsmb_f.ReadDir();
+			break;
+	}
+#else
+	CLog::Log(LOGWARNING, "CFileSMB::Exists() is still working in progress");
+#endif
 	return false;
 }

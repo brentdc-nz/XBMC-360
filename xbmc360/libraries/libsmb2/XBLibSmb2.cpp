@@ -1,5 +1,4 @@
 #include "XBLibSmb2.h"
-#include "utils\Log.h"
 #include <fcntl.h>
 
 CXBLibSMB2::CXBLibSMB2()
@@ -9,6 +8,7 @@ CXBLibSMB2::CXBLibSMB2()
 	m_pLibSMB2Url = NULL;
 	m_FileSize = 0;
 	m_pLibSMB2FH = NULL;
+	m_pLibSMB2ST = NULL;
 }
 
 CXBLibSMB2::~CXBLibSMB2()
@@ -136,6 +136,38 @@ unsigned int CXBLibSMB2::Read(void *lpBuf, __int64 uiBufSize)
 	}
 
 	return (unsigned int)bytesRead;
+}
+
+unsigned int CXBLibSMB2::Write(void *lpBuf, __int64 uiBufSize)
+{
+
+	if(m_pLibSMB2FH == NULL || m_pLibSMB2Context == NULL)
+		  return 0;
+
+	int byteswrite = smb2_write(m_pLibSMB2Context, m_pLibSMB2FH, static_cast<uint8_t *>(lpBuf), (unsigned int)uiBufSize);
+	
+	if(byteswrite < 0)
+	{
+		CLog::Log(LOGERROR, __FUNCTION__" - smbc_write returned error %i", errno);
+		return 0;
+	}
+	return 0;
+}
+
+int CXBLibSMB2::Stat(const CURL &url)
+{
+	if(m_pLibSMB2ST == NULL || m_pLibSMB2Context == NULL)
+		return 0;
+
+	int stat = smb2_stat(m_pLibSMB2Context, url.GetFileName(), NULL);
+
+	if(stat < 0)
+	{
+		CLog::Log(LOGERROR, __FUNCTION__" - smbc_stat returned error %i", errno);
+		return 0;
+	}
+
+	return 0;
 }
 
 __int64 CXBLibSMB2::GetLength()

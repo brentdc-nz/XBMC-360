@@ -39,6 +39,8 @@
 #include <stddef.h>
 #endif
 
+#pragma warning (disable : 4018)
+
 #include <errno.h>
 
 #include "compat.h"
@@ -46,8 +48,6 @@
 #include "smb2.h"
 #include "libsmb2.h"
 #include "libsmb2-private.h"
-
-#pragma warning (disable : 4018)
 
 static int
 smb2_encode_preauth_context(struct smb2_context *smb2, struct smb2_pdu *pdu)

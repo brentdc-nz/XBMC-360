@@ -422,9 +422,6 @@
     <ClInclude Include="xbox\Network.h">
       <Filter>Header Files\xbox</Filter>
     </ClInclude>
-    <ClInclude Include="services\FTPServer\FTPFileWriter.h">
-      <Filter>Header Files\services\FTPServer</Filter>
-    </ClInclude>
     <ClInclude Include="services\FTPServer\FTPServer.h">
       <Filter>Header Files\services\FTPServer</Filter>
     </ClInclude>
@@ -742,6 +739,8 @@
     </ClInclude>
     <ClInclude Include="guilib\GUIControlGroup.h">
       <Filter>Header Files\guilib</Filter>
+    <ClInclude Include="services\FTPServer\FTPFile.h">
+      <Filter>Header Files\services\FTPServer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -991,9 +990,6 @@
     <ClCompile Include="xbox\Network.cpp">
       <Filter>Source Files\xbox</Filter>
     </ClCompile>
-    <ClCompile Include="services\FTPServer\FTPFileWriter.cpp">
-      <Filter>Source Files\services\FTPServer</Filter>
-    </ClCompile>
     <ClCompile Include="services\FTPServer\FTPServer.cpp">
       <Filter>Source Files\services\FTPServer</Filter>
     </ClCompile>
@@ -1067,9 +1063,6 @@
       <Filter>Source Files\libraries\libsmb2</Filter>
     </ClCompile>
     <ClCompile Include="libraries\libsmb2\libsmb2.c">
-      <Filter>Source Files\libraries\libsmb2</Filter>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\md4c.c">
       <Filter>Source Files\libraries\libsmb2</Filter>
     </ClCompile>
     <ClCompile Include="libraries\libsmb2\md5.c">
@@ -1347,6 +1340,11 @@
     </ClCompile>
     <ClCompile Include="guilib\GUIControlGroup.cpp">
       <Filter>Source Files\guilib</Filter>
+    <ClCompile Include="libraries\libsmb2\md4.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="services\FTPServer\FTPFile.cpp">
+      <Filter>Source Files\services\FTPServer</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
