@@ -124,9 +124,9 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
 			// Only process those notifications that come from this window, or those intended for every window
 			if((GetID() == message.GetSenderId()) || !message.GetSenderId())
 			{
-				if(message.GetParam1() == GUI_MSG_SCROLL_CHANGE)//||
-//				    message.GetParam1() == GUI_MSG_REFRESH_THUMBS || // TODO
-//					message.GetParam1() == GUI_MSG_REFRESH_LIST) // TODO
+				if(message.GetParam1() == GUI_MSG_SCROLL_CHANGE || 
+					message.GetParam1() == GUI_MSG_REFRESH_THUMBS ||
+					message.GetParam1() == GUI_MSG_REFRESH_LIST) 
 				{
 					ivecControls it;
 					for (it = m_vecControls.begin(); it != m_vecControls.end(); ++it)
@@ -348,13 +348,13 @@ CGUIControl *CGUIWindow::GetFirstFocusableControl(int id)
 	for(ivecControls i = m_vecControls.begin();i != m_vecControls.end(); ++i)
 	{
 		CGUIControl* pControl = *i;
-/*		if(pControl->IsGroup())
+		if(pControl->IsGroup())
 		{
 			CGUIControlGroup *group = (CGUIControlGroup *)pControl;
 			CGUIControl *control = group->GetFirstFocusableControl(id);
 			if(control) return control;
 		}
-*/		if(pControl->GetID() == id && pControl->CanFocus())
+		if(pControl->GetID() == id && pControl->CanFocus())
 			return pControl;
 	}
 	return NULL;
@@ -629,7 +629,7 @@ void CGUIWindow::LoadControl(TiXmlElement* pControl)
 	CGUIControl* pGUIControl = factory.Create(GetID(), rect, pControl);
 	if (pGUIControl)
 	{
-	/*	float maxX = pGUIControl->GetXPosition() + pGUIControl->GetWidth();
+/*	float maxX = pGUIControl->GetXPosition() + pGUIControl->GetWidth();
 		if (maxX > m_width)
 		{
 			m_width = maxX;
@@ -654,7 +654,8 @@ void CGUIWindow::LoadControl(TiXmlElement* pControl)
 				LoadControl(pSubControl, (CGUIControlGroup *)pGUIControl);
 				pSubControl = pSubControl->NextSiblingElement("control");
 			}
-		}*/
+		}
+*/
 	}
 }
 

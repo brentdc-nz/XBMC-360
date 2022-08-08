@@ -26,15 +26,32 @@
 #include "Key.h"            // needed by practically all controls (CAction + defines)
 #include "GUIInfoTypes.h"
 
-enum ORIENTATION { HORIZONTAL = 0, VERTICAL };
+enum ORIENTATION 
+{ 
+	HORIZONTAL = 0, 
+	VERTICAL 
+};
 
-class CGUIControl
+class CControlState
+{
+public:
+  CControlState(int id, int data)
+  {
+    m_id = id;
+    m_data = data;
+  }
+  int m_id;
+  int m_data;
+};
+
+class CGUIControl 
 {
 public:
 	CGUIControl();
 	CGUIControl(int parentID, int controlID, float posX, float posY, float width, float height);
 	virtual ~CGUIControl(void);
-	
+	//virtual CGUIControl *Clone() const=0;
+
 	// OnAction() is called by our window when we are the focused control.
 	// We should process any control-specific actions in the derived classes,
 	// and return true if we have taken care of the action.  Returning false
@@ -68,6 +85,7 @@ public:
 	DWORD GetParentID(void) const;
 	bool HasFocus(void) const;
 	virtual bool HasID(int id) const;
+	 virtual bool HasVisibleID(int id) const;
 	virtual void SetNavigation(DWORD dwUp, DWORD dwDown, DWORD dwLeft, DWORD dwRight);
 	DWORD GetControlIdUp() const { return m_dwControlUp;};
 	DWORD GetControlIdDown() const { return m_dwControlDown;};
@@ -90,6 +108,12 @@ public:
 	float GetHeight() const;
 	virtual void SetWidth(float iWidth);
 	virtual void SetHeight(float iHeight);
+	virtual bool IsGroup() const { return false; };
+	void SetParentControl(CGUIControl *control) { m_parentControl = control; };
+	virtual void SetPushUpdates(bool pushUpdates) { m_pushedUpdates = pushUpdates; };
+	virtual bool IsContainer() const { return false; };
+	virtual void SaveStates(std::vector<CControlState> &states);
+
 
 	enum GUICONTROLTYPES {
 		GUICONTROL_UNKNOWN,
@@ -160,13 +184,15 @@ protected:
 	bool m_visible;
 	bool m_visibleFromSkinCondition;
 	bool m_forceHidden;       // set from the code when a hidden operation is given - overrides m_visible
-//	CGUIInfoBool m_allowHiddenFocus;
+//	CGUIInfoBool m_allowHiddenFocus; //Setup CGUIBool?
 	bool m_hasRendered;
 	// enable/disable state
 	int m_enableCondition;
 	bool m_enabled;
-
+	CGUIControl *m_parentControl;
 	int m_parentID;
+	  bool m_pushedUpdates;
+
 };
 
 #endif //H_CGUICONTROL

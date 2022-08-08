@@ -737,6 +737,8 @@
     <ClInclude Include="filesystem\FileFTP.h">
       <Filter>Header Files\filesystem</Filter>
     </ClInclude>
+    <ClInclude Include="guilib\GUIControlGroup.h">
+      <Filter>Header Files\guilib</Filter>
     <ClInclude Include="services\FTPServer\FTPFile.h">
       <Filter>Header Files\services\FTPServer</Filter>
     </ClInclude>
@@ -1336,6 +1338,8 @@
     <ClCompile Include="filesystem\FileFTP.cpp">
       <Filter>Source Files\filesystem</Filter>
     </ClCompile>
+    <ClCompile Include="guilib\GUIControlGroup.cpp">
+      <Filter>Source Files\guilib</Filter>
     <ClCompile Include="libraries\libsmb2\md4.c">
       <Filter>Source Files\libraries\libsmb2</Filter>
     </ClCompile>
