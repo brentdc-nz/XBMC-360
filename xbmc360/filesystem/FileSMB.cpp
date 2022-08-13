@@ -117,7 +117,9 @@ int CFileSMB::Stat(const CURL& url, struct __stat64* buffer)
 
 bool CFileSMB::Exists(const CStdString& strPath)
 {	
-	CURL url;
+        CSingleLock lock(xbsmb_f);
+	
+        CURL url;
 	FILE *file = fopen(strPath.c_str(), "rb");
 	
 	if(file != NULL)
