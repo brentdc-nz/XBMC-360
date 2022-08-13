@@ -22,7 +22,7 @@ public:
 	bool Load();
 	bool SaveSettings(const CStdString& strSettingsFile) const;
 	void Save() const;
-
+	void ClearSources();
 	bool AddShare(const CStdString &type, const CMediaSource &share);
 	VECSOURCES *GetSourcesFromType(const CStdString &type);
 	bool DeleteSource(const CStdString &strType, const CStdString strName, const CStdString strPath, bool virtualSource = false);

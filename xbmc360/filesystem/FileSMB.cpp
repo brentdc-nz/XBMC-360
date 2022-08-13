@@ -33,11 +33,17 @@ bool CFileSMB::OpenDir(const CURL& strURL, bool bIsOk)
 {
 	CSingleLock lock(xbsmb_f);
 
-	xbsmb_f.Init();
-
-	xbsmb_f.OpenDir(strURL);
-
-	return true;
+	try
+	{
+		xbsmb_f.Init();
+		xbsmb_f.OpenDir(strURL);
+		return bIsOk = true;
+	}
+	catch(...)
+	{
+		CLog::Log(LOGERROR, "Failed To Open The Following Directory: %s", strURL);
+		return bIsOk = false;
+	}
 }
 
 bool CFileSMB::OpenForWrite(const CURL& strURL, bool bOverWrite)
@@ -50,12 +56,12 @@ bool CFileSMB::OpenForWrite(const CURL& strURL, bool bOverWrite)
 		xbsmb_f.Init();
 		xbsmb_f.OpenFile(strURL);
 		xbsmb_f.Write(static_cast<uint8_t*>(lpBuf), (unsigned int)uiBufSize);
-		return bOverWrite;
+		return bOverWrite = true;
 	}
 	catch(...)
 	{
-	 CLog::Log(LOGERROR, "CFileSMB::OpenForWrite: Failed to Open to write");
-	 return bOverWrite = false;
+		CLog::Log(LOGERROR, "Failed to Open to write");
+		return bOverWrite = false;
 	}
 	return false; 
 }
@@ -111,23 +117,19 @@ int CFileSMB::Stat(const CURL& url, struct __stat64* buffer)
 
 bool CFileSMB::Exists(const CStdString& strPath)
 {	
-#ifdef WIP
-	CSingleLock lock(xbsmb_f);
-
-	if(strPath.size() == 0)
+	CURL url;
+	FILE *file = fopen(strPath.c_str(), "rb");
+	
+	if(file != NULL)
 	{
-	 return 0;
+		fclose(file);
+		return true;
 	}
-
-	switch('read')
+	
+	else
 	{
-	case 1:
-			CLog::Log(LOGNOTICE, "Reading dir");
-			xbsmb_f.ReadDir();
-			break;
+		xbsmb_f.OpenDir(url.GetFileName());
+		return false;
 	}
-#else
-	CLog::Log(LOGWARNING, "CFileSMB::Exists() is still working in progress");
-#endif
-	return false;
+	return true;
 }

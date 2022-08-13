@@ -2,9 +2,10 @@
 #define CFILEBROWSER_H
 
 #include "..\utils\StdString.h"
+#include "File.h"
 #include <vector>
 
-class CFileBrowser
+class CFileBrowser : public XFILE::CFile
 {
 public:
 	CFileBrowser();

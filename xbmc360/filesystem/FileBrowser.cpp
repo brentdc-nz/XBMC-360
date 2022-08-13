@@ -117,7 +117,7 @@ CStdString CFileBrowser::GetFolderFTPLongDescription(CStdString strFolder)
 	else
 		strFullPath = GetCurrentPath() + "\\" + strFolder;
 
-	if(CUtil::FileExists(strFullPath)) // TODO: chnage to CFile::Exists
+	if(CFile::Exists(strFullPath)) // TODO: chnage to CFile::Exists
 	{
 		DWORD dwAttr = GetFileAttributes(strFullPath.c_str());
 		char execute = 'x';

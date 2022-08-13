@@ -24,6 +24,7 @@ public:
 
 	CStdString strName; // Name of the share, can be choosen freely
 	CStdString strPath; // Path of the share, eg. iso9660:// or F:
+	CStdString m_strThumbnailImage;
 	std::vector<CStdString> vecPaths;
 	eSourceType m_iDriveType;
 };

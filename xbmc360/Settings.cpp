@@ -34,9 +34,17 @@ void CSettings::Initialize()
 	m_logFolder = "D:\\";
 }
 
+void CSettings::ClearSources()
+{
+	// Clear sources, then load xml file...
+	m_vecProgramSources.clear();
+	m_vecVideoSources.clear();
+	m_vecMusicSources.clear();
+	m_vecPictureSources.clear();
+}
+
 bool CSettings::Load()
 {
-	// TODO: Probably Move This on CApplication::Create();
 	// Load settings file...
 	CLog::Log(LOGNOTICE, "loading %s", SETTINGS_FILE);
 
@@ -47,11 +55,7 @@ bool CSettings::Load()
 		return false;
 	}
 
-	// Clear sources, then load xml file...
-	m_vecProgramSources.clear();
-	m_vecVideoSources.clear();
-	m_vecMusicSources.clear();
-	m_vecPictureSources.clear();
+	CSettings::ClearSources();
 
 	CStdString strXMLFile = SOURCES_FILE; //GetSourcesFile(); // TODO
 
@@ -253,7 +257,7 @@ void CSettings::GetSources(const TiXmlElement* pRootElement, const CStdString& s
 	}
 }
 
-bool CSettings::SetSources(TiXmlNode *root, const char *section, const VECSOURCES &shares) //TODO: Thumbnails
+bool CSettings::SetSources(TiXmlNode *root, const char *section, const VECSOURCES &shares)
 {
 	TiXmlElement sectionElement(section);
 	TiXmlNode *sectionNode = root->InsertEndChild(sectionElement);
@@ -271,8 +275,8 @@ bool CSettings::SetSources(TiXmlNode *root, const char *section, const VECSOURCE
 			for(unsigned int i = 0; i < share.vecPaths.size(); i++)
 				XMLUtils::SetPath(&source, "path", share.vecPaths[i]);
 
-//			if(!share.m_strThumbnailImage.IsEmpty())
-//				XMLUtils::SetPath(&source, "thumbnail", share.m_strThumbnailImage);
+			if(!share.m_strThumbnailImage.IsEmpty())
+				XMLUtils::SetPath(&source, "thumbnail", share.m_strThumbnailImage);
 
 			sectionNode->InsertEndChild(source);
 		}
@@ -379,10 +383,10 @@ bool CSettings::GetSource(const CStdString &category, const TiXmlNode *source, C
 
 		share.FromNameAndPaths(category, strName, verifiedPaths);
 
-		if(pThumbnailNode) // TODO
+		if(pThumbnailNode)
 		{
-//			if(pThumbnailNode->FirstChild())
-//				share.m_strThumbnailImage = pThumbnailNode->FirstChild()->Value();
+			if(pThumbnailNode->FirstChild())
+				share.m_strThumbnailImage = pThumbnailNode->FirstChild()->Value();
 		}
 		return true;
 	}
