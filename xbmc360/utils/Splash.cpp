@@ -21,10 +21,7 @@
 #include "Splash.h"
 #include "Log.h"
 #include "..\guilib\GUIImage.h"
-#include "..\filesystem\File.h"
 #include "..\guilib\GUIButtonControl.h"
-
-using namespace XFILE;
 
 CSplash::CSplash(const CStdString& imageName)
 {

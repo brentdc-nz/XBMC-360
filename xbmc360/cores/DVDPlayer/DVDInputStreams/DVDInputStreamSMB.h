@@ -3,7 +3,7 @@
 
 #include "DVDInputStream.h"
 
-class CDVDInputStreamSMB : public CDVDInputStream
+class CDVDInputStreamSMB : public CDVDInputStream, XFILE::CFile
 {
 public:
 	CDVDInputStreamSMB();
@@ -17,7 +17,7 @@ public:
 	virtual __int64 GetLength();
 
 protected:
-	XFILE::CFile* m_pFile;
+	CFile* m_pFile;
 	bool m_eof;
 };
 

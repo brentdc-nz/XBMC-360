@@ -1,10 +1,7 @@
 #include "AdvancedSettings.h"
 #include "guilib\tinyxml\tinyxml.h"
-#include "filesystem\File.h"
 #include "utils\Log.h"
 #include "guilib\XMLUtils.h"
-
-using namespace XFILE;
 
 CAdvancedSettings g_advancedSettings;
 

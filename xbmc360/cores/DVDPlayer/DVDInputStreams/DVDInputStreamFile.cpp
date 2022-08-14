@@ -3,8 +3,6 @@
 #include "utils/URIUtils.h"
 #include "FileSystem/File.h"
 
-using namespace XFILE;
-
 CDVDInputStreamFile::CDVDInputStreamFile() : CDVDInputStream(DVDSTREAM_TYPE_FILE)
 {
 	m_pFile = NULL;
@@ -28,7 +26,7 @@ bool CDVDInputStreamFile::Open(const char* strFile, const std::string& content)
 	unsigned int flags = READ_TRUNCATED/* | READ_BITRATE | READ_CHUNKED*/;
   
 //	if(CFileItem(strFile, false).IsInternetStream())
- //   flags |= READ_CACHED;
+//   flags |= READ_CACHED;
 
 	// Open file in binary mode
 	if (!m_pFile->Open(strFile, flags))

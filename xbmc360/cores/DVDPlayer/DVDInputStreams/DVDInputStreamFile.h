@@ -4,7 +4,7 @@
 #include "DVDInputStream.h"
 #include "filesystem\File.h"
 
-class CDVDInputStreamFile : public CDVDInputStream
+class CDVDInputStreamFile : public CDVDInputStream, XFILE::CFile
 {
 public:
 	CDVDInputStreamFile();
@@ -20,7 +20,7 @@ public:
 	virtual bool IsEOF();
 
 protected:
-	XFILE::CFile* m_pFile;
+	CFile* m_pFile;
 	bool m_eof;
 };
 

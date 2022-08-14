@@ -2,8 +2,8 @@
 #define H_CADVANCEDSETTINGS
 
 #include "utils\StdString.h"
-
-class CAdvancedSettings
+#include "filesystem\File.h"
+class CAdvancedSettings : public XFILE::CFile
 {
 public:
 	CAdvancedSettings();

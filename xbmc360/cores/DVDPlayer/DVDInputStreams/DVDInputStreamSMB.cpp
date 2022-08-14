@@ -1,7 +1,5 @@
 #include "DVDInputStreamSMB.h"
 
-using namespace XFILE;
-
 CDVDInputStreamSMB::CDVDInputStreamSMB() : CDVDInputStream(DVDSTREAM_TYPE_FFMPEG)
 {
 	m_pFile = NULL;

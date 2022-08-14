@@ -23,8 +23,9 @@
 
 #include "StdString.h"
 #include "Thread.h"
+#include "..\filesystem\File.h"
 
-class CSplash : public CThread
+class CSplash : public CThread, XFILE::CFile
 {
 public:
 	CSplash(const CStdString& imageName);
