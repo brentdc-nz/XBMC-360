@@ -109,7 +109,7 @@ void CRenderManager::ReleaseImage()
 
 void CRenderManager::PrepareDisplay()
 {
-    CSharedLock lock(m_sharedSection);
+	CSharedLock lock(m_sharedSection);
 
 //	if (m_bPauseDrawing) return;
 
