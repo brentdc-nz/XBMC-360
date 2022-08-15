@@ -1,6 +1,5 @@
-//Copyright Wolf3s 2022
 #include "FileFTP.h"
-#include "..\utils\log.h"
+#include "utils\log.h"
 
 #include <fcntl.h>
 
@@ -9,12 +8,10 @@ CFTPFileWriter *xbftp_f;
 
 CFileFTP::CFileFTP()
 {
-	
 }
 
 CFileFTP::~CFileFTP()
 {
-	
 }
 
 bool CFileFTP::Open(const CURL &strURL, bool bBinarry)
@@ -49,17 +46,17 @@ __int64 CFileFTP::Seek(__int64 iFilePosition, int iWhence)
 	{
 		return 0;
 	}
-	
 	else
 	{
-	   fseek(m_pFile, NULL, iWhence);	
+		fseek(m_pFile, NULL, iWhence);	
 	}
+	
 	return 0;
 }
 
 int64_t CFileFTP::GetLength()
 {
-  return 0;
+	return 0;
 }
 
 int64_t CFileFTP::GetPosition()
