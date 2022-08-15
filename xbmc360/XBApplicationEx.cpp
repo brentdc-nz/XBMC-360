@@ -20,8 +20,8 @@ CXBApplicationEX::CXBApplicationEX()
 	ZeroMemory( &m_d3dpp, sizeof(m_d3dpp) );
 	XVIDEO_MODE VideoMode;
 	XGetVideoMode( &VideoMode );
-	m_d3dpp.BackBufferWidth        = 1280;//1920;//min( VideoMode.dwDisplayWidth, 1280 ); //MARTY FIXME WIP
-	m_d3dpp.BackBufferHeight       = 720;//1080;//min( VideoMode.dwDisplayHeight, 720 ); //MARTY FIXME WIP
+	m_d3dpp.BackBufferWidth        = 1280;//min( VideoMode.dwDisplayWidth, 1280 ); //MARTY FIXME WIP
+	m_d3dpp.BackBufferHeight       = 720;//min( VideoMode.dwDisplayHeight, 720 ); //MARTY FIXME WIP
 	m_d3dpp.BackBufferFormat       = D3DFMT_LIN_X8R8G8B8;
 	m_d3dpp.BackBufferCount        = 1;
 	m_d3dpp.EnableAutoDepthStencil = FALSE;

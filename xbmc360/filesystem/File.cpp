@@ -150,7 +150,7 @@ bool CFile::Exists(const CStdString& strFileName)
 	// TODO - Check other future protocols i.e. ftp, http, etc
 	//
 
-	//Check HDD
+	// Check HDD
 	if(CFileHD::Exists(strFileName)) return true;
 
 	CLog::Log(LOGERROR, "%s - Error checking for %s", __FUNCTION__, strFileName.c_str());

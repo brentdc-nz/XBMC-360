@@ -29,7 +29,7 @@ public:
 	const CStdString& GetFileType() const;
 	const CStdString& GetShareName() const;
 	const CStdString& GetOptions() const;
-	const CStdString  GetFileNameWithoutPath() const; /* return the filename excluding path */
+	const CStdString  GetFileNameWithoutPath() const; // Return the filename excluding path
 
 	inline const char GetDirectorySeparator() const;
 
@@ -41,6 +41,7 @@ public:
 	void GetURLWithoutFilename(CStdString& strURL) const;
 	CURL& operator= (const CURL& source);
 	bool IsLocal() const;
+	static bool IsFullPath(const CStdString &url); // Return true if the URL includes the full path
 
 protected:
 	int m_iPort;

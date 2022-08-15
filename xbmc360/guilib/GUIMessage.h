@@ -35,6 +35,7 @@
 #define GUI_MSG_PAGE_DOWN       23  // Page down
 #define GUI_MSG_MOVE            24  // Message is sent to the window from the base control class when it's
                                     // been asked to move.  dwParam1 contains direction.
+#define GUI_MSG_FOCUSED         26  // A control has become focused
 
 #define GUI_MSG_USER         1000
 

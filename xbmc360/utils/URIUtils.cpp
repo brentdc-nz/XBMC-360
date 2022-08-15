@@ -84,6 +84,13 @@ bool URIUtils::IsMultiPath(const CStdString& strPath)
 	return strPath.Left(10).Equals("multipath:");
 }
 
+bool URIUtils::IsHD(const CStdString& strFileName)
+{
+	CURL url(strFileName);
+
+	return url.IsLocal();
+}
+
 bool URIUtils::HasSlashAtEnd(const CStdString& strFile)
 {
 	if(strFile.size() == 0)

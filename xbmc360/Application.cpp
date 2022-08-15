@@ -19,6 +19,7 @@
 #include "cores\PlayerCoreFactory.h"
 #include "AdvancedSettings.h"
 #include "utils\URIUtils.h"
+#include "guilib\SkinInfo.h"
 
 // Window includes
 #include "guilib\windows\GUIWindowHome.h"
@@ -91,6 +92,7 @@ bool CApplication::Create()
 
 	// Transfer the resolution information to our graphics context
 	g_graphicsContext.SetD3DParameters(&m_d3dpp);
+	g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
 
 	if(m_pD3D->CreateDevice(0, D3DDEVTYPE_HAL, NULL, D3DCREATE_HARDWARE_VERTEXPROCESSING, &m_d3dpp, &m_pd3dDevice) != S_OK)
 	{
@@ -212,6 +214,13 @@ bool CApplication::Initialize()
 	g_windowManager.Add(new CGUIDialogMediaSource);     // window id = 129
 
 	g_windowManager.SetCallback(*this);
+
+	int iResolution = g_graphicsContext.GetVideoResolution();
+		CLog::Log(LOGINFO, "GUI format %ix%i %s",
+			g_settings.m_ResInfo[iResolution].iWidth,
+			g_settings.m_ResInfo[iResolution].iHeight,
+			g_settings.m_ResInfo[iResolution].strMode);
+
 	g_windowManager.Initialize();
 
 	m_slowTimer.StartZero();
@@ -276,6 +285,9 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
 	CLog::Log(LOGINFO, "Delete old skin...");
 	UnloadSkin();	
+
+	// Load in the skin.xml file if it exists
+	g_SkinInfo.Load(strSkinPath);
 
 	g_graphicsContext.SetMediaDir(strSkinPath);
 
@@ -603,6 +615,9 @@ void CApplication::Render()
 
 	// Now render any dialogs
 	g_windowManager.RenderDialogs();
+
+	// Reset image scaling and effect states
+	g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), false);
 
 	GRAPHICSCONTEXT_LOCK()
 	m_pd3dDevice->EndScene();

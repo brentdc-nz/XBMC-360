@@ -46,6 +46,7 @@ CGUIControl::CGUIControl()
 	m_dwControlDown = 0;
 
 	ControlType = GUICONTROL_UNKNOWN;
+	m_parentControl = NULL;
 }
 
 CGUIControl::CGUIControl(int parentID, int controlID, float posX, float posY, float width, float height)
@@ -70,6 +71,9 @@ CGUIControl::CGUIControl(int parentID, int controlID, float posX, float posY, fl
 	m_dwControlRight = 0;
 	m_dwControlUp = 0;
 	m_dwControlDown = 0;
+
+	ControlType = GUICONTROL_UNKNOWN;
+	m_parentControl = NULL;
 }
 
 CGUIControl::~CGUIControl(void)
@@ -153,7 +157,7 @@ void CGUIControl::FreeResources()
 // 1. animate and set the animation transform
 // 2. if visible, paint
 // 3. reset the animation transform
-void CGUIControl::DoRender()
+void CGUIControl::DoRender(unsigned int currentTime)
 {
 /*	Animate(currentTime);
 	if (m_hasCamera)
@@ -259,21 +263,34 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
 		switch(message.GetMessage())
 		{
 			case GUI_MSG_SETFOCUS:
-				// If control is disabled then move 2 the next control
-				if (!CanFocus())
-				{
-					CLog::Log(LOGERROR, "Control %d in window %d has been asked to focus, but it can't", GetID(), GetParentID());
-					return false;
-				}
-				SetFocus(true);
-
-				return true;
-				break;
+			// If control is disabled then move 2 the next control
+			if(!CanFocus())
+			{
+				CLog::Log(LOGERROR, "Control %u in window %u has been asked to focus, "
+						  "but it can't",
+						  GetID(), GetParentID());
+				return false;
+			}
+			SetFocus(true);
+			{
+				// Inform our parent window that this has happened
+				CGUIMessage message(GUI_MSG_FOCUSED, GetParentID(), GetID());
+				if(m_parentControl)
+					m_parentControl->OnMessage(message);
+			}
+			return true;
+			break;
 
 			case GUI_MSG_LOSTFOCUS:
+			{
 				SetFocus(false);
+				// And tell our parent so it can unfocus
+				if(m_parentControl)
+					m_parentControl->OnMessage(message);
+				
 				return true;
-				break;
+			}
+			break;
 
 			case GUI_MSG_VISIBLE:
 				m_visible = m_visibleCondition ? g_infoManager.GetBool(m_visibleCondition) : true;

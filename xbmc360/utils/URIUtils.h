@@ -35,6 +35,7 @@ public:
 	static bool IsURL(const CStdString& strFile);
 	static bool IsRemote(const CStdString& strFile);
 	static bool IsMultiPath(const CStdString& strPath);
+	static bool IsHD(const CStdString& strFileName);
 
 	static bool HasSlashAtEnd(const CStdString& strFile);
 

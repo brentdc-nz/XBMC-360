@@ -64,8 +64,8 @@ private:
 	int m_iScrollBar;
 	int m_iObjectCounterLabel;
 
-	CGUID3DTexture m_imgFocus;
-	CGUID3DTexture m_imgNoFocus;
+	CGUITextureD3D m_imgFocus;
+	CGUITextureD3D m_imgNoFocus;
 
 	std::vector<CGUIListItem*> m_vecItems;
 };

@@ -360,8 +360,8 @@ void CRGBRenderer::Render()
 		return;
 	}
 
-	// Build the world-view-projection matrix and pass it into the vertex shader
-	D3DXMATRIX matWVP = m_matWorld * m_matView * m_matProj;
+    // Build the world-view-projection matrix and pass it into the vertex shader
+    D3DXMATRIX matWVP = m_matWorld * m_matView * m_matProj;
 	m_pd3dDevice->SetVertexShaderConstantF(0, (FLOAT*)&matWVP, 4);
 
 	// We are passing the vertices down a "stream", so first we need

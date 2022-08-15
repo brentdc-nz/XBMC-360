@@ -1,13 +1,14 @@
 #ifndef GUILIB_GUIWINDOW_H
 #define GUILIB_GUIWINDOW_H
 
-#include "..\utils\StdString.h"
+#include "utils\StdString.h"
 #include "tinyXML\tinyxml.h"
+#include "GUIControlGroup.h"
 #include "GUIControl.h"
 #include "GUIMessage.h"
 #include "key.h"
 
-class CGUIWindow
+class CGUIWindow : public CGUIControlGroup
 {
 public:
 	CGUIWindow(int id, const CStdString &xmlFile);
@@ -20,14 +21,13 @@ public:
 	bool Load(const CStdString& strFileName, bool bContainsPath = false);
 
 	virtual bool OnMessage(CGUIMessage& message);
-	void AddControl(CGUIControl* pControl);
 	void InsertControl(CGUIControl *control, const CGUIControl *insertPoint);
 	void RemoveControl(DWORD dwId);
 
 	virtual void OnInitWindow();
 	virtual void OnDeinitWindow();
 	virtual void OnWindowUnload() {};
-
+	virtual bool RenderAnimation(unsigned int time);
 	virtual void AllocResources(bool forceLoad = false );
 	virtual void FreeResources(bool forceUnload = false);
 
@@ -57,6 +57,23 @@ public:
 	DWORD GetIDRange() const { return m_dwIDRange; };
 	void SetID(int id) { iWindowID = id; };
 
+
+	// Sets the value of a property referenced by a key.
+	// param key name of the property to set
+	// param value value to set, may be a string, integer, boolean or double.
+	void SetProperty(const CStdString &key, const CStdString &value);
+	void SetProperty(const CStdString &key, const char *value);
+	void SetProperty(const CStdString &key, int value);
+	void SetProperty(const CStdString &key, bool value);
+	void SetProperty(const CStdString &key, double value);
+
+	CStdString GetProperty(const CStdString &key) const;
+	int GetPropertyInt(const CStdString &key) const;
+	bool GetPropertyBool(const CStdString &key) const;
+	double GetPropertyDouble(const CStdString &key) const;
+
+	void ClearProperties();
+
 protected:
 	// Control state saving on window close
 	virtual void SaveControlStates();
@@ -66,7 +83,7 @@ protected:
 
 	virtual bool LoadXML(const CStdString& strPath, const CStdString &strLowerPath);  ///< Loads from the given file
 	bool Load(TiXmlDocument &xmlDoc);   	
-	void LoadControl(TiXmlElement* pControl);
+	void LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup);
 
 	virtual void OnWindowLoaded();
 
@@ -84,10 +101,22 @@ protected:
 	vector<CGUIControl*> m_vecControls;
 	typedef std::vector<CGUIControl*>::iterator ivecControls;
 	
+	struct icompare
+	{
+		bool operator()(const CStdString &s1, const CStdString &s2) const
+		{
+			return s1.CompareNoCase(s2) < 0;
+		}
+	};
+
+	std::map<CStdString, CStdString, icompare> m_mapProperties;
+
 	DWORD m_dwDefaultFocusControlID;
 
 	bool m_WindowAllocated;
 	bool m_dynamicResourceAlloc;
+	RESOLUTION m_coordsRes; // Resolution that the window coordinates are in.
+	bool m_needsScaling;
 
 	// Control states
 	bool m_saveLastControl;

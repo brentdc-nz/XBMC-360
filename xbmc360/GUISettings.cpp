@@ -47,6 +47,8 @@ CSettingInt::CSettingInt(int iOrder, const char *strSetting, int iLabel, int iDa
 	m_iFormat = -1;
 	m_iLabelMin = -1;
 	m_strFormat = "%i";
+
+	g_guiSettings.m_LookAndFeelResolution = HDTV_720p;
 }
 
 void CSettingInt::FromString(const CStdString &strValue)
@@ -71,10 +73,14 @@ CGUISettings::CGUISettings()
 	AddCategory(7,"LookAndFeel", 14037);
 	AddString(1, "LookAndFeel.Skin", 166, DEFAULT_SKIN, SPIN_CONTROL_TEXT);
 	AddString(2, "LookAndFeel.Language", 248, "English", SPIN_CONTROL_TEXT);
+	AddInt(5, "lookandfeel.skinzoom", 20109, 0, -20, 2, 20, SPIN_CONTROL_INT);
 
 	AddCategory(7, "ScreenSaver", 360);
 	AddString(1, "ScreenSaver.Mode", 356, "Dim", SPIN_CONTROL_TEXT);
 	AddInt(2, "ScreenSaver.Time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS); //TODO
+
+	AddCategory(7, "videoscreen", 131);
+	AddInt(1, "videoscreen.resolution",169,(int)AUTORES, (int)HDTV_720p, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
 }
 
 CGUISettings::~CGUISettings()
@@ -219,6 +225,8 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement)
 			}
 		}
 	}
+
+//	g_guiSettings.m_LookAndFeelResolution = (RESOLUTION)GetInt("videoscreen.resolution");
 }
 
 void CGUISettings::SaveXML(TiXmlNode *pRootNode)

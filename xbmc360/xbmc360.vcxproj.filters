@@ -224,9 +224,6 @@
     <ClInclude Include="guilib\GUIUserMessage.h">
       <Filter>Header Files\guilib</Filter>
     </ClInclude>
-    <ClInclude Include="guilib\GUID3DTexture.h">
-      <Filter>Header Files\guilib</Filter>
-    </ClInclude>
     <ClInclude Include="guilib\GUIImage.h">
       <Filter>Header Files\guilib</Filter>
     </ClInclude>
@@ -318,9 +315,6 @@
       <Filter>Header Files\guilib</Filter>
     </ClInclude>
     <ClInclude Include="guilib\GUISpinControlEx.h">
-      <Filter>Header Files\guilib</Filter>
-    </ClInclude>
-    <ClInclude Include="guilib\GUITexture.h">
       <Filter>Header Files\guilib</Filter>
     </ClInclude>
     <ClInclude Include="SettingsControls.h">
@@ -737,8 +731,23 @@
     <ClInclude Include="guilib\GUIProgressControl.h">
       <Filter>Header Files\guilib</Filter>
     </ClInclude>
-    <ClInclude Include="filesystem\FileFTP.h">
-      <Filter>Header Files\filesystem</Filter>
+    <ClInclude Include="guilib\Geometry.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIControlGroup.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIMultiImage.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\TransformMatrix.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUITexture.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUITextureD3D.h">
+      <Filter>Header Files\guilib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -797,9 +806,6 @@
       <Filter>Source Files\guilib\windows</Filter>
     </ClCompile>
     <ClCompile Include="guilib\GUIMessage.cpp">
-      <Filter>Source Files\guilib</Filter>
-    </ClCompile>
-    <ClCompile Include="guilib\GUID3DTexture.cpp">
       <Filter>Source Files\guilib</Filter>
     </ClCompile>
     <ClCompile Include="guilib\GUIImage.cpp">
@@ -1339,8 +1345,17 @@
     <ClCompile Include="guilib\GUIProgressControl.cpp">
       <Filter>Source Files\guilib</Filter>
     </ClCompile>
-    <ClCompile Include="filesystem\FileFTP.cpp">
-      <Filter>Source Files\filesystem</Filter>
+    <ClCompile Include="guilib\GUIControlGroup.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIMultiImage.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUITexture.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUITextureD3D.cpp">
+      <Filter>Source Files\guilib</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

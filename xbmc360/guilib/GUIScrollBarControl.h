@@ -21,7 +21,7 @@
  *
  */
 
-#include "GUID3DTexture.h"
+#include "GUITextureD3D.h"
 #include "GUIControl.h"
 
 class CGUIScrollBar : public CGUIControl
@@ -50,9 +50,9 @@ private:
 	int m_pageSize;
 	bool m_binvalidated;
 
-	CGUID3DTexture m_guiBackground;
-	CGUID3DTexture m_guiBarNoFocus;
-	CGUID3DTexture m_guiBarFocus;
+	CGUITextureD3D m_guiBackground;
+	CGUITextureD3D m_guiBarNoFocus;
+	CGUITextureD3D m_guiBarFocus;
 };
 
 #endif //GUILIB_GUISCROLLBAR_H

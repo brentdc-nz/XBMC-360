@@ -5,6 +5,7 @@
 #include "guilib\tinyxml\tinyxml.h"
 #include "MediaManager.h"
 #include "VideoSettings.h"
+#include "guilib\GraphicContext.h"
 
 #define DEFAULT_SKIN "Project Mayhem III"
 #define SETTINGS_FILE "D:\\settings.xml"
@@ -34,6 +35,8 @@ public:
 	int m_iSystemTimeTotalUp; // Uptime in minutes!
 
 	CVideoSettings m_currentVideoSettings;
+
+	RESOLUTION_INFO m_ResInfo[10];
 
 protected:
 	void GetSources(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSOURCES& items);

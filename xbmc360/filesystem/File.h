@@ -2,8 +2,8 @@
 #define H_CFILE
 
 #include "FileBase.h"
-#include "..\utils\StdString.h"
-#include "..\utils\BitstreamStats.h"
+#include "utils\StdString.h"
+#include "utils\BitstreamStats.h"
 
 // Indicate that caller can handle truncated reads, where function returns before entire buffer has been filled
 #define READ_TRUNCATED 0x1

@@ -21,8 +21,7 @@
 #ifndef GUILIB_GUIBUTTONCONTROL_H
 #define GUILIB_GUIBUTTONCONTROL_H
 
-#include "GUITexture.h"
-#include "GUID3DTexture.h"
+#include "GUITextureD3D.h"
 #include "GUILabel.h"
 #include "GUIControl.h"
 
@@ -51,8 +50,8 @@ protected:
 
 	void OnClick();
 
-	CGUID3DTexture m_imgFocus;
-	CGUID3DTexture m_imgNoFocus;
+	CGUITextureD3D m_imgFocus;
+	CGUITextureD3D m_imgNoFocus;
 
 	CGUILabel      m_label;
 	CGUILabel      m_label2;
