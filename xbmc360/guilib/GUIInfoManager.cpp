@@ -323,29 +323,32 @@ bool CGUIInfoManager::GetBool(int condition)
 {
 	bool bReturn = false;
 	
-	if ( condition == SYSTEM_ALWAYS_TRUE)
+	if(condition == SYSTEM_ALWAYS_TRUE)
 		bReturn = true;
-	else if (condition == SYSTEM_ALWAYS_FALSE)
+	else if(condition == SYSTEM_ALWAYS_FALSE)
 		bReturn = false;
-	else if (condition == PLAYER_SHOWCODEC)
+	else if(condition == PLAYER_SHOWCODEC)
 		bReturn = m_playerShowCodec;
-	else if (condition >= MULTI_INFO_START && condition <= MULTI_INFO_END)
+	else if(condition >= MULTI_INFO_START && condition <= MULTI_INFO_END)
 	{
-		// cache return value
+		// Cache return value
 		bool result = GetMultiInfoBool(m_multiInfo[condition - MULTI_INFO_START]);
-//		if (!item)
+//		if(!item)
 //			CacheBool(condition1, contextWindow, result); //TODO
 		return result;
 	}
-	else if (g_application.IsPlaying())
+	else if(g_application.IsPlaying())
 	{
-		switch (condition)
+		switch(condition)
 		{
 			case PLAYER_HAS_MEDIA:
 				bReturn = true;
 				break;
 		}
 	}
+
+	// Cache return value
+	if(condition < 0) bReturn = !bReturn;
 
 	return bReturn;
 }

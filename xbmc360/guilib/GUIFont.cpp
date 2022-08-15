@@ -31,7 +31,7 @@ bool CGUIFont::Load(const CStdString& strFontName,const CStdString& strFilename,
 	strFontPath.Replace("D:\\", "file://game:/");
 #endif
 
-	strFontPath += "fonts/" + strFilename;
+	strFontPath += "/fonts/" + strFilename;
 
 	// Convert to wide for our wide members
 	CStringUtils::StringtoWString(strFontName, m_wstrFontName);

@@ -1,0 +1,331 @@
+<window id="0">
+	<defaultcontrol>4</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+	
+		<control>
+			<description>background image</description>
+			<type>image</type>			
+			<posx>320</posx>
+			<posy>135</posy>
+			<width>980</width>
+			<height>480</height>
+			<visible>control.hasfocus(4)</visible>			
+			<texture>home_myprograms.png</texture>
+		</control>	
+		
+		<control>
+			<description>background image</description>
+			<type>image</type>			
+			<posx>320</posx>
+			<posy>135</posy>
+			<width>980</width>
+			<height>480</height>
+			<visible>control.hasfocus(5)</visible>			
+			<texture>home-myvideos2.png</texture>
+		</control>	
+
+		<control>
+			<description>background image</description>
+			<type>image</type>			
+			<posx>320</posx>
+			<posy>135</posy>
+			<width>980</width>
+			<height>480</height>
+			<visible>control.hasfocus(6)</visible>			
+			<texture>home_mymusic.png</texture>
+		</control>			
+
+		<control>
+			<description>background image</description>
+			<type>image</type>			
+			<posx>320</posx>
+			<posy>135</posy>
+			<width>980</width>
+			<height>480</height>
+			<visible>control.hasfocus(7)</visible>			
+			<texture>home_mypictures.png</texture>
+		</control>	
+
+		<control>
+			<description>background image</description>
+			<type>image</type>			
+			<posx>320</posx>
+			<posy>135</posy>
+			<width>980</width>
+			<height>480</height>
+			<visible>control.hasfocus(8)</visible>			
+			<texture>home_myweather.png</texture>
+		</control>			
+		
+			<control>
+			<description>background image</description>
+			<type>image</type>			
+			<posx>320</posx>
+			<posy>135</posy>
+			<width>980</width>
+			<height>480</height>
+			<visible>control.hasfocus(9)</visible>			
+			<texture>home_settings.png</texture>
+		</control>	
+
+		<control>
+			<description>background image</description>
+			<type>image</type>			
+			<posx>320</posx>
+			<posy>135</posy>
+			<width>980</width>
+			<height>480</height>
+			<visible>control.hasfocus(10)</visible>			
+			<texture>home_settings.png</texture>
+		</control>			
+		
+	    <control>
+			<description>video preview window</description>
+			<type>videowindow</type>
+			<id>0</id>
+			<posx>320</posx>
+			<posy>135</posy>
+			<width>980</width>
+			<height>480</height>
+			<visible>true</visible>
+		</control>	
+	
+		<control>
+			<description>background image</description>
+			<type>image</type>					
+			<posx>-5</posx>
+			<posy>135</posy>
+			<width>1288</width>
+			<height>485</height>
+			<texture>Home_Middle.png</texture>
+			<visible>true</visible>			
+		</control>
+		
+		<control>
+			<description>background image</description>
+			<type>image</type>				
+			<posx>-5</posx>
+			<posy>-20</posy>
+			<width>1288</width>
+			<height>321</height>
+			<texture>Home_Top.png</texture>
+			<visible>true</visible>			
+		</control>
+		
+		<control>
+			<description>background image </description>
+			<type>image</type>				
+			<posx>-5</posx>
+			<posy>570</posy>
+			<width>1288</width>
+			<height>153</height>
+			<texture>Home_Bottom.png</texture>
+			<visible>true</visible>			
+		</control>
+			
+		<control>
+			<type>image</type>	
+			<description>background image</description>
+			<posx>120</posx>
+			<posy>270</posy>
+			<width>500</width>
+			<height>305</height>
+			<visible>true</visible>			
+			<texture>home_buttons.png</texture>
+		</control>
+
+		<control>
+			<description>My Programs normal button</description>
+			<type>button</type>
+			<id>4</id>
+			<posx>200</posx>
+			<posy>300</posy>
+			<width>35</width>
+			<height>24</height>
+			<label>Programs</label>
+			<font>special13</font>
+			<onclick>XBMC.ActivateWindow(MyPrograms)</onclick>
+			<onleft>9</onleft>
+			<onright>9</onright>
+			<onup>9</onup>
+			<ondown>5</ondown>
+			<texturefocus>homebuttonsmallfocus.png</texturefocus>
+			<texturenofocus>homebuttonsmall.png</texturenofocus>
+			<textoffsetx>52</textoffsetx>
+			<textoffsety>-2</textoffsety>
+			<visible>true</visible>					
+		</control>	
+
+		<control>
+			<description>My videos normal button</description>
+			<type>button</type>
+			<id>5</id>
+			<posx>200</posx>
+			<posy>350</posy>
+			<width>35</width>
+			<height>24</height>
+			<label>Videos</label>
+			<font>special13</font>
+			<onclick>XBMC.ActivateWindow(MyVideos)</onclick>
+			<onleft>9</onleft>
+			<onright>9</onright>
+			<onup>4</onup>
+			<ondown>6</ondown>
+			<texturefocus>homebuttonsmallfocus.png</texturefocus>
+			<texturenofocus>homebuttonsmall.png</texturenofocus>
+			<textoffsetx>52</textoffsetx>
+			<textoffsety>-2</textoffsety>
+			<visible>true</visible>					
+		</control>
+		
+		<control>
+			<description>Music normal button</description>
+			<type>button</type>
+			<id>6</id>
+			<posx>200</posx>
+			<posy>400</posy>
+			<width>35</width>
+			<height>24</height>
+			<label>Music</label>
+			<font>special13</font>
+			<onclick>XBMC.ActivateWindow(MyMusic)</onclick>
+			<onleft>9</onleft>
+			<onright>9</onright>
+			<onup>5</onup>
+			<ondown>7</ondown>
+			<texturefocus>homebuttonsmallfocus.png</texturefocus>
+			<texturenofocus>homebuttonsmall.png</texturenofocus>
+			<textoffsetx>52</textoffsetx>
+			<textoffsety>-2</textoffsety>
+			<visible>true</visible>					
+		</control>	
+				
+		<control>
+			<description>Pictures normal button</description>
+			<type>button</type>
+			<id>7</id>
+			<posx>200</posx>
+			<posy>450</posy>
+			<width>35</width>
+			<height>24</height>
+			<label>Pictures</label>
+			<font>special13</font>
+			<onclick>XBMC.ActivateWindow(MyPictures)</onclick>
+			<onleft>9</onleft>
+			<onright>9</onright>
+			<onup>6</onup>
+			<ondown>8</ondown>
+			<texturefocus>homebuttonsmallfocus.png</texturefocus>
+			<texturenofocus>homebuttonsmall.png</texturenofocus>
+			<textoffsetx>52</textoffsetx>
+			<textoffsety>-2</textoffsety>
+			<visible>true</visible>					
+		</control>	
+		
+		<control>
+			<description>Weather normal button</description>
+			<type>button</type>
+			<id>8</id>
+			<posx>200</posx>
+			<posy>500</posy>
+			<width>35</width>
+			<height>24</height>
+			<label>Weather</label>
+			<font>special13</font>
+			<onclick></onclick>
+			<onleft>9</onleft>
+			<onright>9</onright>
+			<onup>7</onup>
+			<ondown>9</ondown>
+			<texturefocus>homebuttonsmallfocus.png</texturefocus>
+			<texturenofocus>homebuttonsmall.png</texturenofocus>
+			<textoffsetx>52</textoffsetx>
+			<textoffsety>-2</textoffsety>
+			<visible>true</visible>					
+		</control>					
+
+		<control>
+			<description>Date Label</description>
+			<type>label</type>					
+			<width>255</width>
+			<posx>1090</posx>
+			<posy>95</posy>
+			<label>$INFO[System.Date]</label>
+			<align>right</align>
+			<font>special12</font>
+			<visible>true</visible>
+		</control>				
+								
+		<control>
+			<description>Time and date divider</description>
+			<type>label</type>				
+			<width>255</width>
+			<posx>1105</posx>
+			<posy>95</posy>
+			<label>|</label>
+			<align>left</align>
+			<font>special12</font>
+			<textcolor>60ffffff</textcolor>					
+			<visible>true</visible>
+		</control>				
+				
+		<control>
+			<description>Time label</description>
+			<type>label</type>			
+			<width>255</width>
+			<posx>1120</posx>
+			<posy>95</posy>
+			<label>$INFO[System.Time]</label>
+			<align>left</align>
+			<font>special12</font>
+			<textcolor>60ffffff</textcolor>
+			<visible>true</visible>
+		</control>	
+			
+		<control>
+			<description>Settings button</description>
+			<type>button</type>
+			<id>9</id>
+			<posx>180</posx>
+			<posy>562</posy>
+			<width>35</width>
+			<height>24</height>
+			<label>Settings</label>
+			<font>special12</font>
+			<onclick>XBMC.ActivateWindow(Settings)</onclick>
+			<onleft>9</onleft>
+			<onright>10</onright>
+			<onup>8</onup>
+			<ondown>4</ondown>
+			<texturefocus>homebuttonsmallfocus.png</texturefocus>
+			<texturenofocus>homebuttonsmall.png</texturenofocus>
+			<textoffsetx>52</textoffsetx>
+			<textoffsety>-2</textoffsety>
+			<visible>true</visible>					
+		</control>			
+		
+		<control>
+			<description>Power button</description>
+			<type>button</type>
+			<id>10</id>
+			<posx>1025</posx>
+			<posy>655</posy>
+			<width>52</width>
+			<height>52</height>
+			<label>-</label>
+			<font>-</font>
+			<onclick>XBMC.ActivateWindow(shutdownmenu)</onclick>
+			<onleft>8</onleft>
+			<onright>8</onright>
+			<onup>9</onup>
+			<ondown>4</ondown>
+			<texturefocus>home_power_focus.png</texturefocus>
+			<texturenofocus>home_power.png</texturenofocus>
+			<textoffsetx>52</textoffsetx>
+			<textoffsety>-2</textoffsety>
+			<visible>true</visible>					
+		</control>					
+				
+	</controls>
+</window>

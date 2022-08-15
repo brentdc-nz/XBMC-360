@@ -20,55 +20,20 @@
 #define GUI_MSG_SELECTED       10   // control = selected
 #define GUI_MSG_DESELECTED     11   // control = not selected
 
-#define GUI_MSG_SCROLL_DOWN    11   // Used for scrollbar
-#define GUI_MSG_SCROLL_UP      12   // Used for scrollbar
-
-#define GUI_MSG_LABEL_SET      13  // set the label of a control
-#define GUI_MSG_LABEL_RESET    14  // clear all labels of a control // add label control (for controls supporting more then 1 label)
-#define GUI_MSG_ITEMS_RESET    15  // Clear out all the items for the control
-#define GUI_MSG_ITEM_SELECTED  16  // ask control 2 return the selected item
-#define GUI_MSG_LABEL2_SET     17
-#define GUI_MSG_SHOWRANGE      18
-#define GUI_MSG_ITEM_SELECT    19 // ask control 2 select a specific item
-#define GUI_MSG_ITEM_ADD       20  // Add item to control
-#define GUI_MSG_FULLSCREEN     21  // should go to fullscreen window (vis or video)
-#define GUI_MSG_EXECUTE        22  // user has clicked on a button with <execute> tag
-
-#define GUI_MSG_NOTIFY_ALL     23  // message will be send to all active and inactive(!) windows, all active modal and modeless dialogs
-                                  // dwParam1 must contain an additional message the windows should react on
-
-#define GUI_MSG_REFRESH_THUMBS 22 // message is sent to all windows to refresh all thumbs
+#define GUI_MSG_LABEL_RESET     12  // Clear all labels of a control // add label control (for controls supporting more then 1 label)
+#define GUI_MSG_LABEL_ADD       13  // Add label control (for controls supporting more then 1 label)
+#define GUI_MSG_ITEMS_RESET     14  // Clear out all the items for the control
+#define GUI_MSG_ITEM_ADD        15  // Add item to control
+#define GUI_MSG_LABEL_SET       16  // Set the label of a control
+#define GUI_MSG_ITEM_SELECTED   17  // Ask control to return the selected item
+#define GUI_MSG_ITEM_SELECT     18  // Ask control to select a specific item
+#define GUI_MSG_EXECUTE         19  // User has clicked on a button with <execute> tag
+#define GUI_MSG_NOTIFY_ALL      20  // Message will be send to all active and inactive(!) windows, all active modal and modeless dialogs
 
 #define GUI_MSG_MOVE           24 // message is sent to the window from the base control class when it's
                                  // been asked to move.  dwParam1 contains direction.
 
-#define GUI_MSG_LABEL_BIND     25   // bind label control (for controls supporting more then 1 label)
-
-
-#define GUI_MSG_SCROLL_CHANGE  26  // A page control has changed the page number
-#define GUI_MSG_PAGE_UP        27  // Page up
-#define GUI_MSG_PAGE_DOWN      28  // Page down
-
-#define GUI_MSG_SELCHANGED     29  // selection within the control has changed
-
-#define GUI_MSG_FOCUSED        30  // a control has become focused
-
-#define GUI_MSG_WINDOW_RESET   31  // reset window to initial state
-
-#define GUI_MSG_PAGE_CHANGE    32  // a page control has changed the page number
-
-#define GUI_MSG_REFRESH_LIST   33 // message sent to all listing controls telling them to refresh their item layouts
-
-
-
-#define GUI_MSG_MOVE_OFFSET    35 // Instruct the contorl to MoveUp or MoveDown by offset amount
-
-#define GUI_MSG_SET_TYPE       36 ///< Instruct a control to set it's type appropriately7
-
-#define GUI_MSG_INVALIDATE     37 ///< Instruct all controls to refresh - usually due to sizing changes
-
-#define GUI_MSG_USER           1000
-
+#define GUI_MSG_USER         1000
 
 // Send message macros
 

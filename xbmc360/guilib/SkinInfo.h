@@ -34,9 +34,15 @@ public:
 	CSkinInfo();
 	~CSkinInfo();
 
+	void Load(const CStdString& skinDir, bool loadIncludes = true);
 	bool ResolveConstant(const CStdString &constant, float &value) const;
 
+	// Brief Get the full path to the specified file in the skin
+	// We search for XML files in the skin folder that best matches the current resolution
+	CStdString GetSkinPath(const CStdString& file, RESOLUTION *res = NULL, const CStdString& baseDir = "") const;
+
 protected:
+	CStdString m_strBaseDir;
 	CGUIIncludes m_includes;
 };
 

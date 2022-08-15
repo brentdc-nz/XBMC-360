@@ -133,6 +133,7 @@
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
       <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirenderd.lib;xmediad2.lib;Xonline.lib;libavformat.lib;libavfilter.lib;libavutil.lib;libswscale.lib;libavcodec.lib;pthreads.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\ffmpeg lib\vcproj\libavcodec\Xbox 360\Debug;..\ffmpeg lib\vcproj\libswscale\Xbox 360\Debug;..\ffmpeg lib\vcproj\libavutil\Xbox 360\Debug;..\ffmpeg lib\vcproj\libavfilter\Xbox 360\Debug;..\ffmpeg lib\vcproj\libavformat\Xbox 360\Debug;..\ffmpeg lib\vcproj\pthreads\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <StackCommitSize>642144</StackCommitSize>
     </Link>
     <Deploy>
       <DeploymentType>CopyToHardDrive</DeploymentType>
@@ -362,7 +363,6 @@
     <ClInclude Include="filesystem\FileBase.h" />
     <ClInclude Include="filesystem\FileBrowser.h" />
     <ClInclude Include="filesystem\FileFactory.h" />
-    <ClInclude Include="filesystem\FileFTP.h" />
     <ClInclude Include="filesystem\FileHD.h" />
     <ClInclude Include="filesystem\FileSMB.h" />
     <ClInclude Include="filesystem\HDDirectory.h" />
@@ -381,6 +381,7 @@
     <ClInclude Include="guilib\dialogs\GUIDialogNetworkSetup.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogSeekBar.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogYesNo.h" />
+    <ClInclude Include="guilib\Geometry.h" />
     <ClInclude Include="guilib\GraphicContext.h" />
     <ClInclude Include="guilib\GUIAudioManager.h" />
     <ClInclude Include="guilib\GUIButtonControl.h" />
@@ -402,12 +403,14 @@
     <ClInclude Include="guilib\GUIListItem.h" />
     <ClInclude Include="guilib\GUIMediaWindow.h" />
     <ClInclude Include="guilib\GUIMessage.h" />
+    <ClInclude Include="guilib\GUIMultiImage.h" />
     <ClInclude Include="guilib\GUIProgressControl.h" />
     <ClInclude Include="guilib\GUIScrollBarControl.h" />
     <ClInclude Include="guilib\GUISound.h" />
     <ClInclude Include="guilib\GUISpinControl.h" />
     <ClInclude Include="guilib\GUISpinControlEx.h" />
     <ClInclude Include="guilib\GUITexture.h" />
+    <ClInclude Include="guilib\GUITextureD3D.h" />
     <ClInclude Include="guilib\GUIThumbnailPanel.h" />
     <ClInclude Include="guilib\GUIUserMessage.h" />
     <ClInclude Include="guilib\GUIVideoControl.h" />
@@ -424,6 +427,7 @@
     <ClInclude Include="guilib\TextureManager.h" />
     <ClInclude Include="guilib\tinyxml\tinystr.h" />
     <ClInclude Include="guilib\tinyxml\tinyxml.h" />
+    <ClInclude Include="guilib\TransformMatrix.h" />
     <ClInclude Include="guilib\viewstates\GUIViewState.h" />
     <ClInclude Include="guilib\viewstates\GUIViewStateMusic.h" />
     <ClInclude Include="guilib\viewstates\GUIViewStatePictures.h" />
@@ -552,7 +556,6 @@
     <ClCompile Include="filesystem\FileBase.cpp" />
     <ClCompile Include="filesystem\FileBrowser.cpp" />
     <ClCompile Include="filesystem\FileFactory.cpp" />
-    <ClCompile Include="filesystem\FileFTP.cpp" />
     <ClCompile Include="filesystem\FileHD.cpp" />
     <ClCompile Include="filesystem\FileSMB.cpp" />
     <ClCompile Include="filesystem\HDDirectory.cpp" />
@@ -590,11 +593,14 @@
     <ClCompile Include="guilib\GUIListItem.cpp" />
     <ClCompile Include="guilib\GUIMediaWindow.cpp" />
     <ClCompile Include="guilib\GUIMessage.cpp" />
+    <ClCompile Include="guilib\GUIMultiImage.cpp" />
     <ClCompile Include="guilib\GUIProgressControl.cpp" />
     <ClCompile Include="guilib\GUIScrollBarControl.cpp" />
     <ClCompile Include="guilib\GUISound.cpp" />
     <ClCompile Include="guilib\GUISpinControl.cpp" />
     <ClCompile Include="guilib\GUISpinControlEx.cpp" />
+    <ClCompile Include="guilib\GUITexture.cpp" />
+    <ClCompile Include="guilib\GUITextureD3D.cpp" />
     <ClCompile Include="guilib\GUIThumbnailPanel.cpp" />
     <ClCompile Include="guilib\GUIVideoControl.cpp" />
     <ClCompile Include="guilib\GUIViewControl.cpp" />

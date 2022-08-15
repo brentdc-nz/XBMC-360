@@ -1,9 +1,10 @@
 #ifndef GUILIB_GUIIMAGECONTROL_H
 #define GUILIB_GUIIMAGECONTROL_H
 
-#include "GUID3DTexture.h"
 #include "GUIControl.h"
 #include "GUIInfoTypes.h"
+
+#include "GUITextureD3D.h"
 
 class CGUIImage : public CGUIControl
 {
@@ -21,7 +22,7 @@ public:
 protected:
 	CGUIInfoLabel m_info;
 	CTextureInfo m_image;
-	CGUID3DTexture m_texture;
+	CGUITextureD3D m_texture;
 };
 
 #endif //GUILIB_GUIIMAGECONTROL_H

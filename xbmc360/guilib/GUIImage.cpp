@@ -4,7 +4,7 @@ CGUIImage::CGUIImage(int parentID, int controlID, float posX, float posY, float 
     : CGUIControl(parentID, controlID, posX, posY, width, height)
     , m_texture(posX, posY, width, height, texture)
 {
-
+	ControlType = GUICONTROL_IMAGE;
 }
 
 CGUIImage::~CGUIImage(void)
@@ -30,7 +30,7 @@ void CGUIImage::SetInfo(const CGUIInfoLabel &info)
 {
 	m_info = info;
 	// A constant image never needs updating
-	if (m_info.IsConstant())
+	if(m_info.IsConstant())
 		m_texture.SetFileName(m_info.GetLabel(0));
 }
 
@@ -57,9 +57,10 @@ void CGUIImage::Update()
 
 void CGUIImage::Render()
 {
-	if (!IsVisible()) return;
+	if(!IsVisible()) return;
 
-	if (!m_bAllocated) return;
+	if(!m_bAllocated)
+		m_texture.AllocResources();
 
 	m_texture.Render();
 

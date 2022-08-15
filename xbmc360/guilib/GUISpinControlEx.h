@@ -3,7 +3,7 @@
 
 #include "GUISpinControl.h"
 #include "GUIButtonControl.h"
-#include "..\utils\log.h"
+#include "GUITextureD3D.h"
 
 class CGUISpinControlEx : public CGUISpinControl
 {
@@ -27,6 +27,7 @@ protected:
 	CGUIButtonControl m_buttonControl;
 	int m_spinPosX;
 
+	CGUID3DTexture m_focus; //TODO Hack Remove me!
 };
 
 #endif //GUILIB_SPINCONTROLEX_H

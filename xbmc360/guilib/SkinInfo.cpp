@@ -24,13 +24,31 @@ CSkinInfo g_SkinInfo; // global
 
 CSkinInfo::CSkinInfo()
 {
-
+	m_strBaseDir = "";
 }
 
 CSkinInfo::~CSkinInfo()
-{}
+{
+}
+
+void CSkinInfo::Load(const CStdString& strSkinDir, bool loadIncludes)
+{
+	m_strBaseDir = strSkinDir;
+
+	// TODO!
+}
 
 bool CSkinInfo::ResolveConstant(const CStdString &constant, float &value) const
 {
 	return m_includes.ResolveConstant(constant, value);
+}
+
+CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION *res, const CStdString& strBaseDir /* = "" */) const
+{
+	CStdString strPathToUse = m_strBaseDir;
+
+	if(!strBaseDir.IsEmpty())
+		strPathToUse = strBaseDir;
+
+	return strPathToUse + "\\" + strFile;
 }

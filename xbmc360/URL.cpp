@@ -604,3 +604,12 @@ bool CURL::IsLocal() const
 {
 	return m_strProtocol.IsEmpty();
 }
+
+bool CURL::IsFullPath(const CStdString &url)
+{
+	if(url.size() && url[0] == '/') return true; // - /foo/bar.ext
+	if(url.Find("://") >= 0) return true; // - foo://bar.ext
+	if(url.size() > 1 && url[1] == ':') return true; // - c:\\foo\\bar\\bar.ext
+	
+	return false;
+}

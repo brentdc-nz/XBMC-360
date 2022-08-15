@@ -1,14 +1,15 @@
 #ifndef GUILIB_GUIWINDOW_H
 #define GUILIB_GUIWINDOW_H
 
-#include "..\utils\StdString.h"
+#include "utils\StdString.h"
 #include "tinyXML\tinyxml.h"
+#include "GUIControlGroup.h"
 #include "GUIControl.h"
 #include "GUIControlGroup.h"
 #include "GUIMessage.h"
 #include "key.h"
 
-class CGUIWindow
+class CGUIWindow : public CGUIControlGroup
 {
 public:
 	CGUIWindow(int id, const CStdString &xmlFile);
@@ -21,14 +22,13 @@ public:
 	bool Load(const CStdString& strFileName, bool bContainsPath = false);
 
 	virtual bool OnMessage(CGUIMessage& message);
-	void AddControl(CGUIControl* pControl);
 	void InsertControl(CGUIControl *control, const CGUIControl *insertPoint);
 	void RemoveControl(DWORD dwId);
 
 	virtual void OnInitWindow();
 	virtual void OnDeinitWindow();
 	virtual void OnWindowUnload() {};
-
+	virtual bool RenderAnimation(unsigned int time);
 	virtual void AllocResources(bool forceLoad = false );
 	virtual void FreeResources(bool forceUnload = false);
 
@@ -57,9 +57,6 @@ public:
 	int GetID() { return iWindowID; };
 	DWORD GetIDRange() const { return m_dwIDRange; };
 	void SetID(int id) { iWindowID = id; };
-	virtual bool HasID(int id) { return (id >= m_controlID && id < m_controlID + m_idRange); };
-
-
 
 protected:
 	// Control state saving on window close
@@ -70,7 +67,7 @@ protected:
 
 	virtual bool LoadXML(const CStdString& strPath, const CStdString &strLowerPath);  ///< Loads from the given file
 	bool Load(TiXmlDocument &xmlDoc);   	
-	void LoadControl(TiXmlElement* pControl);
+	void LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup);
 
 	virtual void OnWindowLoaded();
 
@@ -88,12 +85,23 @@ protected:
 	vector<CGUIControl*> m_vecControls;
 	typedef std::vector<CGUIControl*>::iterator ivecControls;
 	
+	struct icompare
+	{
+		bool operator()(const CStdString &s1, const CStdString &s2) const
+		{
+			return s1.CompareNoCase(s2) < 0;
+		}
+	};
+
+	std::map<CStdString, CStdString, icompare> m_mapProperties;
+
 	DWORD m_dwDefaultFocusControlID;
 
 	bool m_WindowAllocated;
 	bool m_dynamicResourceAlloc;
-	int m_idRange;
-	int m_controlID;
+	RESOLUTION m_coordsRes; // Resolution that the window coordinates are in.
+	bool m_needsScaling;
+
 	// Control states
 	bool m_saveLastControl;
 	int m_lastControlID;

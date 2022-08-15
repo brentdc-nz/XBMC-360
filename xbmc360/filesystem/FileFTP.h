@@ -1,17 +1,16 @@
-//Copyright Wolf3s 2022
-
 #ifndef H_CFILEFTP
 #define H_CFILEFTP
+
 #include "FileBase.h"
-#include "..\utils\CriticalSection.h"
-#include "..\services\FTPServer\FTPFile.h"
+#include "utils\CriticalSection.h"
+#include "services\FTPServer\FTPFileWriter.h"
 
 namespace XFILE
 {
 class CFileFTP : public CFileBase
 {
 public:
-//Standards from CFilebase	
+	// Standards from CFilebase	
 	CFileFTP();
 	~CFileFTP();
 
@@ -31,5 +30,4 @@ private:
 
 };
 
-
-#endif
+#endif //H_CFILEFTP
