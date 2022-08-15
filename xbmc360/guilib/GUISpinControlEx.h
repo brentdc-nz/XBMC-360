@@ -27,7 +27,6 @@ protected:
 	CGUIButtonControl m_buttonControl;
 	int m_spinPosX;
 
-	CGUID3DTexture m_focus; //TODO Hack Remove me!
 };
 
 #endif //GUILIB_SPINCONTROLEX_H

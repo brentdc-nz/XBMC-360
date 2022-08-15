@@ -108,6 +108,12 @@ public:
 	float GetHeight() const;
 	virtual void SetWidth(float iWidth);
 	virtual void SetHeight(float iHeight);
+	virtual bool IsGroup() const { return false; };
+	void SetParentControl(CGUIControl *control) { m_parentControl = control; };
+	virtual void SetPushUpdates(bool pushUpdates) { m_pushedUpdates = pushUpdates; };
+	virtual bool IsContainer() const { return false; };
+	virtual void SaveStates(std::vector<CControlState> &states);
+
 
 	enum GUICONTROLTYPES {
 		GUICONTROL_UNKNOWN,
@@ -155,39 +161,38 @@ public:
 protected:
 	void SendWindowMessage(CGUIMessage &message);
 
+	int m_controlID;
+	bool m_bAllocated;
+
 	float m_posX;
 	float m_posY;
 	float m_width;
 	float m_height;
-
-	int m_controlID;
-	int m_parentID;
-	bool m_bAllocated;
-	bool m_bHasFocus;
-	bool m_bInvalidated;
 
 	DWORD m_dwControlLeft;
 	DWORD m_dwControlRight;
 	DWORD m_dwControlUp;
 	DWORD m_dwControlDown;
 
+	bool m_bHasFocus;
+	bool m_bInvalidated;
+
 	GUICONTROLTYPES ControlType;
 
-	CGUIControl *m_parentControl; // Our parent control if we're part of a group
-
-	// Visibility condition/state
+	// visibility condition/state
 	int m_visibleCondition;
 	bool m_visible;
 	bool m_visibleFromSkinCondition;
-	bool m_forceHidden;       // Set from the code when a hidden operation is given - overrides m_visible
-//	CGUIInfoBool m_allowHiddenFocus;
+	bool m_forceHidden;       // set from the code when a hidden operation is given - overrides m_visible
+//	CGUIInfoBool m_allowHiddenFocus; //Setup CGUIBool?
 	bool m_hasRendered;
 	// enable/disable state
 	int m_enableCondition;
 	bool m_enabled;
+	CGUIControl *m_parentControl;
+	int m_parentID;
+	  bool m_pushedUpdates;
 
-	CPoint m_camera;
-	bool m_hasCamera;
 };
 
 #endif //H_CGUICONTROL

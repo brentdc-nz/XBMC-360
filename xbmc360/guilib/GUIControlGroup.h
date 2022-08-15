@@ -92,7 +92,7 @@ protected:
    \return The top left coordinates of the group
    */
   //virtual CPoint GetPosition() const { return CPoint(m_posX, m_posY); };
-  
+
   /*!
    \brief Check whether a given control is valid
    Runs through controls and returns whether this control is valid.  Only functional
