@@ -27,6 +27,7 @@
  */
 
 #include "GUIControl.h"
+#include "Geometry.h"
 #include <map>
 /*!
  \ingroup controls
@@ -41,6 +42,8 @@ public:
   virtual ~CGUIControlGroup(void);
   virtual CGUIControlGroup *Clone() const { return new CGUIControlGroup(*this); };
 
+
+
   //virtual void Render();
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage& message);
@@ -52,7 +55,7 @@ public:
   virtual bool CanFocus() const;
 
   //virtual bool SendMouseEvent(const CPoint &point, const CMouseEvent &event);
-  //virtual void UnfocusFromPoint(const CPoint &point);
+  virtual void UnfocusFromPoint(const CPoint &point);
 
   //virtual void SetInitialVisibility();
 
@@ -91,7 +94,7 @@ protected:
    \brief Return the coordinates of the top left of the group, in the group's parent coordinates
    \return The top left coordinates of the group
    */
-  //virtual CPoint GetPosition() const { return CPoint(m_posX, m_posY); };
+  virtual CPoint GetPosition() const { return CPoint(m_posX, m_posY); };
 
   /*!
    \brief Check whether a given control is valid

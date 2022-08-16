@@ -1,20 +1,27 @@
 #include "GUIWindow.h"
-#include "..\utils\Log.h"
-#include "..\Application.h"
+#include "utils\Log.h"
+#include "Application.h"
 #include "GUIWindowManager.h"
 #include "GUIControlFactory.h"
 
 #include "GUITextureD3D.h"
 
+#include "SkinInfo.h"
+#include "Settings.h"
+#include "GUISettings.h"
+
 CGUIWindow::CGUIWindow(int id, const CStdString &xmlFile)
 {
 	SetID(id);
 	m_dwIDRange = 1;
+	SetProperty("xmlfile", xmlFile);
 	m_xmlFile = xmlFile;
 	m_dwDefaultFocusControlID = 0;
 	m_saveLastControl = false;
 	m_lastControlID = 0;
 	m_visibleCondition = 0;
+	m_coordsRes = g_guiSettings.m_LookAndFeelResolution;
+	m_needsScaling = true;
 	m_WindowAllocated = false;
 	m_loadOnDemand = true;
 	m_dynamicResourceAlloc = true;
@@ -47,26 +54,38 @@ void CGUIWindow::DynamicResourceAlloc(bool bOnOff)
 
 bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
 {
-	if (m_windowLoaded)
-		return true;	// no point loading if it's already there
+	if(m_windowLoaded)
+		return true; // No point loading if it's already there
 
+#ifdef _DEBUG
+	int64_t start;
+	start = CurrentHostCounter();
+#endif
+	RESOLUTION resToUse = INVALID;
 	CLog::Log(LOGINFO, "Loading skin file: %s", strFileName.c_str());
-//	TiXmlDocument xmlDoc;
-	
+	TiXmlDocument xmlDoc;
+
 	// Find appropriate skin folder + resolution to load from
 	CStdString strPath;
 	CStdString strLowerPath;
-//	if (bContainsPath) //MARTY FIXME WIP
+	if (bContainsPath) 
 		strPath = strFileName;
-//	else
-//		strPath = g_SkinInfo.GetSkinPath(strFileName, &resToUse);
+	else
+		strPath = g_SkinInfo.GetSkinPath(strFileName, &resToUse);
 
-//	if (!bContainsPath)
-//		m_coordsRes = resToUse;
+	if (!bContainsPath)
+		m_coordsRes = HDTV_480p_16x9;
 
 	bool ret = LoadXML(strPath.c_str(), strLowerPath.c_str());
 
-  return ret;
+#ifdef _DEBUG
+	int64_t end, freq;
+	end = CurrentHostCounter();
+	freq = CurrentHostFrequency();
+	CLog::Log(LOGDEBUG,"Load %s: %.2fms", GetProperty("xmlfile").c_str(), 1000.f * (end - start) / freq);
+#endif
+
+	return ret;
 }
 
 bool CGUIWindow::OnMessage(CGUIMessage& message)
@@ -245,7 +264,30 @@ void CGUIWindow::Render()
 			pControl->DoRender(currentTime);
 		}
 	}
+	
+	g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
+
+	// Render our window animation - returns false if it needs to stop rendering
+	if(!RenderAnimation(m_renderTime))
+		return;
+
+	CGUIControlGroup::Render();
+
 //	m_hasRendered = true;
+}
+
+bool CGUIWindow::RenderAnimation(unsigned int time)
+{
+	for (int i = 0; i < (int)m_vecControls.size(); i++)
+	{
+		CGUIControl *pControl = m_vecControls[i];
+		if (pControl)
+		{
+//			pControl->UpdateEffectState(time);
+			pControl->DoRender(time);
+		}
+	}
+	return m_hasRendered = true;
 }
 
 bool CGUIWindow::OnAction(const CAction &action)
@@ -310,6 +352,7 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
 			pControl->AllocResources();
 	}
 
+	CGUIControlGroup::AllocResources();
 	m_WindowAllocated = true;
 }
 
@@ -325,6 +368,67 @@ void CGUIWindow::FreeResources(bool forceUnload /*= FALSE */)
 	//g_TextureManager.Dump();
 	// unload the skin
 	if (m_loadOnDemand || forceUnload) ClearAll();
+		
+	CGUIControlGroup::FreeResources();
+}
+
+void CGUIWindow::SetProperty(const CStdString &key, const CStdString &value)
+{
+	m_mapProperties[key] = value;
+}
+
+void CGUIWindow::SetProperty(const CStdString &key, const char *value)
+{
+	m_mapProperties[key] = value;
+}
+
+void CGUIWindow::SetProperty(const CStdString &key, int value)
+{
+	CStdString strVal;
+	strVal.Format("%d", value);
+	SetProperty(key, strVal);
+}
+
+void CGUIWindow::SetProperty(const CStdString &key, bool value)
+{
+	SetProperty(key, value ? "1" : "0");
+}
+
+void CGUIWindow::SetProperty(const CStdString &key, double value)
+{
+	CStdString strVal;
+	strVal.Format("%f", value);
+	SetProperty(key, strVal);
+}
+
+CStdString CGUIWindow::GetProperty(const CStdString &key) const
+{
+	std::map<CStdString, CStdString, icompare>::const_iterator iter = m_mapProperties.find(key);
+
+	if(iter == m_mapProperties.end())
+		return "";
+
+	return iter->second;
+}
+
+int CGUIWindow::GetPropertyInt(const CStdString &key) const
+{
+	return atoi(GetProperty(key).c_str());
+}
+
+bool CGUIWindow::GetPropertyBool(const CStdString &key) const
+{
+	return GetProperty(key) == "1";
+}
+
+double CGUIWindow::GetPropertyDouble(const CStdString &key) const
+{
+	return atof(GetProperty(key).c_str());
+}
+
+void CGUIWindow::ClearProperties()
+{
+	m_mapProperties.clear();
 }
 
 void CGUIWindow::ClearAll()
@@ -466,12 +570,8 @@ void CGUIWindow::RestoreControlStates()
 bool CGUIWindow::LoadXML(const CStdString &strPath, const CStdString &strLowerPath)
 {
 	TiXmlDocument xmlDoc;
-
-	CStdString strPathroot = g_graphicsContext.GetMediaDir();
-	CStdString strPathFull;
-	strPathFull = strPathroot + strPath;
-
-	if ( !xmlDoc.LoadFile(strPathFull)/* && !xmlDoc.LoadFile(CStdString(strPath).ToLower()) && !xmlDoc.LoadFile(strLowerPath)*/)
+	
+	if(!xmlDoc.LoadFile(strPath) && !xmlDoc.LoadFile(CStdString(strPath).ToLower()) && !xmlDoc.LoadFile(strLowerPath))
 	{
 		CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", strPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
 		SetID(WINDOW_INVALID);
@@ -496,7 +596,7 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
 	
 	// set the scaling resolution so that any control creation or initialisation can
 	// be done with respect to the correct aspect ratio
-//	g_graphicsContext.SetScalingResolution(/*m_coordsRes, m_needsScaling*/ true);
+	g_graphicsContext.SetScalingResolution(m_coordsRes, m_needsScaling);
 
 	// Resolve any includes that may be present
 //	g_SkinInfo.ResolveIncludes(pRootElement);
@@ -590,7 +690,7 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
 			{
 				if (strcmpi(pControl->Value(), "control") == 0)
 				{
-					LoadControl(pControl);
+					LoadControl(pControl, NULL);
 				}
 				pControl = pControl->NextSiblingElement();
 			}
@@ -610,7 +710,7 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
 	return true;
 }
 
-void CGUIWindow::LoadControl(TiXmlElement* pControl)
+void CGUIWindow::LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup)
 {
 	// get control type
 	CGUIControlFactory factory;
@@ -628,7 +728,7 @@ void CGUIWindow::LoadControl(TiXmlElement* pControl)
 	CGUIControl* pGUIControl = factory.Create(GetID(), rect, pControl);
 	if (pGUIControl)
 	{
-/*	float maxX = pGUIControl->GetXPosition() + pGUIControl->GetWidth();
+	    float maxX = pGUIControl->GetXPosition() + pGUIControl->GetWidth();
 		if (maxX > m_width)
 		{
 			m_width = maxX;
@@ -642,9 +742,9 @@ void CGUIWindow::LoadControl(TiXmlElement* pControl)
 		if (pGroup)
 			pGroup->AddControl(pGUIControl);
 		else
-*/			AddControl(pGUIControl);
+		AddControl(pGUIControl);
 		// if the new control is a group, then add it's controls
-/*		if (pGUIControl->IsGroup())
+		if (pGUIControl->IsGroup())
 		{
 			TiXmlElement *pSubControl = pControl->FirstChildElement("control");
 			while (pSubControl)
@@ -653,6 +753,6 @@ void CGUIWindow::LoadControl(TiXmlElement* pControl)
 				pSubControl = pSubControl->NextSiblingElement("control");
 			}
 		}
-*/
+
 	}
 }

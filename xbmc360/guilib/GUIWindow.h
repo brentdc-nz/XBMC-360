@@ -8,7 +8,7 @@
 #include "GUIMessage.h"
 #include "key.h"
 
-class CGUIWindow
+class CGUIWindow : public CGUIControlGroup
 {
 public:
 	CGUIWindow(int id, const CStdString &xmlFile);
@@ -28,6 +28,8 @@ public:
 	virtual void OnInitWindow();
 	virtual void OnDeinitWindow();
 	virtual void OnWindowUnload() {};
+	virtual bool RenderAnimation(unsigned int time);
+
 
 	virtual void AllocResources(bool forceLoad = false );
 	virtual void FreeResources(bool forceUnload = false);
@@ -59,6 +61,21 @@ public:
 	void SetID(int id) { iWindowID = id; };
 	virtual bool HasID(int id) { return (id >= m_controlID && id < m_controlID + m_idRange); };
 
+		// Sets the value of a property referenced by a key.
+	// param key name of the property to set
+	// param value value to set, may be a string, integer, boolean or double.
+	void SetProperty(const CStdString &key, const CStdString &value);
+	void SetProperty(const CStdString &key, const char *value);
+	void SetProperty(const CStdString &key, int value);
+	void SetProperty(const CStdString &key, bool value);
+	void SetProperty(const CStdString &key, double value);
+
+	CStdString GetProperty(const CStdString &key) const;
+	int GetPropertyInt(const CStdString &key) const;
+	bool GetPropertyBool(const CStdString &key) const;
+	double GetPropertyDouble(const CStdString &key) const;
+
+	void ClearProperties();
 
 
 protected:
@@ -70,7 +87,7 @@ protected:
 
 	virtual bool LoadXML(const CStdString& strPath, const CStdString &strLowerPath);  ///< Loads from the given file
 	bool Load(TiXmlDocument &xmlDoc);   	
-	void LoadControl(TiXmlElement* pControl);
+	void LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup);
 
 	virtual void OnWindowLoaded();
 
@@ -85,6 +102,16 @@ protected:
 
 	int m_visibleCondition;
 
+	struct icompare
+	{
+		bool operator()(const CStdString &s1, const CStdString &s2) const
+		{
+			return s1.CompareNoCase(s2) < 0;
+		}
+	};
+
+	std::map<CStdString, CStdString, icompare> m_mapProperties;
+
 	vector<CGUIControl*> m_vecControls;
 	typedef std::vector<CGUIControl*>::iterator ivecControls;
 	
@@ -94,6 +121,8 @@ protected:
 	bool m_dynamicResourceAlloc;
 	int m_idRange;
 	int m_controlID;
+	RESOLUTION m_coordsRes; // Resolution that the window coordinates are in.
+	bool m_needsScaling;
 	// Control states
 	bool m_saveLastControl;
 	int m_lastControlID;

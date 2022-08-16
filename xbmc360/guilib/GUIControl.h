@@ -61,6 +61,19 @@ public:
 	// Return true to indicate that the action has been dealt with.
 	virtual bool OnAction(const CAction &action);
 
+	  /*! \brief Unfocus the control if the given point on screen is not within it's boundary
+		  \param point the location in transformed skin coordinates from the upper left corner of the parent control.
+		  \sa CanFocusFromPoint
+	   */
+	virtual void UnfocusFromPoint(const CPoint &point);
+
+   /*! \brief Used to test whether the point is inside a control.
+   \param point location to test
+   \return true if the point is inside the bounds of this control.
+   \sa SetHitRect
+   */
+    virtual bool HitTest(const CPoint &point) const;
+
 	// Common actions to make the code easier to read (no ugly switch statements in derived controls)
 	virtual void OnUp();
 	virtual void OnDown();
@@ -164,6 +177,10 @@ protected:
 	int m_controlID;
 	bool m_bAllocated;
 
+	int m_parentID;
+	bool m_bHasFocus;
+	bool m_bInvalidated;
+
 	float m_posX;
 	float m_posY;
 	float m_width;
@@ -173,11 +190,6 @@ protected:
 	DWORD m_dwControlRight;
 	DWORD m_dwControlUp;
 	DWORD m_dwControlDown;
-
-	bool m_bHasFocus;
-	bool m_bInvalidated;
-
-	GUICONTROLTYPES ControlType;
 
 	// visibility condition/state
 	int m_visibleCondition;
@@ -190,8 +202,11 @@ protected:
 	int m_enableCondition;
 	bool m_enabled;
 	CGUIControl *m_parentControl;
-	int m_parentID;
-	  bool m_pushedUpdates;
+	GUICONTROLTYPES ControlType;
+	TransformMatrix m_transform;
+	bool m_pushedUpdates;
+	CRect m_hitRect;
+
 
 };
 

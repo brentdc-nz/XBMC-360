@@ -440,6 +440,19 @@ bool CGUIControlGroup::InsertControl(CGUIControl *control, const CGUIControl *in
   return false;
 }
 
+void CGUIControlGroup::UnfocusFromPoint(const CPoint &point)
+{
+  CPoint controlCoords(point);
+  m_transform.InverseTransformPosition(controlCoords.x, controlCoords.y);
+  controlCoords -= GetPosition();
+  for (iControls it = m_children.begin(); it != m_children.end(); ++it)
+  {
+    CGUIControl *child = *it;
+    child->UnfocusFromPoint(controlCoords);
+  }
+  CGUIControl::UnfocusFromPoint(point);
+}
+
 void CGUIControlGroup::SaveStates(vector<CControlState> &states)
 {
   // save our state, and that of our children

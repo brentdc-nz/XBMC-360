@@ -21,7 +21,7 @@
 #include "GUIControl.h"
 #include "GUIWindowManager.h"
 #include "GUIInfoManager.h"
-#include "..\utils\log.h"
+#include "utils\log.h"
 
 using namespace std;
 
@@ -216,6 +216,19 @@ bool CGUIControl::OnAction(const CAction &action)
 	return false;
 }
 
+void CGUIControl::UnfocusFromPoint(const CPoint &point)
+{
+  CPoint controlPoint(point);
+  m_transform.InverseTransformPosition(controlPoint.x, controlPoint.y);
+  if (!HitTest(controlPoint))
+    SetFocus(false);
+}
+
+bool CGUIControl::HitTest(const CPoint &point) const
+{
+  return m_hitRect.PtInRect(point);
+}
+
 // Movement controls (derived classes can override)
 void CGUIControl::OnUp()
 {
@@ -262,8 +275,8 @@ void CGUIControl::SendWindowMessage(CGUIMessage &message)
 	CGUIWindow *pWindow = g_windowManager.GetWindow(GetParentID());
 	if (pWindow)
 		pWindow->OnMessage(message);
-//	else
-//		g_graphicsContext.SendMessage(message);
+	//else
+		//g_graphicsContext.SendMessage(message);
 }
 
 bool CGUIControl::OnMessage(CGUIMessage& message)
