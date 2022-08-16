@@ -1,14 +1,15 @@
 #ifndef GUILIB_GUIWINDOW_H
 #define GUILIB_GUIWINDOW_H
 
-#include "..\utils\StdString.h"
+#include "utils\StdString.h"
 #include "tinyXML\tinyxml.h"
 #include "GUIControl.h"
 #include "GUIControlGroup.h"
 #include "GUIMessage.h"
 #include "key.h"
 
-class CGUIWindow
+//TODO: inherit more
+class CGUIWindow : public CGUIControlGroup
 {
 public:
 	CGUIWindow(int id, const CStdString &xmlFile);
