@@ -8,7 +8,6 @@
 #include "GUIMessage.h"
 #include "key.h"
 
-//TODO: inherit more
 class CGUIWindow : public CGUIControlGroup
 {
 public:

@@ -3,7 +3,9 @@
 
 #include "utils\StdString.h"
 #include "filesystem\File.h"
-class CAdvancedSettings : public XFILE::CFile
+using XFILE::CFile;
+
+class CAdvancedSettings
 {
 public:
 	CAdvancedSettings();

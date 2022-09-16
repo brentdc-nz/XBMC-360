@@ -2,7 +2,7 @@
 #define CDRIVE_H
 
 #include "..\utils\StdString.h"
-
+#include "File.h"
 typedef enum 
 {
 	DEVICE_NAND_FLASH, 

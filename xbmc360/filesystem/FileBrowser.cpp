@@ -1,8 +1,8 @@
 #include "FileBrowser.h"
-#include "..\utils\log.h"
-#include "..\Application.h"
-#include "..\utils\StringUtils.h"
-#include "..\utils\Util.h"
+#include "utils\log.h"
+#include "Application.h"
+#include "utils\StringUtils.h"
+#include "utils\Util.h"
 #include <map>
 #include <sys/stat.h>
 
@@ -117,7 +117,7 @@ CStdString CFileBrowser::GetFolderFTPLongDescription(CStdString strFolder)
 	else
 		strFullPath = GetCurrentPath() + "\\" + strFolder;
 
-	if(CFile::Exists(strFullPath)) // TODO: chnage to CFile::Exists
+	if(CFile::Exists(strFullPath))
 	{
 		DWORD dwAttr = GetFileAttributes(strFullPath.c_str());
 		char execute = 'x';
@@ -204,8 +204,8 @@ void CFileBrowser::CD(CStdString strFolder)
 				strFolder.append("\\");
 			
 			// If the folder doesn't exist and there's a : in it, return  ie. hdd1:\foobar , but not foobar
-			if(!CUtil::FileExists(strFolder) && (strFolder.find(":") != strFolder.npos))
-				return; // if (!CUtil::FileExists(strFolder)) return;
+			if(!CFile::Exists(strFolder) && (strFolder.find(":") != strFolder.npos))
+				return;
 			// If the folder ends in \, remove the slash  ie. hdd1:\foo\ -> hdd1:\foo, but also hdd1:\ -> hdd1:
 			
 			if(strFolder.compare("\\") == 0)

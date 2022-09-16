@@ -26,7 +26,6 @@ public:
 	static void GetExtension(const CStdString& strFile, CStdString& strExtension);
 	static void RemoveSlashAtEnd(CStdString& strFolder);
 	static bool IsLocalDrive(const CStdString& strPath, bool bFullPath = false);
-	static bool FileExists(CStdString strFullPath) { return (GetFileAttributes(strFullPath.c_str()) != 0xFFFFFFFF); } // TODO : Remove once filesystem is more sorted out
 	static int GetMatchingShare(const CStdString& strPath, VECSOURCES& vecShares, bool& bIsBookmarkName);
 	static void ForceForwardSlashes(CStdString& strPath);
 	static void Stat64ToStat(struct _stat *result, struct __stat64 *stat);

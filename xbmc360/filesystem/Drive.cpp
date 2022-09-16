@@ -1,8 +1,8 @@
 #include "Drive.h"
-#include "..\utils\log.h"
-#include "..\utils\StringUtils.h"
+#include "utils\log.h"
+#include "utils\StringUtils.h"
 #include "..\xbox\XBKernalExports.h"
-#include "..\utils\Util.h"
+#include "utils\Util.h"
 
 CDrive::CDrive(CStdString strMountPoint, CStdString strSystemPath, eDriveType DriveType)
 {
@@ -75,11 +75,12 @@ HRESULT CDrive::Mount()
 
 bool CDrive::IsMounted()
 {
+	using XFILE::CFile;
 	// MATTIE: changed mounted test to also report empty drives as 
 	// mounted, instead of searching for a file on a drive. 
 	bool bResult = false; 
 	
-	if (CUtil::FileExists(m_strMountPoint + "\\")) 
+	if (CFile::Exists(m_strMountPoint + "\\")) 
 		bResult = true;
 
 	return bResult;
