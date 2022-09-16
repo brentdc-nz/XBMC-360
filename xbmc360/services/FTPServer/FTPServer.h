@@ -1,8 +1,8 @@
 #ifndef CFTPSERVER_H
 #define CFTPSERVER_H
 
-#include "..\..\utils\Thread.h"
-#include "..\..\utils\StdString.h"
+#include "utils\Thread.h"
+#include "utils\StdString.h"
 #include "FTPServerConn.h"
 #include <vector>
 

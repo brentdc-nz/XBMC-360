@@ -1,7 +1,7 @@
 #include "GUID3DTexture.h"
 #include "GraphicContext.h"
 #include "GraphicContext.h"
-#include "..\utils\Log.h"
+#include "utils\Log.h"
 
 namespace D3DTextureShaders
 {
@@ -266,7 +266,7 @@ void CGUID3DTexture::SetHeight(float fHeight)
 
 void CGUID3DTexture::SetPosition(float iPosX, float iPosY)
 {
-	CGUID3DTexture::Update(iPosX, iPosY, m_width, m_height);
+	Update(iPosX, iPosY, m_width, m_height);
 }
 
 void CGUID3DTexture::Update(float fPosX, float fPosY, float fWidth, float fHeight)

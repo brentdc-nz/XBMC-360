@@ -1,6 +1,6 @@
 #include "FileSMB.h"
-#include "..\utils\SingleLock.h"
-#include "..\utils\log.h"
+#include "utils\SingleLock.h"
+#include "utils\log.h"
 #include <fcntl.h>
 
 using namespace XFILE;

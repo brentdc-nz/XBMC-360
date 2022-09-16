@@ -1,8 +1,8 @@
 #ifndef CFTPSERVERCONN_H
 #define CFTPSERVERCONN_H
 
-#include "..\..\utils\Thread.h"
-#include "..\..\utils\StdString.h"
+#include "utils\Thread.h"
+#include "utils\StdString.h"
 #include "..\..\filesystem\FileBrowser.h"
 
 // FTP Command tokens

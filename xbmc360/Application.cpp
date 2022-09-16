@@ -164,7 +164,7 @@ bool CApplication::Create()
 	return CXBApplicationEX::Create();
 }
 
-// This function does not return!
+// This function doesn´t return!
 void CApplication::FatalErrorHandler(bool InitD3D)
 {
 	// XBMC couldn't start for some reason...
@@ -306,11 +306,12 @@ void CApplication::ReloadSkin()
 	pWindow = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
 
 	g_windowManager.ActivateWindow(/*pWindow->GetID()*/WINDOW_SETTINGS_APPEARANCE);
-/*	if (pWindow && pWindow->HasSaveLastControl())
+//	if (pWindow && pWindow->HasSaveLastControl())
 	{
 		CGUIMessage msg3(GUI_MSG_SETFOCUS, g_windowManager.GetActiveWindow(), iCtrlID, 0); //TODO
 		pWindow->OnMessage(msg3);
-	}*/
+	}
+
 }
 
 void CApplication::UnloadSkin()
@@ -754,14 +755,14 @@ bool CApplication::PlayFile(const CFileItem& item)
 
 		if(IsPlayingAudio()) // TODO
 		{
-//			if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
-//				g_windowManager.ActivateWindow(WINDOW_VISUALISATION);
+			if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+				g_windowManager.ActivateWindow(WINDOW_VISUALISATION);
 		}
 
 		if(IsPlayingVideo())
 		{
-//			if (g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)  // TODO
-//				g_windowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
+			if (g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)  // TODO
+				g_windowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
 
 			// if player didn't manage to switch to fullscreen by itself do it here
 			if(g_renderManager.IsStarted()

@@ -2,9 +2,9 @@
 #include "FileHD.h"
 #include "FileFactory.h"
 #include "FileSMB.h"
-#include "..\utils\Log.h"
-#include "..\utils\Stdafx.h"
-#include "..\utils\AutoPtrHandle.h"
+#include "utils\Log.h"
+#include "utils\Stdafx.h"
+#include "utils\AutoPtrHandle.h"
 
 using namespace XFILE;
 

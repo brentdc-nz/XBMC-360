@@ -1,7 +1,7 @@
 #ifndef CFILEBROWSER_H
 #define CFILEBROWSER_H
 
-#include "..\utils\StdString.h"
+#include "utils\StdString.h"
 #include "File.h"
 #include <vector>
 

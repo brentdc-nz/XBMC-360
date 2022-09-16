@@ -1,8 +1,8 @@
 #ifndef GUILIB_MESSAGE_H
 #define GUILIB_MESSAGE_H
 
-#include "..\utils\Stdafx.h"
-#include "..\utils\StdString.h"
+#include "utils\Stdafx.h"
+#include "utils\StdString.h"
 #include <string>
 
 #define GUI_MSG_WINDOW_INIT    1   // Initialize window

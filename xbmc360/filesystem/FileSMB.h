@@ -2,7 +2,7 @@
 #define H_CFILESMB
 
 #include "FileBase.h"
-#include "..\utils\CriticalSection.h"
+#include "utils\CriticalSection.h"
 #include "libraries\libsmb2\XBLibSmb2.h"
 
 #include "..\libraries\libsmb2\libsmb2.h"

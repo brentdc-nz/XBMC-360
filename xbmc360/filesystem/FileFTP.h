@@ -3,7 +3,7 @@
 
 #include "FileBase.h"
 #include "utils\CriticalSection.h"
-#include "services\FTPServer\FTPFileWriter.h"
+#include "..\services\FTPServer\FTPFile.h"
 
 namespace XFILE
 {
