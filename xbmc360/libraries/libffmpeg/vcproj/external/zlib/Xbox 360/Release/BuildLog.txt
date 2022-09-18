@@ -1,0 +1,447 @@
+﻿Build started 17/09/2022 23:31:01.
+     1>Project "C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zlib.vcxproj" on node 2 (rebuild target(s)).
+     1>_PrepareForClean:
+         Deleting file "Xbox 360\Release\zlib.lastbuildstate".
+       InitializeBuildStatus:
+         Creating "Xbox 360\Release\zlib.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Xbox 360 SDK\bin\win32\CL.exe /c /Zi /nologo /Wall /WX- /O2 /D WIN32 /D NDEBUG /D _LIB /D _XBOX /GF- /Gm- /EHsc /MD /GS /Gy- /fp:fast /fp:except- /Zc:wchar_t /Zc:forScope /GR- /openmp- /Fo"Xbox 360\Release\\" /Fd"Xbox 360\Release\vc100.pdb" /TC adler32.c compress.c crc32.c deflate.c gzclose.c gzlib.c gzread.c gzwrite.c infback.c inffast.c inflate.c inftrees.c trees.c uncompr.c zutil.c /FI"C:\Program Files (x86)\Microsoft Xbox 360 SDK\\include\xbox\xbox_intellisense_platform.h"
+     1>cl : Command line warning D9035: option 'MD' has been deprecated and will be removed in a future release
+         adler32.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zutil.h(16): warning C4668: '__GNUC__' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zutil.h(16): warning C4668: '__GNUC_MINOR__' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zconf.h(373): warning C4668: '_LARGEFILE64_SOURCE' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>adler32.c(61): warning C4028: formal parameter 3 different from declaration
+     1>adler32.c(129): warning C4131: 'adler32_combine_' : uses old-style declarator
+     1>adler32.c(153): warning C4131: 'adler32_combine' : uses old-style declarator
+     1>adler32.c(161): warning C4131: 'adler32_combine64' : uses old-style declarator
+         compress.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zconf.h(373): warning C4668: '_LARGEFILE64_SOURCE' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>compress.c(23): warning C4131: 'compress2' : uses old-style declarator
+     1>compress.c(63): warning C4131: 'compress' : uses old-style declarator
+     1>compress.c(76): warning C4131: 'compressBound' : uses old-style declarator
+         crc32.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zutil.h(16): warning C4668: '__GNUC__' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zutil.h(16): warning C4668: '__GNUC_MINOR__' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zconf.h(373): warning C4668: '_LARGEFILE64_SOURCE' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>crc32.c(207): warning C4255: 'get_crc_table' : no function prototype given: converting '()' to '(void)'
+     1>crc32.c(222): warning C4131: 'crc32' : uses old-style declarator
+     1>crc32.c(234): warning C4127: conditional expression is constant
+     1>crc32.c(265): warning C4131: 'crc32_little' : uses old-style declarator
+     1>crc32.c(305): warning C4131: 'crc32_big' : uses old-style declarator
+     1>crc32.c(345): warning C4131: 'gf2_matrix_times' : uses old-style declarator
+     1>crc32.c(362): warning C4131: 'gf2_matrix_square' : uses old-style declarator
+     1>crc32.c(373): warning C4131: 'crc32_combine_' : uses old-style declarator
+     1>crc32.c(429): warning C4131: 'crc32_combine' : uses old-style declarator
+     1>crc32.c(437): warning C4131: 'crc32_combine64' : uses old-style declarator
+         deflate.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zutil.h(16): warning C4668: '__GNUC__' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zutil.h(16): warning C4668: '__GNUC_MINOR__' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zconf.h(373): warning C4668: '_LARGEFILE64_SOURCE' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\deflate.h(105): warning C4820: 'internal_state' : '3' bytes padding added after data member 'method'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\deflate.h(214): warning C4820: 'internal_state' : '3' bytes padding added after data member 'depth'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\deflate.h(258): warning C4820: 'internal_state' : '2' bytes padding added after data member 'bi_buf'
+     1>deflate.c(199): warning C4131: 'deflateInit_' : uses old-style declarator
+     1>deflate.c(212): warning C4131: 'deflateInit2_' : uses old-style declarator
+     1>deflate.c(312): warning C4131: 'deflateSetDictionary' : uses old-style declarator
+     1>deflate.c(354): warning C4131: 'deflateReset' : uses old-style declarator
+     1>deflate.c(390): warning C4131: 'deflateSetHeader' : uses old-style declarator
+     1>deflate.c(401): warning C4131: 'deflatePrime' : uses old-style declarator
+     1>deflate.c(413): warning C4131: 'deflateParams' : uses old-style declarator
+     1>deflate.c(452): warning C4131: 'deflateTune' : uses old-style declarator
+     1>deflate.c(487): warning C4131: 'deflateBound' : uses old-style declarator
+     1>deflate.c(549): warning C4131: 'putShortMSB' : uses old-style declarator
+     1>deflate.c(563): warning C4131: 'flush_pending' : uses old-style declarator
+     1>deflate.c(583): warning C4131: 'deflate' : uses old-style declarator
+     1>deflate.c(728): warning C4242: '=' : conversion from 'int' to 'Bytef', possible loss of data
+     1>deflate.c(759): warning C4242: '=' : conversion from 'int' to 'Bytef', possible loss of data
+     1>deflate.c(896): warning C4131: 'deflateEnd' : uses old-style declarator
+     1>deflate.c(931): warning C4131: 'deflateCopy' : uses old-style declarator
+     1>deflate.c(993): warning C4131: 'read_buf' : uses old-style declarator
+     1>deflate.c(1023): warning C4131: 'lm_init' : uses old-style declarator
+     1>deflate.c(1064): warning C4131: 'longest_match' : uses old-style declarator
+     1>deflate.c(1306): warning C4131: 'fill_window' : uses old-style declarator
+     1>deflate.c(1317): warning C4127: conditional expression is constant
+     1>deflate.c(1463): warning C4131: 'deflate_stored' : uses old-style declarator
+     1>deflate.c(1521): warning C4131: 'deflate_fast' : uses old-style declarator
+     1>deflate.c(1564): warning C4244: 'initializing' : conversion from 'uInt' to 'uch', possible loss of data
+     1>deflate.c(1564): warning C4244: 'initializing' : conversion from 'uInt' to 'ush', possible loss of data
+     1>deflate.c(1617): warning C4131: 'deflate_slow' : uses old-style declarator
+     1>deflate.c(1683): warning C4244: 'initializing' : conversion from 'uInt' to 'uch', possible loss of data
+     1>deflate.c(1683): warning C4244: 'initializing' : conversion from 'uInt' to 'ush', possible loss of data
+     1>deflate.c(1742): warning C4131: 'deflate_rle' : uses old-style declarator
+     1>deflate.c(1785): warning C4244: 'initializing' : conversion from 'uInt' to 'uch', possible loss of data
+     1>deflate.c(1808): warning C4131: 'deflate_huff' : uses old-style declarator
+         gzclose.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\gzguts.h(15): warning C4668: '__GNUC__' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\gzguts.h(15): warning C4668: '__GNUC_MINOR__' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zconf.h(373): warning C4668: '_LARGEFILE64_SOURCE' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\io.h(55): warning C4820: '_finddata32i64_t' : '4' bytes padding added after data member 'name'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\io.h(59): warning C4820: '_finddata64i32_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\io.h(68): warning C4820: '__finddata64_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\io.h(73): warning C4820: '__finddata64_t' : '4' bytes padding added after data member 'name'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\io.h(121): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\io.h(126): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'name'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\io.h(130): warning C4820: '_wfinddata64_t' : '4' bytes padding added after data member 'attrib'
+     1>gzclose.c(12): warning C4131: 'gzclose' : uses old-style declarator
+         gzlib.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\gzguts.h(15): warning C4668: '__GNUC__' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\gzguts.h(15): warning C4668: '__GNUC_MINOR__' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zconf.h(373): warning C4668: '_LARGEFILE64_SOURCE' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\io.h(55): warning C4820: '_finddata32i64_t' : '4' bytes padding added after data member 'name'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\io.h(59): warning C4820: '_finddata64i32_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\io.h(68): warning C4820: '__finddata64_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\io.h(73): warning C4820: '__finddata64_t' : '4' bytes padding added after data member 'name'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\io.h(121): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\io.h(126): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'name'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\io.h(130): warning C4820: '_wfinddata64_t' : '4' bytes padding added after data member 'attrib'
+     1>gzlib.c(72): warning C4131: 'gz_reset' : uses old-style declarator
+     1>gzlib.c(88): warning C4131: 'gz_open' : uses old-style declarator
+     1>gzlib.c(197): warning C4131: 'gzopen' : uses old-style declarator
+     1>gzlib.c(205): warning C4131: 'gzopen64' : uses old-style declarator
+     1>gzlib.c(213): warning C4131: 'gzdopen' : uses old-style declarator
+     1>gzlib.c(229): warning C4131: 'gzbuffer' : uses old-style declarator
+     1>gzlib.c(254): warning C4131: 'gzrewind' : uses old-style declarator
+     1>gzlib.c(276): warning C4131: 'gzseek64' : uses old-style declarator
+     1>gzlib.c(352): warning C4131: 'gzseek' : uses old-style declarator
+     1>gzlib.c(364): warning C4131: 'gztell64' : uses old-style declarator
+     1>gzlib.c(381): warning C4131: 'gztell' : uses old-style declarator
+     1>gzlib.c(391): warning C4131: 'gzoffset64' : uses old-style declarator
+     1>gzlib.c(414): warning C4131: 'gzoffset' : uses old-style declarator
+     1>gzlib.c(424): warning C4131: 'gzeof' : uses old-style declarator
+     1>gzlib.c(442): warning C4131: 'gzerror' : uses old-style declarator
+     1>gzlib.c(462): warning C4131: 'gzclearerr' : uses old-style declarator
+     1>gzlib.c(486): warning C4131: 'gz_error' : uses old-style declarator
+         gzread.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\gzguts.h(15): warning C4668: '__GNUC__' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\gzguts.h(15): warning C4668: '__GNUC_MINOR__' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zconf.h(373): warning C4668: '_LARGEFILE64_SOURCE' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\io.h(55): warning C4820: '_finddata32i64_t' : '4' bytes padding added after data member 'name'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\io.h(59): warning C4820: '_finddata64i32_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\io.h(68): warning C4820: '__finddata64_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\io.h(73): warning C4820: '__finddata64_t' : '4' bytes padding added after data member 'name'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\io.h(121): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\io.h(126): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'name'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\io.h(130): warning C4820: '_wfinddata64_t' : '4' bytes padding added after data member 'attrib'
+     1>gzread.c(22): warning C4131: 'gz_load' : uses old-style declarator
+     1>gzread.c(51): warning C4131: 'gz_avail' : uses old-style declarator
+     1>gzread.c(74): warning C4131: 'gz_next4' : uses old-style declarator
+     1>gzread.c(105): warning C4131: 'gz_head' : uses old-style declarator
+     1>gzread.c(234): warning C4131: 'gz_decomp' : uses old-style declarator
+     1>gzread.c(305): warning C4131: 'gz_make' : uses old-style declarator
+     1>gzread.c(331): warning C4131: 'gz_skip' : uses old-style declarator
+     1>gzread.c(363): warning C4131: 'gzread' : uses old-style declarator
+     1>gzread.c(454): warning C4131: 'gzgetc' : uses old-style declarator
+     1>gzread.c(483): warning C4131: 'gzungetc' : uses old-style declarator
+     1>gzread.c(512): warning C4242: '=' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>gzread.c(533): warning C4242: '=' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>gzread.c(540): warning C4131: 'gzgets' : uses old-style declarator
+     1>gzread.c(604): warning C4131: 'gzdirect' : uses old-style declarator
+     1>gzread.c(628): warning C4131: 'gzclose_r' : uses old-style declarator
+         gzwrite.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\gzguts.h(15): warning C4668: '__GNUC__' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\gzguts.h(15): warning C4668: '__GNUC_MINOR__' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zconf.h(373): warning C4668: '_LARGEFILE64_SOURCE' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\io.h(55): warning C4820: '_finddata32i64_t' : '4' bytes padding added after data member 'name'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\io.h(59): warning C4820: '_finddata64i32_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\io.h(68): warning C4820: '__finddata64_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\io.h(73): warning C4820: '__finddata64_t' : '4' bytes padding added after data member 'name'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\io.h(121): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\io.h(126): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'name'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\io.h(130): warning C4820: '_wfinddata64_t' : '4' bytes padding added after data member 'attrib'
+     1>gzwrite.c(16): warning C4131: 'gz_init' : uses old-style declarator
+     1>gzwrite.c(60): warning C4131: 'gz_comp' : uses old-style declarator
+     1>gzwrite.c(112): warning C4131: 'gz_zero' : uses old-style declarator
+     1>gzwrite.c(144): warning C4131: 'gzwrite' : uses old-style declarator
+     1>gzwrite.c(222): warning C4131: 'gzputc' : uses old-style declarator
+     1>gzwrite.c(251): warning C4242: '=' : conversion from 'int' to 'Bytef', possible loss of data
+     1>gzwrite.c(257): warning C4242: '=' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>gzwrite.c(265): warning C4131: 'gzputs' : uses old-style declarator
+     1>gzwrite.c(427): warning C4131: 'gzflush' : uses old-style declarator
+     1>gzwrite.c(459): warning C4131: 'gzsetparams' : uses old-style declarator
+     1>gzwrite.c(501): warning C4131: 'gzclose_w' : uses old-style declarator
+         infback.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zutil.h(16): warning C4668: '__GNUC__' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zutil.h(16): warning C4668: '__GNUC_MINOR__' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zconf.h(373): warning C4668: '_LARGEFILE64_SOURCE' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>infback.c(29): warning C4131: 'inflateBackInit_' : uses old-style declarator
+     1>infback.c(74): warning C4131: 'fixedtables' : uses old-style declarator
+     1>infback.c(242): warning C4131: 'inflateBack' : uses old-style declarator
+     1>infback.c(286): warning C4127: conditional expression is constant
+     1>infback.c(290): warning C4127: conditional expression is constant
+     1>infback.c(290): warning C4127: conditional expression is constant
+     1>infback.c(290): warning C4127: conditional expression is constant
+     1>infback.c(292): warning C4127: conditional expression is constant
+     1>infback.c(314): warning C4127: conditional expression is constant
+     1>infback.c(319): warning C4127: conditional expression is constant
+     1>infback.c(320): warning C4127: conditional expression is constant
+     1>infback.c(320): warning C4127: conditional expression is constant
+     1>infback.c(320): warning C4127: conditional expression is constant
+     1>infback.c(329): warning C4127: conditional expression is constant
+     1>infback.c(334): warning C4127: conditional expression is constant
+     1>infback.c(335): warning C4127: conditional expression is constant
+     1>infback.c(351): warning C4127: conditional expression is constant
+     1>infback.c(351): warning C4127: conditional expression is constant
+     1>infback.c(351): warning C4127: conditional expression is constant
+     1>infback.c(353): warning C4127: conditional expression is constant
+     1>infback.c(355): warning C4127: conditional expression is constant
+     1>infback.c(357): warning C4127: conditional expression is constant
+     1>infback.c(370): warning C4127: conditional expression is constant
+     1>infback.c(370): warning C4127: conditional expression is constant
+     1>infback.c(370): warning C4127: conditional expression is constant
+     1>infback.c(372): warning C4127: conditional expression is constant
+     1>infback.c(394): warning C4127: conditional expression is constant
+     1>infback.c(394): warning C4127: conditional expression is constant
+     1>infback.c(397): warning C4127: conditional expression is constant
+     1>infback.c(397): warning C4127: conditional expression is constant
+     1>infback.c(397): warning C4127: conditional expression is constant
+     1>infback.c(398): warning C4127: conditional expression is constant
+     1>infback.c(403): warning C4127: conditional expression is constant
+     1>infback.c(403): warning C4127: conditional expression is constant
+     1>infback.c(403): warning C4127: conditional expression is constant
+     1>infback.c(404): warning C4127: conditional expression is constant
+     1>infback.c(412): warning C4127: conditional expression is constant
+     1>infback.c(415): warning C4127: conditional expression is constant
+     1>infback.c(415): warning C4127: conditional expression is constant
+     1>infback.c(415): warning C4127: conditional expression is constant
+     1>infback.c(416): warning C4127: conditional expression is constant
+     1>infback.c(419): warning C4127: conditional expression is constant
+     1>infback.c(422): warning C4127: conditional expression is constant
+     1>infback.c(422): warning C4127: conditional expression is constant
+     1>infback.c(422): warning C4127: conditional expression is constant
+     1>infback.c(423): warning C4127: conditional expression is constant
+     1>infback.c(426): warning C4127: conditional expression is constant
+     1>infback.c(476): warning C4127: conditional expression is constant
+     1>infback.c(480): warning C4127: conditional expression is constant
+     1>infback.c(488): warning C4127: conditional expression is constant
+     1>infback.c(488): warning C4127: conditional expression is constant
+     1>infback.c(496): warning C4127: conditional expression is constant
+     1>infback.c(496): warning C4127: conditional expression is constant
+     1>infback.c(498): warning C4127: conditional expression is constant
+     1>infback.c(500): warning C4127: conditional expression is constant
+     1>infback.c(508): warning C4127: conditional expression is constant
+     1>infback.c(532): warning C4127: conditional expression is constant
+     1>infback.c(532): warning C4127: conditional expression is constant
+     1>infback.c(532): warning C4127: conditional expression is constant
+     1>infback.c(534): warning C4127: conditional expression is constant
+     1>infback.c(542): warning C4127: conditional expression is constant
+     1>infback.c(542): warning C4127: conditional expression is constant
+     1>infback.c(550): warning C4127: conditional expression is constant
+     1>infback.c(550): warning C4127: conditional expression is constant
+     1>infback.c(552): warning C4127: conditional expression is constant
+     1>infback.c(554): warning C4127: conditional expression is constant
+     1>infback.c(565): warning C4127: conditional expression is constant
+     1>infback.c(565): warning C4127: conditional expression is constant
+     1>infback.c(565): warning C4127: conditional expression is constant
+     1>infback.c(567): warning C4127: conditional expression is constant
+     1>infback.c(579): warning C4127: conditional expression is constant
+     1>infback.c(624): warning C4131: 'inflateBackEnd' : uses old-style declarator
+         inffast.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zutil.h(16): warning C4668: '__GNUC__' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zutil.h(16): warning C4668: '__GNUC_MINOR__' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zconf.h(373): warning C4668: '_LARGEFILE64_SOURCE' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>inffast.c(68): warning C4131: 'inflate_fast' : uses old-style declarator
+         inflate.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zutil.h(16): warning C4668: '__GNUC__' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zutil.h(16): warning C4668: '__GNUC_MINOR__' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zconf.h(373): warning C4668: '_LARGEFILE64_SOURCE' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>inflate.c(104): warning C4131: 'inflateReset' : uses old-style declarator
+     1>inflate.c(131): warning C4131: 'inflateReset2' : uses old-style declarator
+     1>inflate.c(169): warning C4131: 'inflateInit2_' : uses old-style declarator
+     1>inflate.c(202): warning C4131: 'inflateInit_' : uses old-style declarator
+     1>inflate.c(210): warning C4131: 'inflatePrime' : uses old-style declarator
+     1>inflate.c(241): warning C4131: 'fixedtables' : uses old-style declarator
+     1>inflate.c(359): warning C4131: 'updatewindow' : uses old-style declarator
+     1>inflate.c(590): warning C4131: 'inflate' : uses old-style declarator
+     1>inflate.c(618): warning C4127: conditional expression is constant
+     1>inflate.c(629): warning C4127: conditional expression is constant
+     1>inflate.c(629): warning C4127: conditional expression is constant
+     1>inflate.c(633): warning C4127: conditional expression is constant
+     1>inflate.c(634): warning C4127: conditional expression is constant
+     1>inflate.c(655): warning C4127: conditional expression is constant
+     1>inflate.c(668): warning C4127: conditional expression is constant
+     1>inflate.c(672): warning C4127: conditional expression is constant
+     1>inflate.c(672): warning C4127: conditional expression is constant
+     1>inflate.c(686): warning C4127: conditional expression is constant
+     1>inflate.c(687): warning C4127: conditional expression is constant
+     1>inflate.c(690): warning C4127: conditional expression is constant
+     1>inflate.c(690): warning C4127: conditional expression is constant
+     1>inflate.c(693): warning C4127: conditional expression is constant
+     1>inflate.c(694): warning C4127: conditional expression is constant
+     1>inflate.c(697): warning C4127: conditional expression is constant
+     1>inflate.c(697): warning C4127: conditional expression is constant
+     1>inflate.c(702): warning C4127: conditional expression is constant
+     1>inflate.c(703): warning C4127: conditional expression is constant
+     1>inflate.c(707): warning C4127: conditional expression is constant
+     1>inflate.c(707): warning C4127: conditional expression is constant
+     1>inflate.c(711): warning C4127: conditional expression is constant
+     1>inflate.c(712): warning C4127: conditional expression is constant
+     1>inflate.c(748): warning C4242: '=' : conversion from 'unsigned int' to 'Bytef', possible loss of data
+     1>inflate.c(769): warning C4242: '=' : conversion from 'unsigned int' to 'Bytef', possible loss of data
+     1>inflate.c(782): warning C4127: conditional expression is constant
+     1>inflate.c(782): warning C4127: conditional expression is constant
+     1>inflate.c(788): warning C4127: conditional expression is constant
+     1>inflate.c(799): warning C4127: conditional expression is constant
+     1>inflate.c(799): warning C4127: conditional expression is constant
+     1>inflate.c(801): warning C4127: conditional expression is constant
+     1>inflate.c(805): warning C4127: conditional expression is constant
+     1>inflate.c(814): warning C4127: conditional expression is constant
+     1>inflate.c(818): warning C4127: conditional expression is constant
+     1>inflate.c(818): warning C4127: conditional expression is constant
+     1>inflate.c(820): warning C4127: conditional expression is constant
+     1>inflate.c(833): warning C4127: conditional expression is constant
+     1>inflate.c(846): warning C4127: conditional expression is constant
+     1>inflate.c(849): warning C4127: conditional expression is constant
+     1>inflate.c(850): warning C4127: conditional expression is constant
+     1>inflate.c(850): warning C4127: conditional expression is constant
+     1>inflate.c(859): warning C4127: conditional expression is constant
+     1>inflate.c(882): warning C4127: conditional expression is constant
+     1>inflate.c(882): warning C4127: conditional expression is constant
+     1>inflate.c(884): warning C4127: conditional expression is constant
+     1>inflate.c(886): warning C4127: conditional expression is constant
+     1>inflate.c(888): warning C4127: conditional expression is constant
+     1>inflate.c(901): warning C4127: conditional expression is constant
+     1>inflate.c(901): warning C4127: conditional expression is constant
+     1>inflate.c(903): warning C4127: conditional expression is constant
+     1>inflate.c(925): warning C4127: conditional expression is constant
+     1>inflate.c(928): warning C4127: conditional expression is constant
+     1>inflate.c(928): warning C4127: conditional expression is constant
+     1>inflate.c(929): warning C4127: conditional expression is constant
+     1>inflate.c(934): warning C4127: conditional expression is constant
+     1>inflate.c(934): warning C4127: conditional expression is constant
+     1>inflate.c(935): warning C4127: conditional expression is constant
+     1>inflate.c(943): warning C4127: conditional expression is constant
+     1>inflate.c(946): warning C4127: conditional expression is constant
+     1>inflate.c(946): warning C4127: conditional expression is constant
+     1>inflate.c(947): warning C4127: conditional expression is constant
+     1>inflate.c(950): warning C4127: conditional expression is constant
+     1>inflate.c(953): warning C4127: conditional expression is constant
+     1>inflate.c(953): warning C4127: conditional expression is constant
+     1>inflate.c(954): warning C4127: conditional expression is constant
+     1>inflate.c(957): warning C4127: conditional expression is constant
+     1>inflate.c(1008): warning C4127: conditional expression is constant
+     1>inflate.c(1010): warning C4127: conditional expression is constant
+     1>inflate.c(1019): warning C4127: conditional expression is constant
+     1>inflate.c(1027): warning C4127: conditional expression is constant
+     1>inflate.c(1029): warning C4127: conditional expression is constant
+     1>inflate.c(1032): warning C4127: conditional expression is constant
+     1>inflate.c(1057): warning C4127: conditional expression is constant
+     1>inflate.c(1057): warning C4127: conditional expression is constant
+     1>inflate.c(1059): warning C4127: conditional expression is constant
+     1>inflate.c(1069): warning C4127: conditional expression is constant
+     1>inflate.c(1077): warning C4127: conditional expression is constant
+     1>inflate.c(1079): warning C4127: conditional expression is constant
+     1>inflate.c(1082): warning C4127: conditional expression is constant
+     1>inflate.c(1094): warning C4127: conditional expression is constant
+     1>inflate.c(1094): warning C4127: conditional expression is constant
+     1>inflate.c(1096): warning C4127: conditional expression is constant
+     1>inflate.c(1161): warning C4127: conditional expression is constant
+     1>inflate.c(1161): warning C4127: conditional expression is constant
+     1>inflate.c(1178): warning C4127: conditional expression is constant
+     1>inflate.c(1185): warning C4127: conditional expression is constant
+     1>inflate.c(1185): warning C4127: conditional expression is constant
+     1>inflate.c(1191): warning C4127: conditional expression is constant
+     1>inflate.c(1216): warning C4127: conditional expression is constant
+     1>inflate.c(1239): warning C4131: 'inflateEnd' : uses old-style declarator
+     1>inflate.c(1253): warning C4131: 'inflateSetDictionary' : uses old-style declarator
+     1>inflate.c(1295): warning C4131: 'inflateGetHeader' : uses old-style declarator
+     1>inflate.c(1323): warning C4131: 'syncsearch' : uses old-style declarator
+     1>inflate.c(1346): warning C4131: 'inflateSync' : uses old-style declarator
+     1>inflate.c(1397): warning C4131: 'inflateSyncPoint' : uses old-style declarator
+     1>inflate.c(1407): warning C4131: 'inflateCopy' : uses old-style declarator
+     1>inflate.c(1454): warning C4131: 'inflateUndermine' : uses old-style declarator
+     1>inflate.c(1471): warning C4131: 'inflateMark' : uses old-style declarator
+         inftrees.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zutil.h(16): warning C4668: '__GNUC__' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zutil.h(16): warning C4668: '__GNUC_MINOR__' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zconf.h(373): warning C4668: '_LARGEFILE64_SOURCE' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>inftrees.c(33): warning C4131: 'inflate_table' : uses old-style declarator
+         trees.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zutil.h(16): warning C4668: '__GNUC__' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zutil.h(16): warning C4668: '__GNUC_MINOR__' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zconf.h(373): warning C4668: '_LARGEFILE64_SOURCE' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\deflate.h(105): warning C4820: 'internal_state' : '3' bytes padding added after data member 'method'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\deflate.h(214): warning C4820: 'internal_state' : '3' bytes padding added after data member 'depth'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\deflate.h(258): warning C4820: 'internal_state' : '2' bytes padding added after data member 'bi_buf'
+     1>trees.c(239): warning C4255: 'tr_static_init' : no function prototype given: converting '()' to '(void)'
+     1>trees.c(387): warning C4131: '_tr_init' : uses old-style declarator
+     1>trees.c(416): warning C4131: 'init_block' : uses old-style declarator
+     1>trees.c(460): warning C4131: 'pqdownheap' : uses old-style declarator
+     1>trees.c(495): warning C4131: 'gen_bitlen' : uses old-style declarator
+     1>trees.c(582): warning C4131: 'gen_codes' : uses old-style declarator
+     1>trees.c(608): warning C4242: '=' : conversion from 'unsigned int' to 'ush', possible loss of data
+     1>trees.c(624): warning C4131: 'build_tree' : uses old-style declarator
+     1>trees.c(712): warning C4131: 'scan_tree' : uses old-style declarator
+     1>trees.c(732): warning C4242: '+=' : conversion from 'int' to 'ush', possible loss of data
+     1>trees.c(757): warning C4131: 'send_tree' : uses old-style declarator
+     1>trees.c(808): warning C4131: 'build_bl_tree' : uses old-style declarator
+     1>trees.c(843): warning C4131: 'send_all_trees' : uses old-style declarator
+     1>trees.c(872): warning C4131: '_tr_stored_block' : uses old-style declarator
+     1>trees.c(897): warning C4131: '_tr_align' : uses old-style declarator
+     1>trees.c(926): warning C4131: '_tr_flush_block' : uses old-style declarator
+     1>trees.c(1027): warning C4131: '_tr_tally' : uses old-style declarator
+     1>trees.c(1077): warning C4131: 'compress_block' : uses old-style declarator
+     1>trees.c(1138): warning C4131: 'detect_data_type' : uses old-style declarator
+     1>trees.c(1172): warning C4131: 'bi_reverse' : uses old-style declarator
+     1>trees.c(1187): warning C4131: 'bi_flush' : uses old-style declarator
+     1>trees.c(1204): warning C4131: 'bi_windup' : uses old-style declarator
+     1>trees.c(1223): warning C4131: 'copy_block' : uses old-style declarator
+         uncompr.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zconf.h(373): warning C4668: '_LARGEFILE64_SOURCE' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>uncompr.c(25): warning C4131: 'uncompress' : uses old-style declarator
+         zutil.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zutil.h(16): warning C4668: '__GNUC__' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zutil.h(16): warning C4668: '__GNUC_MINOR__' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zconf.h(373): warning C4668: '_LARGEFILE64_SOURCE' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>zutil.c(27): warning C4255: 'zlibVersion' : no function prototype given: converting '()' to '(void)'
+     1>zutil.c(32): warning C4255: 'zlibCompileFlags' : no function prototype given: converting '()' to '(void)'
+     1>zutil.c(134): warning C4131: 'zError' : uses old-style declarator
+     1>zutil.c(301): warning C4131: 'zcalloc' : uses old-style declarator
+     1>zutil.c(311): warning C4131: 'zcfree' : uses old-style declarator
+         Generating Code...
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\trees.c(389): warning C4711: function 'tr_static_init' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\trees.c(409): warning C4711: function 'init_block' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\trees.c(608): warning C4711: function 'bi_reverse' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\trees.c(1010): warning C4711: function 'init_block' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\inflate.c(828): warning C4711: function 'fixedtables' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\infback.c(300): warning C4711: function 'fixedtables' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\gzwrite.c(135): warning C4711: function 'gz_comp' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\gzread.c(245): warning C4711: function 'gz_avail' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\gzread.c(355): warning C4711: function 'gz_make' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\gzlib.c(385): warning C4711: function 'gztell64' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\gzlib.c(81): warning C4711: function 'gz_error' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\gzlib.c(315): warning C4711: function 'gz_error' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\gzlib.c(476): warning C4711: function 'gz_error' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\deflate.c(671): warning C4711: function 'putShortMSB' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\deflate.c(675): warning C4711: function 'putShortMSB' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\deflate.c(676): warning C4711: function 'putShortMSB' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\deflate.c(883): warning C4711: function 'putShortMSB' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\deflate.c(884): warning C4711: function 'putShortMSB' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\crc32.c(368): warning C4711: function 'gf2_matrix_times' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\crc32.c(406): warning C4711: function 'gf2_matrix_times' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\crc32.c(416): warning C4711: function 'gf2_matrix_times' selected for automatic inline expansion
+       Lib:
+         C:\Program Files (x86)\Microsoft Xbox 360 SDK\bin\win32\Lib.exe /OUT:"C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\Release\zlib.lib" /NOLOGO "Xbox 360\Release\adler32.obj"
+         "Xbox 360\Release\compress.obj"
+         "Xbox 360\Release\crc32.obj"
+         "Xbox 360\Release\deflate.obj"
+         "Xbox 360\Release\gzclose.obj"
+         "Xbox 360\Release\gzlib.obj"
+         "Xbox 360\Release\gzread.obj"
+         "Xbox 360\Release\gzwrite.obj"
+         "Xbox 360\Release\infback.obj"
+         "Xbox 360\Release\inffast.obj"
+         "Xbox 360\Release\inflate.obj"
+         "Xbox 360\Release\inftrees.obj"
+         "Xbox 360\Release\trees.obj"
+         "Xbox 360\Release\uncompr.obj"
+         "Xbox 360\Release\zutil.obj"
+         zlib.vcxproj -> C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\Release\zlib.lib
+       FinalizeBuildStatus:
+         Deleting file "Xbox 360\Release\zlib.unsuccessfulbuild".
+         Touching "Xbox 360\Release\zlib.lastbuildstate".
+     1>Done Building Project "C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zlib.vcxproj" (rebuild target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.96

@@ -31,6 +31,23 @@
 #endif
 
 #ifdef _MSC_VER
+#if defined(_XBOX) //Wolf3s
+static __inline double gen_nan()
+{
+	double temp = 0.0;
+	return temp / temp;
+}
+static __inline double gen_inf()
+{
+	double temp = 0.0;
+	return 1.0 / temp;
+}
+static __inline double gen_neg_inf()
+{
+	double temp = 0.0;
+	return -1.0 / temp;
+}
+#else
 static inline double gen_nan()
 {
 	double temp = 0.0;
@@ -46,6 +63,7 @@ static inline double gen_neg_inf()
 	double temp = 0.0;
 	return -1.0 / temp;
 }
+#endif
 #endif
 
 #ifndef M_E

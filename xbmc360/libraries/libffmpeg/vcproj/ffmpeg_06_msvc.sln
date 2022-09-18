@@ -1,34 +1,19 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libavutil", "libavutil\libavutil.vcproj", "{360EA05D-89D7-405E-B935-66DCF7E1248F}"
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libavutil", "libavutil\libavutil.vcxproj", "{360EA05D-89D7-405E-B935-66DCF7E1248F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libavformat", "libavformat\libavformat.vcproj", "{F2A4E51C-C442-498C-B9CC-28DFC065A450}"
-	ProjectSection(ProjectDependencies) = postProject
-		{F477301D-1EE3-4E5B-9CFF-5DB97807C86D} = {F477301D-1EE3-4E5B-9CFF-5DB97807C86D}
-		{1937533D-A227-41D1-8D38-FFD5BC66B613} = {1937533D-A227-41D1-8D38-FFD5BC66B613}
-		{360EA05D-89D7-405E-B935-66DCF7E1248F} = {360EA05D-89D7-405E-B935-66DCF7E1248F}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libavformat", "libavformat\libavformat.vcxproj", "{F2A4E51C-C442-498C-B9CC-28DFC065A450}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libavcodec", "libavcodec\libavcodec.vcproj", "{1937533D-A227-41D1-8D38-FFD5BC66B613}"
-	ProjectSection(ProjectDependencies) = postProject
-		{360EA05D-89D7-405E-B935-66DCF7E1248F} = {360EA05D-89D7-405E-B935-66DCF7E1248F}
-		{6A9F149D-15DE-4C41-8144-ADFA4761D2C9} = {6A9F149D-15DE-4C41-8144-ADFA4761D2C9}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libavcodec", "libavcodec\libavcodec.vcxproj", "{1937533D-A227-41D1-8D38-FFD5BC66B613}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "external\zlib\zlib.vcproj", "{6A9F149D-15DE-4C41-8144-ADFA4761D2C9}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "external\zlib\zlib.vcxproj", "{6A9F149D-15DE-4C41-8144-ADFA4761D2C9}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libswscale", "libswscale\libswscale.vcproj", "{F477301D-1EE3-4E5B-9CFF-5DB97807C86D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libswscale", "libswscale\libswscale.vcxproj", "{F477301D-1EE3-4E5B-9CFF-5DB97807C86D}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libavfilter", "libavfilter\libavfilter.vcproj", "{F266F25B-3DC5-4621-A610-5271F3FAA218}"
-	ProjectSection(ProjectDependencies) = postProject
-		{F2A4E51C-C442-498C-B9CC-28DFC065A450} = {F2A4E51C-C442-498C-B9CC-28DFC065A450}
-		{F477301D-1EE3-4E5B-9CFF-5DB97807C86D} = {F477301D-1EE3-4E5B-9CFF-5DB97807C86D}
-		{1937533D-A227-41D1-8D38-FFD5BC66B613} = {1937533D-A227-41D1-8D38-FFD5BC66B613}
-		{360EA05D-89D7-405E-B935-66DCF7E1248F} = {360EA05D-89D7-405E-B935-66DCF7E1248F}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libavfilter", "libavfilter\libavfilter.vcxproj", "{F266F25B-3DC5-4621-A610-5271F3FAA218}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pthreads", "pthreads\pthreads.vcproj", "{E33CEE4D-419C-47D0-9A60-6B651E4419AC}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pthreads", "pthreads\pthreads.vcxproj", "{E33CEE4D-419C-47D0-9A60-6B651E4419AC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

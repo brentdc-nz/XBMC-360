@@ -35,17 +35,24 @@
 /**
  * rational number numerator/denominator
  */
-typedef struct AVRational{
+typedef struct AVRational 
+{
     int num; ///< numerator
     int den; ///< denominator
 } AVRational;
 
-
 #ifdef _MSC_VER
-static inline AVRational av_create_rational(int num, int den){
+#if defined(_XBOX)
+static __inline AVRational av_create_rational(int num, int den) {
 	AVRational ret = {num, den};
 	return ret;
 }
+#else
+static inline AVRational av_create_rational(int num, int den) {
+	AVRational ret = {num, den};
+	return ret;
+}
+#endif
 #endif
 
 /**
@@ -55,6 +62,16 @@ static inline AVRational av_create_rational(int num, int den){
  * @return 0 if a==b, 1 if a>b, -1 if a<b, and INT_MIN if one of the
  * values is of the form 0/0
  */
+#if defined(_XBOX)
+static __inline int av_cmp_q(AVRational a, AVRational b){
+    const int64_t tmp= a.num * (int64_t)b.den - b.num * (int64_t)a.den;
+
+    if(tmp) return ((tmp ^ a.den ^ b.den)>>63)|1;
+    else if(b.den && a.den) return 0;
+    else if(a.num && b.num) return (a.num>>31) - (b.num>>31);
+    else                    return INT_MIN;
+}
+#else
 static inline int av_cmp_q(AVRational a, AVRational b){
     const int64_t tmp= a.num * (int64_t)b.den - b.num * (int64_t)a.den;
 
@@ -63,16 +80,21 @@ static inline int av_cmp_q(AVRational a, AVRational b){
     else if(a.num && b.num) return (a.num>>31) - (b.num>>31);
     else                    return INT_MIN;
 }
-
+#endif
 /**
  * Convert rational to double.
  * @param a rational to convert
  * @return (double) a
  */
+#if defined(_XBOX) //Wolf3s
+static __inline double av_q2d(AVRational a){
+    return a.num / (double) a.den;
+}
+#else
 static inline double av_q2d(AVRational a){
     return a.num / (double) a.den;
 }
-
+#endif
 /**
  * Reduce a fraction.
  * This is useful for framerate calculations.

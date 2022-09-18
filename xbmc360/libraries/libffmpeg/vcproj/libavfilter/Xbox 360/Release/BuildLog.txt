@@ -1,0 +1,942 @@
+﻿Build started 17/09/2022 23:32:22.
+     1>Project "C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\vcproj\libavfilter\libavfilter.vcxproj" on node 3 (rebuild target(s)).
+     1>_PrepareForClean:
+         Deleting file "Xbox 360\Release\libavfilter.lastbuildstate".
+       InitializeBuildStatus:
+         Creating "Xbox 360\Release\libavfilter.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Xbox 360 SDK\bin\win32\CL.exe /c /I..\..\ /I..\external\include /Zi /nologo /Wall /WX- /O2 /D WIN32 /D NDEBUG /D _WINDOWS /D _USRDLL /D _XBOX /D HAVE_AV_CONFIG_H /D _UNICODE /D UNICODE /GF- /Gm- /EHsc /MD /GS /Gy- /fp:fast /fp:except- /Zc:wchar_t /Zc:forScope /GR- /openmp- /Fo"Xbox 360\Release\\" /Fd"Xbox 360\Release\vc100.pdb" /TC ..\..\libavfilter\allfilters.c ..\..\libavfilter\avfilter.c ..\..\libavfilter\avfiltergraph.c ..\..\libavfilter\defaults.c ..\..\libavfilter\formats.c ..\..\libavfilter\graphparser.c ..\..\libavfilter\parseutils.c ..\..\libavfilter\vf_aspect.c ..\..\libavfilter\vf_crop.c ..\..\libavfilter\vf_format.c ..\..\libavfilter\vf_null.c ..\..\libavfilter\vf_scale.c ..\..\libavfilter\vf_slicify.c ..\..\libavfilter\vf_unsharp.c ..\..\libavfilter\vf_vflip.c ..\..\libavfilter\vsink_nullsink.c ..\..\libavfilter\vsrc_nullsrc.c /FI"C:\Program Files (x86)\Microsoft Xbox 360 SDK\\include\xbox\xbox_intellisense_platform.h"
+     1>cl : Command line warning D9035: option 'MD' has been deprecated and will be removed in a future release
+         allfilters.c
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(105): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(110): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'name'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(114): warning C4820: '_wfinddata64_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(484): warning C4820: '_stat32' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(500): warning C4820: 'stat' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(516): warning C4820: '_stat32i64' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(517): warning C4820: '_stat32i64' : '4' bytes padding added after data member 'st_rdev'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(521): warning C4820: '_stat32i64' : '4' bytes padding added after data member 'st_ctime'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(530): warning C4820: '_stat64i32' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(544): warning C4820: '_stat64' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(545): warning C4820: '_stat64' : '4' bytes padding added after data member 'st_rdev'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(75): warning C4255: 'get_ff_log2_tab' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(76): warning C4255: 'get_av_reverse' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\intmath.h(63): warning C4255: 'get_ff_sqrt_tab' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(144): warning C4242: 'return' : conversion from 'int' to 'uint8_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(155): warning C4242: 'return' : conversion from 'int' to 'int8_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(166): warning C4242: 'return' : conversion from 'int' to 'uint16_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(177): warning C4242: 'return' : conversion from 'int' to 'int16_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\rational.h(47): warning C4204: nonstandard extension used : non-constant aggregate initializer
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\rational.h(47): warning C4204: nonstandard extension used : non-constant aggregate initializer
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(35): warning C4255: 'gen_nan' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(40): warning C4255: 'gen_inf' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(45): warning C4255: 'gen_neg_inf' : no function prototype given: converting '()' to '(void)'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1084): warning C4820: 'AVPacket' : '4' bytes padding added after data member 'priv'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '3' bytes padding added after data member 'motion_subsample_log2'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'opaque'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'ref_index'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'hwaccel_picture_private'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1837): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'debug_mv'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2651): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'bits_per_raw_sample'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2907): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'thread_safe_callbacks'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2921): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'audio_service_type'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2976): warning C4820: 'AVCodec' : '3' bytes padding added after data member 'max_lowres'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(3169): warning C4820: 'AVSubtitle' : '2' bytes padding added after data member 'format'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(3173): warning C4820: 'AVSubtitle' : '4' bytes padding added after data member 'rects'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4044): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'flags'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4072): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'key_frame'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4120): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'pts_dts_delta'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.h(112): warning C4820: 'AVFilterPicRef' : '4' bytes padding added after data member 'h'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.h(123): warning C4820: 'AVFilterPicRef' : '4' bytes padding added after data member 'perms'
+     1>..\..\libavfilter\allfilters.c(37): warning C4127: conditional expression is constant
+     1>..\..\libavfilter\allfilters.c(38): warning C4127: conditional expression is constant
+     1>..\..\libavfilter\allfilters.c(39): warning C4127: conditional expression is constant
+     1>..\..\libavfilter\allfilters.c(40): warning C4127: conditional expression is constant
+     1>..\..\libavfilter\allfilters.c(41): warning C4127: conditional expression is constant
+     1>..\..\libavfilter\allfilters.c(42): warning C4127: conditional expression is constant
+     1>..\..\libavfilter\allfilters.c(43): warning C4127: conditional expression is constant
+     1>..\..\libavfilter\allfilters.c(44): warning C4127: conditional expression is constant
+     1>..\..\libavfilter\allfilters.c(45): warning C4127: conditional expression is constant
+     1>..\..\libavfilter\allfilters.c(46): warning C4127: conditional expression is constant
+     1>..\..\libavfilter\allfilters.c(48): warning C4127: conditional expression is constant
+     1>..\..\libavfilter\allfilters.c(50): warning C4127: conditional expression is constant
+         avfilter.c
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(105): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(110): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'name'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(114): warning C4820: '_wfinddata64_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(484): warning C4820: '_stat32' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(500): warning C4820: 'stat' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(516): warning C4820: '_stat32i64' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(517): warning C4820: '_stat32i64' : '4' bytes padding added after data member 'st_rdev'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(521): warning C4820: '_stat32i64' : '4' bytes padding added after data member 'st_ctime'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(530): warning C4820: '_stat64i32' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(544): warning C4820: '_stat64' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(545): warning C4820: '_stat64' : '4' bytes padding added after data member 'st_rdev'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(24): warning C4668: 'CONFIG_SMALL' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(75): warning C4255: 'get_ff_log2_tab' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(76): warning C4255: 'get_av_reverse' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\intmath.h(63): warning C4255: 'get_ff_sqrt_tab' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(144): warning C4242: 'return' : conversion from 'int' to 'uint8_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(155): warning C4242: 'return' : conversion from 'int' to 'int8_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(166): warning C4242: 'return' : conversion from 'int' to 'uint16_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(177): warning C4242: 'return' : conversion from 'int' to 'int16_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\rational.h(47): warning C4204: nonstandard extension used : non-constant aggregate initializer
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\rational.h(47): warning C4204: nonstandard extension used : non-constant aggregate initializer
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(35): warning C4255: 'gen_nan' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(40): warning C4255: 'gen_inf' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(45): warning C4255: 'gen_neg_inf' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(1084): warning C4820: 'AVPacket' : '4' bytes padding added after data member 'priv'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(1120): warning C4820: 'AVFrame' : '3' bytes padding added after data member 'motion_subsample_log2'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'opaque'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'ref_index'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'hwaccel_picture_private'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(1837): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'debug_mv'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(2651): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'bits_per_raw_sample'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(2907): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'thread_safe_callbacks'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(2921): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'audio_service_type'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(2976): warning C4820: 'AVCodec' : '3' bytes padding added after data member 'max_lowres'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(3169): warning C4820: 'AVSubtitle' : '2' bytes padding added after data member 'format'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(3173): warning C4820: 'AVSubtitle' : '4' bytes padding added after data member 'rects'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(4044): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'flags'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(4072): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'key_frame'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(4120): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'pts_dts_delta'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(28): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(34): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(40): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(41): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(42): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(84): warning C4820: 'AVPixFmtDescriptor' : '1' bytes padding added after data member 'log2_chroma_h'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(88): warning C4820: 'AVPixFmtDescriptor' : '3' bytes padding added after data member 'flags'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(102): warning C4255: 'get_av_pix_fmt_descriptors' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.h(112): warning C4820: 'AVFilterPicRef' : '4' bytes padding added after data member 'h'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.h(123): warning C4820: 'AVFilterPicRef' : '4' bytes padding added after data member 'perms'
+     1>..\..\libavfilter\avfilter.c(171): warning C4100: 'end' : unreferenced formal parameter
+     1>..\..\libavfilter\avfilter.c(171): warning C4100: 'picref' : unreferenced formal parameter
+     1>..\..\libavfilter\avfilter.c(171): warning C4100: 'ctx' : unreferenced formal parameter
+     1>..\..\libavfilter\avfilter.c(183): warning C4100: 'end' : unreferenced formal parameter
+     1>..\..\libavfilter\avfilter.c(183): warning C4100: 'link' : unreferenced formal parameter
+     1>..\..\libavfilter\avfilter.c(183): warning C4100: 'ctx' : unreferenced formal parameter
+     1>..\..\libavfilter\avfilter.c(186): warning C4189: 'av_pix_fmt_descriptors' : local variable is initialized but not referenced
+     1>..\..\libavfilter\avfilter.c(235): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavfilter\avfilter.c(439): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavfilter\avfilter.c(444): warning C4018: '<' : signed/unsigned mismatch
+         avfiltergraph.c
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(105): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(110): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'name'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(114): warning C4820: '_wfinddata64_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(484): warning C4820: '_stat32' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(500): warning C4820: 'stat' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(516): warning C4820: '_stat32i64' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(517): warning C4820: '_stat32i64' : '4' bytes padding added after data member 'st_rdev'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(521): warning C4820: '_stat32i64' : '4' bytes padding added after data member 'st_ctime'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(530): warning C4820: '_stat64i32' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(544): warning C4820: '_stat64' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(545): warning C4820: '_stat64' : '4' bytes padding added after data member 'st_rdev'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(75): warning C4255: 'get_ff_log2_tab' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(76): warning C4255: 'get_av_reverse' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\intmath.h(63): warning C4255: 'get_ff_sqrt_tab' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(144): warning C4242: 'return' : conversion from 'int' to 'uint8_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(155): warning C4242: 'return' : conversion from 'int' to 'int8_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(166): warning C4242: 'return' : conversion from 'int' to 'uint16_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(177): warning C4242: 'return' : conversion from 'int' to 'int16_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\rational.h(47): warning C4204: nonstandard extension used : non-constant aggregate initializer
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\rational.h(47): warning C4204: nonstandard extension used : non-constant aggregate initializer
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(35): warning C4255: 'gen_nan' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(40): warning C4255: 'gen_inf' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(45): warning C4255: 'gen_neg_inf' : no function prototype given: converting '()' to '(void)'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1084): warning C4820: 'AVPacket' : '4' bytes padding added after data member 'priv'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '3' bytes padding added after data member 'motion_subsample_log2'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'opaque'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'ref_index'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'hwaccel_picture_private'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1837): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'debug_mv'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2651): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'bits_per_raw_sample'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2907): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'thread_safe_callbacks'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2921): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'audio_service_type'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2976): warning C4820: 'AVCodec' : '3' bytes padding added after data member 'max_lowres'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(3169): warning C4820: 'AVSubtitle' : '2' bytes padding added after data member 'format'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(3173): warning C4820: 'AVSubtitle' : '4' bytes padding added after data member 'rects'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4044): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'flags'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4072): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'key_frame'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4120): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'pts_dts_delta'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.h(112): warning C4820: 'AVFilterPicRef' : '4' bytes padding added after data member 'h'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.h(123): warning C4820: 'AVFilterPicRef' : '4' bytes padding added after data member 'perms'
+     1>..\..\libavfilter\avfiltergraph.c(55): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavfilter\avfiltergraph.c(58): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavfilter\avfiltergraph.c(67): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavfilter\avfiltergraph.c(85): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavfilter\avfiltergraph.c(80): warning C4100: 'log_ctx' : unreferenced formal parameter
+     1>..\..\libavfilter\avfiltergraph.c(101): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavfilter\avfiltergraph.c(115): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavfilter\avfiltergraph.c(123): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavfilter\avfiltergraph.c(126): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavfilter\avfiltergraph.c(183): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavfilter\avfiltergraph.c(186): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavfilter\avfiltergraph.c(188): warning C4018: '<' : signed/unsigned mismatch
+         defaults.c
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(105): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(110): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'name'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(114): warning C4820: '_wfinddata64_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(484): warning C4820: '_stat32' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(500): warning C4820: 'stat' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(516): warning C4820: '_stat32i64' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(517): warning C4820: '_stat32i64' : '4' bytes padding added after data member 'st_rdev'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(521): warning C4820: '_stat32i64' : '4' bytes padding added after data member 'st_ctime'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(530): warning C4820: '_stat64i32' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(544): warning C4820: '_stat64' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(545): warning C4820: '_stat64' : '4' bytes padding added after data member 'st_rdev'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(24): warning C4668: 'CONFIG_SMALL' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(75): warning C4255: 'get_ff_log2_tab' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(76): warning C4255: 'get_av_reverse' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\intmath.h(63): warning C4255: 'get_ff_sqrt_tab' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(144): warning C4242: 'return' : conversion from 'int' to 'uint8_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(155): warning C4242: 'return' : conversion from 'int' to 'int8_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(166): warning C4242: 'return' : conversion from 'int' to 'uint16_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(177): warning C4242: 'return' : conversion from 'int' to 'int16_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\rational.h(47): warning C4204: nonstandard extension used : non-constant aggregate initializer
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\rational.h(47): warning C4204: nonstandard extension used : non-constant aggregate initializer
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(35): warning C4255: 'gen_nan' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(40): warning C4255: 'gen_inf' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(45): warning C4255: 'gen_neg_inf' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(1084): warning C4820: 'AVPacket' : '4' bytes padding added after data member 'priv'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(1120): warning C4820: 'AVFrame' : '3' bytes padding added after data member 'motion_subsample_log2'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'opaque'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'ref_index'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'hwaccel_picture_private'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(1837): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'debug_mv'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(2651): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'bits_per_raw_sample'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(2907): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'thread_safe_callbacks'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(2921): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'audio_service_type'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(2976): warning C4820: 'AVCodec' : '3' bytes padding added after data member 'max_lowres'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(3169): warning C4820: 'AVSubtitle' : '2' bytes padding added after data member 'format'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(3173): warning C4820: 'AVSubtitle' : '4' bytes padding added after data member 'rects'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(4044): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'flags'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(4072): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'key_frame'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(4120): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'pts_dts_delta'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.h(112): warning C4820: 'AVFilterPicRef' : '4' bytes padding added after data member 'h'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.h(123): warning C4820: 'AVFilterPicRef' : '4' bytes padding added after data member 'perms'
+     1>..\..\libavfilter\defaults.c(59): warning C4057: 'function' : 'uint8_t *' differs in indirection to slightly different base types from 'char *'
+     1>..\..\libavfilter\defaults.c(142): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavfilter\defaults.c(148): warning C4018: '<' : signed/unsigned mismatch
+         formats.c
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(105): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(110): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'name'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(114): warning C4820: '_wfinddata64_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(484): warning C4820: '_stat32' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(500): warning C4820: 'stat' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(516): warning C4820: '_stat32i64' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(517): warning C4820: '_stat32i64' : '4' bytes padding added after data member 'st_rdev'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(521): warning C4820: '_stat32i64' : '4' bytes padding added after data member 'st_ctime'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(530): warning C4820: '_stat64i32' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(544): warning C4820: '_stat64' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(545): warning C4820: '_stat64' : '4' bytes padding added after data member 'st_rdev'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(28): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(34): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(40): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(41): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(42): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(84): warning C4820: 'AVPixFmtDescriptor' : '1' bytes padding added after data member 'log2_chroma_h'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(88): warning C4820: 'AVPixFmtDescriptor' : '3' bytes padding added after data member 'flags'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(102): warning C4255: 'get_av_pix_fmt_descriptors' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(75): warning C4255: 'get_ff_log2_tab' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(76): warning C4255: 'get_av_reverse' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\intmath.h(63): warning C4255: 'get_ff_sqrt_tab' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(144): warning C4242: 'return' : conversion from 'int' to 'uint8_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(155): warning C4242: 'return' : conversion from 'int' to 'int8_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(166): warning C4242: 'return' : conversion from 'int' to 'uint16_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(177): warning C4242: 'return' : conversion from 'int' to 'int16_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\rational.h(47): warning C4204: nonstandard extension used : non-constant aggregate initializer
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\rational.h(47): warning C4204: nonstandard extension used : non-constant aggregate initializer
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(35): warning C4255: 'gen_nan' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(40): warning C4255: 'gen_inf' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(45): warning C4255: 'gen_neg_inf' : no function prototype given: converting '()' to '(void)'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1084): warning C4820: 'AVPacket' : '4' bytes padding added after data member 'priv'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '3' bytes padding added after data member 'motion_subsample_log2'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'opaque'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'ref_index'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'hwaccel_picture_private'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1837): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'debug_mv'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2651): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'bits_per_raw_sample'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2907): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'thread_safe_callbacks'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2921): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'audio_service_type'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2976): warning C4820: 'AVCodec' : '3' bytes padding added after data member 'max_lowres'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(3169): warning C4820: 'AVSubtitle' : '2' bytes padding added after data member 'format'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(3173): warning C4820: 'AVSubtitle' : '4' bytes padding added after data member 'rects'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4044): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'flags'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4072): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'key_frame'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4120): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'pts_dts_delta'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.h(112): warning C4820: 'AVFilterPicRef' : '4' bytes padding added after data member 'h'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.h(123): warning C4820: 'AVFilterPicRef' : '4' bytes padding added after data member 'perms'
+     1>..\..\libavfilter\formats.c(32): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavfilter\formats.c(131): warning C4018: '<' : signed/unsigned mismatch
+         graphparser.c
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(105): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(110): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'name'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(114): warning C4820: '_wfinddata64_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(484): warning C4820: '_stat32' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(500): warning C4820: 'stat' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(516): warning C4820: '_stat32i64' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(517): warning C4820: '_stat32i64' : '4' bytes padding added after data member 'st_rdev'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(521): warning C4820: '_stat32i64' : '4' bytes padding added after data member 'st_ctime'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(530): warning C4820: '_stat64i32' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(544): warning C4820: '_stat64' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(545): warning C4820: '_stat64' : '4' bytes padding added after data member 'st_rdev'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(75): warning C4255: 'get_ff_log2_tab' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(76): warning C4255: 'get_av_reverse' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\intmath.h(63): warning C4255: 'get_ff_sqrt_tab' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(144): warning C4242: 'return' : conversion from 'int' to 'uint8_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(155): warning C4242: 'return' : conversion from 'int' to 'int8_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(166): warning C4242: 'return' : conversion from 'int' to 'uint16_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(177): warning C4242: 'return' : conversion from 'int' to 'int16_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\rational.h(47): warning C4204: nonstandard extension used : non-constant aggregate initializer
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\rational.h(47): warning C4204: nonstandard extension used : non-constant aggregate initializer
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(35): warning C4255: 'gen_nan' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(40): warning C4255: 'gen_inf' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(45): warning C4255: 'gen_neg_inf' : no function prototype given: converting '()' to '(void)'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1084): warning C4820: 'AVPacket' : '4' bytes padding added after data member 'priv'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '3' bytes padding added after data member 'motion_subsample_log2'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'opaque'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'ref_index'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'hwaccel_picture_private'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1837): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'debug_mv'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2651): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'bits_per_raw_sample'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2907): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'thread_safe_callbacks'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2921): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'audio_service_type'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2976): warning C4820: 'AVCodec' : '3' bytes padding added after data member 'max_lowres'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(3169): warning C4820: 'AVSubtitle' : '2' bytes padding added after data member 'format'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(3173): warning C4820: 'AVSubtitle' : '4' bytes padding added after data member 'rects'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4044): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'flags'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4072): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'key_frame'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4120): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'pts_dts_delta'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.h(112): warning C4820: 'AVFilterPicRef' : '4' bytes padding added after data member 'h'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.h(123): warning C4820: 'AVFilterPicRef' : '4' bytes padding added after data member 'perms'
+         parseutils.c
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(105): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(110): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'name'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(114): warning C4820: '_wfinddata64_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(484): warning C4820: '_stat32' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(500): warning C4820: 'stat' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(516): warning C4820: '_stat32i64' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(517): warning C4820: '_stat32i64' : '4' bytes padding added after data member 'st_rdev'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(521): warning C4820: '_stat32i64' : '4' bytes padding added after data member 'st_ctime'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(530): warning C4820: '_stat64i32' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(544): warning C4820: '_stat64' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(545): warning C4820: '_stat64' : '4' bytes padding added after data member 'st_rdev'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(75): warning C4255: 'get_ff_log2_tab' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(76): warning C4255: 'get_av_reverse' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\intmath.h(63): warning C4255: 'get_ff_sqrt_tab' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(144): warning C4242: 'return' : conversion from 'int' to 'uint8_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(155): warning C4242: 'return' : conversion from 'int' to 'int8_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(166): warning C4242: 'return' : conversion from 'int' to 'uint16_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(177): warning C4242: 'return' : conversion from 'int' to 'int16_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\rational.h(47): warning C4204: nonstandard extension used : non-constant aggregate initializer
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\rational.h(47): warning C4204: nonstandard extension used : non-constant aggregate initializer
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(35): warning C4255: 'gen_nan' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(40): warning C4255: 'gen_inf' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(45): warning C4255: 'gen_neg_inf' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(1084): warning C4820: 'AVPacket' : '4' bytes padding added after data member 'priv'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(1120): warning C4820: 'AVFrame' : '3' bytes padding added after data member 'motion_subsample_log2'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'opaque'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'ref_index'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'hwaccel_picture_private'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(1837): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'debug_mv'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(2651): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'bits_per_raw_sample'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(2907): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'thread_safe_callbacks'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(2921): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'audio_service_type'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(2976): warning C4820: 'AVCodec' : '3' bytes padding added after data member 'max_lowres'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(3169): warning C4820: 'AVSubtitle' : '2' bytes padding added after data member 'format'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(3173): warning C4820: 'AVSubtitle' : '4' bytes padding added after data member 'rects'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(4044): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'flags'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(4072): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'key_frame'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavcodec\avcodec.h(4120): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'pts_dts_delta'
+     1>..\..\libavfilter\parseutils.c(218): warning C4013: 'strcasecmp' undefined; assuming extern returning int
+     1>..\..\libavfilter\parseutils.c(224): warning C4013: 'ff_random_get_seed' undefined; assuming extern returning int
+     1>..\..\libavfilter\parseutils.c(226): warning C4244: '=' : conversion from 'int' to 'uint8_t', possible loss of data
+     1>..\..\libavfilter\parseutils.c(227): warning C4244: '=' : conversion from 'int' to 'uint8_t', possible loss of data
+     1>..\..\libavfilter\parseutils.c(228): warning C4242: '=' : conversion from 'int' to 'uint8_t', possible loss of data
+     1>..\..\libavfilter\parseutils.c(240): warning C4242: '=' : conversion from 'unsigned int' to 'uint8_t', possible loss of data
+     1>..\..\libavfilter\parseutils.c(243): warning C4244: '=' : conversion from 'unsigned int' to 'uint8_t', possible loss of data
+     1>..\..\libavfilter\parseutils.c(244): warning C4244: '=' : conversion from 'unsigned int' to 'uint8_t', possible loss of data
+     1>..\..\libavfilter\parseutils.c(245): warning C4242: '=' : conversion from 'unsigned int' to 'uint8_t', possible loss of data
+         vf_aspect.c
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(105): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(110): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'name'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(114): warning C4820: '_wfinddata64_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(484): warning C4820: '_stat32' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(500): warning C4820: 'stat' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(516): warning C4820: '_stat32i64' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(517): warning C4820: '_stat32i64' : '4' bytes padding added after data member 'st_rdev'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(521): warning C4820: '_stat32i64' : '4' bytes padding added after data member 'st_ctime'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(530): warning C4820: '_stat64i32' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(544): warning C4820: '_stat64' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(545): warning C4820: '_stat64' : '4' bytes padding added after data member 'st_rdev'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(75): warning C4255: 'get_ff_log2_tab' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(76): warning C4255: 'get_av_reverse' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\intmath.h(63): warning C4255: 'get_ff_sqrt_tab' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(144): warning C4242: 'return' : conversion from 'int' to 'uint8_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(155): warning C4242: 'return' : conversion from 'int' to 'int8_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(166): warning C4242: 'return' : conversion from 'int' to 'uint16_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(177): warning C4242: 'return' : conversion from 'int' to 'int16_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\rational.h(47): warning C4204: nonstandard extension used : non-constant aggregate initializer
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\rational.h(47): warning C4204: nonstandard extension used : non-constant aggregate initializer
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(35): warning C4255: 'gen_nan' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(40): warning C4255: 'gen_inf' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(45): warning C4255: 'gen_neg_inf' : no function prototype given: converting '()' to '(void)'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1084): warning C4820: 'AVPacket' : '4' bytes padding added after data member 'priv'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '3' bytes padding added after data member 'motion_subsample_log2'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'opaque'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'ref_index'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'hwaccel_picture_private'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1837): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'debug_mv'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2651): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'bits_per_raw_sample'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2907): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'thread_safe_callbacks'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2921): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'audio_service_type'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2976): warning C4820: 'AVCodec' : '3' bytes padding added after data member 'max_lowres'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(3169): warning C4820: 'AVSubtitle' : '2' bytes padding added after data member 'format'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(3173): warning C4820: 'AVSubtitle' : '4' bytes padding added after data member 'rects'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4044): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'flags'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4072): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'key_frame'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4120): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'pts_dts_delta'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.h(112): warning C4820: 'AVFilterPicRef' : '4' bytes padding added after data member 'h'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.h(123): warning C4820: 'AVFilterPicRef' : '4' bytes padding added after data member 'perms'
+     1>..\..\libavfilter\vf_aspect.c(47): warning C4242: '/=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavfilter\vf_aspect.c(48): warning C4242: '/=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavfilter\vf_aspect.c(33): warning C4100: 'opaque' : unreferenced formal parameter
+         vf_crop.c
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(105): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(110): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'name'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(114): warning C4820: '_wfinddata64_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(484): warning C4820: '_stat32' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(500): warning C4820: 'stat' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(516): warning C4820: '_stat32i64' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(517): warning C4820: '_stat32i64' : '4' bytes padding added after data member 'st_rdev'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(521): warning C4820: '_stat32i64' : '4' bytes padding added after data member 'st_ctime'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(530): warning C4820: '_stat64i32' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(544): warning C4820: '_stat64' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(545): warning C4820: '_stat64' : '4' bytes padding added after data member 'st_rdev'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(75): warning C4255: 'get_ff_log2_tab' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(76): warning C4255: 'get_av_reverse' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\intmath.h(63): warning C4255: 'get_ff_sqrt_tab' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(144): warning C4242: 'return' : conversion from 'int' to 'uint8_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(155): warning C4242: 'return' : conversion from 'int' to 'int8_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(166): warning C4242: 'return' : conversion from 'int' to 'uint16_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(177): warning C4242: 'return' : conversion from 'int' to 'int16_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\rational.h(47): warning C4204: nonstandard extension used : non-constant aggregate initializer
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\rational.h(47): warning C4204: nonstandard extension used : non-constant aggregate initializer
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(35): warning C4255: 'gen_nan' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(40): warning C4255: 'gen_inf' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(45): warning C4255: 'gen_neg_inf' : no function prototype given: converting '()' to '(void)'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1084): warning C4820: 'AVPacket' : '4' bytes padding added after data member 'priv'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '3' bytes padding added after data member 'motion_subsample_log2'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'opaque'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'ref_index'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'hwaccel_picture_private'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1837): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'debug_mv'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2651): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'bits_per_raw_sample'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2907): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'thread_safe_callbacks'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2921): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'audio_service_type'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2976): warning C4820: 'AVCodec' : '3' bytes padding added after data member 'max_lowres'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(3169): warning C4820: 'AVSubtitle' : '2' bytes padding added after data member 'format'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(3173): warning C4820: 'AVSubtitle' : '4' bytes padding added after data member 'rects'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4044): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'flags'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4072): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'key_frame'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4120): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'pts_dts_delta'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.h(112): warning C4820: 'AVFilterPicRef' : '4' bytes padding added after data member 'h'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.h(123): warning C4820: 'AVFilterPicRef' : '4' bytes padding added after data member 'perms'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(28): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(34): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(40): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(41): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(42): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(84): warning C4820: 'AVPixFmtDescriptor' : '1' bytes padding added after data member 'log2_chroma_h'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(88): warning C4820: 'AVPixFmtDescriptor' : '3' bytes padding added after data member 'flags'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(102): warning C4255: 'get_av_pix_fmt_descriptors' : no function prototype given: converting '()' to '(void)'
+     1>..\..\libavfilter\vf_crop.c(71): warning C4100: 'opaque' : unreferenced formal parameter
+     1>..\..\libavfilter\vf_crop.c(138): warning C4018: '>' : signed/unsigned mismatch
+     1>..\..\libavfilter\vf_crop.c(139): warning C4018: '>' : signed/unsigned mismatch
+         vf_format.c
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(105): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(110): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'name'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(114): warning C4820: '_wfinddata64_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(484): warning C4820: '_stat32' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(500): warning C4820: 'stat' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(516): warning C4820: '_stat32i64' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(517): warning C4820: '_stat32i64' : '4' bytes padding added after data member 'st_rdev'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(521): warning C4820: '_stat32i64' : '4' bytes padding added after data member 'st_ctime'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(530): warning C4820: '_stat64i32' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(544): warning C4820: '_stat64' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(545): warning C4820: '_stat64' : '4' bytes padding added after data member 'st_rdev'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(28): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(34): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(40): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(41): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(42): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(84): warning C4820: 'AVPixFmtDescriptor' : '1' bytes padding added after data member 'log2_chroma_h'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(88): warning C4820: 'AVPixFmtDescriptor' : '3' bytes padding added after data member 'flags'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(102): warning C4255: 'get_av_pix_fmt_descriptors' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(75): warning C4255: 'get_ff_log2_tab' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(76): warning C4255: 'get_av_reverse' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\intmath.h(63): warning C4255: 'get_ff_sqrt_tab' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(144): warning C4242: 'return' : conversion from 'int' to 'uint8_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(155): warning C4242: 'return' : conversion from 'int' to 'int8_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(166): warning C4242: 'return' : conversion from 'int' to 'uint16_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(177): warning C4242: 'return' : conversion from 'int' to 'int16_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\rational.h(47): warning C4204: nonstandard extension used : non-constant aggregate initializer
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\rational.h(47): warning C4204: nonstandard extension used : non-constant aggregate initializer
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(35): warning C4255: 'gen_nan' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(40): warning C4255: 'gen_inf' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(45): warning C4255: 'gen_neg_inf' : no function prototype given: converting '()' to '(void)'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1084): warning C4820: 'AVPacket' : '4' bytes padding added after data member 'priv'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '3' bytes padding added after data member 'motion_subsample_log2'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'opaque'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'ref_index'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'hwaccel_picture_private'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1837): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'debug_mv'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2651): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'bits_per_raw_sample'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2907): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'thread_safe_callbacks'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2921): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'audio_service_type'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2976): warning C4820: 'AVCodec' : '3' bytes padding added after data member 'max_lowres'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(3169): warning C4820: 'AVSubtitle' : '2' bytes padding added after data member 'format'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(3173): warning C4820: 'AVSubtitle' : '4' bytes padding added after data member 'rects'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4044): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'flags'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4072): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'key_frame'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4120): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'pts_dts_delta'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.h(112): warning C4820: 'AVFilterPicRef' : '4' bytes padding added after data member 'h'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.h(123): warning C4820: 'AVFilterPicRef' : '4' bytes padding added after data member 'perms'
+     1>..\..\libavfilter\vf_format.c(39): warning C4100: 'opaque' : unreferenced formal parameter
+         vf_null.c
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(105): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(110): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'name'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(114): warning C4820: '_wfinddata64_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(484): warning C4820: '_stat32' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(500): warning C4820: 'stat' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(516): warning C4820: '_stat32i64' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(517): warning C4820: '_stat32i64' : '4' bytes padding added after data member 'st_rdev'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(521): warning C4820: '_stat32i64' : '4' bytes padding added after data member 'st_ctime'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(530): warning C4820: '_stat64i32' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(544): warning C4820: '_stat64' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(545): warning C4820: '_stat64' : '4' bytes padding added after data member 'st_rdev'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(75): warning C4255: 'get_ff_log2_tab' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(76): warning C4255: 'get_av_reverse' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\intmath.h(63): warning C4255: 'get_ff_sqrt_tab' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(144): warning C4242: 'return' : conversion from 'int' to 'uint8_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(155): warning C4242: 'return' : conversion from 'int' to 'int8_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(166): warning C4242: 'return' : conversion from 'int' to 'uint16_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(177): warning C4242: 'return' : conversion from 'int' to 'int16_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\rational.h(47): warning C4204: nonstandard extension used : non-constant aggregate initializer
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\rational.h(47): warning C4204: nonstandard extension used : non-constant aggregate initializer
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(35): warning C4255: 'gen_nan' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(40): warning C4255: 'gen_inf' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(45): warning C4255: 'gen_neg_inf' : no function prototype given: converting '()' to '(void)'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1084): warning C4820: 'AVPacket' : '4' bytes padding added after data member 'priv'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '3' bytes padding added after data member 'motion_subsample_log2'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'opaque'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'ref_index'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'hwaccel_picture_private'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1837): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'debug_mv'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2651): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'bits_per_raw_sample'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2907): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'thread_safe_callbacks'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2921): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'audio_service_type'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2976): warning C4820: 'AVCodec' : '3' bytes padding added after data member 'max_lowres'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(3169): warning C4820: 'AVSubtitle' : '2' bytes padding added after data member 'format'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(3173): warning C4820: 'AVSubtitle' : '4' bytes padding added after data member 'rects'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4044): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'flags'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4072): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'key_frame'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4120): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'pts_dts_delta'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.h(112): warning C4820: 'AVFilterPicRef' : '4' bytes padding added after data member 'h'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.h(123): warning C4820: 'AVFilterPicRef' : '4' bytes padding added after data member 'perms'
+         vf_scale.c
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(105): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(110): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'name'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(114): warning C4820: '_wfinddata64_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(484): warning C4820: '_stat32' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(500): warning C4820: 'stat' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(516): warning C4820: '_stat32i64' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(517): warning C4820: '_stat32i64' : '4' bytes padding added after data member 'st_rdev'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(521): warning C4820: '_stat32i64' : '4' bytes padding added after data member 'st_ctime'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(530): warning C4820: '_stat64i32' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(544): warning C4820: '_stat64' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(545): warning C4820: '_stat64' : '4' bytes padding added after data member 'st_rdev'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(75): warning C4255: 'get_ff_log2_tab' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(76): warning C4255: 'get_av_reverse' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\intmath.h(63): warning C4255: 'get_ff_sqrt_tab' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(144): warning C4242: 'return' : conversion from 'int' to 'uint8_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(155): warning C4242: 'return' : conversion from 'int' to 'int8_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(166): warning C4242: 'return' : conversion from 'int' to 'uint16_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(177): warning C4242: 'return' : conversion from 'int' to 'int16_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\rational.h(47): warning C4204: nonstandard extension used : non-constant aggregate initializer
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\rational.h(47): warning C4204: nonstandard extension used : non-constant aggregate initializer
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(35): warning C4255: 'gen_nan' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(40): warning C4255: 'gen_inf' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(45): warning C4255: 'gen_neg_inf' : no function prototype given: converting '()' to '(void)'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1084): warning C4820: 'AVPacket' : '4' bytes padding added after data member 'priv'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '3' bytes padding added after data member 'motion_subsample_log2'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'opaque'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'ref_index'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'hwaccel_picture_private'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1837): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'debug_mv'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2651): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'bits_per_raw_sample'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2907): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'thread_safe_callbacks'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2921): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'audio_service_type'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2976): warning C4820: 'AVCodec' : '3' bytes padding added after data member 'max_lowres'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(3169): warning C4820: 'AVSubtitle' : '2' bytes padding added after data member 'format'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(3173): warning C4820: 'AVSubtitle' : '4' bytes padding added after data member 'rects'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4044): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'flags'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4072): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'key_frame'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4120): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'pts_dts_delta'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.h(112): warning C4820: 'AVFilterPicRef' : '4' bytes padding added after data member 'h'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.h(123): warning C4820: 'AVFilterPicRef' : '4' bytes padding added after data member 'perms'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(28): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(34): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(40): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(41): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(42): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(84): warning C4820: 'AVPixFmtDescriptor' : '1' bytes padding added after data member 'log2_chroma_h'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(88): warning C4820: 'AVPixFmtDescriptor' : '3' bytes padding added after data member 'flags'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(102): warning C4255: 'get_av_pix_fmt_descriptors' : no function prototype given: converting '()' to '(void)'
+     1>..\..\libavfilter\vf_scale.c(45): warning C4100: 'opaque' : unreferenced formal parameter
+     1>..\..\libavfilter\vf_scale.c(125): warning C4242: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavfilter\vf_scale.c(126): warning C4242: '=' : conversion from 'int64_t' to 'int', possible loss of data
+         vf_slicify.c
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(105): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(110): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'name'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(114): warning C4820: '_wfinddata64_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(484): warning C4820: '_stat32' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(500): warning C4820: 'stat' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(516): warning C4820: '_stat32i64' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(517): warning C4820: '_stat32i64' : '4' bytes padding added after data member 'st_rdev'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(521): warning C4820: '_stat32i64' : '4' bytes padding added after data member 'st_ctime'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(530): warning C4820: '_stat64i32' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(544): warning C4820: '_stat64' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(545): warning C4820: '_stat64' : '4' bytes padding added after data member 'st_rdev'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(75): warning C4255: 'get_ff_log2_tab' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(76): warning C4255: 'get_av_reverse' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\intmath.h(63): warning C4255: 'get_ff_sqrt_tab' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(144): warning C4242: 'return' : conversion from 'int' to 'uint8_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(155): warning C4242: 'return' : conversion from 'int' to 'int8_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(166): warning C4242: 'return' : conversion from 'int' to 'uint16_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(177): warning C4242: 'return' : conversion from 'int' to 'int16_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\rational.h(47): warning C4204: nonstandard extension used : non-constant aggregate initializer
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\rational.h(47): warning C4204: nonstandard extension used : non-constant aggregate initializer
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(35): warning C4255: 'gen_nan' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(40): warning C4255: 'gen_inf' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(45): warning C4255: 'gen_neg_inf' : no function prototype given: converting '()' to '(void)'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1084): warning C4820: 'AVPacket' : '4' bytes padding added after data member 'priv'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '3' bytes padding added after data member 'motion_subsample_log2'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'opaque'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'ref_index'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'hwaccel_picture_private'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1837): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'debug_mv'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2651): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'bits_per_raw_sample'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2907): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'thread_safe_callbacks'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2921): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'audio_service_type'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2976): warning C4820: 'AVCodec' : '3' bytes padding added after data member 'max_lowres'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(3169): warning C4820: 'AVSubtitle' : '2' bytes padding added after data member 'format'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(3173): warning C4820: 'AVSubtitle' : '4' bytes padding added after data member 'rects'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4044): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'flags'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4072): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'key_frame'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4120): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'pts_dts_delta'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.h(112): warning C4820: 'AVFilterPicRef' : '4' bytes padding added after data member 'h'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.h(123): warning C4820: 'AVFilterPicRef' : '4' bytes padding added after data member 'perms'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(28): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(34): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(40): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(41): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(42): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(84): warning C4820: 'AVPixFmtDescriptor' : '1' bytes padding added after data member 'log2_chroma_h'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(88): warning C4820: 'AVPixFmtDescriptor' : '3' bytes padding added after data member 'flags'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(102): warning C4255: 'get_av_pix_fmt_descriptors' : no function prototype given: converting '()' to '(void)'
+     1>..\..\libavfilter\vf_slicify.c(36): warning C4100: 'opaque' : unreferenced formal parameter
+         vf_unsharp.c
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(105): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(110): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'name'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(114): warning C4820: '_wfinddata64_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(484): warning C4820: '_stat32' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(500): warning C4820: 'stat' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(516): warning C4820: '_stat32i64' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(517): warning C4820: '_stat32i64' : '4' bytes padding added after data member 'st_rdev'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(521): warning C4820: '_stat32i64' : '4' bytes padding added after data member 'st_ctime'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(530): warning C4820: '_stat64i32' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(544): warning C4820: '_stat64' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(545): warning C4820: '_stat64' : '4' bytes padding added after data member 'st_rdev'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(75): warning C4255: 'get_ff_log2_tab' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(76): warning C4255: 'get_av_reverse' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\intmath.h(63): warning C4255: 'get_ff_sqrt_tab' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(144): warning C4242: 'return' : conversion from 'int' to 'uint8_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(155): warning C4242: 'return' : conversion from 'int' to 'int8_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(166): warning C4242: 'return' : conversion from 'int' to 'uint16_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(177): warning C4242: 'return' : conversion from 'int' to 'int16_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\rational.h(47): warning C4204: nonstandard extension used : non-constant aggregate initializer
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\rational.h(47): warning C4204: nonstandard extension used : non-constant aggregate initializer
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(35): warning C4255: 'gen_nan' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(40): warning C4255: 'gen_inf' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(45): warning C4255: 'gen_neg_inf' : no function prototype given: converting '()' to '(void)'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1084): warning C4820: 'AVPacket' : '4' bytes padding added after data member 'priv'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '3' bytes padding added after data member 'motion_subsample_log2'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'opaque'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'ref_index'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'hwaccel_picture_private'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1837): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'debug_mv'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2651): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'bits_per_raw_sample'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2907): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'thread_safe_callbacks'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2921): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'audio_service_type'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2976): warning C4820: 'AVCodec' : '3' bytes padding added after data member 'max_lowres'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(3169): warning C4820: 'AVSubtitle' : '2' bytes padding added after data member 'format'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(3173): warning C4820: 'AVSubtitle' : '4' bytes padding added after data member 'rects'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4044): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'flags'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4072): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'key_frame'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4120): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'pts_dts_delta'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.h(112): warning C4820: 'AVFilterPicRef' : '4' bytes padding added after data member 'h'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.h(123): warning C4820: 'AVFilterPicRef' : '4' bytes padding added after data member 'perms'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(28): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(34): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(40): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(41): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(42): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(84): warning C4820: 'AVPixFmtDescriptor' : '1' bytes padding added after data member 'log2_chroma_h'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(88): warning C4820: 'AVPixFmtDescriptor' : '3' bytes padding added after data member 'flags'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(102): warning C4255: 'get_av_pix_fmt_descriptors' : no function prototype given: converting '()' to '(void)'
+     1>..\..\libavfilter\vf_unsharp.c(122): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+     1>..\..\libavfilter\vf_unsharp.c(130): warning C4100: 'opaque' : unreferenced formal parameter
+     1>..\..\libavfilter\vf_unsharp.c(216): warning C4100: 'slice_dir' : unreferenced formal parameter
+     1>..\..\libavfilter\vf_unsharp.c(216): warning C4100: 'h' : unreferenced formal parameter
+     1>..\..\libavfilter\vf_unsharp.c(216): warning C4100: 'y' : unreferenced formal parameter
+     1>..\..\libavfilter\vf_unsharp.c(216): warning C4100: 'link' : unreferenced formal parameter
+         vf_vflip.c
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(105): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(110): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'name'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(114): warning C4820: '_wfinddata64_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(484): warning C4820: '_stat32' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(500): warning C4820: 'stat' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(516): warning C4820: '_stat32i64' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(517): warning C4820: '_stat32i64' : '4' bytes padding added after data member 'st_rdev'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(521): warning C4820: '_stat32i64' : '4' bytes padding added after data member 'st_ctime'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(530): warning C4820: '_stat64i32' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(544): warning C4820: '_stat64' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(545): warning C4820: '_stat64' : '4' bytes padding added after data member 'st_rdev'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(28): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(34): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(40): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(41): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(42): warning C4214: nonstandard extension used : bit field types other than int
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(84): warning C4820: 'AVPixFmtDescriptor' : '1' bytes padding added after data member 'log2_chroma_h'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(88): warning C4820: 'AVPixFmtDescriptor' : '3' bytes padding added after data member 'flags'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavutil/pixdesc.h(102): warning C4255: 'get_av_pix_fmt_descriptors' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(75): warning C4255: 'get_ff_log2_tab' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(76): warning C4255: 'get_av_reverse' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\intmath.h(63): warning C4255: 'get_ff_sqrt_tab' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(144): warning C4242: 'return' : conversion from 'int' to 'uint8_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(155): warning C4242: 'return' : conversion from 'int' to 'int8_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(166): warning C4242: 'return' : conversion from 'int' to 'uint16_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(177): warning C4242: 'return' : conversion from 'int' to 'int16_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\rational.h(47): warning C4204: nonstandard extension used : non-constant aggregate initializer
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\rational.h(47): warning C4204: nonstandard extension used : non-constant aggregate initializer
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(35): warning C4255: 'gen_nan' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(40): warning C4255: 'gen_inf' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(45): warning C4255: 'gen_neg_inf' : no function prototype given: converting '()' to '(void)'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1084): warning C4820: 'AVPacket' : '4' bytes padding added after data member 'priv'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '3' bytes padding added after data member 'motion_subsample_log2'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'opaque'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'ref_index'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'hwaccel_picture_private'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1837): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'debug_mv'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2651): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'bits_per_raw_sample'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2907): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'thread_safe_callbacks'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2921): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'audio_service_type'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2976): warning C4820: 'AVCodec' : '3' bytes padding added after data member 'max_lowres'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(3169): warning C4820: 'AVSubtitle' : '2' bytes padding added after data member 'format'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(3173): warning C4820: 'AVSubtitle' : '4' bytes padding added after data member 'rects'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4044): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'flags'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4072): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'key_frame'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4120): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'pts_dts_delta'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.h(112): warning C4820: 'AVFilterPicRef' : '4' bytes padding added after data member 'h'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.h(123): warning C4820: 'AVFilterPicRef' : '4' bytes padding added after data member 'perms'
+         vsink_nullsink.c
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(105): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(110): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'name'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(114): warning C4820: '_wfinddata64_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(484): warning C4820: '_stat32' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(500): warning C4820: 'stat' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(516): warning C4820: '_stat32i64' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(517): warning C4820: '_stat32i64' : '4' bytes padding added after data member 'st_rdev'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(521): warning C4820: '_stat32i64' : '4' bytes padding added after data member 'st_ctime'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(530): warning C4820: '_stat64i32' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(544): warning C4820: '_stat64' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(545): warning C4820: '_stat64' : '4' bytes padding added after data member 'st_rdev'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(75): warning C4255: 'get_ff_log2_tab' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(76): warning C4255: 'get_av_reverse' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\intmath.h(63): warning C4255: 'get_ff_sqrt_tab' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(144): warning C4242: 'return' : conversion from 'int' to 'uint8_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(155): warning C4242: 'return' : conversion from 'int' to 'int8_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(166): warning C4242: 'return' : conversion from 'int' to 'uint16_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(177): warning C4242: 'return' : conversion from 'int' to 'int16_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\rational.h(47): warning C4204: nonstandard extension used : non-constant aggregate initializer
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\rational.h(47): warning C4204: nonstandard extension used : non-constant aggregate initializer
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(35): warning C4255: 'gen_nan' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(40): warning C4255: 'gen_inf' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(45): warning C4255: 'gen_neg_inf' : no function prototype given: converting '()' to '(void)'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1084): warning C4820: 'AVPacket' : '4' bytes padding added after data member 'priv'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '3' bytes padding added after data member 'motion_subsample_log2'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'opaque'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'ref_index'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'hwaccel_picture_private'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1837): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'debug_mv'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2651): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'bits_per_raw_sample'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2907): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'thread_safe_callbacks'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2921): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'audio_service_type'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2976): warning C4820: 'AVCodec' : '3' bytes padding added after data member 'max_lowres'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(3169): warning C4820: 'AVSubtitle' : '2' bytes padding added after data member 'format'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(3173): warning C4820: 'AVSubtitle' : '4' bytes padding added after data member 'rects'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4044): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'flags'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4072): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'key_frame'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4120): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'pts_dts_delta'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.h(112): warning C4820: 'AVFilterPicRef' : '4' bytes padding added after data member 'h'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.h(123): warning C4820: 'AVFilterPicRef' : '4' bytes padding added after data member 'perms'
+     1>..\..\libavfilter\vsink_nullsink.c(21): warning C4100: 'picref' : unreferenced formal parameter
+     1>..\..\libavfilter\vsink_nullsink.c(21): warning C4100: 'link' : unreferenced formal parameter
+     1>..\..\libavfilter\vsink_nullsink.c(25): warning C4100: 'link' : unreferenced formal parameter
+         vsrc_nullsrc.c
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(105): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(110): warning C4820: '_wfinddata64i32_t' : '4' bytes padding added after data member 'name'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(114): warning C4820: '_wfinddata64_t' : '4' bytes padding added after data member 'attrib'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(484): warning C4820: '_stat32' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(500): warning C4820: 'stat' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(516): warning C4820: '_stat32i64' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(517): warning C4820: '_stat32i64' : '4' bytes padding added after data member 'st_rdev'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(521): warning C4820: '_stat32i64' : '4' bytes padding added after data member 'st_ctime'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(530): warning C4820: '_stat64i32' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(544): warning C4820: '_stat64' : '2' bytes padding added after data member 'st_gid'
+     1>C:\Program Files (x86)\Microsoft Xbox 360 SDK\include\xbox\wchar.h(545): warning C4820: '_stat64' : '4' bytes padding added after data member 'st_rdev'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(75): warning C4255: 'get_ff_log2_tab' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(76): warning C4255: 'get_av_reverse' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\intmath.h(63): warning C4255: 'get_ff_sqrt_tab' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(144): warning C4242: 'return' : conversion from 'int' to 'uint8_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(155): warning C4242: 'return' : conversion from 'int' to 'int8_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(166): warning C4242: 'return' : conversion from 'int' to 'uint16_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\common.h(177): warning C4242: 'return' : conversion from 'int' to 'int16_t', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\rational.h(47): warning C4204: nonstandard extension used : non-constant aggregate initializer
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\rational.h(47): warning C4204: nonstandard extension used : non-constant aggregate initializer
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(35): warning C4255: 'gen_nan' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(40): warning C4255: 'gen_inf' : no function prototype given: converting '()' to '(void)'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\mathematics.h(45): warning C4255: 'gen_neg_inf' : no function prototype given: converting '()' to '(void)'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1084): warning C4820: 'AVPacket' : '4' bytes padding added after data member 'priv'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '3' bytes padding added after data member 'motion_subsample_log2'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'opaque'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'ref_index'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1120): warning C4820: 'AVFrame' : '4' bytes padding added after data member 'hwaccel_picture_private'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(1837): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'debug_mv'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2651): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'bits_per_raw_sample'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2907): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'thread_safe_callbacks'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2921): warning C4820: 'AVCodecContext' : '4' bytes padding added after data member 'audio_service_type'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(2976): warning C4820: 'AVCodec' : '3' bytes padding added after data member 'max_lowres'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(3169): warning C4820: 'AVSubtitle' : '2' bytes padding added after data member 'format'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(3173): warning C4820: 'AVSubtitle' : '4' bytes padding added after data member 'rects'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4044): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'flags'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4072): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'key_frame'
+     1>C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\libavcodec/avcodec.h(4120): warning C4820: 'AVCodecParserContext' : '4' bytes padding added after data member 'pts_dts_delta'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.h(112): warning C4820: 'AVFilterPicRef' : '4' bytes padding added after data member 'h'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.h(123): warning C4820: 'AVFilterPicRef' : '4' bytes padding added after data member 'perms'
+     1>..\..\libavfilter\vsrc_nullsrc.c(30): warning C4100: 'opaque' : unreferenced formal parameter
+     1>..\..\libavfilter\vsrc_nullsrc.c(60): warning C4100: 'link' : unreferenced formal parameter
+         Generating Code...
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\vf_unsharp.c(141): warning C4711: function 'set_filter_param' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\vf_unsharp.c(142): warning C4711: function 'set_filter_param' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\vf_scale.c(111): warning C4706: assignment within conditional expression
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\vf_scale.c(113): warning C4706: assignment within conditional expression
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\vf_format.c(49): warning C4706: assignment within conditional expression
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\parseutils.c(312): warning C4711: function 'parse_key_value_pair' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\graphparser.c(186): warning C4711: function 'link_filter' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\graphparser.c(193): warning C4711: function 'insert_inout' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\graphparser.c(209): warning C4711: function 'insert_inout' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\graphparser.c(221): warning C4711: function 'parse_link_name' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\graphparser.c(239): warning C4711: function 'insert_inout' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\graphparser.c(255): warning C4711: function 'parse_link_name' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\graphparser.c(269): warning C4711: function 'link_filter' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\graphparser.c(278): warning C4711: function 'insert_inout' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\graphparser.c(303): warning C4711: function 'parse_filter' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\formats.c(67): warning C4711: function 'merge_ref' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\formats.c(93): warning C4706: assignment within conditional expression
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\formats.c(116): warning C4711: function 'avfilter_add_colorspace' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\formats.c(161): warning C4711: function 'find_ref_index' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfiltergraph.c(89): warning C4706: assignment within conditional expression
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfiltergraph.c(153): warning C4706: assignment within conditional expression
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfiltergraph.c(153): warning C4706: assignment within conditional expression
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfiltergraph.c(146): warning C4711: function 'avfilter_graph_add_filter' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfiltergraph.c(187): warning C4711: function 'pick_format' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfiltergraph.c(189): warning C4711: function 'pick_format' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.c(155): warning C4706: assignment within conditional expression
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.c(160): warning C4706: assignment within conditional expression
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.c(204): warning C4711: function 'dprintf_link' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.c(212): warning C4711: function 'dprintf_link' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.c(212): warning C4711: function 'dprintf_picref' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.c(219): warning C4711: function 'dprintf_link' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.c(255): warning C4706: assignment within conditional expression
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.c(253): warning C4711: function 'dprintf_link' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.c(253): warning C4711: function 'dprintf_picref' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.c(284): warning C4706: assignment within conditional expression
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.c(292): warning C4711: function 'avfilter_unref_pic' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.c(338): warning C4706: assignment within conditional expression
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.c(308): warning C4711: function 'dprintf_link' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.c(415): warning C4711: function 'pad_count' selected for automatic inline expansion
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavfilter\avfilter.c(422): warning C4711: function 'pad_count' selected for automatic inline expansion
+       Lib:
+         C:\Program Files (x86)\Microsoft Xbox 360 SDK\bin\win32\Lib.exe /OUT:"C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\vcproj\libavfilter\Release\libavfilter.lib" /NOLOGO "Xbox 360\Release\allfilters.obj"
+         "Xbox 360\Release\avfilter.obj"
+         "Xbox 360\Release\avfiltergraph.obj"
+         "Xbox 360\Release\defaults.obj"
+         "Xbox 360\Release\formats.obj"
+         "Xbox 360\Release\graphparser.obj"
+         "Xbox 360\Release\parseutils.obj"
+         "Xbox 360\Release\vf_aspect.obj"
+         "Xbox 360\Release\vf_crop.obj"
+         "Xbox 360\Release\vf_format.obj"
+         "Xbox 360\Release\vf_null.obj"
+         "Xbox 360\Release\vf_scale.obj"
+         "Xbox 360\Release\vf_slicify.obj"
+         "Xbox 360\Release\vf_unsharp.obj"
+         "Xbox 360\Release\vf_vflip.obj"
+         "Xbox 360\Release\vsink_nullsink.obj"
+         "Xbox 360\Release\vsrc_nullsrc.obj"
+         libavfilter.vcxproj -> C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\vcproj\libavfilter\Release\libavfilter.lib
+       FinalizeBuildStatus:
+         Deleting file "Xbox 360\Release\libavfilter.unsuccessfulbuild".
+         Touching "Xbox 360\Release\libavfilter.lastbuildstate".
+     1>Done Building Project "C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\vcproj\libavfilter\libavfilter.vcxproj" (rebuild target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:01.32
