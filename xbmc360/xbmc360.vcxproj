@@ -122,7 +122,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PreprocessorDefinitions>_DEBUG;_XBOX</PreprocessorDefinitions>
       <CallAttributedProfiling>Callcap</CallAttributedProfiling>
-      <AdditionalIncludeDirectories>..\xbmc360\;..\ffmpeg lib\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\xbmc360\;..\xbmc360\libraries\libffmpeg;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/EHa %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -132,7 +132,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
       <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirenderd.lib;xmediad2.lib;Xonline.lib;libavformat.lib;libavfilter.lib;libavutil.lib;libswscale.lib;libavcodec.lib;pthreads.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\ffmpeg lib\vcproj\libavcodec\Xbox 360\Debug;..\ffmpeg lib\vcproj\libswscale\Xbox 360\Debug;..\ffmpeg lib\vcproj\libavutil\Xbox 360\Debug;..\ffmpeg lib\vcproj\libavfilter\Xbox 360\Debug;..\ffmpeg lib\vcproj\libavformat\Xbox 360\Debug;..\ffmpeg lib\vcproj\pthreads\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\xbmc360\libraries\libffmpeg\vcproj\libavcodec\Xbox 360\Debug;..\xbmc360\libraries\libffmpeg\vcproj\libswscale\Xbox 360\Debug;..\xbmc360\libraries\libffmpeg\vcproj\libavutil\Xbox 360\Debug;..\xbmc360\libraries\libffmpeg\vcproj\libavfilter\Xbox 360\Debug;..\xbmc360\libraries\libffmpeg\vcproj\libavformat\Xbox 360\Debug;..\xbmc360\libraries\libffmpeg\vcproj\pthreads\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
     <Deploy>
       <DeploymentType>CopyToHardDrive</DeploymentType>
@@ -257,7 +258,7 @@
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PreprocessorDefinitions>NDEBUG;_XBOX</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\xbmc360\libraries\libffmpeg;..\xbmc360;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\xbmc360;..\xbmc360\libraries\libffmpeg;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <PreschedulingOptimization>true</PreschedulingOptimization>

@@ -157,7 +157,9 @@ public:
 		GUICONTAINER_THUMBNAILPANEL
 	};
 	GUICONTROLTYPES GetControlType() const { return ControlType; }
-
+#ifdef _DEBUG
+  virtual void DumpTextureUse();
+#endif
 protected:
 	void SendWindowMessage(CGUIMessage &message);
 
