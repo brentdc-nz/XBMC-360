@@ -80,7 +80,7 @@ bool CDrive::IsMounted()
 	// mounted, instead of searching for a file on a drive. 
 	bool bResult = false; 
 	
-	if (CFile::Exists(m_strMountPoint + "\\")) 
+	if (CUtil::FileExists(m_strMountPoint + "\\")) 
 		bResult = true;
 
 	return bResult;

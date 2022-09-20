@@ -31,6 +31,7 @@ public:
 	static void Stat64ToStat(struct _stat *result, struct __stat64 *stat);
 	static void URLEncode(CStdString& strURLData);
 	static void AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult);
+	static bool FileExists(CStdString strFullPath) { return (GetFileAttributes(strFullPath.c_str()) != 0xFFFFFFFF); } // TODO : Remove once filesystem is more sorted out
 	static bool IsStack(const CStdString& strFile);
 	static void UrlDecode(CStdString& strURLData);
 	static float CurrentCpuUsage();

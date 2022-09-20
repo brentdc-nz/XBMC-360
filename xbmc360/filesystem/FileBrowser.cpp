@@ -204,7 +204,7 @@ void CFileBrowser::CD(CStdString strFolder)
 				strFolder.append("\\");
 			
 			// If the folder doesn't exist and there's a : in it, return  ie. hdd1:\foobar , but not foobar
-			if(!CFile::Exists(strFolder) && (strFolder.find(":") != strFolder.npos))
+			if(!CUtil::FileExists(strFolder) && (strFolder.find(":") != strFolder.npos))
 				return;
 			// If the folder ends in \, remove the slash  ie. hdd1:\foo\ -> hdd1:\foo, but also hdd1:\ -> hdd1:
 			
