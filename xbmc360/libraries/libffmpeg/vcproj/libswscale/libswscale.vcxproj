@@ -200,10 +200,39 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">
     <ClCompile>
-      <WarningLevel>EnableAllWarnings</WarningLevel>
-      <AdditionalIncludeDirectories>..\..\;..\external\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;_XBOX;HAVE_AV_CONFIG_H;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\external\include;..\..</AdditionalIncludeDirectories>
       <CompileAs>CompileAsC</CompileAs>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;_XBOX;HAVE_AV_CONFIG_H</PreprocessorDefinitions>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4305</DisableSpecificWarnings>
+      <ForcedIncludeFiles>config.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
+      <PreschedulingOptimization>true</PreschedulingOptimization>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\external\include;..\..</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">
+    <ClCompile>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;DEBUG;_XBOX;HAVE_AV_CONFIG_H</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>true</MinimalRebuild>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <CompileAs>CompileAsC</CompileAs>
+      <DisableSpecificWarnings>4305</DisableSpecificWarnings>
+      <ForcedIncludeFiles>config.h</ForcedIncludeFiles>
+      <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>

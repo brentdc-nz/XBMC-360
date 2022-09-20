@@ -200,10 +200,33 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">
     <ClCompile>
-      <WarningLevel>EnableAllWarnings</WarningLevel>
-      <AdditionalIncludeDirectories>..\..\;..\external\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;_XBOX;HAVE_AV_CONFIG_H;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>Level3</WarningLevel>
+      <AdditionalIncludeDirectories>..\..;..\external\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;_XBOX;HAVE_AV_CONFIG_H</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <StringPooling>true</StringPooling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
       <CompileAs>CompileAsC</CompileAs>
+      <DisableSpecificWarnings>4305</DisableSpecificWarnings>
+      <ForcedIncludeFiles>config.h</ForcedIncludeFiles>
+      <PreschedulingOptimization>true</PreschedulingOptimization>
+      <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..;..\external\include</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;DEBUG;_XBOX</PreprocessorDefinitions>
+      <CompileAs>CompileAsC</CompileAs>
+      <DisableSpecificWarnings>4305</DisableSpecificWarnings>
+      <ForcedIncludeFiles>config.h</ForcedIncludeFiles>
+      <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>

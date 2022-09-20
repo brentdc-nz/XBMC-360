@@ -18,7 +18,6 @@
  * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
-#include <stdint.h>
 
 static const uint8_t huff_iid_df1_bits[] = {
     18, 18, 18, 18, 18, 18, 18, 18, 18, 17, 18, 17, 17, 16, 16, 15, 14, 14,

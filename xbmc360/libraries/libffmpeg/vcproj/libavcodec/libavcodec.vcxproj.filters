@@ -14,7 +14,7 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
     </Filter>
     <Filter Include="ppc">
-      <UniqueIdentifier>{faa355ef-bcc5-4719-98a6-9f45413bfabc}</UniqueIdentifier>
+      <UniqueIdentifier>{143d1603-5865-4078-8e09-c279298be20d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

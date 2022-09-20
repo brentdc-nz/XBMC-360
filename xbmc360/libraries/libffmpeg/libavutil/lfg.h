@@ -35,17 +35,10 @@ void av_lfg_init(AVLFG *c, unsigned int seed);
  * Please also consider a simple LCG like state= state*1664525+1013904223,
  * it may be good enough and faster for your specific use case.
  */
-#if defined(_XBOX) //Wolf3s
-static __inline unsigned int av_lfg_get(AVLFG *c){
-    c->state[c->index & 63] = c->state[(c->index-24) & 63] + c->state[(c->index-55) & 63];
-    return c->state[c->index++ & 63];
-}
-#else
 static inline unsigned int av_lfg_get(AVLFG *c){
     c->state[c->index & 63] = c->state[(c->index-24) & 63] + c->state[(c->index-55) & 63];
     return c->state[c->index++ & 63];
 }
-#endif
 /**
  * Get the next random unsigned 32-bit number using a MLFG.
  *

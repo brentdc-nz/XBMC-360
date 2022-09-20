@@ -162,9 +162,14 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">
     <ClCompile>
-      <WarningLevel>EnableAllWarnings</WarningLevel>
       <CompileAs>CompileAsC</CompileAs>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_XBOX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">
+    <ClCompile>
+      <CompileAs>CompileAsC</CompileAs>
+      <WarningLevel>Level3</WarningLevel>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>

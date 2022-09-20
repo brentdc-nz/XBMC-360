@@ -196,12 +196,24 @@
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'" />
   </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">
+    <ClCompile>
+      <PreprocessorDefinitions>_DEBUG;_XBOX;_LIB;HAVE_CONFIG_H;PTW32_STATIC_LIB</PreprocessorDefinitions>
+      <CompileAs>CompileAsC</CompileAs>
+      <AdditionalIncludeDirectories>../external/pthreads/</AdditionalIncludeDirectories>
+      <WarningLevel>Level3</WarningLevel>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">
     <ClCompile>
-      <WarningLevel>EnableAllWarnings</WarningLevel>
+      <PreprocessorDefinitions>NDEBUG;_XBOX;_LIB;HAVE_CONFIG_H;PTW32_STATIC_LIB</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>../external/pthreads/</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG;_XBOX;_LIB;HAVE_CONFIG_H;PTW32_STATIC_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <CompileAs>CompileAsC</CompileAs>
+      <WarningLevel>Level3</WarningLevel>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>

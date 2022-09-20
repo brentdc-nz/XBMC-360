@@ -124,7 +124,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\;..\external\zlib;..\external\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..;..\external\zlib;..\external\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -202,10 +202,39 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">
     <ClCompile>
-      <WarningLevel>EnableAllWarnings</WarningLevel>
-      <AdditionalIncludeDirectories>..\..\;..\external\include;..\external\zlib;..\external\phthreads</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..;..\external\zlib;..\external\include</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;_XBOX;HAVE_AV_CONFIG_H</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <CompileAs>CompileAsC</CompileAs>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;_XBOX;HAVE_AV_CONFIG_H;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DisableSpecificWarnings>4305</DisableSpecificWarnings>
+      <ForcedIncludeFiles>libavutil/intmath.h;config.h</ForcedIncludeFiles>
+      <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..;..\external\zlib;..\external\include</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;DEBUG;_XBOX;HAVE_AV_CONFIG_H</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>true</MinimalRebuild>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <CompileAs>CompileAsC</CompileAs>
+      <DisableSpecificWarnings>4305</DisableSpecificWarnings>
+      <ForcedIncludeFiles>libavutil/intmath.h;config.h</ForcedIncludeFiles>
+      <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>

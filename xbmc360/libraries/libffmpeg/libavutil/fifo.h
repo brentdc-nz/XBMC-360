@@ -106,15 +106,6 @@ int av_fifo_realloc2(AVFifoBuffer *f, unsigned int size);
  */
 void av_fifo_drain(AVFifoBuffer *f, int size);
 
-#if defined(_XBOX) //Wolf3s
-static __inline uint8_t av_fifo_peek(AVFifoBuffer *f, int offs)
-{
-    uint8_t *ptr = f->rptr + offs;
-    if (ptr >= f->end)
-        ptr -= f->end - f->buffer;
-    return *ptr;
-}
-#else
 static inline uint8_t av_fifo_peek(AVFifoBuffer *f, int offs)
 {
     uint8_t *ptr = f->rptr + offs;
@@ -122,5 +113,4 @@ static inline uint8_t av_fifo_peek(AVFifoBuffer *f, int offs)
         ptr -= f->end - f->buffer;
     return *ptr;
 }
-#endif
 #endif /* AVUTIL_FIFO_H */

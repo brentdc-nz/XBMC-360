@@ -194,10 +194,35 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">
     <ClCompile>
-      <WarningLevel>EnableAllWarnings</WarningLevel>
+      <AdditionalIncludeDirectories>..\external\include;..\..</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;_XBOX;HAVE_AV_CONFIG_H</PreprocessorDefinitions>
       <CompileAs>CompileAsC</CompileAs>
-      <AdditionalIncludeDirectories>..\..\;..\external\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;_XBOX;HAVE_AV_CONFIG_H;_MSC_VER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <WarningLevel>Level3</WarningLevel>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <StringPooling>true</StringPooling>
+      <DisableSpecificWarnings>4305</DisableSpecificWarnings>
+      <ForcedIncludeFiles>config.h</ForcedIncludeFiles>
+      <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
+      <PreschedulingOptimization>true</PreschedulingOptimization>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\external\include;..\..</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;DEBUG;_XBOX;HAVE_AV_CONFIG_H</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>true</MinimalRebuild>
+      <CompileAs>CompileAsC</CompileAs>
+      <DisableSpecificWarnings>4305</DisableSpecificWarnings>
+      <ForcedIncludeFiles>config.h</ForcedIncludeFiles>
+      <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>

@@ -70,8 +70,6 @@ public:
 	void StopTimeServer();
 	void StartFtpServer();
 	void StopFtpServer();
-	void StartSMBServer();
-	void StopSMBServer();
 
 	void ResetScreenSaver();
 	bool ResetScreenSaverWindow();
