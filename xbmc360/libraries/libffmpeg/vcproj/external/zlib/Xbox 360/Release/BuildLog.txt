@@ -1,0 +1,50 @@
+﻿Build started 19/09/2022 22:19:50.
+     1>Project "C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zlib.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "Xbox 360\Release\zlib.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Xbox 360 SDK\bin\win32\CL.exe /c /Zi /nologo /W1 /WX- /O2 /D WIN32 /D NDEBUG /D _LIB /D _XBOX /GF- /Gm- /EHsc /MD /GS /Gy- /fp:fast /fp:except- /Zc:wchar_t /Zc:forScope /GR- /openmp- /Fo"Xbox 360\Release\\" /Fd"Xbox 360\Release\vc100.pdb" /TC adler32.c compress.c crc32.c deflate.c gzclose.c gzlib.c gzread.c gzwrite.c infback.c inffast.c inflate.c inftrees.c trees.c uncompr.c zutil.c /FI"C:\Program Files (x86)\Microsoft Xbox 360 SDK\\include\xbox\xbox_intellisense_platform.h"
+     1>cl : Command line warning D9035: option 'MD' has been deprecated and will be removed in a future release
+         adler32.c
+         compress.c
+         crc32.c
+         deflate.c
+         gzclose.c
+         gzlib.c
+         gzread.c
+         gzwrite.c
+         infback.c
+         inffast.c
+         inflate.c
+         inftrees.c
+         trees.c
+         uncompr.c
+         zutil.c
+         Generating Code...
+       MakeDirsForLib:
+         Creating directory "C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\Release".
+       Lib:
+         C:\Program Files (x86)\Microsoft Xbox 360 SDK\bin\win32\Lib.exe /OUT:"C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\Release\zlib.lib" /NOLOGO "Xbox 360\Release\adler32.obj"
+         "Xbox 360\Release\compress.obj"
+         "Xbox 360\Release\crc32.obj"
+         "Xbox 360\Release\deflate.obj"
+         "Xbox 360\Release\gzclose.obj"
+         "Xbox 360\Release\gzlib.obj"
+         "Xbox 360\Release\gzread.obj"
+         "Xbox 360\Release\gzwrite.obj"
+         "Xbox 360\Release\infback.obj"
+         "Xbox 360\Release\inffast.obj"
+         "Xbox 360\Release\inflate.obj"
+         "Xbox 360\Release\inftrees.obj"
+         "Xbox 360\Release\trees.obj"
+         "Xbox 360\Release\uncompr.obj"
+         "Xbox 360\Release\zutil.obj"
+         zlib.vcxproj -> C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\Release\zlib.lib
+       FinalizeBuildStatus:
+         Deleting file "Xbox 360\Release\zlib.unsuccessfulbuild".
+         Touching "Xbox 360\Release\zlib.lastbuildstate".
+     1>Done Building Project "C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zlib.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.74

@@ -1,0 +1,903 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Xbox 360">
+      <Configuration>Debug</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_LTCG|Win32">
+      <Configuration>Release_LTCG</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_LTCG|Xbox 360">
+      <Configuration>Release_LTCG</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Xbox 360">
+      <Configuration>Release</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{1937533D-A227-41D1-8D38-FFD5BC66B613}</ProjectGuid>
+    <RootNamespace>libavcodec</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfAtl>false</UseOfAtl>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfAtl>false</UseOfAtl>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfAtl>false</UseOfAtl>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">$(Platform)\$(Configuration)\</IntDir>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..;..\external\zlib;..\external\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <CompileAs>CompileAsC</CompileAs>
+      <DisableSpecificWarnings>4305;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ForcedIncludeFiles>libavutil/intmath.h;config.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>libavutil.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>.\avcodec-52.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>..\..;..\external\zlib;..\external\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBAVUTIL_INTERNAL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>CompileAsC</CompileAs>
+      <DisableSpecificWarnings>4305;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ForcedIncludeFiles>libavutil/intmath.h;config.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>libavutil.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>.\avcodec-52.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>..\..;..\external\zlib;..\external\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBAVUTIL_INTERNAL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>CompileAsC</CompileAs>
+      <DisableSpecificWarnings>4305;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ForcedIncludeFiles>libavutil/intmath.h;config.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>libavutil.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>.\avcodec-52.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..;..\external\zlib;..\external\include</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;_XBOX;HAVE_AV_CONFIG_H</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <CompileAs>CompileAsC</CompileAs>
+      <DisableSpecificWarnings>4305</DisableSpecificWarnings>
+      <ForcedIncludeFiles>libavutil/intmath.h;config.h</ForcedIncludeFiles>
+      <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..;..\external\zlib;..\external\include</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;DEBUG;_XBOX;HAVE_AV_CONFIG_H</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>true</MinimalRebuild>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <CompileAs>CompileAsC</CompileAs>
+      <DisableSpecificWarnings>4305</DisableSpecificWarnings>
+      <ForcedIncludeFiles>libavutil/intmath.h;config.h</ForcedIncludeFiles>
+      <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\libavcodec\4xm.c" />
+    <ClCompile Include="..\..\libavcodec\8bps.c" />
+    <ClCompile Include="..\..\libavcodec\8svx.c" />
+    <ClCompile Include="..\..\libavcodec\aac_ac3_parser.c" />
+    <ClCompile Include="..\..\libavcodec\aac_adtstoasc_bsf.c" />
+    <ClCompile Include="..\..\libavcodec\aac_parser.c" />
+    <ClCompile Include="..\..\libavcodec\aacadtsdec.c" />
+    <ClCompile Include="..\..\libavcodec\aaccoder.c" />
+    <ClCompile Include="..\..\libavcodec\aacdec.c" />
+    <ClCompile Include="..\..\libavcodec\aacenc.c" />
+    <ClCompile Include="..\..\libavcodec\aacps.c" />
+    <ClCompile Include="..\..\libavcodec\aacpsdata.c" />
+    <ClCompile Include="..\..\libavcodec\aacpsy.c" />
+    <ClCompile Include="..\..\libavcodec\aacsbr.c" />
+    <ClCompile Include="..\..\libavcodec\aactab.c" />
+    <ClCompile Include="..\..\libavcodec\aandcttab.c" />
+    <ClCompile Include="..\..\libavcodec\aasc.c" />
+    <ClCompile Include="..\..\libavcodec\ac3.c" />
+    <ClCompile Include="..\..\libavcodec\ac3_parser.c" />
+    <ClCompile Include="..\..\libavcodec\ac3dec.c" />
+    <ClCompile Include="..\..\libavcodec\ac3dec_data.c" />
+    <ClCompile Include="..\..\libavcodec\ac3dsp.c" />
+    <ClCompile Include="..\..\libavcodec\ac3enc.c" />
+    <ClCompile Include="..\..\libavcodec\ac3tab.c" />
+    <ClCompile Include="..\..\libavcodec\acelp_filters.c" />
+    <ClCompile Include="..\..\libavcodec\acelp_pitch_delay.c" />
+    <ClCompile Include="..\..\libavcodec\acelp_vectors.c" />
+    <ClCompile Include="..\..\libavcodec\adpcm.c" />
+    <ClCompile Include="..\..\libavcodec\adxdec.c" />
+    <ClCompile Include="..\..\libavcodec\adxenc.c" />
+    <ClCompile Include="..\..\libavcodec\alac.c" />
+    <ClCompile Include="..\..\libavcodec\alacenc.c" />
+    <ClCompile Include="..\..\libavcodec\allcodecs.c" />
+    <ClCompile Include="..\..\libavcodec\alsdec.c" />
+    <ClCompile Include="..\..\libavcodec\amrnbdec.c" />
+    <ClCompile Include="..\..\libavcodec\anm.c" />
+    <ClCompile Include="..\..\libavcodec\apedec.c" />
+    <ClCompile Include="..\..\libavcodec\asv1.c" />
+    <ClCompile Include="..\..\libavcodec\atrac.c" />
+    <ClCompile Include="..\..\libavcodec\atrac1.c" />
+    <ClCompile Include="..\..\libavcodec\atrac3.c" />
+    <ClCompile Include="..\..\libavcodec\audioconvert.c" />
+    <ClCompile Include="..\..\libavcodec\aura.c" />
+    <ClCompile Include="..\..\libavcodec\avfft.c" />
+    <ClCompile Include="..\..\libavcodec\avpacket.c" />
+    <ClCompile Include="..\..\libavcodec\avs.c" />
+    <ClCompile Include="..\..\libavcodec\bethsoftvideo.c" />
+    <ClCompile Include="..\..\libavcodec\bfi.c" />
+    <ClCompile Include="..\..\libavcodec\bgmc.c" />
+    <ClCompile Include="..\..\libavcodec\bink.c" />
+    <ClCompile Include="..\..\libavcodec\binkaudio.c" />
+    <ClCompile Include="..\..\libavcodec\binkidct.c" />
+    <ClCompile Include="..\..\libavcodec\bitstream.c" />
+    <ClCompile Include="..\..\libavcodec\bitstream_filter.c" />
+    <ClCompile Include="..\..\libavcodec\bmp.c" />
+    <ClCompile Include="..\..\libavcodec\bmpenc.c" />
+    <ClCompile Include="..\..\libavcodec\c93.c" />
+    <ClCompile Include="..\..\libavcodec\cabac.c" />
+    <ClCompile Include="..\..\libavcodec\cavs.c" />
+    <ClCompile Include="..\..\libavcodec\cavs_parser.c" />
+    <ClCompile Include="..\..\libavcodec\cavsdec.c" />
+    <ClCompile Include="..\..\libavcodec\cavsdsp.c" />
+    <ClCompile Include="..\external\cbrt.c" />
+    <ClCompile Include="..\..\libavcodec\cdgraphics.c" />
+    <ClCompile Include="..\..\libavcodec\celp_filters.c" />
+    <ClCompile Include="..\..\libavcodec\celp_math.c" />
+    <ClCompile Include="..\..\libavcodec\cga_data.c" />
+    <ClCompile Include="..\..\libavcodec\cinepak.c" />
+    <ClCompile Include="..\..\libavcodec\cljr.c" />
+    <ClCompile Include="..\..\libavcodec\cook.c" />
+    <ClCompile Include="..\..\libavcodec\cscd.c" />
+    <ClCompile Include="..\..\libavcodec\cyuv.c" />
+    <ClCompile Include="..\..\libavcodec\dca.c" />
+    <ClCompile Include="..\..\libavcodec\dca_parser.c" />
+    <ClCompile Include="..\..\libavcodec\dcadsp.c" />
+    <ClCompile Include="..\..\libavcodec\dct.c" />
+    <ClCompile Include="..\..\libavcodec\dctref.c" />
+    <ClCompile Include="..\..\libavcodec\dirac.c" />
+    <ClCompile Include="..\..\libavcodec\dirac_parser.c" />
+    <ClCompile Include="..\..\libavcodec\dnxhd_parser.c" />
+    <ClCompile Include="..\..\libavcodec\dnxhddata.c" />
+    <ClCompile Include="..\..\libavcodec\dnxhddec.c" />
+    <ClCompile Include="..\..\libavcodec\dnxhdenc.c" />
+    <ClCompile Include="..\..\libavcodec\dpcm.c" />
+    <ClCompile Include="..\..\libavcodec\dpx.c" />
+    <ClCompile Include="..\..\libavcodec\dsicinav.c" />
+    <ClCompile Include="..\..\libavcodec\dsputil.c" />
+    <ClCompile Include="..\..\libavcodec\dump_extradata_bsf.c" />
+    <ClCompile Include="..\..\libavcodec\dv.c" />
+    <ClCompile Include="..\..\libavcodec\dvbsub.c" />
+    <ClCompile Include="..\..\libavcodec\dvbsub_parser.c" />
+    <ClCompile Include="..\..\libavcodec\dvbsubdec.c" />
+    <ClCompile Include="..\..\libavcodec\dvdata.c" />
+    <ClCompile Include="..\..\libavcodec\dvdsub_parser.c" />
+    <ClCompile Include="..\..\libavcodec\dvdsubdec.c" />
+    <ClCompile Include="..\..\libavcodec\dvdsubenc.c" />
+    <ClCompile Include="..\..\libavcodec\dwt.c" />
+    <ClCompile Include="..\..\libavcodec\dxa.c" />
+    <ClCompile Include="..\..\libavcodec\eac3dec.c" />
+    <ClCompile Include="..\..\libavcodec\eac3dec_data.c" />
+    <ClCompile Include="..\..\libavcodec\eacmv.c" />
+    <ClCompile Include="..\..\libavcodec\eaidct.c" />
+    <ClCompile Include="..\..\libavcodec\eamad.c" />
+    <ClCompile Include="..\..\libavcodec\eatgq.c" />
+    <ClCompile Include="..\..\libavcodec\eatgv.c" />
+    <ClCompile Include="..\..\libavcodec\eatqi.c" />
+    <ClCompile Include="..\..\libavcodec\elbg.c" />
+    <ClCompile Include="..\..\libavcodec\error_resilience.c" />
+    <ClCompile Include="..\..\libavcodec\escape124.c" />
+    <ClCompile Include="..\..\libavcodec\eval.c" />
+    <ClCompile Include="..\..\libavcodec\faandct.c" />
+    <ClCompile Include="..\..\libavcodec\faanidct.c" />
+    <ClCompile Include="..\..\libavcodec\faxcompr.c" />
+    <ClCompile Include="..\..\libavcodec\fft.c" />
+    <ClCompile Include="..\..\libavcodec\ffv1.c" />
+    <ClCompile Include="..\..\libavcodec\flac.c" />
+    <ClCompile Include="..\..\libavcodec\flacdata.c" />
+    <ClCompile Include="..\..\libavcodec\flacdec.c" />
+    <ClCompile Include="..\..\libavcodec\flacenc.c" />
+    <ClCompile Include="..\..\libavcodec\flashsv.c" />
+    <ClCompile Include="..\..\libavcodec\flashsvenc.c" />
+    <ClCompile Include="..\..\libavcodec\flicvideo.c" />
+    <ClCompile Include="..\..\libavcodec\flvdec.c" />
+    <ClCompile Include="..\..\libavcodec\flvenc.c" />
+    <ClCompile Include="..\..\libavcodec\fmtconvert.c" />
+    <ClCompile Include="..\..\libavcodec\fraps.c" />
+    <ClCompile Include="..\..\libavcodec\frwu.c" />
+    <ClCompile Include="..\..\libavcodec\g726.c" />
+    <ClCompile Include="..\..\libavcodec\gif.c" />
+    <ClCompile Include="..\..\libavcodec\gifdec.c" />
+    <ClCompile Include="..\..\libavcodec\golomb.c" />
+    <ClCompile Include="..\..\libavcodec\h261.c" />
+    <ClCompile Include="..\..\libavcodec\h261_parser.c" />
+    <ClCompile Include="..\..\libavcodec\h261dec.c" />
+    <ClCompile Include="..\..\libavcodec\h261enc.c" />
+    <ClCompile Include="..\..\libavcodec\h263.c" />
+    <ClCompile Include="..\..\libavcodec\h263_parser.c" />
+    <ClCompile Include="..\..\libavcodec\h263dec.c" />
+    <ClCompile Include="..\..\libavcodec\h264.c" />
+    <ClCompile Include="..\..\libavcodec\h264_cabac.c" />
+    <ClCompile Include="..\..\libavcodec\h264_cavlc.c" />
+    <ClCompile Include="..\..\libavcodec\h264_direct.c" />
+    <ClCompile Include="..\..\libavcodec\h264_hl_motion.c" />
+    <ClCompile Include="..\..\libavcodec\h264_loopfilter.c" />
+    <ClCompile Include="..\..\libavcodec\h264_mp4toannexb_bsf.c" />
+    <ClCompile Include="..\..\libavcodec\h264_parser.c" />
+    <ClCompile Include="..\..\libavcodec\h264_ps.c" />
+    <ClCompile Include="..\..\libavcodec\h264_refs.c" />
+    <ClCompile Include="..\..\libavcodec\h264_sei.c" />
+    <ClCompile Include="..\..\libavcodec\h264dsp.c" />
+    <ClCompile Include="..\..\libavcodec\h264enc.c" />
+    <ClCompile Include="..\..\libavcodec\h264idct.c" />
+    <ClCompile Include="..\..\libavcodec\h264pred.c" />
+    <ClCompile Include="..\..\libavcodec\huffman.c" />
+    <ClCompile Include="..\..\libavcodec\huffyuv.c" />
+    <ClCompile Include="..\..\libavcodec\idcinvideo.c" />
+    <ClCompile Include="..\..\libavcodec\iff.c" />
+    <ClCompile Include="..\..\libavcodec\iirfilter.c" />
+    <ClCompile Include="..\..\libavcodec\imc.c" />
+    <ClCompile Include="..\..\libavcodec\imgconvert.c" />
+    <ClCompile Include="..\..\libavcodec\imx_dump_header_bsf.c" />
+    <ClCompile Include="..\..\libavcodec\indeo2.c" />
+    <ClCompile Include="..\..\libavcodec\indeo3.c" />
+    <ClCompile Include="..\..\libavcodec\indeo5.c" />
+    <ClCompile Include="..\..\libavcodec\intelh263dec.c" />
+    <ClCompile Include="..\..\libavcodec\interplayvideo.c" />
+    <ClCompile Include="..\..\libavcodec\intrax8.c" />
+    <ClCompile Include="..\..\libavcodec\intrax8dsp.c" />
+    <ClCompile Include="..\..\libavcodec\ituh263dec.c" />
+    <ClCompile Include="..\..\libavcodec\ituh263enc.c" />
+    <ClCompile Include="..\..\libavcodec\ivi_common.c" />
+    <ClCompile Include="..\..\libavcodec\ivi_dsp.c" />
+    <ClCompile Include="..\..\libavcodec\jfdctfst.c" />
+    <ClCompile Include="..\..\libavcodec\jfdctint.c" />
+    <ClCompile Include="..\..\libavcodec\jpegls.c" />
+    <ClCompile Include="..\..\libavcodec\jpeglsdec.c" />
+    <ClCompile Include="..\..\libavcodec\jpeglsenc.c" />
+    <ClCompile Include="..\..\libavcodec\jrevdct.c" />
+    <ClCompile Include="..\..\libavcodec\kbdwin.c" />
+    <ClCompile Include="..\..\libavcodec\kgv1dec.c" />
+    <ClCompile Include="..\..\libavcodec\kmvc.c" />
+    <ClCompile Include="..\..\libavcodec\lcldec.c" />
+    <ClCompile Include="..\..\libavcodec\lclenc.c" />
+    <ClCompile Include="..\..\libavcodec\libdirac_libschro.c" />
+    <ClCompile Include="..\..\libavcodec\libdiracdec.c" />
+    <ClCompile Include="..\..\libavcodec\libdiracenc.c" />
+    <ClCompile Include="..\..\libavcodec\libfaac.c" />
+    <ClCompile Include="..\..\libavcodec\libfaad.c" />
+    <ClCompile Include="..\..\libavcodec\libgsm.c" />
+    <ClCompile Include="..\..\libavcodec\libmp3lame.c" />
+    <ClCompile Include="..\..\libavcodec\libopencore-amr.c" />
+    <ClCompile Include="..\..\libavcodec\libopenjpeg.c" />
+    <ClCompile Include="..\..\libavcodec\libschroedinger.c" />
+    <ClCompile Include="..\..\libavcodec\libschroedingerdec.c" />
+    <ClCompile Include="..\..\libavcodec\libschroedingerenc.c" />
+    <ClCompile Include="..\..\libavcodec\libspeexdec.c" />
+    <ClCompile Include="..\..\libavcodec\libtheoraenc.c" />
+    <ClCompile Include="..\..\libavcodec\libvorbis.c" />
+    <ClCompile Include="..\..\libavcodec\libvpxdec.c" />
+    <ClCompile Include="..\..\libavcodec\libvpxenc.c" />
+    <ClCompile Include="..\..\libavcodec\libx264.c" />
+    <ClCompile Include="..\..\libavcodec\libxvid_rc.c" />
+    <ClCompile Include="..\..\libavcodec\libxvidff.c" />
+    <ClCompile Include="..\..\libavcodec\ljpegenc.c" />
+    <ClCompile Include="..\..\libavcodec\loco.c" />
+    <ClCompile Include="..\..\libavcodec\lpc.c" />
+    <ClCompile Include="..\..\libavcodec\lsp.c" />
+    <ClCompile Include="..\..\libavcodec\lzw.c" />
+    <ClCompile Include="..\..\libavcodec\lzwenc.c" />
+    <ClCompile Include="..\..\libavcodec\mace.c" />
+    <ClCompile Include="..\..\libavcodec\mdct.c" />
+    <ClCompile Include="..\..\libavcodec\mdec.c" />
+    <ClCompile Include="..\..\libavcodec\mimic.c" />
+    <ClCompile Include="..\..\libavcodec\mjpeg.c" />
+    <ClCompile Include="..\..\libavcodec\mjpeg_parser.c" />
+    <ClCompile Include="..\..\libavcodec\mjpega_dump_header_bsf.c" />
+    <ClCompile Include="..\..\libavcodec\mjpegbdec.c" />
+    <ClCompile Include="..\..\libavcodec\mjpegdec.c" />
+    <ClCompile Include="..\..\libavcodec\mjpegenc.c" />
+    <ClCompile Include="..\..\libavcodec\mlp.c" />
+    <ClCompile Include="..\..\libavcodec\mlp_parser.c" />
+    <ClCompile Include="..\..\libavcodec\mlpdec.c" />
+    <ClCompile Include="..\..\libavcodec\mlpdsp.c" />
+    <ClCompile Include="..\..\libavcodec\mmvideo.c" />
+    <ClCompile Include="..\..\libavcodec\motion_est.c" />
+    <ClCompile Include="..\..\libavcodec\motionpixels.c" />
+    <ClCompile Include="..\..\libavcodec\movsub_bsf.c" />
+    <ClCompile Include="..\..\libavcodec\mp3_header_compress_bsf.c" />
+    <ClCompile Include="..\..\libavcodec\mp3_header_decompress_bsf.c" />
+    <ClCompile Include="..\..\libavcodec\mpc.c" />
+    <ClCompile Include="..\..\libavcodec\mpc7.c" />
+    <ClCompile Include="..\..\libavcodec\mpc8.c" />
+    <ClCompile Include="..\..\libavcodec\mpeg12.c" />
+    <ClCompile Include="..\..\libavcodec\mpeg12data.c" />
+    <ClCompile Include="..\..\libavcodec\mpeg12enc.c" />
+    <ClCompile Include="..\..\libavcodec\mpeg4audio.c" />
+    <ClCompile Include="..\..\libavcodec\mpeg4video.c" />
+    <ClCompile Include="..\..\libavcodec\mpeg4video_parser.c" />
+    <ClCompile Include="..\..\libavcodec\mpeg4videodec.c" />
+    <ClCompile Include="..\..\libavcodec\mpeg4videoenc.c" />
+    <ClCompile Include="..\..\libavcodec\mpegaudio.c" />
+    <ClCompile Include="..\..\libavcodec\mpegaudio_parser.c" />
+    <ClCompile Include="..\..\libavcodec\mpegaudiodata.c" />
+    <ClCompile Include="..\..\libavcodec\mpegaudiodec.c" />
+    <ClCompile Include="..\..\libavcodec\mpegaudiodecheader.c" />
+    <ClCompile Include="..\..\libavcodec\mpegaudioenc.c" />
+    <ClCompile Include="..\..\libavcodec\mpegvideo.c" />
+    <ClCompile Include="..\..\libavcodec\mpegvideo_enc.c" />
+    <ClCompile Include="..\..\libavcodec\mpegvideo_parser.c" />
+    <ClCompile Include="..\..\libavcodec\mpegvideo_xvmc.c" />
+    <ClCompile Include="..\..\libavcodec\msmpeg4.c" />
+    <ClCompile Include="..\..\libavcodec\msmpeg4data.c" />
+    <ClCompile Include="..\..\libavcodec\msrle.c" />
+    <ClCompile Include="..\..\libavcodec\msrledec.c" />
+    <ClCompile Include="..\..\libavcodec\msvideo1.c" />
+    <ClCompile Include="..\..\libavcodec\nellymoser.c" />
+    <ClCompile Include="..\..\libavcodec\nellymoserdec.c" />
+    <ClCompile Include="..\..\libavcodec\nellymoserenc.c" />
+    <ClCompile Include="..\..\libavcodec\noise_bsf.c" />
+    <ClCompile Include="..\..\libavcodec\nuv.c" />
+    <ClCompile Include="..\..\libavcodec\opt.c" />
+    <ClCompile Include="..\..\libavcodec\options.c" />
+    <ClCompile Include="..\..\libavcodec\pamenc.c" />
+    <ClCompile Include="..\..\libavcodec\parser.c" />
+    <ClCompile Include="..\..\libavcodec\pcm-mpeg.c" />
+    <ClCompile Include="..\..\libavcodec\pcm.c" />
+    <ClCompile Include="..\..\libavcodec\pcx.c" />
+    <ClCompile Include="..\..\libavcodec\pcxenc.c" />
+    <ClCompile Include="..\..\libavcodec\pgssubdec.c" />
+    <ClCompile Include="..\..\libavcodec\png.c" />
+    <ClCompile Include="..\..\libavcodec\pngdec.c" />
+    <ClCompile Include="..\..\libavcodec\pngenc.c" />
+    <ClCompile Include="..\..\libavcodec\pnm.c" />
+    <ClCompile Include="..\..\libavcodec\pnm_parser.c" />
+    <ClCompile Include="..\..\libavcodec\pnmdec.c" />
+    <ClCompile Include="..\..\libavcodec\pnmenc.c" />
+    <ClCompile Include="..\..\libavcodec\psymodel.c" />
+    <ClCompile Include="..\..\libavcodec\ptx.c" />
+    <ClCompile Include="..\..\libavcodec\qcelpdec.c" />
+    <ClCompile Include="..\..\libavcodec\qdm2.c" />
+    <ClCompile Include="..\..\libavcodec\qdrw.c" />
+    <ClCompile Include="..\..\libavcodec\qpeg.c" />
+    <ClCompile Include="..\..\libavcodec\qtrle.c" />
+    <ClCompile Include="..\..\libavcodec\qtrleenc.c" />
+    <ClCompile Include="..\..\libavcodec\r210dec.c" />
+    <ClCompile Include="..\..\libavcodec\ra144.c" />
+    <ClCompile Include="..\..\libavcodec\ra288.c" />
+    <ClCompile Include="..\..\libavcodec\rangecoder.c" />
+    <ClCompile Include="..\..\libavcodec\ratecontrol.c" />
+    <ClCompile Include="..\..\libavcodec\raw.c" />
+    <ClCompile Include="..\..\libavcodec\rawdec.c" />
+    <ClCompile Include="..\..\libavcodec\rawenc.c" />
+    <ClCompile Include="..\..\libavcodec\rdft.c" />
+    <ClCompile Include="..\..\libavcodec\remove_extradata_bsf.c" />
+    <ClCompile Include="..\..\libavcodec\resample.c" />
+    <ClCompile Include="..\..\libavcodec\resample2.c" />
+    <ClCompile Include="..\..\libavcodec\rl2.c" />
+    <ClCompile Include="..\..\libavcodec\rle.c" />
+    <ClCompile Include="..\..\libavcodec\roqaudioenc.c" />
+    <ClCompile Include="..\..\libavcodec\roqvideo.c" />
+    <ClCompile Include="..\..\libavcodec\roqvideodec.c" />
+    <ClCompile Include="..\..\libavcodec\roqvideoenc.c" />
+    <ClCompile Include="..\..\libavcodec\rpza.c" />
+    <ClCompile Include="..\..\libavcodec\rtjpeg.c" />
+    <ClCompile Include="..\..\libavcodec\rv10.c" />
+    <ClCompile Include="..\..\libavcodec\rv10enc.c" />
+    <ClCompile Include="..\..\libavcodec\rv20enc.c" />
+    <ClCompile Include="..\..\libavcodec\rv30.c" />
+    <ClCompile Include="..\..\libavcodec\rv30dsp.c" />
+    <ClCompile Include="..\..\libavcodec\rv34.c" />
+    <ClCompile Include="..\..\libavcodec\rv40.c" />
+    <ClCompile Include="..\..\libavcodec\rv40dsp.c" />
+    <ClCompile Include="..\..\libavcodec\s3tc.c" />
+    <ClCompile Include="..\..\libavcodec\sgidec.c" />
+    <ClCompile Include="..\..\libavcodec\sgienc.c" />
+    <ClCompile Include="..\..\libavcodec\shorten.c" />
+    <ClCompile Include="..\..\libavcodec\simple_idct.c" />
+    <ClCompile Include="..\..\libavcodec\sinewin.c" />
+    <ClCompile Include="..\..\libavcodec\sipr.c" />
+    <ClCompile Include="..\..\libavcodec\sipr16k.c" />
+    <ClCompile Include="..\..\libavcodec\smacker.c" />
+    <ClCompile Include="..\..\libavcodec\smc.c" />
+    <ClCompile Include="..\..\libavcodec\snow.c" />
+    <ClCompile Include="..\..\libavcodec\sonic.c" />
+    <ClCompile Include="..\..\libavcodec\sp5xdec.c" />
+    <ClCompile Include="..\..\libavcodec\sunrast.c" />
+    <ClCompile Include="..\..\libavcodec\svq1.c" />
+    <ClCompile Include="..\..\libavcodec\svq1dec.c" />
+    <ClCompile Include="..\..\libavcodec\svq1enc.c" />
+    <ClCompile Include="..\..\libavcodec\svq3.c" />
+    <ClCompile Include="..\..\libavcodec\synth_filter.c" />
+    <ClCompile Include="..\..\libavcodec\tableprint.c" />
+    <ClCompile Include="..\..\libavcodec\targa.c" />
+    <ClCompile Include="..\..\libavcodec\targaenc.c" />
+    <ClCompile Include="..\..\libavcodec\tiertexseqv.c" />
+    <ClCompile Include="..\..\libavcodec\tiff.c" />
+    <ClCompile Include="..\..\libavcodec\tiffenc.c" />
+    <ClCompile Include="..\..\libavcodec\tmv.c" />
+    <ClCompile Include="..\..\libavcodec\truemotion1.c" />
+    <ClCompile Include="..\..\libavcodec\truemotion2.c" />
+    <ClCompile Include="..\..\libavcodec\truespeech.c" />
+    <ClCompile Include="..\..\libavcodec\tta.c" />
+    <ClCompile Include="..\..\libavcodec\twinvq.c" />
+    <ClCompile Include="..\..\libavcodec\txd.c" />
+    <ClCompile Include="..\..\libavcodec\ulti.c" />
+    <ClCompile Include="..\..\libavcodec\utils.c" />
+    <ClCompile Include="..\..\libavcodec\v210dec.c" />
+    <ClCompile Include="..\..\libavcodec\v210enc.c" />
+    <ClCompile Include="..\..\libavcodec\v210x.c" />
+    <ClCompile Include="..\..\libavcodec\vaapi.c" />
+    <ClCompile Include="..\..\libavcodec\vaapi_h264.c" />
+    <ClCompile Include="..\..\libavcodec\vaapi_mpeg2.c" />
+    <ClCompile Include="..\..\libavcodec\vaapi_mpeg4.c" />
+    <ClCompile Include="..\..\libavcodec\vaapi_vc1.c" />
+    <ClCompile Include="..\..\libavcodec\vb.c" />
+    <ClCompile Include="..\..\libavcodec\vc1.c" />
+    <ClCompile Include="..\..\libavcodec\vc1_parser.c" />
+    <ClCompile Include="..\..\libavcodec\vc1data.c" />
+    <ClCompile Include="..\..\libavcodec\vc1dec.c" />
+    <ClCompile Include="..\..\libavcodec\vc1dsp.c" />
+    <ClCompile Include="..\..\libavcodec\vcr1.c" />
+    <ClCompile Include="..\..\libavcodec\vdpau.c" />
+    <ClCompile Include="..\..\libavcodec\vmdav.c" />
+    <ClCompile Include="..\..\libavcodec\vmnc.c" />
+    <ClCompile Include="..\..\libavcodec\vorbis.c" />
+    <ClCompile Include="..\..\libavcodec\vorbis_data.c" />
+    <ClCompile Include="..\..\libavcodec\vorbis_dec.c" />
+    <ClCompile Include="..\..\libavcodec\vorbis_enc.c" />
+    <ClCompile Include="..\..\libavcodec\vp3.c" />
+    <ClCompile Include="..\..\libavcodec\vp3_parser.c" />
+    <ClCompile Include="..\..\libavcodec\vp3dsp.c" />
+    <ClCompile Include="..\..\libavcodec\vp5.c" />
+    <ClCompile Include="..\..\libavcodec\vp56.c" />
+    <ClCompile Include="..\..\libavcodec\vp56data.c" />
+    <ClCompile Include="..\..\libavcodec\vp56dsp.c" />
+    <ClCompile Include="..\..\libavcodec\vp56rac.c" />
+    <ClCompile Include="..\..\libavcodec\vp6.c" />
+    <ClCompile Include="..\..\libavcodec\vp6dsp.c" />
+    <ClCompile Include="..\..\libavcodec\vqavideo.c" />
+    <ClCompile Include="..\..\libavcodec\w32thread.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libavcodec\wavpack.c" />
+    <ClCompile Include="..\..\libavcodec\wma.c" />
+    <ClCompile Include="..\..\libavcodec\wmadec.c" />
+    <ClCompile Include="..\..\libavcodec\wmaenc.c" />
+    <ClCompile Include="..\..\libavcodec\wmaprodec.c" />
+    <ClCompile Include="..\..\libavcodec\wmavoice.c" />
+    <ClCompile Include="..\..\libavcodec\wmv2.c" />
+    <ClCompile Include="..\..\libavcodec\wmv2dec.c" />
+    <ClCompile Include="..\..\libavcodec\wmv2enc.c" />
+    <ClCompile Include="..\..\libavcodec\wnv1.c" />
+    <ClCompile Include="..\..\libavcodec\ws-snd1.c" />
+    <ClCompile Include="..\..\libavcodec\xan.c" />
+    <ClCompile Include="..\..\libavcodec\xb_thread.c" />
+    <ClCompile Include="..\..\libavcodec\xiph.c" />
+    <ClCompile Include="..\..\libavcodec\xl.c" />
+    <ClCompile Include="..\..\libavcodec\xsubdec.c" />
+    <ClCompile Include="..\..\libavcodec\xsubenc.c" />
+    <ClCompile Include="..\..\libavcodec\yop.c" />
+    <ClCompile Include="..\..\libavcodec\zmbv.c" />
+    <ClCompile Include="..\..\libavcodec\zmbvenc.c" />
+    <ClCompile Include="..\..\libavcodec\xbox360\dsputil_ppc.c" />
+    <ClCompile Include="..\..\libavcodec\ppc\dsputil_ppc.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libavcodec\xbox360\float_altivec.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libavcodec\xbox360\gmc_vmx.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libavcodec\xbox360\h264_idtc2_vmx.c" />
+    <ClCompile Include="..\..\libavcodec\xbox360\h264_idtc_vmx.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libavcodec\xbox360\h264_luma_vmx.c" />
+    <ClCompile Include="..\..\libavcodec\xbox360\h264_template_vmx.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libavcodec\xbox360\h264_test_vmx.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libavcodec\xbox360\h264_vmx.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libavcodec\xbox360\vc1dsp_vmx.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</ExcludedFromBuild>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\libavcodec\h264_hl_motion.h" />
+    <ClInclude Include="..\..\libavcodec\p_pthread.h" />
+    <ClInclude Include="..\..\..\ffmpeg-HEAD-f4bc923\ffmpeg-HEAD-f4bc923\libavcodec\sinewin.h" />
+    <ClInclude Include="..\..\..\ffmpeg-HEAD-f4bc923\ffmpeg-HEAD-f4bc923\libavcodec\sinewin_tablegen.h" />
+    <ClInclude Include="..\..\libavcodec\aac.h" />
+    <ClInclude Include="..\..\libavcodec\aac_ac3_parser.h" />
+    <ClInclude Include="..\..\libavcodec\aac_parser.h" />
+    <ClInclude Include="..\..\libavcodec\aacdectab.h" />
+    <ClInclude Include="..\..\libavcodec\aacenc.h" />
+    <ClInclude Include="..\..\libavcodec\aacpsy.h" />
+    <ClInclude Include="..\..\libavcodec\aacsbr.h" />
+    <ClInclude Include="..\..\libavcodec\aacsbrdata.h" />
+    <ClInclude Include="..\..\libavcodec\aactab.h" />
+    <ClInclude Include="..\..\libavcodec\aandcttab.h" />
+    <ClInclude Include="..\..\libavcodec\ac3.h" />
+    <ClInclude Include="..\..\libavcodec\ac3_parser.h" />
+    <ClInclude Include="..\..\libavcodec\ac3dec.h" />
+    <ClInclude Include="..\..\libavcodec\ac3dec_data.h" />
+    <ClInclude Include="..\..\libavcodec\ac3tab.h" />
+    <ClInclude Include="..\..\libavcodec\acelp_filters.h" />
+    <ClInclude Include="..\..\libavcodec\acelp_pitch_delay.h" />
+    <ClInclude Include="..\..\libavcodec\acelp_vectors.h" />
+    <ClInclude Include="..\..\libavcodec\adx.h" />
+    <ClInclude Include="..\..\libavcodec\amrnbdata.h" />
+    <ClInclude Include="..\..\libavcodec\atrac.h" />
+    <ClInclude Include="..\..\libavcodec\atrac1data.h" />
+    <ClInclude Include="..\..\libavcodec\atrac3data.h" />
+    <ClInclude Include="..\..\libavcodec\audioconvert.h" />
+    <ClInclude Include="..\..\libavcodec\avcodec.h" />
+    <ClInclude Include="..\..\libavcodec\avfft.h" />
+    <ClInclude Include="..\..\libavcodec\bethsoftvideo.h" />
+    <ClInclude Include="..\..\libavcodec\bgmc.h" />
+    <ClInclude Include="..\..\libavcodec\binkdata.h" />
+    <ClInclude Include="..\..\libavcodec\bmp.h" />
+    <ClInclude Include="..\..\libavcodec\bytestream.h" />
+    <ClInclude Include="..\..\libavcodec\cabac.h" />
+    <ClInclude Include="..\..\libavcodec\cavs.h" />
+    <ClInclude Include="..\..\libavcodec\cavsdata.h" />
+    <ClInclude Include="..\..\libavcodec\cbrt_tablegen.h" />
+    <ClInclude Include="..\..\libavcodec\celp_filters.h" />
+    <ClInclude Include="..\..\libavcodec\celp_math.h" />
+    <ClInclude Include="..\..\libavcodec\cga_data.h" />
+    <ClInclude Include="..\..\libavcodec\colorspace.h" />
+    <ClInclude Include="..\..\libavcodec\cookdata.h" />
+    <ClInclude Include="..\..\libavcodec\dca.h" />
+    <ClInclude Include="..\..\libavcodec\dcadata.h" />
+    <ClInclude Include="..\..\libavcodec\dcadsp.h" />
+    <ClInclude Include="..\..\libavcodec\dcahuff.h" />
+    <ClInclude Include="..\..\libavcodec\dctref.h" />
+    <ClInclude Include="..\..\libavcodec\dirac.h" />
+    <ClInclude Include="..\..\libavcodec\dnxhddata.h" />
+    <ClInclude Include="..\..\libavcodec\dnxhdenc.h" />
+    <ClInclude Include="..\..\libavcodec\dsputil.h" />
+    <ClInclude Include="..\..\libavcodec\dv_tablegen.h" />
+    <ClInclude Include="..\..\libavcodec\dv_vlc_data.h" />
+    <ClInclude Include="..\..\libavcodec\dvdata.h" />
+    <ClInclude Include="..\..\libavcodec\dwt.h" />
+    <ClInclude Include="..\..\libavcodec\dxva2.h" />
+    <ClInclude Include="..\..\libavcodec\dxva2_internal.h" />
+    <ClInclude Include="..\..\libavcodec\eac3dec_data.h" />
+    <ClInclude Include="..\..\libavcodec\elbg.h" />
+    <ClInclude Include="..\..\libavcodec\eval.h" />
+    <ClInclude Include="..\..\libavcodec\faandct.h" />
+    <ClInclude Include="..\..\libavcodec\faanidct.h" />
+    <ClInclude Include="..\..\libavcodec\faxcompr.h" />
+    <ClInclude Include="..\..\libavcodec\fft.h" />
+    <ClInclude Include="..\..\libavcodec\flac.h" />
+    <ClInclude Include="..\..\libavcodec\flacdata.h" />
+    <ClInclude Include="..\..\libavcodec\flv.h" />
+    <ClInclude Include="..\..\libavcodec\g729.h" />
+    <ClInclude Include="..\..\libavcodec\g729data.h" />
+    <ClInclude Include="..\..\libavcodec\get_bits.h" />
+    <ClInclude Include="..\..\libavcodec\golomb.h" />
+    <ClInclude Include="..\..\libavcodec\h261.h" />
+    <ClInclude Include="..\..\libavcodec\h261data.h" />
+    <ClInclude Include="..\..\libavcodec\h263.h" />
+    <ClInclude Include="..\..\libavcodec\h263_parser.h" />
+    <ClInclude Include="..\..\libavcodec\h263data.h" />
+    <ClInclude Include="..\..\libavcodec\h264.h" />
+    <ClInclude Include="..\..\libavcodec\h264_mvpred.h" />
+    <ClInclude Include="..\..\libavcodec\h264_parser.h" />
+    <ClInclude Include="..\..\libavcodec\h264data.h" />
+    <ClInclude Include="..\..\libavcodec\h264dsp.h" />
+    <ClInclude Include="..\..\libavcodec\h264pred.h" />
+    <ClInclude Include="..\..\libavcodec\huffman.h" />
+    <ClInclude Include="..\..\libavcodec\iff.h" />
+    <ClInclude Include="..\..\libavcodec\iirfilter.h" />
+    <ClInclude Include="..\..\libavcodec\imcdata.h" />
+    <ClInclude Include="..\..\libavcodec\imgconvert.h" />
+    <ClInclude Include="..\..\libavcodec\indeo2data.h" />
+    <ClInclude Include="..\..\libavcodec\indeo3data.h" />
+    <ClInclude Include="..\..\libavcodec\indeo5data.h" />
+    <ClInclude Include="..\..\libavcodec\internal.h" />
+    <ClInclude Include="..\..\libavcodec\intrax8.h" />
+    <ClInclude Include="..\..\libavcodec\intrax8huf.h" />
+    <ClInclude Include="..\..\libavcodec\ivi_common.h" />
+    <ClInclude Include="..\..\libavcodec\ivi_dsp.h" />
+    <ClInclude Include="..\..\libavcodec\jpegls.h" />
+    <ClInclude Include="..\..\libavcodec\jpeglsdec.h" />
+    <ClInclude Include="..\..\libavcodec\lcl.h" />
+    <ClInclude Include="..\..\libavcodec\libdirac.h" />
+    <ClInclude Include="..\..\libavcodec\libdirac_libschro.h" />
+    <ClInclude Include="..\..\libavcodec\libschroedinger.h" />
+    <ClInclude Include="..\..\libavcodec\libxvid_internal.h" />
+    <ClInclude Include="..\..\libavcodec\lpc.h" />
+    <ClInclude Include="..\..\libavcodec\lsp.h" />
+    <ClInclude Include="..\..\libavcodec\lzw.h" />
+    <ClInclude Include="..\..\libavcodec\mathops.h" />
+    <ClInclude Include="..\..\libavcodec\mdct_tablegen.h" />
+    <ClInclude Include="..\..\libavcodec\mjpeg.h" />
+    <ClInclude Include="..\..\libavcodec\mjpegdec.h" />
+    <ClInclude Include="..\..\libavcodec\mjpegenc.h" />
+    <ClInclude Include="..\..\libavcodec\mlp.h" />
+    <ClInclude Include="..\..\libavcodec\mlp_parser.h" />
+    <ClInclude Include="..\..\libavcodec\motionpixels_tablegen.h" />
+    <ClInclude Include="..\..\libavcodec\mpc.h" />
+    <ClInclude Include="..\..\libavcodec\mpc7data.h" />
+    <ClInclude Include="..\..\libavcodec\mpc8data.h" />
+    <ClInclude Include="..\..\libavcodec\mpc8huff.h" />
+    <ClInclude Include="..\..\libavcodec\mpcdata.h" />
+    <ClInclude Include="..\..\libavcodec\mpeg12.h" />
+    <ClInclude Include="..\..\libavcodec\mpeg12data.h" />
+    <ClInclude Include="..\..\libavcodec\mpeg12decdata.h" />
+    <ClInclude Include="..\..\libavcodec\mpeg4audio.h" />
+    <ClInclude Include="..\..\libavcodec\mpeg4data.h" />
+    <ClInclude Include="..\..\libavcodec\mpeg4video.h" />
+    <ClInclude Include="..\..\libavcodec\mpeg4video_parser.h" />
+    <ClInclude Include="..\..\libavcodec\mpegaudio.h" />
+    <ClInclude Include="..\..\libavcodec\mpegaudio3.h" />
+    <ClInclude Include="..\..\libavcodec\mpegaudio_tablegen.h" />
+    <ClInclude Include="..\..\libavcodec\mpegaudiodata.h" />
+    <ClInclude Include="..\..\libavcodec\mpegaudiodecheader.h" />
+    <ClInclude Include="..\..\libavcodec\mpegaudiodectab.h" />
+    <ClInclude Include="..\..\libavcodec\mpegaudiotab.h" />
+    <ClInclude Include="..\..\libavcodec\mpegvideo.h" />
+    <ClInclude Include="..\..\libavcodec\mpegvideo_common.h" />
+    <ClInclude Include="..\..\libavcodec\msmpeg4.h" />
+    <ClInclude Include="..\..\libavcodec\msmpeg4data.h" />
+    <ClInclude Include="..\..\libavcodec\msrledec.h" />
+    <ClInclude Include="..\..\libavcodec\nellymoser.h" />
+    <ClInclude Include="..\..\libavcodec\opt.h" />
+    <ClInclude Include="..\..\libavcodec\parser.h" />
+    <ClInclude Include="..\..\libavcodec\pcm_tablegen.h" />
+    <ClInclude Include="..\..\libavcodec\png.h" />
+    <ClInclude Include="..\..\libavcodec\pnm.h" />
+    <ClInclude Include="..\..\libavcodec\psymodel.h" />
+    <ClInclude Include="..\..\libavcodec\put_bits.h" />
+    <ClInclude Include="..\..\libavcodec\qcelpdata.h" />
+    <ClInclude Include="..\..\libavcodec\qdm2_tablegen.h" />
+    <ClInclude Include="..\..\libavcodec\qdm2data.h" />
+    <ClInclude Include="..\..\libavcodec\ra144.h" />
+    <ClInclude Include="..\..\libavcodec\ra288.h" />
+    <ClInclude Include="..\..\libavcodec\rangecoder.h" />
+    <ClInclude Include="..\..\libavcodec\ratecontrol.h" />
+    <ClInclude Include="..\..\libavcodec\raw.h" />
+    <ClInclude Include="..\..\libavcodec\rectangle.h" />
+    <ClInclude Include="..\..\libavcodec\rl.h" />
+    <ClInclude Include="..\..\libavcodec\rle.h" />
+    <ClInclude Include="..\..\libavcodec\roqvideo.h" />
+    <ClInclude Include="..\..\libavcodec\rtjpeg.h" />
+    <ClInclude Include="..\..\libavcodec\rv30data.h" />
+    <ClInclude Include="..\..\libavcodec\rv34.h" />
+    <ClInclude Include="..\..\libavcodec\rv34data.h" />
+    <ClInclude Include="..\..\libavcodec\rv34vlc.h" />
+    <ClInclude Include="..\..\libavcodec\rv40data.h" />
+    <ClInclude Include="..\..\libavcodec\rv40vlc2.h" />
+    <ClInclude Include="..\..\libavcodec\s3tc.h" />
+    <ClInclude Include="..\..\libavcodec\sbr.h" />
+    <ClInclude Include="..\..\libavcodec\sgi.h" />
+    <ClInclude Include="..\..\libavcodec\simple_idct.h" />
+    <ClInclude Include="..\..\libavcodec\sipr.h" />
+    <ClInclude Include="..\..\libavcodec\sipr16kdata.h" />
+    <ClInclude Include="..\..\libavcodec\siprdata.h" />
+    <ClInclude Include="..\..\libavcodec\snow.h" />
+    <ClInclude Include="..\..\libavcodec\sp5x.h" />
+    <ClInclude Include="..\..\libavcodec\svq1.h" />
+    <ClInclude Include="..\..\libavcodec\svq1_cb.h" />
+    <ClInclude Include="..\..\libavcodec\svq1_vlc.h" />
+    <ClInclude Include="..\..\libavcodec\svq1enc_cb.h" />
+    <ClInclude Include="..\..\libavcodec\synth_filter.h" />
+    <ClInclude Include="..\..\libavcodec\tableprint.h" />
+    <ClInclude Include="..\..\libavcodec\tiff.h" />
+    <ClInclude Include="..\..\libavcodec\truemotion1data.h" />
+    <ClInclude Include="..\..\libavcodec\truespeech_data.h" />
+    <ClInclude Include="..\..\libavcodec\twinvq_data.h" />
+    <ClInclude Include="..\..\libavcodec\ulti_cb.h" />
+    <ClInclude Include="..\..\libavcodec\unary.h" />
+    <ClInclude Include="..\..\libavcodec\vaapi.h" />
+    <ClInclude Include="..\..\libavcodec\vaapi_internal.h" />
+    <ClInclude Include="..\..\libavcodec\vc1.h" />
+    <ClInclude Include="..\..\libavcodec\vc1acdata.h" />
+    <ClInclude Include="..\..\libavcodec\vc1data.h" />
+    <ClInclude Include="..\..\libavcodec\vdpau.h" />
+    <ClInclude Include="..\..\libavcodec\vdpau_internal.h" />
+    <ClInclude Include="..\..\libavcodec\vorbis.h" />
+    <ClInclude Include="..\..\libavcodec\vorbis_enc_data.h" />
+    <ClInclude Include="..\..\libavcodec\vp3data.h" />
+    <ClInclude Include="..\..\libavcodec\vp56.h" />
+    <ClInclude Include="..\..\libavcodec\vp56data.h" />
+    <ClInclude Include="..\..\libavcodec\vp56dsp.h" />
+    <ClInclude Include="..\..\libavcodec\vp5data.h" />
+    <ClInclude Include="..\..\libavcodec\vp6data.h" />
+    <ClInclude Include="..\..\libavcodec\wma.h" />
+    <ClInclude Include="..\..\libavcodec\wmadata.h" />
+    <ClInclude Include="..\..\libavcodec\wmaprodata.h" />
+    <ClInclude Include="..\..\libavcodec\wmavoice_data.h" />
+    <ClInclude Include="..\..\libavcodec\wmv2.h" />
+    <ClInclude Include="..\..\libavcodec\xiph.h" />
+    <ClInclude Include="..\..\libavcodec\xvmc.h" />
+    <ClInclude Include="..\..\libavcodec\xvmc_internal.h" />
+    <ClInclude Include="..\..\libavcodec\ppc\dsputil_ppc.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\external\zlib\zlib.vcxproj">
+      <Project>{6a9f149d-15de-4c41-8144-adfa4761d2c9}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\libavutil\libavutil.vcxproj">
+      <Project>{360ea05d-89d7-405e-b935-66dcf7e1248f}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

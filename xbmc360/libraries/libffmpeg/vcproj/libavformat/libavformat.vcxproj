@@ -1,0 +1,596 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Xbox 360">
+      <Configuration>Debug</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_LTCG|Win32">
+      <Configuration>Release_LTCG</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_LTCG|Xbox 360">
+      <Configuration>Release_LTCG</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Xbox 360">
+      <Configuration>Release</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{F2A4E51C-C442-498C-B9CC-28DFC065A450}</ProjectGuid>
+    <RootNamespace>libavformat</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfAtl>false</UseOfAtl>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfAtl>false</UseOfAtl>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfAtl>false</UseOfAtl>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">$(Platform)\$(Configuration)\</IntDir>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..;..\external\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;DEBUG;_XBOX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <CompileAs>CompileAsC</CompileAs>
+      <DisableSpecificWarnings>4305;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ForcedIncludeFiles>config.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>libavutil.lib;libavcodec.lib;Ws2_32.lib;Vfw32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>.\avformat-52.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>..\..;..\external\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBAVUTIL_INTERNAL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4305;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ForcedIncludeFiles>config.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>libavutil.lib;libavcodec.lib;Ws2_32.lib;Vfw32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>.\avformat-52.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>..\..;..\external\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBAVUTIL_INTERNAL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4305;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ForcedIncludeFiles>config.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>libavutil.lib;libavcodec.lib;Ws2_32.lib;Vfw32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>.\avformat-52.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <AdditionalIncludeDirectories>..\..;..\external\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;_XBOX;HAVE_AV_CONFIG_H</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <StringPooling>true</StringPooling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <CompileAs>CompileAsC</CompileAs>
+      <DisableSpecificWarnings>4305</DisableSpecificWarnings>
+      <ForcedIncludeFiles>config.h</ForcedIncludeFiles>
+      <PreschedulingOptimization>true</PreschedulingOptimization>
+      <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..;..\external\include</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;DEBUG;_XBOX</PreprocessorDefinitions>
+      <CompileAs>CompileAsC</CompileAs>
+      <DisableSpecificWarnings>4305</DisableSpecificWarnings>
+      <ForcedIncludeFiles>config.h</ForcedIncludeFiles>
+      <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\libavformat\4xm.c" />
+    <ClCompile Include="..\..\libavformat\aacdec.c" />
+    <ClCompile Include="..\..\libavformat\ac3dec.c" />
+    <ClCompile Include="..\..\libavformat\adtsenc.c" />
+    <ClCompile Include="..\..\libavformat\aea.c" />
+    <ClCompile Include="..\..\libavformat\aiffdec.c" />
+    <ClCompile Include="..\..\libavformat\aiffenc.c" />
+    <ClCompile Include="..\..\libavformat\allformats.c" />
+    <ClCompile Include="..\..\libavformat\amr.c" />
+    <ClCompile Include="..\..\libavformat\anm.c" />
+    <ClCompile Include="..\..\libavformat\apc.c" />
+    <ClCompile Include="..\..\libavformat\ape.c" />
+    <ClCompile Include="..\..\libavformat\apetag.c" />
+    <ClCompile Include="..\..\libavformat\asf.c" />
+    <ClCompile Include="..\..\libavformat\asfcrypt.c" />
+    <ClCompile Include="..\..\libavformat\asfdec.c" />
+    <ClCompile Include="..\..\libavformat\asfenc.c" />
+    <ClCompile Include="..\..\libavformat\assdec.c" />
+    <ClCompile Include="..\..\libavformat\assenc.c" />
+    <ClCompile Include="..\..\libavformat\au.c" />
+    <ClCompile Include="..\..\libavformat\audiointerleave.c" />
+    <ClCompile Include="..\..\libavformat\avc.c" />
+    <ClCompile Include="..\..\libavformat\avi.c" />
+    <ClCompile Include="..\..\libavformat\avidec.c" />
+    <ClCompile Include="..\..\libavformat\avienc.c" />
+    <ClCompile Include="..\..\libavformat\avio.c" />
+    <ClCompile Include="..\..\libavformat\aviobuf.c" />
+    <ClCompile Include="..\..\libavformat\avisynth.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libavformat\avlanguage.c" />
+    <ClCompile Include="..\..\libavformat\avs.c" />
+    <ClCompile Include="..\..\libavformat\bethsoftvid.c" />
+    <ClCompile Include="..\..\libavformat\bfi.c" />
+    <ClCompile Include="..\..\libavformat\bink.c" />
+    <ClCompile Include="..\..\libavformat\c93.c" />
+    <ClCompile Include="..\..\libavformat\caf.c" />
+    <ClCompile Include="..\..\libavformat\cafdec.c" />
+    <ClCompile Include="..\..\libavformat\cdg.c" />
+    <ClCompile Include="..\..\libavformat\concat.c" />
+    <ClCompile Include="..\..\libavformat\crcenc.c" />
+    <ClCompile Include="..\..\libavformat\cutils.c" />
+    <ClCompile Include="..\..\libavformat\daud.c" />
+    <ClCompile Include="..\external\DllEntry.c" />
+    <ClCompile Include="..\..\libavformat\dsicin.c" />
+    <ClCompile Include="..\..\libavformat\dtsdec.c" />
+    <ClCompile Include="..\..\libavformat\dv.c" />
+    <ClCompile Include="..\..\libavformat\dvenc.c" />
+    <ClCompile Include="..\..\libavformat\dxa.c" />
+    <ClCompile Include="..\..\libavformat\eacdata.c" />
+    <ClCompile Include="..\..\libavformat\electronicarts.c" />
+    <ClCompile Include="..\..\libavformat\ffmdec.c" />
+    <ClCompile Include="..\..\libavformat\ffmenc.c" />
+    <ClCompile Include="..\..\libavformat\file.c" />
+    <ClCompile Include="..\..\libavformat\filmstripdec.c" />
+    <ClCompile Include="..\..\libavformat\filmstripenc.c" />
+    <ClCompile Include="..\..\libavformat\flacdec.c" />
+    <ClCompile Include="..\..\libavformat\flacenc.c" />
+    <ClCompile Include="..\..\libavformat\flacenc_header.c" />
+    <ClCompile Include="..\..\libavformat\flic.c" />
+    <ClCompile Include="..\..\libavformat\flvdec.c" />
+    <ClCompile Include="..\..\libavformat\flvenc.c" />
+    <ClCompile Include="..\..\libavformat\framecrcenc.c" />
+    <ClCompile Include="..\..\libavformat\gif.c" />
+    <ClCompile Include="..\..\libavformat\gopher.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libavformat\gxf.c" />
+    <ClCompile Include="..\..\libavformat\gxfenc.c" />
+    <ClCompile Include="..\..\libavformat\h261dec.c" />
+    <ClCompile Include="..\..\libavformat\h263dec.c" />
+    <ClCompile Include="..\..\libavformat\h264dec.c" />
+    <ClCompile Include="..\..\libavformat\http.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libavformat\httpauth.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libavformat\id3v1.c" />
+    <ClCompile Include="..\..\libavformat\id3v2.c" />
+    <ClCompile Include="..\..\libavformat\idcin.c" />
+    <ClCompile Include="..\..\libavformat\iff.c" />
+    <ClCompile Include="..\..\libavformat\img2.c" />
+    <ClCompile Include="..\..\libavformat\ipmovie.c" />
+    <ClCompile Include="..\..\libavformat\isom.c" />
+    <ClCompile Include="..\..\libavformat\iss.c" />
+    <ClCompile Include="..\..\libavformat\iv8.c" />
+    <ClCompile Include="..\..\libavformat\libnut.c" />
+    <ClCompile Include="..\..\libavformat\librtmp.c" />
+    <ClCompile Include="..\..\libavformat\lmlm4.c" />
+    <ClCompile Include="..\..\libavformat\m4vdec.c" />
+    <ClCompile Include="..\..\libavformat\matroska.c" />
+    <ClCompile Include="..\..\libavformat\matroskadec.c" />
+    <ClCompile Include="..\..\libavformat\matroskaenc.c" />
+    <ClCompile Include="..\..\libavformat\metadata.c" />
+    <ClCompile Include="..\..\libavformat\metadata_compat.c" />
+    <ClCompile Include="..\..\libavformat\mm.c" />
+    <ClCompile Include="..\..\libavformat\mmf.c" />
+    <ClCompile Include="..\..\libavformat\mov.c" />
+    <ClCompile Include="..\..\libavformat\movenc.c" />
+    <ClCompile Include="..\..\libavformat\movenchint.c" />
+    <ClCompile Include="..\..\libavformat\mp3dec.c" />
+    <ClCompile Include="..\..\libavformat\mpc.c" />
+    <ClCompile Include="..\..\libavformat\mpc8.c" />
+    <ClCompile Include="..\..\libavformat\mpeg.c" />
+    <ClCompile Include="..\..\libavformat\mpegenc.c" />
+    <ClCompile Include="..\..\libavformat\mpegts.c" />
+    <ClCompile Include="..\..\libavformat\mpegtsenc.c" />
+    <ClCompile Include="..\..\libavformat\mpegvideodec.c" />
+    <ClCompile Include="..\..\libavformat\mpjpeg.c" />
+    <ClCompile Include="..\..\libavformat\msnwc_tcp.c" />
+    <ClCompile Include="..\..\libavformat\mtv.c" />
+    <ClCompile Include="..\..\libavformat\mvi.c" />
+    <ClCompile Include="..\..\libavformat\mxf.c" />
+    <ClCompile Include="..\..\libavformat\mxfdec.c" />
+    <ClCompile Include="..\..\libavformat\mxfenc.c" />
+    <ClCompile Include="..\..\libavformat\ncdec.c" />
+    <ClCompile Include="..\..\libavformat\nsvdec.c" />
+    <ClCompile Include="..\..\libavformat\nut.c" />
+    <ClCompile Include="..\..\libavformat\nutdec.c" />
+    <ClCompile Include="..\..\libavformat\nutenc.c" />
+    <ClCompile Include="..\..\libavformat\nuv.c" />
+    <ClCompile Include="..\..\libavformat\oggdec.c" />
+    <ClCompile Include="..\..\libavformat\oggenc.c" />
+    <ClCompile Include="..\..\libavformat\oggparsedirac.c" />
+    <ClCompile Include="..\..\libavformat\oggparseflac.c" />
+    <ClCompile Include="..\..\libavformat\oggparseogm.c" />
+    <ClCompile Include="..\..\libavformat\oggparseskeleton.c" />
+    <ClCompile Include="..\..\libavformat\oggparsespeex.c" />
+    <ClCompile Include="..\..\libavformat\oggparsetheora.c" />
+    <ClCompile Include="..\..\libavformat\oggparsevorbis.c" />
+    <ClCompile Include="..\..\libavformat\oma.c" />
+    <ClCompile Include="..\..\libavformat\options.c" />
+    <ClCompile Include="..\..\libavformat\os_support.c" />
+    <ClCompile Include="..\..\libavformat\pcm.c" />
+    <ClCompile Include="..\..\libavformat\pcmdec.c" />
+    <ClCompile Include="..\..\libavformat\psxstr.c" />
+    <ClCompile Include="..\..\libavformat\pva.c" />
+    <ClCompile Include="..\..\libavformat\qcp.c" />
+    <ClCompile Include="..\..\libavformat\r3d.c" />
+    <ClCompile Include="..\..\libavformat\rawdec.c" />
+    <ClCompile Include="..\..\libavformat\rdt.c" />
+    <ClCompile Include="..\..\libavformat\riff.c" />
+    <ClCompile Include="..\..\libavformat\rl2.c" />
+    <ClCompile Include="..\..\libavformat\rm.c" />
+    <ClCompile Include="..\..\libavformat\rmdec.c" />
+    <ClCompile Include="..\..\libavformat\rmenc.c" />
+    <ClCompile Include="..\..\libavformat\rpl.c" />
+    <ClCompile Include="..\..\libavformat\rtmppkt.c" />
+    <ClCompile Include="..\..\libavformat\rtmpproto.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libavformat\rtp.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libavformat\rtpdec.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libavformat\rtpdec_amr.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libavformat\rtpdec_asf.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libavformat\rtpdec_h263.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libavformat\rtpdec_h264.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libavformat\rtpdec_xiph.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libavformat\rtpenc.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libavformat\rtpenc_aac.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libavformat\rtpenc_amr.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libavformat\rtpenc_h263.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libavformat\rtpenc_h264.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libavformat\rtpenc_mpv.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libavformat\rtpproto.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libavformat\rtsp.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libavformat\rtspenc.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libavformat\sdp.c" />
+    <ClCompile Include="..\..\libavformat\seek.c" />
+    <ClCompile Include="..\..\libavformat\segafilm.c" />
+    <ClCompile Include="..\..\libavformat\sierravmd.c" />
+    <ClCompile Include="..\..\libavformat\siff.c" />
+    <ClCompile Include="..\..\libavformat\smacker.c" />
+    <ClCompile Include="..\..\libavformat\sol.c" />
+    <ClCompile Include="..\..\libavformat\soxdec.c" />
+    <ClCompile Include="..\..\libavformat\soxenc.c" />
+    <ClCompile Include="..\..\libavformat\spdif.c" />
+    <ClCompile Include="..\..\libavformat\swfdec.c" />
+    <ClCompile Include="..\..\libavformat\swfenc.c" />
+    <ClCompile Include="..\..\libavformat\tcp.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libavformat\thp.c" />
+    <ClCompile Include="..\..\libavformat\tiertexseq.c" />
+    <ClCompile Include="..\..\libavformat\timefilter.c" />
+    <ClCompile Include="..\..\libavformat\tmv.c" />
+    <ClCompile Include="..\..\libavformat\tta.c" />
+    <ClCompile Include="..\..\libavformat\txd.c" />
+    <ClCompile Include="..\..\libavformat\udp.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\libavformat\utils.c" />
+    <ClCompile Include="..\..\libavformat\vc1test.c" />
+    <ClCompile Include="..\..\libavformat\vc1testenc.c" />
+    <ClCompile Include="..\..\libavformat\voc.c" />
+    <ClCompile Include="..\..\libavformat\vocdec.c" />
+    <ClCompile Include="..\..\libavformat\vocenc.c" />
+    <ClCompile Include="..\..\libavformat\vorbiscomment.c" />
+    <ClCompile Include="..\..\libavformat\vqf.c" />
+    <ClCompile Include="..\..\libavformat\wav.c" />
+    <ClCompile Include="..\..\libavformat\wc3movie.c" />
+    <ClCompile Include="..\..\libavformat\westwood.c" />
+    <ClCompile Include="..\..\libavformat\wv.c" />
+    <ClCompile Include="..\..\libavformat\xa.c" />
+    <ClCompile Include="..\..\libavformat\yop.c" />
+    <ClCompile Include="..\..\libavformat\yuv4mpeg.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="avformat-52.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\libavformat\adts.h" />
+    <ClInclude Include="..\..\libavformat\aiff.h" />
+    <ClInclude Include="..\..\libavformat\apetag.h" />
+    <ClInclude Include="..\..\libavformat\asf.h" />
+    <ClInclude Include="..\..\libavformat\asfcrypt.h" />
+    <ClInclude Include="..\..\libavformat\audiointerleave.h" />
+    <ClInclude Include="..\..\libavformat\avc.h" />
+    <ClInclude Include="..\..\libavformat\avformat.h" />
+    <ClInclude Include="..\..\libavformat\avi.h" />
+    <ClInclude Include="..\..\libavformat\avio.h" />
+    <ClInclude Include="..\..\libavformat\avlanguage.h" />
+    <ClInclude Include="..\..\libavformat\caf.h" />
+    <ClInclude Include="..\..\libavformat\dv.h" />
+    <ClInclude Include="..\..\libavformat\ffm.h" />
+    <ClInclude Include="..\..\libavformat\flacenc.h" />
+    <ClInclude Include="..\..\libavformat\flv.h" />
+    <ClInclude Include="..\..\libavformat\gxf.h" />
+    <ClInclude Include="..\..\libavformat\httpauth.h" />
+    <ClInclude Include="..\..\libavformat\id3v1.h" />
+    <ClInclude Include="..\..\libavformat\id3v2.h" />
+    <ClInclude Include="..\..\libavformat\internal.h" />
+    <ClInclude Include="..\..\libavformat\isom.h" />
+    <ClInclude Include="..\..\libavformat\matroska.h" />
+    <ClInclude Include="..\..\libavformat\metadata.h" />
+    <ClInclude Include="..\..\libavformat\movenc.h" />
+    <ClInclude Include="..\..\libavformat\mpeg.h" />
+    <ClInclude Include="..\..\libavformat\mpegts.h" />
+    <ClInclude Include="..\..\libavformat\mxf.h" />
+    <ClInclude Include="..\..\libavformat\network.h" />
+    <ClInclude Include="..\..\libavformat\nut.h" />
+    <ClInclude Include="..\..\libavformat\oggdec.h" />
+    <ClInclude Include="..\..\libavformat\os_support.h" />
+    <ClInclude Include="..\..\libavformat\qtpalette.h" />
+    <ClInclude Include="..\..\libavformat\raw.h" />
+    <ClInclude Include="..\..\libavformat\rdt.h" />
+    <ClInclude Include="..\..\libavformat\riff.h" />
+    <ClInclude Include="..\..\libavformat\rm.h" />
+    <ClInclude Include="..\..\libavformat\rtmp.h" />
+    <ClInclude Include="..\..\libavformat\rtmppkt.h" />
+    <ClInclude Include="..\..\libavformat\rtp.h" />
+    <ClInclude Include="..\..\libavformat\rtpdec.h" />
+    <ClInclude Include="..\..\libavformat\rtpdec_amr.h" />
+    <ClInclude Include="..\..\libavformat\rtpdec_asf.h" />
+    <ClInclude Include="..\..\libavformat\rtpdec_h263.h" />
+    <ClInclude Include="..\..\libavformat\rtpdec_h264.h" />
+    <ClInclude Include="..\..\libavformat\rtpdec_xiph.h" />
+    <ClInclude Include="..\..\libavformat\rtpenc.h" />
+    <ClInclude Include="..\..\libavformat\rtsp.h" />
+    <ClInclude Include="..\..\libavformat\rtspcodes.h" />
+    <ClInclude Include="..\..\libavformat\seek.h" />
+    <ClInclude Include="..\..\libavformat\sox.h" />
+    <ClInclude Include="..\..\libavformat\swf.h" />
+    <ClInclude Include="..\..\libavformat\timefilter.h" />
+    <ClInclude Include="..\..\libavformat\voc.h" />
+    <ClInclude Include="..\..\libavformat\vorbiscomment.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\libavcodec\libavcodec.vcxproj">
+      <Project>{1937533d-a227-41d1-8d38-ffd5bc66b613}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\libavutil\libavutil.vcxproj">
+      <Project>{360ea05d-89d7-405e-b935-66dcf7e1248f}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\libswscale\libswscale.vcxproj">
+      <Project>{f477301d-1ee3-4e5b-9cff-5db97807c86d}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

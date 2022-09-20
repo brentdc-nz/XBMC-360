@@ -35,14 +35,14 @@
 /**
  * rational number numerator/denominator
  */
-typedef struct AVRational{
+typedef struct AVRational 
+{
     int num; ///< numerator
     int den; ///< denominator
 } AVRational;
 
-
 #ifdef _MSC_VER
-static inline AVRational av_create_rational(int num, int den){
+static inline AVRational av_create_rational(int num, int den) {
 	AVRational ret = {num, den};
 	return ret;
 }
@@ -63,7 +63,6 @@ static inline int av_cmp_q(AVRational a, AVRational b){
     else if(a.num && b.num) return (a.num>>31) - (b.num>>31);
     else                    return INT_MIN;
 }
-
 /**
  * Convert rational to double.
  * @param a rational to convert
@@ -72,7 +71,6 @@ static inline int av_cmp_q(AVRational a, AVRational b){
 static inline double av_q2d(AVRational a){
     return a.num / (double) a.den;
 }
-
 /**
  * Reduce a fraction.
  * This is useful for framerate calculations.
