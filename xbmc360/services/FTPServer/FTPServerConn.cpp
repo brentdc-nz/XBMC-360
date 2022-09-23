@@ -234,7 +234,7 @@ void CFTPServerConn::Process()
 				}
                 strNewPath = GetPath(buf);
 
-				if(CFile::Exists(strNewPath))
+				if(CUtil::FileExists(strNewPath))
                     SendReply("350 File Exists");
                 else
                     SendReply("550 Path permission error");
@@ -1076,7 +1076,7 @@ void CFTPServerConn::Cmd_EXEC(const char *filename)
 	CLog::Log(LOGNOTICE, "FTPServerConn : FTP EXEC: filename: %s", filename);
 	CLog::Log(LOGNOTICE, "FTPServerConn : FTP EXEC: realpath: %s", strRealPath.c_str());
 
-	if (CFile::Exists(strRealPath))
+	if (CUtil::FileExists(strRealPath))
 	{
 		SendReply("221 goodbye");
 		closesocket(m_iCommandSocket);
