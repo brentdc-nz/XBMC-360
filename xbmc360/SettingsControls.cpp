@@ -19,7 +19,8 @@ CSpinExSettingControl::CSpinExSettingControl(CGUISpinControlEx *pSpin, DWORD dwI
 		m_pSpin->SetFloatRange(pSettingFloat->m_fMin, pSettingFloat->m_fMax);
 		m_pSpin->SetFloatInterval(pSettingFloat->m_fStep);
 	}
-	else*/ if (pSetting->GetControlType() == SPIN_CONTROL_INT_PLUS /*|| pSetting->GetControlType() == SPIN_CONTROL_INT*/)
+	else
+*/ if (pSetting->GetControlType() == SPIN_CONTROL_INT_PLUS /*|| pSetting->GetControlType() == SPIN_CONTROL_INT*/)
 	{
 		CSettingInt *pSettingInt = (CSettingInt *)pSetting;
 		m_pSpin->SetType(SPIN_CONTROL_TYPE_TEXT);

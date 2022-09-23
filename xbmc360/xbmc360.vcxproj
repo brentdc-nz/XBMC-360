@@ -257,7 +257,7 @@
       <ExceptionHandling>false</ExceptionHandling>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <PreprocessorDefinitions>NDEBUG;_XBOX</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_XBOX;TIXML_USE_STL;USE_XBMC_FILESYSTEM</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\xbmc360;..\xbmc360\libraries\libffmpeg;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>

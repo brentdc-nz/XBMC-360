@@ -24,6 +24,7 @@
 #include "guilib\GUIWindowManager.h"
 #include "filesystem\HDDirectory.h"
 #include "guilib\LocalizeStrings.h"
+#include "guilib\GUIControl.h"
 
 #define CONTROL_GROUP_BUTTONS           0
 #define CONTROL_GROUP_SETTINGS          1
@@ -227,7 +228,8 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
 			m_strNewSkin.Empty();
 			g_application.CancelDelayLoadSkin();
 			pControl->SettingsCategorySetSpinTextColor(pControl->GetButtonLabelInfo().disabledColor);
-		}*/
+		}
+*/
 	}
 }
 
@@ -292,7 +294,7 @@ void CGUIWindowSettingsCategory::SetupControls()
 void CGUIWindowSettingsCategory::CreateSettings()
 {
 	FreeSettingsControls();
-//	m_vecGroups.push_back(CControlGroup(1)); // Add the control group
+	//m_vecGroups.push_back(CControlGroup(1)); // Add the control group
 
 	const CGUIControl *pControlArea = GetControl(CONTROL_AREA);
 	const CGUIControl *pControlGap = GetControl(CONTROL_GAP);

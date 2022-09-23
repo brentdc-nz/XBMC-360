@@ -1099,7 +1099,7 @@ bool TiXmlDocument::LoadFile( const char* _filename, TiXmlEncoding encoding )
 }
 //Wolf3s Begin:
 //Warning: This is the same code from above, The only difference is the class and some changes...
-bool TiXmlDocument::LoadFile(CFile file, TiXmlEncoding encoding) 
+bool TiXmlDocument::LoadFile(CFile* file, TiXmlEncoding encoding) 
 {
 	// There was a really terrifying little bug here. The code:
 	//		value = filename
@@ -1108,7 +1108,7 @@ bool TiXmlDocument::LoadFile(CFile file, TiXmlEncoding encoding)
 	// address as it's c_str() method, and so bad things happen. Looks
 	// like a bug in the Microsoft STL implementation.
 	// Add an extra string to avoid the crash
-	if (!file.Open(value))
+	if (!file->Open(value.c_str()))
 	{
 		SetError( TIXML_ERROR_OPENING_FILE, 0, 0, TIXML_ENCODING_UNKNOWN );
 		return false;
@@ -1120,13 +1120,9 @@ bool TiXmlDocument::LoadFile(CFile file, TiXmlEncoding encoding)
 
 	// Get the file size, so we can pre-allocate the string. HUGE speed impact.
 	long length = -1;
-	__int64 filelen = file.GetLength();
+	__int64 filelen = file->GetLength();
 	if (filelen > 0)
 		length = (long)filelen;
-
-	// We might be streaming it, correct length will be fixed by reading
-	if( length < 0 )
-		length = 1024;
 
 	// Subtle bug here. TinyXml did use fgets. But from the XML spec:
 	// 2.11 End-of-Line Handling
@@ -1142,21 +1138,6 @@ bool TiXmlDocument::LoadFile(CFile file, TiXmlEncoding encoding)
 	// Generally, you expect fgets to translate from the convention of the OS to the c/unix
 	// convention, and not work generally.
 
-	char*  buf = (char*)malloc(length+1);
-	long   pos = 0;
-	long   len;
-	while( (len = file.Read(buf+pos, length-pos, NULL)) > 0 ) {
-		pos += len;
-		assert(pos <= length);
-		if(pos == length) {
-			length *= 2;
-			buf = (char*)realloc(buf, length);
-		}
-	}
-	length = pos;
-
-    file.Close();
-
 	// Strange case, but good to handle up front.
 	if ( length == 0 )
 	{
@@ -1166,61 +1147,55 @@ bool TiXmlDocument::LoadFile(CFile file, TiXmlEncoding encoding)
 
 	// If we have a file, assume it is all one big XML file, and read it in.
 	// The document parser may decide the document ends sooner than the entire file, however.
-	TIXML_STRING data;
-	data.reserve( length );
+	char* buf = new char[ length+1 ];
+	buf[0] = 0;
 
-	const char* lastPos = buf;
-	const char* p = buf;
+	if( file->Read(buf, length, 1) != 1 )
+	{
+		delete [] buf;
+		SetError( TIXML_ERROR_OPENING_FILE, 0, 0, TIXML_ENCODING_UNKNOWN );
+		return false;
+	}
+	// Process the buffer in place to normalize new lines. (See comment above.)
+	// Copies from the 'p' to 'q' pointer, where p can advance faster if
+	// a newline-carriage return is hit.
+	//
+	// Wikipedia:
+	// Systems based on ASCII or a compatible character set use either LF  (Line feed, '\n', 0x0A, 10 in decimal) or 
+	// CR (Carriage return, '\r', 0x0D, 13 in decimal) individually, or CR followed by LF (CR+LF, 0x0D 0x0A)...
+	//		* LF:    Multics, Unix and Unix-like systems (GNU/Linux, AIX, Xenix, Mac OS X, FreeBSD, etc.), BeOS, Amiga, RISC OS, and others
+    //		* CR+LF: DEC RT-11 and most other early non-Unix, non-IBM OSes, CP/M, MP/M, DOS, OS/2, Microsoft Windows, Symbian OS
+    //		* CR:    Commodore 8-bit machines, Apple II family, Mac OS up to version 9 and OS-9
+
+	const char* p = buf;	// the read head
+	char* q = buf;			// the write head
+	const char CR = 0x0d;
+	const char LF = 0x0a;
 
 	buf[length] = 0;
 	while( *p ) {
 		assert( p < (buf+length) );
-		if ( *p == 0xa ) {
-			// Newline character. No special rules for this. Append all the characters
-			// since the last string, and include the newline.
-			data.append( lastPos, (p-lastPos+1) );	// append, include the newline
-			++p;									// move past the newline
-			lastPos = p;							// and point to the new buffer (may be 0)
-			assert( p <= (buf+length) );
-		}
-		else if ( *p == 0xd ) {
-			// Carriage return. Append what we have so far, then
-			// handle moving forward in the buffer.
-			if ( (p-lastPos) > 0 ) {
-				data.append( lastPos, p-lastPos );	// do not add the CR
-			}
-			data += (char)0xa;						// a proper newline
+		assert( q <= (buf+length) );
+		assert( q <= p );
 
-			if ( *(p+1) == 0xa ) {
-				// Carriage return - new line sequence
-				p += 2;
-				lastPos = p;
-				assert( p <= (buf+length) );
-			}
-			else {
-				// it was followed by something else...that is presumably characters again.
-				++p;
-				lastPos = p;
-				assert( p <= (buf+length) );
+		if ( *p == CR ) {
+			*q++ = LF;
+			p++;
+			if ( *p == LF ) {		// check for CR+LF (and skip LF)
+				p++;
 			}
 		}
 		else {
-			++p;
+			*q++ = *p++;
 		}
 	}
-	// Handle any left over characters.
-	if ( p-lastPos ) {
-		data.append( lastPos, p-lastPos );
-	}		
-	free(buf);
-	buf = 0;
+	assert( q <= (buf+length) );
+	*q = 0;
 
-	Parse( data.c_str(), 0, encoding );
+	Parse( buf, 0, encoding );
 
-	if (  Error() )
-		return false;
-	else
-		return true;
+	delete [] buf;
+	return !Error();
 }
 
 bool TiXmlDocument::SaveFile( const char *filename ) const
@@ -1236,6 +1211,29 @@ bool TiXmlDocument::SaveFile( const char *filename ) const
 	}
 	return false;
 }
+bool TiXmlDocument::SaveFile(CFile* file) const
+{
+	TiXmlPrinter print;
+	Accept(&print);
+
+	if ( useMicrosoftBOM ) 
+	{
+		const unsigned char TIXML_UTF_LEAD_0 = 0xefU;
+		const unsigned char TIXML_UTF_LEAD_1 = 0xbbU;
+		const unsigned char TIXML_UTF_LEAD_2 = 0xbfU;
+        
+		file->OpenForWrite(print.CStr(), true);
+		//WIP: Figure out how i write these guys with CFile?
+
+		//fputc( TIXML_UTF_LEAD_0, &file );
+		//fputc( TIXML_UTF_LEAD_1, fp );
+		//fputc( TIXML_UTF_LEAD_2, fp );
+		file->Close();
+	}
+	
+	return (file->Stat(print.CStr(), 0));
+}
+//Wolf3s end:
 #else
 bool TiXmlDocument::LoadFile( const char* _filename, TiXmlEncoding encoding )
 {
@@ -1367,7 +1365,6 @@ bool TiXmlDocument::SaveFile( const char * filename ) const
 	}
 	return false;
 }
-#endif
 
 bool TiXmlDocument::SaveFile( FILE* fp ) const
 {
@@ -1384,6 +1381,9 @@ bool TiXmlDocument::SaveFile( FILE* fp ) const
 	Print( fp, 0 );
 	return (ferror(fp) == 0);
 }
+
+#endif
+
 
 
 void TiXmlDocument::CopyTo( TiXmlDocument* target ) const

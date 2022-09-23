@@ -38,11 +38,7 @@ distribution.
 #include <string.h>
 #include <assert.h>
 
-#define USE_XBMC_FILESYSTEM
-#ifdef _XBOX
-#define TIXML_USE_STL
-#endif
-
+//#define USE_XBMC_FILESYSTEM
 
 // Help out windows:
 #if defined( _DEBUG ) && !defined( DEBUG )
@@ -1437,13 +1433,15 @@ public:
 		file location. Streaming may be added in the future.
 	*/
 #ifdef USE_XBMC_FILESYSTEM
-	bool LoadFile( CFile, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING );
+	bool LoadFile( CFile*, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING );
+	/// Save a file using the given CFile*. Returns true if successful.
+	bool SaveFile( CFile* ) const;
 #else
-
 	bool LoadFile( FILE*, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING );
-#endif
 	/// Save a file using the given FILE*. Returns true if successful.
 	bool SaveFile( FILE* ) const;
+
+#endif
 
 	#ifdef TIXML_USE_STL
 	bool LoadFile( const std::string& filename, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING )			///< STL std::string version.
