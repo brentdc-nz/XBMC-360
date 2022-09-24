@@ -1,0 +1,84 @@
+﻿Build started 24/09/2022 20:49:48.
+     1>Project "C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zlib.vcxproj" on node 2 (rebuild target(s)).
+     1>PrepareForBuild:
+         Creating directory "C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\vcproj\Debug\".
+       InitializeBuildStatus:
+         Creating "Debug\zlib.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         F:\Visual Studio\2010\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _LIB /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TC /wd4305 /analyze- /errorReport:prompt adler32.c compress.c crc32.c deflate.c gzclose.c gzlib.c gzread.c gzwrite.c infback.c inffast.c inflate.c inftrees.c trees.c uncompr.c zutil.c
+         zutil.c
+         uncompr.c
+         trees.c
+         inftrees.c
+         inflate.c
+         inffast.c
+         infback.c
+         gzwrite.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\gzwrite.c(89): warning C4996: 'write': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _write. See online help for details.
+                 f:\visual studio\2010\vc\include\io.h(318) : see declaration of 'write'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\gzwrite.c(91): warning C4996: 'strerror': This function or variable may be unsafe. Consider using strerror_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 f:\visual studio\2010\vc\include\string.h(157) : see declaration of 'strerror'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\gzwrite.c(119): warning C4996: 'write': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _write. See online help for details.
+                 f:\visual studio\2010\vc\include\io.h(318) : see declaration of 'write'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\gzwrite.c(121): warning C4996: 'strerror': This function or variable may be unsafe. Consider using strerror_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 f:\visual studio\2010\vc\include\string.h(157) : see declaration of 'strerror'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\gzwrite.c(440): warning C4996: 'vsnprintf': This function or variable may be unsafe. Consider using vsnprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 f:\visual studio\2010\vc\include\stdio.h(354) : see declaration of 'vsnprintf'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\gzwrite.c(673): warning C4996: 'close': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _close. See online help for details.
+                 f:\visual studio\2010\vc\include\io.h(302) : see declaration of 'close'
+         gzread.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\gzread.c(35): warning C4996: 'read': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _read. See online help for details.
+                 f:\visual studio\2010\vc\include\io.h(313) : see declaration of 'read'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\gzread.c(41): warning C4996: 'strerror': This function or variable may be unsafe. Consider using strerror_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 f:\visual studio\2010\vc\include\string.h(157) : see declaration of 'strerror'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\gzread.c(649): warning C4996: 'close': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _close. See online help for details.
+                 f:\visual studio\2010\vc\include\io.h(302) : see declaration of 'close'
+         gzlib.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\gzlib.c(195): warning C4996: 'wcstombs': This function or variable may be unsafe. Consider using wcstombs_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 f:\visual studio\2010\vc\include\stdlib.h(533) : see declaration of 'wcstombs'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\gzlib.c(210): warning C4996: 'wcstombs': This function or variable may be unsafe. Consider using wcstombs_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 f:\visual studio\2010\vc\include\stdlib.h(533) : see declaration of 'wcstombs'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\gzlib.c(216): warning C4996: '_snprintf': This function or variable may be unsafe. Consider using _snprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 f:\visual studio\2010\vc\include\stdio.h(363) : see declaration of '_snprintf'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\gzlib.c(247): warning C4996: '_wopen': This function or variable may be unsafe. Consider using _wsopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 f:\visual studio\2010\vc\include\io.h(272) : see declaration of '_wopen'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\gzlib.c(247): warning C4996: 'open': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _open. See online help for details.
+                 f:\visual studio\2010\vc\include\io.h(312) : see declaration of 'open'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\gzlib.c(298): warning C4996: '_snprintf': This function or variable may be unsafe. Consider using _snprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 f:\visual studio\2010\vc\include\stdio.h(363) : see declaration of '_snprintf'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\gzlib.c(614): warning C4996: '_snprintf': This function or variable may be unsafe. Consider using _snprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 f:\visual studio\2010\vc\include\stdio.h(363) : see declaration of '_snprintf'
+         gzclose.c
+         deflate.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\deflate.c(1916): warning C4244: '=' : conversion from 'ush' to 'uchf', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\deflate.c(2041): warning C4244: '=' : conversion from 'ush' to 'uchf', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\deflate.c(2150): warning C4244: '=' : conversion from 'ush' to 'uchf', possible loss of data
+         crc32.c
+         compress.c
+         adler32.c
+         Generating Code...
+       Lib:
+         F:\Visual Studio\2010\VC\bin\Lib.exe /OUT:"C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\vcproj\Debug\zlib.lib" /NOLOGO Debug\adler32.obj
+         Debug\compress.obj
+         Debug\crc32.obj
+         Debug\deflate.obj
+         Debug\gzclose.obj
+         Debug\gzlib.obj
+         Debug\gzread.obj
+         Debug\gzwrite.obj
+         Debug\infback.obj
+         Debug\inffast.obj
+         Debug\inflate.obj
+         Debug\inftrees.obj
+         Debug\trees.obj
+         Debug\uncompr.obj
+         Debug\zutil.obj
+         zlib.vcxproj -> C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\vcproj\Debug\zlib.lib
+       FinalizeBuildStatus:
+         Deleting file "Debug\zlib.unsuccessfulbuild".
+         Touching "Debug\zlib.lastbuildstate".
+     1>Done Building Project "C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zlib.vcxproj" (rebuild target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:01.05

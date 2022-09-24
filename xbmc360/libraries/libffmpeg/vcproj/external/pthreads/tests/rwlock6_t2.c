@@ -4,32 +4,30 @@
  *
  * --------------------------------------------------------------------------
  *
- *      Pthreads-win32 - POSIX Threads Library for Win32
- *      Copyright(C) 1998 John E. Bossom
- *      Copyright(C) 1999,2005 Pthreads-win32 contributors
- * 
- *      Contact Email: rpj@callisto.canberra.edu.au
- * 
+ *      Pthreads4w - POSIX Threads for Windows
+ *      Copyright 1998 John E. Bossom
+ *      Copyright 1999-2018, Pthreads4w contributors
+ *
+ *      Homepage: https://sourceforge.net/projects/pthreads4w/
+ *
  *      The current list of contributors is contained
  *      in the file CONTRIBUTORS included with the source
  *      code distribution. The list can also be seen at the
  *      following World Wide Web location:
- *      http://sources.redhat.com/pthreads-win32/contributors.html
- * 
- *      This library is free software; you can redistribute it and/or
- *      modify it under the terms of the GNU Lesser General Public
- *      License as published by the Free Software Foundation; either
- *      version 2 of the License, or (at your option) any later version.
- * 
- *      This library is distributed in the hope that it will be useful,
- *      but WITHOUT ANY WARRANTY; without even the implied warranty of
- *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *      Lesser General Public License for more details.
- * 
- *      You should have received a copy of the GNU Lesser General Public
- *      License along with this library in the file COPYING.LIB;
- *      if not, write to the Free Software Foundation, Inc.,
- *      59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
+ *
+ *      https://sourceforge.net/p/pthreads4w/wiki/Contributors/
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *
  * --------------------------------------------------------------------------
  *
@@ -47,28 +45,28 @@
 static pthread_rwlock_t rwlock1 = PTHREAD_RWLOCK_INITIALIZER;
 
 static int bankAccount = 0;
-struct timespec abstime = { 0, 0 };
+struct timespec abstime, reltime = { 1, 0 };
 
 void * wrfunc(void * arg)
 {
   int result;
 
   result = pthread_rwlock_timedwrlock(&rwlock1, &abstime);
-  if ((int) arg == 1)
+  if ((int) (size_t)arg == 1)
     {
       assert(result == 0);
       Sleep(2000);
       bankAccount += 10;
       assert(pthread_rwlock_unlock(&rwlock1) == 0);
-      return ((void *) bankAccount);
+      return ((void *)(size_t)bankAccount);
     }
-  else if ((int) arg == 2)
+  else if ((int) (size_t)arg == 2)
     {
       assert(result == ETIMEDOUT);
       return ((void *) 100);
     }
 
-  return ((void *) -1);
+  return ((void *)(size_t)-1);
 }
 
 void * rdfunc(void * arg)
@@ -77,7 +75,7 @@ void * rdfunc(void * arg)
 
   assert(pthread_rwlock_timedrdlock(&rwlock1, &abstime) == ETIMEDOUT);
 
-  return ((void *) ba);
+  return ((void *)(size_t)ba);
 }
 
 int
@@ -86,34 +84,27 @@ main()
   pthread_t wrt1;
   pthread_t wrt2;
   pthread_t rdt;
-  int wr1Result = 0;
-  int wr2Result = 0;
-  int rdResult = 0;
-  struct _timeb currSysTime;
-  const DWORD NANOSEC_PER_MILLISEC = 1000000;
+  void* wr1Result = (void*)0;
+  void* wr2Result = (void*)0;
+  void* rdResult = (void*)0;
 
-  _ftime(&currSysTime);
-
-  abstime.tv_sec = currSysTime.time;
-  abstime.tv_nsec = NANOSEC_PER_MILLISEC * currSysTime.millitm;
-
-  abstime.tv_sec += 1;
+  (void) pthread_win32_getabstime_np(&abstime, &reltime);
 
   bankAccount = 0;
 
-  assert(pthread_create(&wrt1, NULL, wrfunc, (void *) 1) == 0);
+  assert(pthread_create(&wrt1, NULL, wrfunc, (void *)(size_t)1) == 0);
   Sleep(100);
   assert(pthread_create(&rdt, NULL, rdfunc, NULL) == 0);
   Sleep(100);
-  assert(pthread_create(&wrt2, NULL, wrfunc, (void *) 2) == 0);
+  assert(pthread_create(&wrt2, NULL, wrfunc, (void *)(size_t)2) == 0);
 
-  assert(pthread_join(wrt1, (void **) &wr1Result) == 0);
-  assert(pthread_join(rdt, (void **) &rdResult) == 0);
-  assert(pthread_join(wrt2, (void **) &wr2Result) == 0);
+  assert(pthread_join(wrt1, &wr1Result) == 0);
+  assert(pthread_join(rdt, &rdResult) == 0);
+  assert(pthread_join(wrt2, &wr2Result) == 0);
 
-  assert(wr1Result == 10);
-  assert(rdResult == 0);
-  assert(wr2Result == 100);
+  assert((int)(size_t)wr1Result == 10);
+  assert((int)(size_t)rdResult == 0);
+  assert((int)(size_t)wr2Result == 100);
 
   return 0;
 }

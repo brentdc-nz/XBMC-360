@@ -83,12 +83,12 @@ typedef voidp unzFile;
 /* tm_unz contain date/time info */
 typedef struct tm_unz_s
 {
-    uInt tm_sec;            /* seconds after the minute - [0,59] */
-    uInt tm_min;            /* minutes after the hour - [0,59] */
-    uInt tm_hour;           /* hours since midnight - [0,23] */
-    uInt tm_mday;           /* day of the month - [1,31] */
-    uInt tm_mon;            /* months since January - [0,11] */
-    uInt tm_year;           /* years - [1980..2044] */
+    int tm_sec;             /* seconds after the minute - [0,59] */
+    int tm_min;             /* minutes after the hour - [0,59] */
+    int tm_hour;            /* hours since midnight - [0,23] */
+    int tm_mday;            /* day of the month - [1,31] */
+    int tm_mon;             /* months since January - [0,11] */
+    int tm_year;            /* years - [1980..2044] */
 } tm_unz;
 
 /* unz_global_info structure contain global data about the ZIPfile
@@ -197,9 +197,9 @@ extern unzFile ZEXPORT unzOpen2_64 OF((const void *path,
 
 extern int ZEXPORT unzClose OF((unzFile file));
 /*
-  Close a ZipFile opened with unzipOpen.
+  Close a ZipFile opened with unzOpen.
   If there is files inside the .Zip opened with unzOpenCurrentFile (see later),
-    these files MUST be closed with unzipCloseCurrentFile before call unzipClose.
+    these files MUST be closed with unzCloseCurrentFile before call unzClose.
   return UNZ_OK if there is no problem. */
 
 extern int ZEXPORT unzGetGlobalInfo OF((unzFile file,

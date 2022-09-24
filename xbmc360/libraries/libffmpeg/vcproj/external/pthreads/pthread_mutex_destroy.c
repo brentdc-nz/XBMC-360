@@ -6,33 +6,35 @@
  *
  * --------------------------------------------------------------------------
  *
- *      Pthreads-win32 - POSIX Threads Library for Win32
- *      Copyright(C) 1998 John E. Bossom
- *      Copyright(C) 1999,2005 Pthreads-win32 contributors
- * 
- *      Contact Email: rpj@callisto.canberra.edu.au
- * 
+ *      Pthreads4w - POSIX Threads for Windows
+ *      Copyright 1998 John E. Bossom
+ *      Copyright 1999-2018, Pthreads4w contributors
+ *
+ *      Homepage: https://sourceforge.net/projects/pthreads4w/
+ *
  *      The current list of contributors is contained
  *      in the file CONTRIBUTORS included with the source
  *      code distribution. The list can also be seen at the
  *      following World Wide Web location:
- *      http://sources.redhat.com/pthreads-win32/contributors.html
- * 
- *      This library is free software; you can redistribute it and/or
- *      modify it under the terms of the GNU Lesser General Public
- *      License as published by the Free Software Foundation; either
- *      version 2 of the License, or (at your option) any later version.
- * 
- *      This library is distributed in the hope that it will be useful,
- *      but WITHOUT ANY WARRANTY; without even the implied warranty of
- *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *      Lesser General Public License for more details.
- * 
- *      You should have received a copy of the GNU Lesser General Public
- *      License along with this library in the file COPYING.LIB;
- *      if not, write to the Free Software Foundation, Inc.,
- *      59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
+ *
+ *      https://sourceforge.net/p/pthreads4w/wiki/Contributors/
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
 
 #include "pthread.h"
 #include "implement.h"
@@ -61,7 +63,7 @@ pthread_mutex_destroy (pthread_mutex_t * mutex)
        * If trylock succeeded and the mutex is not recursively locked it
        * can be destroyed.
        */
-      if (result == 0)
+      if (0 == result || ENOTRECOVERABLE == result)
 	{
 	  if (mx->kind != PTHREAD_MUTEX_RECURSIVE || 1 == mx->recursive_count)
 	    {
@@ -71,17 +73,17 @@ pthread_mutex_destroy (pthread_mutex_t * mutex)
 	       * be too late invalidating the mutex below since another thread
 	       * may already have entered mutex_lock and the check for a valid
 	       * *mutex != NULL.
-	       *
-	       * Note that this would be an unusual situation because it is not
-	       * common that mutexes are destroyed while they are still in
-	       * use by other threads.
 	       */
 	      *mutex = NULL;
 
-	      result = pthread_mutex_unlock (&mx);
+	      result = (0 == result)?pthread_mutex_unlock(&mx):0;
 
-	      if (result == 0)
+	      if (0 == result)
 		{
+                  if (mx->robustNode != NULL)
+                    {
+                      free(mx->robustNode);
+                    }
 		  if (!CloseHandle (mx->event))
 		    {
 		      *mutex = mx;
@@ -112,10 +114,13 @@ pthread_mutex_destroy (pthread_mutex_t * mutex)
     }
   else
     {
+      __ptw32_mcs_local_node_t node;
+
       /*
-       * See notes in ptw32_mutex_check_need_init() above also.
+       * See notes in __ptw32_mutex_check_need_init() above also.
        */
-      EnterCriticalSection (&ptw32_mutex_test_init_lock);
+
+      __ptw32_mcs_lock_acquire(&__ptw32_mutex_test_init_lock, &node);
 
       /*
        * Check again.
@@ -138,8 +143,7 @@ pthread_mutex_destroy (pthread_mutex_t * mutex)
 	   */
 	  result = EBUSY;
 	}
-
-      LeaveCriticalSection (&ptw32_mutex_test_init_lock);
+      __ptw32_mcs_lock_release(&node);
     }
 
   return (result);

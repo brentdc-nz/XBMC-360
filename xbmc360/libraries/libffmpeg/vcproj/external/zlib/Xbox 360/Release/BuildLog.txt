@@ -1,5 +1,5 @@
-﻿Build started 19/09/2022 22:19:50.
-     1>Project "C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zlib.vcxproj" on node 2 (build target(s)).
+﻿Build started 24/09/2022 20:52:07.
+     1>Project "C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zlib.vcxproj" on node 2 (rebuild target(s)).
      1>InitializeBuildStatus:
          Creating "Xbox 360\Release\zlib.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
@@ -21,8 +21,6 @@
          uncompr.c
          zutil.c
          Generating Code...
-       MakeDirsForLib:
-         Creating directory "C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\Release".
        Lib:
          C:\Program Files (x86)\Microsoft Xbox 360 SDK\bin\win32\Lib.exe /OUT:"C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\Release\zlib.lib" /NOLOGO "Xbox 360\Release\adler32.obj"
          "Xbox 360\Release\compress.obj"
@@ -43,8 +41,8 @@
        FinalizeBuildStatus:
          Deleting file "Xbox 360\Release\zlib.unsuccessfulbuild".
          Touching "Xbox 360\Release\zlib.lastbuildstate".
-     1>Done Building Project "C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zlib.vcxproj" (build target(s)).
+     1>Done Building Project "C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\vcproj\external\zlib\zlib.vcxproj" (rebuild target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.74
+Time Elapsed 00:00:00.75

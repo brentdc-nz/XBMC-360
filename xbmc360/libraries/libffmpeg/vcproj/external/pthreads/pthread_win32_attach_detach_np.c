@@ -6,170 +6,114 @@
  *
  * --------------------------------------------------------------------------
  *
- *      Pthreads-win32 - POSIX Threads Library for Win32
- *      Copyright(C) 1998 John E. Bossom
- *      Copyright(C) 1999,2005 Pthreads-win32 contributors
- * 
- *      Contact Email: rpj@callisto.canberra.edu.au
- * 
+ *      Pthreads4w - POSIX Threads for Windows
+ *      Copyright 1998 John E. Bossom
+ *      Copyright 1999-2018, Pthreads4w contributors
+ *
+ *      Homepage: https://sourceforge.net/projects/pthreads4w/
+ *
  *      The current list of contributors is contained
  *      in the file CONTRIBUTORS included with the source
  *      code distribution. The list can also be seen at the
  *      following World Wide Web location:
- *      http://sources.redhat.com/pthreads-win32/contributors.html
- * 
- *      This library is free software; you can redistribute it and/or
- *      modify it under the terms of the GNU Lesser General Public
- *      License as published by the Free Software Foundation; either
- *      version 2 of the License, or (at your option) any later version.
- * 
- *      This library is distributed in the hope that it will be useful,
- *      but WITHOUT ANY WARRANTY; without even the implied warranty of
- *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *      Lesser General Public License for more details.
- * 
- *      You should have received a copy of the GNU Lesser General Public
- *      License along with this library in the file COPYING.LIB;
- *      if not, write to the Free Software Foundation, Inc.,
- *      59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
+ *
+ *      https://sourceforge.net/p/pthreads4w/wiki/Contributors/
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-#ifndef PTW32_STATIC_LIB
+
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
 
 #include "pthread.h"
 #include "implement.h"
+#include <tchar.h>
+#if ! (defined(__GNUC__) || defined (__PTW32_CONFIG_MSVC7) || defined(WINCE))
+# include <stdlib.h>
+#endif
 
 /*
- * Handle to kernel32.dll 
+ * Handle to quserex.dll
  */
-static HINSTANCE ptw32_h_kernel32;
-
-/*
- * Handle to quserex.dll 
- */
-static HINSTANCE ptw32_h_quserex;
+static HINSTANCE __ptw32_h_quserex;
 
 BOOL
 pthread_win32_process_attach_np ()
 {
+  TCHAR QuserExDLLPathBuf[1024];
   BOOL result = TRUE;
-  DWORD_PTR vProcessCPUs;
-  DWORD_PTR vSystemCPUs;
 
-  result = ptw32_processInitialize ();
+  result = __ptw32_processInitialize ();
 
-#ifdef _UWIN
+#if defined(_UWIN)
   pthread_count++;
 #endif
 
-  ptw32_features = 0;
-
-
-#if defined(NEED_PROCESS_AFFINITY_MASK)
-
-  ptw32_smp_system = PTW32_FALSE;
-
+#if defined(__GNUC__)
+  __ptw32_features = 0;
 #else
-
-  if (GetProcessAffinityMask (GetCurrentProcess (),
-			      &vProcessCPUs, &vSystemCPUs))
-    {
-      int CPUs = 0;
-      DWORD_PTR bit;
-
-      for (bit = 1; bit != 0; bit <<= 1)
-	{
-	  if (vSystemCPUs & bit)
-	    {
-	      CPUs++;
-	    }
-	}
-      ptw32_smp_system = (CPUs > 1);
-    }
-  else
-    {
-      ptw32_smp_system = PTW32_FALSE;
-    }
-
+  /*
+   * This is obsolete now.
+   */
+  __ptw32_features =  __PTW32_SYSTEM_INTERLOCKED_COMPARE_EXCHANGE;
 #endif
 
-#ifdef WINCE
-
   /*
-   * Load COREDLL and try to get address of InterlockedCompareExchange
-   */
-  ptw32_h_kernel32 = LoadLibrary (TEXT ("COREDLL.DLL"));
-
+   * Load QUSEREX.DLL and try to get address of QueueUserAPCEx.
+   * Because QUSEREX.DLL requires a driver to be installed we will
+   * assume the DLL is in the system directory.
+   *
+   * This should take care of any security issues.
+   */   
+#if defined(__GNUC__) || defined (__PTW32_CONFIG_MSVC7) && !defined(_XBOX)
+  if(GetSystemDirectory(QuserExDLLPathBuf, sizeof(QuserExDLLPathBuf)))
+  {
+    (void) strncat(QuserExDLLPathBuf,
+                   "\\QUSEREX.DLL",
+                   sizeof(QuserExDLLPathBuf) - strlen(QuserExDLLPathBuf) - 1);
+    __ptw32_h_quserex = LoadLibrary(QuserExDLLPathBuf);
+  }
 #else
-
-  /*
-   * Load KERNEL32 and try to get address of InterlockedCompareExchange
-   */
-  ptw32_h_kernel32 = LoadLibrary (TEXT ("KERNEL32.DLL"));
-
+#  if ! defined(WINCE) && !defined(_XBOX)
+  if(GetSystemDirectory(QuserExDLLPathBuf, sizeof(QuserExDLLPathBuf)/sizeof(TCHAR)) &&
+      0 == _tcsncat_s(QuserExDLLPathBuf, _countof(QuserExDLLPathBuf), TEXT("\\QUSEREX.DLL"), 12))
+    {
+      __ptw32_h_quserex = LoadLibrary(QuserExDLLPathBuf);
+    }
+#  endif
 #endif
 
-  ptw32_interlocked_compare_exchange =
-    (PTW32_INTERLOCKED_LONG (WINAPI *)
-     (PTW32_INTERLOCKED_LPLONG, PTW32_INTERLOCKED_LONG,
-      PTW32_INTERLOCKED_LONG))
+  if (__ptw32_h_quserex != NULL)
+    {
+      __ptw32_register_cancellation = (DWORD (*)(PAPCFUNC, HANDLE, DWORD))
 #if defined(NEED_UNICODE_CONSTS)
-    GetProcAddress (ptw32_h_kernel32,
-		    (const TCHAR *) TEXT ("InterlockedCompareExchange"));
-#else
-    GetProcAddress (ptw32_h_kernel32, (LPCSTR) "InterlockedCompareExchange");
-#endif
-
-  if (ptw32_interlocked_compare_exchange == NULL)
-    {
-      ptw32_interlocked_compare_exchange = ptw32_InterlockedCompareExchange;
-
-      /*
-       * If InterlockedCompareExchange is not being used, then free
-       * the kernel32.dll handle now, rather than leaving it until
-       * DLL_PROCESS_DETACH.
-       *
-       * Note: this is not a pedantic exercise in freeing unused
-       * resources!  It is a work-around for a bug in Windows 95
-       * (see microsoft knowledge base article, Q187684) which
-       * does Bad Things when FreeLibrary is called within
-       * the DLL_PROCESS_DETACH code, in certain situations.
-       * Since w95 just happens to be a platform which does not
-       * provide InterlockedCompareExchange, the bug will be
-       * effortlessly avoided.
-       */
-      (void) FreeLibrary (ptw32_h_kernel32);
-      ptw32_h_kernel32 = 0;
-    }
-  else
-    {
-      ptw32_features |= PTW32_SYSTEM_INTERLOCKED_COMPARE_EXCHANGE;
-    }
-
-  /*
-   * Load QUSEREX.DLL and try to get address of QueueUserAPCEx
-   */
-  ptw32_h_quserex = LoadLibrary (TEXT ("QUSEREX.DLL"));
-
-  if (ptw32_h_quserex != NULL)
-    {
-      ptw32_register_cancelation = (DWORD (*)(PAPCFUNC, HANDLE, DWORD))
-#if defined(NEED_UNICODE_CONSTS)
-	GetProcAddress (ptw32_h_quserex,
+	GetProcAddress (__ptw32_h_quserex,
 			(const TCHAR *) TEXT ("QueueUserAPCEx"));
 #else
-	GetProcAddress (ptw32_h_quserex, (LPCSTR) "QueueUserAPCEx");
+	GetProcAddress (__ptw32_h_quserex, (LPCSTR) "QueueUserAPCEx");
 #endif
     }
 
-  if (NULL == ptw32_register_cancelation)
+  if (NULL == __ptw32_register_cancellation)
     {
-      ptw32_register_cancelation = ptw32_RegisterCancelation;
+      __ptw32_register_cancellation = __ptw32_Registercancellation;
 
-      if (ptw32_h_quserex != NULL)
+      if (__ptw32_h_quserex != NULL)
 	{
-	  (void) FreeLibrary (ptw32_h_quserex);
+	  (void) FreeLibrary (__ptw32_h_quserex);
 	}
-      ptw32_h_quserex = 0;
+      __ptw32_h_quserex = 0;
     }
   else
     {
@@ -178,24 +122,24 @@ pthread_win32_process_attach_np ()
 
       queue_user_apc_ex_init = (BOOL (*)(VOID))
 #if defined(NEED_UNICODE_CONSTS)
-	GetProcAddress (ptw32_h_quserex,
+	GetProcAddress (__ptw32_h_quserex,
 			(const TCHAR *) TEXT ("QueueUserAPCEx_Init"));
 #else
-	GetProcAddress (ptw32_h_quserex, (LPCSTR) "QueueUserAPCEx_Init");
+	GetProcAddress (__ptw32_h_quserex, (LPCSTR) "QueueUserAPCEx_Init");
 #endif
 
       if (queue_user_apc_ex_init == NULL || !queue_user_apc_ex_init ())
 	{
-	  ptw32_register_cancelation = ptw32_RegisterCancelation;
+	  __ptw32_register_cancellation = __ptw32_Registercancellation;
 
-	  (void) FreeLibrary (ptw32_h_quserex);
-	  ptw32_h_quserex = 0;
+	  (void) FreeLibrary (__ptw32_h_quserex);
+	  __ptw32_h_quserex = 0;
 	}
     }
 
-  if (ptw32_h_quserex)
+  if (__ptw32_h_quserex)
     {
-      ptw32_features |= PTW32_ALERTABLE_ASYNC_CANCEL;
+      __ptw32_features |=  __PTW32_ALERTABLE_ASYNC_CANCEL;
     }
 
   return result;
@@ -205,9 +149,9 @@ pthread_win32_process_attach_np ()
 BOOL
 pthread_win32_process_detach_np ()
 {
-  if (ptw32_processInitialized)
+  if (__ptw32_processInitialized)
     {
-      ptw32_thread_t * sp = (ptw32_thread_t *) pthread_getspecific (ptw32_selfThreadKey);
+      __ptw32_thread_t * sp = (__ptw32_thread_t *) pthread_getspecific (__ptw32_selfThreadKey);
 
       if (sp != NULL)
 	{
@@ -217,39 +161,37 @@ pthread_win32_process_detach_np ()
 	   */
 	  if (sp->detachState == PTHREAD_CREATE_DETACHED)
 	    {
-	      ptw32_threadDestroy (sp->ptHandle);
-	      TlsSetValue (ptw32_selfThreadKey->key, NULL);
+	      __ptw32_threadDestroy (sp->ptHandle);
+	      if (__ptw32_selfThreadKey)
+	        {
+	    	  TlsSetValue (__ptw32_selfThreadKey->key, NULL);
+	        }
 	    }
 	}
 
       /*
        * The DLL is being unmapped from the process's address space
        */
-      ptw32_processTerminate ();
+      __ptw32_processTerminate ();
 
-      if (ptw32_h_quserex)
+      if (__ptw32_h_quserex)
 	{
 	  /* Close QueueUserAPCEx */
 	  BOOL (*queue_user_apc_ex_fini) (VOID);
 
 	  queue_user_apc_ex_fini = (BOOL (*)(VOID))
 #if defined(NEED_UNICODE_CONSTS)
-	    GetProcAddress (ptw32_h_quserex,
+	    GetProcAddress (__ptw32_h_quserex,
 			    (const TCHAR *) TEXT ("QueueUserAPCEx_Fini"));
 #else
-	    GetProcAddress (ptw32_h_quserex, (LPCSTR) "QueueUserAPCEx_Fini");
+	    GetProcAddress (__ptw32_h_quserex, (LPCSTR) "QueueUserAPCEx_Fini");
 #endif
 
 	  if (queue_user_apc_ex_fini != NULL)
 	    {
 	      (void) queue_user_apc_ex_fini ();
 	    }
-	  (void) FreeLibrary (ptw32_h_quserex);
-	}
-
-      if (ptw32_h_kernel32)
-	{
-	  (void) FreeLibrary (ptw32_h_kernel32);
+	  (void) FreeLibrary (__ptw32_h_quserex);
 	}
     }
 
@@ -265,42 +207,63 @@ pthread_win32_thread_attach_np ()
 BOOL
 pthread_win32_thread_detach_np ()
 {
-  if (ptw32_processInitialized)
+  if (__ptw32_processInitialized)
     {
       /*
        * Don't use pthread_self() - to avoid creating an implicit POSIX thread handle
        * unnecessarily.
        */
-      ptw32_thread_t * sp = (ptw32_thread_t *) pthread_getspecific (ptw32_selfThreadKey);
+      __ptw32_thread_t * sp = (__ptw32_thread_t *) pthread_getspecific (__ptw32_selfThreadKey);
 
       if (sp != NULL) // otherwise Win32 thread with no implicit POSIX handle.
 	{
-	  ptw32_callUserDestroyRoutines (sp->ptHandle);
+          __ptw32_mcs_local_node_t stateLock;
+	  __ptw32_callUserDestroyRoutines (sp->ptHandle);
 
-	  (void) pthread_mutex_lock (&sp->cancelLock);
+	  __ptw32_mcs_lock_acquire (&sp->stateLock, &stateLock);
 	  sp->state = PThreadStateLast;
 	  /*
 	   * If the thread is joinable at this point then it MUST be joined
 	   * or detached explicitly by the application.
 	   */
-	  (void) pthread_mutex_unlock (&sp->cancelLock);
+	  __ptw32_mcs_lock_release (&stateLock);
+
+          /*
+           * Robust Mutexes
+           */
+          while (sp->robustMxList != NULL)
+            {
+              pthread_mutex_t mx = sp->robustMxList->mx;
+              __ptw32_robust_mutex_remove(&mx, sp);
+              (void)  __PTW32_INTERLOCKED_EXCHANGE_LONG(
+                        (__PTW32_INTERLOCKED_LONGPTR)&mx->robustNode->stateInconsistent,
+                        (__PTW32_INTERLOCKED_LONG)-1);
+              /*
+               * If there are no waiters then the next thread to block will
+               * sleep, wake up immediately and then go back to sleep.
+               * See pthread_mutex_lock.c.
+               */
+              SetEvent(mx->event);
+            }
+
 
 	  if (sp->detachState == PTHREAD_CREATE_DETACHED)
 	    {
-	      ptw32_threadDestroy (sp->ptHandle);
+	      __ptw32_threadDestroy (sp->ptHandle);
 
-	      TlsSetValue (ptw32_selfThreadKey->key, NULL);
+	      if (__ptw32_selfThreadKey)
+	        {
+	    	  TlsSetValue (__ptw32_selfThreadKey->key, NULL);
+	        }
 	    }
 	}
     }
 
   return TRUE;
 }
-#endif // PTW32_STATIC_LIB
 
 BOOL
 pthread_win32_test_features_np (int feature_mask)
 {
-  return ((ptw32_features & feature_mask) == feature_mask);
+  return ((__ptw32_features & feature_mask) == feature_mask);
 }
-

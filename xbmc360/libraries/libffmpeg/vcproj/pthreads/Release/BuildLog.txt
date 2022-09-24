@@ -1,17 +1,31 @@
-﻿Build started 19/09/2022 22:19:04.
-     1>Project "C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\vcproj\pthreads\pthreads.vcxproj" on node 2 (build target(s)).
-     1>InitializeBuildStatus:
+﻿Build started 24/09/2022 20:51:30.
+     1>Project "C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\vcproj\pthreads\pthreads.vcxproj" on node 2 (rebuild target(s)).
+     1>PrepareForBuild:
+         Creating directory "C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\vcproj\Xbox 360\Release\".
+       InitializeBuildStatus:
          Creating "Release\pthreads.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
-         All outputs are up-to-date.
+         C:\Program Files (x86)\Microsoft Xbox 360 SDK\bin\win32\CL.exe /c /I../external/pthreads/ /Zi /nologo /W3 /WX- /O2 /D NDEBUG /D _XBOX /D _LIB /D HAVE_CONFIG_H /D PTW32_STATIC_LIB /GF /Gm- /EHsc /MT /GS /Gy /fp:fast /fp:except- /Zc:wchar_t /Zc:forScope /GR- /openmp- /Fo"Release\\" /Fd"Release\vc100.pdb" /TC ..\external\pthreads\pthread.c /FI"C:\Program Files (x86)\Microsoft Xbox 360 SDK\\include\xbox\xbox_intellisense_platform.h"
+         pthread.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\pthreads\pthread.h(75): warning C4005: 'PTW32_STATIC_LIB' : macro redefinition
+                 command-line arguments : see previous definition of 'PTW32_STATIC_LIB'
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\pthreads\ptw32_getprocessors.c(60): warning C4101: 'vProcessCPUs' : unreferenced local variable
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\pthreads\ptw32_getprocessors.c(61): warning C4101: 'vSystemCPUs' : unreferenced local variable
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\pthreads\pthread_self.c(134): warning C4101: 'vSystemMask' : unreferenced local variable
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\pthreads\pthread_self.c(134): warning C4101: 'vProcessMask' : unreferenced local variable
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\pthreads\pthread_self.c(134): warning C4101: 'vThreadMask' : unreferenced local variable
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\pthreads\pthread_win32_attach_detach_np.c(54): warning C4101: 'QuserExDLLPathBuf' : unreferenced local variable
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\pthreads\sched_setaffinity.c(226): warning C4101: 'vSystemMask' : unreferenced local variable
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\pthreads\sched_setaffinity.c(227): warning C4101: 'h' : unreferenced local variable
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\vcproj\external\pthreads\sched_setaffinity.c(225): warning C4101: 'vProcessMask' : unreferenced local variable
        Lib:
-         All outputs are up-to-date.
+         C:\Program Files (x86)\Microsoft Xbox 360 SDK\bin\win32\Lib.exe /OUT:"C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\vcproj\pthreads\Release\pthreads.lib" /NOLOGO Release\pthread.obj
          pthreads.vcxproj -> C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\vcproj\pthreads\Release\pthreads.lib
        FinalizeBuildStatus:
          Deleting file "Release\pthreads.unsuccessfulbuild".
          Touching "Release\pthreads.lastbuildstate".
-     1>Done Building Project "C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\vcproj\pthreads\pthreads.vcxproj" (build target(s)).
+     1>Done Building Project "C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\vcproj\pthreads\pthreads.vcxproj" (rebuild target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.03
+Time Elapsed 00:00:01.01
