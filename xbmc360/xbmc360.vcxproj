@@ -465,6 +465,7 @@
     <ClInclude Include="libraries\libsmb2\XBLibSmb2.h" />
     <ClInclude Include="libraries\libsmb2\xbox_defines.h" />
     <ClInclude Include="MediaManager.h" />
+    <ClInclude Include="Profile.h" />
     <ClInclude Include="services\FTPServer\FTPFile.h" />
     <ClInclude Include="services\FTPServer\FTPServer.h" />
     <ClInclude Include="services\FTPServer\FTPServerConn.h" />
@@ -842,6 +843,7 @@
     </ClCompile>
     <ClCompile Include="libraries\libsmb2\XBLibSmb2.cpp" />
     <ClCompile Include="MediaManager.cpp" />
+    <ClCompile Include="Profile.cpp" />
     <ClCompile Include="services\FTPServer\FTPFile.cpp" />
     <ClCompile Include="services\FTPServer\FTPServer.cpp" />
     <ClCompile Include="services\FTPServer\FTPServerConn.cpp" />

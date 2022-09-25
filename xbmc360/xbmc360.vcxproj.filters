@@ -743,6 +743,9 @@
     <ClInclude Include="guilib\GUIControlGroup.h">
       <Filter>Header Files\guilib</Filter>
     </ClInclude>
+    <ClInclude Include="Profile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -1347,6 +1350,9 @@
     </ClCompile>
     <ClCompile Include="guilib\GUIControlGroup.cpp">
       <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="Profile.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

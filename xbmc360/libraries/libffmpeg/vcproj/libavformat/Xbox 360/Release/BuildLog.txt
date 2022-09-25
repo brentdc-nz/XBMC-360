@@ -1,0 +1,1371 @@
+﻿Build started 25/09/2022 13:17:06.
+     1>Project "C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\vcproj\libavformat\libavformat.vcxproj" on node 2 (build target(s)).
+     1>PrepareForBuild:
+         Creating directory "C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\vcproj\Xbox 360\Release\".
+       InitializeBuildStatus:
+         Creating "Xbox 360\Release\libavformat.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Xbox 360 SDK\bin\win32\CL.exe /c /I..\.. /I..\external\include /Zi /nologo /W3 /WX- /O2 /Ob0 /D WIN32 /D NDEBUG /D _WINDOWS /D _USRDLL /D _XBOX /D HAVE_AV_CONFIG_H /GF /Gm- /EHsc /MT /GS /Gy /fp:fast /fp:except- /Zc:wchar_t /Zc:forScope /GR- /openmp- /Fo"Xbox 360\Release\\" /Fd"Xbox 360\Release\vc100.pdb" /TC /wd4305 /FIconfig.h ..\..\libavformat\4xm.c ..\..\libavformat\aacdec.c ..\..\libavformat\ac3dec.c ..\..\libavformat\adtsenc.c ..\..\libavformat\aea.c ..\..\libavformat\aiffdec.c ..\..\libavformat\aiffenc.c ..\..\libavformat\allformats.c ..\..\libavformat\amr.c ..\..\libavformat\anm.c ..\..\libavformat\apc.c ..\..\libavformat\ape.c ..\..\libavformat\apetag.c ..\..\libavformat\asf.c ..\..\libavformat\asfcrypt.c ..\..\libavformat\asfdec.c ..\..\libavformat\asfenc.c ..\..\libavformat\assdec.c ..\..\libavformat\assenc.c ..\..\libavformat\au.c ..\..\libavformat\audiointerleave.c ..\..\libavformat\avc.c ..\..\libavformat\avi.c ..\..\libavformat\avidec.c ..\..\libavformat\avienc.c ..\..\libavformat\avio.c ..\..\libavformat\aviobuf.c ..\..\libavformat\avlanguage.c ..\..\libavformat\avs.c ..\..\libavformat\bethsoftvid.c ..\..\libavformat\bfi.c ..\..\libavformat\bink.c ..\..\libavformat\c93.c ..\..\libavformat\caf.c ..\..\libavformat\cafdec.c ..\..\libavformat\cdg.c ..\..\libavformat\concat.c ..\..\libavformat\crcenc.c ..\..\libavformat\cutils.c ..\..\libavformat\daud.c ..\external\DllEntry.c ..\..\libavformat\dsicin.c ..\..\libavformat\dtsdec.c ..\..\libavformat\dv.c ..\..\libavformat\dvenc.c ..\..\libavformat\dxa.c ..\..\libavformat\eacdata.c ..\..\libavformat\electronicarts.c ..\..\libavformat\ffmdec.c ..\..\libavformat\ffmenc.c ..\..\libavformat\file.c ..\..\libavformat\filmstripdec.c ..\..\libavformat\filmstripenc.c ..\..\libavformat\flacdec.c ..\..\libavformat\flacenc.c ..\..\libavformat\flacenc_header.c ..\..\libavformat\flic.c ..\..\libavformat\flvdec.c ..\..\libavformat\flvenc.c ..\..\libavformat\framecrcenc.c ..\..\libavformat\gif.c ..\..\libavformat\gxf.c ..\..\libavformat\gxfenc.c ..\..\libavformat\h261dec.c ..\..\libavformat\h263dec.c ..\..\libavformat\h264dec.c ..\..\libavformat\id3v1.c ..\..\libavformat\id3v2.c ..\..\libavformat\idcin.c ..\..\libavformat\iff.c ..\..\libavformat\img2.c ..\..\libavformat\ipmovie.c ..\..\libavformat\isom.c ..\..\libavformat\iss.c ..\..\libavformat\iv8.c ..\..\libavformat\libnut.c ..\..\libavformat\librtmp.c ..\..\libavformat\lmlm4.c ..\..\libavformat\m4vdec.c ..\..\libavformat\matroska.c ..\..\libavformat\matroskadec.c ..\..\libavformat\matroskaenc.c ..\..\libavformat\metadata.c ..\..\libavformat\metadata_compat.c ..\..\libavformat\mm.c ..\..\libavformat\mmf.c ..\..\libavformat\mov.c ..\..\libavformat\movenc.c ..\..\libavformat\movenchint.c ..\..\libavformat\mp3dec.c ..\..\libavformat\mpc.c ..\..\libavformat\mpc8.c ..\..\libavformat\mpeg.c ..\..\libavformat\mpegenc.c ..\..\libavformat\mpegts.c ..\..\libavformat\mpegtsenc.c ..\..\libavformat\mpegvideodec.c ..\..\libavformat\mpjpeg.c ..\..\libavformat\msnwc_tcp.c ..\..\libavformat\mtv.c ..\..\libavformat\mvi.c ..\..\libavformat\mxf.c ..\..\libavformat\mxfdec.c ..\..\libavformat\mxfenc.c ..\..\libavformat\ncdec.c ..\..\libavformat\nsvdec.c ..\..\libavformat\nut.c ..\..\libavformat\nutdec.c ..\..\libavformat\nutenc.c ..\..\libavformat\nuv.c ..\..\libavformat\oggdec.c ..\..\libavformat\oggenc.c ..\..\libavformat\oggparsedirac.c ..\..\libavformat\oggparseflac.c ..\..\libavformat\oggparseogm.c ..\..\libavformat\oggparseskeleton.c ..\..\libavformat\oggparsespeex.c ..\..\libavformat\oggparsetheora.c ..\..\libavformat\oggparsevorbis.c ..\..\libavformat\oma.c ..\..\libavformat\options.c ..\..\libavformat\os_support.c ..\..\libavformat\pcm.c ..\..\libavformat\pcmdec.c ..\..\libavformat\psxstr.c ..\..\libavformat\pva.c ..\..\libavformat\qcp.c ..\..\libavformat\r3d.c ..\..\libavformat\rawdec.c ..\..\libavformat\rdt.c ..\..\libavformat\riff.c ..\..\libavformat\rl2.c ..\..\libavformat\rm.c ..\..\libavformat\rmdec.c ..\..\libavformat\rmenc.c ..\..\libavformat\rpl.c ..\..\libavformat\rtmppkt.c ..\..\libavformat\rtp.c ..\..\libavformat\sdp.c ..\..\libavformat\seek.c ..\..\libavformat\segafilm.c ..\..\libavformat\sierravmd.c ..\..\libavformat\siff.c ..\..\libavformat\smacker.c ..\..\libavformat\sol.c ..\..\libavformat\soxdec.c ..\..\libavformat\soxenc.c ..\..\libavformat\spdif.c ..\..\libavformat\swfdec.c ..\..\libavformat\swfenc.c ..\..\libavformat\thp.c ..\..\libavformat\tiertexseq.c ..\..\libavformat\timefilter.c ..\..\libavformat\tmv.c ..\..\libavformat\tta.c ..\..\libavformat\txd.c ..\..\libavformat\utils.c ..\..\libavformat\vc1test.c ..\..\libavformat\vc1testenc.c ..\..\libavformat\voc.c ..\..\libavformat\vocdec.c ..\..\libavformat\vocenc.c ..\..\libavformat\vorbiscomment.c ..\..\libavformat\vqf.c ..\..\libavformat\wav.c ..\..\libavformat\wc3movie.c ..\..\libavformat\westwood.c ..\..\libavformat\wv.c ..\..\libavformat\xa.c ..\..\libavformat\yop.c ..\..\libavformat\yuv4mpeg.c /Ou /Oz /FI"C:\Program Files (x86)\Microsoft Xbox 360 SDK\\include\xbox\xbox_intellisense_platform.h"
+         4xm.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\4xm.c(148): warning C4244: 'function' : conversion from 'float' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\4xm.c(301): warning C4018: '<' : signed/unsigned mismatch
+         aacdec.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         ac3dec.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         adtsenc.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         aea.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         aiffdec.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\aiffdec.c(102): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+     1>..\..\libavformat\aiffdec.c(215): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\aiffdec.c(304): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\aiffdec.c(314): warning C4090: 'initializing' : different 'const' qualifiers
+         aiffenc.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\aiffenc.c(130): warning C4244: 'function' : conversion from 'int64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\aiffenc.c(134): warning C4244: 'function' : conversion from 'int64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\aiffenc.c(138): warning C4244: 'function' : conversion from 'int64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\aiffenc.c(151): warning C4090: 'initializing' : different 'const' qualifiers
+         allformats.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         amr.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         anm.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\anm.c(66): warning C4018: '>=' : signed/unsigned mismatch
+     1>..\..\libavformat\anm.c(71): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\anm.c(146): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\anm.c(202): warning C4018: '>=' : signed/unsigned mismatch
+     1>..\..\libavformat\anm.c(211): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+         apc.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         ape.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\ape.c(163): warning C4244: '=' : conversion from 'int64_t' to 'uint32_t', possible loss of data
+     1>..\..\libavformat\ape.c(271): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\ape.c(278): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\ape.c(281): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\ape.c(287): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\ape.c(333): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\ape.c(351): warning C4018: '>' : signed/unsigned mismatch
+         apetag.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\apetag.c(69): warning C4244: 'initializing' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\apetag.c(110): warning C4018: '<' : signed/unsigned mismatch
+         asf.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         asfcrypt.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\asfcrypt.c(103): warning C4244: 'initializing' : conversion from 'uint64_t' to 'uint32_t', possible loss of data
+     1>..\..\libavformat\asfcrypt.c(107): warning C4244: '+=' : conversion from 'uint64_t' to 'uint32_t', possible loss of data
+     1>..\..\libavformat\asfcrypt.c(128): warning C4244: 'initializing' : conversion from 'uint64_t' to 'uint32_t', possible loss of data
+     1>..\..\libavformat\asfcrypt.c(134): warning C4244: '-=' : conversion from 'uint64_t' to 'uint32_t', possible loss of data
+         asfdec.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\asfdec.c(147): warning C4244: 'return' : conversion from 'uint64_t' to 'int', possible loss of data
+     1>..\..\libavformat\asfdec.c(501): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\asfdec.c(848): warning C4018: '>' : signed/unsigned mismatch
+     1>..\..\libavformat\asfdec.c(940): warning C4018: '<=' : signed/unsigned mismatch
+     1>..\..\libavformat\asfdec.c(940): warning C4018: '>' : signed/unsigned mismatch
+     1>..\..\libavformat\asfdec.c(948): warning C4018: '>' : signed/unsigned mismatch
+     1>..\..\libavformat\asfdec.c(979): warning C4018: '>=' : signed/unsigned mismatch
+     1>..\..\libavformat\asfdec.c(1106): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\asfdec.c(1120): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\asfdec.c(1136): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\asfdec.c(1164): warning C4244: 'function' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\asfdec.c(1239): warning C4244: 'initializing' : conversion from 'int64_t' to 'int', possible loss of data
+         asfenc.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\asfenc.c(321): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\asfenc.c(396): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\asfenc.c(478): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\asfenc.c(529): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\asfenc.c(645): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\asfenc.c(810): warning C4244: 'function' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\asfenc.c(817): warning C4018: '>=' : signed/unsigned mismatch
+     1>..\..\libavformat\asfenc.c(845): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\asfenc.c(884): warning C4090: 'initializing' : different 'const' qualifiers
+     1>..\..\libavformat\asfenc.c(884): warning C4090: 'initializing' : different 'const' qualifiers
+     1>..\..\libavformat\asfenc.c(884): warning C4090: 'initializing' : different 'const' qualifiers
+         assdec.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\assdec.c(72): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\assdec.c(126): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\assdec.c(175): warning C4244: '=' : conversion from 'int64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\assdec.c(190): warning C4018: '<' : signed/unsigned mismatch
+         assenc.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\assenc.c(39): warning C4018: '<' : signed/unsigned mismatch
+         au.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         Generating Code...
+         Compiling...
+         audiointerleave.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\audiointerleave.c(31): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\audiointerleave.c(49): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\audiointerleave.c(86): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\audiointerleave.c(123): warning C4018: '<' : signed/unsigned mismatch
+         avc.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         avi.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         avidec.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\xbox360/bswap.h(31): warning C4022: '__loadshortbytereverse' : pointer mismatch for actual parameter 2
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\xbox360/bswap.h(37): warning C4022: '__loadwordbytereverse' : pointer mismatch for actual parameter 2
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\avidec.c(151): warning C4018: '>=' : signed/unsigned mismatch
+     1>..\..\libavformat\avidec.c(228): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\avidec.c(245): warning C4244: 'function' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\avidec.c(273): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\avidec.c(304): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\avidec.c(310): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\avidec.c(496): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\avidec.c(553): warning C4018: '>=' : signed/unsigned mismatch
+     1>..\..\libavformat\avidec.c(558): warning C4244: '=' : conversion from 'uint64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\avidec.c(673): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\avidec.c(680): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\avidec.c(734): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\avidec.c(767): warning C4018: '>' : signed/unsigned mismatch
+     1>..\..\libavformat\avidec.c(813): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\avidec.c(866): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\avidec.c(1013): warning C4018: '>' : signed/unsigned mismatch
+     1>..\..\libavformat\avidec.c(1017): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\avidec.c(1034): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\avidec.c(1038): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\avidec.c(1044): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\avidec.c(1106): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\avidec.c(1146): warning C4244: '+=' : conversion from 'int64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\avidec.c(1177): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\avidec.c(1300): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\avidec.c(1347): warning C4018: '<' : signed/unsigned mismatch
+         avienc.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\xbox360/bswap.h(31): warning C4022: '__loadshortbytereverse' : pointer mismatch for actual parameter 2
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\xbox360/bswap.h(37): warning C4022: '__loadwordbytereverse' : pointer mismatch for actual parameter 2
+     1>..\..\libavformat\avienc.c(78): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\avienc.c(131): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\avienc.c(171): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\avienc.c(187): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\avienc.c(336): warning C4244: 'initializing' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\avienc.c(344): warning C4244: 'function' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\avienc.c(417): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\avienc.c(454): warning C4244: 'function' : conversion from 'int64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\avienc.c(476): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\avienc.c(483): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\avienc.c(573): warning C4244: '=' : conversion from 'int64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\avienc.c(611): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\avienc.c(632): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\avienc.c(643): warning C4090: 'initializing' : different 'const' qualifiers
+     1>..\..\libavformat\avienc.c(643): warning C4090: 'initializing' : different 'const' qualifiers
+         avio.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\avio.c(64): warning C4133: 'initializing' : incompatible types - from 'void **' to 'URLProtocol **'
+     1>..\..\libavformat\avio.c(342): warning C4090: 'function' : different 'const' qualifiers
+         aviobuf.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\aviobuf.c(249): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\aviobuf.c(491): warning C4244: 'function' : conversion from 'uint64_t' to 'int', possible loss of data
+     1>..\..\libavformat\aviobuf.c(928): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\aviobuf.c(1092): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\aviobuf.c(1101): warning C4018: '>' : signed/unsigned mismatch
+     1>..\..\libavformat\aviobuf.c(1139): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+         avlanguage.c
+         avs.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\avs.c(126): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\avs.c(128): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+         bethsoftvid.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\bethsoftvid.c(115): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+         bfi.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         bink.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\bink.c(204): warning C4018: '<' : signed/unsigned mismatch
+         c93.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         caf.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         cafdec.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\cafdec.c(68): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+     1>..\..\libavformat\cafdec.c(109): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\cafdec.c(111): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\cafdec.c(134): warning C4244: 'function' : conversion from 'int64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\cafdec.c(137): warning C4244: 'function' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\cafdec.c(138): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\cafdec.c(155): warning C4244: '=' : conversion from 'uint64_t' to 'int', possible loss of data
+     1>..\..\libavformat\cafdec.c(281): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\cafdec.c(325): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\cafdec.c(329): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\cafdec.c(330): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\cafdec.c(332): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\cafdec.c(333): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+         cdg.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\cdg.c(41): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+         concat.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         crcenc.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         cutils.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\cutils.c(55): warning C4244: '=' : conversion from 'time_t' to 'int', possible loss of data
+     1>..\..\libavformat\cutils.c(57): warning C4244: '=' : conversion from 'time_t' to 'int', possible loss of data
+         daud.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         Generating Code...
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavformat\cafdec.c(110): warning C4700: uninitialized local variable 'atom' used
+         Compiling...
+         DllEntry.c
+     1>..\external\DllEntry.c(36): warning C4101: 'pomS' : unreferenced local variable
+         dsicin.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         dtsdec.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         dv.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\dv.c(263): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\dv.c(387): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\dv.c(421): warning C4244: '=' : conversion from 'int64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\dv.c(442): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\dv.c(478): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+         dvenc.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\dvenc.c(302): warning C4018: '<' : signed/unsigned mismatch
+         dxa.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\dxa.c(158): warning C4018: '>' : signed/unsigned mismatch
+         eacdata.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         electronicarts.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\electronicarts.c(296): warning C4244: 'initializing' : conversion from 'int64_t' to 'unsigned int', possible loss of data
+         ffmdec.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\ffmdec.c(259): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\ffmdec.c(260): warning C4090: 'function' : different 'const' qualifiers
+     1>..\..\libavformat\ffmdec.c(309): warning C4244: '=' : conversion from 'unsigned int' to 'float', possible loss of data
+     1>..\..\libavformat\ffmdec.c(325): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\ffmdec.c(326): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\ffmdec.c(332): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\ffmdec.c(333): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\ffmdec.c(334): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\ffmdec.c(335): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\ffmdec.c(347): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\ffmdec.c(358): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\ffmdec.c(359): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+         ffmenc.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\ffmenc.c(100): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\ffmenc.c(107): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\ffmenc.c(116): warning C4244: 'function' : conversion from 'float' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\ffmenc.c(220): warning C4244: '=' : conversion from 'int64_t' to 'uint8_t', possible loss of data
+     1>..\..\libavformat\ffmenc.c(220): warning C4244: '=' : conversion from 'int64_t' to 'uint8_t', possible loss of data
+     1>..\..\libavformat\ffmenc.c(220): warning C4244: '=' : conversion from 'int64_t' to 'uint8_t', possible loss of data
+     1>..\..\libavformat\ffmenc.c(220): warning C4244: '=' : conversion from 'int64_t' to 'uint8_t', possible loss of data
+         file.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         filmstripdec.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         filmstripenc.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\filmstripenc.c(67): warning C4244: 'function' : conversion from 'double' to 'unsigned int', possible loss of data
+         flacdec.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\flacdec.c(68): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+         flacenc.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         flacenc_header.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         flic.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         flvdec.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\flvdec.c(165): warning C4244: '=' : conversion from 'double' to 'int64_t', possible loss of data
+     1>..\..\libavformat\flvdec.c(266): warning C4244: '=' : conversion from 'double' to 'int64_t', possible loss of data
+     1>..\..\libavformat\flvdec.c(268): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+     1>..\..\libavformat\flvdec.c(270): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+     1>..\..\libavformat\flvdec.c(295): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\flvdec.c(414): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\flvdec.c(529): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+         flvenc.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\flvenc.c(182): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\flvenc.c(209): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\flvenc.c(224): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\flvenc.c(241): warning C4244: 'function' : conversion from 'int64_t' to 'double', possible loss of data
+     1>..\..\libavformat\flvenc.c(291): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\flvenc.c(297): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\flvenc.c(318): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\flvenc.c(338): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\flvenc.c(342): warning C4244: 'function' : conversion from 'int64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\flvenc.c(352): warning C4244: 'function' : conversion from 'int64_t' to 'double', possible loss of data
+     1>..\..\libavformat\flvenc.c(404): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\flvenc.c(407): warning C4244: '=' : conversion from 'int64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\flvenc.c(425): warning C4244: 'function' : conversion from 'int64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\flvenc.c(440): warning C4090: 'initializing' : different 'const' qualifiers
+     1>..\..\libavformat\flvenc.c(440): warning C4090: 'initializing' : different 'const' qualifiers
+         framecrcenc.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         Generating Code...
+         Compiling...
+         gif.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\gif.c(267): warning C4018: '<' : signed/unsigned mismatch
+         gxf.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\gxf.c(248): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\gxf.c(255): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\gxf.c(362): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\gxf.c(498): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\gxf.c(501): warning C4244: 'function' : conversion from 'int64_t' to 'int', possible loss of data
+         gxfenc.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\gxfenc.c(128): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\gxfenc.c(131): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\gxfenc.c(146): warning C4244: 'function' : conversion from 'int64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\gxfenc.c(264): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\gxfenc.c(313): warning C4244: 'function' : conversion from 'int64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\gxfenc.c(315): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\gxfenc.c(327): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\gxfenc.c(332): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\gxfenc.c(362): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\gxfenc.c(387): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\gxfenc.c(448): warning C4244: '=' : conversion from 'int64_t' to 'uint32_t', possible loss of data
+     1>..\..\libavformat\gxfenc.c(449): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\gxfenc.c(458): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\gxfenc.c(537): warning C4244: '=' : conversion from 'int64_t' to 'uint32_t', possible loss of data
+     1>..\..\libavformat\gxfenc.c(538): warning C4018: '<=' : signed/unsigned mismatch
+     1>..\..\libavformat\gxfenc.c(585): warning C4244: 'function' : conversion from 'int64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\gxfenc.c(588): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\gxfenc.c(603): warning C4244: '=' : conversion from 'int64_t' to 'uint32_t', possible loss of data
+     1>..\..\libavformat\gxfenc.c(608): warning C4244: '=' : conversion from 'int64_t' to 'uint32_t', possible loss of data
+     1>..\..\libavformat\gxfenc.c(609): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\gxfenc.c(643): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\gxfenc.c(765): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\gxfenc.c(786): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\gxfenc.c(826): warning C4244: '=' : conversion from 'int64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\gxfenc.c(866): warning C4244: 'initializing' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\gxfenc.c(915): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\gxfenc.c(918): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+         h261dec.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         h263dec.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         h264dec.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         id3v1.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         id3v2.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\id3v2.c(262): warning C4018: '<' : signed/unsigned mismatch
+         idcin.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         iff.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         img2.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\img2.c(296): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+         ipmovie.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         isom.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         iss.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\iss.c(90): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+         iv8.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         libnut.c
+         librtmp.c
+         lmlm4.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\lmlm4.c(88): warning C4146: unary minus operator applied to unsigned type, result still unsigned
+         m4vdec.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         matroska.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         Generating Code...
+         Compiling...
+         matroskadec.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\matroskadec.c(590): warning C4334: '<<' : result of 32-bit shift implicitly converted to 64 bits (was 64-bit shift intended?)
+     1>..\..\libavformat\matroskadec.c(771): warning C4334: '<<' : result of 32-bit shift implicitly converted to 64 bits (was 64-bit shift intended?)
+     1>..\..\libavformat\matroskadec.c(771): warning C4244: '=' : conversion from 'uint64_t' to 'uint32_t', possible loss of data
+     1>..\..\libavformat\matroskadec.c(855): warning C4244: 'function' : conversion from 'uint64_t' to 'int', possible loss of data
+     1>..\..\libavformat\matroskadec.c(856): warning C4244: 'function' : conversion from 'uint64_t' to 'int', possible loss of data
+     1>..\..\libavformat\matroskadec.c(858): warning C4244: 'function' : conversion from 'uint64_t' to 'int', possible loss of data
+     1>..\..\libavformat\matroskadec.c(859): warning C4244: 'function' : conversion from 'uint64_t' to 'int', possible loss of data
+     1>..\..\libavformat\matroskadec.c(1048): warning C4244: 'initializing' : conversion from 'uint64_t' to 'int', possible loss of data
+     1>..\..\libavformat\matroskadec.c(1049): warning C4244: 'initializing' : conversion from 'uint64_t' to 'int', possible loss of data
+     1>..\..\libavformat\matroskadec.c(1163): warning C4018: '<=' : signed/unsigned mismatch
+     1>..\..\libavformat\matroskadec.c(1269): warning C4244: '=' : conversion from 'double' to 'int64_t', possible loss of data
+     1>..\..\libavformat\matroskadec.c(1297): warning C4244: '=' : conversion from 'double' to 'uint64_t', possible loss of data
+     1>..\..\libavformat\matroskadec.c(1362): warning C4244: 'function' : conversion from 'uint64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\matroskadec.c(1379): warning C4244: 'function' : conversion from 'uint64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\matroskadec.c(1396): warning C4244: 'function' : conversion from 'double' to 'int', possible loss of data
+     1>..\..\libavformat\matroskadec.c(1401): warning C4244: '=' : conversion from 'uint64_t' to 'uint8_t', possible loss of data
+     1>..\..\libavformat\matroskadec.c(1403): warning C4244: 'function' : conversion from 'double' to 'int', possible loss of data
+     1>..\..\libavformat\matroskadec.c(1419): warning C4244: 'function' : conversion from 'uint64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\matroskadec.c(1420): warning C4244: 'function' : conversion from 'uint64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\matroskadec.c(1421): warning C4244: 'function' : conversion from 'double' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\matroskadec.c(1422): warning C4244: 'function' : conversion from 'double' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\matroskadec.c(1463): warning C4244: 'function' : conversion from 'double' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\matroskadec.c(1498): warning C4244: '=' : conversion from 'uint64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\matroskadec.c(1499): warning C4244: '=' : conversion from 'uint64_t' to 'int', possible loss of data
+     1>..\..\libavformat\matroskadec.c(1500): warning C4244: '=' : conversion from 'uint64_t' to 'int', possible loss of data
+     1>..\..\libavformat\matroskadec.c(1512): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+     1>..\..\libavformat\matroskadec.c(1513): warning C4244: '=' : conversion from 'uint64_t' to 'int', possible loss of data
+     1>..\..\libavformat\matroskadec.c(1555): warning C4244: 'function' : conversion from 'uint64_t' to 'int', possible loss of data
+     1>..\..\libavformat\matroskadec.c(1568): warning C4244: '=' : conversion from 'uint64_t' to 'int', possible loss of data
+     1>..\..\libavformat\matroskadec.c(1575): warning C4244: 'function' : conversion from 'uint64_t' to 'int', possible loss of data
+     1>..\..\libavformat\matroskadec.c(1653): warning C4244: 'function' : conversion from 'uint64_t' to 'int', possible loss of data
+     1>..\..\libavformat\matroskadec.c(1676): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\matroskadec.c(1680): warning C4018: '>' : signed/unsigned mismatch
+     1>..\..\libavformat\matroskadec.c(1743): warning C4244: '=' : conversion from 'uint64_t' to 'uint32_t', possible loss of data
+     1>..\..\libavformat\matroskadec.c(1755): warning C4244: '=' : conversion from 'int64_t' to 'uint32_t', possible loss of data
+     1>..\..\libavformat\matroskadec.c(1853): warning C4244: '=' : conversion from 'uint64_t' to 'int', possible loss of data
+     1>..\..\libavformat\matroskadec.c(1957): warning C4018: '<' : signed/unsigned mismatch
+         matroskaenc.c
+         metadata.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\metadata.c(40): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\metadata.c(76): warning C4090: '=' : different 'const' qualifiers
+     1>..\..\libavformat\metadata.c(80): warning C4090: '=' : different 'const' qualifiers
+     1>..\..\libavformat\metadata.c(160): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\metadata.c(162): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\metadata.c(164): warning C4018: '<' : signed/unsigned mismatch
+         metadata_compat.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\metadata_compat.c(80): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\metadata_compat.c(88): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\metadata_compat.c(101): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\metadata_compat.c(140): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\metadata_compat.c(142): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\metadata_compat.c(146): warning C4018: '<' : signed/unsigned mismatch
+         mm.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         mmf.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\mmf.c(151): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\mmf.c(275): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+         mov.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\mov.c(186): warning C4244: '=' : conversion from 'int64_t' to 'uint16_t', possible loss of data
+     1>..\..\libavformat\mov.c(200): warning C4244: '=' : conversion from 'int64_t' to 'uint16_t', possible loss of data
+     1>..\..\libavformat\mov.c(347): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mov.c(568): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\mov.c(704): warning C4244: 'function' : conversion from 'int64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\mov.c(707): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\mov.c(709): warning C4244: 'function' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\mov.c(759): warning C4244: 'function' : conversion from 'uint64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\mov.c(764): warning C4244: '=' : conversion from 'uint64_t' to 'int', possible loss of data
+     1>..\..\libavformat\mov.c(765): warning C4244: '=' : conversion from 'int64_t' to 'uint8_t', possible loss of data
+     1>..\..\libavformat\mov.c(765): warning C4244: '=' : conversion from 'int64_t' to 'uint8_t', possible loss of data
+     1>..\..\libavformat\mov.c(765): warning C4244: '=' : conversion from 'int64_t' to 'uint8_t', possible loss of data
+     1>..\..\libavformat\mov.c(765): warning C4244: '=' : conversion from 'int64_t' to 'uint8_t', possible loss of data
+     1>..\..\libavformat\mov.c(767): warning C4244: 'function' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\mov.c(785): warning C4244: 'function' : conversion from 'int64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\mov.c(788): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\mov.c(789): warning C4244: 'function' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\mov.c(814): warning C4244: 'function' : conversion from 'int64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\mov.c(817): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\mov.c(818): warning C4244: 'function' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\mov.c(841): warning C4244: 'function' : conversion from 'int64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\mov.c(844): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\mov.c(846): warning C4244: 'function' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\mov.c(1043): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mov.c(1062): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mov.c(1076): warning C4018: '<=' : signed/unsigned mismatch
+     1>..\..\libavformat\mov.c(1122): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+     1>..\..\libavformat\mov.c(1419): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mov.c(1534): warning C4244: 'initializing' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\mov.c(1568): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mov.c(1613): warning C4244: '=' : conversion from 'uint64_t' to 'int', possible loss of data
+     1>..\..\libavformat\mov.c(1677): warning C4018: '>=' : signed/unsigned mismatch
+     1>..\..\libavformat\mov.c(1780): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\mov.c(1786): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mov.c(1960): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mov.c(2020): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mov.c(2053): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mov.c(2172): warning C4018: '>' : signed/unsigned mismatch
+     1>..\..\libavformat\mov.c(2303): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mov.c(2346): warning C4244: '=' : conversion from 'uint16_t' to 'uint8_t', possible loss of data
+     1>..\..\libavformat\mov.c(2393): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mov.c(2427): warning C4020: 'mov_read_default' : too many actual parameters
+     1>..\..\libavformat\mov.c(2464): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mov.c(2474): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\mov.c(2503): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mov.c(2523): warning C4018: '>=' : signed/unsigned mismatch
+     1>..\..\libavformat\mov.c(2536): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mov.c(2552): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mov.c(2557): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mov.c(2569): warning C4018: '<' : signed/unsigned mismatch
+         movenc.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\movenc.c(44): warning C4244: 'function' : conversion from 'int64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\movenc.c(68): warning C4244: 'function' : conversion from 'uint64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\movenc.c(70): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\movenc.c(102): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\movenc.c(108): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\movenc.c(138): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\movenc.c(162): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\movenc.c(300): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\movenc.c(318): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\movenc.c(354): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\movenc.c(484): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\movenc.c(519): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\movenc.c(770): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\movenc.c(852): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\movenc.c(872): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\movenc.c(890): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\movenc.c(918): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\movenc.c(949): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\movenc.c(960): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\movenc.c(1001): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\movenc.c(1010): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\movenc.c(1096): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\movenc.c(1133): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\movenc.c(1148): warning C4244: 'function' : conversion from 'uint64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\movenc.c(1149): warning C4244: 'function' : conversion from 'uint64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\movenc.c(1152): warning C4244: 'function' : conversion from 'int64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\movenc.c(1174): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\movenc.c(1191): warning C4244: 'function' : conversion from 'uint64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\movenc.c(1192): warning C4244: 'function' : conversion from 'uint64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\movenc.c(1196): warning C4244: 'function' : conversion from 'int64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\movenc.c(1229): warning C4244: 'function' : conversion from 'double' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\movenc.c(1243): warning C4244: 'initializing' : conversion from 'int64_t' to 'int32_t', possible loss of data
+     1>..\..\libavformat\movenc.c(1262): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\movenc.c(1277): warning C4244: 'function' : conversion from 'int64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\movenc.c(1352): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\movenc.c(1399): warning C4244: 'function' : conversion from 'int64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\movenc.c(1400): warning C4244: 'function' : conversion from 'int64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\movenc.c(1403): warning C4244: 'function' : conversion from 'int64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\movenc.c(1475): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\movenc.c(1551): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\movenc.c(1565): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\movenc.c(1615): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\movenc.c(1641): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\movenc.c(1651): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\movenc.c(1742): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\movenc.c(1764): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\movenc.c(1780): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\movenc.c(1789): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\movenc.c(1812): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\movenc.c(1857): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\movenc.c(2020): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\movenc.c(2060): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\movenc.c(2066): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\movenc.c(2118): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\movenc.c(2131): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\movenc.c(2213): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\movenc.c(2243): warning C4244: 'function' : conversion from 'uint64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\movenc.c(2276): warning C4090: 'initializing' : different 'const' qualifiers
+     1>..\..\libavformat\movenc.c(2276): warning C4090: 'initializing' : different 'const' qualifiers
+     1>..\..\libavformat\movenc.c(2315): warning C4090: 'initializing' : different 'const' qualifiers
+     1>..\..\libavformat\movenc.c(2354): warning C4090: 'initializing' : different 'const' qualifiers
+     1>..\..\libavformat\movenc.c(2394): warning C4090: 'initializing' : different 'const' qualifiers
+     1>..\..\libavformat\movenc.c(2434): warning C4090: 'initializing' : different 'const' qualifiers
+     1>..\..\libavformat\movenc.c(2474): warning C4090: 'initializing' : different 'const' qualifiers
+         movenchint.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\movenchint.c(332): warning C4018: '>' : signed/unsigned mismatch
+         mp3dec.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\mp3dec.c(127): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+         mpc.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\mpc.c(192): warning C4244: '=' : conversion from 'int64_t' to 'uint32_t', possible loss of data
+         mpc8.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\mpc8.c(145): warning C4244: 'function' : conversion from 'int64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\mpc8.c(147): warning C4244: 'function' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\mpc8.c(148): warning C4244: 'function' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\mpc8.c(257): warning C4244: 'function' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\mpc8.c(278): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+         mpeg.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\mpeg.c(404): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mpeg.c(443): warning C4018: '<' : signed/unsigned mismatch
+         mpegenc.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\mpegenc.c(183): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mpegenc.c(225): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mpegenc.c(278): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mpegenc.c(328): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mpegenc.c(398): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mpegenc.c(480): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mpegenc.c(488): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mpegenc.c(1003): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mpegenc.c(1040): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mpegenc.c(1073): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mpegenc.c(1160): warning C4244: 'initializing' : conversion from 'int64_t' to 'const int', possible loss of data
+     1>..\..\libavformat\mpegenc.c(1226): warning C4018: '<' : signed/unsigned mismatch
+         mpegts.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\mpegts.c(166): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mpegts.c(194): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mpegts.c(221): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mpegts.c(223): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mpegts.c(227): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mpegts.c(860): warning C4090: 'function' : different 'const' qualifiers
+     1>..\..\libavformat\mpegts.c(1542): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\mpegts.c(1544): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+     1>..\..\libavformat\mpegts.c(1589): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+         mpegtsenc.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\mpegtsenc.c(243): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mpegtsenc.c(480): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mpegtsenc.c(589): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mpegtsenc.c(625): warning C4244: '=' : conversion from 'int64_t' to 'uint8_t', possible loss of data
+     1>..\..\libavformat\mpegtsenc.c(626): warning C4244: '=' : conversion from 'int64_t' to 'uint8_t', possible loss of data
+     1>..\..\libavformat\mpegtsenc.c(627): warning C4244: '=' : conversion from 'int64_t' to 'uint8_t', possible loss of data
+     1>..\..\libavformat\mpegtsenc.c(628): warning C4244: '=' : conversion from 'int64_t' to 'uint8_t', possible loss of data
+     1>..\..\libavformat\mpegtsenc.c(629): warning C4244: '=' : conversion from 'int64_t' to 'uint8_t', possible loss of data
+     1>..\..\libavformat\mpegtsenc.c(630): warning C4244: '=' : conversion from 'int64_t' to 'uint8_t', possible loss of data
+     1>..\..\libavformat\mpegtsenc.c(983): warning C4018: '<' : signed/unsigned mismatch
+         mpegvideodec.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         mpjpeg.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         msnwc_tcp.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         mtv.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         Generating Code...
+         Compiling...
+         mvi.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\mvi.c(109): warning C4244: '=' : conversion from 'uint64_t' to 'int', possible loss of data
+         mxf.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         mxfdec.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\mxfdec.c(182): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mxfdec.c(207): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mxfdec.c(226): warning C4244: 'function' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\mxfdec.c(227): warning C4244: 'function' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\mxfdec.c(296): warning C4244: 'function' : conversion from 'uint64_t' to 'int', possible loss of data
+     1>..\..\libavformat\mxfdec.c(300): warning C4244: 'function' : conversion from 'uint64_t' to 'int', possible loss of data
+     1>..\..\libavformat\mxfdec.c(301): warning C4244: '=' : conversion from 'uint64_t' to 'int', possible loss of data
+     1>..\..\libavformat\mxfdec.c(339): warning C4244: 'function' : conversion from 'uint64_t' to 'int', possible loss of data
+     1>..\..\libavformat\mxfdec.c(360): warning C4018: '>' : signed/unsigned mismatch
+     1>..\..\libavformat\mxfdec.c(876): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mxfdec.c(961): warning C4018: '<' : signed/unsigned mismatch
+         mxfenc.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\mxfenc.c(335): warning C4244: 'function' : conversion from 'uint64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\mxfenc.c(344): warning C4244: 'function' : conversion from 'uint64_t' to 'int', possible loss of data
+     1>..\..\libavformat\mxfenc.c(348): warning C4244: 'function' : conversion from 'uint64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\mxfenc.c(412): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mxfenc.c(747): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mxfenc.c(966): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mxfenc.c(984): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mxfenc.c(1105): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mxfenc.c(1126): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mxfenc.c(1137): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mxfenc.c(1267): warning C4244: '=' : conversion from 'int64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\mxfenc.c(1414): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mxfenc.c(1508): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mxfenc.c(1718): warning C4244: '=' : conversion from 'uint64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\mxfenc.c(1755): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\mxfenc.c(1763): warning C4244: 'function' : conversion from 'uint64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\mxfenc.c(1816): warning C4018: '<' : signed/unsigned mismatch
+         ncdec.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         nsvdec.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\nsvdec.c(611): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\nsvdec.c(704): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+         nut.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\nut.c(87): warning C4018: '<' : signed/unsigned mismatch
+         nutdec.c
+         nutenc.c
+         nuv.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         oggdec.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\oggdec.c(296): warning C4018: '<' : signed/unsigned mismatch
+         oggenc.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\oggenc.c(201): warning C4018: '>' : signed/unsigned mismatch
+     1>..\..\libavformat\oggenc.c(320): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\oggenc.c(408): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\oggenc.c(415): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\oggenc.c(462): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\oggenc.c(488): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\oggenc.c(493): warning C4018: '<' : signed/unsigned mismatch
+         oggparsedirac.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\oggparsedirac.c(120): warning C4047: 'initializing' : 'const int8_t *' differs in levels of indirection from 'int (__cdecl *)(AVFormatContext *,int)'
+     1>..\..\libavformat\oggparsedirac.c(122): warning C4113: 'uint64_t (__cdecl *)(AVFormatContext *,int,uint64_t,int64_t *)' differs in parameter lists from 'int (__cdecl *)(AVFormatContext *,int)'
+     1>..\..\libavformat\oggparsedirac.c(122): warning C4133: 'initializing' : incompatible types - from 'uint64_t (__cdecl *)(AVFormatContext *,int,uint64_t,int64_t *)' to 'int (__cdecl *)(AVFormatContext *,int)'
+     1>..\..\libavformat\oggparsedirac.c(123): warning C4047: 'initializing' : 'uint64_t (__cdecl *)(AVFormatContext *,int,uint64_t,int64_t *)' differs in levels of indirection from 'int'
+     1>..\..\libavformat\oggparsedirac.c(129): warning C4047: 'initializing' : 'const int8_t *' differs in levels of indirection from 'int (__cdecl *)(AVFormatContext *,int)'
+     1>..\..\libavformat\oggparsedirac.c(131): warning C4113: 'uint64_t (__cdecl *)(AVFormatContext *,int,uint64_t,int64_t *)' differs in parameter lists from 'int (__cdecl *)(AVFormatContext *,int)'
+     1>..\..\libavformat\oggparsedirac.c(131): warning C4133: 'initializing' : incompatible types - from 'uint64_t (__cdecl *)(AVFormatContext *,int,uint64_t,int64_t *)' to 'int (__cdecl *)(AVFormatContext *,int)'
+     1>..\..\libavformat\oggparsedirac.c(132): warning C4047: 'initializing' : 'uint64_t (__cdecl *)(AVFormatContext *,int,uint64_t,int64_t *)' differs in levels of indirection from 'int'
+         oggparseflac.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         oggparseogm.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\oggparseogm.c(84): warning C4244: '=' : conversion from 'uint64_t' to 'int', possible loss of data
+     1>..\..\libavformat\oggparseogm.c(85): warning C4244: '=' : conversion from 'uint64_t' to 'int', possible loss of data
+     1>..\..\libavformat\oggparseogm.c(91): warning C4244: '=' : conversion from 'uint64_t' to 'int', possible loss of data
+     1>..\..\libavformat\oggparseogm.c(122): warning C4244: '=' : conversion from 'uint64_t' to 'int', possible loss of data
+         oggparseskeleton.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         oggparsespeex.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\oggparsespeex.c(106): warning C4244: '=' : conversion from 'uint64_t' to 'int', possible loss of data
+     1>..\..\libavformat\oggparsespeex.c(111): warning C4244: '=' : conversion from 'uint64_t' to 'unsigned int', possible loss of data
+         oggparsetheora.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         oggparsevorbis.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\oggparsevorbis.c(52): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\oggparsevorbis.c(122): warning C4018: '<' : signed/unsigned mismatch
+         oma.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\oma.c(181): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\oma.c(193): warning C4090: 'initializing' : different 'const' qualifiers
+         Generating Code...
+         Compiling...
+         options.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         os_support.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         pcm.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\pcm.c(53): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+         pcmdec.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         psxstr.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         pva.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\pva.c(181): warning C4018: '>' : signed/unsigned mismatch
+         qcp.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\qcp.c(154): warning C4018: '<=' : signed/unsigned mismatch
+         r3d.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\r3d.c(122): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\r3d.c(244): warning C4244: '=' : conversion from 'uint64_t' to 'int', possible loss of data
+     1>..\..\libavformat\r3d.c(290): warning C4244: '=' : conversion from 'uint64_t' to 'int', possible loss of data
+     1>..\..\libavformat\r3d.c(301): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\r3d.c(358): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\r3d.c(361): warning C4018: '<' : signed/unsigned mismatch
+         rawdec.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         rdt.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\rdt.c(66): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\rdt.c(304): warning C4090: 'function' : different 'const' qualifiers
+     1>..\..\libavformat\rdt.c(308): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\rdt.c(420): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\rdt.c(572): warning C4047: 'initializing' : 'int' differs in levels of indirection from 'int (__cdecl *)(AVFormatContext *,int,PayloadContext *,const char *)'
+     1>..\..\libavformat\rdt.c(572): warning C4113: 'PayloadContext *(__cdecl *)(void)' differs in parameter lists from 'int (__cdecl *)(AVFormatContext *,int,PayloadContext *,const char *)'
+     1>..\..\libavformat\rdt.c(572): warning C4047: 'initializing' : 'int (__cdecl *)(AVFormatContext *,int,PayloadContext *,const char *)' differs in levels of indirection from 'PayloadContext *(__cdecl *)(void)'
+     1>..\..\libavformat\rdt.c(572): warning C4028: formal parameter 1 different from declaration
+     1>..\..\libavformat\rdt.c(572): warning C4047: 'initializing' : 'PayloadContext *(__cdecl *)(void)' differs in levels of indirection from 'void (__cdecl *)(PayloadContext *)'
+     1>..\..\libavformat\rdt.c(572): warning C4113: 'int (__cdecl *)(AVFormatContext *,PayloadContext *,AVStream *,AVPacket *,uint32_t *,const uint8_t *,int,int)' differs in parameter lists from 'void (__cdecl *)(PayloadContext *)'
+     1>..\..\libavformat\rdt.c(573): warning C4047: 'initializing' : 'int' differs in levels of indirection from 'int (__cdecl *)(AVFormatContext *,int,PayloadContext *,const char *)'
+     1>..\..\libavformat\rdt.c(573): warning C4113: 'PayloadContext *(__cdecl *)(void)' differs in parameter lists from 'int (__cdecl *)(AVFormatContext *,int,PayloadContext *,const char *)'
+     1>..\..\libavformat\rdt.c(573): warning C4047: 'initializing' : 'int (__cdecl *)(AVFormatContext *,int,PayloadContext *,const char *)' differs in levels of indirection from 'PayloadContext *(__cdecl *)(void)'
+     1>..\..\libavformat\rdt.c(573): warning C4028: formal parameter 1 different from declaration
+     1>..\..\libavformat\rdt.c(573): warning C4047: 'initializing' : 'PayloadContext *(__cdecl *)(void)' differs in levels of indirection from 'void (__cdecl *)(PayloadContext *)'
+     1>..\..\libavformat\rdt.c(573): warning C4113: 'int (__cdecl *)(AVFormatContext *,PayloadContext *,AVStream *,AVPacket *,uint32_t *,const uint8_t *,int,int)' differs in parameter lists from 'void (__cdecl *)(PayloadContext *)'
+     1>..\..\libavformat\rdt.c(574): warning C4047: 'initializing' : 'int' differs in levels of indirection from 'int (__cdecl *)(AVFormatContext *,int,PayloadContext *,const char *)'
+     1>..\..\libavformat\rdt.c(574): warning C4113: 'PayloadContext *(__cdecl *)(void)' differs in parameter lists from 'int (__cdecl *)(AVFormatContext *,int,PayloadContext *,const char *)'
+     1>..\..\libavformat\rdt.c(574): warning C4047: 'initializing' : 'int (__cdecl *)(AVFormatContext *,int,PayloadContext *,const char *)' differs in levels of indirection from 'PayloadContext *(__cdecl *)(void)'
+     1>..\..\libavformat\rdt.c(574): warning C4028: formal parameter 1 different from declaration
+     1>..\..\libavformat\rdt.c(574): warning C4047: 'initializing' : 'PayloadContext *(__cdecl *)(void)' differs in levels of indirection from 'void (__cdecl *)(PayloadContext *)'
+     1>..\..\libavformat\rdt.c(574): warning C4113: 'int (__cdecl *)(AVFormatContext *,PayloadContext *,AVStream *,AVPacket *,uint32_t *,const uint8_t *,int,int)' differs in parameter lists from 'void (__cdecl *)(PayloadContext *)'
+     1>..\..\libavformat\rdt.c(575): warning C4047: 'initializing' : 'int' differs in levels of indirection from 'int (__cdecl *)(AVFormatContext *,int,PayloadContext *,const char *)'
+     1>..\..\libavformat\rdt.c(575): warning C4113: 'PayloadContext *(__cdecl *)(void)' differs in parameter lists from 'int (__cdecl *)(AVFormatContext *,int,PayloadContext *,const char *)'
+     1>..\..\libavformat\rdt.c(575): warning C4047: 'initializing' : 'int (__cdecl *)(AVFormatContext *,int,PayloadContext *,const char *)' differs in levels of indirection from 'PayloadContext *(__cdecl *)(void)'
+     1>..\..\libavformat\rdt.c(575): warning C4028: formal parameter 1 different from declaration
+     1>..\..\libavformat\rdt.c(575): warning C4047: 'initializing' : 'PayloadContext *(__cdecl *)(void)' differs in levels of indirection from 'void (__cdecl *)(PayloadContext *)'
+     1>..\..\libavformat\rdt.c(575): warning C4113: 'int (__cdecl *)(AVFormatContext *,PayloadContext *,AVStream *,AVPacket *,uint32_t *,const uint8_t *,int,int)' differs in parameter lists from 'void (__cdecl *)(PayloadContext *)'
+         riff.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\xbox360/bswap.h(31): warning C4022: '__loadshortbytereverse' : pointer mismatch for actual parameter 2
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\xbox360/bswap.h(37): warning C4022: '__loadwordbytereverse' : pointer mismatch for actual parameter 2
+     1>..\..\libavformat\riff.c(442): warning C4244: 'function' : conversion from 'int64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\riff.c(610): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+         rl2.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\rl2.c(175): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\rl2.c(177): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\rl2.c(179): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\rl2.c(183): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\rl2.c(225): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\rl2.c(227): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\rl2.c(275): warning C4018: '<' : signed/unsigned mismatch
+         rm.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         rmdec.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\xbox360/bswap.h(31): warning C4022: '__loadshortbytereverse' : pointer mismatch for actual parameter 2
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\xbox360/bswap.h(37): warning C4022: '__loadwordbytereverse' : pointer mismatch for actual parameter 2
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\rmdec.c(195): warning C4018: '>=' : signed/unsigned mismatch
+     1>..\..\libavformat\rmdec.c(209): warning C4018: '<=' : signed/unsigned mismatch
+     1>..\..\libavformat\rmdec.c(232): warning C4018: '>=' : signed/unsigned mismatch
+     1>..\..\libavformat\rmdec.c(244): warning C4018: '<=' : signed/unsigned mismatch
+     1>..\..\libavformat\rmdec.c(305): warning C4244: 'function' : conversion from 'int64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\rmdec.c(324): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\rmdec.c(484): warning C4244: '=' : conversion from 'int64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\rmdec.c(562): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\rmdec.c(877): warning C4018: '<' : signed/unsigned mismatch
+         rmenc.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\rmenc.c(92): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\rmenc.c(140): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\rmenc.c(298): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>..\..\libavformat\rmenc.c(311): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\rmenc.c(439): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\rmenc.c(449): warning C4018: '<' : signed/unsigned mismatch
+         rpl.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\rpl.c(255): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\rpl.c(262): warning C4244: 'function' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\rpl.c(265): warning C4244: 'function' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\rpl.c(265): warning C4244: 'function' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\rpl.c(266): warning C4244: '+=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\rpl.c(289): warning C4018: '>=' : signed/unsigned mismatch
+         rtmppkt.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         rtp.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         sdp.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\sdp.c(520): warning C4018: '<' : signed/unsigned mismatch
+         seek.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\seek.c(120): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\seek.c(285): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\seek.c(335): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\seek.c(355): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\seek.c(423): warning C4018: '<' : signed/unsigned mismatch
+         Generating Code...
+         Compiling...
+         segafilm.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\segafilm.c(171): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\segafilm.c(175): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\segafilm.c(237): warning C4018: '>' : signed/unsigned mismatch
+     1>..\..\libavformat\segafilm.c(250): warning C4018: '<' : signed/unsigned mismatch
+         sierravmd.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\sierravmd.c(183): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\sierravmd.c(188): warning C4018: '<' : signed/unsigned mismatch
+         siff.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         smacker.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\smacker.c(146): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\smacker.c(149): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\smacker.c(238): warning C4018: '>=' : signed/unsigned mismatch
+     1>..\..\libavformat\smacker.c(247): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\smacker.c(259): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+         sol.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         soxdec.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\soxdec.c(110): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+         soxenc.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\soxenc.c(58): warning C4244: 'function' : conversion from 'int64_t' to 'unsigned int', possible loss of data
+     1>..\..\libavformat\soxenc.c(65): warning C4244: 'function' : conversion from 'int64_t' to 'unsigned int', possible loss of data
+         spdif.c
+         swfdec.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\swfdec.c(98): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\swfdec.c(121): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\swfdec.c(146): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\swfdec.c(158): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\swfdec.c(173): warning C4018: '<' : signed/unsigned mismatch
+         swfenc.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\swfenc.c(51): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\swfenc.c(186): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\swfenc.c(228): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+     1>..\..\libavformat\swfenc.c(481): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\swfenc.c(496): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+         thp.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\thp.c(108): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+         tiertexseq.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         timefilter.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         tmv.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         tta.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\tta.c(102): warning C4244: '=' : conversion from 'uint64_t' to 'int', possible loss of data
+     1>..\..\libavformat\tta.c(103): warning C4018: '<=' : signed/unsigned mismatch
+         txd.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         utils.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\utils.c(534): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(558): warning C4146: unary minus operator applied to unsigned type, result still unsigned
+     1>..\..\libavformat\utils.c(574): warning C4018: '<=' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(575): warning C4018: '>' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(575): warning C4018: '>' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(575): warning C4018: '>' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(576): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(579): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(727): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(991): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\utils.c(1182): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(1338): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(1362): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(1387): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(1565): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\utils.c(1735): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\utils.c(1739): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\utils.c(1766): warning C4244: 'return' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\utils.c(1824): warning C4018: '>' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(1841): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(1864): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(1895): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+     1>..\..\libavformat\utils.c(1906): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(1926): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(1940): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(1968): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(2025): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(2252): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(2296): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(2310): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(2343): warning C4018: '>=' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(2355): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(2398): warning C4244: 'function' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\utils.c(2432): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(2437): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(2536): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(2545): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(2546): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(2638): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(2677): warning C4090: 'function' : different 'const' qualifiers
+     1>..\..\libavformat\utils.c(2757): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(2778): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(2870): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(2944): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(2982): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\utils.c(3113): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(3211): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(3230): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(3234): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(3275): warning C4244: 'initializing' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\utils.c(3362): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\utils.c(3376): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\utils.c(3389): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(3399): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(3405): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(3411): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(3414): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\libavformat\utils.c(3889): warning C4018: '<' : signed/unsigned mismatch
+         vc1test.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         vc1testenc.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\vc1testenc.c(63): warning C4244: 'function' : conversion from 'int64_t' to 'unsigned int', possible loss of data
+         voc.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         Generating Code...
+         Compiling...
+         vocdec.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\vocdec.c(124): warning C4244: '-=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\vocdec.c(149): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\vocdec.c(159): warning C4090: 'initializing' : different 'const' qualifiers
+         vocenc.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\vocenc.c(92): warning C4090: 'initializing' : different 'const' qualifiers
+         vorbiscomment.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         vqf.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\vqf.c(243): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+         wav.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\wav.c(118): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\wav.c(254): warning C4244: 'function' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\wav.c(341): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+     1>..\..\libavformat\wav.c(460): warning C4244: 'function' : conversion from 'int64_t' to 'int', possible loss of data
+         wc3movie.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         westwood.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         wv.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         xa.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         yop.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+     1>..\..\libavformat\yop.c(194): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
+         yuv4mpeg.c
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(81): warning C4244: 'return' : conversion from 'double' to 'long', possible loss of data
+     1>c:\users\andre\downloads\xbmc-360\xbmc360\libraries\libffmpeg\libavutil\libm.h(102): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
+         Generating Code...
+       MakeDirsForLib:
+         Creating directory "C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\vcproj\libavformat\Release".
+       Lib:
+         C:\Program Files (x86)\Microsoft Xbox 360 SDK\bin\win32\Lib.exe /OUT:"C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\vcproj\libavformat\Release\libavformat.lib" /NOLOGO "Xbox 360\Release\4xm.obj"
+         "Xbox 360\Release\aacdec.obj"
+         "Xbox 360\Release\ac3dec.obj"
+         "Xbox 360\Release\adtsenc.obj"
+         "Xbox 360\Release\aea.obj"
+         "Xbox 360\Release\aiffdec.obj"
+         "Xbox 360\Release\aiffenc.obj"
+         "Xbox 360\Release\allformats.obj"
+         "Xbox 360\Release\amr.obj"
+         "Xbox 360\Release\anm.obj"
+         "Xbox 360\Release\apc.obj"
+         "Xbox 360\Release\ape.obj"
+         "Xbox 360\Release\apetag.obj"
+         "Xbox 360\Release\asf.obj"
+         "Xbox 360\Release\asfcrypt.obj"
+         "Xbox 360\Release\asfdec.obj"
+         "Xbox 360\Release\asfenc.obj"
+         "Xbox 360\Release\assdec.obj"
+         "Xbox 360\Release\assenc.obj"
+         "Xbox 360\Release\au.obj"
+         "Xbox 360\Release\audiointerleave.obj"
+         "Xbox 360\Release\avc.obj"
+         "Xbox 360\Release\avi.obj"
+         "Xbox 360\Release\avidec.obj"
+         "Xbox 360\Release\avienc.obj"
+         "Xbox 360\Release\avio.obj"
+         "Xbox 360\Release\aviobuf.obj"
+         "Xbox 360\Release\avlanguage.obj"
+         "Xbox 360\Release\avs.obj"
+         "Xbox 360\Release\bethsoftvid.obj"
+         "Xbox 360\Release\bfi.obj"
+         "Xbox 360\Release\bink.obj"
+         "Xbox 360\Release\c93.obj"
+         "Xbox 360\Release\caf.obj"
+         "Xbox 360\Release\cafdec.obj"
+         "Xbox 360\Release\cdg.obj"
+         "Xbox 360\Release\concat.obj"
+         "Xbox 360\Release\crcenc.obj"
+         "Xbox 360\Release\cutils.obj"
+         "Xbox 360\Release\daud.obj"
+         "Xbox 360\Release\DllEntry.obj"
+         "Xbox 360\Release\dsicin.obj"
+         "Xbox 360\Release\dtsdec.obj"
+         "Xbox 360\Release\dv.obj"
+         "Xbox 360\Release\dvenc.obj"
+         "Xbox 360\Release\dxa.obj"
+         "Xbox 360\Release\eacdata.obj"
+         "Xbox 360\Release\electronicarts.obj"
+         "Xbox 360\Release\ffmdec.obj"
+         "Xbox 360\Release\ffmenc.obj"
+         "Xbox 360\Release\file.obj"
+         "Xbox 360\Release\filmstripdec.obj"
+         "Xbox 360\Release\filmstripenc.obj"
+         "Xbox 360\Release\flacdec.obj"
+         "Xbox 360\Release\flacenc.obj"
+         "Xbox 360\Release\flacenc_header.obj"
+         "Xbox 360\Release\flic.obj"
+         "Xbox 360\Release\flvdec.obj"
+         "Xbox 360\Release\flvenc.obj"
+         "Xbox 360\Release\framecrcenc.obj"
+         "Xbox 360\Release\gif.obj"
+         "Xbox 360\Release\gxf.obj"
+         "Xbox 360\Release\gxfenc.obj"
+         "Xbox 360\Release\h261dec.obj"
+         "Xbox 360\Release\h263dec.obj"
+         "Xbox 360\Release\h264dec.obj"
+         "Xbox 360\Release\id3v1.obj"
+         "Xbox 360\Release\id3v2.obj"
+         "Xbox 360\Release\idcin.obj"
+         "Xbox 360\Release\iff.obj"
+         "Xbox 360\Release\img2.obj"
+         "Xbox 360\Release\ipmovie.obj"
+         "Xbox 360\Release\isom.obj"
+         "Xbox 360\Release\iss.obj"
+         "Xbox 360\Release\iv8.obj"
+         "Xbox 360\Release\libnut.obj"
+         "Xbox 360\Release\librtmp.obj"
+         "Xbox 360\Release\lmlm4.obj"
+         "Xbox 360\Release\m4vdec.obj"
+         "Xbox 360\Release\matroska.obj"
+         "Xbox 360\Release\matroskadec.obj"
+         "Xbox 360\Release\matroskaenc.obj"
+         "Xbox 360\Release\metadata.obj"
+         "Xbox 360\Release\metadata_compat.obj"
+         "Xbox 360\Release\mm.obj"
+         "Xbox 360\Release\mmf.obj"
+         "Xbox 360\Release\mov.obj"
+         "Xbox 360\Release\movenc.obj"
+         "Xbox 360\Release\movenchint.obj"
+         "Xbox 360\Release\mp3dec.obj"
+         "Xbox 360\Release\mpc.obj"
+         "Xbox 360\Release\mpc8.obj"
+         "Xbox 360\Release\mpeg.obj"
+         "Xbox 360\Release\mpegenc.obj"
+         "Xbox 360\Release\mpegts.obj"
+         "Xbox 360\Release\mpegtsenc.obj"
+         "Xbox 360\Release\mpegvideodec.obj"
+         "Xbox 360\Release\mpjpeg.obj"
+         "Xbox 360\Release\msnwc_tcp.obj"
+         "Xbox 360\Release\mtv.obj"
+         "Xbox 360\Release\mvi.obj"
+         "Xbox 360\Release\mxf.obj"
+         "Xbox 360\Release\mxfdec.obj"
+         "Xbox 360\Release\mxfenc.obj"
+         "Xbox 360\Release\ncdec.obj"
+         "Xbox 360\Release\nsvdec.obj"
+         "Xbox 360\Release\nut.obj"
+         "Xbox 360\Release\nutdec.obj"
+         "Xbox 360\Release\nutenc.obj"
+         "Xbox 360\Release\nuv.obj"
+         "Xbox 360\Release\oggdec.obj"
+         "Xbox 360\Release\oggenc.obj"
+         "Xbox 360\Release\oggparsedirac.obj"
+         "Xbox 360\Release\oggparseflac.obj"
+         "Xbox 360\Release\oggparseogm.obj"
+         "Xbox 360\Release\oggparseskeleton.obj"
+         "Xbox 360\Release\oggparsespeex.obj"
+         "Xbox 360\Release\oggparsetheora.obj"
+         "Xbox 360\Release\oggparsevorbis.obj"
+         "Xbox 360\Release\oma.obj"
+         "Xbox 360\Release\options.obj"
+         "Xbox 360\Release\os_support.obj"
+         "Xbox 360\Release\pcm.obj"
+         "Xbox 360\Release\pcmdec.obj"
+         "Xbox 360\Release\psxstr.obj"
+         "Xbox 360\Release\pva.obj"
+         "Xbox 360\Release\qcp.obj"
+         "Xbox 360\Release\r3d.obj"
+         "Xbox 360\Release\rawdec.obj"
+         "Xbox 360\Release\rdt.obj"
+         "Xbox 360\Release\riff.obj"
+         "Xbox 360\Release\rl2.obj"
+         "Xbox 360\Release\rm.obj"
+         "Xbox 360\Release\rmdec.obj"
+         "Xbox 360\Release\rmenc.obj"
+         "Xbox 360\Release\rpl.obj"
+         "Xbox 360\Release\rtmppkt.obj"
+         "Xbox 360\Release\rtp.obj"
+         "Xbox 360\Release\sdp.obj"
+         "Xbox 360\Release\seek.obj"
+         "Xbox 360\Release\segafilm.obj"
+         "Xbox 360\Release\sierravmd.obj"
+         "Xbox 360\Release\siff.obj"
+         "Xbox 360\Release\smacker.obj"
+         "Xbox 360\Release\sol.obj"
+         "Xbox 360\Release\soxdec.obj"
+         "Xbox 360\Release\soxenc.obj"
+         "Xbox 360\Release\spdif.obj"
+         "Xbox 360\Release\swfdec.obj"
+         "Xbox 360\Release\swfenc.obj"
+         "Xbox 360\Release\thp.obj"
+         "Xbox 360\Release\tiertexseq.obj"
+         "Xbox 360\Release\timefilter.obj"
+         "Xbox 360\Release\tmv.obj"
+         "Xbox 360\Release\tta.obj"
+         "Xbox 360\Release\txd.obj"
+         "Xbox 360\Release\utils.obj"
+         "Xbox 360\Release\vc1test.obj"
+         "Xbox 360\Release\vc1testenc.obj"
+         "Xbox 360\Release\voc.obj"
+         "Xbox 360\Release\vocdec.obj"
+         "Xbox 360\Release\vocenc.obj"
+         "Xbox 360\Release\vorbiscomment.obj"
+         "Xbox 360\Release\vqf.obj"
+         "Xbox 360\Release\wav.obj"
+         "Xbox 360\Release\wc3movie.obj"
+         "Xbox 360\Release\westwood.obj"
+         "Xbox 360\Release\wv.obj"
+         "Xbox 360\Release\xa.obj"
+         "Xbox 360\Release\yop.obj"
+         "Xbox 360\Release\yuv4mpeg.obj"
+     1>rmenc.obj : warning LNK4221: This object file does not define any previously undefined public symbols, so it will not be used by any link operation that consumes this library
+     1>os_support.obj : warning LNK4221: This object file does not define any previously undefined public symbols, so it will not be used by any link operation that consumes this library
+     1>nutenc.obj : warning LNK4221: This object file does not define any previously undefined public symbols, so it will not be used by any link operation that consumes this library
+     1>nutdec.obj : warning LNK4221: This object file does not define any previously undefined public symbols, so it will not be used by any link operation that consumes this library
+     1>matroskaenc.obj : warning LNK4221: This object file does not define any previously undefined public symbols, so it will not be used by any link operation that consumes this library
+     1>librtmp.obj : warning LNK4221: This object file does not define any previously undefined public symbols, so it will not be used by any link operation that consumes this library
+     1>libnut.obj : warning LNK4221: This object file does not define any previously undefined public symbols, so it will not be used by any link operation that consumes this library
+         libavformat.vcxproj -> C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\vcproj\libavformat\Release\libavformat.lib
+       FinalizeBuildStatus:
+         Deleting file "Xbox 360\Release\libavformat.unsuccessfulbuild".
+         Touching "Xbox 360\Release\libavformat.lastbuildstate".
+     1>Done Building Project "C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libffmpeg\vcproj\libavformat\libavformat.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:15.74

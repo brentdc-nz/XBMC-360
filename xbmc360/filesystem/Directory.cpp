@@ -68,3 +68,71 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
 	CLog::Log(LOGERROR, __FUNCTION__" - Error getting %s", strPath.c_str());  	
 	return false;
 }
+
+bool CDirectory::Create(const CStdString& strPath)
+{
+  try
+  {
+    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(strPath));
+    if (pDirectory.get())
+      if(pDirectory->Create(strPath.c_str()))
+        return true;
+  }
+#ifndef _XBOX
+  catch (const win32_exception &e)
+  {
+    e.writelog(__FUNCTION__);
+  }
+#endif
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
+  }
+  CLog::Log(LOGERROR, "%s - Error creating %s", __FUNCTION__, strPath.c_str());
+  return false;
+}
+
+bool CDirectory::Exists(const CStdString& strPath)
+{
+  try
+  {
+    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(strPath));
+    if (pDirectory.get())
+      return pDirectory->Exists(strPath.c_str());
+  }
+#ifndef _XBOX
+  catch (const win32_exception &e)
+  {
+    e.writelog(__FUNCTION__);
+  }
+#endif
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
+  }
+  CLog::Log(LOGERROR, "%s - Error checking for %s", __FUNCTION__, strPath.c_str());
+  return false;
+}
+
+bool CDirectory::Remove(const CStdString& strPath)
+{
+  try
+  {
+    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(strPath));
+    if (pDirectory.get())
+      if(pDirectory->Remove(strPath.c_str()))
+        return true;
+  }
+#ifndef _XBOX
+  catch (const win32_exception &e)
+  {
+    e.writelog(__FUNCTION__);
+  }
+#endif
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
+  }
+  CLog::Log(LOGERROR, "%s - Error removing %s", __FUNCTION__, strPath.c_str());
+  return false;
+}

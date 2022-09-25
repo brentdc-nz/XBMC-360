@@ -98,6 +98,29 @@ bool XMLUtils::GetBoolean(const TiXmlNode* pRootNode, const char* strTag, bool& 
 	return true;
 }
 
+bool XMLUtils::GetPath(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringValue)
+{
+  const TiXmlElement* pElement = pRootNode->FirstChildElement(strTag);
+  if (!pElement) return false;
+
+  int pathVersion = 0;
+  pElement->Attribute("pathversion", &pathVersion);
+  const char* encoded = pElement->Attribute("urlencoded");
+  const TiXmlNode* pNode = pElement->FirstChild();
+  if (pNode != NULL)
+  {
+    strStringValue = pNode->Value();
+#ifdef WIP    
+	if (encoded && stricmp(encoded,"yes") == 0)
+      CURL::Decode(strStringValue);
+    strStringValue = CSpecialProtocol::ReplaceOldPath(strStringValue, pathVersion);
+    return true;
+#endif
+  }
+  strStringValue.Empty();
+  return false;
+}
+
 void XMLUtils::SetString(TiXmlNode* pRootNode, const char *strTag, const CStdString& strValue)
 {
 	TiXmlElement newElement(strTag);

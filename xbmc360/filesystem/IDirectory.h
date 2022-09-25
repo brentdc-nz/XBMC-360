@@ -1,4 +1,4 @@
-#include "..\FileItem.h"
+#include "FileItem.h"
 
 #ifndef H_IDIRECTORY
 #define H_IDIRECTORY
@@ -19,6 +19,9 @@ public:
 	virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items) = 0;
 	bool IsAllowed(const CStdString& strFile);
 	void SetMask(const CStdString& strMask);
+	virtual bool Exists(const char* strPath) { return false; }
+	virtual bool Create(const char* strPath) { return false; }
+	virtual bool Remove(const char* strPath) { return false; }
 
 protected:
 	CStdString m_strFileMask; // Holds the file mask specified by SetMask()

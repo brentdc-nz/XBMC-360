@@ -87,13 +87,14 @@ public:
 
 	inline float GetFPS() const { return m_fps; };
 
+	CStdString GetTime(bool bSeconds = false);
+	CStdString GetDate(bool bNumbersOnly = false);
+	CStdString GetSystemHeatInfo(int info);
+
 protected:
 	int AddMultiInfo(const GUIInfo &info);
 	bool GetMultiInfoBool(const GUIInfo &info, int contextWindow = 0);
 
-	CStdString GetTime(bool bSeconds = false);
-	CStdString GetDate(bool bNumbersOnly = false);
-	CStdString GetSystemHeatInfo(int info);
 
 	__int64 GetPlayTime() const; // In ms
 	CStdString GetCurrentPlayTime(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
