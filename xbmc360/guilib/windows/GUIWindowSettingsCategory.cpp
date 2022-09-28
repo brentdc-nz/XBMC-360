@@ -120,7 +120,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
 */
 				CStdString strLanguagePath;
 				strLanguagePath.Format("D:\\language\\%s\\strings.xml", m_strNewLanguage.c_str());
-				g_localizeStrings.Load(strLanguagePath);
+				g_localizeStrings.Load(strLanguagePath, m_strNewLanguage); //Todo:
 			}
 
 /*			// Do we need to reload the skin font set

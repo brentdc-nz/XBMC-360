@@ -2,6 +2,8 @@
 #include "guilib\tinyxml\tinyxml.h"
 #include "utils\Log.h"
 #include "guilib\XMLUtils.h"
+#include "Settings.h"
+
 
 CAdvancedSettings g_advancedSettings;
 
@@ -30,7 +32,7 @@ bool CAdvancedSettings::Load()
 	//       don't take defaults in.  Defaults are set in the constructor above
 	CStdString advancedSettingsXML;
 
-	advancedSettingsXML = "D:\\advancedsettings.xml";//g_settings.GetUserDataItem("advancedsettings.xml"); //TODO
+	advancedSettingsXML = g_settings.GetUserDataItem("advancedsettings.xml"); //TODO
 	TiXmlDocument advancedXML;
 	if(!CFile::Exists(advancedSettingsXML))
 	{

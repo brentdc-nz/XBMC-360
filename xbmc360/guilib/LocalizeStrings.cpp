@@ -1,5 +1,5 @@
 #include "LocalizeStrings.h"
-#include "..\utils\Log.h"
+#include "utils\Log.h"
 #include "tinyxml\tinyxml.h"
 
 CLocalizeStrings g_localizeStrings;
@@ -9,12 +9,16 @@ extern CStdString g_LoadErrorStr;
 using namespace std;
 
 CLocalizeStrings::CLocalizeStrings(void)
-{}
+{
+
+}
 
 CLocalizeStrings::~CLocalizeStrings(void)
-{}
+{
 
-bool CLocalizeStrings::Load(const CStdString& strFileName)
+}
+
+bool CLocalizeStrings::Load(const CStdString& strFileName, const CStdString& strLanguage)
 {
 	m_vecStrings.erase(m_vecStrings.begin(), m_vecStrings.end());
     

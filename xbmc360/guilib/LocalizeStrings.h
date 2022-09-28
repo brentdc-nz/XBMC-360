@@ -1,8 +1,8 @@
 #ifndef GUILIB_LOCALIZESTRINGS_H
 #define GUILIB_LOCALIZESTRINGS_H
 
-#include "..\utils\Stdafx.h"
-#include "..\utils\StdString.h"
+#include "utils\Stdafx.h"
+#include "utils\StdString.h"
 #include <string>
 #include <map>
 
@@ -12,7 +12,7 @@ public:
 	CLocalizeStrings(void);
 	virtual ~CLocalizeStrings(void);
 	
-	bool Load(const CStdString& strFileName);
+	bool Load(const CStdString& strPathName, const CStdString& strLanguage);
 	const std::string& Get(DWORD dwCode) const;
 	void Clear();
 

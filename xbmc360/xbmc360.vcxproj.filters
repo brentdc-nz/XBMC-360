@@ -746,6 +746,15 @@
     <ClInclude Include="Profile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LangInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\CharsetConverter.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\ArabicShaping.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -1353,6 +1362,15 @@
     </ClCompile>
     <ClCompile Include="Profile.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LangInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\CharsetConverter.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\ArabicShaping.cpp">
+      <Filter>Source Files\utils</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

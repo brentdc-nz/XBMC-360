@@ -7,6 +7,12 @@
 #include "AdvancedSettings.h"
 #include "URL.h"
 #include "filesystem\File.h"
+#include "utils/Util.h"
+#include "guilib/GUIInfoManager.h"
+#include "guilib/GUIWindowManager.h"
+#include "LangInfo.h"
+
+using namespace DIRECTORY;
 
 class CSettings g_settings;
 extern CStdString g_LoadErrorStr;
@@ -31,7 +37,6 @@ void CSettings::Initialize()
 {
 	LoadExtensions();
 	m_iSystemTimeTotalUp = 0;
-	m_logFolder = "D:\\";
 }
 
 void CSettings::ClearSources()
@@ -46,18 +51,18 @@ void CSettings::ClearSources()
 bool CSettings::Load()
 {
 	// Load settings file...
-	CLog::Log(LOGNOTICE, "loading %s", SETTINGS_FILE);
+	CLog::Log(LOGNOTICE, "loading %s", GetSettingsFile());
 
-	if(!LoadSettings(SETTINGS_FILE))
+	if(!LoadSettings(GetSettingsFile()))
 	{
-		CLog::Log(LOGERROR, "Unable to load %s, creating new %s with default values", SETTINGS_FILE, SETTINGS_FILE);
+		CLog::Log(LOGERROR, "Unable to load %s, creating new %s with default values", GetSettingsFile(), GetSettingsFile());
 		Save();
 		return false;
 	}
 
 	ClearSources();
 
-	CStdString strXMLFile = SOURCES_FILE; //GetSourcesFile(); // TODO
+	CStdString strXMLFile = GetSourcesFile(); 
 
 	CLog::Log(LOGNOTICE, "%s", strXMLFile.c_str());
 	TiXmlDocument xmlDoc;
@@ -124,6 +129,16 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 	return true;
 }
 
+CStdString CSettings::GetSettingsFile() const
+{
+  CStdString settings;
+  if (m_currentProfile == 0)
+    settings = "special://masterprofile/guisettings.xml";
+  else
+    settings = "special://profile/guisettings.xml";
+  return settings;
+}
+
 void CSettings::Save() const
 {
 	if(g_application.IsStopping())
@@ -133,10 +148,22 @@ void CSettings::Save() const
 		// for every screen when the application is stopping.
 		return;
 	}
-	if (!SaveSettings(SETTINGS_FILE))
+	if (!SaveSettings(GetUserDataFolder()))
 	{
-		CLog::Log(LOGERROR, "Unable to save settings to D:\\settings.xml");
+		CLog::Log(LOGERROR, "Unable to save settings to special:\\xbmc-360\settings.xml");
 	}
+}
+
+CStdString CSettings::GetUserDataItem(const CStdString& strFile) const
+{
+  CStdString folder;
+  folder = "special://profile/"+strFile;
+  //check if item exists in the profile
+  //(either for folder or for a file (depending on slashAtEnd of strFile)
+  //otherwise return path to masterprofile
+  if ( (URIUtils::HasSlashAtEnd(folder) && !CDirectory::Exists(folder)) || !CFile::Exists(folder))
+    folder = "special://masterprofile/"+strFile;
+  return folder;
 }
 
 bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
@@ -179,6 +206,237 @@ bool CSettings::AddShare(const CStdString &type, const CMediaSource &share)
 	pShares->push_back(shareToAdd);
 
 	return SaveSources();
+}
+
+bool CSettings::LoadProfile(unsigned int index)
+{
+  unsigned int oldProfile = m_currentProfile;
+  m_currentProfile = index;
+  bool bSourcesXML=true;
+  CStdString strOldSkin = g_guiSettings.GetString("lookandfeel.skin");
+  CStdString strOldFont = g_guiSettings.GetString("lookandfeel.font");
+  CStdString strOldTheme = g_guiSettings.GetString("lookandfeel.skintheme");
+  CStdString strOldColors = g_guiSettings.GetString("lookandfeel.skincolors");
+
+  if (Load())
+  {
+#ifdef WIP
+    CreateProfileFolders();
+    // initialize our charset converter
+    g_charsetConverter.reset();
+#endif
+    // Load the langinfo to have user charset <-> utf-8 conversion
+    CStdString strLanguage = g_guiSettings.GetString("locale.language");
+    strLanguage[0] = toupper(strLanguage[0]);
+
+    CStdString strLangInfoPath;
+    strLangInfoPath.Format("special://xbmc-360/language/%s/langinfo.xml", strLanguage.c_str());
+    CLog::Log(LOGINFO, "load language info file: %s", strLangInfoPath);
+#ifdef WIP	
+	g_langInfo.Load(strLangInfoPath);
+#endif
+#ifdef _XBOX
+    CStdString strKeyboardLayoutConfigurationPath;
+    strKeyboardLayoutConfigurationPath.Format("special://xbmc-360/language/%s/keyboardmap.xml", strLanguage.c_str());
+    CLog::Log(LOGINFO, "load keyboard layout configuration info file: %s", strKeyboardLayoutConfigurationPath.c_str());
+#ifdef WIP
+    g_keyboardLayoutConfiguration.Load(strKeyboardLayoutConfigurationPath);
+#endif
+#endif
+#ifdef WIP
+    CButtonTranslator::GetInstance().Load();
+#endif
+    g_localizeStrings.Load("special://xbmc-360/language/", strLanguage);
+
+    g_infoManager.ResetCache();
+    g_infoManager.ResetLibraryBools();
+
+    // always reload the skin - we need it for the new language strings
+    g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
+#ifdef WIP
+    if (m_currentProfile != 0)
+    {
+      TiXmlDocument doc;
+      if (doc.LoadFile(URIUtils::AddFileToFolder(GetUserDataFolder(),"guisettings.xml")))
+        g_guiSettings.LoadMasterLock(doc.RootElement());
+	}
+   
+#ifdef HAS_XBOX_HARDWARE //TODO: Add cooler class
+    if (g_guiSettings.GetBool("system.autotemperature"))
+    {
+      CLog::Log(LOGNOTICE, "start fancontroller");
+      CFanController::Instance()->Start(g_guiSettings.GetInt("system.targettemperature"), g_guiSettings.GetInt("system.minfanspeed"));
+    }
+    else if (g_guiSettings.GetBool("system.fanspeedcontrol"))
+    {
+      CLog::Log(LOGNOTICE, "setting fanspeed");
+      CFanController::Instance()->SetFanSpeed(g_guiSettings.GetInt("system.fanspeed"));
+    }
+    g_application.StartLEDControl(false);
+#endif
+#endif
+    // to set labels - shares are reloaded
+#ifdef WIP    
+	CDetectDVDMedia::UpdateState();
+#endif    
+	// init windows
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_WINDOW_RESET);
+
+    g_windowManager.SendMessage(msg);
+#ifdef WIP    
+	CUtil::DeleteMusicDatabaseDirectoryCache();
+    CUtil::DeleteVideoDatabaseDirectoryCache();
+#endif
+    return true;
+  }
+
+  m_currentProfile = oldProfile;
+
+  return false;
+}
+
+CStdString CSettings::GetProfileUserDataFolder() const
+{
+  CStdString folder;
+  if (m_currentProfile == 0)
+    return GetUserDataFolder();
+
+  URIUtils::AddFileToFolder(GetUserDataFolder(), GetCurrentProfile().getDirectory(), folder);
+
+  return folder;
+}
+
+CStdString CSettings::GetUserDataFolder() const
+{
+  return GetMasterProfile().getDirectory();
+}
+
+CStdString CSettings::GetSkinFolder() const
+{
+  CStdString folder;
+
+  // Get the Current Skin Path
+  return GetSkinFolder(g_guiSettings.GetString("lookandfeel.skin"));
+}
+
+CStdString CSettings::GetSkinFolder(const CStdString &skinName) const
+{
+  CStdString folder;
+
+  // Get the Current Skin Path
+  URIUtils::AddFileToFolder("special://home/skin/", skinName, folder);
+  if ( ! CDirectory::Exists(folder) )
+    URIUtils::AddFileToFolder("special://xbmc-360/skin/", skinName, folder);
+
+  return folder;
+}
+
+CStdString CSettings::GetSourcesFile() const
+{
+  CStdString folder;
+  if (GetCurrentProfile().hasSources())
+    URIUtils::AddFileToFolder(GetProfileUserDataFolder(),"sources.xml",folder);
+  else
+    URIUtils::AddFileToFolder(GetUserDataFolder(),"sources.xml",folder);
+  return folder;
+}
+
+void CSettings::CreateProfileFolders()
+{
+#ifdef WIP
+  CDirectory::Create(GetDatabaseFolder());
+  CDirectory::Create(GetCDDBFolder());
+
+  // Thumbnails/
+  CDirectory::Create(GetThumbnailsFolder());
+  CDirectory::Create(GetMusicThumbFolder());
+  CDirectory::Create(GetMusicArtistThumbFolder());
+  CDirectory::Create(GetLastFMThumbFolder());
+  CDirectory::Create(GetVideoThumbFolder());
+  CDirectory::Create(GetVideoFanartFolder());
+  CDirectory::Create(GetMusicFanartFolder());
+  CDirectory::Create(GetBookmarksThumbFolder());
+  CDirectory::Create(GetProgramsThumbFolder());
+  CDirectory::Create(GetPicturesThumbFolder());
+  CDirectory::Create(GetGameSaveThumbFolder());
+
+  CLog::Log(LOGINFO, "thumbnails folder: %s", GetThumbnailsFolder().c_str());
+  for (unsigned int hex=0; hex < 16; hex++)
+  {
+    CStdString strHex;
+    strHex.Format("%x",hex);
+    CDirectory::Create(URIUtils::AddFileToFolder(GetPicturesThumbFolder(), strHex));
+    CDirectory::Create(URIUtils::AddFileToFolder(GetMusicThumbFolder(), strHex));
+    CDirectory::Create(URIUtils::AddFileToFolder(GetVideoThumbFolder(), strHex));
+    CDirectory::Create(URIUtils::AddFileToFolder(GetProgramsThumbFolder(), strHex));
+ 
+  }
+   CDirectory::Create("special://profile/visualisations");
+#endif
+}
+
+static CProfile emptyProfile;
+
+const CProfile &CSettings::GetMasterProfile() const
+{
+  if (GetNumProfiles())
+    return m_vecProfiles[0];
+  CLog::Log(LOGERROR, "%s - master profile requested while none exists", __FUNCTION__);
+  return emptyProfile;
+}
+
+const CProfile &CSettings::GetCurrentProfile() const
+{
+  if (m_currentProfile < m_vecProfiles.size())
+    return m_vecProfiles[m_currentProfile];
+  CLog::Log(LOGERROR, "%s - last profile index (%u) is outside the valid range (%u)", __FUNCTION__, m_currentProfile, m_vecProfiles.size());
+  return emptyProfile;
+}
+
+void CSettings::UpdateCurrentProfileDate()
+{
+  if (m_currentProfile < m_vecProfiles.size())
+    m_vecProfiles[m_currentProfile].setDate();
+}
+
+const CProfile *CSettings::GetProfile(unsigned int index) const
+{
+  if (index < GetNumProfiles())
+    return &m_vecProfiles[index];
+  return NULL;
+}
+
+CProfile *CSettings::GetProfile(unsigned int index)
+{
+  if (index < GetNumProfiles())
+    return &m_vecProfiles[index];
+  return NULL;
+}
+
+unsigned int CSettings::GetNumProfiles() const
+{
+  return m_vecProfiles.size();
+}
+
+int CSettings::GetProfileIndex(const CStdString &name) const
+{
+  for (unsigned int i = 0; i < m_vecProfiles.size(); i++)
+    if (m_vecProfiles[i].getName().Equals(name))
+      return i;
+  return -1;
+}
+
+void CSettings::AddProfile(const CProfile &profile)
+{
+  m_vecProfiles.push_back(profile);
+}
+
+void CSettings::LoadMasterForLogin()
+{
+  // save the previous user
+  m_lastUsedProfile = m_currentProfile;
+  if (m_currentProfile != 0)
+    LoadProfile(0);
 }
 
 VECSOURCES *CSettings::GetSourcesFromType(const CStdString &type)
@@ -298,7 +556,7 @@ bool CSettings::SaveSources()
 	SetSources(pRoot, "music", m_vecMusicSources);
 	SetSources(pRoot, "pictures", m_vecPictureSources);
 
-	return doc.SaveFile(/*GetSourcesFile()*/SOURCES_FILE); //TODO
+	return doc.SaveFile(GetUserDataFolder());
 }
 
 bool CSettings::GetSource(const CStdString &category, const TiXmlNode *source, CMediaSource &share)

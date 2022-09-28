@@ -1,10 +1,10 @@
 #include "GUIInfoManager.h"
 #include "GUIWindowManager.h"
-#include "..\utils\Log.h"
-#include "..\Application.h"
+#include "utils\Log.h"
+#include "Application.h"
 #include "LocalizeStrings.h"
-#include "..\xbox\XBKernalExports.h"
-#include "..\utils\StringUtils.h"
+#include "xbox\XBKernalExports.h"
+#include "utils\StringUtils.h"
 
 #include <vector>
 
@@ -72,6 +72,14 @@ int CGUIInfoManager::TranslateString(const CStdString &condition)
 	}
 	// Just single command.
 	return TranslateSingleString(strCondition);
+}
+
+void CGUIInfoManager::ResetLibraryBools()
+{
+  m_libraryHasMusic = -1;
+  m_libraryHasMovies = -1;
+  m_libraryHasTVShows = -1;
+  m_libraryHasMusicVideos = -1;
 }
 
 // Translates a string as given by the skin into an int that we e
@@ -189,6 +197,21 @@ bool CGUIInfoManager::EvaluateBooleanExpression(const CCombinedValue &expression
 	if (save.size() != 1) return false;
 	result = save.top();
 	return true;
+}
+
+void CGUIInfoManager::ResetCache()
+{
+  CSingleLock lock(m_critInfo);
+  m_boolCache.clear();
+  // reset any animation triggers as well
+  m_containerMoves.clear();
+  m_updateTime++;
+}
+
+void CGUIInfoManager::ResetPersistentCache()
+{
+  CSingleLock lock(m_critInfo);
+  m_persistentBoolCache.clear();
 }
 
 int CGUIInfoManager::TranslateBooleanExpression(const CStdString &expression)

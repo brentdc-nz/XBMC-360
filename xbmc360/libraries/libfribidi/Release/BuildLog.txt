@@ -1,0 +1,71 @@
+﻿Build started 27/09/2022 21:08:43.
+     1>Project "C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libfribidi\libfribidi.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "Release\libfribidi.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Xbox 360 SDK\bin\win32\CL.exe /c /I./ /Zi /nologo /W3 /WX- /Ox /Os /D NDEBUG /D _XBOX /D _LIB /D _MBCS /GF /Gm- /MT /GS- /Gy /fp:fast /fp:except- /Zc:wchar_t /Zc:forScope /GR- /openmp- /Fo"Release\\" /Fd"Release\vc100.pdb" /TC fribidi.c fribidi_char_sets.c fribidi_char_sets_cap_rtl.c fribidi_char_sets_cp1255.c fribidi_char_sets_cp1256.c fribidi_char_sets_isiri_3342.c fribidi_char_sets_iso8859_6.c fribidi_char_sets_iso8859_8.c fribidi_char_sets_utf8.c fribidi_char_type.c fribidi_create_char_types.c fribidi_create_mirroring.c fribidi_main.c fribidi_mem.c fribidi_mirroring.c fribidi_types.c fribidi_utils.c fribidi_wcwidth.c getopt.c getopt1.c packtab.c /FI"C:\Program Files (x86)\Microsoft Xbox 360 SDK\\include\xbox\xbox_intellisense_platform.h"
+         fribidi.c
+     1>fribidi.c(935): warning C4244: '=' : conversion from 'FriBidiCharType' to 'FriBidiLevel', possible loss of data
+         fribidi_char_sets.c
+         fribidi_char_sets_cap_rtl.c
+         fribidi_char_sets_cp1255.c
+         fribidi_char_sets_cp1256.c
+         fribidi_char_sets_isiri_3342.c
+         fribidi_char_sets_iso8859_6.c
+         fribidi_char_sets_iso8859_8.c
+         fribidi_char_sets_utf8.c
+     1>fribidi_char_sets_utf8.c(79): warning C4244: '=' : conversion from 'FriBidiChar' to 'char', possible loss of data
+         fribidi_char_type.c
+         fribidi_create_char_types.c
+         fribidi_create_mirroring.c
+         fribidi_main.c
+     1>fribidi_main.c(187): warning C4013: 'getenv' undefined; assuming extern returning int
+     1>fribidi_main.c(187): warning C4047: '=' : 'char *' differs in levels of indirection from 'int'
+         fribidi_mem.c
+         fribidi_mirroring.c
+         fribidi_types.c
+         fribidi_utils.c
+         fribidi_wcwidth.c
+     1>fribidi_wcwidth.c(77): warning C4018: '<' : signed/unsigned mismatch
+     1>fribidi_wcwidth.c(77): warning C4018: '>' : signed/unsigned mismatch
+     1>fribidi_wcwidth.c(82): warning C4018: '>' : signed/unsigned mismatch
+     1>fribidi_wcwidth.c(84): warning C4018: '<' : signed/unsigned mismatch
+         getopt.c
+         getopt1.c
+         Generating Code...
+         Compiling...
+         packtab.c
+         Generating Code...
+       Lib:
+         C:\Program Files (x86)\Microsoft Xbox 360 SDK\bin\win32\Lib.exe /OUT:"C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libfribidi\Release\libfribidi.lib" /NOLOGO Release\fribidi.obj
+         Release\fribidi_char_sets.obj
+         Release\fribidi_char_sets_cap_rtl.obj
+         Release\fribidi_char_sets_cp1255.obj
+         Release\fribidi_char_sets_cp1256.obj
+         Release\fribidi_char_sets_isiri_3342.obj
+         Release\fribidi_char_sets_iso8859_6.obj
+         Release\fribidi_char_sets_iso8859_8.obj
+         Release\fribidi_char_sets_utf8.obj
+         Release\fribidi_char_type.obj
+         Release\fribidi_create_char_types.obj
+         Release\fribidi_create_mirroring.obj
+         Release\fribidi_main.obj
+         Release\fribidi_mem.obj
+         Release\fribidi_mirroring.obj
+         Release\fribidi_types.obj
+         Release\fribidi_utils.obj
+         Release\fribidi_wcwidth.obj
+         Release\getopt.obj
+         Release\getopt1.obj
+         Release\packtab.obj
+     1>fribidi_create_mirroring.obj : warning LNK4006: main already defined in fribidi_main.obj; second definition ignored
+     1>fribidi_create_char_types.obj : warning LNK4006: main already defined in fribidi_main.obj; second definition ignored
+         libfribidi.vcxproj -> C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libfribidi\Release\libfribidi.lib
+       FinalizeBuildStatus:
+         Deleting file "Release\libfribidi.unsuccessfulbuild".
+         Touching "Release\libfribidi.lastbuildstate".
+     1>Done Building Project "C:\Users\andre\Downloads\XBMC-360\xbmc360\libraries\libfribidi\libfribidi.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.74

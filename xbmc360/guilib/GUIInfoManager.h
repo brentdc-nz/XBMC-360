@@ -1,11 +1,12 @@
 #ifndef CGUIINFOMANAGER_H
 #define CGUIINFOMANAGER_H
 
-#include "..\utils\StdString.h"
-#include "..\utils\Stdafx.h"
-#include "..\utils\TimeUtils.h"
-
+#include "utils\StdString.h"
+#include "utils\Stdafx.h"
+#include "utils\TimeUtils.h"
+#include "utils\SingleLock.h"
 #include <list>
+#include <map>
 
 #define KB  (1024)          // 1 KiloByte (1KB)   1024 Byte (2^10 Byte)
 #define MB  (1024*KB)       // 1 MegaByte (1MB)   1024 KB (2^10 KB)
@@ -82,8 +83,14 @@ public:
 	int GetInt(int info, int contextWindow = 0) const;
 	void UpdateFPS();
 
+	void ResetCache();
+    void ResetPersistentCache();
+
 	void SetShowCodec(bool showcodec) { m_playerShowCodec = showcodec; };
 	void ToggleShowCodec() { m_playerShowCodec = !m_playerShowCodec; };
+
+	void ResetLibraryBools();
+
 
 	inline float GetFPS() const { return m_fps; };
 
@@ -94,7 +101,16 @@ public:
 protected:
 	int AddMultiInfo(const GUIInfo &info);
 	bool GetMultiInfoBool(const GUIInfo &info, int contextWindow = 0);
+	std::map<int, bool> m_boolCache, m_persistentBoolCache;//, m_CombinedValues;
+	unsigned int m_updateTime;
+	std::map<int, int> m_containerMoves;  // direction of list moving
+	CCriticalSection m_critInfo;
 
+	
+	int m_libraryHasMusic;
+    int m_libraryHasMovies;
+    int m_libraryHasTVShows;
+    int m_libraryHasMusicVideos;
 
 	__int64 GetPlayTime() const; // In ms
 	CStdString GetCurrentPlayTime(TIME_FORMAT format = TIME_FORMAT_GUESS) const;

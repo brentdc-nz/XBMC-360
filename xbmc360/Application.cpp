@@ -154,7 +154,7 @@ bool CApplication::Create()
 	strLanguagePath.Format("D:\\language\\%s\\strings.xml", g_guiSettings.GetString("LookAndFeel.Language"));
 
 	CLog::Log(LOGINFO, "Load language file:%s", strLanguagePath.c_str());
-	if(!g_localizeStrings.Load( strLanguagePath ))
+	if(!g_localizeStrings.Load( strLanguagePath, g_guiSettings.GetString("LookAndFeel.Language")))
 		FatalErrorHandler(true);
 
 	CLog::Log(LOGINFO, "Load keymapping");

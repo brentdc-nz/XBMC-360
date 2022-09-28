@@ -3,6 +3,7 @@
 
 #include "utils\StdString.h"
 #include "filesystem\File.h"
+
 using XFILE::CFile;
 
 class CAdvancedSettings
@@ -27,6 +28,7 @@ public:
 	CStdString m_videoPPFFmpegDeint;
 	CStdString m_videoPPFFmpegPostProc;
 	int m_iSkipLoopFilter;
+	std::vector<CStdString> m_vecTokens;
 };
 
 extern CAdvancedSettings g_advancedSettings;

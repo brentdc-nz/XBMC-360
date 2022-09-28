@@ -258,7 +258,7 @@
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PreprocessorDefinitions>NDEBUG;_XBOX;TIXML_USE_STL;USE_XBMC_FILESYSTEM</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\xbmc360;..\xbmc360\libraries\libffmpeg;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\xbmc360;..\xbmc360\libraries\libffmpeg;..\xbmc360\libraries\libfribidi;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <PreschedulingOptimization>true</PreschedulingOptimization>
@@ -276,8 +276,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
       <SetChecksum>true</SetChecksum>
-      <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirender.lib;xmediad2.lib;xonline.lib;libavformat.lib;libavfilter.lib;libavutil.lib;libswscale.lib;libavcodec.lib;pthreads.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\xbmc360\libraries\libffmpeg\vcproj\libavcodec\Xbox 360\Release;..\xbmc360\libraries\libffmpeg\vcproj\libswscale\Xbox 360\Release;..\xbmc360\libraries\libffmpeg\vcproj\libavutil\Xbox 360\Release;..\xbmc360\libraries\libffmpeg\vcproj\libavfilter\Xbox 360\Release;..\xbmc360\libraries\libffmpeg\vcproj\libavformat\Xbox 360\Release;..\xbmc360\libraries\libffmpeg\vcproj\pthreads\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirender.lib;xmediad2.lib;xonline.lib;libavformat.lib;libavfilter.lib;libavutil.lib;libswscale.lib;libavcodec.lib;pthreads.lib;libfribidi.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\xbmc360\libraries\libffmpeg\vcproj\libavcodec\Xbox 360\Release;..\xbmc360\libraries\libffmpeg\vcproj\libswscale\Xbox 360\Release;..\xbmc360\libraries\libffmpeg\vcproj\libavutil\Xbox 360\Release;..\xbmc360\libraries\libffmpeg\vcproj\libavfilter\Xbox 360\Release;..\xbmc360\libraries\libffmpeg\vcproj\libavformat\Xbox 360\Release;..\xbmc360\libraries\libffmpeg\vcproj\pthreads\Release;..\xbmc360\libraries\libfribidi\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Deploy>
       <DeploymentType>CopyToHardDrive</DeploymentType>
@@ -442,6 +442,7 @@
     <ClInclude Include="guilib\windows\GUIWindowVideoFiles.h" />
     <ClInclude Include="guilib\XMLUtils.h" />
     <ClInclude Include="GUISettings.h" />
+    <ClInclude Include="LangInfo.h" />
     <ClInclude Include="libraries\libsmb2\aes.h" />
     <ClInclude Include="libraries\libsmb2\aes128ccm.h" />
     <ClInclude Include="libraries\libsmb2\compat.h" />
@@ -474,9 +475,13 @@
     <ClInclude Include="SettingsControls.h" />
     <ClInclude Include="ThumbLoader.h" />
     <ClInclude Include="URL.h" />
+    <ClInclude Include="utils\ArabicShaping.h" />
     <ClInclude Include="utils\asprintf.h" />
     <ClInclude Include="utils\AutoPtrHandle.h" />
     <ClInclude Include="utils\BitstreamStats.h" />
+    <ClInclude Include="utils\CharsetConverter.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="utils\CRC_32.h" />
     <ClInclude Include="utils\CriticalSection.h" />
     <ClInclude Include="utils\Event.h" />
@@ -631,6 +636,7 @@
     <ClCompile Include="guilib\windows\GUIWindowVideoFiles.cpp" />
     <ClCompile Include="guilib\XMLUtils.cpp" />
     <ClCompile Include="GUISettings.cpp" />
+    <ClCompile Include="LangInfo.cpp" />
     <ClCompile Include="libraries\libsmb2\aes.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
@@ -852,6 +858,9 @@
     <ClCompile Include="SettingsControls.cpp" />
     <ClCompile Include="ThumbLoader.cpp" />
     <ClCompile Include="URL.cpp" />
+    <ClCompile Include="utils\ArabicShaping.cpp">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsCpp</CompileAs>
+    </ClCompile>
     <ClCompile Include="utils\asprintf.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
@@ -859,6 +868,9 @@
     </ClCompile>
     <ClCompile Include="utils\AutoPtrHandle.cpp" />
     <ClCompile Include="utils\BitstreamStats.cpp" />
+    <ClCompile Include="utils\CharsetConverter.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="utils\CRC_32.cpp" />
     <ClCompile Include="utils\CriticalSection.cpp" />
     <ClCompile Include="utils\Event.cpp" />
