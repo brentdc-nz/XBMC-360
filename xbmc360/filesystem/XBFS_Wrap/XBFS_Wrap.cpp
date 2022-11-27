@@ -1,10 +1,10 @@
 #include "XBFS_Wrap.h"
 #include "fcntl.h"
-#include "..\..\utils\log.h"
+#include "utils\Log.h"
 #include "EmuFileWrapper.h"
 #include "io.h"
 #include <sys/stat.h>
-#include "..\..\utils\Util.h"
+#include "utils\Util.h"
 
 CEmuFileWrapper g_emuFileWrapper;
 

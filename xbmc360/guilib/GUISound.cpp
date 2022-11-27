@@ -60,7 +60,7 @@ bool CGUISound::LoadWavFile(const CStdString& strFileName)
 	if(!pXAudio2)
 		return false;
 
-	CStdString strSoundsPath = g_graphicsContext.GetMediaDir() + "sounds\\" + strFileName;
+	CStdString strSoundsPath = g_graphicsContext.GetMediaDir() + "\\sounds\\" + strFileName;
 
 	ATG::WaveFile WaveFile;
 

@@ -1,32 +1,14 @@
 #include "Util.h"
 #include "Log.h"
-#include "..\ButtonTranslator.h"
-#include "..\guilib\GUIWindowManager.h"
-#include "..\Application.h"
-#include "..\URL.h"
-#include "..\filesystem\MultiPathDirectory.h"
-
-namespace MathUtils
-{
-	inline int round_int(double x)
-	{
-		return (x > 0) ? (int)floor(x + 0.5) : (int)ceil(x - 0.5);
-	}
-
-	inline double rint(double x)
-	{
-		return floor(x+.5);
-	}
-
-	void hack()
-	{
-		// Stupid hack to keep compiler from dropping these
-		// functions as unused
-		MathUtils::round_int(0.0);
-		MathUtils::rint(0.0);
-	}
-
-} // CMathUtils namespace
+#include "ButtonTranslator.h"
+#include "guilib\GUIWindowManager.h"
+#include "Application.h"
+#include "URL.h"
+#include "filesystem\MultiPathDirectory.h"
+#include "URIUtils.h"
+#include "Settings.h"
+#include "guilib\LocalizeStrings.h"
+//#include "RegExp.h" // TODO
 
 typedef struct
 {
@@ -73,36 +55,124 @@ const BUILT_IN commands[] =
 	"Dialog.Close","Close a dialog"
 };
 
-bool CUtil::IsBuiltIn(const CStdString& execString)
+void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function, vector<CStdString> &parameters)
 {
-	CStdString function, param;
-	SplitExecFunction(execString, function, param);
-	for (int i = 0; i < sizeof(commands)/sizeof(BUILT_IN); i++)
-	{
-		if (function.CompareNoCase(commands[i].command) == 0)
-			return true;
-	}
-	return false;
-}
-
-void CUtil::SplitExecFunction(const CStdString &execString, CStdString &strFunction, CStdString &strParam)
-{
-	strParam = "";
-
+	CStdString paramString;
+ 
 	int iPos = execString.Find("(");
 	int iPos2 = execString.ReverseFind(")");
+	
 	if (iPos > 0 && iPos2 > 0)
 	{
-		strParam = execString.Mid(iPos + 1, iPos2 - iPos - 1);
-		strFunction = execString.Left(iPos);
+		paramString = execString.Mid(iPos + 1, iPos2 - iPos - 1);
+		function = execString.Left(iPos);
 	}
 	else
-		strFunction = execString;
+		function = execString;
 
-	//xbmc is the standard prefix.. so allways remove this
-	//all other commands with go through in full
-	if( strFunction.Left(5).Equals("xbmc.", false) )
-		strFunction.Delete(0, 5);
+	// Remove any whitespace, and the standard prefix (if it exists)
+	function.Trim();
+
+	if( function.Left(5).Equals("xbmc.", false) )
+		function.Delete(0, 5);
+
+	SplitParams(paramString, parameters);
+}
+
+void CUtil::SplitParams(const CStdString &paramString, std::vector<CStdString> &parameters)
+{
+	bool inQuotes = false;
+	bool lastEscaped = false; // Only every second character can be escaped
+	int inFunction = 0;
+	size_t whiteSpacePos = 0;
+	CStdString parameter;
+	parameters.clear();
+
+	for (size_t pos = 0; pos < paramString.size(); pos++)
+	{
+		char ch = paramString[pos];
+		bool escaped = (pos > 0 && paramString[pos - 1] == '\\' && !lastEscaped);
+		lastEscaped = escaped;
+
+		if (inQuotes)
+		{
+			// If we're in a quote, we accept everything until the closing quote
+			if (ch == '\"' && !escaped)
+			{
+				// Finished a quote - no need to add the end quote to our string
+				inQuotes = false;
+			}
+		}
+		else
+		{
+			// Not in a quote, so check if we should be starting one
+			if (ch == '\"' && !escaped)
+			{
+				// Start of quote - no need to add the quote to our string
+				inQuotes = true;
+			}
+			if (inFunction && ch == ')')
+			{
+				// End of a function
+				inFunction--;
+			}
+			if (ch == '(')
+			{
+				// Start of function
+				inFunction++;
+			}
+
+			if (!inFunction && ch == ',')
+			{
+				// Not in a function, so a comma signfies the end of this parameter
+				if (whiteSpacePos)
+					parameter = parameter.Left(whiteSpacePos);
+
+				// Trim off start and end quotes
+				if (parameter.GetLength() > 1 && parameter[0] == '\"' && parameter[parameter.GetLength() - 1] == '\"')
+					parameter = parameter.Mid(1,parameter.GetLength() - 2);
+
+				parameters.push_back(parameter);
+				parameter.Empty();
+				whiteSpacePos = 0;
+				continue;
+			}
+		}
+
+		if ((ch == '\"' || ch == '\\') && escaped)
+		{
+			// Escaped quote or backslash
+			parameter[parameter.size()-1] = ch;
+			continue;
+		}
+
+		// Whitespace handling - We skip any whitespace at the left or right of an unquoted parameter
+		if (ch == ' ' && !inQuotes)
+		{
+			if (parameter.IsEmpty()) // skip whitespace on left
+				continue;
+
+			if (!whiteSpacePos) // Make a note of where whitespace starts on the right
+				whiteSpacePos = parameter.size();
+		}
+		else
+			whiteSpacePos = 0;
+
+		parameter += ch;
+	}
+
+	if (inFunction || inQuotes)
+		CLog::Log(LOGWARNING, "%s(%s) - end of string while searching for ) or \"", __FUNCTION__, paramString.c_str());
+
+	if (whiteSpacePos)
+		parameter = parameter.Left(whiteSpacePos);
+
+	// Trim off start and end quotes
+	if (parameter.GetLength() > 1 && parameter[0] == '\"' && parameter[parameter.GetLength() - 1] == '\"')
+		parameter = parameter.Mid(1,parameter.GetLength() - 2);
+
+	if (!parameter.IsEmpty() || parameters.size())
+		parameters.push_back(parameter);
 }
 
 // Returns a filename given an url
@@ -132,84 +202,29 @@ const CStdString CUtil::GetFileName(const CStdString& strFileNameAndPath)
 CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bIsFolder /* = false */)
 {
 	// Use above to get the filename
-	CStdString strFilename = GetFileName(strFileNameAndPath);
+	CStdString path(strFileNameAndPath);
+	URIUtils::RemoveSlashAtEnd(path);
+	CStdString strFilename = URIUtils::GetFileName(path);
 
-	// Now remove the extension if needed
-/*	if(g_guiSettings.GetBool("filelists.hideextensions") && !bIsFolder)
+	CURL url(strFileNameAndPath);
+	CStdString strHostname = url.GetHostName();
+
+	// Windows SMB Network (SMB)
+	if (url.GetProtocol() == "smb" && strFilename.IsEmpty())
 	{
-		RemoveExtension(strFilename);
-		return strFilename;
+		if (url.GetHostName().IsEmpty())
+		{
+			strFilename = g_localizeStrings.Get(20171);
+		}
+		else
+		{
+			strFilename = url.GetHostName();
+		}
 	}
-*/
+
+	// URLDecode since the original path may be an URL
+	CURL::Decode(strFilename);
 	return strFilename;
-}
-
-int CUtil::ExecBuiltIn(const CStdString& execString)
-{
-	// Get the text after the "XBMC."
-	CStdString execute, parameter;
-	SplitExecFunction(execString, execute, parameter);
-	CStdString strParameterCaseIntact = parameter;
-	parameter.ToLower();
-	execute.ToLower();
-  
-	if(execute.Equals("reboot") || execute.Equals("restart")) // Will reboot the Xbox, aka cold reboot
-	{
-		g_application.getApplicationMessenger().Reboot();
-	}
-	else if(execute.Equals("shutdown"))
-	{
-		g_application.getApplicationMessenger().Shutdown();
-	}
-	else if (execute.Equals("activatewindow") || execute.Equals("replacewindow"))
-	{
-		// Get the parameters
-		CStdString strWindow;
-		CStdString strPath;
-
-		// Split the parameter on first comma
-		int iPos = parameter.Find(",");
-		if(iPos == 0)
-		{
-			// Error condition missing path
-			// XMBC.ActivateWindow(1,)
-			CLog::Log(LOGERROR, "Activate/ReplaceWindow called with invalid parameter: %s", parameter.c_str());
-			return -7;
-		}
-		else if(iPos < 0)
-		{
-			// No path parameter
-			// XBMC.ActivateWindow(5001)
-			strWindow = parameter;
-		}
-		else
-		{
-			// Path parameter included
-			// XBMC.ActivateWindow(5001,F:\Music\)
-			strWindow = parameter.Left(iPos);
-			strPath = parameter.Mid(iPos + 1);
-		}
-
-		// Confirm the window destination is actually a number
-		// before switching
-		int iWindow = g_buttonTranslator.TranslateWindowString(strWindow.c_str());
-		if(iWindow != WINDOW_INVALID)
-		{
-			// Disable the screensaver
-			g_application.ResetScreenSaverWindow();
-			if(execute.Equals("activatewindow"))
-				g_windowManager.ActivateWindow(iWindow/*, strPath*/);
-			else  
-				// Replace Window
-				g_windowManager.ChangeActiveWindow(iWindow/*, strPath*/);
-		}
-		else
-		{
-			CLog::Log(LOGERROR, "Activate/ReplaceWindow called with invalid destination window: %s", strWindow.c_str());
-			return false;
-		}
-	}
-	return 0;
 }
 
 bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
@@ -341,128 +356,8 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSOURCES& vecShares, b
 	if(strPath1.IsEmpty())
 		return -1;
 
-	CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, testing original path/name [%s]", strPath1.c_str());
 
-	// Copy as we may change strPath
-	CStdString strPath = strPath1;
-
-	// Check for special protocols
-	CURL checkURL(strPath);
-
-	if(checkURL.GetProtocol() == "multipath")
-		strPath = DIRECTORY::CMultiPathDirectory::GetFirstPath(strPath);
-
-	CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, testing for matching name [%s]", strPath.c_str());
-	
-	bIsBookmarkName = false;
-	int iIndex = -1;
-	int iLength = -1;
-	
-	// We first test the NAME of a bookmark
-	for(int i = 0; i < (int)vecShares.size(); ++i)
-	{
-		CMediaSource share = vecShares.at(i);
-		CStdString strName = share.strName;
-/*
-		// Special cases for DVDs
-		if(IsOnDVD(share.strPath)) //TODO
-		{
-			if(IsOnDVD(strPath))
-				return i;
-
-			// Not a path, so we need to modify the bookmark name
-			// since we add the drive status and disc name to the bookmark
-
-			// "Name (Drive Status/Disc Name)"
-			int iPos = strName.ReverseFind('(');
-			if(iPos > 1)
-				strName = strName.Mid(0, iPos - 1);
-		}
-*/
-		CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, comparing name [%s]", strName.c_str());
-
-		if(strPath.Equals(strName))
-		{
-			bIsBookmarkName = true;
-			return i;
-		}
-	}
-
-	// Now test the paths
-
-	// Remove user details, and ensure path only uses forward slashes
-	// and ends with a trailing slash so as not to match a substring
-	CURL urlDest(strPath);
-	CStdString strDest;
-	urlDest.GetURLWithoutUserDetails(strDest);
-	ForceForwardSlashes(strDest);
-
-	if(!HasSlashAtEnd(strDest))
-		strDest += "/";
-
-	int iLenPath = strDest.size();
-
-	CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, testing url [%s]", strDest.c_str());
-
-	for(int i = 0; i < (int)vecShares.size(); ++i)
-	{
-		CMediaSource share = vecShares.at(i);
-
-		// Doesnt match a name, so try the bookmark path
-		vector<CStdString> vecPaths;
-
-		// Add any concatenated paths if they exist
-		if(share.vecPaths.size() > 0)
-			vecPaths = share.vecPaths;
-
-		// Add the actual share path at the front of the vector
-		vecPaths.insert(vecPaths.begin(), share.strPath);
-
-		// Test each path
-		for(int j = 0; j < (int)vecPaths.size(); ++j)
-		{
-			// Remove user details, and ensure path only uses forward slashes
-			// and ends with a trailing slash so as not to match a substring
-			CURL urlShare(vecPaths[j]);
-			CStdString strShare;
-			urlShare.GetURLWithoutUserDetails(strShare);
-			ForceForwardSlashes(strShare);
-
-			if(!HasSlashAtEnd(strShare))
-				strShare += "/";
-			
-			int iLenShare = strShare.size();
-			
-			CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, comparing url [%s]", strShare.c_str());
-
-			if((iLenPath >= iLenShare) && (strDest.Left(iLenShare).Equals(strShare)) && (iLenShare > iLength))
-			{
-				CLog::Log(LOGDEBUG,"Found matching bookmark at index %i: [%s], Len = [%i]", i, strShare.c_str(), iLenShare);
-
-				// If exact match, return it immediately
-				if(iLenPath == iLenShare)
-				{
-					// If the path EXACTLY matches an item in a concatentated path
-					// set bookmark name to true to load the full virtualpath
-					bIsBookmarkName = false;
-
-					if(vecPaths.size() > 1)
-						bIsBookmarkName = true;
-
-					return i;
-				}
-				iIndex = i;
-				iLength = iLenShare;
-			}
-		}
-	}
-
-	// Return the index of the share with the longest match
-
-	if(iIndex == -1)
-		CLog::Log(LOGWARNING,"CUtil::GetMatchingShare... no matching bookmark found for [%s]", strPath1.c_str());
-
-	return iIndex;
+	return -1;
 }
 
 void CUtil::ForceForwardSlashes(CStdString& strPath)
@@ -524,26 +419,7 @@ void CUtil::URLEncode(CStdString& strURLData)
 bool CUtil::IsLocalDrive(const CStdString& strPath, bool bFullPath /*= false*/)
 {
 	VECSOURCES sources;
-	g_mediaManager.GetLocalDrives(sources);
 
-	CStdString strTmpPath = strPath;
-
-	if(bFullPath)
-	{
-		int iPos = strTmpPath.Find(":\\");
-		strTmpPath.Delete(iPos + 2, strTmpPath.size() - iPos);
-	}
-
-	for(int i = 0; i < (int)sources.size(); ++i)
-	{
-		CStdString strTmp = sources[i].strPath;	
-
-		CUtil::RemoveSlashAtEnd(strTmp);
-		CUtil::RemoveSlashAtEnd(strTmpPath);
-
-		if(strTmp == strTmpPath)
-			return true;
-	}
 	return false;
 }
 
@@ -581,6 +457,23 @@ bool CUtil::IsStack(const CStdString& strFile)
 	return false;
 }
 
+bool CUtil::IsPicture(const CStdString& strFile)
+{
+	CStdString extension = URIUtils::GetExtension(strFile);
+
+	if (extension.IsEmpty())
+		return false;
+
+	extension.ToLower();
+	if (g_settings.GetPictureExtensions().Find(extension) != -1)
+		return true;
+
+	if (extension == ".tbn" || extension == ".dds")
+		return true;
+
+	return false;
+}
+
 void CUtil::UrlDecode(CStdString& strURLData)
 {
 	CStdString strResult;
@@ -615,4 +508,205 @@ void CUtil::UrlDecode(CStdString& strURLData)
 float CUtil::CurrentCpuUsage()
 {
 	return (1.0f - g_application.GetIdleThread().GetRelativeUsage())*100;
+}
+
+__int64 CUtil::ToInt64(DWORD dwHigh, DWORD dwLow)
+{
+	__int64 n;
+	n = dwHigh;
+	n <<= 32;
+	n += dwLow;
+	return n;
+}
+
+bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps) // TODO
+{
+	if (strFileOrFolder.IsEmpty())
+		return false;
+
+	CStdString strExclude = strFileOrFolder;
+	strExclude.MakeLower();
+
+	return true; // WIP
+
+/* // TODO
+	CRegExp regExExcludes;
+
+	for (unsigned int i = 0; i < regexps.size(); i++)
+	{
+		if (!regExExcludes.RegComp(regexps[i].c_str()))
+		{
+			// Invalid regexp - complain in logs
+			CLog::Log(LOGERROR, "%s: Invalid exclude RegExp:'%s'", __FUNCTION__, regexps[i].c_str());
+			continue;
+		}
+		if (regExExcludes.RegFind(strExclude) > -1)
+		{
+			CLog::Log(LOGDEBUG, "%s: File '%s' excluded. (Matches exclude rule RegExp:'%s')", __FUNCTION__, strExclude.c_str(), regexps[i].c_str());
+			return true;
+		}
+	}
+	return false;
+*/
+}
+
+int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES, bool& bIsSourceName)
+{
+	if (strPath1.IsEmpty())
+		return -1;
+
+	CLog::Log(LOGDEBUG,"CUtil::GetMatchingSource, testing original path/name [%s]", strPath1.c_str());
+
+	// Copy as we may change strPath
+	CStdString strPath = strPath1;
+
+	// Check for special protocols
+	CURL checkURL(strPath);
+
+	// stack://
+	if (checkURL.GetProtocol() == "stack")
+		strPath.Delete(0, 8); // Remove the stack protocol
+
+	if (checkURL.GetProtocol() == "shout")
+		strPath = checkURL.GetHostName();
+
+	if (checkURL.GetProtocol() == "lastfm")
+		return 1;
+
+	if (checkURL.GetProtocol() == "tuxbox")
+		return 1;
+
+	if (checkURL.GetProtocol() == "plugin")
+		return 1;
+
+//	if (checkURL.GetProtocol() == "multipath") // TODO
+//		strPath = CMultiPathDirectory::GetFirstPath(strPath); // TODO
+
+	CLog::Log(LOGDEBUG,"CUtil::GetMatchingSource, testing for matching name [%s]", strPath.c_str());
+	bIsSourceName = false;
+	int iIndex = -1;
+	int iLength = -1;
+	
+	// We first test the NAME of a source
+	for (int i = 0; i < (int)VECSOURCES.size(); ++i)
+	{
+		CMediaSource share = VECSOURCES.at(i);
+		CStdString strName = share.strName;
+
+		// Special cases for dvds
+		if (/*URIUtils::IsOnDVD(share.strPath)*/0) // TODO
+		{
+//			if (URIUtils::IsOnDVD(strPath)) // TODO
+				return i;
+
+			// Not a path, so we need to modify the source name
+			// since we add the drive status and disc name to the source
+			// "Name (Drive Status/Disc Name)"
+			int iPos = strName.ReverseFind('(');
+			if (iPos > 1)
+				strName = strName.Mid(0, iPos - 1);
+		}
+
+		CLog::Log(LOGDEBUG,"CUtil::GetMatchingSource, comparing name [%s]", strName.c_str());
+
+		if (strPath.Equals(strName))
+		{
+			bIsSourceName = true;
+			return i;
+		}
+	}
+
+	// Now test the paths
+
+	// Remove user details, and ensure path only uses forward slashes
+	// and ends with a trailing slash so as not to match a substring
+	CURL urlDest(strPath);
+	urlDest.SetOptions("");
+	CStdString strDest = urlDest.GetWithoutUserDetails();
+	ForceForwardSlashes(strDest);
+	
+	if (!URIUtils::HasSlashAtEnd(strDest))
+		strDest += "/";
+	
+	int iLenPath = strDest.size();
+
+	CLog::Log(LOGDEBUG,"CUtil::GetMatchingSource, testing url [%s]", strDest.c_str());
+
+	for (int i = 0; i < (int)VECSOURCES.size(); ++i)
+	{
+		CMediaSource share = VECSOURCES.at(i);
+
+		// Does it match a source name?
+		if (share.strPath.substr(0,8) == "shout://")
+		{
+			CURL url(share.strPath);
+			if (strPath.Equals(url.GetHostName()))
+				return i;
+		}
+
+		// Doesnt match a name, so try the source path
+		vector<CStdString> vecPaths;
+
+		// Add any concatenated paths if they exist
+		if (share.vecPaths.size() > 0)
+			vecPaths = share.vecPaths;
+
+		// Add the actual share path at the front of the vector
+		vecPaths.insert(vecPaths.begin(), share.strPath);
+
+		// Test each path
+		for (int j = 0; j < (int)vecPaths.size(); ++j)
+		{
+			// Remove user details, and ensure path only uses forward slashes
+			// and ends with a trailing slash so as not to match a substring
+			CURL urlShare(vecPaths[j]);
+			urlShare.SetOptions("");
+			CStdString strShare = urlShare.GetWithoutUserDetails();
+			ForceForwardSlashes(strShare);
+			
+			if (!URIUtils::HasSlashAtEnd(strShare))
+				strShare += "/";
+			
+			int iLenShare = strShare.size();
+			CLog::Log(LOGDEBUG,"CUtil::GetMatchingSource, comparing url [%s]", strShare.c_str());
+
+			if ((iLenPath >= iLenShare) && (strDest.Left(iLenShare).Equals(strShare)) && (iLenShare > iLength))
+			{
+				CLog::Log(LOGDEBUG,"Found matching source at index %i: [%s], Len = [%i]", i, strShare.c_str(), iLenShare);
+
+				// If exact match, return it immediately
+				if (iLenPath == iLenShare)
+				{
+					// If the path EXACTLY matches an item in a concatentated path
+					// set source name to true to load the full virtualpath
+					bIsSourceName = false;
+					
+					if (vecPaths.size() > 1)
+						bIsSourceName = true;
+					
+					return i;
+				}
+				iIndex = i;
+				iLength = iLenShare;
+			}
+		}
+	}
+
+	// Return the index of the share with the longest match
+	if (iIndex == -1)
+	{
+		// rar:// and zip://
+		// If archive wasn't mounted, look for a matching share for the archive instead
+		if( strPath.Left(6).Equals("rar://") || strPath.Left(6).Equals("zip://") )
+		{
+			// Get the hostname portion of the url since it contains the archive file
+			strPath = checkURL.GetHostName();
+
+			bIsSourceName = false;
+			bool bDummy;
+			return GetMatchingSource(strPath, VECSOURCES, bDummy);
+		}
+		CLog::Log(LOGWARNING,"CUtil::GetMatchingSource... no matching source found for [%s]", strPath1.c_str());
+	}
+	return iIndex;
 }

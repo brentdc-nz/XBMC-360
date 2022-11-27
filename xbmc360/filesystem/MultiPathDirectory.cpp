@@ -1,9 +1,9 @@
 #include "MultiPathDirectory.h"
-#include "..\utils\log.h"
-#include "..\utils\StringUtils.h"
+#include "utils\Log.h"
+#include "utils\StringUtils.h"
 #include "Directory.h"
 
-using namespace DIRECTORY;
+using namespace XFILE;
 
 //
 // Multipath://{path1} , {path2} , {path3} , ... , {path-N}
@@ -23,7 +23,7 @@ CMultiPathDirectory::~CMultiPathDirectory()
 bool CMultiPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
 	CLog::Log(LOGDEBUG,"CMultiPathDirectory::GetDirectory(%s)", strPath.c_str());
-
+#if 0
 	vector<CStdString> vecPaths;
 
 	if(!GetPaths(strPath, vecPaths))
@@ -89,10 +89,10 @@ bool CMultiPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
 
 	// Merge like-named folders into a sub multipath:// style url
 	MergeItems(items);
-
+#endif
 	return true;
 }
-
+#if 0
 bool CMultiPathDirectory::GetPaths(const CStdString& strPath, vector<CStdString>& vecPaths)
 {
 	vecPaths.empty();
@@ -123,7 +123,7 @@ bool CMultiPathDirectory::GetPaths(const CStdString& strPath, vector<CStdString>
 
 	return true;
 }
-
+#endif
 CStdString CMultiPathDirectory::GetFirstPath(const CStdString &strPath)
 {
 	int pos = strPath.Find(" , ", 12);
@@ -142,107 +142,5 @@ void CMultiPathDirectory::MergeItems(CFileItemList &items)
 	CLog::Log(LOGDEBUG, "CMultiPathDirectory::MergeItems, items = %i", (int)items.Size());
 	DWORD dwTime=GetTickCount();
 
-	// Sort items by label
-	// Folders are before files in this sort method
-//	items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC); //TODO
-	int i = 0;
-
-	// If first item in the sorted list is a file, just abort
-	if(!items.Get(i)->m_bIsFolder)
-		return;
-
-	while(i + 1 < items.Size())
-	{
-		// There are no more folders left, so exit the loop
-		CFileItem* pItem1 = items.Get(i);
-
-		if(!pItem1->m_bIsFolder)
-			break;
-
-		vector<int> stack;
-		stack.push_back(i);
-		CLog::Log(LOGDEBUG,"Testing path: [%03i] %s", i, pItem1->m_strPath.c_str());
-
-		int j = i + 1;
-		
-		do
-		{
-			CFileItem* pItem2 = items.Get(j);
-
-			if(!pItem2->GetLabel().Equals(pItem1->GetLabel()))
-				break;
-
-			// Ignore any filefolders which may coincidently have
-			// the same label as a true folder
-			if(!pItem2->IsFileFolder())
-			{
-				stack.push_back(j);
-				CLog::Log(LOGDEBUG,"  Adding path: [%03i] %s", j, pItem2->m_strPath.c_str());
-			}
-			j++;
-		} while(j < items.Size());
-
-		// Do we have anything to combine?
-		if(stack.size() > 1)
-		{
-			// We have a multipath so remove the items and add the new item
-			CStdString newPath = ConstructMultiPath(items, stack);
-			for(unsigned int k = stack.size() - 1; k > 0; --k)
-				items.Remove(stack[k]);
-			
-			pItem1->m_strPath = newPath;
-			CLog::Log(LOGDEBUG,"  New path: %s", pItem1->m_strPath.c_str());
-		}
-		i++;
-	}
 	CLog::Log(LOGDEBUG, "CMultiPathDirectory::MergeItems, items = %i,  took %ld ms", items.Size(), GetTickCount()-dwTime);
-}
-
-CStdString CMultiPathDirectory::ConstructMultiPath(const vector<CStdString> &vecPaths)
-{
-	// We replace all instances of comma's with double comma's, then separate the paths using " , "
-	CLog::Log(LOGDEBUG, "Building multipath");
-	CStdString newPath = "multipath://";
-	CStdString strPath = vecPaths[0];
-
-	CLog::Log(LOGDEBUG, "-- adding path: %s", strPath.c_str());
-	strPath.Replace(",", ",,");
-	newPath += strPath;
-
-	for(unsigned int i = 1; i < vecPaths.size(); ++i)
-	{
-		newPath += " , ";
-		strPath = vecPaths[i];
-		
-		CLog::Log(LOGDEBUG, "-- adding path: %s", strPath.c_str());
-		strPath.Replace(",", ",,");
-		newPath += strPath;
-	}
-	CLog::Log(LOGDEBUG, "Final path: %s", newPath.c_str());
-	return newPath;
-}
-
-CStdString CMultiPathDirectory::ConstructMultiPath(const CFileItemList& items, const vector<int> &stack)
-{
-	// We replace all instances of comma's with double comma's, then separate the paths using " , "
-	CLog::Log(LOGDEBUG, "Building multipath");
-	CStdString newPath = "multipath://";
-	CStdString strPath = items[stack[0]]->m_strPath;
-
-	CLog::Log(LOGDEBUG, "-- adding path: %s", strPath.c_str());
-	strPath.Replace(",", ",,");
-	newPath += strPath;
-
-	for(unsigned int i = 1; i < stack.size(); ++i)
-	{
-		newPath += " , ";
-		strPath = items[stack[i]]->m_strPath;
-		
-		CLog::Log(LOGDEBUG, "-- adding path: %s", strPath.c_str());
-		strPath.Replace(",", ",,");
-		newPath += strPath;
-	}
-	CLog::Log(LOGDEBUG, "Final path: %s", newPath.c_str());
-	
-	return newPath;
 }

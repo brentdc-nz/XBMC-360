@@ -1,213 +1,246 @@
 <window id="129">
-	<defaultcontrol>10</defaultcontrol>
-	<allowoverlay>no</allowoverlay>
+	<defaultcontrol always="true">10</defaultcontrol>
+	<animation effect="fade" time="400">WindowOpen</animation>
+	<animation effect="fade" time="400">WindowClose</animation>
+	<coordinates>
+		<system>1</system>
+		<posx>105</posx>
+		<posy>130</posy>
+	</coordinates>
 	<controls>
-	
-		<control>
+		<control type="image">
+			<posx>-300</posx>
+			<posy>-300</posy>
+			<width>1300</width>
+			<height>1300</height>
+			<texture>black.png</texture>
+			<animation effect="fade" time="2000">WindowOpen</animation>
+		</control>
+		<control type="image">
 			<description>background image</description>
-			<id>10000</id>
-			<type>image</type>			
-			<posx>200</posx>
-			<posy>160</posy>
-			<width>900</width>
-			<height>440</height>
-			<visible>true</visible>				
-			<texture>dialog-panel2.png</texture>			
-		</control>		
-	
-		<control>
-			<description>heading label</description>
-			<type>label</type>	
-			<id>2</id>
-			<posx>248</posx>
-			<posy>178</posy>
+			<posx>-15</posx>
+			<posy>-15</posy>
+			<width>540</width>
+			<height>375</height>
+			<texture>dialog-panel2.png</texture>
+		</control>
+		<control type="label" id="2">
+			<description>Heading Label</description>
+			<posx>10</posx>
+			<posy>-2</posy>
 			<width>500</width>
 			<align>left</align>
 			<label>-</label>
 			<font>special13</font>
-			<visible>true</visible>
-		</control>	
-	
-		<control>
-			<description>path label</description>
-			<id>10001</id>			
-			<type>label</type>				
-			<posx>248</posx>
-			<posy>212</posy>
-			<width>500</width>
-			<align>left</align>
-			<font>font10</font>
-			<label>1021</label>
-			<visible>true</visible>			
-		</control>	
-	
-		<control>
-			<description>path list control</description>
-			<type>list</type>
-			<id>10</id>
-			<posx>248</posx>
-			<posy>245</posy>
-			<width>600</width>
-			<height>500</height>			
-			<onup>18</onup>
-			<onleft>11</onleft>
-			<onright>11</onright>
-			<ondown>12</ondown>
-			<texturefocus>input-focus.png</texturefocus>
-			<texturenofocus>input-nofocus.png</texturenofocus>		
-			<font>special13</font>
-			<textcolor>ffffffff</textcolor>			
-			<selectedcolor>60ffffff</selectedcolor>
-			<visible>true</visible>	
-		</control>	
-	
-		<control>
-			<description>browse button</description>
-			<type>button</type>
-			<id>11</id>
-			<posx>875</posx>
-			<posy>245</posy>
-			<width>198</width>
-			<height>42</height>
-			<font>font12</font>
-			<label>Browse</label>		
-<!--			<label>1024</label> FIXME: local lang lookup-->
-			<align>center</align>
-			<aligny>center</aligny>
-			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
-			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
-			<onup>18</onup>
-			<onleft>10</onleft>
-			<onright>10</onright>
-			<ondown>13</ondown>
-			<visible>true</visible>				
-		</control>	
-	
-		<control>
-			<description>add path button</description>
-			<type>button</type>
-			<id>13</id>
-			<posx>875</posx>
-			<posy>302</posy>
-			<width>198</width>
-			<height>42</height>
-			<font>font12</font>
-			<label>Add</label>		
-<!--		<label>1024</label> FIXME: local lang lookup-->
-			<align>center</align>
-			<aligny>center</aligny>
-			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
-			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
-			<onup>11</onup>
-			<onleft>10</onleft>
-			<onright>10</onright>
-			<ondown>14</ondown>
-			<visible>true</visible>				
-		</control>		
-	
-		<control>
-			<description>remove path button</description>
-			<type>button</type>
-			<id>14</id>
-			<posx>875</posx>
-			<posy>359</posy>
-			<width>198</width>
-			<height>42</height>
-			<font>font12</font>
-			<label>Remove</label>		
-			<disabledcolor>60d0d0d0</disabledcolor>
-<!--			<label>1024</label> FIXME: local lang lookup-->
-			<align>center</align>
-			<aligny>center</aligny>
-			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
-			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
-			<onup>13</onup>
-			<onleft>10</onleft>
-			<onright>10</onright>
-			<ondown>12</ondown>
-			<visible>true</visible>				
-		</control>	
-
-		<control>
-			<description>name label</description>
-			<id>10003</id>
-			<type>label</type>				
-			<posx>248</posx>
-			<posy>420</posy>
-			<width>500</width>
-			<align>left</align>
-			<font>font10</font>
-			<label>1022</label>
-			<visible>true</visible>			
+			<textcolor>dialogheader</textcolor>
 		</control>
-
-		<control>
-			<description>name button</description>
-			<type>button</type>
-			<id>12</id>
-			<posx>248</posx>
-			<posy>455</posy>
-			<width>825</width>
-			<height>42</height>
+		<control type="label">
+			<description>path label</description>
+			<posx>10</posx>
+			<posy>35</posy>
+			<width>500</width>
+			<align>left</align>
 			<font>font12</font>
-			<textoffsetx>10</textoffsetx>
-			<label>-</label>	
+			<label>1021</label>
+		</control>
+		<control type="list" id="10">
+			<posx>10</posx>
+			<posy>60</posy>
+			<width>380</width>
+			<height>160</height>
+			<onup>9001</onup>
+			<onleft>9000</onleft>
+			<onright>9000</onright>
+			<ondown>12</ondown>
+			<pagecontrol>-</pagecontrol>
+			<scrolltime>200</scrolltime>
+			<itemlayout height="40">
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>380</width>
+					<height>32</height>
+					<texture>input-nofocus.png</texture>
+				</control>
+				<control type="label">
+					<posx>5</posx>
+					<posy>0</posy>
+					<width>370</width>
+					<height>32</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<info>ListItem.Label</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="40">
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>380</width>
+					<height>32</height>
+					<texture>input-nofocus.png</texture>
+					<visible>!Control.hasfocus(10)</visible>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>380</width>
+					<height>32</height>
+					<texture>input-focus.png</texture>
+					<visible>Control.hasfocus(10)</visible>
+				</control>
+				<control type="label">
+					<posx>5</posx>
+					<posy>0</posy>
+					<width>370</width>
+					<height>32</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<info>ListItem.Label</info>
+				</control>
+			</focusedlayout>
+		</control>
+		<control type="group" id="9000">
+			<control type="button" id="11">
+				<description>Browse Button</description>
+				<posx>400</posx>
+				<posy>60</posy>
+				<width>110</width>
+				<height>32</height>
+				<font>font12</font>
+				<textoffsetx>12</textoffsetx>
+				<label>1024</label>
+				<align>center</align>
+				<aligny>center</aligny>
+				<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+				<onup>18</onup>
+				<onleft>10</onleft>
+				<onright>10</onright>
+				<ondown>13</ondown>
+			</control>
+			<control type="button" id="13">
+				<description>Add Path Button</description>
+				<posx>400</posx>
+				<posy>100</posy>
+				<width>110</width>
+				<height>32</height>
+				<font>font12</font>
+				<textoffsetx>12</textoffsetx>
+				<label>15019</label>
+				<align>center</align>
+				<aligny>center</aligny>
+				<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+				<onup>11</onup>
+				<onleft>10</onleft>
+				<onright>10</onright>
+				<ondown>14</ondown>
+			</control>
+			<control type="button" id="14">
+				<description>Remove Path Button</description>
+				<posx>400</posx>
+				<posy>140</posy>
+				<width>110</width>
+				<height>32</height>
+				<font>font12</font>
+				<textoffsetx>12</textoffsetx>
+				<label>1210</label>
+				<align>center</align>
+				<aligny>center</aligny>
+				<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+				<onup>13</onup>
+				<onleft>10</onleft>
+				<onright>10</onright>
+				<ondown>12</ondown>
+			</control>
+		</control>
+		<control type="label">
+			<description>Name Label</description>
+			<posx>10</posx>
+			<posy>222</posy>
+			<width>500</width>
+			<font>font12</font>
+			<label>1022</label>
+		</control>
+		<control type="button" id="12">
+			<description>Name Button</description>
+			<posx>10</posx>
+			<posy>250</posy>
+			<width>500</width>
+			<height>32</height>
+			<font>font12</font>
+			<textoffsetx>12</textoffsetx>
+			<textwidth>380</textwidth>
 			<aligny>center</aligny>
-<!--		<label>1024</label> FIXME: local lang lookup-->
 			<texturefocus>input-focus.png</texturefocus>
 			<texturenofocus>input-nofocus.png</texturenofocus>
+			<label>-</label>
 			<onup>10</onup>
 			<onleft>12</onleft>
 			<onright>19</onright>
-			<ondown>18</ondown>
-			<visible>true</visible>				
-		</control>	
-	
-		<control>
-			<description>ok button</description>
-			<type>button</type>
-			<id>18</id>
-			<posx>662</posx>
-			<posy>510</posy>
-			<width>198</width>
-			<height>42</height>
-			<font>font12</font>
-			<label>OK</label>
-			<disabledcolor>60d0d0d0</disabledcolor>
-<!--			<label>1024</label> FIXME: local lang lookup-->
-			<align>center</align>
-			<aligny>center</aligny>
-			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
-			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
-			<onup>12</onup>
-			<onleft>19</onleft>
-			<onright>19</onright>
-			<ondown>10</ondown>
-			<visible>true</visible>				
+			<ondown>9001</ondown>
 		</control>
-	
-		<control>
-			<description>cancel button</description>
-			<type>button</type>
-			<id>19</id>
-			<posx>875</posx>
-			<posy>510</posy>
-			<width>198</width>
-			<height>42</height>
-			<font>font12</font>
-			<label>Cancel</label>		
-<!--			<label>1024</label> FIXME: local lang lookup-->
-			<align>center</align>
-			<aligny>center</aligny>
-			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
-			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
-			<label>222</label>
-			<onup>12</onup>
-			<onleft>18</onleft>
-			<onright>18</onright>
-			<ondown>10</ondown>
-			<visible>true</visible>				
-		</control>	
-	
+		<control type="group" id="9001">
+			<control type="button" id="18">
+				<description>Ok Button</description>
+				<posx>285</posx>
+				<posy>290</posy>
+				<width>110</width>
+				<height>32</height>
+				<font>font12</font>
+				<textoffsetx>12</textoffsetx>
+				<align>center</align>
+				<aligny>center</aligny>
+				<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+				<label>186</label>
+				<onup>12</onup>
+				<onleft>20</onleft>
+				<onright>19</onright>
+				<ondown>10</ondown>
+			</control>
+			<control type="button" id="19">
+				<description>Cancel Button</description>
+				<posx>400</posx>
+				<posy>290</posy>
+				<width>110</width>
+				<height>32</height>
+				<font>font12</font>
+				<textoffsetx>12</textoffsetx>
+				<align>center</align>
+				<aligny>center</aligny>
+				<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+				<label>222</label>
+				<onup>12</onup>
+				<onleft>18</onleft>
+				<onright>20</onright>
+				<ondown>10</ondown>
+			</control>`
+			<control type="button" id="20">
+				<description>Set Content Button</description>
+				<posx>170</posx>
+				<posy>290</posy>
+				<width>110</width>
+				<height>32</height>
+				<font>font12</font>
+				<textoffsetx>12</textoffsetx>
+				<align>center</align>
+				<aligny>center</aligny>
+				<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+				<label>20333</label>
+				<onup>12</onup>
+				<onleft>19</onleft>
+				<onright>18</onright>
+				<ondown>10</ondown>
+			</control>
+		</control>
 	</controls>
 </window>	

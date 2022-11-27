@@ -9,8 +9,10 @@ public:
 	CGUIViewStateWindowPrograms(const CFileItemList& items);
 
 protected:
-	virtual VECSOURCES& GetShares();
+	virtual void SaveViewState();
+	virtual CStdString GetLockType();
 	virtual CStdString GetExtensions();
+	virtual VECSOURCES& GetSources();
 };
 
 #endif //H_CGUIVIEWSTATEPROGRAMS

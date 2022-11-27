@@ -1,7 +1,7 @@
 #include "Edl.h"
-#include "utils\log.h"
+#include "utils\Log.h"
 #include "utils\StringUtils.h"
-#include "..\..\filesystem\File.h"
+#include "filesystem\File.h"
 
 #define MPLAYER_EDL_FILENAME "special://temp/xbmc.edl"
 

@@ -19,6 +19,8 @@
 #include "cores\PlayerCoreFactory.h"
 #include "AdvancedSettings.h"
 #include "utils\URIUtils.h"
+#include "guilib\SkinInfo.h"
+#include "interfaces\Builtins.h"
 
 // Window includes
 #include "guilib\windows\GUIWindowHome.h"
@@ -38,6 +40,9 @@
 #include "guilib\dialogs\GUIDialogMediaSource.h"
 #include "guilib\dialogs\GUIDialogContextMenu.h"
 #include "guilib\dialogs\GUIDialogYesNo.h"
+#include "guilib\dialogs\GUIDialogKeyboard.h"
+#include "guilib\dialogs\GUIDialogNumeric.h"
+#include "guilib\dialogs\GUIDialogOK.h"
 
 CStdString g_LoadErrorStr;
 
@@ -91,6 +96,7 @@ bool CApplication::Create()
 
 	// Transfer the resolution information to our graphics context
 	g_graphicsContext.SetD3DParameters(&m_d3dpp);
+	g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
 
 	if(m_pD3D->CreateDevice(0, D3DDEVTYPE_HAL, NULL, D3DCREATE_HARDWARE_VERTEXPROCESSING, &m_d3dpp, &m_pd3dDevice) != S_OK)
 	{
@@ -100,8 +106,17 @@ bool CApplication::Create()
 
 	g_graphicsContext.SetD3DDevice(m_pd3dDevice);
 
+	// Set GUI res and force the clear of the screen
+	g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE, true);
+
 	m_splash = new CSplash("D:\\media\\splash.png");
 	m_splash->Start();
+
+	int iResolution = g_graphicsContext.GetVideoResolution();
+	CLog::Log(LOGINFO, "GUI format %ix%i %s",
+		g_settings.m_ResInfo[iResolution].iWidth,
+		g_settings.m_ResInfo[iResolution].iHeight,
+		g_settings.m_ResInfo[iResolution].strMode);
 
 	// Mount our drives
 	CLog::Log(LOGNOTICE, "Mounting the drives..");
@@ -114,47 +129,18 @@ bool CApplication::Create()
 	if(!g_audioContext.Initialize())
 		CLog::Log(LOGERROR, "Unable to initialize XAudio2!");
 
-	// Initialize the XUI stuff
-	HRESULT hr;
-
-	// Initialize Xui render library with our D3D device, 
-	// and use a Xui-provided texture loader.
-	hr = XuiRenderInitShared( m_pd3dDevice, &m_d3dpp, XuiD3DXTextureLoader );
-	if(FAILED(hr)) 
-	{
-		CLog::Log(LOGFATAL, "Unable to Initialize Xui render library!");
-		FatalErrorHandler(true);
-	}
-
-	// Create a Xui device context. The Xui text renderer uses many attributes
-	// from this device context (position, color, shaders, etc.).
-	hr = XuiRenderCreateDC( &m_hXUIDC );
-	if(FAILED(hr)) 
-	{
-		CLog::Log(LOGFATAL, "Unable to create Xui device context!");
-		FatalErrorHandler(true);
-	}
-
-	// Initialize the Xui runtime library.  Typeface descriptors are registered
-	// by the runtime library, and consumed by the render library.
-	hr = XuiInit(&m_XUIParams);
-	if(FAILED(hr))
-	{
-		CLog::Log(LOGFATAL, "Unable to initialize the Xui runtime library!");
-		FatalErrorHandler(true);
-	}
-
-	g_graphicsContext.SetXUIDevice(m_hXUIDC);
-
 	CLog::Log(LOGNOTICE, "Load settings...");	
 	if(!g_settings.Load())
 		FatalErrorHandler(true);
 
-	CStdString strLanguagePath;
-	strLanguagePath.Format("D:\\language\\%s\\strings.xml", g_guiSettings.GetString("LookAndFeel.Language"));
+	// Load the langinfo to have user charset <-> utf-8 conversion
+	CStdString strLanguage = "english";//g_guiSettings.GetString("locale.language"); // TODO
+	strLanguage[0] = toupper(strLanguage[0]);
 
-	CLog::Log(LOGINFO, "Load language file:%s", strLanguagePath.c_str());
-	if(!g_localizeStrings.Load( strLanguagePath ))
+	CStdString strLanguagePath = "D:\\language\\";
+
+	CLog::Log(LOGINFO, "load %s language file, from path: %s", strLanguage.c_str(), strLanguagePath.c_str());
+	if (!g_localizeStrings.Load(strLanguagePath, strLanguage))
 		FatalErrorHandler(true);
 
 	CLog::Log(LOGINFO, "Load keymapping");
@@ -205,13 +191,17 @@ bool CApplication::Initialize()
 
 	// Dialogs
 	g_windowManager.Add(new CGUIDialogYesNo);           // window id = 100
+	g_windowManager.Add(new CGUIDialogKeyboard);        // window id = 103
 	g_windowManager.Add(new CGUIDialogContextMenu);     // window id = 106
+	g_windowManager.Add(new CGUIDialogNumeric);         // window id = 109
 	g_windowManager.Add(new CGUIDialogButtonMenu);      // window id = 111
 	g_windowManager.Add(&m_guiDialogSeekBar);           // window id = 115
 	g_windowManager.Add(new CGUIDialogNetworkSetup);    // window id = 128
 	g_windowManager.Add(new CGUIDialogMediaSource);     // window id = 129
+	g_windowManager.Add(new CGUIDialogOK);              // window id = 2002
 
 	g_windowManager.SetCallback(*this);
+
 	g_windowManager.Initialize();
 
 	m_slowTimer.StartZero();
@@ -277,6 +267,9 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	CLog::Log(LOGINFO, "Delete old skin...");
 	UnloadSkin();	
 
+	// Load in the skin.xml file if it exists
+	g_SkinInfo.Load(strSkinPath);
+
 	g_graphicsContext.SetMediaDir(strSkinPath);
 
 	CLog::Log(LOGINFO, "Load fonts for skin...");
@@ -285,6 +278,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	g_fontManager.LoadFonts(strFontPath);
 
 	CLog::Log(LOGINFO, "Initialize new skin...");
+	m_guiDialogSeekBar.AllocResources(true);
 	g_windowManager.AddMsgTarget(this);
 	g_windowManager.Initialize();
 
@@ -319,6 +313,7 @@ void CApplication::UnloadSkin()
 	g_TextureManager.Cleanup();
 	g_fontManager.Clear();
 	g_audioManager.Cleanup();
+	g_infoManager.Clear();
 }
 
 void CApplication::Process()
@@ -332,6 +327,10 @@ void CApplication::Process()
 
 	// Process messages, even if a movie is playing
 	m_applicationMessenger.ProcessMessages();
+
+	// Process messages which have to be send to the gui
+	// (this can only be done after g_windowManager.Render())
+	m_applicationMessenger.ProcessWindowMessages();
 
 	// Do any processing that isn't needed on each run
 	if(m_slowTimer.GetElapsedMilliseconds() > 500)
@@ -444,7 +443,7 @@ bool CApplication::ProcessGamepad()
 // The window manager will return true if the event is processed, false otherwise.
 // If not already processed, this routine handles global keypresses.  It returns
 // true if the key has been processed, false otherwise.
-bool CApplication::OnKey(CKey& key)
+bool CApplication::OnKey(CKey& key) // TODO - Update to OnAction
 {
 	CAction action;
 
@@ -473,12 +472,6 @@ bool CApplication::OnKey(CKey& key)
 		// Switch to fullscreen mode if we can
 		if (SwitchToFullScreen())
 			return true;
-	}
-
-	if (action.GetID() == ACTION_BUILT_IN_FUNCTION)
-	{
-		CUtil::ExecBuiltIn(action.GetActionString());
-		return true;
 	}
 
 	// In normal case
@@ -520,6 +513,8 @@ void CApplication::FrameMove()
 
 	// Process input actions
 	ProcessGamepad();
+
+	g_windowManager.FrameMove();
 }
 
 bool CApplication::OnMessage(CGUIMessage& message)
@@ -551,15 +546,9 @@ bool CApplication::OnMessage(CGUIMessage& message)
 		break;
 
 		case GUI_MSG_EXECUTE:
-		{
-			// User has asked for something to be executed
-			if(CUtil::IsBuiltIn(message.GetStringParam()))
-				CUtil::ExecBuiltIn(message.GetStringParam());
-			else
-				return false;
-		
-			return true;
-		}
+			if (message.GetStringParam().length() > 0)
+				return ExecuteXBMCAction(message.GetStringParam());
+		break;
 	}
 	return false;
 }
@@ -587,16 +576,14 @@ void CApplication::Render()
 	else
 		g_graphicsContext.EnablePreviewWindow(false);
 
-	GRAPHICSCONTEXT_LOCK()
+	g_graphicsContext.TLock();
 	m_pd3dDevice->BeginScene();  
-	GRAPHICSCONTEXT_UNLOCK()
+	g_graphicsContext.TUnlock();
 
 	// Update our FPS
 	g_infoManager.UpdateFPS();
 
 	// Draw GUI
-
-	g_graphicsContext.Clear();
 
 	// Render current windows
 	g_windowManager.Render();
@@ -604,12 +591,17 @@ void CApplication::Render()
 	// Now render any dialogs
 	g_windowManager.RenderDialogs();
 
-	GRAPHICSCONTEXT_LOCK()
+    // reset the window scaling and fade status
+	g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), false);
+
+	g_graphicsContext.TLock();
 	m_pd3dDevice->EndScene();
+	g_graphicsContext.TUnlock();
 
 	// Present the backbuffer contents to the display
+	g_graphicsContext.TLock();
 	m_pd3dDevice->Present(NULL, NULL, NULL, NULL);
-	GRAPHICSCONTEXT_UNLOCK()
+	g_graphicsContext.TUnlock();
 }
 
 bool CApplication::NeedRenderFullScreen()
@@ -687,6 +679,11 @@ void CApplication::OnPlayBackStarted()
 {
 	if(m_bPlaybackStarting)
 		return;
+
+	CLog::Log(LOGDEBUG, "%s - Playback has started", __FUNCTION__);
+
+	CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0);
+	g_windowManager.SendThreadMessage(msg);
 }
 
 void CApplication::OnQueueNextItem()
@@ -762,8 +759,9 @@ bool CApplication::PlayFile(const CFileItem& item)
 			// if player didn't manage to switch to fullscreen by itself do it here
 			if(g_renderManager.IsStarted()
 				&& g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
-			
-			SwitchToFullScreen();
+			{
+				SwitchToFullScreen();
+			}
 		}
 	}
 
@@ -1034,6 +1032,69 @@ void CApplication::ActivateScreenSaver()
 	}
 }
 
+bool CApplication::ExecuteXBMCAction(std::string actionStr)
+{
+	// See if it is a user set string
+	CLog::Log(LOGDEBUG,"%s : Translating %s", __FUNCTION__, actionStr.c_str());
+	CGUIInfoLabel info(actionStr, "");
+	actionStr = info.GetLabel(0);
+	CLog::Log(LOGDEBUG,"%s : To %s", __FUNCTION__, actionStr.c_str());
+
+	// User has asked for something to be executed
+	if (CBuiltins::HasCommand(actionStr))
+			CBuiltins::Execute(actionStr);
+	else
+	{
+		// Try translating the action from our ButtonTranslator
+		int actionID;
+
+		if (CButtonTranslator::TranslateActionString(actionStr.c_str(), actionID))
+		{
+//			OnAction(CAction(actionID));// TODO 
+			return true;
+		}
+
+		CFileItem item(actionStr, false);
+
+/*		if (item.IsPythonScript()) //TODO
+		{
+			// A python script
+			unsigned int argc = 1;
+			char ** argv = new char*[argc];
+			argv[0] = (char*)item.GetPath().c_str();
+			g_pythonParser.evalFile(argv[0], argc, (const char**)argv);
+			delete [] argv;
+		}
+		else if (item.IsXEX()) //TODO
+		{
+			// an XEX
+			int iRegion;
+			if (g_guiSettings.GetBool("myprograms.gameautoregion"))
+			{
+				CXBE xbe;
+				iRegion = xbe.ExtractGameRegion(item.GetPath());
+
+				if (iRegion < 1 || iRegion > 7)
+					iRegion = 0;
+				
+				iRegion = xbe.FilterRegion(iRegion);
+			}
+			else
+				iRegion = 0;
+			
+			CUtil::RunXEX(item.GetPath().c_str(),NULL,F_VIDEO(iRegion));
+		}
+		else if (item.IsAudio() || item.IsVideo())
+		{
+			// An audio or video file
+			PlayFile(item);
+		}
+		else*/
+			return false;
+	}
+	return true;
+}
+
 void CApplication::Cleanup()
 {
 	try
@@ -1056,11 +1117,15 @@ void CApplication::Cleanup()
 		g_windowManager.Delete(WINDOW_DIALOG_BUTTON_MENU);
 		g_windowManager.Delete(WINDOW_DIALOG_MEDIA_SOURCE);
 		g_windowManager.Delete(WINDOW_DIALOG_NETWORK_SETUP);
+		g_windowManager.Delete(WINDOW_DIALOG_KEYBOARD);
+		g_windowManager.Delete(WINDOW_DIALOG_NUMERIC);
+		g_windowManager.Delete(WINDOW_DIALOG_OK);
 
 		g_localizeStrings.Clear();
 		g_guiSettings.Clear();
 		g_advancedSettings.Clear();
 		g_buttonTranslator.Clear();
+		g_infoManager.Clear();
 	}
 	catch(...)
 	{

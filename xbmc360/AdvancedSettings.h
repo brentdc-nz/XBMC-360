@@ -25,6 +25,7 @@ public:
 	CStdString m_videoPPFFmpegDeint;
 	CStdString m_videoPPFFmpegPostProc;
 	int m_iSkipLoopFilter;
+	bool m_bNavVKeyboard; // If true we navigate the virtual keyboard using cursor keys
 };
 
 extern CAdvancedSettings g_advancedSettings;

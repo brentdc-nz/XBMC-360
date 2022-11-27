@@ -32,10 +32,6 @@ protected:
 	IDirect3DDevice9*				m_pd3dDevice;	
 	D3DPRESENT_PARAMETERS			m_d3dpp;	
 
-	// XUI objects
-	HXUIDC							m_hXUIDC; // Xui device context
-	XUIInitParams					m_XUIParams;
-
 	// Members to init the XBINPUT devices.
 	GAMEPAD	   m_Gamepads[4];
 	GAMEPAD    m_DefaultGamepad;

@@ -107,14 +107,14 @@ void CRGBRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 	if(!m_pFrameY || !m_pFrameU || !m_pFrameV)
 		return;
 
-	GRAPHICSCONTEXT_LOCK()
-
 	ManageDisplay();
 
 	if(clear)
+	{
+		g_graphicsContext.TLock();
 		m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET, 0xff000000, 1.0f, 0L );
-
-	GRAPHICSCONTEXT_UNLOCK()
+		g_graphicsContext.TUnlock();
+	}
 
 	Render();
 }
@@ -128,8 +128,6 @@ bool CRGBRenderer::PreInit()
 		return false;
 
 	m_bConfigured = false;
-
-	GRAPHICSCONTEXT_LOCK()
 
 	m_iScreenWidth = g_graphicsContext.GetWidth();
 	m_iScreenHeight = g_graphicsContext.GetHeight();
@@ -149,9 +147,11 @@ bool CRGBRenderer::PreInit()
                                     &pVertexErrorMsg,
                                     NULL);
 
+	g_graphicsContext.TLock();
 	// Create vertex shader
 	m_pd3dDevice->CreateVertexShader((DWORD*)pVertexShaderCode->GetBufferPointer(),
                                       &m_pVertexShader);
+	g_graphicsContext.TUnlock();
 
 	// Compile pixel shader
 	ID3DXBuffer* pPixelShaderCode;
@@ -168,9 +168,11 @@ bool CRGBRenderer::PreInit()
                             &pPixelErrorMsg,
                             NULL);
 
+	g_graphicsContext.TLock();
     // Create pixel shader.
     m_pd3dDevice->CreatePixelShader((DWORD*)pPixelShaderCode->GetBufferPointer(),
                                      &m_pPixelShader);
+	g_graphicsContext.TUnlock();
 
     // Define the vertex elements and
     // create a vertex declaration from the element descriptions
@@ -180,16 +182,23 @@ bool CRGBRenderer::PreInit()
         { 0, 12, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0 },
         D3DDECL_END()
     };
+
+	g_graphicsContext.TLock();
     m_pd3dDevice->CreateVertexDeclaration( VertexElements, &m_pVertexDecl );
+	g_graphicsContext.TUnlock();
 
     // Create the vertex buffer. Here we are allocating enough memory
     // (from the default pool) to hold all our 3 custom vertices. 
-    m_pd3dDevice->CreateVertexBuffer(4 * sizeof(COLORVERTEX),
+	g_graphicsContext.TLock();
+	m_pd3dDevice->CreateVertexBuffer(4 * sizeof(COLORVERTEX),
                                                   D3DUSAGE_WRITEONLY,
                                                   NULL,
                                                   D3DPOOL_MANAGED,
                                                   &m_pVB,
                                                   NULL);
+	
+	g_graphicsContext.TUnlock();
+
 	if(pVertexShaderCode)
 		pVertexShaderCode->Release();
 
@@ -203,8 +212,6 @@ bool CRGBRenderer::PreInit()
 		pPixelErrorMsg->Release();
 
 	m_bInitialized = true;
-
-	GRAPHICSCONTEXT_UNLOCK()
 
 	return true;
 }
@@ -254,19 +261,10 @@ void CRGBRenderer::ManageDisplay()
 	m_pVB->Lock(0, 0, ( void** )&pVertices, 0);
 	memcpy(pVertices, Vertices, 4 * sizeof(COLORVERTEX));
 	m_pVB->Unlock();
-
-	// Initialize the world and view matrix
-	D3DXMatrixIdentity( &m_matWorld );
-	D3DXMatrixIdentity( &m_matView );
-
-	// Initialize the projection matrix
-	D3DXMatrixOrthoOffCenterLH(&m_matProj, 0, (float)m_iScreenWidth, (float)m_iScreenHeight, 0, 0.0f, 1.0f ); 
 }
 
 bool CRGBRenderer::Configure(int iWidth, int iHeight)
 {
-	GRAPHICSCONTEXT_LOCK()
-
 	m_iSourceWidth = iWidth;
 	m_iSourceHeight = iHeight;
 
@@ -306,8 +304,6 @@ bool CRGBRenderer::Configure(int iWidth, int iHeight)
 			NULL);
 	}
 
-	GRAPHICSCONTEXT_UNLOCK()
-
 	m_bConfigured = true;
 
 	return true;
@@ -315,8 +311,6 @@ bool CRGBRenderer::Configure(int iWidth, int iHeight)
 
 bool CRGBRenderer::GetImage(YV12Image* image)
 {
-	GRAPHICSCONTEXT_LOCK()
-
 	if (!image) return false;
 
 	image->width = m_iSourceWidth;
@@ -326,9 +320,15 @@ bool CRGBRenderer::GetImage(YV12Image* image)
 	D3DLOCKED_RECT lockRectU;
 	D3DLOCKED_RECT lockRectV;
 
+	g_graphicsContext.TLock();
 	m_pFrameY->LockRect(0, &lockRectY, NULL, 0);
+	g_graphicsContext.TUnlock();
+	g_graphicsContext.TLock();
 	m_pFrameU->LockRect(0, &lockRectU, NULL, 0);
+	g_graphicsContext.TUnlock();
+	g_graphicsContext.TLock();
 	m_pFrameV->LockRect(0, &lockRectV, NULL, 0);
+	g_graphicsContext.TUnlock();
 
 	image->plane[0] = (uint8_t*)lockRectY.pBits;
 	image->plane[1] = (uint8_t*)lockRectU.pBits;
@@ -346,75 +346,108 @@ void CRGBRenderer::ReleaseImage()
 	m_pFrameU->UnlockRect(0);
 	m_pFrameY->UnlockRect(0);
 	m_pFrameV->UnlockRect(0);
-
-	GRAPHICSCONTEXT_UNLOCK()
 }
 
 void CRGBRenderer::Render()
 {
-	GRAPHICSCONTEXT_LOCK()
-
 	if( !m_pd3dDevice || !m_pVertexShader || !m_pVB )
 	{
 		CLog::Log(LOGERROR, "Direct3D rendering objects missing!");
 		return;
 	}
 
-	// Build the world-view-projection matrix and pass it into the vertex shader
-	D3DXMATRIX matWVP = m_matWorld * m_matView * m_matProj;
-	m_pd3dDevice->SetVertexShaderConstantF(0, (FLOAT*)&matWVP, 4);
+	g_graphicsContext.TLock();
+	// Pass matrix into the vertex shader
+	m_pd3dDevice->SetVertexShaderConstantF(0, (FLOAT*)&g_graphicsContext.GetFinalMatrix(), 4);
+	g_graphicsContext.TUnlock();
 
 	// We are passing the vertices down a "stream", so first we need
-	// to specify the source of that stream, which is our vertex buffer. 
-	// Then we need to let D3D know what vertex and pixel shaders to use. 
+	// to specify the source of that stream, which is our vertex buffer
+	// Then we need to let D3D know what vertex and pixel shaders to use
+	g_graphicsContext.TLock();
 	m_pd3dDevice->SetVertexDeclaration(m_pVertexDecl);
+	g_graphicsContext.TUnlock();
+	g_graphicsContext.TLock();
 	m_pd3dDevice->SetStreamSource(0, m_pVB, 0, sizeof(COLORVERTEX));
+	g_graphicsContext.TUnlock();
+	g_graphicsContext.TLock();
 	m_pd3dDevice->SetVertexShader(m_pVertexShader);
+	g_graphicsContext.TUnlock();
+	g_graphicsContext.TLock();
 	m_pd3dDevice->SetPixelShader(m_pPixelShader);
+	g_graphicsContext.TUnlock();
 
+	g_graphicsContext.TLock();
 	m_pd3dDevice->SetTexture(0, m_pFrameY);
+	g_graphicsContext.TUnlock();
+	g_graphicsContext.TLock();
 	m_pd3dDevice->SetTexture(1, m_pFrameU);
+	g_graphicsContext.TUnlock();
+	g_graphicsContext.TLock();
 	m_pd3dDevice->SetTexture(2, m_pFrameV);
+	g_graphicsContext.TUnlock();
 
+	g_graphicsContext.TLock();
 	m_pd3dDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+	g_graphicsContext.TUnlock();
+	g_graphicsContext.TLock();
 	m_pd3dDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+	g_graphicsContext.TUnlock();
+	g_graphicsContext.TLock();
 	m_pd3dDevice->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+	g_graphicsContext.TUnlock();
 
+	g_graphicsContext.TLock();
 	m_pd3dDevice->SetSamplerState(1, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+	g_graphicsContext.TUnlock();
+	g_graphicsContext.TLock();
 	m_pd3dDevice->SetSamplerState(1, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+	g_graphicsContext.TUnlock();
+	g_graphicsContext.TLock();
 	m_pd3dDevice->SetSamplerState(1, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+	g_graphicsContext.TUnlock();
 
+	g_graphicsContext.TLock();
 	m_pd3dDevice->SetSamplerState(2, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+	g_graphicsContext.TUnlock();
+	g_graphicsContext.TLock();
 	m_pd3dDevice->SetSamplerState(2, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+	g_graphicsContext.TUnlock();
+	g_graphicsContext.TLock();
 	m_pd3dDevice->SetSamplerState(2, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+	g_graphicsContext.TUnlock();
 
 	// Draw the vertices in the vertex buffer
+	g_graphicsContext.TLock();
 	m_pd3dDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+	g_graphicsContext.TUnlock();
 	
+	g_graphicsContext.TLock();
 	m_pd3dDevice->SetTexture(0, NULL);
+	g_graphicsContext.TUnlock();
+	g_graphicsContext.TLock();
 	m_pd3dDevice->SetTexture(1, NULL);
+	g_graphicsContext.TUnlock();
+	g_graphicsContext.TLock();
 	m_pd3dDevice->SetTexture(2, NULL);
+	g_graphicsContext.TUnlock();
 
+	g_graphicsContext.TLock();
 	m_pd3dDevice->SetStreamSource(NULL, NULL, NULL, NULL);
-
-	GRAPHICSCONTEXT_UNLOCK()
+	g_graphicsContext.TUnlock();
 }
 
 void CRGBRenderer::PrepareDisplay()
 {
 	if(g_graphicsContext.IsFullScreenVideo())
-	{    
-		GRAPHICSCONTEXT_LOCK()
-		
+	{    		
 		ManageDisplay();
 
+		g_graphicsContext.TLock();
 		m_pd3dDevice->Clear(0L, NULL, D3DCLEAR_TARGET, 0xff000000, 1.0f, 0L);
-
-		GRAPHICSCONTEXT_UNLOCK()
+		g_graphicsContext.TUnlock();
 
 		Render();
-
-		GRAPHICSCONTEXT_LOCK()
 
 		if(g_application.NeedRenderFullScreen())
 		{ 
@@ -423,8 +456,6 @@ void CRGBRenderer::PrepareDisplay()
 		}
     
 //		m_pd3dDevice->KickPushBuffer();
-
-		GRAPHICSCONTEXT_UNLOCK()
 	}
 
 	m_bPrepared = true;
@@ -443,15 +474,15 @@ void CRGBRenderer::FlipPage()
 
 	if(g_graphicsContext.IsFullScreenVideo() && !g_application.m_pPlayer->IsPaused())
 	{   
-		GRAPHICSCONTEXT_LOCK();
-
 		// Make sure the push buffer is done before waiting for vblank, otherwise we can get tearing
+		g_graphicsContext.TLock();
 		while(m_pd3dDevice->IsBusy()) Sleep(1);
+		g_graphicsContext.TUnlock();
 
 		// Present the backbuffer contents to the display
+		g_graphicsContext.TLock();
 		m_pd3dDevice->Present(NULL, NULL, NULL, NULL);
-
-		GRAPHICSCONTEXT_UNLOCK()
+		g_graphicsContext.TUnlock();
 	}
 }
 
@@ -460,55 +491,73 @@ void CRGBRenderer::UnInit()
 	if(!m_bInitialized)
 		return;
 
-	GRAPHICSCONTEXT_LOCK()
-
 	if(m_pFrameY)
 	{
+		g_graphicsContext.TLock();
 		m_pFrameY->Release();
+		g_graphicsContext.TUnlock();
 		m_pFrameY = NULL;
 	}
 	
 	if(m_pFrameU)
 	{
+		g_graphicsContext.TLock();
 		m_pFrameU->Release();
+		g_graphicsContext.TUnlock();
 		m_pFrameU = NULL;
 	}
 
 	if(m_pFrameV)
 	{
+		g_graphicsContext.TLock();
 		m_pFrameV->Release();
+		g_graphicsContext.TUnlock();
 		m_pFrameV = NULL;
 	}
 
 	if(m_pVB)
 	{
-		m_pd3dDevice->SetStreamSource( NULL, NULL, NULL, NULL );
+		g_graphicsContext.TLock();
+		m_pd3dDevice->SetStreamSource(NULL, NULL, NULL, NULL);
+		g_graphicsContext.TUnlock();
+		g_graphicsContext.TLock();
 		m_pVB->Release();
+		g_graphicsContext.TUnlock();
 		m_pVB = NULL;
 	}
 
 	if(m_pVertexShader)
 	{
-		m_pd3dDevice->SetVertexShader( NULL );
+		g_graphicsContext.TLock();
+		m_pd3dDevice->SetVertexShader(NULL);
+		g_graphicsContext.TUnlock();
+		g_graphicsContext.TLock();
 		m_pVertexShader->Release();
+		g_graphicsContext.TUnlock();
 		m_pVertexShader = NULL;
 	}
 
 	if(m_pVertexDecl)
 	{
-		m_pd3dDevice->SetVertexDeclaration( NULL );
+		g_graphicsContext.TLock();
+		m_pd3dDevice->SetVertexDeclaration(NULL);
+		g_graphicsContext.TUnlock();
+		g_graphicsContext.TLock();
 		m_pVertexDecl->Release();
+		g_graphicsContext.TUnlock();
 		m_pVertexDecl = NULL;
 	}
 
 	if(m_pPixelShader)
 	{
-		m_pd3dDevice->SetPixelShader( NULL );
+		g_graphicsContext.TLock();
+		m_pd3dDevice->SetPixelShader(NULL);
+		g_graphicsContext.TUnlock();
+		g_graphicsContext.TLock();
 		m_pPixelShader->Release();
+		g_graphicsContext.TUnlock();
 		m_pPixelShader = NULL;
 	}
 
 	m_bConfigured = false;
-
-	GRAPHICSCONTEXT_UNLOCK()
 }

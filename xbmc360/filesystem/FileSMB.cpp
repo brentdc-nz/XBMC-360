@@ -1,6 +1,6 @@
 #include "FileSMB.h"
-#include "..\utils\SingleLock.h"
-#include "..\utils\log.h"
+#include "utils\SingleLock.h"
+#include "utils\Log.h"
 #include <fcntl.h>
 #include "libraries\libsmb2\XBLibSmb2.h"
 

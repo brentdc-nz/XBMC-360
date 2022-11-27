@@ -1,86 +1,40 @@
-<window id="0">
-	<defaultcontrol>6</defaultcontrol>
+<window id="12">
+	<defaultcontrol>2</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<controls>
-	
-		<control>
+		<control type="image">
 			<description>background image</description>
-			<type>image</type>				
-			<posx>-4</posx>
+			<posx>0</posx>
 			<posy>0</posy>
-			<width>1284</width>
-			<height>720</height>
-			<texture>background.png</texture>
-			<visible>true</visible>			
+			<width>720</width>
+			<height>88</height>
+			<texture>background-settings.png</texture>
 		</control>
-		
-		<control>
-			<description>header image</description>
-			<type>image</type>				
-			<posx>-5</posx>
-			<posy>-20</posy>
-			<width>1288</width>
-			<height>155</height>
-			<texture>header_settings.png</texture>
-			<visible>true</visible>			
-		</control>		
-		
-		<control>
-			<description>Title</description>
-			<type>label</type>			
-			<width>255</width>
-			<posx>100</posx>
-			<posy>50</posy>
-			<label>Settings</label>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>88</posy>
+			<width>720</width>
+			<height>488</height>
+			<texture>background-bottom.png</texture>
+		</control>
+		<control type="label">
+			<description>XBMC label</description>
+			<posx>200</posx>
+			<posy>43</posy>
+			<align>right</align>
+			<label>9</label>
+			<font>special12</font>
+		</control>
+		<control type="label">
+			<description>description label</description>
+			<posx>207</posx>
+			<posy>43</posy>
+			<align>left</align>
+			<label>10507</label>
 			<font>special13</font>
-			<visible>true</visible>
-		</control>				
-		
-		<control>
-			<description>Appearance Settings</description>
-			<type>button</type>
-			<id>6</id>
-			<posx>980</posx>
-			<posy>450</posy>
-			<width>128</width>
-			<height>128</height>
-			<label>Appearance</label>
-			<font>special13</font>
-			<onclick>XBMC.ActivateWindow(AppearanceSettings)</onclick>
-			<onleft>9</onleft>
-			<onright>9</onright>
-			<onup>5</onup>
-			<ondown>7</ondown>
-			<texturefocus>settings-appearance-focus.png</texturefocus>
-			<texturenofocus>settings-appearance-nofocus.png</texturenofocus>
-			<textoffsetx>0</textoffsetx>
-			<textoffsety>132</textoffsety>
-			<visible>true</visible>					
-		</control>			
-		
-	    <control>
-			<description>video preview window</description>
-			<type>videowindow</type>
-			<id>0</id>
-			<posx>45</posx>
-			<posy>430</posy>
-			<width>260</width>
-			<height>220</height>
-			<visible>true</visible>
 		</control>
-		
-		<control>
-			<description>video time label</description>
-			<type>label</type>
-			<id>0</id>
-			<posx>45</posx>
-			<posy>660</posy>
-			<font>font10</font>
-			<label>$INFO[Player.Time] $INFO[Player.Duration,/ ]</label>
-			<width>100</width>
-			<height>16</height>
-			<visible>true</visible> <!-- TODO: implement Player.IsPlaying visible condition -->
-		</control>
-		
+		<include>contentpanel</include>
+
 	</controls>
 </window>

@@ -1,11 +1,11 @@
 #include "GUIDialogButtonMenu.h"
-#include "..\GUILabelControl.h"
-#include "..\GUIButtonControl.h"
+#include "guilib\GUILabelControl.h"
+#include "guilib\GUIButtonControl.h"
 
 #define CONTROL_BUTTON_LABEL  3100
 
-CGUIDialogButtonMenu::CGUIDialogButtonMenu(void)
-    : CGUIDialog(WINDOW_DIALOG_BUTTON_MENU, "DialogButtonMenu.xml")
+CGUIDialogButtonMenu::CGUIDialogButtonMenu(int id, const CStdString &xmlFile)
+: CGUIDialog(id, xmlFile)
 {
 }
 
@@ -13,35 +13,33 @@ CGUIDialogButtonMenu::~CGUIDialogButtonMenu(void)
 {
 }
 
-bool CGUIDialogButtonMenu::OnMessage(CGUIMessage& message)
+bool CGUIDialogButtonMenu::OnMessage(CGUIMessage &message)
 {
-	switch (message.GetMessage())
+	bool bRet = CGUIDialog::OnMessage(message);
+	if (message.GetMessage() == GUI_MSG_CLICKED)
 	{
-		case GUI_MSG_CLICKED:
-		{
-			// Someone has been clicked - deinit...
-			Close();
-		}
-		break;
+		// Someone has been clicked - Deinit...
+		Close();
+		return true;
 	}
-
-	return CGUIWindow::OnMessage(message);
+	return bRet;
 }
 
-void CGUIDialogButtonMenu::Render()
+void CGUIDialogButtonMenu::FrameMove()
 {
 	// Get the label control
 	CGUILabelControl *pLabel = (CGUILabelControl *)GetControl(CONTROL_BUTTON_LABEL);
+	
 	if (pLabel)
 	{
 		// Get the active window, and put it's label into the label control
-		int iControl = GetFocusedControlID();
-		const CGUIControl *pControl = GetControl(iControl);
-		if (pControl && pControl->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
+		const CGUIControl *pControl = GetFocusedControl();
+		if (pControl && (pControl->GetControlType() == CGUIControl::GUICONTROL_BUTTON || pControl->GetControlType() == CGUIControl::GUICONTROL_TOGGLEBUTTON))
 		{
 			CGUIButtonControl *pButton = (CGUIButtonControl *)pControl;
 			pLabel->SetLabel(pButton->GetLabel());
 		}
 	}
-	CGUIDialog::Render();
+
+	CGUIDialog::FrameMove();
 }

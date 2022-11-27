@@ -8,6 +8,7 @@
 #include <map>
 #include <vector>
 
+#define SPIN_CONTROL_INT        3
 #define SPIN_CONTROL_INT_PLUS	4
 #define SPIN_CONTROL_TEXT		5
 
@@ -149,6 +150,10 @@ public:
 
 	void LoadXML(TiXmlElement *pRootElement);
 	void SaveXML(TiXmlNode *pRootNode);
+
+	// m_LookAndFeelResolution holds the real gui resolution,
+	// also when g_guiSettings.GetInt("videoscreen.resolution") is set to AUTORES
+	RESOLUTION m_LookAndFeelResolution;
 
 	void Clear();
 

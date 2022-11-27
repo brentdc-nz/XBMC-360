@@ -1,78 +1,169 @@
-#include "utils\stdafx.h"
+//#include "system.h" // TODO
 #include "utils\log.h"
-
 #include "BackgroundInfoLoader.h"
+#include "FileItem.h"
+//#include "settings\AdvancedSettings.h" // TODO
+#include "utils\SingleLock.h"
 
-CBackgroundInfoLoader::CBackgroundInfoLoader()
+using namespace std;
+
+#ifdef _XBOX
+#define ITEMS_PER_THREAD 10
+#else
+#define ITEMS_PER_THREAD 5
+#endif
+
+CBackgroundInfoLoader::CBackgroundInfoLoader(int nThreads)
 {
-	m_bRunning = false;
+	m_bStop = true;
+	m_pObserver = NULL;
+	m_pProgressCallback = NULL;
+	m_pVecItems = NULL;
+	m_nRequestedThreads = nThreads;
+	m_bStartCalled = false;
+	m_nActiveThreads = 0;
 }
 
 CBackgroundInfoLoader::~CBackgroundInfoLoader()
 {
+	StopThread();
 }
 
-void CBackgroundInfoLoader::OnStartup()
+void CBackgroundInfoLoader::SetNumOfWorkers(int nThreads)
 {
-	m_bRunning = true;
+	m_nRequestedThreads = nThreads;
 }
 
-void CBackgroundInfoLoader::Process()
+void CBackgroundInfoLoader::Run()
 {
 	try
 	{
-		CFileItemList& vecItems = (*m_pVecItems);
-
-		if (vecItems.Size() <= 0)
-			return;
-
-		OnLoaderStart();
-
-		for (int i = 0; i < (int)vecItems.Size(); ++i)
+		if (m_vecItems.size() > 0)
 		{
-			CFileItem* pItem = vecItems[i];
+			{
+				CSingleLock lock(m_lock);
+				if (!m_bStartCalled)
+				{
+					OnLoaderStart();
+					m_bStartCalled = true;
+				}
+			}
 
-			// Ask the callback if we should abort
-//			if(m_pProgressCallback && m_pProgressCallback->Abort()) //TODO
-//				m_bStop=true;
+			while (!m_bStop)
+			{
+				CSingleLock lock(m_lock);
+				CFileItemPtr pItem;
+				
+				vector<CFileItemPtr>::iterator iter = m_vecItems.begin();
+				if (iter != m_vecItems.end())
+				{
+					pItem = *iter;
+					m_vecItems.erase(iter);
+				}
 
-			if(m_bStop)
-				break;
+				if (pItem == NULL)
+					break;
 
-			// Load the item
-			if(!LoadItem(pItem))
-				continue;
+				// Ask the callback if we should abort
+				if ((m_pProgressCallback && m_pProgressCallback->Abort()) || m_bStop)
+					break;
 
-			// Notify observer a item
-			// is loaded.
-//			if (m_pObserver)
-//				m_pObserver->OnItemLoaded(pItem);  //TODO
+				lock.Leave();
+				
+				try
+				{
+					if (LoadItem(pItem.get()) && m_pObserver)
+						m_pObserver->OnItemLoaded(pItem.get());
+				}
+				catch (...)
+				{
+					CLog::Log(LOGERROR, "%s::LoadItem - Unhandled exception for item %s", __FUNCTION__, pItem->GetPath().c_str());
+				}
+			}
 		}
 
-		OnLoaderFinish();
+		CSingleLock lock(m_lock);
+		
+		if (m_nActiveThreads == 1)
+			OnLoaderFinish();
+		
+		m_nActiveThreads--;
 	}
 	catch (...)
 	{
-		CLog::Log(LOGERROR, "BackgroundInfoLoader thread: Unhandled exception");
+		m_nActiveThreads--;
+		CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
 	}
-}
-
-void CBackgroundInfoLoader::OnExit()
-{
-	m_bRunning = false;
 }
 
 void CBackgroundInfoLoader::Load(CFileItemList& items)
 {
-	m_pVecItems = &items;
-
 	StopThread();
-	Create();
 
-	m_bRunning = true;
+	if (items.Size() == 0)
+		return;
+  
+	EnterCriticalSection(m_lock);
+
+	for (int nItem=0; nItem < items.Size(); nItem++)
+		m_vecItems.push_back(items[nItem]);
+
+	m_pVecItems = &items;
+	m_bStop = false;
+	m_bStartCalled = false;
+
+	int nThreads = m_nRequestedThreads;
+	if (nThreads == -1)
+		nThreads = (m_vecItems.size() / (ITEMS_PER_THREAD+1)) + 1;
+
+//	if (nThreads > g_advancedSettings.m_bgInfoLoaderMaxThreads) // TODO
+		nThreads = 5;////g_advancedSettings.m_bgInfoLoaderMaxThreads; // TODO
+
+	m_nActiveThreads = nThreads;
+	for (int i=0; i < nThreads; i++)
+	{
+		CThread *pThread = new CThread(this); 
+		pThread->Create();
+		pThread->SetPriority(THREAD_PRIORITY_BELOW_NORMAL);
+		pThread->SetName("Background Loader");
+		m_workers.push_back(pThread);
+	}
+      
+	LeaveCriticalSection(m_lock);
+}
+
+void CBackgroundInfoLoader::StopAsync()
+{
+	m_bStop = true;
+}
+
+void CBackgroundInfoLoader::StopThread()
+{
+	StopAsync();
+
+	for (int i=0; i<(int)m_workers.size(); i++)
+	{
+		m_workers[i]->StopThread();
+		delete m_workers[i];
+	}
+
+	m_workers.clear();
+	m_vecItems.clear();
+	m_pVecItems = NULL;
+	m_nActiveThreads = 0;
 }
 
 bool CBackgroundInfoLoader::IsLoading()
 {
-	return m_bRunning;
+	return m_nActiveThreads > 0;
+}
+
+void CBackgroundInfoLoader::SetObserver(IBackgroundLoaderObserver* pObserver)
+{
+	m_pObserver = pObserver;
+}
+
+void CBackgroundInfoLoader::SetProgressCallback(IProgressCallback* pCallback)
+{
+	m_pProgressCallback = pCallback;
 }

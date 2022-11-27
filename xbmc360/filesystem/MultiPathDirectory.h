@@ -5,7 +5,7 @@
 #include "..\utils\StdString.h"
 #include "..\FileItem.h"
 
-namespace DIRECTORY
+namespace XFILE
 {
 
 class CMultiPathDirectory :	public IDirectory
@@ -15,13 +15,13 @@ public:
 	virtual ~CMultiPathDirectory(void);
 
 	virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
-	static bool GetPaths(const CStdString& strPath, vector<CStdString>& vecPaths);
+//	static bool GetPaths(const CStdString& strPath, vector<CStdString>& vecPaths);
 	static CStdString GetFirstPath(const CStdString &strPath);
 	void MergeItems(CFileItemList &items);
-	static CStdString ConstructMultiPath(const vector<CStdString> &vecPaths);
+//	static CStdString ConstructMultiPath(const vector<CStdString> &vecPaths);
 
 private:
-	CStdString ConstructMultiPath(const CFileItemList& items, const vector<int> &stack);
+//	CStdString ConstructMultiPath(const CFileItemList& items, const vector<int> &stack);
 };
 
 };

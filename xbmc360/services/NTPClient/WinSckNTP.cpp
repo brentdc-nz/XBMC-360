@@ -4,6 +4,7 @@
 #include <math.h>
 #include "xbox\XBKernalExports.h"
 #include "Application.h"
+#include <sstream>
 
 const long JAN_1ST_1900 = 2415021;
 const double NTP_TO_SECOND = (((double)1.0) / 0xFFFFFFFF);

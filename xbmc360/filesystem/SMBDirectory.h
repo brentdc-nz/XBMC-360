@@ -6,7 +6,7 @@
 #include "FileSmb.h"
 #include <fcntl.h>
 
-namespace DIRECTORY
+namespace XFILE
 {
 
 class CSMBDirectory : public IDirectory

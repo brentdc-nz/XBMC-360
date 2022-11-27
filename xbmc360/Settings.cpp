@@ -21,6 +21,12 @@ CSettings::~CSettings()
 
 void CSettings::Initialize()
 {
+	for(int i = HDTV_1080i; i <= PAL60_16x9; i++)
+	{
+		g_graphicsContext.ResetScreenParameters((RESOLUTION)i);
+		g_graphicsContext.ResetOverscan((RESOLUTION)i, m_ResInfo[i].Overscan);
+	}
+
 	m_strVideoExtensions = ".m4v|.3gp|.nsv|.ts|.ty|.strm|.pls|.rm|.rmvb|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.nrg|.img|.iso|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mp4|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli|.flv|.rar|.001|.wpl|.zip|.vdr|.dvr-ms";
 	m_strAudioExtensions = ".nsv|.m4a|.flac|.aac|.strm|.pls|.rm|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u|.mod|.amf|.669|.dmf|.dsm|.far|.gdm|.imf|.it|.m15|.med|.okt|.s3m|.stm|.sfx|.ult|.uni|.xm|.sid|.ac3|.dts|.cue|.aif|.aiff|.wpl|.ape|.mac|.mpc|.mp+|.mpp|.shn|.zip|.rar|.wv|.nsf|.spc|.gym|.adplug|.adx|.dsp|.adp|.ymf|.ast|.afc|.hps|.xsp|.xwav|.waa|.wvs|.wam|.gcm|.idsp|.mpdsp|.mss|.spt|.rsd";
 	m_strPictureExtensions = ".png|.jpg|.jpeg|.bmp|.gif|.ico|.tif|.tiff|.tga|.pcx|.cbz|.zip|.cbr|.rar|.m3u";
@@ -42,10 +48,11 @@ bool CSettings::Load()
 	}
 
 	// Clear sources, then load xml file...
-	m_vecProgramSources.clear();
-	m_vecVideoSources.clear();
-	m_vecMusicSources.clear();
-	m_vecPictureSources.clear();
+	m_fileSources.clear();
+	m_musicSources.clear();
+	m_pictureSources.clear();
+	m_programSources.clear();
+	m_videoSources.clear();
 
 	CStdString strXMLFile = SOURCES_FILE; //GetSourcesFile(); // TODO
 
@@ -70,10 +77,11 @@ bool CSettings::Load()
 	if(pRootElement)
 	{
 		// Parse sources...
-		GetSources(pRootElement, "programs", m_vecProgramSources);
-		GetSources(pRootElement, "videos", m_vecVideoSources);
-		GetSources(pRootElement, "music", m_vecMusicSources);
-		GetSources(pRootElement, "pictures", m_vecPictureSources);
+		GetSources(pRootElement, "programs", m_programSources);
+		GetSources(pRootElement, "pictures", m_pictureSources);
+		GetSources(pRootElement, "files", m_fileSources);
+		GetSources(pRootElement, "music", m_musicSources);
+		GetSources(pRootElement, "video", m_videoSources);
 	}	
 
 	return true;
@@ -150,67 +158,93 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	return xmlDoc.SaveFile(strSettingsFile);
 }
 
+bool CSettings::UpdateShare(const CStdString &type, const CStdString oldName, const CMediaSource &share)
+{
+	VECSOURCES *pShares = GetSourcesFromType(type);
+
+	if (!pShares) return false;
+
+	// update our current share list
+	CMediaSource* pShare=NULL;
+	for (IVECSOURCES it = pShares->begin(); it != pShares->end(); it++)
+	{
+		if ((*it).strName == oldName)
+		{
+			(*it).strName = share.strName;
+			(*it).strPath = share.strPath;
+			(*it).vecPaths = share.vecPaths;
+			pShare = &(*it);
+			break;
+		}
+	}
+
+	if (!pShare)
+		return false;
+
+	// Update our XML file as well
+	return SaveSources();
+}
+
 bool CSettings::AddShare(const CStdString &type, const CMediaSource &share)
 {
 	VECSOURCES *pShares = GetSourcesFromType(type);
-	if(!pShares) return false;
+	if (!pShares) return false;
 
 	// Translate dir and add to our current shares
 	CStdString strPath1 = share.strPath;
 	strPath1.ToUpper();
-	
+
 	if(strPath1.IsEmpty())
 	{
-		CLog::Log(LOGERROR, "Unable to add empty path");
+		CLog::Log(LOGERROR, "unable to add empty path");
 		return false;
 	}
 
 	CMediaSource shareToAdd = share;
+
+/* // TODO - No special shares yet
+	if (strPath1.at(0) == '$')
+	{
+		shareToAdd.strPath = CUtil::TranslateSpecialSource(strPath1);
+		
+		if (!share.strPath.IsEmpty())
+			CLog::Log(LOGDEBUG, "%s Translated (%s) to Path (%s)",__FUNCTION__ ,strPath1.c_str(),shareToAdd.strPath.c_str());
+		else
+		{
+			CLog::Log(LOGDEBUG, "%s Skipping invalid special directory token: %s",__FUNCTION__,strPath1.c_str());
+			return false;
+		}
+	}
+*/
 	pShares->push_back(shareToAdd);
 
-	return SaveSources();
+	if (!share.m_ignore)
+	{
+		return SaveSources();
+	}
+	return true;
 }
 
 VECSOURCES *CSettings::GetSourcesFromType(const CStdString &type)
 {
-	CStdString strType(type);
-
-	CStringUtils::MakeLowercase(strType);
-
-	if(strType == "programs" || strType == "myprograms")
-		return &m_vecProgramSources;
-	else if(strType== "videos")
-		return &m_vecVideoSources;
-	else if(strType == "music")
-		return &m_vecMusicSources;
-	else if(strType == "pictures")
-		return &m_vecPictureSources;
+	if (type == "programs" || type == "myprograms")
+		return &m_programSources;
+	else if (type == "files")
+		return &m_fileSources;
+	else if (type == "music")
+		return &m_musicSources;
+	else if (type == "video")
+		return &m_videoSources;
+	else if (type == "pictures")
+		return &m_pictureSources;
 
 	return NULL;
 }
 
 bool CSettings::DeleteSource(const CStdString &strType, const CStdString strName, const CStdString strPath, bool virtualSource)
 {
-	VECSOURCES *pShares = GetSourcesFromType(strType);
-	if(!pShares) return false;
 
-	bool found(false);
-
-	for(IVECSOURCES it = pShares->begin(); it != pShares->end(); it++)
-	{
-		if((*it).strName == strName && (*it).strPath == strPath)
-		{
-			CLog::Log(LOGDEBUG,"Found source, removing!");
-			pShares->erase(it);
-			found = true;
-			break;
-		}
-	}
-
-	if(virtualSource)
-		return found;
-
-	return SaveSources();
+	return false;
 }
 
 void CSettings::GetSources(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSOURCES& items)
@@ -252,21 +286,33 @@ bool CSettings::SetSources(TiXmlNode *root, const char *section, const VECSOURCE
 	TiXmlElement sectionElement(section);
 	TiXmlNode *sectionNode = root->InsertEndChild(sectionElement);
 	
-	if(sectionNode)
+	if (sectionNode)
 	{
-		for(unsigned int i = 0; i < shares.size(); i++)
+		XMLUtils::SetPath(sectionNode, "default", /*defaultPath*/"todo"); // TODO
+		for (unsigned int i = 0; i < shares.size(); i++)
 		{
 			const CMediaSource &share = shares[i];
-				
+			
+			if (share.m_ignore)
+				continue;
+			
 			TiXmlElement source("source");
 
 			XMLUtils::SetString(&source, "name", share.strName);
 
-			for(unsigned int i = 0; i < share.vecPaths.size(); i++)
+			for (unsigned int i = 0; i < share.vecPaths.size(); i++)
 				XMLUtils::SetPath(&source, "path", share.vecPaths[i]);
 
-//			if(!share.m_strThumbnailImage.IsEmpty())
-//				XMLUtils::SetPath(&source, "thumbnail", share.m_strThumbnailImage);
+/* TODO - No locking yet
+			if (share.m_iHasLock)
+			{
+				XMLUtils::SetInt(&source, "lockmode", share.m_iLockMode);
+				XMLUtils::SetString(&source, "lockcode", share.m_strLockCode);
+				XMLUtils::SetInt(&source, "badpwdcount", share.m_iBadPwdCount);
+			}
+*/			
+			if (!share.m_strThumbnailImage.IsEmpty())
+				XMLUtils::SetPath(&source, "thumbnail", share.m_strThumbnailImage);
 
 			sectionNode->InsertEndChild(source);
 		}
@@ -283,101 +329,148 @@ bool CSettings::SaveSources()
 	if(!pRoot) return false;
 
 	// Ok, now run through and save each sources section
-	SetSources(pRoot, "programs", m_vecProgramSources);
-	SetSources(pRoot, "videos", m_vecVideoSources);
-	SetSources(pRoot, "music", m_vecMusicSources);
-	SetSources(pRoot, "pictures", m_vecPictureSources);
+	SetSources(pRoot, "programs", m_programSources);
+	SetSources(pRoot, "video", m_videoSources);
+	SetSources(pRoot, "music", m_musicSources);
+	SetSources(pRoot, "pictures", m_pictureSources);
+	SetSources(pRoot, "files", m_fileSources);
 
 	return doc.SaveFile(/*GetSourcesFile()*/SOURCES_FILE); //TODO
 }
 
 bool CSettings::GetSource(const CStdString &category, const TiXmlNode *source, CMediaSource &share)
 {
-	CLog::Log(LOGDEBUG,"---- SOURCE START ----");
-	const TiXmlNode *pNodeName = source->FirstChild("name");
+	CLog::Log(LOGDEBUG,"    ---- SOURCE START ----");
 
+	const TiXmlNode *pNodeName = source->FirstChild("name");
 	CStdString strName;
-	if(pNodeName && pNodeName->FirstChild())
+	
+	if (pNodeName && pNodeName->FirstChild())
 	{
 		strName = pNodeName->FirstChild()->Value();
-		CLog::Log(LOGDEBUG,"Found name: %s", strName.c_str());
+		CLog::Log(LOGDEBUG,"    Found name: %s", strName.c_str());
 	}
-
+	
 	// Get multiple paths
 	vector<CStdString> vecPaths;
 	const TiXmlElement *pPathName = source->FirstChildElement("path");
 	
-	while(pPathName)
+	while (pPathName)
 	{
-		if(pPathName->FirstChild())
+		if (pPathName->FirstChild())
 		{
+			int pathVersion = 0;
+			pPathName->Attribute("pathversion", &pathVersion);
 			CStdString strPath = pPathName->FirstChild()->Value();
-
-			if(!strPath.IsEmpty())
+//			strPath = CSpecialProtocol::ReplaceOldPath(strPath, pathVersion); // TODO - No special paths yet
+			
+			// Make sure there are no virtualpaths or stack paths defined in xboxmediacenter.xml
+			CLog::Log(LOGDEBUG,"    Found path: %s", strPath.c_str());
+			
+			if (/*!URIUtils::IsStack(strPath)*/1) // TODO
 			{
-				CLog::Log(LOGDEBUG,"-> Translated to path: %s", strPath.c_str());
+				// Translate special tags
+				if (!strPath.IsEmpty() && strPath.at(0) == '$')
+				{
+					CStdString strPathOld(strPath);
+					strPath = strPath;//CUtil::TranslateSpecialSource(strPath); // TODO - No special paths yet
+					
+					if (!strPath.IsEmpty())
+					{
+						CLog::Log(LOGDEBUG,"    -> Translated to path: %s", strPath.c_str());
+					}
+					else
+					{
+						CLog::Log(LOGERROR,"    -> Skipping invalid token: %s", strPathOld.c_str());
+						pPathName = pPathName->NextSiblingElement("path");
+						continue;
+					}
+				}
+				URIUtils::AddSlashAtEnd(strPath);
+				vecPaths.push_back(strPath);
 			}
 			else
-			{
-				CLog::Log(LOGERROR,"-> Skipping invalid token: %s", strPath.c_str());
-				pPathName = pPathName->NextSiblingElement("path");
-				continue;
-			}
-			URIUtils::AddSlashAtEnd(strPath);
-			vecPaths.push_back(strPath);
+				CLog::Log(LOGERROR,"    Invalid path type (%s) in source", strPath.c_str());
 		}
 		pPathName = pPathName->NextSiblingElement("path");
 	}
 
+	const TiXmlNode *pLockMode = source->FirstChild("lockmode");
+	const TiXmlNode *pLockCode = source->FirstChild("lockcode");
+	const TiXmlNode *pBadPwdCount = source->FirstChild("badpwdcount");
 	const TiXmlNode *pThumbnailNode = source->FirstChild("thumbnail");
 
-	if(!strName.IsEmpty() && vecPaths.size() > 0)
+	if (!strName.IsEmpty() && vecPaths.size() > 0)
 	{
 		vector<CStdString> verifiedPaths;
-
+		
 		// Disallowed for files, or theres only a single path in the vector
-		if(vecPaths.size() == 1)
+		if ((category.Equals("files")) || (vecPaths.size() == 1))
 			verifiedPaths.push_back(vecPaths[0]);
-		else // Multiple paths?
+		// Multiple paths?
+		else
 		{
 			// Validate the paths
-			for(int j = 0; j < (int)vecPaths.size(); ++j)
+			for (int j = 0; j < (int)vecPaths.size(); ++j)
 			{
 				CURL url(vecPaths[j]);
+				CStdString protocol = url.GetProtocol();
 				bool bIsInvalid = false;
 
 				// For my programs
-				if(category.Equals("programs") || category.Equals("myprograms"))
+				if (category.Equals("programs") || category.Equals("myprograms"))
 				{
 					// Only allow HD and plugins
-					if(url.IsLocal())
+					if (url.IsLocal() || protocol.Equals("plugin"))
 						verifiedPaths.push_back(vecPaths[j]);
 					else
-						bIsInvalid = true;
-				}		
+					bIsInvalid = true;
+				}
+				// For others allow everything (if the user does something silly, we can't stop them)
 				else
-					verifiedPaths.push_back(vecPaths[j]); // For others allow everything (if the user does something silly, we can't stop them)
+					verifiedPaths.push_back(vecPaths[j]);
 
-			// Error message
-			if(bIsInvalid)
-				CLog::Log(LOGERROR,"Invalid path type (%s) for multipath source", vecPaths[j].c_str());
+				// Error message
+				if (bIsInvalid)
+					CLog::Log(LOGERROR,"    Invalid path type (%s) for multipath source", vecPaths[j].c_str());
 			}
 
 			// No valid paths? skip to next source
-			if(verifiedPaths.size() == 0)
+			if (verifiedPaths.size() == 0)
 			{
-				CLog::Log(LOGERROR,"Missing or invalid <name> and/or <path> in source");
+				CLog::Log(LOGERROR,"    Missing or invalid <name> and/or <path> in source");
 				return false;
 			}
 		}
 
 		share.FromNameAndPaths(category, strName, verifiedPaths);
 
-		if(pThumbnailNode) // TODO
+/* // TODO - No locking yet
+		share.m_iBadPwdCount = 0;
+		if (pLockMode)
 		{
-//			if(pThumbnailNode->FirstChild())
-//				share.m_strThumbnailImage = pThumbnailNode->FirstChild()->Value();
+			share.m_iLockMode = LockType(atoi(pLockMode->FirstChild()->Value()));
+			share.m_iHasLock = 2;
 		}
+
+		if (pLockCode)
+		{
+			if (pLockCode->FirstChild())
+				share.m_strLockCode = pLockCode->FirstChild()->Value();
+		}
+
+		if (pBadPwdCount)
+		{
+			if (pBadPwdCount->FirstChild())
+				share.m_iBadPwdCount = atoi( pBadPwdCount->FirstChild()->Value() );
+		}
+*/
+		if (pThumbnailNode)
+		{
+			if (pThumbnailNode->FirstChild())
+				share.m_strThumbnailImage = pThumbnailNode->FirstChild()->Value();
+		}
+
 		return true;
 	}
 	return false;

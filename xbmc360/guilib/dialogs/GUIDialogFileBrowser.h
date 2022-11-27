@@ -1,43 +1,76 @@
 #ifndef GUILIB_CGUIDIALOGFILEBROWSER_H
 #define GUILIB_CGUIDIALOGFILEBROWSER_H
 
-#include "..\GUIDialog.h"
-#include "..\..\Settings.h"
-#include "..\GUIViewControl.h"
-#include "..\..\MediaManager.h"
-#include "..\..\filesystem\VirtualDirectory.h"
-#include "..\..\filesystem\DirectoryHistory.h"
+#include "guilib\GUIDialog.h"
+#include "FileSystem\VirtualDirectory.h"
+#include "FileSystem\DirectoryHistory.h"
+#include "guilib\GUIViewControl.h"
+#include "BackgroundInfoLoader.h"
+//#include "pictures\PictureThumbLoader.h" // TODO
 
-class CGUIDialogFileBrowser : public CGUIDialog
+class CFileItem;
+class CFileItemList;
+
+class CGUIDialogFileBrowser : public CGUIDialog, public IBackgroundLoaderObserver
 {
 public:
 	CGUIDialogFileBrowser(void);
 	virtual ~CGUIDialogFileBrowser(void);
-	virtual void Render();
 	virtual bool OnMessage(CGUIMessage& message);
+	virtual bool OnAction(const CAction &action);
+	virtual bool OnBack(int actionID);
+	virtual void FrameMove();
 	virtual void OnWindowLoaded();
 	virtual void OnWindowUnload();
 	bool IsConfirmed() { return m_bConfirmed; };
-	static bool ShowAndGetShare(CStdString &path, bool allowNetworkShares/*, VECSHARES* additionalShare = NULL*/);
-	void SetShares(VECSOURCES &shares);
-	void OnAddNetworkLocation();
+	void SetHeading(const CStdString &heading);
+
+	static bool ShowAndGetDirectory(const VECSOURCES &shares, const CStdString &heading, CStdString &path, bool bWriteOnly=false);
+	static bool ShowAndGetFile(const VECSOURCES &shares, const CStdString &mask, const CStdString &heading, CStdString &path, bool useThumbs = false, bool useFileDirectories = false);
+	static bool ShowAndGetFile(const CStdString &directory, const CStdString &mask, const CStdString &heading, CStdString &path, bool useThumbs = false, bool useFileDirectories = false);
+	static bool ShowAndGetSource(CStdString &path, bool allowNetworkShares, VECSOURCES* additionalShare = NULL, const CStdString& strType="");
+	static bool ShowAndGetImage(const VECSOURCES &shares, const CStdString &heading, CStdString &path);
+	static bool ShowAndGetImage(const CFileItemList &items, const VECSOURCES &shares, const CStdString &heading, CStdString &path, bool* flip=NULL, int label=21371);
+
+	void SetSources(const VECSOURCES &shares);
+
+	virtual void OnItemLoaded(CFileItem *item) {};
+
+	virtual bool HasListItems() const { return true; };
+	virtual CFileItemPtr GetCurrentListItem(int offset = 0);
+	int GetViewContainerID() const { return m_viewControl.GetCurrentControl(); };
 
 protected:
+	void GoParentFolder();
 	void OnClick(int iItem);
+	void OnSort();
 	void ClearFileItems();
 	void Update(const CStdString &strDirectory);
+	bool HaveDiscOrConnection( int iDriveType );
+	bool OnPopupMenu(int iItem);
+	void OnAddNetworkLocation();
+	void OnAddMediaSource();
+	void OnEditMediaSource(CFileItem* pItem);
+	CGUIControl *GetFirstFocusableControl(int id);
 
-	CDirectoryHistory m_history;
-	bool m_singleList; // If true, we have no shares or anything
-	int m_browsingForFolders; // 0 - no, 1 - yes, 2 - yes, only writable
-	bool m_bConfirmed;
-	CFileItem m_Directory;
+	VECSOURCES m_shares;
+	XFILE::CVirtualDirectory m_rootDir;
+	CFileItemList* m_vecItems;
+	CFileItem* m_Directory;
 	CStdString m_strParentPath;
 	CStdString m_selectedPath;
-	VECSOURCES m_shares;
+	CDirectoryHistory m_history;
+	int m_browsingForFolders; // 0 - no, 1 - yes, 2 - yes, only writable
+	bool m_bConfirmed;
+	int m_bFlip;
+	bool m_addNetworkShareEnabled;
+	bool m_flipEnabled;
+	CStdString m_addSourceType;
+	bool m_browsingForImages;
 	bool m_useFileDirectories;
-	DIRECTORY::CVirtualDirectory m_rootDir;
-	CFileItemList m_vecItems;
+	bool m_singleList; // If true, we have no shares or anything
+
+//	CPictureThumbLoader m_thumbLoader; // TODO
 	CGUIViewControl m_viewControl;
 };
 

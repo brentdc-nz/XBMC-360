@@ -1,6 +1,6 @@
 #include "DVDPlayer.h"
 #include "utils\Log.h"
-#include "utils\Util.h"
+#include "utils\MathUtils.h"
 #include "Application.h"
 #include "Settings.h"
 #include "DVDInputStreams\DVDFactoryInputStream.h"
@@ -252,7 +252,7 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 {
 	try
 	{
-		CLog::Log(LOGNOTICE, "DVDPlayer: Opening: %s", file.m_strPath.c_str());
+		CLog::Log(LOGNOTICE, "DVDPlayer: Opening: %s", file.GetPath().c_str());
 
 		// If playing a file close it first
 		// this has to be changed so we won't have to close it.
@@ -268,7 +268,7 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 		m_PlayerOptions = options;
 		m_item     = file;
 //		m_mimetype  = file.GetMimeType();
-		m_filename = file.m_strPath;
+		m_filename = file.GetPath();
 
 		ResetEvent(m_hReadyEvent);
 		Create();

@@ -3,7 +3,7 @@
 
 #include "XBApplicationEx.h"
 #include "cores\IPlayer.h"
-#include "guilib\GUIUserMessage.h"
+#include "guilib\GUIUserMessages.h"
 #include "guilib\IMsgTargetCallback.h"
 #include "utils\Stopwatch.h"
 #include "utils\Splash.h"
@@ -84,6 +84,8 @@ public:
 	CNetwork& getNetwork() { return m_network; };
 	CDrivesManager& getDriveManager() { return m_drivesManager; };
 	CApplicationMessenger& getApplicationMessenger() { return m_applicationMessenger; };
+
+	bool ExecuteXBMCAction(std::string action);
 
 protected:
 	bool ProcessGamepad(/*float frameTime*/);

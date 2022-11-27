@@ -13,36 +13,6 @@ public:
 	CGUIWindowSettingsCategory(void);
 	virtual ~CGUIWindowSettingsCategory(void);
 
-	virtual bool OnAction(const CAction &action);
-	virtual bool OnMessage(CGUIMessage& message);
-
-protected:
-	void OnClick(CBaseSettingControl *pSettingControl);
-	void SetupControls();
-	void CreateSettings();
-	void AddSetting(CSetting *pSetting, int iPosX, int &iPosY, int iGap, int iWidth, int &iControlID);
-	virtual void OnInitWindow();
-	void FreeControls();
-	void FreeSettingsControls();
-
-	void FillInSkins(CSetting *pSetting);
-	void FillInLanguages(CSetting *pSetting);
-	void FillInScreenSavers(CSetting *pSetting);
-
-	CBaseSettingControl* GetSetting(const CStdString &strSetting);
-
-	CGUISpinControlEx *m_pOriginalSpin;
-	CGUIButtonControl *m_pOriginalSettingsButton;
-
-	std::vector<CBaseSettingControl *> m_vecSettings;
-	int m_iScreen;
-
-	vecSettingsCategory m_vecSections;
-	int m_iSection;
-
-	// look + feel settings (for delayed loading)
-	CStdString m_strNewSkin;
-	CStdString m_strNewLanguage;
 };
 
 #endif //GUILIB_GUIWINDOWSETTINGSCATEGORY_H

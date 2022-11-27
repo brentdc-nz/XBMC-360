@@ -7,6 +7,8 @@
 #include "guilib\Key.h"
 #include <map>
 
+class CAction;
+
 struct CButtonAction
 {
 	int iID;
@@ -22,8 +24,14 @@ public:
 
 	bool Load();
 	WORD TranslateWindowString(const char *szWindow);
-	bool TranslateActionString(const char *szAction, int &iAction);
+	 static bool TranslateActionString(const char *szAction, int &action);
 	void GetAction(WORD wWindow, const CKey &key, CAction &action);
+
+	// Translate between a window name and it's id
+	// param window name of the window
+	// return id of the window, or WINDOW_INVALID if not found
+	static int TranslateWindow(const CStdString &window);
+
 	void Clear();
 
 private:

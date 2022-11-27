@@ -24,6 +24,7 @@ CAdvancedSettings::CAdvancedSettings()
 	m_videoPPFFmpegDeint = "linblenddeint";
 	m_videoPPFFmpegPostProc = "ha:128:7,va,dr";
 	m_iSkipLoopFilter = 0;
+	m_bNavVKeyboard = false;
 }
 
 bool CAdvancedSettings::Load()
@@ -101,6 +102,7 @@ bool CAdvancedSettings::Load()
 	}
 
 	XMLUtils::GetInt(pRootElement,"skiploopfilter", m_iSkipLoopFilter, -16, 48);
+	XMLUtils::GetBoolean(pRootElement,"navigatevirtualkeyboard", m_bNavVKeyboard);
 
 	return true;
 }

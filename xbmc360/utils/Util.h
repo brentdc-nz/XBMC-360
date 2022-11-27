@@ -3,22 +3,17 @@
 
 #include "StdString.h"
 #include "stdafx.h"
-#include "..\MediaManager.h"
-
-namespace MathUtils
-{
-	inline int round_int(double x);
-	inline double rint(double x);
-}
+#include "MediaSource.h"
 
 class CUtil
 {
 public:
-	static bool IsBuiltIn(const CStdString& execString);
-	static void SplitExecFunction(const CStdString &execString, CStdString &strFunction, CStdString &strParam);
+
+	static void SplitExecFunction(const CStdString &execString, CStdString &function, std::vector<CStdString> &parameters);
+	static void SplitParams(const CStdString &paramString, std::vector<CStdString> &parameters);
 	static const CStdString GetFileName(const CStdString& strFileNameAndPath);
 	static CStdString GetTitleFromPath(const CStdString& strFileNameAndPath, bool bIsFolder = false);
-	static int ExecBuiltIn(const CStdString& execString);
+
 	static bool GetParentPath(const CStdString& strPath, CStdString& strParent);
 	static bool HasSlashAtEnd(const CStdString& strFile);
 	static void AddSlashAtEnd(CStdString& strFolder);
@@ -33,8 +28,12 @@ public:
 	static void URLEncode(CStdString& strURLData);
 	static void AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult);
 	static bool IsStack(const CStdString& strFile);
+	static bool IsPicture(const CStdString& strFile);
 	static void UrlDecode(CStdString& strURLData);
 	static float CurrentCpuUsage();
+	static __int64 ToInt64(DWORD dwHigh, DWORD dwLow);
+	static bool ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps);
+	static int GetMatchingSource(const CStdString& strPath, VECSOURCES& VECSOURCES, bool& bIsSourceName);
 };
 
 #endif //CUTIL_H

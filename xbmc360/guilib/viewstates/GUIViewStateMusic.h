@@ -2,15 +2,18 @@
 #define H_CGUIVIEWSTATEMUSIC
 
 #include "GUIViewState.h"
+#include "FileItem.h"
 
-class CGUIViewStateWindowMusic : public CGUIViewState
+class CGUIViewStateWindowMusicFiles : public CGUIViewState
 {
 public:
-	CGUIViewStateWindowMusic(const CFileItemList& items);
+	CGUIViewStateWindowMusicFiles(const CFileItemList& items);
+	virtual CStdString GetExtensions();
 
 protected:
-	virtual VECSOURCES& GetShares();
-	virtual CStdString GetExtensions();
+	virtual CStdString GetLockType();
+	virtual void SaveViewState();
+	virtual VECSOURCES& GetSources();
 };
 
 #endif //H_CGUIVIEWSTATEMUSIC

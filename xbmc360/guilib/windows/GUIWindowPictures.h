@@ -1,23 +1,16 @@
 #ifndef GUILIB_GUIWINDOWPICTURES_H
 #define GUILIB_GUIWINDOWPICTURES_H
 
-#include "..\GUIWindow.h"
-#include "..\GUIMediaWindow.h"
-#include "..\..\ThumbLoader.h"
+#include "guilib/GUIMediaWindow.h"
 
-class CGUIWindowPictures : public CGUIMediaWindow
+class CGUIWindowPictures : public CGUIMediaWindow//, public IBackgroundLoaderObserver // TODO
 {
 public:
 	CGUIWindowPictures(void);
 	virtual ~CGUIWindowPictures(void);
 
-	virtual bool OnMessage(CGUIMessage& message);
-	virtual bool OnClick(int iItem);
-	bool Update(const CStdString &strDirectory);
-	bool OnPlayMedia(int iItem);
-
-private:
-	CPicturesThumbLoader m_thumbLoader;
+protected:
+	virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
 };
 
 #endif //GUILIB_GUIWINDOWPICTURES_H

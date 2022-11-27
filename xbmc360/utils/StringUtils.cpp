@@ -3,6 +3,9 @@
 
 using namespace std;
 
+// empty string for use in returns by ref
+const CStdString CStringUtils::EmptyString = "";
+
 // Converts string to wide
 void CStringUtils::StringtoWString(CStdString strText, std::wstring &strResult)
 {
@@ -96,7 +99,19 @@ void CStringUtils::StringSplit(CStdString str, CStdString delim, std::vector<CSt
 		results->push_back(str);
 }
 
-// assumes it is called from after the first open bracket is found
+vector<string> CStringUtils::Split(const CStdString& input, const CStdString& delimiter, unsigned int iMaxStrings /* = 0 */)
+{
+	CStdStringArray result;
+	SplitString(input, delimiter, result, iMaxStrings);
+
+	vector<string> strArray;
+	for (unsigned int index = 0; index < result.size(); index++)
+		strArray.push_back(result.at(index));
+
+	return strArray;
+}
+
+// Assumes it is called from after the first open bracket is found
 int CStringUtils::FindEndBracket(const CStdString &str, char opener, char closer, int startPos)
 {
 	int blocks = 1;
@@ -126,6 +141,14 @@ bool CStringUtils::IsNaturalNumber(const CStdString& str)
 	return true;
 }
 
+bool CStringUtils::IsInteger(const CStdString& str)
+{
+	if (str.size() > 0 && str[0] == '-')
+		return IsNaturalNumber(str.Mid(1));
+	else
+		return IsNaturalNumber(str);
+}
+
 CStdString CStringUtils::SecondsToTimeString(long lSeconds, TIME_FORMAT format)
 {
 	int hh = lSeconds / 3600;
@@ -150,6 +173,28 @@ CStdString CStringUtils::SecondsToTimeString(long lSeconds, TIME_FORMAT format)
 		strHMS.AppendFormat(strHMS.IsEmpty() ? "%02.2i" : ":%02.2i", ss);
 	
 	return strHMS;
+}
+
+long CStringUtils::TimeStringToSeconds(const CStdString &timeString)
+{  
+	if(timeString.Right(4).Equals(" min"))
+	{
+		// This is imdb format of "XXX min"
+		return 60 * atoi(timeString.c_str());
+	}
+	else
+	{
+		CStdStringArray secs;
+		CStringUtils::SplitString(timeString, ":", secs);
+		
+		int timeInSecs = 0;
+		for (unsigned int i = 0; i < secs.size(); i++)
+		{
+			timeInSecs *= 60;
+			timeInSecs += atoi(secs[i]);
+		}
+		return timeInSecs;
+	}
 }
 
 CStdString CStringUtils::ReplaceAllA(CStdString s, CStdString sub, CStdString other)
@@ -186,4 +231,59 @@ CStdString CStringUtils::MakeLowercase(CStdString strTmp)
 
 	for_each(strTmp.begin(), strTmp.end(), lowercase_func());
 	return strTmp;
+}
+
+size_t CStringUtils::FindWords(const char *str, const char *wordLowerCase)
+{
+	// NOTE: This assumes word is lowercase!
+	unsigned char *s = (unsigned char *)str;
+	do
+	{
+		// Start with a compare
+		unsigned char *c = s;
+		unsigned char *w = (unsigned char *)wordLowerCase;
+		bool same = true;
+		
+		while (same && *c && *w)
+		{
+			unsigned char lc = *c++;
+
+			if (lc >= 'A' && lc <= 'Z')
+				lc += 'a'-'A';
+
+			if (lc != *w++) // Different
+				same = false;
+		}
+
+		if (same && *w == 0)  // Only the same if word has been exhausted
+			return (const char *)s - str;
+
+		// Otherwise, find a space and skip to the end of the whitespace
+		while (*s && *s != ' ') s++;
+		while (*s && *s == ' ') s++;
+
+		// and repeat until we're done
+	} while (*s);
+
+	return CStdString::npos;
+}
+
+void CStringUtils::WordToDigits(CStdString &word) 
+{
+	static const char word_to_letter[] = "22233344455566677778889999";
+	word.ToLower();
+	
+	for (unsigned int i = 0; i < word.size(); ++i)
+	{
+		// NB: This assumes ascii, which probably needs extending at some  point.
+		char letter = word[i];
+		if ((letter >= 'a' && letter <= 'z')) // assume contiguous letter range
+		{  
+			word[i] = word_to_letter[letter-'a'];
+		}
+		else if (letter < '0' || letter > '9') // We want to keep 0-9!
+		{  
+			word[i] = ' ';  // replace everything else with a space
+		}
+	}
 }

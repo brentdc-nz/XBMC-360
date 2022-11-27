@@ -3,8 +3,9 @@
 
 #include "utils\StdString.h"
 #include "guilib\tinyxml\tinyxml.h"
-#include "MediaManager.h"
+#include "MediaSource.h"
 #include "VideoSettings.h"
+#include "guilib\GraphicContext.h"
 
 #define DEFAULT_SKIN "Project Mayhem III"
 #define SETTINGS_FILE "D:\\settings.xml"
@@ -22,6 +23,7 @@ public:
 	bool SaveSettings(const CStdString& strSettingsFile) const;
 	void Save() const;
 
+	bool UpdateShare(const CStdString &type, const CStdString oldName, const CMediaSource &share);
 	bool AddShare(const CStdString &type, const CMediaSource &share);
 	VECSOURCES *GetSourcesFromType(const CStdString &type);
 	bool DeleteSource(const CStdString &strType, const CStdString strName, const CStdString strPath, bool virtualSource = false);
@@ -35,6 +37,14 @@ public:
 
 	CVideoSettings m_currentVideoSettings;
 
+	RESOLUTION_INFO m_ResInfo[10];
+
+	VECSOURCES m_programSources;
+	VECSOURCES m_pictureSources;
+	VECSOURCES m_fileSources;
+	VECSOURCES m_musicSources;
+	VECSOURCES m_videoSources;
+
 protected:
 	void GetSources(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSOURCES& items);
 	bool GetSource(const CStdString &category, const TiXmlNode *source, CMediaSource &share);
@@ -42,11 +52,6 @@ protected:
 	bool SaveSources();
 
 	void GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName, int& iValue, const int iDefault, const int iMin, const int iMax);
-
-	VECSOURCES m_vecProgramSources;
-	VECSOURCES m_vecVideoSources;
-	VECSOURCES m_vecMusicSources;
-	VECSOURCES m_vecPictureSources;
 
 	CStdString m_strVideoExtensions;
 	CStdString m_strAudioExtensions;

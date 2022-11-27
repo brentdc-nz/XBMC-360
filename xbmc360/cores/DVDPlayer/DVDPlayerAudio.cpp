@@ -3,10 +3,10 @@
 #include "DVDPerformanceCounter.h"
 #include "DVDCodecs\DVDFactoryCodec.h"
 #include "DVDPlayer.h"
-#include "..\..\utils\TimeUtils.h"
+#include "utils\TimeUtils.h"
 #include <sstream>
 #include <iomanip>
-#include "utils\Util.h"
+#include "utils\MathUtils.h"
 
 using namespace std;
 

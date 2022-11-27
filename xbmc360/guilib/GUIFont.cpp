@@ -1,223 +1,263 @@
 #include "GUIFont.h"
+#include "GUIFontTTF.h"
 #include "GraphicContext.h"
-#include "..\utils\StringUtils.h"
+#include "utils\StringUtils.h"
+#include "utils\MathUtils.h"
+#include "utils\SingleLock.h"
 
-CGUIFont::CGUIFont(void)
+#define ROUND(x) (float)(MathUtils::round_int(x))
+
+void CScrollInfo::SetSpeed(int speed)
 {
-	m_wstrFontName = L"";
-	m_wstrFontFile = L"";
-	m_dwStyle = 0;
-	m_fSize = 0;
-	m_Font = NULL;
+  if (speed == defaultSpeed)
+  {
+    // HACK: workaround for PAL vs NTSC speeds on xbox
+    if (g_graphicsContext.GetVideoResolution() == PAL_4x3 ||
+        g_graphicsContext.GetVideoResolution() == PAL_16x9)
+      speed = 50;
+  }
+  pixelSpeed = speed * 0.001f;
+}
+
+float CScrollInfo::GetPixelsPerFrame()
+{
+  static const float alphaEMA = 0.05f;
+
+  if (0 == pixelSpeed)
+    return 0; // not scrolling
+  unsigned int currentTime = CTimeUtils::GetFrameTime();
+  float delta = m_lastFrameTime ? (float)(currentTime - m_lastFrameTime) : m_averageFrameTime;
+  if (delta > 100)
+    delta = 100; // assume a minimum of 10 fps
+  m_lastFrameTime = currentTime;
+  // do an exponential moving average of the frame time
+  m_averageFrameTime = m_averageFrameTime + (delta - m_averageFrameTime) * alphaEMA;
+  // and multiply by pixel speed (per ms) to get number of pixels to move this frame
+#ifdef _XBOX
+  return ROUND(pixelSpeed * m_averageFrameTime);
+#else
+  return pixelSpeed * m_averageFrameTime;
+#endif
+}
+
+CGUIFont::CGUIFont(const CStdString& strFontName, uint32_t style, color_t textColor, color_t shadowColor, float lineSpacing, CGUIFontTTF *font)
+{
+	m_strFontName = strFontName;
+	m_style = style & FONT_STYLE_MASK;
+	m_textColor = textColor;
+	m_shadowColor = shadowColor;
+	m_lineSpacing = lineSpacing;
+	m_font = font;
+
+	if (m_font)
+		m_font->AddReference();
 }
 
 CGUIFont::~CGUIFont(void)
 {
+	if (m_font)
+		m_font->RemoveReference();
 }
 
-const CStdString CGUIFont::GetFontName()
+CStdString& CGUIFont::GetFontName()
 {
-	// Convert back to a normal string from wide
-	string strFontName(m_wstrFontName.begin(), m_wstrFontName.end());
+	return m_strFontName;
+}
+
+void CGUIFont::DrawText( float x, float y, const vecColors &colors, color_t shadowColor,
+                const vecText &text, uint32_t alignment, float maxPixelWidth)
+{
+	if (!m_font) return;
+
+	bool clip = maxPixelWidth > 0;
+
+	if (clip && ClippedRegionIsEmpty(x, y, maxPixelWidth, alignment))
+		return;
+
+	maxPixelWidth = ROUND(maxPixelWidth / g_graphicsContext.GetGUIScaleX());
+	vecColors renderColors;
+
+	for (unsigned int i = 0; i < colors.size(); i++)
+		renderColors.push_back(g_graphicsContext.MergeAlpha(colors[i] ? colors[i] : m_textColor));
 	
-	return strFontName;
-}
+	if (!shadowColor) shadowColor = m_shadowColor;
 
-bool CGUIFont::Load(const CStdString& strFontName,const CStdString& strFilename, int iSize, DWORD dwStyles)
-{
-	CStdString strFontPath = g_graphicsContext.GetMediaDir();
-
-#if 1 // HACK: Nasty workaround for XUI to work..
-	strFontPath.Replace("D:\\", "file://game:/");
-#endif
-
-	strFontPath += "fonts/" + strFilename;
-
-	// Convert to wide for our wide members
-	CStringUtils::StringtoWString(strFontName, m_wstrFontName);
-	CStringUtils::StringtoWString(strFontPath, m_wstrFontFile);
-
-	m_dwStyle = dwStyles;
-	m_fSize = (float)iSize;
-
-	TypefaceDescriptor typeface = {0};
-	typeface.szTypeface = m_wstrFontName.c_str();
-	typeface.szLocator = m_wstrFontFile.c_str();
-	typeface.szReserved1 = NULL;
-	XuiRegisterTypeface( &typeface, TRUE );
-
-	XuiCreateFont(m_wstrFontName.c_str(), m_fSize, dwStyles, 0, &m_Font);
-
-	return true;
-}
-
-bool CGUIFont::Reload(DWORD dwStyles)
-{
-	TypefaceDescriptor typeface = {0};
-	typeface.szTypeface = m_wstrFontName.c_str();
-	typeface.szLocator = m_wstrFontFile.c_str();
-	typeface.szReserved1 = NULL;
-	XuiRegisterTypeface(&typeface, TRUE);
-
-	XuiCreateFont(m_wstrFontName.c_str(), m_fSize, dwStyles, 0, &m_Font);
-
-	return true;
-}
-
-bool CGUIFont::DrawText(float fPosX, float fPosY, DWORD dwColor, const CStdString strText, float fMaxPixelWidth, float fMaxPixelHeight, DWORD dwFlags/* = XUI_FONT_STYLE_NORMAL*/)
-{
-	if (!g_graphicsContext.IsFullScreenVideo())
-		GRAPHICSCONTEXT_LOCK()
-
-	// Convert our text string to wide
-	wstring wstrText;
-	CStringUtils::StringtoWString(strText, wstrText);
-
-	XuiRenderBegin(g_graphicsContext.GetXUIDevice(), D3DCOLOR_ARGB(255,0,0,0));
-
-	// If our font syle changed we need to recreate our font..
-	// Why does XUI make this a pain to do ugh..
-	if(m_dwStyle != dwFlags)
+	if (shadowColor)
 	{
-		Release();
-		Reload(dwFlags);
-		m_dwStyle = dwFlags;
+		shadowColor = g_graphicsContext.MergeAlpha(shadowColor);
+		vecColors shadowColors;
+		
+		for (unsigned int i = 0; i < renderColors.size(); i++)
+			shadowColors.push_back((renderColors[i] & 0xff000000) != 0 ? shadowColor : 0);
+		
+		m_font->DrawTextInternal(x + 1, y + 1, shadowColors, text, alignment, maxPixelWidth, false);
 	}
-
-	// Measure the text
-	XUIRect clipRect(0, 0, (float)g_graphicsContext.GetWidth()/* - fPosX*/, (float)g_graphicsContext.GetHeight()/* - fPosY*/);
-	XuiMeasureText(m_Font, wstrText.c_str(), -1, dwFlags, 0, &clipRect);
-
-	if(dwFlags & XUI_FONT_STYLE_RIGHT_ALIGN)
-	{
-		clipRect.right = g_graphicsContext.GetWidth() - fPosX + clipRect.GetWidth();
-		fPosX = fPosX - clipRect.GetWidth();
-	}
-	else if(dwFlags & XUI_FONT_STYLE_CENTER_ALIGN)
-	{
-		float fTextCenter = clipRect.right / 2;
-		float fControlCenter = fMaxPixelWidth / 2;
-		fPosX += fControlCenter;
-		fPosX -= fTextCenter;
-	}
-
-	if(dwFlags & XUI_FONT_STYLE_VERTICAL_CENTER)
-	{
-		float fTextCenter = clipRect.bottom / 2;
-		float fControlCenter = fMaxPixelHeight / 2;
-		fPosY += fControlCenter;
-		fPosY -= fTextCenter;
-	}
-
-	// Set the text position in the device context
-	D3DXMATRIX matXForm;
-	D3DXMatrixIdentity(&matXForm);
-	matXForm._41 = fPosX;
-	matXForm._42 = fPosY;
-	XuiRenderSetTransform(g_graphicsContext.GetXUIDevice(), &matXForm);
-
-	// Select the font and color into the device context
-    XuiSelectFont(g_graphicsContext.GetXUIDevice(), m_Font);
-    XuiSetColorFactor(g_graphicsContext.GetXUIDevice(), (DWORD)dwColor);
-
-    // Set the view
-    D3DXMATRIX matView;
-    D3DXMatrixIdentity(&matView);
-    XuiRenderSetViewTransform(g_graphicsContext.GetXUIDevice(), &matView);
-
-	// Draw the text
-	XuiDrawText(g_graphicsContext.GetXUIDevice(), wstrText.c_str(), dwFlags, 0, &clipRect);
 	
-	XuiRenderEnd(g_graphicsContext.GetXUIDevice());
-	XuiRenderPresent(g_graphicsContext.GetXUIDevice(), NULL, NULL, NULL);
+	m_font->DrawTextInternal( x, y, renderColors, text, alignment, maxPixelWidth, false);
 
-	if (!g_graphicsContext.IsFullScreenVideo())
-		GRAPHICSCONTEXT_UNLOCK()
-
-	return true;
+	if (clip)
+		g_graphicsContext.RestoreClipRegion();
 }
 
-bool CGUIFont::DrawTextWidth(float fPosX, float fPosY, DWORD dwColor, const CStdString strText, float fMaxPixelWidth, DWORD dwFlags/* = XUI_FONT_STYLE_NORMAL*/)
+void CGUIFont::DrawScrollingText(float x, float y, const vecColors &colors, color_t shadowColor,
+                const vecText &text, uint32_t alignment, float maxWidth, CScrollInfo &scrollInfo)
 {
-	if (!g_graphicsContext.IsFullScreenVideo())
-		GRAPHICSCONTEXT_LOCK()
+  if (!m_font) return;
+  if (!shadowColor) shadowColor = m_shadowColor;
 
-	// Convert our text string to wide
-	wstring wstrText;
-	CStringUtils::StringtoWString(strText, wstrText);
+  float spaceWidth = GetCharWidth(L' ');
+  unsigned int maxChars = min((long unsigned int)(text.size() + scrollInfo.suffix.size()), (long unsigned int)((maxWidth*1.05f)/spaceWidth)); //max chars on screen + extra marginchars
 
-	XuiRenderBegin( g_graphicsContext.GetXUIDevice(), D3DCOLOR_ARGB(255,0,0,0) );
+  if (!text.size() || ClippedRegionIsEmpty(x, y, maxWidth, alignment))
+    return; // nothing to render
 
-	// If our font syle changed we need to recreate our font..
-	// Why does XUI make this a pain to do ugh..
-	if(m_dwStyle != dwFlags)
-	{
-		Release();
-		Reload(dwFlags);
-		m_dwStyle = dwFlags;
-	}
+  maxWidth = ROUND(maxWidth / g_graphicsContext.GetGUIScaleX());
 
-	// Measure the text
-	XUIRect clipRect( 0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight());
-	XuiMeasureText( m_Font, wstrText.c_str(), -1, dwFlags, 0, &clipRect );
+  // draw at our scroll position
+  // we handle the scrolling as follows:
+  //   We scroll on a per-pixel basis up until we have scrolled the first character outside
+  //   of our viewport, whereby we cycle the string around, and reset the scroll position.
+  //
+  //   pixelPos is the amount in pixels to move the string by.
+  //   characterPos is the amount in characters to rotate the string by.
+  //
+  float offset = scrollInfo.pixelPos;
+  if (!scrollInfo.waitTime)
+  {
+    // move along by the appropriate scroll amount
+    float scrollAmount = fabs(scrollInfo.GetPixelsPerFrame() * g_graphicsContext.GetGUIScaleX());
 
-	if(dwFlags & XUI_FONT_STYLE_RIGHT_ALIGN)
-	{
-		clipRect.right = g_graphicsContext.GetWidth() - fPosX + clipRect.GetWidth();
-		fPosX = fPosX - clipRect.GetWidth();
-	}
+    if (scrollInfo.pixelSpeed > 0)
+    {
+      // we want to move scrollAmount, grab the next character
+      float charWidth = GetCharWidth(scrollInfo.GetCurrentChar(text));
+      if (scrollInfo.pixelPos + scrollAmount < charWidth)
+        scrollInfo.pixelPos += scrollAmount;  // within the current character
+      else
+      { // past the current character, decrement scrollAmount by the charWidth and move to the next character
+        while (scrollInfo.pixelPos + scrollAmount >= charWidth)
+        {
+          scrollAmount -= (charWidth - scrollInfo.pixelPos);
+          scrollInfo.pixelPos = 0;
+          scrollInfo.characterPos++;
+          if (scrollInfo.characterPos >= text.size() + scrollInfo.suffix.size())
+          {
+            scrollInfo.Reset();
+            break;
+          }
+          charWidth = GetCharWidth(scrollInfo.GetCurrentChar(text));
+        }
+      }
+      offset = scrollInfo.pixelPos;
+    }
+    else if (scrollInfo.pixelSpeed < 0)
+    { // scrolling backwards
+      // we want to move scrollAmount, grab the next character
+      float charWidth = GetCharWidth(scrollInfo.GetCurrentChar(text));
+      if (scrollInfo.pixelPos + scrollAmount < charWidth)
+        scrollInfo.pixelPos += scrollAmount;  // within the current character
+      else
+      { // past the current character, decrement scrollAmount by the charWidth and move to the next character
+        while (scrollInfo.pixelPos + scrollAmount >= charWidth)
+        {
+          scrollAmount -= (charWidth - scrollInfo.pixelPos);
+          scrollInfo.pixelPos = 0;
+          if (scrollInfo.characterPos == 0)
+          {
+            scrollInfo.Reset();
+            scrollInfo.characterPos = text.size() + scrollInfo.suffix.size() - 1;
+            break;
+          }
+          scrollInfo.characterPos--;
+          charWidth = GetCharWidth(scrollInfo.GetCurrentChar(text));
+        }
+      }
+      offset = charWidth - scrollInfo.pixelPos;
+    }
+  }
+  else
+    scrollInfo.waitTime--;
 
-	clipRect.right = clipRect.left + fMaxPixelWidth;
+  // Now rotate our string as needed, only take a slightly larger then visible part of the text.
+  unsigned int pos = scrollInfo.characterPos;
+  vecText renderText;
+  renderText.reserve(maxChars);
+  for (vecText::size_type i = 0; i < maxChars; i++)
+  {
+    if (pos >= text.size() + scrollInfo.suffix.size())
+      pos = 0;
+    if (pos < text.size())
+      renderText.push_back(text[pos]);
+    else
+      renderText.push_back(scrollInfo.suffix[pos - text.size()]);
+    pos++;
+  }
 
-	// Set the text position in the device context
-	D3DXMATRIX matXForm;
-	D3DXMatrixIdentity( &matXForm );
-	matXForm._41 = fPosX;
-	matXForm._42 = fPosY;
-	XuiRenderSetTransform( g_graphicsContext.GetXUIDevice(), &matXForm );
+  vecColors renderColors;
+  for (unsigned int i = 0; i < colors.size(); i++)
+    renderColors.push_back(g_graphicsContext.MergeAlpha(colors[i] ? colors[i] : m_textColor));
 
-	// Select the font and color into the device context
-    XuiSelectFont( g_graphicsContext.GetXUIDevice(), m_Font );
-    XuiSetColorFactor( g_graphicsContext.GetXUIDevice(), ( DWORD )dwColor );
+  bool scroll =  !scrollInfo.waitTime && scrollInfo.pixelSpeed;
+  if (shadowColor)
+  {
+    shadowColor = g_graphicsContext.MergeAlpha(shadowColor);
+    vecColors shadowColors;
+    for (unsigned int i = 0; i < renderColors.size(); i++)
+      shadowColors.push_back((renderColors[i] & 0xff000000) != 0 ? shadowColor : 0);
+    m_font->DrawTextInternal(x - offset + 1, y + 1, shadowColors, renderText, alignment, maxWidth + scrollInfo.pixelPos + m_font->GetLineHeight(2.0f), scroll);
+  }
+  m_font->DrawTextInternal(x - offset, y, renderColors, renderText, alignment, maxWidth + scrollInfo.pixelPos + m_font->GetLineHeight(2.0f), scroll);
 
-    // Set the view
-    D3DXMATRIX matView;
-    D3DXMatrixIdentity( &matView );
-    XuiRenderSetViewTransform( g_graphicsContext.GetXUIDevice(), &matView );
-
-	// Draw the text
-	XuiDrawText( g_graphicsContext.GetXUIDevice(), wstrText.c_str(), dwFlags | XUI_FONT_STYLE_NO_WORDWRAP, 0, &clipRect );
-	
-	XuiRenderEnd( g_graphicsContext.GetXUIDevice() );
-	XuiRenderPresent( g_graphicsContext.GetXUIDevice(), NULL, NULL, NULL );
-
-	if (!g_graphicsContext.IsFullScreenVideo())
-		GRAPHICSCONTEXT_UNLOCK()
-
-	return true;
+  g_graphicsContext.RestoreClipRegion();
 }
 
-void CGUIFont::GetTextExtent(const CStdString strText, float* pWidth, float* pHeight)
+float CGUIFont::GetCharWidth( character_t ch )
 {
-	// Set default text extent in output parameters
-	(*pWidth) = 0.0f;
-	(*pHeight) = 0.0f;
-
-	// Convert our text string to wide
-	wstring wstrText;
-	CStringUtils::StringtoWString(strText, wstrText);
-
-	// Measure the text
-	XUIRect clipRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight());
-	XuiMeasureText(m_Font, wstrText.c_str(), -1, NULL, 0, &clipRect );
-
-	(*pWidth) = clipRect.GetWidth();
-	(*pHeight) = clipRect.GetHeight();
+  if (!m_font) return 0;
+  CSingleLock lock(g_graphicsContext);
+  return m_font->GetCharWidthInternal(ch) * g_graphicsContext.GetGUIScaleX();
 }
 
-void CGUIFont::Release()
+
+float CGUIFont::GetTextWidth( const vecText &text )
 {
-	// Release the font
-	XuiReleaseFont(m_Font);
-	m_Font = NULL;
+	if (!m_font) return 0;
+	CSingleLock lock(g_graphicsContext);
+	return m_font->GetTextWidthInternal(text.begin(), text.end()) * g_graphicsContext.GetGUIScaleX();
+}
+
+float CGUIFont::GetTextHeight(int numLines) const
+{
+	if (!m_font) return 0;
+	return m_font->GetTextHeight(m_lineSpacing, numLines) * g_graphicsContext.GetGUIScaleY();
+}
+
+float CGUIFont::GetLineHeight() const
+{
+	if (!m_font) return 0;
+	return m_font->GetLineHeight(m_lineSpacing) * g_graphicsContext.GetGUIScaleY();
+}
+
+void CGUIFont::Begin()
+{
+  if (!m_font) return;
+  m_font->Begin();
+}
+
+void CGUIFont::End()
+{
+  if (!m_font) return;
+  m_font->End();
+}
+
+bool CGUIFont::ClippedRegionIsEmpty(float x, float y, float width, uint32_t alignment) const
+{
+  if (alignment & XBFONT_CENTER_X)
+    x -= width * 0.5f;
+  else if (alignment & XBFONT_RIGHT)
+    x -= width;
+  if (alignment & XBFONT_CENTER_Y)
+    y -= m_font->GetLineHeight(m_lineSpacing);
+
+  return !g_graphicsContext.SetClipRegion(x, y, width, m_font->GetLineHeight(2.0f));
 }

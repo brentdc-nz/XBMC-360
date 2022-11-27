@@ -1,10 +1,11 @@
 #include "SMBDirectory.h"
-#include "..\utils\SingleLock.h"
-#include "..\utils\log.h"
-#include "..\utils\Util.h"
-#include "..\libraries\libsmb2\XBLibSmb2.h"
+#include "utils\SingleLock.h"
+#include "utils\Log.h"
+#include "utils\Util.h"
+#include "libraries\libsmb2\XBLibSmb2.h"
+#include "FileItem.h"
 
-using namespace DIRECTORY;
+using namespace XFILE;
 
 CXBLibSMB2 xbsmb;
 
@@ -48,7 +49,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 
 		if(dirEnt->st.smb2_type == SMB2_TYPE_DIRECTORY)
 		{
-			CFileItem *pItem = new CFileItem(strFile);
+			CFileItemPtr pItem(new CFileItem(strFile));
 			pItem->m_strPath = strRoot;
 /*
 			// Needed for network / workgroup browsing
@@ -70,11 +71,11 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 			pItem->m_bIsFolder = true;
 //			pItem->m_dateTime = localTime;
 //			vecCacheItems.Add(pItem);
-			items.Add(new CFileItem(*pItem));
+			items.Add(pItem);
 		}
 		else if(dirEnt->st.smb2_type == SMB2_TYPE_FILE)
 		{
-			CFileItem *pItem = new CFileItem(strFile);
+			CFileItemPtr pItem(new CFileItem(strFile));
 			pItem->m_strPath = strRoot + dirEnt->name;
 			pItem->m_bIsFolder = false;
 //			pItem->m_dwSize = iSize;
@@ -82,7 +83,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 
 //			vecCacheItems.Add(pItem);
 			if(IsAllowed(dirEnt->name))
-				items.Add(new CFileItem(*pItem));
+				items.Add(pItem);
 		}
 	}
 
@@ -103,5 +104,5 @@ bool CSMBDirectory::Remove(const char* strPath)
 
 bool CSMBDirectory::Exists(const char* strPath)
 {
-	return false;
+	return true;
 }

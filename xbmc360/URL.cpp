@@ -2,6 +2,7 @@
 #include "utils\stdafx.h"
 #include "utils\Util.h"
 #include "utils\Log.h"
+#include "FileItem.h"
 
 CStdString URLEncodeInline(const CStdString& strData)
 {
@@ -403,7 +404,76 @@ CStdString CURL::Get() const
 
 	if(m_strOptions.length() > 0 )
 		strURL += m_strOptions;
+
 	if(m_strProtocolOptions.length() > 0)
+		strURL += "|"+m_strProtocolOptions;
+
+	return strURL;
+}
+
+CStdString CURL::GetWithoutUserDetails() const
+{
+	CStdString strURL;
+
+	if (m_strProtocol.Equals("stack")) // TODO
+	{
+		CFileItemList items;
+		CStdString strURL2;
+		strURL2 = Get();
+/*		XFILE::CStackDirectory dir; // TODO
+		dir.GetDirectory(strURL2,items);
+		vector<CStdString> newItems;
+		
+		for (int i = 0; i < items.Size(); ++i)
+		{
+			CURL url(items[i]->GetPath());
+			items[i]->SetPath(url.GetWithoutUserDetails());
+			newItems.push_back(items[i]->GetPath());
+		}
+		
+		dir.ConstructStackPath(newItems,strURL);
+*/		return strURL;
+	}
+
+	unsigned int sizeneed = m_strProtocol.length()
+							+ m_strDomain.length()
+							+ m_strHostName.length()
+							+ m_strFileName.length()
+							+ m_strOptions.length()
+							+ m_strProtocolOptions.length()
+							+ 10;
+
+	strURL.reserve(sizeneed);
+
+	if (m_strProtocol == "")
+		return m_strFileName;
+
+	strURL = m_strProtocol;
+	strURL += "://";
+
+	if (m_strHostName != "")
+	{
+		if (m_strProtocol.Equals("rar") || m_strProtocol.Equals("zip"))
+			strURL += CURL(m_strHostName).GetWithoutUserDetails();
+		else
+			strURL += m_strHostName;
+
+		if ( HasPort() )
+		{
+			CStdString strPort;
+			strPort.Format("%i", m_iPort);
+			strURL += ":";
+			strURL += strPort;
+		}
+		strURL += "/";
+	}
+
+	strURL += m_strFileName;
+
+	if( m_strOptions.length() > 0 )
+		strURL += m_strOptions;
+	
+	if( m_strProtocolOptions.length() > 0 )
 		strURL += "|"+m_strProtocolOptions;
 
 	return strURL;
@@ -603,4 +673,52 @@ void CURL::GetURLWithoutFilename(CStdString& strURL) const
 bool CURL::IsLocal() const
 {
 	return m_strProtocol.IsEmpty();
+}
+
+bool CURL::IsFullPath(const CStdString &url)
+{
+	if(url.size() && url[0] == '/') return true; // - /foo/bar.ext
+	if(url.Find("://") >= 0) return true; // - foo://bar.ext
+	if(url.size() > 1 && url[1] == ':') return true; // - c:\\foo\\bar\\bar.ext
+	
+	return false;
+}
+
+// Modified to be more accomodating - If a non hex value follows a % take the characters directly and don't raise an error.
+// However % characters should really be escaped like any other non safe character (www.rfc-editor.org/rfc/rfc1738.txt)
+void CURL::Decode(CStdString& strURLData)
+{
+	CStdString strResult;
+
+	// result will always be less than source
+	strResult.reserve( strURLData.length() );
+
+	for (unsigned int i = 0; i < strURLData.size(); ++i)
+	{
+		int kar = (unsigned char)strURLData[i];
+
+		if (kar == '+') strResult += ' ';
+		else if (kar == '%')
+		{
+			if (i < strURLData.size() - 2)
+			{
+				CStdString strTmp;
+				strTmp.assign(strURLData.substr(i + 1, 2));
+				int dec_num=-1;
+				sscanf(strTmp,"%x",(unsigned int *)&dec_num);
+				
+				if (dec_num<0 || dec_num>255)
+					strResult += kar;
+				else
+				{
+					strResult += (char)dec_num;
+					i += 2;
+				}
+			}
+			else
+				strResult += kar;
+		}
+		else strResult += kar;
+	}
+	strURLData = strResult;
 }

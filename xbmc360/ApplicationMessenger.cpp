@@ -1,26 +1,8 @@
-/*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
- *
- *  This Program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2, or (at your option)
- *  any later version.
- *
- *  This Program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
- *  <http://www.gnu.org/licenses/>.
- *
- */
-
 #include "ApplicationMessenger.h"
 #include "Application.h"
 #include "xbox\XBKernalExports.h"
+#include "interfaces\Builtins.h"
+#include "guilib\GUIWindowManager.h"
 
 using namespace std;
 
@@ -41,7 +23,18 @@ void CApplicationMessenger::Cleanup()
 			SetEvent(pMsg->hWaitEvent);
 
 		delete pMsg;
-			m_vecMessages.pop();
+		m_vecMessages.pop();
+	}
+
+	while (m_vecWindowMessages.size() > 0)
+	{
+		ThreadMessage* pMsg = m_vecWindowMessages.front();
+
+		if (pMsg->hWaitEvent)
+			SetEvent(pMsg->hWaitEvent);
+
+		delete pMsg;
+		m_vecWindowMessages.pop();
 	}
 }
 
@@ -57,12 +50,12 @@ void CApplicationMessenger::SendMessage(ThreadMessage& message, bool wait)
 
 	CSingleLock lock (m_critSection);
 
-/*	if (msg->dwMessage == TMSG_DIALOG_DOMODAL ||
-      msg->dwMessage == TMSG_WRITE_SCRIPT_OUTPUT)
+	if (msg->dwMessage == TMSG_DIALOG_DOMODAL/* ||
+      msg->dwMessage == TMSG_WRITE_SCRIPT_OUTPUT*/) // TODO
 	{
-		m_vecWindowMessages.push_back(msg);
+		m_vecWindowMessages.push(msg);
 	}
-	else*/ m_vecMessages.push(msg);
+	else m_vecMessages.push(msg);
 
 	lock.Leave();
 
@@ -88,8 +81,10 @@ void CApplicationMessenger::ProcessMessages()
 		lock.Leave();
 
 		ProcessMessage(pMsg);
+
 		if (pMsg->hWaitEvent)
 			SetEvent(pMsg->hWaitEvent);
+
 		delete pMsg;
 
 		// Reenter here again, to not ruin message vector
@@ -121,11 +116,56 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 		}
 		break;
 
+		case TMSG_SWITCHTOFULLSCREEN:
+			if( g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO )
+				g_application.SwitchToFullScreen();
+		break;
+
+		case TMSG_EXECUTE_BUILT_IN:
+			CBuiltins::Execute(pMsg->strParam.c_str());
+		break;
+
+		// Window messages below here...
+		case TMSG_DIALOG_DOMODAL: //doModel of window
+		{
+			CGUIDialog* pDialog = (CGUIDialog*)g_windowManager.GetWindow(pMsg->dwParam1);
+			if (!pDialog) return;
+
+			pDialog->DoModal();
+		}
+		break;
+
 		case TMSG_NETWORKMESSAGE:
 		{
 			g_application.getNetwork().NetworkMessage((CNetwork::EMESSAGE)pMsg->dwParam1, pMsg->dwParam2);
 		}
 		break;
+	}
+}
+
+void CApplicationMessenger::ProcessWindowMessages()
+{
+	CSingleLock lock (m_critSection);
+
+	// Message type is window, process window messages
+	while (m_vecWindowMessages.size() > 0)
+	{
+		ThreadMessage* pMsg = m_vecWindowMessages.front();
+
+		// First remove the message from the queue, else the message could be processed more then once
+		m_vecWindowMessages.pop();
+
+		// Leave here in case we make more thread messages from this one
+		lock.Leave();
+
+		ProcessMessage(pMsg);
+		
+		if (pMsg->hWaitEvent)
+			SetEvent(pMsg->hWaitEvent);
+
+		delete pMsg;
+
+		lock.Enter();
 	}
 }
 
@@ -141,8 +181,23 @@ void CApplicationMessenger::Reboot()
 	SendMessage(tMsg);
 }
 
+void CApplicationMessenger::SwitchToFullscreen()
+{
+	// FIXME: Ideally this call should return upon a successfull switch but currently
+	// is causing deadlocks between the DVDPlayer destructor and the rendermanager
+	ThreadMessage tMsg = {TMSG_SWITCHTOFULLSCREEN};
+	SendMessage(tMsg, false);
+}
+
 void CApplicationMessenger::NetworkMessage(DWORD dwMessage, DWORD dwParam)
 {
 	ThreadMessage tMsg = {TMSG_NETWORKMESSAGE, dwMessage, dwParam};
+	SendMessage(tMsg);
+}
+
+void CApplicationMessenger::ExecBuiltIn(const CStdString &command)
+{
+	ThreadMessage tMsg = {TMSG_EXECUTE_BUILT_IN};
+	tMsg.strParam = command;
 	SendMessage(tMsg);
 }

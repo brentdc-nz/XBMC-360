@@ -1,108 +1,111 @@
-<window id="0">
-	<defaultcontrol>3117</defaultcontrol>
-	<allowoverlay>no</allowoverlay>
+<window type="buttonMenu" id="111">
+	<defaultcontrol always="true">3112</defaultcontrol>
+	
+	<coordinates>
+		<system>1</system>
+		<posx>185</posx>
+		<posy>230</posy>
+	</coordinates>
+	
 	<controls>
 	
-		<control>
-			<description>sub menu background</description>
-			<type>image</type>			
-			<posx>0</posx>
-			<posy>300</posy>
-			<width>1280</width>
-			<height>90</height>
-			<visible>true</visible>			
-			<texture>sub_background.png</texture>
-		</control>		
-
-		<control>
-			<description>system info button</description>
-			<type>button</type>
-			<id>3116</id>
-			<posx>550</posx>
-			<posy>305</posy>
-			<width>90</width>
-			<height>65</height>
-			<label>System Info</label>
-			<font>-</font>
-			<onclick>XBMC.ActivateWindow(systeminfo)</onclick>
-			<onleft>3118</onleft>
-			<onright>3117</onright>
-			<onup>3116</onup>
-			<ondown>3116</ondown>
-			<texturefocus>sub_info_focus.png</texturefocus>
-			<texturenofocus>sub_info_nofocus.png</texturenofocus>
-			<textoffsetx>52</textoffsetx>
-			<textoffsety>-2</textoffsety>
-			<visible>true</visible>					
-		</control>		
-	
-		<control>
-			<description>shutdown console button</description>
-			<type>button</type>
-			<id>3117</id>
-			<posx>640</posx>
-			<posy>305</posy>			
-			<width>90</width>
-			<height>65</height>
-			<label>Shutdown</label>
-			<font>-</font>
-			<onclick>XBMC.Shutdown()</onclick>
-			<onleft>3116</onleft>
-			<onright>3118</onright>
-			<onup>3117</onup>
-			<ondown>3117</ondown>
-			<texturefocus>sub_shutdown_focus.png</texturefocus>
-			<texturenofocus>sub_shutdown_nofocus.png</texturenofocus>
-			<textoffsetx>52</textoffsetx>
-			<textoffsety>-2</textoffsety>
-			<visible>true</visible>					
-		</control>		
-	
-		<control>
-			<description>reboot console button</description>
-			<type>button</type>
-			<id>3118</id>
-			<posx>730</posx>
-			<posy>305</posy>			
-			<width>90</width>
-			<height>65</height>
-			<label>Reboot</label>
-			<font>-</font>
-			<onclick>XBMC.Reboot()</onclick>
-			<onleft>3117</onleft>
-			<onright>3116</onright>
-			<onup>3118</onup>
-			<ondown>3118</ondown>
-			<texturefocus>sub_reboot_focus.png</texturefocus>
-			<texturenofocus>sub_reboot_nofocus.png</texturenofocus>
-			<textoffsetx>52</textoffsetx>
-			<textoffsety>-2</textoffsety>
-			<visible>true</visible>					
+		<control type="image">
+			<posx>-185</posx>
+			<posy>-230</posy>
+			<width>720</width>
+			<height>576</height>
+			<texture>black.png</texture>
+			<animation effect="fade" time="2000" delay="300">WindowOpen</animation>
+			<animation effect="fade" time="700" delay="300">WindowClose</animation>
 		</control>
 		
-		<control>
-			<description>sub menu label background</description>
-			<type>image</type>			
-			<posx>0</posx>
-			<posy>410</posy>
-			<width>1280</width>
-			<height>50</height>
-			<visible>true</visible>		
-			<texture>sub_background_label.png</texture>
+		<control type="image">
+			<posx>-245</posx>
+			<posy>0</posy>
+			<width>805</width>
+			<height>90</height>
+			<texture>sub-background.png</texture>
+			<include>shutdownmenu</include>
+		</control>
+		
+		<control type="group">		
+		
+			<control type="button" id="3113">
+				<description>System Info button</description>
+				<posx>60</posx>
+				<posy>5</posy>
+				<width>60</width>
+				<height>65</height>
+				<texturefocus>sub-info-focus.png</texturefocus>
+				<texturenofocus>sub-info-nofocus.png</texturenofocus>
+				<onclick>XBMC.ActivateWindow(7)</onclick>
+				<pulseonselect>no</pulseonselect>
+				<onleft>3114</onleft>
+				<onright>3112</onright>
+				<onup>3113</onup>
+				<ondown>3113</ondown>
+				<font>-</font>
+				<label>130</label>
+			</control>		
+		
+			<control type="button" id="3112">
+				<description>Shutdown button</description>
+				<posx>180</posx>
+				<posy>5</posy>
+				<width>60</width>
+				<height>65</height>
+				<texturefocus>sub-shutdown-focus.png</texturefocus>
+				<texturenofocus>sub-shutdown-nofocus.png</texturenofocus>
+				<onclick>XBMC.ShutDown()</onclick>
+				<pulseonselect>no</pulseonselect>
+				<onleft>3113</onleft>
+				<onright>3114</onright>
+				<onup>3112</onup>
+				<ondown>3112</ondown>
+				<font>-</font>
+				<label>13005</label>
+			</control>
+
+			<control type="button" id="3114">
+				<description>Reboot button</description>
+				<posx>300</posx>
+				<posy>5</posy>
+				<width>60</width>
+				<height>65</height>
+				<texturefocus>sub-reboot-focus.png</texturefocus>
+				<texturenofocus>sub-reboot-nofocus.png</texturenofocus>
+				<onclick>XBMC.Reboot()</onclick>
+				<pulseonselect>no</pulseonselect>
+				<onleft>3112</onleft>
+				<onright>3113</onright>
+				<onup>3114</onup>
+				<ondown>3114</ondown>
+				<font>-</font>
+				<label>13313</label>
+			</control>
+			
 		</control>	
-	
-		<control>
-			<description>control label</description>
-			<type>label</type>
-			<id>3100</id>			
-			<posx>650</posx>
-			<posy>415</posy>
-			<width>255</width>
+			
+		<control type="image" id="0">
+			<posx>-245</posx>
+			<posy>84</posy>
+			<width>805</width>
+			<height>46</height>
+			<texture>sub-background-label.png</texture>
+			<include>shutdownmenu</include>
+		</control>
+			
+		<control type="label" id="3100">
+			<description>Label control</description>
+			<posx>19</posx>
+			<posy>91</posy>
+			<width>322</width>
+			<height>20</height>
 			<label>-</label>
-			<font>special13</font>
-			<visible>true</visible>
-		</control>		
-	
+			<align>center</align>
+			<aligny>center</aligny>
+			<font>font12</font>
+		</control>
+		
 	</controls>
 </window>
-

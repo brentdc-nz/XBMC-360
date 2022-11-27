@@ -122,7 +122,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PreprocessorDefinitions>_DEBUG;_XBOX</PreprocessorDefinitions>
       <CallAttributedProfiling>Callcap</CallAttributedProfiling>
-      <AdditionalIncludeDirectories>..\xbmc360\;..\ffmpeg lib\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\xbmc360\;..\libraries\freetype\freetype\include;..\libraries\ffmpeg lib\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/EHa %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -131,8 +131,9 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
-      <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirenderd.lib;xmediad2.lib;Xonline.lib;libavformat.lib;libavfilter.lib;libavutil.lib;libswscale.lib;libavcodec.lib;pthreads.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\ffmpeg lib\vcproj\libavcodec\Xbox 360\Debug;..\ffmpeg lib\vcproj\libswscale\Xbox 360\Debug;..\ffmpeg lib\vcproj\libavutil\Xbox 360\Debug;..\ffmpeg lib\vcproj\libavfilter\Xbox 360\Debug;..\ffmpeg lib\vcproj\libavformat\Xbox 360\Debug;..\ffmpeg lib\vcproj\pthreads\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirenderd.lib;xmediad2.lib;Xonline.lib;libavformat.lib;libavfilter.lib;libavutil.lib;libswscale.lib;libavcodec.lib;pthreads.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\libraries\ffmpeg lib\vcproj\libavcodec\Xbox 360\Debug;..\libraries\ffmpeg lib\vcproj\libswscale\Xbox 360\Debug;..\libraries\ffmpeg lib\vcproj\libavutil\Xbox 360\Debug;..\libraries\ffmpeg lib\vcproj\libavfilter\Xbox 360\Debug;..\libraries\ffmpeg lib\vcproj\libavformat\Xbox 360\Debug;..\libraries\ffmpeg lib\vcproj\pthreads\Debug;..\libraries\freetype\freetype\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <StackCommitSize>812000</StackCommitSize>
     </Link>
     <Deploy>
       <DeploymentType>CopyToHardDrive</DeploymentType>
@@ -248,7 +249,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <Optimization>Full</Optimization>
+      <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <StringPooling>true</StringPooling>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -257,7 +258,7 @@
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PreprocessorDefinitions>NDEBUG;_XBOX</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\xbmc360\;..\ffmpeg lib\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\xbmc360\;..\libraries\freetype\freetype\include;..\libraries\ffmpeg lib\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <PreschedulingOptimization>true</PreschedulingOptimization>
@@ -267,7 +268,8 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -275,8 +277,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
       <SetChecksum>true</SetChecksum>
-      <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirender.lib;xmediad2.lib;xonline.lib;libavformat.lib;libavfilter.lib;libavutil.lib;libswscale.lib;libavcodec.lib;pthreads.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\ffmpeg lib\vcproj\libavcodec\Xbox 360\Release;..\ffmpeg lib\vcproj\libswscale\Xbox 360\Release;..\ffmpeg lib\vcproj\libavutil\Xbox 360\Release;..\ffmpeg lib\vcproj\libavfilter\Xbox 360\Release;..\ffmpeg lib\vcproj\libavformat\Xbox 360\Release;..\ffmpeg lib\vcproj\pthreads\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirender.lib;xmediad2.lib;xonline.lib;libavformat.lib;libavfilter.lib;libavutil.lib;libswscale.lib;libavcodec.lib;pthreads.lib;freetype.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\libraries\ffmpeg lib\vcproj\libavcodec\Xbox 360\Release;..\libraries\ffmpeg lib\vcproj\libswscale\Xbox 360\Release;..\libraries\ffmpeg lib\vcproj\libavutil\Xbox 360\Release;..\libraries\ffmpeg lib\vcproj\libavfilter\Xbox 360\Release;..\libraries\ffmpeg lib\vcproj\libavformat\Xbox 360\Release;..\libraries\ffmpeg lib\vcproj\pthreads\Release;..\libraries\freetype\freetype\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Deploy>
       <DeploymentType>CopyToHardDrive</DeploymentType>
@@ -353,16 +355,16 @@
     <ClInclude Include="cores\VideoRenderers\RGBRenderer.h" />
     <ClInclude Include="FileItem.h" />
     <ClInclude Include="filesystem\Directory.h" />
+    <ClInclude Include="filesystem\DirectoryCache.h" />
+    <ClInclude Include="filesystem\DirectoryFactory.h" />
     <ClInclude Include="filesystem\DirectoryHistory.h" />
     <ClInclude Include="filesystem\Drive.h" />
     <ClInclude Include="filesystem\DrivesManager.h" />
-    <ClInclude Include="filesystem\FactoryDirectory.h" />
-    <ClInclude Include="filesystem\FactoryFileDirectory.h" />
     <ClInclude Include="filesystem\File.h" />
     <ClInclude Include="filesystem\FileBase.h" />
     <ClInclude Include="filesystem\FileBrowser.h" />
+    <ClInclude Include="filesystem\FileDirectoryFactory.h" />
     <ClInclude Include="filesystem\FileFactory.h" />
-    <ClInclude Include="filesystem\FileFTP.h" />
     <ClInclude Include="filesystem\FileHD.h" />
     <ClInclude Include="filesystem\FileSMB.h" />
     <ClInclude Include="filesystem\HDDirectory.h" />
@@ -377,43 +379,70 @@
     <ClInclude Include="guilib\dialogs\GUIDialogButtonMenu.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogContextMenu.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogFileBrowser.h" />
+    <ClInclude Include="guilib\dialogs\GUIDialogKeyboard.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogMediaSource.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogNetworkSetup.h" />
+    <ClInclude Include="guilib\dialogs\GUIDialogNumeric.h" />
+    <ClInclude Include="guilib\dialogs\GUIDialogOK.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogSeekBar.h" />
+    <ClInclude Include="guilib\dialogs\GUIDialogSlider.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogYesNo.h" />
+    <ClInclude Include="guilib\Geometry.h" />
     <ClInclude Include="guilib\GraphicContext.h" />
+    <ClInclude Include="guilib\GUIAction.h" />
     <ClInclude Include="guilib\GUIAudioManager.h" />
+    <ClInclude Include="guilib\GUIBaseContainer.h" />
+    <ClInclude Include="guilib\GUIBorderedImage.h" />
     <ClInclude Include="guilib\GUIButtonControl.h" />
+    <ClInclude Include="guilib\GUICallback.h" />
+    <ClInclude Include="guilib\GUIColorManager.h" />
     <ClInclude Include="guilib\GUIControl.h" />
     <ClInclude Include="guilib\GUIControlFactory.h" />
-    <ClInclude Include="guilib\GUID3DTexture.h" />
+    <ClInclude Include="guilib\GUIControlGroup.h" />
+    <ClInclude Include="guilib\GUIControlGroupList.h" />
     <ClInclude Include="guilib\GUIDialog.h" />
     <ClInclude Include="guilib\GUIDialogBoxBase.h" />
+    <ClInclude Include="guilib\GUIEditControl.h" />
     <ClInclude Include="guilib\GUIFont.h" />
     <ClInclude Include="guilib\GUIFontManager.h" />
+    <ClInclude Include="guilib\GUIFontTTF.h" />
     <ClInclude Include="guilib\GUIImage.h" />
     <ClInclude Include="guilib\GUIIncludes.h" />
     <ClInclude Include="guilib\GUIInfoManager.h" />
     <ClInclude Include="guilib\GUIInfoTypes.h" />
     <ClInclude Include="guilib\GUILabel.h" />
     <ClInclude Include="guilib\GUILabelControl.h" />
-    <ClInclude Include="guilib\GUIListControl.h" />
+    <ClInclude Include="guilib\GUIListContainer.h" />
+    <ClInclude Include="guilib\GUIListGroup.h" />
     <ClInclude Include="guilib\GUIListItem.h" />
+    <ClInclude Include="guilib\GUIListItemLayout.h" />
+    <ClInclude Include="guilib\GUIListLabel.h" />
     <ClInclude Include="guilib\GUIMediaWindow.h" />
     <ClInclude Include="guilib\GUIMessage.h" />
+    <ClInclude Include="guilib\GUIMultiImage.h" />
+    <ClInclude Include="guilib\GUIMultiSelectText.h" />
+    <ClInclude Include="guilib\GUIPanelContainer.h" />
     <ClInclude Include="guilib\GUIProgressControl.h" />
     <ClInclude Include="guilib\GUIScrollBarControl.h" />
+    <ClInclude Include="guilib\GUISliderControl.h" />
     <ClInclude Include="guilib\GUISound.h" />
     <ClInclude Include="guilib\GUISpinControl.h" />
     <ClInclude Include="guilib\GUISpinControlEx.h" />
+    <ClInclude Include="guilib\GUIStaticItem.h" />
+    <ClInclude Include="guilib\GUITextLayout.h" />
     <ClInclude Include="guilib\GUITexture.h" />
-    <ClInclude Include="guilib\GUIThumbnailPanel.h" />
-    <ClInclude Include="guilib\GUIUserMessage.h" />
+    <ClInclude Include="guilib\GUITextureD3D.h" />
+    <ClInclude Include="guilib\GUIToggleButtonControl.h" />
+    <ClInclude Include="guilib\GUIUserMessages.h" />
     <ClInclude Include="guilib\GUIVideoControl.h" />
     <ClInclude Include="guilib\GUIViewControl.h" />
     <ClInclude Include="guilib\GUIWindow.h" />
     <ClInclude Include="guilib\GUIWindowManager.h" />
+    <ClInclude Include="guilib\GUIWindowVideoBase.h" />
     <ClInclude Include="guilib\IMsgTargetCallback.h" />
+    <ClInclude Include="guilib\include.h" />
+    <ClInclude Include="guilib\info\InfoBool.h" />
+    <ClInclude Include="guilib\info\SkinVariable.h" />
     <ClInclude Include="guilib\IWindowManagerCallback.h" />
     <ClInclude Include="guilib\Key.h" />
     <ClInclude Include="guilib\LocalizeStrings.h" />
@@ -423,11 +452,14 @@
     <ClInclude Include="guilib\TextureManager.h" />
     <ClInclude Include="guilib\tinyxml\tinystr.h" />
     <ClInclude Include="guilib\tinyxml\tinyxml.h" />
+    <ClInclude Include="guilib\TransformMatrix.h" />
+    <ClInclude Include="guilib\Tween.h" />
     <ClInclude Include="guilib\viewstates\GUIViewState.h" />
     <ClInclude Include="guilib\viewstates\GUIViewStateMusic.h" />
     <ClInclude Include="guilib\viewstates\GUIViewStatePictures.h" />
     <ClInclude Include="guilib\viewstates\GUIViewStatePrograms.h" />
-    <ClInclude Include="guilib\viewstates\GUIViewStateVideos.h" />
+    <ClInclude Include="guilib\viewstates\GUIViewStateVideo.h" />
+    <ClInclude Include="guilib\VisibleEffect.h" />
     <ClInclude Include="guilib\windows\GUIWindowFullScreen.h" />
     <ClInclude Include="guilib\windows\GUIWindowHome.h" />
     <ClInclude Include="guilib\windows\GUIWindowMusicFiles.h" />
@@ -440,6 +472,8 @@
     <ClInclude Include="guilib\windows\GUIWindowVideoFiles.h" />
     <ClInclude Include="guilib\XMLUtils.h" />
     <ClInclude Include="GUISettings.h" />
+    <ClInclude Include="interfaces\Builtins.h" />
+    <ClInclude Include="IProgressCallback.h" />
     <ClInclude Include="libraries\libsmb2\aes.h" />
     <ClInclude Include="libraries\libsmb2\aes128ccm.h" />
     <ClInclude Include="libraries\libsmb2\compat.h" />
@@ -463,22 +497,29 @@
     <ClInclude Include="libraries\libsmb2\XBLibSmb2.h" />
     <ClInclude Include="libraries\libsmb2\xbox_defines.h" />
     <ClInclude Include="MediaManager.h" />
+    <ClInclude Include="MediaSource.h" />
     <ClInclude Include="services\FTPServer\FTPFileWriter.h" />
     <ClInclude Include="services\FTPServer\FTPServer.h" />
     <ClInclude Include="services\FTPServer\FTPServerConn.h" />
     <ClInclude Include="services\NTPClient\WinSckNTP.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="SettingsControls.h" />
+    <ClInclude Include="SortFileItem.h" />
     <ClInclude Include="ThumbLoader.h" />
     <ClInclude Include="URL.h" />
+    <ClInclude Include="utils\Archive.h" />
     <ClInclude Include="utils\asprintf.h" />
     <ClInclude Include="utils\AutoPtrHandle.h" />
     <ClInclude Include="utils\BitstreamStats.h" />
+    <ClInclude Include="utils\CharsetConverter.h" />
     <ClInclude Include="utils\CRC_32.h" />
     <ClInclude Include="utils\CriticalSection.h" />
     <ClInclude Include="utils\Event.h" />
     <ClInclude Include="utils\Idle.h" />
+    <ClInclude Include="utils\LabelFormatter.h" />
     <ClInclude Include="utils\Log.h" />
+    <ClInclude Include="utils\MathUtils.h" />
+    <ClInclude Include="utils\POUtils.h" />
     <ClInclude Include="utils\SharedSection.h" />
     <ClInclude Include="utils\SingleLock.h" />
     <ClInclude Include="utils\Splash.h" />
@@ -490,10 +531,13 @@
     <ClInclude Include="utils\TimeUtils.h" />
     <ClInclude Include="utils\URIUtils.h" />
     <ClInclude Include="utils\Util.h" />
+    <ClInclude Include="utils\Variant.h" />
     <ClInclude Include="utils\Win32Exception.h" />
     <ClInclude Include="utils\XEXUtils.h" />
     <ClInclude Include="VideoSettings.h" />
+    <ClInclude Include="ViewState.h" />
     <ClInclude Include="XBApplicationEx.h" />
+    <ClInclude Include="XBDateTime.h" />
     <ClInclude Include="xbox\Network.h" />
     <ClInclude Include="xbox\socket_emu\addrinfo.h" />
     <ClInclude Include="xbox\socket_emu\addrsize.h" />
@@ -542,16 +586,16 @@
     <ClCompile Include="cores\VideoRenderers\RGBRenderer.cpp" />
     <ClCompile Include="FileItem.cpp" />
     <ClCompile Include="filesystem\Directory.cpp" />
+    <ClCompile Include="filesystem\DirectoryCache.cpp" />
+    <ClCompile Include="filesystem\DirectoryFactory.cpp" />
     <ClCompile Include="filesystem\DirectoryHistory.cpp" />
     <ClCompile Include="filesystem\Drive.cpp" />
     <ClCompile Include="filesystem\DrivesManager.cpp" />
-    <ClCompile Include="filesystem\FactoryDirectory.cpp" />
-    <ClCompile Include="filesystem\FactoryFileDirectory.cpp" />
     <ClCompile Include="filesystem\File.cpp" />
     <ClCompile Include="filesystem\FileBase.cpp" />
     <ClCompile Include="filesystem\FileBrowser.cpp" />
+    <ClCompile Include="filesystem\FileDirectoryFactory.cpp" />
     <ClCompile Include="filesystem\FileFactory.cpp" />
-    <ClCompile Include="filesystem\FileFTP.cpp" />
     <ClCompile Include="filesystem\FileHD.cpp" />
     <ClCompile Include="filesystem\FileSMB.cpp" />
     <ClCompile Include="filesystem\HDDirectory.cpp" />
@@ -564,36 +608,58 @@
     <ClCompile Include="guilib\dialogs\GUIDialogButtonMenu.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogContextMenu.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogFileBrowser.cpp" />
+    <ClCompile Include="guilib\dialogs\GUIDialogKeyboard.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogMediaSource.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogNetworkSetup.cpp" />
+    <ClCompile Include="guilib\dialogs\GUIDialogNumeric.cpp" />
+    <ClCompile Include="guilib\dialogs\GUIDialogOK.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogSeekBar.cpp" />
+    <ClCompile Include="guilib\dialogs\GUIDialogSlider.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogYesNo.cpp" />
     <ClCompile Include="guilib\GraphicContext.cpp" />
+    <ClCompile Include="guilib\GUIAction.cpp" />
     <ClCompile Include="guilib\GUIAudioManager.cpp" />
+    <ClCompile Include="guilib\GUIBaseContainer.cpp" />
+    <ClCompile Include="guilib\GUIBorderedImage.cpp" />
     <ClCompile Include="guilib\GUIButtonControl.cpp" />
+    <ClCompile Include="guilib\GUIColorManager.cpp" />
     <ClCompile Include="guilib\GUIControl.cpp" />
     <ClCompile Include="guilib\GUIControlFactory.cpp" />
-    <ClCompile Include="guilib\GUID3DTexture.cpp" />
+    <ClCompile Include="guilib\GUIControlGroup.cpp" />
+    <ClCompile Include="guilib\GUIControlGroupList.cpp" />
     <ClCompile Include="guilib\GUIDialog.cpp" />
     <ClCompile Include="guilib\GUIDialogBoxBase.cpp" />
+    <ClCompile Include="guilib\GUIEditControl.cpp" />
     <ClCompile Include="guilib\GUIFont.cpp" />
     <ClCompile Include="guilib\GUIFontManager.cpp" />
+    <ClCompile Include="guilib\GUIFontTTF.cpp" />
     <ClCompile Include="guilib\GUIImage.cpp" />
     <ClCompile Include="guilib\GUIIncludes.cpp" />
     <ClCompile Include="guilib\GUIInfoManager.cpp" />
     <ClCompile Include="guilib\GUIInfoTypes.cpp" />
     <ClCompile Include="guilib\GUILabel.cpp" />
     <ClCompile Include="guilib\GUILabelControl.cpp" />
-    <ClCompile Include="guilib\GUIListControl.cpp" />
+    <ClCompile Include="guilib\GUIListContainer.cpp" />
+    <ClCompile Include="guilib\GUIListGroup.cpp" />
     <ClCompile Include="guilib\GUIListItem.cpp" />
+    <ClCompile Include="guilib\GUIListItemLayout.cpp" />
+    <ClCompile Include="guilib\GUIListLabel.cpp" />
     <ClCompile Include="guilib\GUIMediaWindow.cpp" />
     <ClCompile Include="guilib\GUIMessage.cpp" />
+    <ClCompile Include="guilib\GUIMultiImage.cpp" />
+    <ClCompile Include="guilib\GUIMultiSelectText.cpp" />
+    <ClCompile Include="guilib\GUIPanelContainer.cpp" />
     <ClCompile Include="guilib\GUIProgressControl.cpp" />
     <ClCompile Include="guilib\GUIScrollBarControl.cpp" />
+    <ClCompile Include="guilib\GUISliderControl.cpp" />
     <ClCompile Include="guilib\GUISound.cpp" />
     <ClCompile Include="guilib\GUISpinControl.cpp" />
     <ClCompile Include="guilib\GUISpinControlEx.cpp" />
-    <ClCompile Include="guilib\GUIThumbnailPanel.cpp" />
+    <ClCompile Include="guilib\GUIStaticItem.cpp" />
+    <ClCompile Include="guilib\GUITextLayout.cpp" />
+    <ClCompile Include="guilib\GUITexture.cpp" />
+    <ClCompile Include="guilib\GUITextureD3D.cpp" />
+    <ClCompile Include="guilib\GUIToggleButtonControl.cpp" />
     <ClCompile Include="guilib\GUIVideoControl.cpp" />
     <ClCompile Include="guilib\GUIViewControl.cpp" />
     <ClCompile Include="guilib\GUIWindow.cpp">
@@ -602,6 +668,9 @@
       <InlineAssemblyOptimization Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">true</InlineAssemblyOptimization>
     </ClCompile>
     <ClCompile Include="guilib\GUIWindowManager.cpp" />
+    <ClCompile Include="guilib\GUIWindowVideoBase.cpp" />
+    <ClCompile Include="guilib\info\InfoBool.cpp" />
+    <ClCompile Include="guilib\info\SkinVariable.cpp" />
     <ClCompile Include="guilib\LocalizeStrings.cpp" />
     <ClCompile Include="guilib\screensavers\ScreensaverPlasma.cpp" />
     <ClCompile Include="guilib\SkinInfo.cpp" />
@@ -614,7 +683,8 @@
     <ClCompile Include="guilib\viewstates\GUIViewStateMusic.cpp" />
     <ClCompile Include="guilib\viewstates\GUIViewStatePictures.cpp" />
     <ClCompile Include="guilib\viewstates\GUIViewStatePrograms.cpp" />
-    <ClCompile Include="guilib\viewstates\GUIViewStateVideos.cpp" />
+    <ClCompile Include="guilib\viewstates\GUIViewStateVideo.cpp" />
+    <ClCompile Include="guilib\VisibleEffect.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowFullScreen.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowHome.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowMusicFiles.cpp" />
@@ -627,6 +697,7 @@
     <ClCompile Include="guilib\windows\GUIWindowVideoFiles.cpp" />
     <ClCompile Include="guilib\XMLUtils.cpp" />
     <ClCompile Include="GUISettings.cpp" />
+    <ClCompile Include="interfaces\Builtins.cpp" />
     <ClCompile Include="libraries\libsmb2\aes.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
@@ -839,14 +910,17 @@
     </ClCompile>
     <ClCompile Include="libraries\libsmb2\XBLibSmb2.cpp" />
     <ClCompile Include="MediaManager.cpp" />
+    <ClCompile Include="MediaSource.cpp" />
     <ClCompile Include="services\FTPServer\FTPFileWriter.cpp" />
     <ClCompile Include="services\FTPServer\FTPServer.cpp" />
     <ClCompile Include="services\FTPServer\FTPServerConn.cpp" />
     <ClCompile Include="services\NTPClient\WinSckNTP.cpp" />
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="SettingsControls.cpp" />
+    <ClCompile Include="SortFileItem.cpp" />
     <ClCompile Include="ThumbLoader.cpp" />
     <ClCompile Include="URL.cpp" />
+    <ClCompile Include="utils\Archive.cpp" />
     <ClCompile Include="utils\asprintf.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
@@ -854,11 +928,14 @@
     </ClCompile>
     <ClCompile Include="utils\AutoPtrHandle.cpp" />
     <ClCompile Include="utils\BitstreamStats.cpp" />
+    <ClCompile Include="utils\CharsetConverter.cpp" />
     <ClCompile Include="utils\CRC_32.cpp" />
     <ClCompile Include="utils\CriticalSection.cpp" />
     <ClCompile Include="utils\Event.cpp" />
     <ClCompile Include="utils\Idle.cpp" />
+    <ClCompile Include="utils\LabelFormatter.cpp" />
     <ClCompile Include="utils\Log.cpp" />
+    <ClCompile Include="utils\POUtils.cpp" />
     <ClCompile Include="utils\SharedSection.cpp" />
     <ClCompile Include="utils\SingleLock.cpp" />
     <ClCompile Include="utils\Splash.cpp" />
@@ -869,10 +946,12 @@
     <ClCompile Include="utils\TimeUtils.cpp" />
     <ClCompile Include="utils\URIUtils.cpp" />
     <ClCompile Include="utils\Util.cpp" />
+    <ClCompile Include="utils\Variant.cpp" />
     <ClCompile Include="utils\Win32Exception.cpp" />
     <ClCompile Include="utils\XEXUtils.cpp" />
     <ClCompile Include="VideoSettings.cpp" />
     <ClCompile Include="XBApplicationEx.cpp" />
+    <ClCompile Include="XBDateTime.cpp" />
     <ClCompile Include="xbmc.cpp" />
     <ClCompile Include="xbox\Network.cpp" />
     <ClCompile Include="xbox\socket_emu\emu_socket.cpp" />

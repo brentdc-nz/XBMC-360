@@ -1,11 +1,19 @@
 <settings>
+    <general>
+        <systemtotaluptime>857</systemtotaluptime>
+    </general>
     <LookAndFeel>
         <Language>English</Language>
-		<Language>Portuguese(PT-BR)</Language>
         <Skin>Project Mayhem III</Skin>
     </LookAndFeel>
     <ScreenSaver>
         <Mode>Dim</Mode>
-        <Time>15</Time>
+        <Time>13</Time>
     </ScreenSaver>
+    <lookandfeel>
+        <skinzoom>0</skinzoom>
+    </lookandfeel>
+    <videoscreen>
+        <resolution>10</resolution>
+    </videoscreen>
 </settings>

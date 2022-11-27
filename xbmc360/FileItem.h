@@ -1,8 +1,13 @@
-#ifndef H_CFILEITEM
-#define H_CFILEITEM
+#ifndef CFILEITEM_H
+#define CFILEITEM_H
 
-#include "MediaManager.h"
+#include "MediaSource.h"
 #include "guilib\GUIListItem.h"
+#include "utils\SingleLock.h"
+#include "XBDateTime.h"
+#include "SortFileItem.h"
+#include "URL.h"
+
 #include <map>
 #include <vector>
 
@@ -10,72 +15,171 @@ class CFileItem : public CGUIListItem
 {
 public:
 	CFileItem(void);
+	CFileItem(const CFileItem& item);
+	CFileItem(const CGUIListItem& item);
 	CFileItem(const CStdString& strLabel);
 	CFileItem(const CStdString& strPath, bool bIsFolder);
 	CFileItem(const CMediaSource& share);
-	~CFileItem();
+	virtual ~CFileItem(void);
 
-	bool IsXEX() const;
-	bool IsRemote() const;
+	virtual CGUIListItem *Clone() const { return new CFileItem(*this); };
+
+	const CStdString &GetPath() const { return m_strPath; };
+	void SetPath(const CStdString &path) { m_strPath = path; };
+	void Reset();
+	const CFileItem& operator=(const CFileItem& item);
+	virtual bool IsFileItem() const { return true; };
+
 	bool IsVideo() const;
 	bool IsAudio() const;
 	bool IsPicture() const;
+	bool IsXEX() const;
 	bool IsParentFolder() const;
-	bool IsFileFolder() const;
 	bool IsVirtualDirectoryRoot() const;
-	bool IsMultiPath() const;
+	bool IsRemovable() const;
+	bool IsFileFolder() const;
+	bool IsInternetStream() const {return false; } ; // TODO
 
-	void Reset();
-	const CStdString &GetPath() const;
-	void SetPath(CStdString strPath);
 	virtual void SetLabel(const CStdString &strLabel);
 	void FillInDefaultIcon();
+	void RemoveExtension();
+	void SetLabelPreformated(bool bYesNo) { m_bLabelPreformated = bYesNo; }
+	bool IsLabelPreformated() const { return m_bLabelPreformated; }
+	CURL GetAsUrl() const;
 
-    // Returns the content type of this item if known, will lookup for http streams 
-	const CStdString& GetContentType() const; 
-
+public:
 	bool m_bIsShareOrDrive; // Is this a root share/drive
-	CStdString m_strPath; //FIXME: Make private again
+	int m_iDriveType; // If \e m_bIsShareOrDrive is \e true, use to get the share type. Types see: CMediaSource::m_iDriveType
+	CDateTime m_dateTime; // File creation date & time
+	__int64 m_dwSize; // File size (0 for folders)
 
-private:
-//	CStdString m_strPath;
-	CStdString m_contenttype;
+	int m_iprogramCount;
+	int m_idepth;
+	int m_lStartOffset;
+	int m_lEndOffset;
+
+//private: // FIXME - Make private again!
+	CStdString m_strPath; // Complete path to item
 	bool m_bIsParentFolder;
-	int m_iDriveType;
+	bool m_bLabelPreformated;
+
+	CStdString m_mimetype;
 };
 
-typedef std::vector<CFileItem*> VECFILEITEMS;
+/////////////////////////////////////////////////////////////////////////////////
+/////
+///// CFileItemList
+/////
+//////////////////////////////////////////////////////////////////////////////////
 
-typedef std::map<CStdString, CFileItem*> MAPFILEITEMS;
+// A shared pointer to CFileItem
+typedef std::shared_ptr<CFileItem> CFileItemPtr;
 
-typedef std::pair<CStdString, CFileItem*> MAPFILEITEMSPAIR;
+// A vector of pointer to CFileItem
+typedef std::vector< CFileItemPtr > VECFILEITEMS;
 
-typedef std::vector<CFileItem*>::iterator IVECFILEITEMS;
+// Iterator for VECFILEITEMS
+typedef std::vector< CFileItemPtr >::iterator IVECFILEITEMS;
 
-class CFileItemList : public CFileItem
+// A map of pointers to CFileItem
+typedef std::map<CStdString, CFileItemPtr > MAPFILEITEMS;
+
+// Iterator for MAPFILEITEMS
+typedef std::map<CStdString, CFileItemPtr >::iterator IMAPFILEITEMS;
+
+// Pair for MAPFILEITEMS
+typedef std::pair<CStdString, CFileItemPtr > MAPFILEITEMSPAIR;
+
+typedef bool (*FILEITEMLISTCOMPARISONFUNC) (const CFileItemPtr &pItem1, const CFileItemPtr &pItem2);
+typedef void (*FILEITEMFILLFUNC) (CFileItemPtr &item);
+
+// Represents a list of files
+class CFileItemList	 : public CFileItem
 {
 public:
+	enum CACHE_TYPE { CACHE_NEVER = 0, CACHE_IF_SLOW, CACHE_ALWAYS };
+
 	CFileItemList();
 	CFileItemList(const CStdString& strPath);
 	virtual ~CFileItemList();
 
-	CFileItem* operator[] (int iItem);
-	const CFileItem* operator[] (int iItem) const;
+	CFileItemPtr operator[] (int iItem);
+	const CFileItemPtr operator[] (int iItem) const;
+	CFileItemPtr operator[] (const CStdString& strPath);
+	const CFileItemPtr operator[] (const CStdString& strPath) const;
+
+	void Add(const CFileItemPtr &pItem);
+	void AddFront(const CFileItemPtr &pItem, int itemPosition);
+	void Remove(int iItem);
+
+	CFileItemPtr Get(int iItem);
+	const CFileItemPtr Get(int iItem) const;
+	CFileItemPtr Get(const CStdString& strPath);
+	const CFileItemPtr Get(const CStdString& strPath) const;
+
+	SORT_ORDER GetSortOrder() const { return m_sortOrder; }
+	SORT_METHOD GetSortMethod() const { return m_sortMethod; }
 
 	void Clear();
-	CFileItem* Get(int iItem);
-	const CFileItem* Get(int iItem) const;
-	void Remove(int iItem);
-	void Add(CFileItem* pItem);
+	void ClearItems();
 	int Size() const;
 	bool IsEmpty() const;
+	bool Copy (const CFileItemList& item);
+	void Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder);
 	void Append(const CFileItemList& itemlist);
+	void Assign(const CFileItemList& itemlist, bool append = false);
+
+	bool GetReplaceListing() const { return m_replaceListing; };
+	const std::vector<SORT_METHOD_DETAILS> &GetSortDetails() const { return m_sortDetails; };
+
 	void FillInDefaultIcons();
 
+	void SetFastLookup(bool fastLookup);
+	bool Contains(const CStdString& fileName) const;
+
+	void ClearSortState();
+	bool CacheToDiscAlways() const { return m_cacheToDisc == CACHE_ALWAYS; }
+	void SetCacheToDisc(CACHE_TYPE cacheToDisc) { m_cacheToDisc = cacheToDisc; }
+	bool CacheToDiscIfSlow() const { return m_cacheToDisc == CACHE_IF_SLOW; }
+
+	// windowID id of the window that's saving this list (defaults to 0)
+	// return true if successful, false otherwise.
+	bool Save(int windowID = 0);
+
+	// Update an item in the item list
+	// param item the new item, which we match based on path to an existing item in the list
+	// return true if the item exists in the list (and was thus updated), false otherwise.
+	bool UpdateItem(const CFileItem *item);
+
+	// windowID id of the window that's loading this list (defaults to 0)
+	// return true if we loaded from the cache, false otherwise.
+	// sa Save,RemoveDiscCache
+	bool Load(int windowID = 0);
+
+	void FillInDefaultIcon();
+
+	void RemoveDiscCache(int windowID = 0) const;
+
+	int GetObjectCount() const;
+
+	bool AlwaysCache() const;
+
 private:
-	bool m_fastLookup;
+	void FillSortFields(FILEITEMFILLFUNC func);
+
 	VECFILEITEMS m_items;
 	MAPFILEITEMS m_map;
+
+	bool m_fastLookup;
+	SORT_METHOD m_sortMethod;
+	SORT_ORDER m_sortOrder;
+	CACHE_TYPE m_cacheToDisc;
+	bool m_replaceListing;
+	CStdString m_content;
+
+	std::vector<SORT_METHOD_DETAILS> m_sortDetails;
+
+	CCriticalSection m_lock;
 };
 
-#endif //H_CFILEITEM
+#endif //CFILEITEM_H

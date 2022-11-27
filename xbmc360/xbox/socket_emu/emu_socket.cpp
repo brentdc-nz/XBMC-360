@@ -19,7 +19,7 @@
  */
  
 
-#include "..\..\utils\log.h"
+#include "utils\Log.h"
 #include "emu_socket.h"
 
 #define MAX_SOCKETS 100

@@ -4,7 +4,7 @@
 #include "IDirectory.h"
 #include "..\FileItem.h"
 
-namespace DIRECTORY
+namespace XFILE
 {
 
 class CHDDirectory : public IDirectory

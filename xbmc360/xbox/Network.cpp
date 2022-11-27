@@ -1,6 +1,6 @@
 #include "Network.h"
-#include "..\utils\log.h"
-#include "..\Application.h"
+#include "utils\Log.h"
+#include "Application.h"
 
 // Time to wait before we give up on network init
 #define WAIT_TIME 10000
@@ -22,6 +22,8 @@ bool CNetwork::Initialize()
 	WSADATA WsaData;
 	DWORD dwState = 0;	
 	
+	memset(&m_networkinfo , 0, sizeof(m_networkinfo));
+
 	XNetStartupParams xnsp;
 	memset(&xnsp, 0, sizeof(xnsp));
 	xnsp.cfgSizeOfStruct = sizeof(XNetStartupParams);

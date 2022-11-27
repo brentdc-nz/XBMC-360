@@ -1,28 +1,8 @@
-/*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
- *
- *  This Program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2, or (at your option)
- *  any later version.
- *
- *  This Program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
- *  <http://www.gnu.org/licenses/>.
- *
- */
-
 #include "Splash.h"
 #include "Log.h"
-#include "..\guilib\GUIImage.h"
-#include "..\filesystem\File.h"
-#include "..\guilib\GUIButtonControl.h"
+#include "guilib\GUIImage.h"
+#include "filesystem\File.h"
+#include "guilib\GUIButtonControl.h"
 
 using namespace XFILE;
 
@@ -44,25 +24,27 @@ void CSplash::OnExit()
 {
 }
 
-void CSplash::Process()
+void CSplash::Process()	
 {
 	D3DGAMMARAMP newRamp;
 	D3DGAMMARAMP oldRamp;
 
-	GRAPHICSCONTEXT_LOCK()
+	g_graphicsContext.TLock();
 	g_graphicsContext.Get3DDevice()->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
-	GRAPHICSCONTEXT_UNLOCK()
+	g_graphicsContext.TUnlock();
 
+	g_graphicsContext.SetCameraPosition(CPoint(0, 0));
 	float w = g_graphicsContext.GetWidth() * 0.5f;
 	float h = g_graphicsContext.GetHeight() * 0.5f;
 	
 	CGUIImage* image = new CGUIImage(0, 0, w*0.5f, h*0.5f, w, h, m_ImageName);
+	image->SetAspectRatio(CAspectRatio::AR_KEEP);
 	image->AllocResources();
 
 	// Store the old gamma ramp
-	GRAPHICSCONTEXT_LOCK()
+	g_graphicsContext.TLock();
 	g_graphicsContext.Get3DDevice()->GetGammaRamp(NULL, &oldRamp);
-	GRAPHICSCONTEXT_UNLOCK()
+	g_graphicsContext.TUnlock();
 
 	float fade = 0.5f;
 	for (int i = 0; i < 256; i++)
@@ -72,34 +54,48 @@ void CSplash::Process()
 		newRamp.blue[i] = (int)((float)oldRamp.red[i] * fade);
 	}
 	
-	GRAPHICSCONTEXT_LOCK()
+	g_graphicsContext.TLock();
 	g_graphicsContext.Get3DDevice()->SetGammaRamp(NULL, D3DSGR_IMMEDIATE, &newRamp);
-	
+	g_graphicsContext.TUnlock();
+
 	// Render splash image
+	g_graphicsContext.TLock();
 	g_graphicsContext.Get3DDevice()->BeginScene();
+	g_graphicsContext.TUnlock();
 
 	// FIXME - Why not alpha blended like all other CGUIImage instances!?
+	g_graphicsContext.TLock();
 	g_graphicsContext.Get3DDevice()->SetRenderState(D3DRS_ALPHAREF, (DWORD)0x0000008f);
-	g_graphicsContext.Get3DDevice()->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE); 
+	g_graphicsContext.TUnlock();
+	g_graphicsContext.TLock();
+	g_graphicsContext.Get3DDevice()->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+	g_graphicsContext.TUnlock();
+	g_graphicsContext.TLock();
 	g_graphicsContext.Get3DDevice()->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
-
-	GRAPHICSCONTEXT_UNLOCK()
+	g_graphicsContext.TUnlock();
 
 	image->Render();
 	image->FreeResources();
 	delete image;
 
 	// Show it on screen
-	GRAPHICSCONTEXT_LOCK()
-
+	g_graphicsContext.TLock();
 	g_graphicsContext.Get3DDevice()->SetRenderState(D3DRS_ALPHAREF, NULL);
-	g_graphicsContext.Get3DDevice()->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE); 
+	g_graphicsContext.TUnlock();
+	g_graphicsContext.TLock();
+	g_graphicsContext.Get3DDevice()->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+	g_graphicsContext.TUnlock();
+	g_graphicsContext.TLock();
 	g_graphicsContext.Get3DDevice()->SetRenderState(D3DRS_ALPHAFUNC,  NULL);
+	g_graphicsContext.TUnlock();
 
+	g_graphicsContext.TLock();
 	g_graphicsContext.Get3DDevice()->EndScene();
+	g_graphicsContext.TUnlock();
 
+	g_graphicsContext.TLock();
 	g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
-	GRAPHICSCONTEXT_UNLOCK()
+	g_graphicsContext.TUnlock();
 
 	// Fade in and wait untill the thread is stopped
 	while (!m_bStop)
@@ -113,9 +109,9 @@ void CSplash::Process()
 				newRamp.green[i] = (int)((float)oldRamp.green[i] * fade);
 				newRamp.blue[i] = (int)((float)oldRamp.blue[i] * fade);
 			}
-			GRAPHICSCONTEXT_LOCK()
+			g_graphicsContext.TLock();
 			g_graphicsContext.Get3DDevice()->SetGammaRamp(NULL, D3DSGR_IMMEDIATE, &newRamp);
-			GRAPHICSCONTEXT_UNLOCK()
+			g_graphicsContext.TUnlock();
 			fade += 0.01f;
 		}
 		else
@@ -124,8 +120,6 @@ void CSplash::Process()
 		}
 	}
 
-	GRAPHICSCONTEXT_LOCK()
-	
 	// Fade out
 	for (float fadeout = fade - 0.01f; fadeout >= 0.f; fadeout -= 0.01f)
 	{
@@ -136,14 +130,21 @@ void CSplash::Process()
 			newRamp.blue[i] = (int)((float)oldRamp.blue[i] * fadeout);
 		}
 		Sleep(1);
+		g_graphicsContext.TLock();
 		g_graphicsContext.Get3DDevice()->SetGammaRamp(NULL, D3DSGR_IMMEDIATE, &newRamp);
+		g_graphicsContext.TUnlock();
 	}
 	
 	// Restore original gamma ramp
+	g_graphicsContext.TLock();
 	g_graphicsContext.Get3DDevice()->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
+	g_graphicsContext.TUnlock();
+	g_graphicsContext.TLock();
 	g_graphicsContext.Get3DDevice()->SetGammaRamp(NULL, D3DSGR_IMMEDIATE, &oldRamp);
+	g_graphicsContext.TUnlock();
+	g_graphicsContext.TLock();
 	g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
-	GRAPHICSCONTEXT_UNLOCK()
+	g_graphicsContext.TUnlock();
 }
 
 bool CSplash::Start()

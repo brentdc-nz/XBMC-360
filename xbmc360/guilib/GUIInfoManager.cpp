@@ -1,10 +1,11 @@
 #include "GUIInfoManager.h"
 #include "GUIWindowManager.h"
-#include "..\utils\Log.h"
-#include "..\Application.h"
+#include "utils\Log.h"
+#include "Application.h"
 #include "LocalizeStrings.h"
-#include "..\xbox\XBKernalExports.h"
-#include "..\utils\StringUtils.h"
+#include "xbox\XBKernalExports.h"
+#include "utils\StringUtils.h"
+#include "SkinInfo.h"
 
 #include <vector>
 
@@ -37,12 +38,71 @@ int GUIInfo::GetData2() const
 	return m_data2;
 }
 
+using namespace INFO;
+
 CGUIInfoManager::CGUIInfoManager(void)
 {
+	m_nextWindowID = WINDOW_INVALID;
+	m_prevWindowID = WINDOW_INVALID;
+	m_frameCounter = 0;
+	m_lastFPSTime = 0;
+	m_updateTime = 0;
 }
 
 CGUIInfoManager::~CGUIInfoManager(void)
 {
+}
+
+unsigned int CGUIInfoManager::Register(const CStdString &expression, int context)
+{
+  CStdString condition(CGUIInfoLabel::ReplaceLocalize(expression));
+  condition.TrimLeft(" \t\r\n");
+  condition.TrimRight(" \t\r\n");
+
+  if (condition.IsEmpty())
+    return 0;
+
+  CSingleLock lock(m_critInfo);
+  // do we have the boolean expression already registered?
+  InfoBool test(condition, context);
+  for (unsigned int i = 0; i < m_bools.size(); ++i)
+  {
+    if (*m_bools[i] == test)
+      return i+1;
+  }
+
+  if (condition.find_first_of("|+[]!") != condition.npos)
+    m_bools.push_back(new InfoExpression(condition, context));
+  else
+    m_bools.push_back(new InfoSingle(condition, context));
+
+  return m_bools.size();
+}
+
+/*
+	TODO: what to do with item-based infobools...
+	these crop up:
+	1. if condition is between LISTITEM_START and LISTITEM_END
+	2. if condition is STRING_IS_EMPTY, STRING_COMPARE, STRING_STR, INTEGER_GREATER_THAN and the
+	corresponding label is between LISTITEM_START and LISTITEM_END
+
+	In both cases they shouldn't be in our cache as they depend on items outside of our control atm.
+
+	We only pass a listitem object in for controls inside a listitemlayout, so I think it's probably OK
+	to not cache these, as they're "pushed" out anyway.
+
+	The problem is how do we avoid these?  The only thing we have to go on is the expression here, so I
+	guess what we have to do is call through via Update.  One thing we don't handle, however, is that the
+	majority of conditions (even inside lists) don't depend on the listitem at all.
+
+	Advantage is that we know this at creation time I think, so could perhaps signal it in IsDirty()?
+ */
+bool CGUIInfoManager::GetBoolValue(unsigned int expression, const CGUIListItem *item)
+{
+	if (expression && --expression < m_bools.size())
+		return m_bools[expression]->Get(m_updateTime, item);
+	
+	return false;
 }
 
 // Translates a string as given by the skin into an int that we use for more
@@ -72,6 +132,17 @@ int CGUIInfoManager::TranslateString(const CStdString &condition)
 	}
 	// Just single command.
 	return TranslateSingleString(strCondition);
+}
+
+bool CGUIInfoManager::EvaluateBool(const CStdString &expression, int contextWindow)
+{
+	bool result = false;
+/*	unsigned int info = Register(expression, contextWindow);
+
+	if (info)
+		result = GetBoolValue(info);*/
+
+	return result;
 }
 
 // Translates a string as given by the skin into an int that we e
@@ -110,7 +181,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 		else if(strTest.Equals("system.gputemperature")) ret = SYSTEM_GPU_TEMPERATURE;
 		else if(strTest.Equals("system.memory(free)") || strTest.Equals("system.freememory")) ret = SYSTEM_FREE_MEMORY;
 	}
-
 	else if(strCategory.Equals("player"))
 	{
 		if(strTest.Equals("player.hasmedia")) ret = PLAYER_HAS_MEDIA;
@@ -118,8 +188,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 		else if(strTest.Equals("player.timeremaining")) ret = PLAYER_TIME_REMAINING;
 		else if(strTest.Equals("player.duration")) ret = PLAYER_DURATION;
 		else if(strTest.Equals("player.progress")) ret = PLAYER_PROGRESS;
+		else if (strTest.Equals("player.seeking")) ret = PLAYER_SEEKING;
 	}
-
 	else if(strCategory.Equals("control"))
 	{
 		if(strTest.Left(17).Equals("control.hasfocus("))
@@ -131,8 +201,65 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 			}
 		}
 	}
+	else if (strTest.Left(13).Equals("controlgroup("))
+	{
+		int groupID = atoi(strTest.Mid(13).c_str());
+		int controlID = 0;
+		int controlPos = strTest.Find(".hasfocus(");
+		
+		if (controlPos > 0)
+			controlID = atoi(strTest.Mid(controlPos + 10).c_str());
+		
+		if (groupID)
+		{
+			return AddMultiInfo(GUIInfo(bNegate ? -CONTROL_GROUP_HAS_FOCUS : CONTROL_GROUP_HAS_FOCUS, groupID, controlID));
+		}
+	}
+	else if (strCategory.Left(8).Equals("listitem"))
+	{
+		int offset = atoi(strCategory.Mid(9, strCategory.GetLength() - 10));
+		ret = TranslateListItem(strTest.Mid(strCategory.GetLength() + 1));
+		
+		if (offset || ret == LISTITEM_ISSELECTED || ret == LISTITEM_ISPLAYING || ret == LISTITEM_IS_FOLDER)
+			return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, 0, offset, INFOFLAG_LISTITEM_WRAP));
+	}
 
 	return bNegate ? -ret : ret;
+}
+
+int CGUIInfoManager::RegisterSkinVariableString(const CSkinVariableString* info)
+{
+	if (!info)
+		return 0;
+
+	CSingleLock lock(m_critInfo);
+	m_skinVariableStrings.push_back(*info);
+
+	delete info;
+	return CONDITIONAL_LABEL_START + m_skinVariableStrings.size() - 1;
+}
+
+int CGUIInfoManager::TranslateSkinVariableString(const CStdString& name, int context)
+{
+	for (vector<CSkinVariableString>::const_iterator it = m_skinVariableStrings.begin();
+		it != m_skinVariableStrings.end(); ++it)
+	{
+		if (it->GetName().Equals(name) && it->GetContext() == context)
+			return it - m_skinVariableStrings.begin() + CONDITIONAL_LABEL_START;
+	}
+	return 0;
+}
+
+CStdString CGUIInfoManager::GetSkinVariableString(int info,
+                                                  bool preferImage /*= false*/,
+                                                  const CGUIListItem *item /*= NULL*/)
+{
+	info -= CONDITIONAL_LABEL_START;
+	
+	if (info >= 0 && info < (int)m_skinVariableStrings.size())
+		return m_skinVariableStrings[info].GetValue(preferImage, item);
+
+	return "";
 }
 
 int CGUIInfoManager::GetOperator(const char ch)
@@ -197,7 +324,7 @@ int CGUIInfoManager::TranslateBooleanExpression(const CStdString &expression)
 	comb.m_info = expression;
 	comb.m_id = COMBINED_VALUES_START + m_CombinedValues.size();
 
-	// operator stack
+	// Operator stack
 	stack<char> save;
 
 	CStdString operand;
@@ -269,9 +396,62 @@ int CGUIInfoManager::TranslateBooleanExpression(const CStdString &expression)
 	bool test;
 	if (!EvaluateBooleanExpression(comb, test, WINDOW_INVALID))
 		CLog::Log(LOGERROR, "Error evaluating boolean expression %s", expression.c_str());
-	// success - add to our combined values
+
+	// Success - add to our combined values
 	m_CombinedValues.push_back(comb);
+
 	return comb.m_id;
+}
+
+CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
+{
+	if (!item) return "";
+
+	if (info >= CONDITIONAL_LABEL_START && info <= CONDITIONAL_LABEL_END)
+		return GetSkinVariableString(info, false, item);
+
+	if (info >= LISTITEM_PROPERTY_START && info - LISTITEM_PROPERTY_START < (int)m_listitemProperties.size())
+	{
+		// Grab the property  
+		CStdString property = m_listitemProperties[info - LISTITEM_PROPERTY_START];
+		return item->GetProperty(property);
+	}
+
+	switch (info)
+	{
+		case LISTITEM_LABEL:
+			return item->GetLabel();
+		case LISTITEM_LABEL2:
+			return item->GetLabel2();
+		case LISTITEM_ICON:
+		{
+			CStdString strThumb = item->GetThumbnailImage();
+			if(!strThumb.IsEmpty() && !g_TextureManager.CanLoad(strThumb))
+				strThumb = "";
+
+			if(strThumb.IsEmpty() && !item->GetIconImage().IsEmpty())
+			{
+				strThumb = item->GetIconImage();
+				if (g_SkinInfo.GetVersion() <= 2.10)
+					strThumb.Insert(strThumb.Find("."), "Big");
+			}
+			return strThumb;
+		}
+		case LISTITEM_THUMB:
+			return item->GetThumbnailImage();
+
+		// TODO - Many missign !!!
+	}
+
+	return "";
+}
+
+CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info)
+{
+	if (info >= CONDITIONAL_LABEL_START && info <= CONDITIONAL_LABEL_END)
+		return GetSkinVariableString(info, true, item);
+
+	return GetItemLabel(item, info);
 }
 
 CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
@@ -295,12 +475,73 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
 			return GetSystemHeatInfo(info);
 			break;
 		case SYSTEM_FREE_MEMORY:
+		{
+			MEMORYSTATUS stat;
+			GlobalMemoryStatus(&stat);
+			strLabel.Format("%iMB", stat.dwAvailPhys /MB);
+		}
+		break;
+
+		// Network section
+		case NETWORK_IP_ADDRESS:
+		{
+			return g_application.getNetwork().m_networkinfo.ip;
+		}
+		break;
+		case NETWORK_SUBNET_ADDRESS:
+		{
+			return g_application.getNetwork().m_networkinfo.subnet;
+		}
+		break;
+		case NETWORK_GATEWAY_ADDRESS:
+		{
+			return g_application.getNetwork().m_networkinfo.gateway;
+		}
+		break;
+		case NETWORK_DNS1_ADDRESS:
+		{
+			return g_application.getNetwork().m_networkinfo.DNS1;
+		}
+		break;
+		case NETWORK_DNS2_ADDRESS:
+		{
+			return g_application.getNetwork().m_networkinfo.DNS2;
+		}
+		break;
+		case NETWORK_DHCP_ADDRESS:
+		{
+			return g_application.getNetwork().m_networkinfo.dhcpserver;
+		}
+		break;
+		case NETWORK_IS_DHCP:
+		{
+			if(g_application.getNetwork().m_networkinfo.DHCP)
+				return g_localizeStrings.Get(148); // Is DHCP IP
+			else
+				return g_localizeStrings.Get(147); // Is fixed IP
+		}
+		break;
+		case NETWORK_LINK_STATE:
+		{
+			DWORD dwnetstatus = XNetGetEthernetLinkStatus();
+			CStdString linkStatus;
+
+			if (dwnetstatus & XNET_ETHERNET_LINK_ACTIVE)
 			{
-				MEMORYSTATUS stat;
-				GlobalMemoryStatus(&stat);
-				strLabel.Format("%iMB", stat.dwAvailPhys /MB);
+				if (dwnetstatus & XNET_ETHERNET_LINK_100MBPS)
+					linkStatus += "100mbps ";
+				if (dwnetstatus & XNET_ETHERNET_LINK_10MBPS)
+					linkStatus += "10mbps ";
+				if (dwnetstatus & XNET_ETHERNET_LINK_FULL_DUPLEX)
+					linkStatus += g_localizeStrings.Get(153);
+				if (dwnetstatus & XNET_ETHERNET_LINK_HALF_DUPLEX)
+					linkStatus += g_localizeStrings.Get(152);
 			}
-			break;
+			else
+				linkStatus += g_localizeStrings.Get(159);
+			return linkStatus;
+		}
+		break;
 
 		// Player Section	
 		case PLAYER_TIME:
@@ -318,34 +559,71 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
 	return strLabel;
 }
 
-// Checks the condition and returns it as necessary.
-bool CGUIInfoManager::GetBool(int condition)
+// Obtains the filename of the image to show from whichever subsystem is needed
+CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
+{
+	if (info >= CONDITIONAL_LABEL_START && info <= CONDITIONAL_LABEL_END)
+		return GetSkinVariableString(info, true);
+
+	if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
+	{
+		return GetMultiInfoLabel(m_multiInfo[info - MULTI_INFO_START], contextWindow);
+	}
+	else if (info == LISTITEM_THUMB || info == LISTITEM_ICON || info == LISTITEM_ACTUAL_ICON ||
+          info == LISTITEM_OVERLAY || info == LISTITEM_RATING || info == LISTITEM_STAR_RATING)
+	{
+		CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS);
+		if (window)
+		{
+			CFileItemPtr item = window->GetCurrentListItem();
+			if (item)
+				return GetItemImage(item.get(), info);
+		}
+	}
+	return GetLabel(info, contextWindow);
+}
+
+// Checks the condition and returns it as necessary.  Currently used
+// for toggle button controls and visibility of images
+bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListItem *item)
 {
 	bool bReturn = false;
 	
-	if ( condition == SYSTEM_ALWAYS_TRUE)
-		bReturn = true;
-	else if (condition == SYSTEM_ALWAYS_FALSE)
-		bReturn = false;
-	else if (condition == PLAYER_SHOWCODEC)
-		bReturn = m_playerShowCodec;
-	else if (condition >= MULTI_INFO_START && condition <= MULTI_INFO_END)
+	int condition = abs(condition1);
+
+	if(condition >= COMBINED_VALUES_START && (condition - COMBINED_VALUES_START) < (int)(m_CombinedValues.size()) )
 	{
-		// cache return value
-		bool result = GetMultiInfoBool(m_multiInfo[condition - MULTI_INFO_START]);
-//		if (!item)
+		const CCombinedValue &comb = m_CombinedValues[condition - COMBINED_VALUES_START];
+
+		if (!EvaluateBooleanExpression(comb, bReturn, contextWindow/*, item*/)) //TODO
+			bReturn = false;
+	}
+  	else if(condition == SYSTEM_ALWAYS_TRUE)
+		bReturn = true;
+	else if(condition == SYSTEM_ALWAYS_FALSE)
+		bReturn = false;
+	else if(condition == PLAYER_SHOWCODEC)
+		bReturn = m_playerShowCodec;
+	else if(condition >= MULTI_INFO_START && condition <= MULTI_INFO_END)
+	{
+		// Cache return value
+		bool result = GetMultiInfoBool(m_multiInfo[condition - MULTI_INFO_START], contextWindow/*, item*/);
+//		if(!item)
 //			CacheBool(condition1, contextWindow, result); //TODO
 		return result;
 	}
-	else if (g_application.IsPlaying())
+	else if(g_application.IsPlaying())
 	{
-		switch (condition)
+		switch(condition)
 		{
 			case PLAYER_HAS_MEDIA:
 				bReturn = true;
-				break;
+			break;
 		}
 	}
+
+	// Cache return value
+	if(condition1 < 0) bReturn = !bReturn;
 
 	return bReturn;
 }
@@ -371,6 +649,18 @@ int CGUIInfoManager::GetInt(int info, int contextWindow) const
 	return 0; // Not found
 }
 
+void CGUIInfoManager::Clear()
+{
+	CSingleLock lock(m_critInfo);
+
+	for (unsigned int i = 0; i < m_bools.size(); ++i)
+		delete m_bools[i];
+	
+	m_bools.clear();
+	
+	m_skinVariableStrings.clear();
+}
+
 void CGUIInfoManager::UpdateFPS()
 {
 	m_frameCounter++;
@@ -385,18 +675,61 @@ void CGUIInfoManager::UpdateFPS()
 	}
 }
 
+bool CGUIInfoManager::CheckWindowCondition(CGUIWindow *window, int condition) const //TODO
+{
+	// Check if it satisfies our condition
+	if (!window) return false;
+/*
+	if ((condition & WINDOW_CONDITION_HAS_LIST_ITEMS) && !window->HasListItems())
+		return false;
+
+	if ((condition & WINDOW_CONDITION_IS_MEDIA_WINDOW) && !window->IsMediaWindow())
+		return false;
+*/	
+	return true;
+}
+
+CGUIWindow *CGUIInfoManager::GetWindowWithCondition(int contextWindow, int condition) const
+{
+	CGUIWindow *window = g_windowManager.GetWindow(contextWindow);
+	if (CheckWindowCondition(window, condition))
+		return window;
+
+	// Try topmost dialog
+	window = g_windowManager.GetWindow(g_windowManager.GetTopMostModalDialogID());
+	if (CheckWindowCondition(window, condition))
+		return window;
+
+	// Try active window
+	window = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
+	if (CheckWindowCondition(window, condition))
+		return window;
+
+	return NULL;
+}
+
+
 int CGUIInfoManager::AddMultiInfo(const GUIInfo &info)
 {
-	// check to see if we have this info already
+	// Check to see if we have this info already
 	for (unsigned int i = 0; i < m_multiInfo.size(); i++)
+	
 	if (m_multiInfo[i] == info)
 		return (int)i + MULTI_INFO_START;
-	// return the new offset
+	
+	// Return the new offset
 	m_multiInfo.push_back(info);
+
 	return (int)m_multiInfo.size() + MULTI_INFO_START - 1;
 }
 
-/// \brief Examines the multi information sent and returns true or false accordingly.
+// Examines the multi information sent and returns the string as appropriate
+CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWindow)
+{
+	return CStringUtils::EmptyString; // TODO
+}
+
+// Examines the multi information sent and returns true or false accordingly.
 bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow)
 {
 	bool bReturn = false;
@@ -411,9 +744,88 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow)
 				bReturn = (window->GetFocusedControlID() == (int)info.GetData1());
         }
         break;
+		case CONTROL_GROUP_HAS_FOCUS:
+        {
+			CGUIWindow *window = GetWindowWithCondition(contextWindow, 0);
+			if (window)
+				bReturn = window->ControlGroupHasFocus(info.GetData1(), info.GetData2());
+        }
+        break;
 	}
 
 	return (info.m_info < 0) ? !bReturn : bReturn;
+}
+
+
+
+int CGUIInfoManager::TranslateListItem(const CStdString &info)
+{
+	if (info.Equals("thumb")) return LISTITEM_THUMB;
+	else if (info.Equals("icon")) return LISTITEM_ICON;
+	else if (info.Equals("actualicon")) return LISTITEM_ACTUAL_ICON;
+	else if (info.Equals("overlay")) return LISTITEM_OVERLAY;
+	else if (info.Equals("label")) return LISTITEM_LABEL;
+	else if (info.Equals("label2")) return LISTITEM_LABEL2;
+	else if (info.Equals("title")) return LISTITEM_TITLE;
+	else if (info.Equals("tracknumber")) return LISTITEM_TRACKNUMBER;
+	else if (info.Equals("artist")) return LISTITEM_ARTIST;
+	else if (info.Equals("album")) return LISTITEM_ALBUM;
+	else if (info.Equals("albumartist")) return LISTITEM_ALBUM_ARTIST;
+	else if (info.Equals("year")) return LISTITEM_YEAR;
+	else if (info.Equals("genre")) return LISTITEM_GENRE;
+	else if (info.Equals("director")) return LISTITEM_DIRECTOR;
+	else if (info.Equals("filename")) return LISTITEM_FILENAME;
+	else if (info.Equals("filenameandpath")) return LISTITEM_FILENAME_AND_PATH;
+	else if (info.Equals("fileextension")) return LISTITEM_FILE_EXTENSION;
+	else if (info.Equals("date")) return LISTITEM_DATE;
+	else if (info.Equals("size")) return LISTITEM_SIZE;
+	else if (info.Equals("rating")) return LISTITEM_RATING;
+	else if (info.Equals("ratingandvotes")) return LISTITEM_RATING_AND_VOTES;
+	else if (info.Equals("programcount")) return LISTITEM_PROGRAM_COUNT;
+	else if (info.Equals("duration")) return LISTITEM_DURATION;
+	else if (info.Equals("isselected")) return LISTITEM_ISSELECTED;
+	else if (info.Equals("isplaying")) return LISTITEM_ISPLAYING;
+	else if (info.Equals("plot")) return LISTITEM_PLOT;
+	else if (info.Equals("plotoutline")) return LISTITEM_PLOT_OUTLINE;
+	else if (info.Equals("episode")) return LISTITEM_EPISODE;
+	else if (info.Equals("season")) return LISTITEM_SEASON;
+	else if (info.Equals("tvshowtitle")) return LISTITEM_TVSHOW;
+	else if (info.Equals("premiered")) return LISTITEM_PREMIERED;
+	else if (info.Equals("comment")) return LISTITEM_COMMENT;
+	else if (info.Equals("path")) return LISTITEM_PATH;
+	else if (info.Equals("foldername")) return LISTITEM_FOLDERNAME;
+	else if (info.Equals("folderpath")) return LISTITEM_FOLDERPATH;
+	else if (info.Equals("picturepath")) return LISTITEM_PICTURE_PATH;
+	else if (info.Equals("pictureresolution")) return LISTITEM_PICTURE_RESOLUTION;
+	else if (info.Equals("picturedatetime")) return LISTITEM_PICTURE_DATETIME;
+	else if (info.Equals("studio")) return LISTITEM_STUDIO;
+	else if (info.Equals("country")) return LISTITEM_COUNTRY;
+	else if (info.Equals("mpaa")) return LISTITEM_MPAA;
+	else if (info.Equals("cast")) return LISTITEM_CAST;
+	else if (info.Equals("castandrole")) return LISTITEM_CAST_AND_ROLE;
+	else if (info.Equals("writer")) return LISTITEM_WRITER;
+	else if (info.Equals("tagline")) return LISTITEM_TAGLINE;
+	else if (info.Equals("top250")) return LISTITEM_TOP250;
+	else if (info.Equals("trailer")) return LISTITEM_TRAILER;
+	else if (info.Equals("starrating")) return LISTITEM_STAR_RATING;
+	else if (info.Equals("sortletter")) return LISTITEM_SORT_LETTER;
+	else if (info.Equals("videocodec")) return LISTITEM_VIDEO_CODEC;
+	else if (info.Equals("videoresolution")) return LISTITEM_VIDEO_RESOLUTION;
+	else if (info.Equals("videoaspect")) return LISTITEM_VIDEO_ASPECT;
+	else if (info.Equals("audiocodec")) return LISTITEM_AUDIO_CODEC;
+	else if (info.Equals("audiochannels")) return LISTITEM_AUDIO_CHANNELS;
+	else if (info.Equals("audiolanguage")) return LISTITEM_AUDIO_LANGUAGE;
+	else if (info.Equals("subtitlelanguage")) return LISTITEM_SUBTITLE_LANGUAGE;
+	else if (info.Equals("isfolder")) return LISTITEM_IS_FOLDER;
+	else if (info.Equals("originaltitle")) return LISTITEM_ORIGINALTITLE;
+	else if (info.Equals("lastplayed")) return LISTITEM_LASTPLAYED;
+	else if (info.Equals("playcount")) return LISTITEM_PLAYCOUNT;
+//	else if (info.Equals("lastplayed")) return MUSICPLAYER_LASTPLAYED; // TODO
+	else if (info.Equals("discnumber")) return LISTITEM_DISC_NUMBER;
+	else if (info.Equals("isresumable")) return LISTITEM_IS_RESUMABLE;
+//	else if (info.Left(9).Equals("property(")) return AddListItemProp(info.Mid(9, info.GetLength() - 10)); // TODO
+
+	return 0;
 }
 
 CStdString CGUIInfoManager::GetDate(bool bNumbersOnly)
@@ -592,4 +1004,14 @@ CStdString CGUIInfoManager::GetDuration(TIME_FORMAT format) const
 		return CStringUtils::SecondsToTimeString(iTotal, format);
 
 	return "";
+}
+
+void CGUIInfoManager::ResetCache() // TODO
+{
+	CSingleLock lock(m_critInfo);
+//	m_boolCache.clear();// TODO
+	
+	// Reset any animation triggers as well
+//	m_containerMoves.clear();// TODO
+	m_updateTime++;
 }

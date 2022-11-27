@@ -1,6 +1,10 @@
+#include "include.h"
 #include "GUIMessage.h"
+#include "LocalizeStrings.h"
 
 using namespace std;
+
+CStdString CGUIMessage::empty_string;
 
 CGUIMessage::CGUIMessage(int msg, int senderID, int controlID, int param1, int param2)
 {
@@ -9,19 +13,48 @@ CGUIMessage::CGUIMessage(int msg, int senderID, int controlID, int param1, int p
 	m_controlID = controlID;
 	m_param1 = param1;
 	m_param2 = param2;
-	m_lpVoid = NULL;
+	m_pointer = NULL;
 }
 
-CGUIMessage::CGUIMessage(int msg, int senderID, int controlID, int param1, int param2, void* lpVoid)
+CGUIMessage::CGUIMessage(int msg, int senderID, int controlID, int param1, int param2, CFileItemList *item)
 {
 	m_message = msg;
 	m_senderID = senderID;
 	m_controlID = controlID;
 	m_param1 = param1;
 	m_param2 = param2;
-	m_lpVoid = lpVoid;
+	m_pointer = item;
 }
 
+CGUIMessage::CGUIMessage(int msg, int senderID, int controlID, int param1, int param2, const CGUIListItemPtr &item)
+{
+	m_message = msg;
+	m_senderID = senderID;
+	m_controlID = controlID;
+	m_param1 = param1;
+	m_param2 = param2;
+	m_pointer = NULL;
+	m_item = item;
+}
+
+CGUIMessage::CGUIMessage(int msg, int senderID, int controlID, int param1, int param2, CVisualisation* vis)
+{
+	m_message = msg;
+	m_senderID = senderID;
+	m_controlID = controlID;
+	m_param1 = param1;
+	m_param2 = param2;
+	m_pointer = vis;
+}
+
+CGUIMessage::CGUIMessage(const CGUIMessage& msg)
+{
+	*this = msg;
+}
+
+CGUIMessage::~CGUIMessage(void)
+{
+}
 
 int CGUIMessage::GetControlId() const
 {
@@ -33,39 +66,14 @@ int CGUIMessage::GetMessage() const
 	return m_message;
 }
 
-int CGUIMessage::GetSenderId() const
+void* CGUIMessage::GetPointer() const
 {
-	return m_senderID;
+	return m_pointer;
 }
 
-void CGUIMessage::SetLabel(const string& strLabel)
+CGUIListItemPtr CGUIMessage::GetItem() const
 {
-	m_strLabel = strLabel;
-}
-
-const string& CGUIMessage::GetLabel() const
-{
-	return m_strLabel;
-}
-
-void CGUIMessage::SetStringParam(const string& strParam)
-{
-	m_strParam = strParam;
-}
-
-const string& CGUIMessage::GetStringParam() const
-{
-	return m_strParam;
-}
-
-void CGUIMessage::SetParam1(int iParam1)
-{
-	m_param1 = iParam1;
-}
-
-void CGUIMessage::SetParam2(int iParam2)
-{
-	m_param2 = iParam2;
+	return m_item;
 }
 
 int CGUIMessage::GetParam1() const
@@ -78,7 +86,80 @@ int CGUIMessage::GetParam2() const
 	return m_param2;
 }
 
-void* CGUIMessage::GetLPVOID() const
+int CGUIMessage::GetSenderId() const
 {
-	return m_lpVoid;
+	return m_senderID;
+}
+
+const CGUIMessage& CGUIMessage::operator = (const CGUIMessage& msg)
+{
+	if (this == &msg) return * this;
+
+	m_message = msg.m_message;
+	m_controlID = msg.m_controlID;
+	m_param1 = msg.m_param1;
+	m_param2 = msg.m_param2;
+	m_pointer = msg.m_pointer;
+	m_strLabel = msg.m_strLabel;
+	m_senderID = msg.m_senderID;
+	m_params = msg.m_params;
+	m_item = msg.m_item;
+
+	return *this;
+}
+
+void CGUIMessage::SetParam1(int param1)
+{
+	m_param1 = param1;
+}
+
+void CGUIMessage::SetParam2(int param2)
+{
+	m_param2 = param2;
+}
+
+void CGUIMessage::SetPointer(void* lpVoid)
+{
+	m_pointer = lpVoid;
+}
+
+void CGUIMessage::SetLabel(const string& strLabel)
+{
+	m_strLabel = strLabel;
+}
+
+const string& CGUIMessage::GetLabel() const
+{
+	return m_strLabel;
+}
+
+void CGUIMessage::SetLabel(int iString)
+{
+	m_strLabel = g_localizeStrings.Get(iString);
+}
+
+void CGUIMessage::SetStringParam(const CStdString& strParam)
+{
+	m_params.clear();
+
+	if (strParam.size())
+		m_params.push_back(strParam);
+}
+
+void CGUIMessage::SetStringParams(const vector<CStdString> &params)
+{
+	m_params = params;
+}
+
+const CStdString& CGUIMessage::GetStringParam(size_t param) const
+{
+	if (param >= m_params.size())
+		return empty_string;
+
+	return m_params[param];
+}
+
+size_t CGUIMessage::GetNumStringParams() const
+{
+	return m_params.size();
 }

@@ -21,7 +21,7 @@
 #ifndef H_URIUTILS
 #define H_URIUTILS
 
-#include "StdString.h"
+#include "utils\StdString.h"
 
 class URIUtils
 {
@@ -29,14 +29,21 @@ public:
 	URIUtils(void) {};
 	virtual ~URIUtils(void) {};
 
+	static void GetDirectory(const CStdString& strFilePath, CStdString& strDirectoryPath);
+	static const CStdString GetExtension(const CStdString& strFileName);
+	static void GetExtension(const CStdString& strFile, CStdString& strExtension);
 	static bool IsDOSPath(const CStdString &path);
-
 	static void AddSlashAtEnd(CStdString& strFolder);
 	static bool IsURL(const CStdString& strFile);
 	static bool IsRemote(const CStdString& strFile);
 	static bool IsMultiPath(const CStdString& strPath);
-
+	static bool IsHD(const CStdString& strFileName);
+	static const CStdString GetFileName(const CStdString& strFileNameAndPath);
 	static bool HasSlashAtEnd(const CStdString& strFile);
+	static void RemoveSlashAtEnd(CStdString& strFolder);
+	static void RemoveExtension(CStdString& strFileName);
+	static CStdString GetParentPath(const CStdString& strPath);
+	static bool GetParentPath(const CStdString& strPath, CStdString& strParent);
 
 	static void AddFileToFolder(const CStdString& strFolder,
                               const CStdString& strFile, CStdString& strResult);

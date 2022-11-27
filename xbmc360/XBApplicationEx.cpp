@@ -11,27 +11,20 @@ CXBApplicationEX::CXBApplicationEX()
 	m_pD3D = NULL;
 	m_pd3dDevice = NULL;
 	
-	//XUI
-	m_hXUIDC = NULL;
-
 	// Set up the presentation parameters for a double-buffered
 	// 32-bit display using depth-stencil. Override these parameters in
 	// your derived class as your app requires.
 	ZeroMemory( &m_d3dpp, sizeof(m_d3dpp) );
 	XVIDEO_MODE VideoMode;
 	XGetVideoMode( &VideoMode );
-	m_d3dpp.BackBufferWidth        = 1280;//1920;//min( VideoMode.dwDisplayWidth, 1280 ); //MARTY FIXME WIP
-	m_d3dpp.BackBufferHeight       = 720;//1080;//min( VideoMode.dwDisplayHeight, 720 ); //MARTY FIXME WIP
+	m_d3dpp.BackBufferWidth        = min( VideoMode.dwDisplayWidth, 1280 );
+	m_d3dpp.BackBufferHeight       = min( VideoMode.dwDisplayHeight, 720 );
 	m_d3dpp.BackBufferFormat       = D3DFMT_LIN_X8R8G8B8;
 	m_d3dpp.BackBufferCount        = 1;
 	m_d3dpp.EnableAutoDepthStencil = FALSE;
 	m_d3dpp.AutoDepthStencilFormat = D3DFMT_D24S8;
 	m_d3dpp.SwapEffect             = D3DSWAPEFFECT_DISCARD;
 	m_d3dpp.PresentationInterval   = D3DPRESENT_INTERVAL_DEFAULT;
-
-	//XUI
-	XUIInitParams m_XUIParams = { 0 };
-	XUI_INIT_PARAMS( m_XUIParams );
 
 	m_bStop = false;
 }
@@ -78,31 +71,21 @@ void CXBApplicationEX::Destroy()
 	// Perform app-specific cleanup
 	Cleanup();
 
-	// Release display objects
-	XuiRenderUninit();
-	XuiUninit();
-
-	GRAPHICSCONTEXT_LOCK()
-
-	if(m_hXUIDC)
-	{
-		XuiRenderDestroyDC(m_hXUIDC);
-		m_hXUIDC = NULL;
-	}
-
 	if(m_pd3dDevice)
 	{
+		g_graphicsContext.TLock();
 		m_pd3dDevice->Release();
 		m_pd3dDevice = NULL;
+		g_graphicsContext.TUnlock();
 	}
 
 	if(m_pD3D)
 	{
+		g_graphicsContext.TLock();
 		m_pD3D->Release();
 		m_pD3D = NULL;
+		g_graphicsContext.TUnlock();
 	}
-
-	GRAPHICSCONTEXT_UNLOCK()
 }
 
 void CXBApplicationEX::ReadInput()

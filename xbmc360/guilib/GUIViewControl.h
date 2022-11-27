@@ -1,12 +1,9 @@
-#ifndef GUILIB_GUIVIEWCONTROL_H
-#define GUILIB_GUIVIEWCONTROL_H
+#ifndef GUILIB_CGUIVIEWCONTROL_H
+#define GUILIB_CGUIVIEWCONTROL_H
 
-#include "GUIControl.h"
-#include "..\FileItem.h"
-#include "viewstates\GUIViewState.h"
-#include <map>
+#include "guilib\viewstates\GUIViewState.h"
 
-typedef std::map<VIEW_METHOD, CGUIControl *>::const_iterator map_iter;
+#include "GUIBaseContainer.h"
 
 class CGUIViewControl
 {
@@ -16,30 +13,44 @@ public:
 
 	void Reset();
 	void SetParentWindow(int window);
-	void SetCurrentView(VIEW_METHOD viewMode);
-	void SetItems(CFileItemList &items);
-	void SetSelectedItem(const CStdString &itemPath);
-	void SetSelectedItem(int item);
-	void AddView(VIEW_METHOD type, const CGUIControl *control);
+	void AddView(const CGUIControl *control);
 	void SetViewControlID(int control);
-	void SetFocused();
-	bool HasControl(int viewControlID);
+
+	void SetCurrentView(int viewMode);
+
+	void SetItems(CFileItemList &items);
+
+	void SetSelectedItem(int item);
+	void SetSelectedItem(const CStdString &itemPath);
+
 	int GetSelectedItem() const;
-	int GetSelectedItem(const CGUIControl *control) const;
-	bool HasViewMode(VIEW_METHOD viewMode);
-	int GetCurrentControl();
+	void SetFocused();
+
+	bool HasControl(int controlID) const;
+	int GetNextViewMode(int direction = 1) const;
+	int GetViewModeNumber(int number) const;
+	int GetViewModeByID(int id) const;
+
+	int GetCurrentControl() const;
+
 	void Clear();
 
 protected:
-	void UpdateContents(const CGUIControl *control);
+	int GetSelectedItem(const CGUIControl *control) const;
+	void UpdateContents(const CGUIControl *control, int currentItem);
 	void UpdateView();
-	void UpdateViewAsControl();
+	void UpdateViewAsControl(const CStdString &viewLabel);
+	void UpdateViewVisibility();
+	int GetView(VIEW_TYPE type, int id) const;
 
-	VIEW_METHOD m_currentView;
-	map<VIEW_METHOD, CGUIControl*> m_vecViews;
-	CFileItemList* m_fileItems;
-	int m_viewAsControl;
-	int m_parentWindow;
+	std::vector<CGUIControl *> m_allViews;
+	std::vector<CGUIControl *> m_visibleViews;
+	typedef std::vector<CGUIControl *>::const_iterator ciViews;
+
+	CFileItemList*        m_fileItems;
+	int                   m_viewAsControl;
+	int                   m_parentWindow;
+	int                   m_currentView;
 };
 
-#endif //GUILIB_GUIVIEWCONTROL_H
+#endif //GUILIB_CGUIVIEWCONTROL_H

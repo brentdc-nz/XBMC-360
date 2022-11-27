@@ -1,7 +1,7 @@
 #ifndef GUILIB_CGUIDIALOGSEEKBAR_H
 #define GUILIB_CGUIDIALOGSEEKBAR_H
 
-#include "..\GUIDialog.h"
+#include "guilib\GUIDialog.h"
 
 class CGUIDialogSeekBar : public CGUIDialog
 {
@@ -13,7 +13,7 @@ public:
 	void ResetTimer();
 
 protected:
-	DWORD m_dwTimer;
+	unsigned int m_timer;
 };
 
 #endif //GUILIB_CGUIDIALOGSEEKBAR_H

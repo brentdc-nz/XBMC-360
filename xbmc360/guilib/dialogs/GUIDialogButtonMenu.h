@@ -1,16 +1,17 @@
 #ifndef GUILIB_CGUIDIALOGBUTTONMENU_H
 #define GUILIB_CGUIDIALOGBUTTONMENU_H
 
-#include "..\GUIDialog.h"
+#include "guilib\GUIDialog.h"
 
-class CGUIDialogButtonMenu : public CGUIDialog
+class CGUIDialogButtonMenu :
+	public CGUIDialog
 {
 public:
-	CGUIDialogButtonMenu(void);
+	CGUIDialogButtonMenu(int id = WINDOW_DIALOG_BUTTON_MENU, const CStdString &xmlFile = "DialogButtonMenu.xml");
 	virtual ~CGUIDialogButtonMenu(void);
 
-	virtual bool OnMessage(CGUIMessage& message);
-	virtual void Render();
+	virtual bool OnMessage(CGUIMessage &message);
+	virtual void FrameMove();
 };
 
 #endif //GUILIB_CGUIDIALOGBUTTONMENU_H

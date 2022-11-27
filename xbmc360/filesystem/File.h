@@ -2,8 +2,8 @@
 #define H_CFILE
 
 #include "FileBase.h"
-#include "..\utils\StdString.h"
-#include "..\utils\BitstreamStats.h"
+#include "utils\StdString.h"
+#include "utils\BitstreamStats.h"
 
 // Indicate that caller can handle truncated reads, where function returns before entire buffer has been filled
 #define READ_TRUNCATED 0x1
@@ -22,7 +22,7 @@ public:
 
 	bool Open(const CStdString& strURLFile, unsigned int iFlags = 0);
 	bool OpenForWrite(const CStdString& strFileName, bool bOverWrite = false);
-	unsigned int Read(void* lpBuf, unsigned int uiBufSize, unsigned int flags);
+	unsigned int Read(void* lpBuf, unsigned int uiBufSize, unsigned int flags = NULL);
 	int Write(const void* lpBuf, int64_t uiBufSize);
 	__int64 GetPosition();
 	__int64 Seek(__int64 iFilePosition, int iWhence = SEEK_SET);

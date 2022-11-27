@@ -1,98 +1,292 @@
+#include "include.h"
 #include "GUISpinControl.h"
-#include "GUIWindowManager.h"
+//#include "utils\CharsetConverter.h" // TODO
+
+using namespace std;
+
+#define SPIN_BUTTON_DOWN 1
+#define SPIN_BUTTON_UP   2
 
 CGUISpinControl::CGUISpinControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& textureUp, const CTextureInfo& textureDown, const CTextureInfo& textureUpFocus, const CTextureInfo& textureDownFocus, const CLabelInfo &labelInfo, int iType)
-    : CGUIControl(parentID, controlID, posX, posY, width, height)
-    , m_imgspinUp(parentID, controlID, posX, posY, width, height, textureUp)
-    , m_imgspinDown(parentID, controlID, posX, posY, width, height, textureDown)
-    , m_imgspinUpFocus(parentID, controlID, posX, posY, width, height, textureUpFocus)
-    , m_imgspinDownFocus(parentID, controlID, posX, posY, width, height, textureDownFocus)
+	: CGUIControl(parentID, controlID, posX, posY, width, height)
+	, m_imgspinUp(posX, posY, width, height, textureUp)
+	, m_imgspinDown(posX, posY, width, height, textureDown)
+	, m_imgspinUpFocus(posX, posY, width, height, textureUpFocus)
+	, m_imgspinDownFocus(posX, posY, width, height, textureDownFocus)
+	, m_label(posX, posY, width, height, labelInfo)
 {
-	m_width = width;
-	m_label = labelInfo;
-	ControlType = GUICONTROL_SPIN;
-	m_iSelect = SPIN_BUTTON_DOWN;
-	m_iType = iType;
+	m_bReverse = false;
 	m_iStart = 0;
 	m_iEnd = 100;
 	m_fStart = 0.0f;
 	m_fEnd = 1.0f;
+	m_fInterval = 0.1f;
 	m_iValue = 0;
+	m_fValue = 0.0;
+	m_iType = iType;
+	m_iSelect = SPIN_BUTTON_DOWN;
+	m_bShowRange = false;
+	m_iTypedPos = 0;
+	strcpy(m_szTyped, "");
+	ControlType = GUICONTROL_SPIN;
+	m_currentItem = 0;
+	m_numItems = 10;
+	m_itemsPerPage = 10;
+	m_showOnePage = true;
 }
 
 CGUISpinControl::~CGUISpinControl(void)
 {
 }
 
-void CGUISpinControl::Render()
+bool CGUISpinControl::OnAction(const CAction &action)
 {
-	if (!IsVisible()) return;
-
-	CStdString text;
-
-	if (m_iValue >= 0 && m_iValue < (int)m_vecLabels.size() )
+	switch (action.GetID())
 	{
-		if (/*m_bShowRange*/1) //TODO
+		case REMOTE_0:
+		case REMOTE_1:
+		case REMOTE_2:
+		case REMOTE_3:
+		case REMOTE_4:
+		case REMOTE_5:
+		case REMOTE_6:
+		case REMOTE_7:
+		case REMOTE_8:
+		case REMOTE_9:
 		{
-			text.Format("(%i/%i) %s", m_iValue + 1, (int)m_vecLabels.size(), CStdString(m_vecLabels[m_iValue]).c_str() );
+			if (strlen(m_szTyped) >= 3)
+			{
+				m_iTypedPos = 0;
+				strcpy(m_szTyped, "");
+			}
+			int iNumber = action.GetID() - REMOTE_0;
+
+			m_szTyped[m_iTypedPos] = iNumber + '0';
+			m_iTypedPos++;
+			m_szTyped[m_iTypedPos] = 0;
+			int iValue;
+			sscanf(m_szTyped, "%i", &iValue);
+			
+			switch (m_iType)
+			{
+				case SPIN_CONTROL_TYPE_INT:
+				{
+					if (iValue < m_iStart || iValue > m_iEnd)
+					{
+						m_iTypedPos = 0;
+						m_szTyped[m_iTypedPos] = iNumber + '0';
+						m_iTypedPos++;
+						m_szTyped[m_iTypedPos] = 0;
+						sscanf(m_szTyped, "%i", &iValue);
+						
+						if (iValue < m_iStart || iValue > m_iEnd)
+						{
+							m_iTypedPos = 0;
+							strcpy(m_szTyped, "");
+							return true;
+						}
+					}
+					m_iValue = iValue;
+					CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
+					SendWindowMessage(msg);
+				}
+				break;
+
+				case SPIN_CONTROL_TYPE_TEXT:
+				{
+					if (iValue < 0 || iValue >= (int)m_vecLabels.size())
+					{
+						m_iTypedPos = 0;
+						m_szTyped[m_iTypedPos] = iNumber + '0';
+						m_iTypedPos++;
+						m_szTyped[m_iTypedPos] = 0;
+						sscanf(m_szTyped, "%i", &iValue);
+						
+						if (iValue < 0 || iValue >= (int)m_vecLabels.size())
+						{
+							m_iTypedPos = 0;
+							strcpy(m_szTyped, "");
+							return true;
+						}
+					}
+					m_iValue = iValue;
+					CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
+					SendWindowMessage(msg);
+				}
+				break;
+			}
+			return true;
 		}
-		else
-		{
-			text.Format("%s", CStdString(m_vecLabels[m_iValue]).c_str() );
-		}
+		break;
+		case ACTION_PAGE_UP:
+			if (!m_bReverse)
+				PageDown();
+			else
+				PageUp();
+			return true;
+			break;
+		case ACTION_PAGE_DOWN:
+			if (!m_bReverse)
+				PageUp();
+			else
+				PageDown();
+			return true;
+			break;
+		case ACTION_SELECT_ITEM:
+			if (m_iSelect == SPIN_BUTTON_UP)
+			{
+				MoveUp();
+				return true;
+			}
+			if (m_iSelect == SPIN_BUTTON_DOWN)
+			{
+				MoveDown();
+				return true;
+			}
+		break;
 	}
-    else text.Format("?%i?", m_iValue);
+	return CGUIControl::OnAction(action);
+}
 
-	if ( HasFocus() )
+void CGUISpinControl::OnLeft()
+{
+	if (m_iSelect == SPIN_BUTTON_UP)
 	{
-		if ( m_iSelect == SPIN_BUTTON_UP )
-			m_imgspinUpFocus.Render();
-		else
-			m_imgspinUp.Render();
-
-		if ( m_iSelect == SPIN_BUTTON_DOWN )
-			m_imgspinDownFocus.Render();
-		else
-			m_imgspinDown.Render();
+		// Select the down button
+		m_iSelect = SPIN_BUTTON_DOWN;
 	}
 	else
 	{
-		m_imgspinUp.Render();
-		m_imgspinDown.Render();
+		// Base class
+		CGUIControl::OnLeft();
 	}
+}
 
-	if (m_label.font)
+void CGUISpinControl::OnRight()
+{
+	if (m_iSelect == SPIN_BUTTON_DOWN)
 	{
-		float fPosY;
-		if (/*m_label.align & XBFONT_CENTER_Y*/0)
-		{
-			fPosY = (float)m_posY + m_height * 0.5f;
-		}
-		else
-		{
-			fPosY = (float)(m_posY + m_label.offsetY);
-		}
-
-		float fPosX = (float)(m_posX + m_label.offsetX) - 3;
-		if ( /*!IsDisabled()*/1 /*HasFocus()*/ ) //TODO
-		{
-			m_label.font->DrawText(fPosX, fPosY, m_label.dwTextColor, text.c_str(), m_width, m_height, m_label.dwAlign);
-		}
-		else
-		{
-			m_label.font->DrawText(fPosX, fPosY, m_label.dwTextColor, text.c_str(), m_width, m_height, m_label.dwAlign);
-		}
+		// Select the up button
+		m_iSelect = SPIN_BUTTON_UP;
 	}
+	else
+	{
+		// Base class
+		CGUIControl::OnRight();
+	}
+}
 
-	CGUIControl::Render();
+void CGUISpinControl::Clear()
+{
+	m_vecLabels.erase(m_vecLabels.begin(), m_vecLabels.end());
+	m_vecValues.erase(m_vecValues.begin(), m_vecValues.end());
+	SetValue(0);
+}
+
+bool CGUISpinControl::OnMessage(CGUIMessage& message)
+{
+	if (CGUIControl::OnMessage(message))
+		return true;
+
+	if (message.GetControlId() == GetID())
+	{
+		switch (message.GetMessage())
+		{
+			case GUI_MSG_ITEM_SELECT:
+				if (SPIN_CONTROL_TYPE_PAGE == m_iType)
+				{
+					m_currentItem = message.GetParam1();
+					return true;
+				}
+				SetValue( message.GetParam1());
+				if (message.GetParam2() == SPIN_BUTTON_DOWN || message.GetParam2() == SPIN_BUTTON_UP)
+					m_iSelect = message.GetParam2();
+				return true;
+				break;
+
+			case GUI_MSG_LABEL_RESET:
+				if (SPIN_CONTROL_TYPE_PAGE == m_iType)
+				{
+					m_itemsPerPage = message.GetParam1();
+					m_numItems = message.GetParam2();
+					return true;
+				}
+				{
+					Clear();
+					return true;
+				}
+				break;
+
+			case GUI_MSG_SHOWRANGE:
+				if (message.GetParam1() )
+					m_bShowRange = true;
+				else
+					m_bShowRange = false;
+				break;
+
+			case GUI_MSG_LABEL_ADD:
+				{
+					AddLabel(message.GetLabel(), message.GetParam1());
+					return true;
+				}
+				break;
+
+			case GUI_MSG_ITEM_SELECTED:
+				{
+					message.SetParam1( GetValue() );
+					message.SetParam2(m_iSelect);
+
+					if (m_iType == SPIN_CONTROL_TYPE_TEXT)
+					{
+						if ( m_iValue >= 0 && m_iValue < (int)m_vecLabels.size() )
+							message.SetLabel( m_vecLabels[m_iValue]);
+					}
+					return true;
+				}
+
+			case GUI_MSG_PAGE_UP:
+				if (CanMoveUp())
+					MoveUp();
+				return true;
+
+			case GUI_MSG_PAGE_DOWN:
+				if (CanMoveDown())
+					MoveDown();
+				return true;
+
+			case GUI_MSG_MOVE_OFFSET:
+				{
+					int count = (int)message.GetParam1();
+					while (count < 0)
+					{
+						MoveUp();
+						count++;
+					}
+					while (count > 0)
+					{
+						MoveDown();
+						count--;
+					}
+					return true;
+				}
+			}
+	}
+	return false;
+}
+
+void CGUISpinControl::PreAllocResources()
+{
+	CGUIControl::PreAllocResources();
+
+	m_imgspinUp.PreAllocResources();
+	m_imgspinUpFocus.PreAllocResources();
+	m_imgspinDown.PreAllocResources();
+	m_imgspinDownFocus.PreAllocResources();
 }
 
 void CGUISpinControl::AllocResources()
 {
 	CGUIControl::AllocResources();
-
-	// Correct alignment - We always align the spincontrol on the right.
-	m_label.dwAlign = XUI_FONT_STYLE_RIGHT_ALIGN;
 
 	m_imgspinUp.AllocResources();
 	m_imgspinUpFocus.AllocResources();
@@ -105,74 +299,207 @@ void CGUISpinControl::AllocResources()
 	m_imgspinUpFocus.SetPosition(m_posX + m_imgspinDownFocus.GetWidth(), m_posY);
 }
 
-void CGUISpinControl::FreeResources()
+void CGUISpinControl::FreeResources(bool immediately)
 {
-	CGUIControl::FreeResources();
+	CGUIControl::FreeResources(immediately);
 
-//	m_imgspinUp.FreeResources(); //FIXME 
-//	m_imgspinUpFocus.FreeResources();
-//	m_imgspinDown.FreeResources();
-//	m_imgspinDownFocus.FreeResources();
+	m_imgspinUp.FreeResources(immediately);
+	m_imgspinUpFocus.FreeResources(immediately);
+	m_imgspinDown.FreeResources(immediately);
+	m_imgspinDownFocus.FreeResources(immediately);
+	m_iTypedPos = 0;
+	strcpy(m_szTyped, "");
 }
 
-void CGUISpinControl::SetPosition(float posX, float posY)
+void CGUISpinControl::DynamicResourceAlloc(bool bOnOff)
 {
-	m_imgspinDownFocus.SetPosition(posX, posY);
-	m_imgspinDown.SetPosition(posX, posY);
+	CGUIControl::DynamicResourceAlloc(bOnOff);
 
-	m_imgspinUp.SetPosition(m_posX + m_imgspinDown.GetWidth(), m_posY);
-	m_imgspinUpFocus.SetPosition(m_posX + m_imgspinDownFocus.GetWidth(), m_posY);\
-
-	CGUIControl::SetPosition(posX, posY);
+	m_imgspinUp.DynamicResourceAlloc(bOnOff);
+	m_imgspinUpFocus.DynamicResourceAlloc(bOnOff);
+	m_imgspinDown.DynamicResourceAlloc(bOnOff);
+	m_imgspinDownFocus.DynamicResourceAlloc(bOnOff);
 }
 
-bool CGUISpinControl::OnAction(const CAction &action)
+void CGUISpinControl::Render()
 {
-	switch (action.GetID())
+	if (!HasFocus())
 	{
-		case ACTION_SELECT_ITEM:
+		m_iTypedPos = 0;
+		strcpy(m_szTyped, "");
+	}
+
+	CStdString text;
+	CStdStringW strTextUnicode;
+
+	if (m_iType == SPIN_CONTROL_TYPE_INT)
+	{
+		if (m_bShowRange)
+		{
+			text.Format("%i/%i", m_iValue, m_iEnd);
+		}
+		else
+		{
+			text.Format("%i", m_iValue);
+		}
+	}
+	else if (m_iType == SPIN_CONTROL_TYPE_PAGE)
+	{
+		// Work out number of pages and current page
+		int numPages = (m_numItems + m_itemsPerPage - 1) / m_itemsPerPage;
+		int currentPage = m_currentItem / m_itemsPerPage + 1;
+		
+		if (m_currentItem >= m_numItems - m_itemsPerPage)
+			currentPage = numPages;
+		
+		text.Format("%i/%i", currentPage, numPages);
+	}
+	else if (m_iType == SPIN_CONTROL_TYPE_FLOAT)
+	{
+		if (m_bShowRange)
+		{
+			text.Format("%02.2f/%02.2f", m_fValue, m_fEnd);
+		}
+		else
+		{
+			text.Format("%02.2f", m_fValue);
+		}
+	}
+	else
+	{
+		if (m_iValue >= 0 && m_iValue < (int)m_vecLabels.size() )
+		{
+			if (m_bShowRange)
+			{
+				text.Format("(%i/%i) %s", m_iValue + 1, (int)m_vecLabels.size(), CStdString(m_vecLabels[m_iValue]).c_str() );
+			}
+			else
+			{
+				text.Format("%s", CStdString(m_vecLabels[m_iValue]).c_str() );
+			}
+		}
+		else text.Format("?%i?", m_iValue);
+	}
+
+	m_label.SetText(text);
+
+	const float space = 5;
+	float textWidth = m_label.GetTextWidth() + 2 * m_label.GetLabelInfo().offsetX;
+	
+	// Position the arrows
+	bool arrowsOnRight(0 != (m_label.GetLabelInfo().align & (XBFONT_RIGHT | XBFONT_CENTER_X)));
+	if (!arrowsOnRight)
+	{
+		m_imgspinDownFocus.SetPosition(m_posX + textWidth + space, m_posY);
+		m_imgspinDown.SetPosition(m_posX + textWidth + space, m_posY);
+		m_imgspinUpFocus.SetPosition(m_posX + textWidth + space + m_imgspinDown.GetWidth(), m_posY);
+		m_imgspinUp.SetPosition(m_posX + textWidth + space + m_imgspinDown.GetWidth(), m_posY);
+	}
+
+	if (HasFocus())
+	{
 		if (m_iSelect == SPIN_BUTTON_UP)
-		{
-			MoveUp();
-			return true;
-		}
+			m_imgspinUpFocus.Render();
+		else
+			m_imgspinUp.Render();
+
 		if (m_iSelect == SPIN_BUTTON_DOWN)
-		{
-			MoveDown();
-			return true;
-		}
-		break;
-	}
-
-	return CGUIControl::OnAction(action);
-}
-
-void CGUISpinControl::OnLeft()
-{
-	if (m_iSelect == SPIN_BUTTON_UP)
-	{
-		// select the down button
-		m_iSelect = SPIN_BUTTON_DOWN;
-	}
-	else
-	{ 
-		// base class
-		CGUIControl::OnLeft();
-	}
-}
-
-void CGUISpinControl::OnRight()
-{
-	if (m_iSelect == SPIN_BUTTON_DOWN)
-	{
-		// select the up button
-		m_iSelect = SPIN_BUTTON_UP;
+			m_imgspinDownFocus.Render();
+		else
+			m_imgspinDown.Render();
 	}
 	else
 	{
-		// base class
-		CGUIControl::OnRight();
+		m_imgspinUp.Render();
+		m_imgspinDown.Render();
 	}
+
+	if (m_label.GetLabelInfo().font)
+	{
+		if (arrowsOnRight)
+			RenderText(m_posX - space - textWidth, textWidth);
+		else
+			RenderText(m_posX + m_imgspinDown.GetWidth() + m_imgspinUp.GetWidth() + space, textWidth);
+
+		// Set our hit rectangle for MouseOver events
+		m_hitRect = m_label.GetRenderRect();
+	}
+	CGUIControl::Render();
+}
+
+void CGUISpinControl::RenderText(float posX, float width)
+{
+	m_label.SetMaxRect(posX, m_posY, width, m_height);
+	m_label.SetColor(GetTextColor());
+	m_label.Render();
+}
+
+CGUILabel::COLOR CGUISpinControl::GetTextColor() const
+{
+	if (IsDisabled())
+		return CGUILabel::COLOR_DISABLED;
+	else if (HasFocus())
+		return CGUILabel::COLOR_FOCUSED;
+
+	return CGUILabel::COLOR_TEXT;
+}
+
+void CGUISpinControl::SetRange(int iStart, int iEnd)
+{
+	m_iStart = iStart;
+	m_iEnd = iEnd;
+}
+
+void CGUISpinControl::SetFloatRange(float fStart, float fEnd)
+{
+	m_fStart = fStart;
+	m_fEnd = fEnd;
+}
+
+void CGUISpinControl::SetValueFromLabel(const CStdString &label)
+{
+	if (m_iType == SPIN_CONTROL_TYPE_TEXT)
+	{
+		m_iValue = 0;
+		for (unsigned int i = 0; i < m_vecLabels.size(); i++)
+			if (label == m_vecLabels[i])
+				m_iValue = i;
+	}
+	else
+		m_iValue = atoi(label.c_str());
+}
+
+void CGUISpinControl::SetValue(int iValue)
+{
+	if (m_iType == SPIN_CONTROL_TYPE_TEXT)
+	{
+		m_iValue = 0;
+		for (unsigned int i = 0; i < m_vecValues.size(); i++)
+			if (iValue == m_vecValues[i])
+				m_iValue = i;
+	}
+	else
+		m_iValue = iValue;
+}
+
+void CGUISpinControl::SetFloatValue(float fValue)
+{
+	m_fValue = fValue;
+}
+
+int CGUISpinControl::GetValue() const
+{
+	if (m_iType == SPIN_CONTROL_TYPE_TEXT)
+	{
+		if (m_iValue >= 0 && m_iValue < (int)m_vecValues.size())
+			return m_vecValues[m_iValue];
+	}
+	return m_iValue;
+}
+
+float CGUISpinControl::GetFloatValue() const
+{
+	return m_fValue;
 }
 
 void CGUISpinControl::AddLabel(const string& strLabel, int iValue)
@@ -190,53 +517,291 @@ const string CGUISpinControl::GetLabel() const
 	return "";
 }
 
-void CGUISpinControl::Clear()
+void CGUISpinControl::SetPosition(float posX, float posY)
 {
-	m_vecLabels.erase(m_vecLabels.begin(), m_vecLabels.end());
-	m_vecValues.erase(m_vecValues.begin(), m_vecValues.end());
-	SetValue(0);
+	CGUIControl::SetPosition(posX, posY);
+
+	m_imgspinDownFocus.SetPosition(posX, posY);
+	m_imgspinDown.SetPosition(posX, posY);
+
+	m_imgspinUp.SetPosition(m_posX + m_imgspinDown.GetWidth(), m_posY);
+	m_imgspinUpFocus.SetPosition(m_posX + m_imgspinDownFocus.GetWidth(), m_posY);
 }
 
-void CGUISpinControl::SetRange(int iStart, int iEnd)
+float CGUISpinControl::GetWidth() const
 {
-	m_iStart = iStart;
-	m_iEnd = iEnd;
+	return m_imgspinDown.GetWidth() * 2 ;
 }
 
-
-void CGUISpinControl::SetFloatRange(float fStart, float fEnd)
+bool CGUISpinControl::CanMoveUp(bool bTestReverse)
 {
-	m_fStart = fStart;
-	m_fEnd = fEnd;
-}
+	// Test for reverse...
+	if (bTestReverse && m_bReverse) return CanMoveDown(false);
 
-void CGUISpinControl::SetValue(int iValue)
-{  
-	if (m_iType == SPIN_CONTROL_TYPE_TEXT)
+	switch (m_iType)
 	{
-		m_iValue = -1;
-		for (unsigned int i = 0; i < m_vecValues.size(); i++)
-		if (iValue == m_vecValues[i])
-			m_iValue = i;
+		case SPIN_CONTROL_TYPE_PAGE:
+			return m_currentItem > 0;
+		case SPIN_CONTROL_TYPE_INT:
+		{
+			if (m_iValue - 1 >= m_iStart)
+				return true;
+			return false;
+		}
+		break;
+
+		case SPIN_CONTROL_TYPE_FLOAT:
+		{
+			if (m_fValue - m_fInterval >= m_fStart)
+				return true;
+			return false;
+		}
+		break;
+
+		case SPIN_CONTROL_TYPE_TEXT:
+		{
+			if (m_iValue - 1 >= 0)
+				return true;
+			return false;
+		}
+		break;
 	}
-	else
-		m_iValue = iValue;
+	return false;
 }
 
-int CGUISpinControl::GetValue() const
+bool CGUISpinControl::CanMoveDown(bool bTestReverse)
 {
-	if (m_iType == SPIN_CONTROL_TYPE_TEXT)
+	// Test for reverse...
+	if (bTestReverse && m_bReverse) return CanMoveUp(false);
+	
+	switch (m_iType)
 	{
-		if (m_iValue >= 0 && m_iValue < (int)m_vecValues.size())
-			return m_vecValues[m_iValue];
+		case SPIN_CONTROL_TYPE_PAGE:
+			return m_currentItem < m_numItems;
+		case SPIN_CONTROL_TYPE_INT:
+		{
+			if (m_iValue + 1 <= m_iEnd)
+				return true;
+			return false;
+		}
+		break;
+
+		case SPIN_CONTROL_TYPE_FLOAT:
+		{
+			if (m_fValue + m_fInterval <= m_fEnd)
+				return true;
+			return false;
+		}
+		break;
+
+		case SPIN_CONTROL_TYPE_TEXT:
+		{
+			if (m_iValue + 1 < (int)m_vecLabels.size())
+				return true;
+			return false;
+		}
+		break;
 	}
-	return m_iValue;
+	return false;
+}
+
+void CGUISpinControl::PageUp()
+{
+	switch (m_iType)
+	{
+		case SPIN_CONTROL_TYPE_INT:
+		{
+			if (m_iValue - 10 >= m_iStart)
+				m_iValue -= 10;
+			else
+				m_iValue = m_iStart;
+			
+			CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
+			SendWindowMessage(msg);
+			return;
+		}
+		break;
+		case SPIN_CONTROL_TYPE_PAGE:
+			ChangePage(-10);
+		break;
+		case SPIN_CONTROL_TYPE_TEXT:
+		{
+			if (m_iValue - 10 >= 0)
+				m_iValue -= 10;
+			else
+				m_iValue = 0;
+			
+			CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
+			SendWindowMessage(msg);
+			return;
+		}
+		break;
+	}
+}
+
+void CGUISpinControl::PageDown()
+{
+	switch (m_iType)
+	{
+		case SPIN_CONTROL_TYPE_INT:
+		{
+			if (m_iValue + 10 <= m_iEnd)
+				m_iValue += 10;
+			else
+				m_iValue = m_iEnd;
+			
+			CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
+			SendWindowMessage(msg);
+			return;
+		}
+		break;
+		case SPIN_CONTROL_TYPE_PAGE:
+			ChangePage(10);
+			break;
+		case SPIN_CONTROL_TYPE_TEXT:
+		{
+			if (m_iValue + 10 < (int)m_vecLabels.size())
+				m_iValue += 10;
+			
+			CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
+			SendWindowMessage(msg);
+		}
+		break;
+	}
+}
+
+void CGUISpinControl::MoveUp(bool bTestReverse)
+{
+	if (bTestReverse && m_bReverse)
+	{
+		// Actually should move down
+		MoveDown(false);
+		return ;
+	}
+	
+	switch (m_iType)
+	{
+		case SPIN_CONTROL_TYPE_INT:
+		{
+			if (m_iValue - 1 >= m_iStart)
+				m_iValue--;
+			else if (m_iValue == m_iStart)
+				m_iValue = m_iEnd;
+			
+			CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
+			SendWindowMessage(msg);
+			return;
+		}
+		break;
+
+		case SPIN_CONTROL_TYPE_PAGE:
+			ChangePage(-1);
+		break;
+
+		case SPIN_CONTROL_TYPE_FLOAT:
+		{
+			if (m_fValue - m_fInterval >= m_fStart)
+				m_fValue -= m_fInterval;
+			else if (m_fValue - m_fInterval < m_fStart)
+				m_fValue = m_fEnd;
+
+			CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
+			SendWindowMessage(msg);
+			return;
+		}
+		break;
+
+		case SPIN_CONTROL_TYPE_TEXT:
+		{
+			if (m_iValue - 1 >= 0)
+				m_iValue--;
+			else if (m_iValue == 0)
+				m_iValue = (int)m_vecLabels.size() - 1;
+			
+			CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
+			SendWindowMessage(msg);
+			return;
+		}
+		break;
+	}
+}
+
+void CGUISpinControl::MoveDown(bool bTestReverse)
+{
+	if (bTestReverse && m_bReverse)
+	{
+		// Actually should move up.
+		MoveUp(false);
+		return ;
+	}
+	
+	switch (m_iType)
+	{
+		case SPIN_CONTROL_TYPE_INT:
+		{
+			if (m_iValue + 1 <= m_iEnd)
+				m_iValue++;
+			else if (m_iValue == m_iEnd)
+				m_iValue = m_iStart;
+			
+			CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
+			SendWindowMessage(msg);
+			return;
+		}
+		break;
+
+		case SPIN_CONTROL_TYPE_PAGE:
+		ChangePage(1);
+		break;
+
+		case SPIN_CONTROL_TYPE_FLOAT:
+		{
+			if (m_fValue + m_fInterval <= m_fEnd)
+				m_fValue += m_fInterval;
+			else if (m_fValue + m_fInterval > m_fEnd)
+				m_fValue = m_fStart;
+			
+			CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
+			SendWindowMessage(msg);
+			return;
+		}
+		break;
+
+		case SPIN_CONTROL_TYPE_TEXT:
+		{
+			if (m_iValue + 1 < (int)m_vecLabels.size())
+				m_iValue++;
+			else if (m_iValue == (int)m_vecLabels.size() - 1)
+				m_iValue = 0;
+			
+			CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
+			SendWindowMessage(msg);
+			return;
+		}
+		break;
+	}
+}
+void CGUISpinControl::SetReverse(bool bReverse)
+{
+	m_bReverse = bReverse;
+}
+
+void CGUISpinControl::SetFloatInterval(float fInterval)
+{
+	m_fInterval = fInterval;
+}
+
+void CGUISpinControl::SetShowRange(bool bOnoff)
+{
+	m_bShowRange = bOnoff;
 }
 
 int CGUISpinControl::GetMinimum() const
 {
 	switch (m_iType)
 	{
+		case SPIN_CONTROL_TYPE_PAGE:
+			return 0;
 		case SPIN_CONTROL_TYPE_INT:
 			return m_iStart;
 			break;
@@ -247,7 +812,7 @@ int CGUISpinControl::GetMinimum() const
 
 		case SPIN_CONTROL_TYPE_FLOAT:
 			return (int)(m_fStart*10.0f);
-		break;
+			break;
 	}
 	return 0;
 }
@@ -256,6 +821,8 @@ int CGUISpinControl::GetMaximum() const
 {
 	switch (m_iType)
 	{
+		case SPIN_CONTROL_TYPE_PAGE:
+			return m_numItems;
 		case SPIN_CONTROL_TYPE_INT:
 			return m_iEnd;
 			break;
@@ -271,61 +838,93 @@ int CGUISpinControl::GetMaximum() const
 	return 100;
 }
 
-
-void CGUISpinControl::SetType(int iType)
+bool CGUISpinControl::HitTest(const CPoint &point) const
 {
-	m_iType = iType;
+	if (m_imgspinUpFocus.HitTest(point) || m_imgspinDownFocus.HitTest(point))
+		return true;
+
+	return CGUIControl::HitTest(point);
 }
 
-void CGUISpinControl::MoveUp(bool bTestReverse)
+#ifdef _HAS_MOUSE
+bool CGUISpinControl::OnMouseOver(const CPoint &point)
 {
-/*
-	if (bTestReverse && m_bReverse)  //TODO
-	{
-		// actually should move down.
-		MoveDown(false);
-		return ;
-	}
-*/
-	switch (m_iType)
-	{
-		case SPIN_CONTROL_TYPE_TEXT:
-		{
-			if (m_iValue + 1 < (int)m_vecLabels.size() )
-				m_iValue++;
-			else if (m_iValue == (int)m_vecLabels.size() - 1)
-			m_iValue = 0;
-			CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
-			g_windowManager.SendMessage(msg);
-			return ;
-		}
-		break;
-	}
+	if (m_imgspinDownFocus.HitTest(point))
+		m_iSelect = SPIN_BUTTON_DOWN;
+	else
+		m_iSelect = SPIN_BUTTON_UP;
+	
+	return CGUIControl::OnMouseOver(point);
 }
+#endif
 
-void CGUISpinControl::MoveDown(bool bTestReverse)
+#ifdef _HAS_MOUSE
+bool CGUISpinControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
-/*
-	if (bTestReverse && m_bReverse)  //TODO
-	{ 
-		// actually should move up.
-		MoveUp(false);
-		return ;
-	}
-*/
-	switch (m_iType)
+	if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
 	{
-		case SPIN_CONTROL_TYPE_TEXT:
-		{
-			if (m_iValue - 1 >= 0)
-				m_iValue--;
-			else if (m_iValue == 0)
-				m_iValue = (int)m_vecLabels.size() - 1;
+		if (m_imgspinUpFocus.HitTest(point))
+			MoveUp();
+		else if (m_imgspinDownFocus.HitTest(point))
+			MoveDown();
 		
-			CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
-			g_windowManager.SendMessage(msg);
-			return ;
-		}
-		break;
+		return true;
 	}
+	else if (event.m_id == ACTION_MOUSE_WHEEL_UP)
+	{
+		MoveUp();
+		return true;
+	}
+	else if (event.m_id == ACTION_MOUSE_WHEEL_DOWN)
+	{
+		MoveDown();
+		return true;
+	}
+	return false;
+}
+#endif
+
+CStdString CGUISpinControl::GetDescription() const
+{
+	CStdString strLabel;
+	strLabel.Format("%i/%i", 1 + GetValue(), GetMaximum());
+	return strLabel;
+}
+
+bool CGUISpinControl::IsFocusedOnUp() const
+{
+	return (m_iSelect == SPIN_BUTTON_UP);
+}
+
+void CGUISpinControl::ChangePage(int amount)
+{
+	m_currentItem += amount * m_itemsPerPage;
+	
+	if (m_currentItem > m_numItems - m_itemsPerPage)
+		m_currentItem = m_numItems - m_itemsPerPage;
+	
+	if (m_currentItem < 0)
+		m_currentItem = 0;
+	
+	CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetParentID(), GetID(), GUI_MSG_PAGE_CHANGE, m_currentItem);
+	SendWindowMessage(message);
+}
+
+void CGUISpinControl::UpdateColors()
+{
+	m_label.UpdateColors();
+	CGUIControl::UpdateColors();
+	m_imgspinDownFocus.SetDiffuseColor(m_diffuseColor);
+	m_imgspinDown.SetDiffuseColor(m_diffuseColor);
+	m_imgspinUp.SetDiffuseColor(m_diffuseColor);
+	m_imgspinUpFocus.SetDiffuseColor(m_diffuseColor);
+}
+
+bool CGUISpinControl::IsVisible() const
+{
+	// Page controls can be optionally disabled if the number of pages is 1
+	if (m_iType == SPIN_CONTROL_TYPE_PAGE && m_numItems <= m_itemsPerPage && !m_showOnePage)
+		return false;
+
+	return CGUIControl::IsVisible();
 }

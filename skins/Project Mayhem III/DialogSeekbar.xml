@@ -1,55 +1,77 @@
-<window id="0">
-	<defaultcontrol>0</defaultcontrol>
-	<allowoverlay>no</allowoverlay>
+<window id="115">
+	<defaultcontrol>1</defaultcontrol>
+	<include>dialogeffect</include>
+	<visible>!Player.Seeking</visible>
 	<controls>
-	
 		<!-- progressbar dialog -->
-		<control type="image">
-			<description>Panel Background</description>		
-			<posx>750</posx>
+		<control type="image" id="23">
+			<description>Popup Seek Dialog Background</description>
+			<posx>475</posx>
 			<posy>22</posy>
-			<width>500</width>
-			<height>58</height>
-			<visible>true</visible>			
-			<texture>volume_panel_bg.png</texture>
-		</control>		
-		
-		<control type="label">
+			<width>185</width>
+			<height>75</height>
+			<texture>voulume-panel-bg.png</texture>
+		</control>
+		<control type="label" id="22">
 			<description>Elapsed Time Label</description>
-			<posx>770</posx>
-			<posy>30</posy>
-			<font>font10</font>
-			<label>$INFO[Player.Time]</label>
-			<width>100</width>
-			<height>16</height>
-			<visible>true</visible> <!-- TODO: implement Player.IsPlaying visible condition -->
-		</control>			
-
-		<control type="label">
-			<description>Duration Time Label</description>
-			<posx>1230</posx>
-			<posy>30</posy>
+			<posx>563</posx>
+			<posy>40</posy>
 			<font>font10</font>
 			<align>right</align>
-			<label>$INFO[Player.Duration]</label>
+			<info>Player.Time</info>
 			<width>100</width>
 			<height>16</height>
-			<visible>true</visible> <!-- TODO: implement Player.IsPlaying visible condition -->
-		</control>				
-		
-		<control type="progress">
-			<id>23</id>		
+			<visible>!Player.Seeking</visible>
+		</control>
+		<control type="label" id="22">
+			<description>Seek Time Label</description>
+			<posx>563</posx>
+			<posy>40</posy>
+			<font>font10</font>
+			<align>right</align>
+			<info>Player.SeekTime</info>
+			<width>100</width>
+			<height>16</height>
+			<visible>Player.Seeking</visible>
+		</control>
+		<control type="label" id="0">
+			<description>Duration Label</description>
+			<posx>568</posx>
+			<posy>40</posy>
+			<label>$INFO[Player.Duration,/ ]</label>
+			<font>font10</font>
+			<align>left</align>
+			<width>100</width>
+			<height>16</height>
+		</control>
+		<control type="progress" id="23">
 			<description>Progressbar</description>
-			<posx>770</posx>
-			<posy>58</posy>
-			<width>462</width>
-			<height>8</height>
-			<texturebg>progress-back.png</texturebg>
-			<midtexture>progress-front.png</midtexture>	
+			<posx>501</posx>
+			<posy>63</posy>
+			<width>138</width>
+			<height>5</height>
 			<info>Player.Progress</info>
+			<texturebg>progress_back.png</texturebg>
+			<lefttexture>progress_left.png</lefttexture>
+			<midtexture>progress_mid.png</midtexture>
+			<righttexture>progress_right.png</righttexture>
+			<overlaytexture>-</overlaytexture>
 			<visible>true</visible>
-		</control>		
-		
+		</control>
+		<control type="slider" id="401">
+			<description>Seek Slider</description>
+			<posx>501</posx>
+			<posy>62</posy>
+			<width>138</width>
+			<height>6</height>
+			<texturesliderbar>seekslider.png</texturesliderbar>
+			<textureslidernib>slider_nibFO.png</textureslidernib>
+			<textureslidernibfocus>slider_nibFO.png</textureslidernibfocus>
+			<visible>true</visible>
+			<onup>1</onup>
+			<ondown>1</ondown>
+			<onleft>1</onleft>
+			<onright>1</onright>
+		</control>
 	</controls>
 </window>
-

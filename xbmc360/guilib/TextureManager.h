@@ -1,28 +1,8 @@
-/*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
- *
- *  This Program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2, or (at your option)
- *  any later version.
- *
- *  This Program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
- *  <http://www.gnu.org/licenses/>.
- *
- */
-
 #ifndef GUILIB_TEXTUREMANAGER_H
 #define GUILIB_TEXTUREMANAGER_H
 
-#include "..\utils\Stdafx.h"
-#include "..\utils\stdstring.h"
+#include "utils\Stdafx.h"
+#include "utils\stdstring.h"
 #include <vector>
 
 using namespace std;
@@ -30,39 +10,64 @@ using namespace std;
 class CTexture
 {
 public:
-    CTexture();
-    CTexture(LPDIRECT3DTEXTURE9 pTexture,int iWidth, int iHeight);
-	virtual ~CTexture();
+  CTexture()
+  {
+    Reset();
+  };
+  void Reset()
+  {
+    m_textures.clear();
+    m_delays.clear();
+//    m_palette = NULL;
+    m_width = 0;
+    m_height = 0;
+    m_loops = 0;
+    m_texWidth = 0;
+    m_texHeight = 0;
+    m_texCoordsArePixels = false;
+    m_packed = false;
+  };
+  CTexture(int width, int height, int loops,/* LPDIRECT3DPALETTE9 palette = NULL,*/ bool packed = false, bool texCoordsArePixels = false);
+  void Add(LPDIRECT3DTEXTURE9 texture, int delay);
+  void Set(LPDIRECT3DTEXTURE9 texture, int width, int height);
+  void Free();
+  unsigned int size() const;
 
-
-    LPDIRECT3DTEXTURE9  GetTexture(/*int& iWidth, int& iHeight*/);
-	
-	void FreeTexture();
-	void Flush(); 
-
-protected:
-    LPDIRECT3DTEXTURE9  m_pTexture;
-	int					m_iWidth;
-	int					m_iHeight;
+  std::vector<LPDIRECT3DTEXTURE9> m_textures;
+//  LPDIRECT3DPALETTE9 m_palette;
+  std::vector<int> m_delays;
+  int m_width;
+  int m_height;
+  int m_loops;
+  int m_texWidth;
+  int m_texHeight;
+  bool m_texCoordsArePixels;
+  bool m_packed;
 };
 
 class CTextureMap
 {
-  public:
-    CTextureMap();
-    CTextureMap(const CStdString& strTextureName);
-    virtual   ~CTextureMap();
+public:
+  CTextureMap();
+  virtual ~CTextureMap();
 
-	const CStdString&   GetName() const;
-    int                 size() const;
-    LPDIRECT3DTEXTURE9  GetTexture(/*int iPicture, int& iWidth, int& iHeight*/);
-    void                Add(CTexture* pTexture);
-	bool				IsEmpty() const;
-	void				Flush();
+  CTextureMap(const CStdString& textureName, int width, int height, int loops/*, LPDIRECT3DPALETTE9 palette*/, bool packed);
+  void Add(LPDIRECT3DTEXTURE9 pTexture, int delay);
+  bool Release();
 
-protected:  
-    CStdString          m_strTextureName;
-    vector<CTexture*>   m_vecTexures;
+  const CStdString& GetName() const;
+  const CTexture &GetTexture();
+  void Dump() const;
+  unsigned int GetMemoryUsage() const;
+  void Flush();
+  bool IsEmpty() const;
+protected:
+  void FreeTexture();
+
+  CStdString m_textureName;
+  CTexture m_texture;
+  unsigned int m_referenceCount;
+  unsigned int m_memUsage;
 };
 
 class CGUITextureManager
@@ -71,18 +76,26 @@ public:
 	CGUITextureManager(void);
 	virtual ~CGUITextureManager(void);
 
-	void SetTexturePath(const CStdString& strMediaPath);
-	LPDIRECT3DTEXTURE9 GetTexture(const CStdString& strTextureName/*, int iItem, int& iWidth, int& iHeight*/);
-	int Load(const CStdString& strTextureName, DWORD dwColorKey);
+	int Load(const CStdString& strTextureName, bool checkBundleOnly = false);
+	const CTexture &GetTexture(const CStdString& strTextureName);
 
 	void Flush();
 	void Cleanup();
+
+	CStdString GetTexturePath(const CStdString& textureName, bool directory = false);
+
+	void AddTexturePath(const CStdString &texturePath);    // Add a new path to the paths to check when loading media
+	void SetTexturePath(const CStdString &texturePath);    // Set a single path as the path to check when loading media (clear then add)
+	void RemoveTexturePath(const CStdString &texturePath); // Remove a path from the paths to check when loading media
+	bool CanLoad(const CStdString &texturePath) const;     // Returns true if the texture manager can load this texture
 
 protected:
 	CStdString m_strMediaDir;
 
 	vector<CTextureMap*> m_vecTextures;
 	typedef   vector<CTextureMap*>::iterator ivecTextures;
+
+	std::vector<CStdString> m_texturePaths;
 };
 
 extern CGUITextureManager g_TextureManager;

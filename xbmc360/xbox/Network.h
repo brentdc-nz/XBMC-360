@@ -1,7 +1,18 @@
 #ifndef CNETWORK_H
 #define CNETWORK_H
 
-#include "..\utils\SingleLock.h"
+#include "utils\CriticalSection.h"
+
+struct network_info
+{
+	char ip[32];
+	char gateway[32];
+	char subnet[32];
+	char DNS1[32];
+	char DNS2[32];
+	bool DHCP;
+	char dhcpserver[32];
+};
 
 class CNetwork
 {
@@ -33,9 +44,11 @@ public:
 	// Callback from application controlled thread to handle any setup
 	void NetworkMessage(EMESSAGE message, DWORD dwParam);
 
+	struct network_info m_networkinfo;
+
 private:
 	bool m_bInited; // True if initalized() has been called
-	bool m_bNetworkUp;  /* true if network is available */
+	bool m_bNetworkUp; // True if network is available
 	DWORD m_dwLastLink; // Will hold the last link, to notice changes
 	DWORD m_dwLastState;  // Will hold the last state, to notice changes
 

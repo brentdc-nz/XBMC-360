@@ -159,6 +159,18 @@
     <Filter Include="Source Files\cores\AudioRenderers">
       <UniqueIdentifier>{e7547332-c625-4841-b17d-7122fc8d651b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\interfaces">
+      <UniqueIdentifier>{16859876-fb25-46ca-a28f-9cbc87db345c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\interfaces">
+      <UniqueIdentifier>{7e43d81f-2545-447d-ac47-f6e49789fa87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\guilib\info">
+      <UniqueIdentifier>{75d01943-8874-4fe8-a9f5-87ab6b7d66e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\guilib\info">
+      <UniqueIdentifier>{48de35a2-40c0-4dc4-b81b-31be9fc03932}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -220,12 +232,6 @@
     </ClInclude>
     <ClInclude Include="cores\IPlayer.h">
       <Filter>Header Files\cores</Filter>
-    </ClInclude>
-    <ClInclude Include="guilib\GUIUserMessage.h">
-      <Filter>Header Files\guilib</Filter>
-    </ClInclude>
-    <ClInclude Include="guilib\GUID3DTexture.h">
-      <Filter>Header Files\guilib</Filter>
     </ClInclude>
     <ClInclude Include="guilib\GUIImage.h">
       <Filter>Header Files\guilib</Filter>
@@ -320,9 +326,6 @@
     <ClInclude Include="guilib\GUISpinControlEx.h">
       <Filter>Header Files\guilib</Filter>
     </ClInclude>
-    <ClInclude Include="guilib\GUITexture.h">
-      <Filter>Header Files\guilib</Filter>
-    </ClInclude>
     <ClInclude Include="SettingsControls.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -357,9 +360,6 @@
       <Filter>Header Files\filesystem</Filter>
     </ClInclude>
     <ClInclude Include="utils\Stdafx.h">
-      <Filter>Header Files\utils</Filter>
-    </ClInclude>
-    <ClInclude Include="utils\Log.h">
       <Filter>Header Files\utils</Filter>
     </ClInclude>
     <ClInclude Include="guilib\dialogs\GUIDialogButtonMenu.h">
@@ -401,13 +401,7 @@
     <ClInclude Include="guilib\GUIMediaWindow.h">
       <Filter>Header Files\guilib</Filter>
     </ClInclude>
-    <ClInclude Include="guilib\GUIThumbnailPanel.h">
-      <Filter>Header Files\guilib</Filter>
-    </ClInclude>
     <ClInclude Include="guilib\GUIViewControl.h">
-      <Filter>Header Files\guilib</Filter>
-    </ClInclude>
-    <ClInclude Include="guilib\GUIScrollBarControl.h">
       <Filter>Header Files\guilib</Filter>
     </ClInclude>
     <ClInclude Include="BackgroundInfoLoader.h">
@@ -557,17 +551,11 @@
     <ClInclude Include="guilib\dialogs\GUIDialogMediaSource.h">
       <Filter>Header Files\guilib\dialogs</Filter>
     </ClInclude>
-    <ClInclude Include="guilib\GUIListControl.h">
-      <Filter>Header Files\guilib</Filter>
-    </ClInclude>
     <ClInclude Include="guilib\windows\GUIWindowPrograms.h">
       <Filter>Header Files\guilib\windows</Filter>
     </ClInclude>
     <ClInclude Include="guilib\dialogs\GUIDialogFileBrowser.h">
       <Filter>Header Files\guilib\dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="MediaManager.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="filesystem\VirtualDirectory.h">
       <Filter>Header Files\filesystem</Filter>
@@ -581,13 +569,7 @@
     <ClInclude Include="filesystem\Directory.h">
       <Filter>Header Files\filesystem</Filter>
     </ClInclude>
-    <ClInclude Include="filesystem\FactoryDirectory.h">
-      <Filter>Header Files\filesystem</Filter>
-    </ClInclude>
     <ClInclude Include="filesystem\IFileDirectory.h">
-      <Filter>Header Files\filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="filesystem\FactoryFileDirectory.h">
       <Filter>Header Files\filesystem</Filter>
     </ClInclude>
     <ClInclude Include="filesystem\DirectoryHistory.h">
@@ -597,9 +579,6 @@
       <Filter>Header Files\guilib\viewstates</Filter>
     </ClInclude>
     <ClInclude Include="guilib\viewstates\GUIViewStatePrograms.h">
-      <Filter>Header Files\guilib\viewstates</Filter>
-    </ClInclude>
-    <ClInclude Include="guilib\viewstates\GUIViewStateVideos.h">
       <Filter>Header Files\guilib\viewstates</Filter>
     </ClInclude>
     <ClInclude Include="filesystem\MultiPathDirectory.h">
@@ -737,8 +716,167 @@
     <ClInclude Include="guilib\GUIProgressControl.h">
       <Filter>Header Files\guilib</Filter>
     </ClInclude>
-    <ClInclude Include="filesystem\FileFTP.h">
+    <ClInclude Include="guilib\Geometry.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIControlGroup.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIMultiImage.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\TransformMatrix.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUITexture.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUITextureD3D.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\VisibleEffect.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\Tween.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIFontTTF.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUITextLayout.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIColorManager.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIAction.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="interfaces\Builtins.h">
+      <Filter>Header Files\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\Log.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\include.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\POUtils.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\MathUtils.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIControlGroupList.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIBaseContainer.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIListItemLayout.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIListGroup.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIListLabel.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIMultiSelectText.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIStaticItem.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\Archive.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\Variant.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIListContainer.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUICallback.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIWindowVideoBase.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SortFileItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\LabelFormatter.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="XBDateTime.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MediaSource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIUserMessages.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\viewstates\GUIViewStateVideo.h">
+      <Filter>Header Files\guilib\viewstates</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIToggleButtonControl.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIPanelContainer.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\info\SkinVariable.h">
+      <Filter>Header Files\guilib\info</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\info\InfoBool.h">
+      <Filter>Header Files\guilib\info</Filter>
+    </ClInclude>
+    <ClInclude Include="IProgressCallback.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MediaManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIBorderedImage.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="filesystem\DirectoryFactory.h">
       <Filter>Header Files\filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="filesystem\FileDirectoryFactory.h">
+      <Filter>Header Files\filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="filesystem\DirectoryCache.h">
+      <Filter>Header Files\filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIScrollBarControl.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUIEditControl.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\dialogs\GUIDialogSlider.h">
+      <Filter>Header Files\guilib\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\GUISliderControl.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\dialogs\GUIDialogKeyboard.h">
+      <Filter>Header Files\guilib\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\CharsetConverter.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\dialogs\GUIDialogNumeric.h">
+      <Filter>Header Files\guilib\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\dialogs\GUIDialogOK.h">
+      <Filter>Header Files\guilib\dialogs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -797,9 +935,6 @@
       <Filter>Source Files\guilib\windows</Filter>
     </ClCompile>
     <ClCompile Include="guilib\GUIMessage.cpp">
-      <Filter>Source Files\guilib</Filter>
-    </ClCompile>
-    <ClCompile Include="guilib\GUID3DTexture.cpp">
       <Filter>Source Files\guilib</Filter>
     </ClCompile>
     <ClCompile Include="guilib\GUIImage.cpp">
@@ -967,13 +1102,7 @@
     <ClCompile Include="guilib\GUIMediaWindow.cpp">
       <Filter>Source Files\guilib</Filter>
     </ClCompile>
-    <ClCompile Include="guilib\GUIThumbnailPanel.cpp">
-      <Filter>Source Files\guilib</Filter>
-    </ClCompile>
     <ClCompile Include="guilib\GUIViewControl.cpp">
-      <Filter>Source Files\guilib</Filter>
-    </ClCompile>
-    <ClCompile Include="guilib\GUIScrollBarControl.cpp">
       <Filter>Source Files\guilib</Filter>
     </ClCompile>
     <ClCompile Include="BackgroundInfoLoader.cpp">
@@ -1180,17 +1309,11 @@
     <ClCompile Include="guilib\dialogs\GUIDialogMediaSource.cpp">
       <Filter>Source Files\guilib\dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="guilib\GUIListControl.cpp">
-      <Filter>Source Files\guilib</Filter>
-    </ClCompile>
     <ClCompile Include="guilib\windows\GUIWindowPrograms.cpp">
       <Filter>Source Files\guilib\windows</Filter>
     </ClCompile>
     <ClCompile Include="guilib\dialogs\GUIDialogFileBrowser.cpp">
       <Filter>Source Files\guilib\dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="MediaManager.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="filesystem\VirtualDirectory.cpp">
       <Filter>Source Files\filesystem</Filter>
@@ -1201,12 +1324,6 @@
     <ClCompile Include="filesystem\Directory.cpp">
       <Filter>Source Files\filesystem</Filter>
     </ClCompile>
-    <ClCompile Include="filesystem\FactoryDirectory.cpp">
-      <Filter>Source Files\filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="filesystem\FactoryFileDirectory.cpp">
-      <Filter>Source Files\filesystem</Filter>
-    </ClCompile>
     <ClCompile Include="filesystem\DirectoryHistory.cpp">
       <Filter>Source Files\filesystem</Filter>
     </ClCompile>
@@ -1214,9 +1331,6 @@
       <Filter>Source Files\guilib\viewstates</Filter>
     </ClCompile>
     <ClCompile Include="guilib\viewstates\GUIViewStatePrograms.cpp">
-      <Filter>Source Files\guilib\viewstates</Filter>
-    </ClCompile>
-    <ClCompile Include="guilib\viewstates\GUIViewStateVideos.cpp">
       <Filter>Source Files\guilib\viewstates</Filter>
     </ClCompile>
     <ClCompile Include="filesystem\MultiPathDirectory.cpp">
@@ -1339,8 +1453,137 @@
     <ClCompile Include="guilib\GUIProgressControl.cpp">
       <Filter>Source Files\guilib</Filter>
     </ClCompile>
-    <ClCompile Include="filesystem\FileFTP.cpp">
+    <ClCompile Include="guilib\GUIControlGroup.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIMultiImage.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUITexture.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUITextureD3D.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\VisibleEffect.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIFontTTF.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUITextLayout.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIColorManager.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIAction.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\Builtins.cpp">
+      <Filter>Source Files\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\POUtils.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIControlGroupList.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIBaseContainer.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIListItemLayout.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIListGroup.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIListLabel.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIMultiSelectText.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIStaticItem.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\Archive.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\Variant.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIListContainer.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIWindowVideoBase.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="SortFileItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\LabelFormatter.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="XBDateTime.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MediaSource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\viewstates\GUIViewStateVideo.cpp">
+      <Filter>Source Files\guilib\viewstates</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIToggleButtonControl.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIPanelContainer.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\info\SkinVariable.cpp">
+      <Filter>Source Files\guilib\info</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\info\InfoBool.cpp">
+      <Filter>Source Files\guilib\info</Filter>
+    </ClCompile>
+    <ClCompile Include="MediaManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIBorderedImage.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="filesystem\DirectoryFactory.cpp">
       <Filter>Source Files\filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="filesystem\FileDirectoryFactory.cpp">
+      <Filter>Source Files\filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="filesystem\DirectoryCache.cpp">
+      <Filter>Source Files\filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIScrollBarControl.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIEditControl.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\dialogs\GUIDialogSlider.cpp">
+      <Filter>Source Files\guilib\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUISliderControl.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\dialogs\GUIDialogKeyboard.cpp">
+      <Filter>Source Files\guilib\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\CharsetConverter.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\dialogs\GUIDialogNumeric.cpp">
+      <Filter>Source Files\guilib\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\dialogs\GUIDialogOK.cpp">
+      <Filter>Source Files\guilib\dialogs</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

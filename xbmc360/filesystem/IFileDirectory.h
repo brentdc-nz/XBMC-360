@@ -3,9 +3,7 @@
 
 #include "IDirectory.h"
 
-using namespace DIRECTORY;
-
-namespace DIRECTORY
+namespace XFILE
 {
 
 class IFileDirectory : public IDirectory

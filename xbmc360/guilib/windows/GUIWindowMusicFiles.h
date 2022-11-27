@@ -1,23 +1,18 @@
-#ifndef GUILIB_GUIWINDOWMUSICFILES_H
-#define GUILIB_GUIWINDOWMUSICFILES_H
+#ifndef GUILIB_GUIWINDOWMUSIC_H
+#define GUILIB_GUIWINDOWMUSIC_H
 
-#include "..\GUIWindow.h"
-#include "..\GUIMediaWindow.h"
-#include "..\..\ThumbLoader.h"
+#include "guilib\GUIMediaWindow.h"
 
 class CGUIWindowMusicFiles : public CGUIMediaWindow
 {
 public:
 	CGUIWindowMusicFiles(void);
 	virtual ~CGUIWindowMusicFiles(void);
-
+	
 	virtual bool OnMessage(CGUIMessage& message);
-	virtual bool OnClick(int iItem);
-	bool Update(const CStdString &strDirectory);
-	bool OnPlayMedia(int iItem);
 
-private:
-	CMusicThumbLoader m_thumbLoader;
+protected:
+	virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
 };
 
-#endif //GUILIB_GUIWINDOWMUSICFILES_H
+#endif //GUILIB_GUIWINDOWOMUSIC_H

@@ -1,23 +1,23 @@
 #ifndef GUILIB_GUIWINDOWVIDEOFILES_H
 #define GUILIB_GUIWINDOWVIDEOFILES_H
 
-#include "..\GUIWindow.h"
-#include "..\GUIMediaWindow.h"
-#include "..\..\ThumbLoader.h"
+#include "guilib\GUIWindowVideoBase.h"
 
-class CGUIWindowVideoFiles : public CGUIMediaWindow
+namespace VIDEO
+{
+  class CVideoInfoScanner;
+}
+
+class CGUIWindowVideoFiles : public CGUIWindowVideoBase
 {
 public:
 	CGUIWindowVideoFiles(void);
 	virtual ~CGUIWindowVideoFiles(void);
-
+	
 	virtual bool OnMessage(CGUIMessage& message);
-	virtual bool OnClick(int iItem);
-	bool Update(const CStdString &strDirectory);
-	bool OnPlayMedia(int iItem);
 
-private:
-	CVideoThumbLoader m_thumbLoader;
+protected:
+	virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
 };
 
 #endif //GUILIB_GUIWINDOWVIDEOFILES_H

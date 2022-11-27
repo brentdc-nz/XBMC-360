@@ -38,10 +38,6 @@ private:
 	IDirect3DTexture9*				m_pFrameU;
 	IDirect3DTexture9*				m_pFrameV;
 	IDirect3DTexture9*				m_pFrameY;
-
-	D3DXMATRIX						m_matWorld;
-	D3DXMATRIX						m_matProj;
-	D3DXMATRIX						m_matView;
 };
 
 #endif //RGB_RENDERER_H

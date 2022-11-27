@@ -34,9 +34,9 @@ bool CRenderManager::PreInit()
 
 	if (!m_pRenderer)
 	{ 
-		// no renderer
+		// No renderer
 		
-		//ONLY HAVE THE RGB Renderer ATM
+		// ONLY HAVE THE RGB Renderer ATM
 		//m_rendermethod = g_guiSettings.GetInt("videoplayer.rendermethod");
 
 		if (/*m_rendermethod == RENDER_HQ_RGB_SHADER*/1)
@@ -66,9 +66,9 @@ bool CRenderManager::Configure(int width, int height, unsigned flags)
 	{
 		if(flags & CONF_FLAGS_FULLSCREEN)
 		{
-			lock.Leave();
-			g_application./*getApplicationMessenger().*/SwitchToFullScreen();
-			lock.Enter();
+//			lock.Leave();
+			g_application.getApplicationMessenger().SwitchToFullscreen();
+//			lock.Enter();
 		}
 //		m_pRenderer->Update(false);
 		m_bIsStarted = true;
@@ -109,7 +109,7 @@ void CRenderManager::ReleaseImage()
 
 void CRenderManager::PrepareDisplay()
 {
-	CSharedLock lock(m_sharedSection);
+    CSharedLock lock(m_sharedSection);
 
 //	if (m_bPauseDrawing) return;
 

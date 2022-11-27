@@ -9,8 +9,11 @@ public:
 	CGUIViewStateWindowPictures(const CFileItemList& items);
 
 protected:
-	virtual VECSOURCES& GetShares();
+	virtual void SaveViewState();
+	virtual CStdString GetLockType();
+	virtual bool UnrollArchives();
 	virtual CStdString GetExtensions();
+	virtual VECSOURCES& GetSources();
 };
 
 #endif //H_CGUIVIEWSTATEPICTURES

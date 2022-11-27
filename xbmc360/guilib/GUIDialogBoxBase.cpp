@@ -97,6 +97,6 @@ void CGUIDialogBoxBase::SetChoice(int iButton, const string& strString) // iButt
 void CGUIDialogBoxBase::OnInitWindow()
 {
 	// Set focus to default
-	m_lastControlID = m_dwDefaultFocusControlID;
+	m_lastControlID = m_defaultControl;
 	CGUIDialog::OnInitWindow();
 }

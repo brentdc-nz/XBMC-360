@@ -1,32 +1,55 @@
 #include "GUIViewStateMusic.h"
-#include "..\..\Settings.h"
+#include "Settings.h"
+#include "ViewState.h"
+#include "guilib\key.h"
 
-CGUIViewStateWindowMusic::CGUIViewStateWindowMusic(const CFileItemList& items) : CGUIViewState(items) // TODO : Check same as the real version
+CGUIViewStateWindowMusicFiles::CGUIViewStateWindowMusicFiles(const CFileItemList& items) : CGUIViewState(items)
 {
-/*
-	if(g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-		AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 103, LABEL_MASKS("%K", "%I", "%L", ""));  // Titel, Size | Foldername, empty
+	if (items.IsVirtualDirectoryRoot())
+	{
+		AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS()); // Preformated
+		AddSortMethod(SORT_METHOD_DRIVE_TYPE, 564, LABEL_MASKS()); // Preformated
+		SetSortMethod(SORT_METHOD_LABEL);
+
+		SetViewAsControl(DEFAULT_VIEW_ICONS);
+
+		SetSortOrder(SORT_ORDER_ASC);
+	}
 	else
-		AddSortMethod(SORT_METHOD_LABEL, 103, LABEL_MASKS("%K", "%I", "%L", ""));  // Titel, Size | Foldername, empty
-		AddSortMethod(SORT_METHOD_DATE, 104, LABEL_MASKS("%K", "%J", "%L", "%J"));  // Titel, Date | Foldername, Date
-		AddSortMethod(SORT_METHOD_PROGRAM_COUNT, 507, LABEL_MASKS("%K", "%C", "%L", ""));  // Titel, Count | Foldername, empty
-		AddSortMethod(SORT_METHOD_SIZE, 105, LABEL_MASKS("%K", "%I", "%K", "%I"));  // Filename, Size | Foldername, Size
-		SetSortMethod(g_stSettings.m_MyProgramsSortMethod);
-*/
-	AddViewAsControl(VIEW_METHOD_LIST, 101);
-	AddViewAsControl(VIEW_METHOD_THUMBS, 100);
+	{
+		if (/*g_guiSettings.GetBool("filelists.ignorethewhensorting")*/1)// TEST
+			AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%L", "%I", "%L", "")); // FileName, Size | Foldername, empty
+		else
+			AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%L", "%I", "%L", ""));  // FileName, Size | Foldername, empty
+		
+		AddSortMethod(SORT_METHOD_SIZE, 553, LABEL_MASKS("%L", "%I", "%L", "%I")); // FileName, Size | Foldername, Size
+		AddSortMethod(SORT_METHOD_DATE, 552, LABEL_MASKS("%L", "%J", "%L", "%J")); // FileName, Date | Foldername, Date
+		AddSortMethod(SORT_METHOD_FILE, 561, LABEL_MASKS("%L", "%I", "%L", ""));  // Filename, Size | FolderName, empty
 
-//	SetViewAsControl(g_stSettings.m_MyProgramsViewMethod);
-
-//	SetSortOrder(g_stSettings.m_MyProgramsSortOrder);
+		SetSortMethod(/*g_settings.m_viewStateMusicFiles.m_sortMethod*/SORT_METHOD_LABEL); // TODO
+		SetViewAsControl(/*g_settings.m_viewStateMusicFiles.m_viewMode*/DEFAULT_VIEW_LIST); // TODO
+		SetSortOrder(/*g_settings.m_viewStateMusicFiles.m_sortOrder*/SORT_ORDER_DESC); // TODO
+	}
+	LoadViewState(items.GetPath(), WINDOW_MUSIC);
 }
 
-VECSOURCES& CGUIViewStateWindowMusic::GetShares()
+CStdString CGUIViewStateWindowMusicFiles::GetLockType()
 {
-	return *g_settings.GetSourcesFromType("music");
+	return "music";
 }
 
-CStdString CGUIViewStateWindowMusic::GetExtensions()
+void CGUIViewStateWindowMusicFiles::SaveViewState()
+{
+	int itest = 1;
+   // SaveViewToDb(m_items.GetPath(), WINDOW_MSUIC, &g_settings.m_viewStateMusicFiles); // TODO
+}
+
+CStdString CGUIViewStateWindowMusicFiles::GetExtensions()
 {
 	return g_settings.GetAudioExtensions();
+}
+
+VECSOURCES& CGUIViewStateWindowMusicFiles::GetSources()
+{
+	return g_settings.m_musicSources; 
 }

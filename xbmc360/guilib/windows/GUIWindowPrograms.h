@@ -1,23 +1,21 @@
 #ifndef GUILIB_GUIWINDOWPROGRAMS_H
 #define GUILIB_GUIWINDOWPROGRAMS_H
 
-#include "..\GUIWindow.h"
-#include "..\GUIMediaWindow.h"
-#include "..\..\ThumbLoader.h"
+#include "guilib\GUIMediaWindow.h"
 
-class CGUIWindowPrograms : public CGUIMediaWindow
+class CGUIWindowPrograms :
+      public CGUIMediaWindow//, public IBackgroundLoaderObserver
 {
 public:
 	CGUIWindowPrograms(void);
 	virtual ~CGUIWindowPrograms(void);
 
 	virtual bool OnMessage(CGUIMessage& message);
-	virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
-	bool Update(const CStdString &strDirectory);
-	bool OnPlayMedia(int iItem);
 
-private:
-	CProgramThumbLoader m_thumbLoader;
+protected:
+	virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
+	virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+	virtual bool OnPlayMedia(int iItem);
 };
 
 #endif //GUILIB_GUIWINDOWPROGRAMS_H

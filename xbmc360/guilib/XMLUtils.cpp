@@ -98,6 +98,38 @@ bool XMLUtils::GetBoolean(const TiXmlNode* pRootNode, const char* strTag, bool& 
 	return true;
 }
 
+bool XMLUtils::GetDouble(const TiXmlNode *root, const char *tag, double &value)
+{
+	const TiXmlNode* node = root->FirstChild(tag);
+	if (!node || !node->FirstChild()) return false;
+	value = atof(node->FirstChild()->Value());
+	return true;
+}
+
+bool XMLUtils::GetFloat(const TiXmlNode* pRootNode, const char* strTag, float& value)
+{
+	const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
+	if (!pNode || !pNode->FirstChild()) return false;
+	value = (float)atof(pNode->FirstChild()->Value());
+	return true;
+}
+
+// Returns true if the encoding of the document is other then UTF-8.
+// param strEncoding Returns the encoding of the document. Empty if UTF-8
+bool XMLUtils::GetEncoding(const TiXmlDocument* pDoc, CStdString& strEncoding)
+{
+	const TiXmlNode* pNode=NULL;
+	while ((pNode=pDoc->IterateChildren(pNode)) && pNode->Type()!=TiXmlNode::DECLARATION) {}
+	if (!pNode) return false;
+	const TiXmlDeclaration* pDecl=pNode->ToDeclaration();
+	if (!pDecl) return false;
+	strEncoding=pDecl->Encoding();
+	if (strEncoding.Equals("UTF-8") || strEncoding.Equals("UTF8")) strEncoding.Empty();
+	strEncoding.MakeUpper();
+
+	return !strEncoding.IsEmpty(); // Other encoding then UTF8?
+}
+
 void XMLUtils::SetString(TiXmlNode* pRootNode, const char *strTag, const CStdString& strValue)
 {
 	TiXmlElement newElement(strTag);
