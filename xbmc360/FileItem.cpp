@@ -214,7 +214,7 @@ bool CFileItem::IsPicture() const
 
 bool CFileItem::IsXEX() const
 {
-  return URIUtils::GetExtension(m_strPath).Equals(".xex", false);
+	return URIUtils::GetExtension(m_strPath).Equals(".xex", false);
 }
 
 bool CFileItem::IsParentFolder() const
