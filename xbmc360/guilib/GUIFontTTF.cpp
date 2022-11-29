@@ -289,7 +289,7 @@ void CGUIFontTTF::Begin()
 		m_pD3DDevice->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1); // XBOX 360 - Brent
 		g_graphicsContext.TUnlock();
 
-#ifdef HAS_XBOX_D3D
+#if 0 // OG Xbox
 		// Render the image
 		m_pD3DDevice->SetScreenSpaceOffset(-0.5f, -0.5f);
 		m_pD3DDevice->Begin(D3DPT_QUADLIST);
@@ -308,7 +308,7 @@ void CGUIFontTTF::End()
 	if (--m_nestedBeginCount > 0)
 		return;
 
-#ifdef HAS_XBOX_D3D
+#if 0 // OG Xbox
 	m_pD3DDevice->End();
 	m_pD3DDevice->SetScreenSpaceOffset(0, 0);
 #endif
@@ -617,7 +617,7 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character *ch)
 				newTexture->GetSurfaceLevel(0, &pTarget);
 				m_texture->GetSurfaceLevel(0, &pSource);
 #if 1 // 360
-			g_graphicsContext.TLock();
+				g_graphicsContext.TLock();
 
 				D3DXLoadSurfaceFromSurface(
 					pTarget,   //LPDIRECT3DSURFACE9 pDestSurface,
@@ -627,8 +627,7 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character *ch)
 					NULL,     // CONST PALETTEENTRY *pSrcPalette,
 					NULL,     // CONST RECT *pSrcRect,
 					D3DX_FILTER_NONE,  // DWORD Filter,
-					0 //  D3DCOLOR ColorKey
-					);
+					0); //  D3DCOLOR ColorKey
 
 				g_graphicsContext.TUnlock();
 #else // OG
