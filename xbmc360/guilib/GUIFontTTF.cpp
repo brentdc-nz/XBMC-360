@@ -381,7 +381,7 @@ void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, D
 
 	m_numCharactersRendered++;
 
-#ifdef HAS_XBOX_D3D
+#if 0 // OG Xbox
 	if (m_numCharactersRendered >= TEXT_RENDER_LIMIT)
 	{
 		// We're pushing the (undocumented) limits of xbox here
@@ -401,7 +401,7 @@ void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, D
 	m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x1, texture.y2);
 	m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x[3], y4, z4, 1);
 
-#else
+#else // Xbox 360
 struct CUSTOMVERTEX
 	{
 		FLOAT x, y, z;
