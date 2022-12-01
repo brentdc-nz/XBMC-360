@@ -122,7 +122,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PreprocessorDefinitions>_DEBUG;_XBOX</PreprocessorDefinitions>
       <CallAttributedProfiling>Callcap</CallAttributedProfiling>
-      <AdditionalIncludeDirectories>..\xbmc360\;..\libraries\freetype\freetype\include;..\libraries\ffmpeg lib\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\xbmc360\;..\libraries\freetype\freetype\include;..\libraries\ffmpeg\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/EHa %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -132,7 +132,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
       <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirenderd.lib;xmediad2.lib;Xonline.lib;libavformat.lib;libavfilter.lib;libavutil.lib;libswscale.lib;libavcodec.lib;pthreads.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\libraries\ffmpeg lib\vcproj\libavcodec\Xbox 360\Debug;..\libraries\ffmpeg lib\vcproj\libswscale\Xbox 360\Debug;..\libraries\ffmpeg lib\vcproj\libavutil\Xbox 360\Debug;..\libraries\ffmpeg lib\vcproj\libavfilter\Xbox 360\Debug;..\libraries\ffmpeg lib\vcproj\libavformat\Xbox 360\Debug;..\libraries\ffmpeg lib\vcproj\pthreads\Debug;..\libraries\freetype\freetype\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\libraries\ffmpeg\vcproj\libavcodec\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\libswscale\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\libavutil\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\libavfilter\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\libavformat\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\pthreads\Debug;..\libraries\freetype\freetype\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <StackCommitSize>812000</StackCommitSize>
     </Link>
     <Deploy>
@@ -258,7 +258,7 @@
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PreprocessorDefinitions>NDEBUG;_XBOX</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\xbmc360\;..\libraries\freetype\freetype\include;..\libraries\ffmpeg lib\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\xbmc360\;..\libraries\freetype\freetype\include;..\libraries\ffmpeg\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <PreschedulingOptimization>true</PreschedulingOptimization>
@@ -278,7 +278,7 @@
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
       <SetChecksum>true</SetChecksum>
       <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirender.lib;xmediad2.lib;xonline.lib;libavformat.lib;libavfilter.lib;libavutil.lib;libswscale.lib;libavcodec.lib;pthreads.lib;freetype.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\libraries\ffmpeg lib\vcproj\libavcodec\Xbox 360\Release;..\libraries\ffmpeg lib\vcproj\libswscale\Xbox 360\Release;..\libraries\ffmpeg lib\vcproj\libavutil\Xbox 360\Release;..\libraries\ffmpeg lib\vcproj\libavfilter\Xbox 360\Release;..\libraries\ffmpeg lib\vcproj\libavformat\Xbox 360\Release;..\libraries\ffmpeg lib\vcproj\pthreads\Release;..\libraries\freetype\freetype\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\libraries\ffmpeg\vcproj\libavcodec\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libswscale\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libavutil\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libavfilter\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libavformat\Xbox 360\Release;..\libraries\ffmpeg\vcproj\pthreads\Release;..\libraries\freetype\freetype\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Deploy>
       <DeploymentType>CopyToHardDrive</DeploymentType>
