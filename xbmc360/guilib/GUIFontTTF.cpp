@@ -357,12 +357,16 @@ void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, D
 		// really interests us anyway.
 		float rx0 = ROUND_TO_PIXEL(x[0]);
 		float rx3 = ROUND_TO_PIXEL(x[3]);
+
 		x[1] = TRUNC_TO_PIXEL(x[1]);
 		x[2] = TRUNC_TO_PIXEL(x[2]);
+
 		if (rx0 > x[0])
 			x[1] += 1;
+
 		if (rx3 > x[3])
 			x[2] += 1;
+
 		x[0] = rx0;
 		x[3] = rx3;
 	}
@@ -402,7 +406,7 @@ void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, D
 	m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x[3], y4, z4, 1);
 
 #else // Xbox 360
-struct CUSTOMVERTEX
+	struct CUSTOMVERTEX
 	{
 		FLOAT x, y, z;
 		DWORD color;
@@ -460,7 +464,7 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr)
 		else if (ch < m_char[mid].letterAndStyle)
 			high = mid - 1;
 		else
-		return &m_char[mid];
+			return &m_char[mid];
 	}
 
 	// If we get to here, then low is where we should insert the new character
@@ -590,7 +594,7 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character *ch)
 				return false;
 			}
 
-			if (D3D_OK != D3DXCreateTexture(m_pD3DDevice, m_textureWidth, newHeight, 1, 0, D3DFMT_LIN_A8, D3DPOOL_MANAGED, &newTexture))
+			if (D3D_OK != D3DXCreateTexture(m_pD3DDevice, m_textureWidth, newHeight, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED, &newTexture))
 			{
 				CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: Error creating new cache texture for size %f", m_height);
 				FT_Done_Glyph(glyph);

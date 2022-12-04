@@ -35,6 +35,8 @@ public:
 	// We search for XML files in the skin folder that best matches the current resolution
 	CStdString GetSkinPath(const CStdString& file, RESOLUTION *res = NULL, const CStdString& baseDir = "") const;
 
+	CStdString GetBaseDir() const;
+
 	double GetVersion() const { return m_Version; };
 
 	// Given a resolution, retrieve the corresponding directory name

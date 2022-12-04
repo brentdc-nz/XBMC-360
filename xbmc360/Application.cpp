@@ -21,6 +21,7 @@
 #include "utils\URIUtils.h"
 #include "guilib\SkinInfo.h"
 #include "interfaces\Builtins.h"
+#include "guilib\GUIColorManager.h"
 
 // Window includes
 #include "guilib\windows\GUIWindowHome.h"
@@ -271,6 +272,8 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	g_SkinInfo.Load(strSkinPath);
 
 	g_graphicsContext.SetMediaDir(strSkinPath);
+
+	g_colorManager.Load(g_guiSettings.GetString("lookandfeel.skincolors"));
 
 	CLog::Log(LOGINFO, "Load fonts for skin...");
 

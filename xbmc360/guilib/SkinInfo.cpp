@@ -169,6 +169,11 @@ CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION *res, co
 		return strPath;
 }
 
+CStdString CSkinInfo::GetBaseDir() const
+{
+	return m_strBaseDir;
+}
+
 bool CSkinInfo::GetResolution(const TiXmlNode *root, const char *tag, RESOLUTION &res) const
 {
 	CStdString strRes;
