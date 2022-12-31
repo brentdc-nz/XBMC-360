@@ -292,23 +292,24 @@ void CGUIWindow::CenterWindow()
 
 void CGUIWindow::Render()
 {
-  // If we're rendering from a different thread, then we should wait for the main
-  // app thread to finish AllocResources(), as dynamic resources (images in particular)
-  // will try and be allocated from 2 different threads, which causes nasty things
-  // to occur.
-  if (!m_bAllocated) return;
+	// If we're rendering from a different thread, then we should wait for the main
+	// app thread to finish AllocResources(), as dynamic resources (images in particular)
+	// will try and be allocated from 2 different threads, which causes nasty things
+	// to occur.
+	if (!m_bAllocated) return;
 
-  g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
+	g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
 
-   m_renderTime = CTimeUtils::GetFrameTime();
-  // render our window animation - returns false if it needs to stop rendering
-  if (!RenderAnimation(m_renderTime))
-    return;
+	m_renderTime = CTimeUtils::GetFrameTime();
 
-  if (m_hasCamera)
-    g_graphicsContext.SetCameraPosition(m_camera);
+	// render our window animation - returns false if it needs to stop rendering
+	if (!RenderAnimation(m_renderTime))
+		return;
 
-  CGUIControlGroup::Render();
+	if (m_hasCamera)
+		g_graphicsContext.SetCameraPosition(m_camera);
+
+	CGUIControlGroup::Render();
 }
 
 void CGUIWindow::Close(bool forceClose)

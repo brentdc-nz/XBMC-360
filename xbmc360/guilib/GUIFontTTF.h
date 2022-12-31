@@ -30,6 +30,7 @@ class CGUIFontTTF
 		float advance;
 		DWORD letterAndStyle;
 	};
+
 public:
 	CGUIFontTTF(const CStdString& strFileName);
 	virtual ~CGUIFontTTF(void);
@@ -43,7 +44,6 @@ public:
 
 	const CStdString& GetFileName() const { return m_strFileName; };
 	void CopyReferenceCountFrom(CGUIFontTTF& ttf) { m_referenceCount = ttf.m_referenceCount; }
-
 
 //protected: //FIXME
 	void AddReference();
@@ -89,7 +89,7 @@ public:
 
 	unsigned int m_nestedBeginCount;   // Speedups
 
-	// freetype stuff
+	// Freetype stuff
 	FT_Face    m_face;
 	FT_Stroker m_stroker;
 
@@ -103,8 +103,19 @@ public:
 
 	DWORD m_numCharactersRendered;
 	
+	struct COLORVERTEX
+	{
+		float fPosition[3];
+		float fTexCoord[2];
+	};
+
+	IDirect3DVertexDeclaration9*	m_pVertexDecl; // Vertex format decl
+	IDirect3DVertexShader9*			m_pVertexShader; // Vertex Shader
+	IDirect3DPixelShader9*			m_pPixelShader;  // Pixel Shader
+
 private:
 	int m_referenceCount;
 };
+
 
 #endif //CGUILIB_GUIFONTTTF_H

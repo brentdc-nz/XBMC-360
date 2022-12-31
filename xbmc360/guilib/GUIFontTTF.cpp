@@ -20,9 +20,9 @@ using namespace std;
 #define CHARS_PER_TEXTURE_LINE 20 // Number of characters to cache per texture line
 #define CHAR_CHUNK    64          // 64 chars allocated at a time (1024 bytes)
 
-int CGUIFontTTF::justification_word_weight = 6;    // Weight of word spacing over letter spacing when justifying.
-                                                   // A larger number means more of the "dead space" is placed between
-                                                   // words rather than between letters.
+int CGUIFontTTF::justification_word_weight = 6; // Weight of word spacing over letter spacing when justifying.
+                                                // A larger number means more of the "dead space" is placed between
+                                                // words rather than between letters.
 
 unsigned int CGUIFontTTF::max_texture_size = 4096; // Max texture size - 4096 for xbox
 
@@ -112,6 +112,51 @@ CFreeTypeLibrary g_freeTypeLibrary; // Our FreeType library
 
 //-----------------------------------------------------------------------
 
+namespace D3DFontShaders
+{
+// Vertex shader
+const char* g_strVertexShader =
+    " float4x4 matWVP : register(c0);              "
+    "                                              "
+    " struct VS_IN                                 "
+    " {                                            "
+    "     float4 ObjPos   : POSITION;              "
+    "     float2 TexCoord : TEXCOORD;              "
+    " };                                           "
+    "                                              "
+    " struct VS_OUT                                "
+    " {                                            "
+    "     float4 ProjPos  : POSITION;              "
+    "     float2 TexCoord : TEXCOORD;              "
+    " };                                           "
+    "                                              "
+    " VS_OUT main( VS_IN In )                      "
+    " {                                            "
+    "     VS_OUT Out;                              "
+    "     Out.ProjPos = mul( matWVP, In.ObjPos );  "
+    "     Out.TexCoord = In.TexCoord;              "
+    "     return Out;                              "
+    " }                                            ";
+
+// Pixel shader
+const char* g_strPixelShader =
+    " struct PS_IN                                 "
+    " {                                            "
+    "     float2 TexCoord : TEXCOORD;              "
+    " };                                           "
+    "                                              "
+    " float3 InputColor : register(c10);           "
+	" sampler2D InputTexture : register(S0);       "
+    "                                              "
+    " float4 main(float2 uv : TEXCOORD) : COLOR    "
+    " {                                            "
+	"    float4 originalColor = tex2D( InputTexture, uv.xy);"
+	"    return float4(InputColor[0], InputColor[1], InputColor[2], originalColor.a);"
+	" }                                            ";
+}
+
+//-----------------------------------------------------------------------
+
 CGUIFontTTF::CGUIFontTTF(const CStdString& strFileName)
 {
 	m_texture = NULL;
@@ -139,6 +184,21 @@ void CGUIFontTTF::Clear()
 
 	m_texture = NULL;
 	
+	if (m_pVertexDecl)
+		m_pVertexDecl->Release();
+
+	m_pVertexDecl = NULL;
+
+	if (m_pVertexShader)
+		m_pVertexShader->Release();
+
+	m_pVertexShader = NULL;
+
+	if (m_pPixelShader)
+		m_pPixelShader->Release();
+
+	m_pPixelShader = NULL;
+
 	if (m_char)
 		delete[] m_char;
 	
@@ -230,7 +290,7 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, float height, float aspect
 	m_textureWidth = ((m_cellHeight * CHARS_PER_TEXTURE_LINE) & ~63) + 64;
 	if (m_textureWidth > max_texture_size) m_textureWidth = max_texture_size;
 
-	// Set the posX and posY so that our texture will be created on first character write.
+	// Set the posX and posY so that our texture will be created on first character write
 	m_posX = m_textureWidth;
 	m_posY = -(int)m_cellHeight;
 
@@ -238,35 +298,87 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, float height, float aspect
 	Character *ellipse = GetCharacter(L'.');
 	if (ellipse) m_ellipsesWidth = ellipse->advance;
 
+	//-------------------------------------------------------------------------------------------------
+
+	// Compile vertex shader
+	ID3DXBuffer* pVertexShaderCode;
+   
+	D3DXCompileShader( D3DFontShaders::g_strVertexShader,
+                                    ( UINT )strlen( D3DFontShaders::g_strVertexShader ),
+                                    NULL,
+                                    NULL,
+                                    "main",
+                                    "vs_2_0",
+                                    0,
+                                    &pVertexShaderCode,
+                                    NULL,
+                                    NULL );
+
+    // Create vertex shader
+    m_pD3DDevice->CreateVertexShader( ( DWORD* )pVertexShaderCode->GetBufferPointer(),
+                                      &m_pVertexShader );
+
+    // Compile pixel shader
+	ID3DXBuffer* pPixelShaderCode;
+
+	D3DXCompileShader( D3DFontShaders::g_strPixelShader,
+                            ( UINT )strlen( D3DFontShaders::g_strPixelShader ),
+                            NULL,
+                            NULL,
+                            "main",
+                            "ps_2_0",
+                            0,
+                            &pPixelShaderCode,
+                            NULL,
+                            NULL );
+
+    // Create pixel shader
+    m_pD3DDevice->CreatePixelShader( ( DWORD* )pPixelShaderCode->GetBufferPointer(),
+                                     &m_pPixelShader );
+
+    // Define the vertex elements and
+    // Create a vertex declaration from the element descriptions
+    static const D3DVERTEXELEMENT9 VertexElements[3] =
+    {
+        { 0,  0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0 },
+        { 0, 12, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0 },
+        D3DDECL_END()
+    };
+
+    m_pD3DDevice->CreateVertexDeclaration( VertexElements, &m_pVertexDecl );
+
+	if(pVertexShaderCode)
+		pVertexShaderCode->Release();
+
+	if(pPixelShaderCode)
+		pPixelShaderCode->Release();
+
 	return true;
 }
 
 void CGUIFontTTF::Begin()
 {
+	if( !m_pD3DDevice || !m_pVertexShader || !m_pPixelShader)
+	{
+		CLog::Log(LOGERROR, "Direct3D rendering objects missing!");
+		return;
+	}
+
+	g_graphicsContext.TLock();
+	// Pass matrix into the vertex shader
+	m_pD3DDevice->SetVertexShaderConstantF(0, (FLOAT*)&g_graphicsContext.GetFinalMatrix(), 4);
+	g_graphicsContext.TUnlock();
+
 	if (m_nestedBeginCount == 0)
 	{
 		// Just have to blit from our texture.
 		g_graphicsContext.TLock();
 		m_pD3DDevice->SetTexture( 0, m_texture );
 		g_graphicsContext.TUnlock();
-/*
-		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ADDRESSU, D3DTADDRESS_CLAMP );
-		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ADDRESSV, D3DTADDRESS_CLAMP );
-		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR );
-		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTEXF_LINEAR );
-		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_SELECTARG1 ); // only use diffuse
-		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_DIFFUSE);
-		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
-		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
 
-		// No other texture stages needed
-		m_pD3DDevice->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE);
-*/
 		g_graphicsContext.TLock();
 		m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
 		g_graphicsContext.TUnlock();
-//		m_pD3DDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
 		g_graphicsContext.TLock();
 		m_pD3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
 		g_graphicsContext.TUnlock();
@@ -282,18 +394,10 @@ void CGUIFontTTF::Begin()
 		g_graphicsContext.TLock();
 		m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
 		g_graphicsContext.TUnlock();
-//		m_pD3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE);
 
-//		m_pD3DDevice->SetVertexShader(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1); //OG XBOX
 		g_graphicsContext.TLock();
-		m_pD3DDevice->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1); // XBOX 360 - Brent
+		m_pD3DDevice->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
 		g_graphicsContext.TUnlock();
-
-#if 0 // OG Xbox
-		// Render the image
-		m_pD3DDevice->SetScreenSpaceOffset(-0.5f, -0.5f);
-		m_pD3DDevice->Begin(D3DPT_QUADLIST);
-#endif
 	}
 
 	// Keep track of the nested begin/end calls.
@@ -308,14 +412,9 @@ void CGUIFontTTF::End()
 	if (--m_nestedBeginCount > 0)
 		return;
 
-#if 0 // OG Xbox
-	m_pD3DDevice->End();
-	m_pD3DDevice->SetScreenSpaceOffset(0, 0);
-#endif
 	g_graphicsContext.TLock();
 	m_pD3DDevice->SetTexture(0, NULL);
 	g_graphicsContext.TUnlock();
-//	m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
 
 	m_numCharactersRendered = 0;
 }
@@ -383,35 +482,15 @@ void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, D
 	float y4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y2));
 	float z4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y2));
 
-	m_numCharactersRendered++;
+	g_graphicsContext.TLock();
 
-#if 0 // OG Xbox
-	if (m_numCharactersRendered >= TEXT_RENDER_LIMIT)
-	{
-		// We're pushing the (undocumented) limits of xbox here
-		m_pD3DDevice->End();
-		m_pD3DDevice->Begin(D3DPT_QUADLIST);
-		m_numCharactersRendered = 1;
-	}
+	// Get the color and parse into the pixel shader
+	float fInputColor[3] = { (float)((dwColor>>16)&255), (float)((dwColor>>12)&255), (float)(dwColor&255) };
+	m_pD3DDevice->SetPixelShaderConstantF(10, fInputColor, 4);
 	
-	m_pD3DDevice->SetVertexDataColor( D3DVSDE_DIFFUSE, dwColor);
+	g_graphicsContext.TUnlock();
 
-	m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x1, texture.y1);
-	m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x[0], y1, z1, 1);
-	m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x2, texture.y1);
-	m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x[1], y2, z2, 1);
-	m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x2, texture.y2);
-	m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x[2], y3, z3, 1);
-	m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x1, texture.y2);
-	m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x[3], y4, z4, 1);
-
-#else // Xbox 360
-	struct CUSTOMVERTEX
-	{
-		FLOAT x, y, z;
-		DWORD color;
-		FLOAT tu, tv; // Texture coordinates
-	};
+	m_numCharactersRendered++;
 
 	// Tex coords converted to 0..1 range
 	float tl = texture.x1 / m_textureWidth;
@@ -419,17 +498,57 @@ void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, D
 	float tt = texture.y1 / m_textureHeight;
 	float tb = texture.y2 / m_textureHeight;
 
-	CUSTOMVERTEX verts[4] = {
-	{ x[0], y1, z1, dwColor, tl, tt},
-	{ x[1], y2, z2, dwColor, tr, tt},
-	{ x[2], y3, z3, dwColor, tr, tb},
-	{ x[3], y4, z4, dwColor, tl, tb}
+	COLORVERTEX Vertices[] =
+	{
+		{ x[0], y1, z1, tl, tt},
+		{ x[1], y2, z2, tr, tt},
+		{ x[2], y3, z3, tr, tb},
+		{ x[3], y4, z4, tl, tb}
 	};
 
 	g_graphicsContext.TLock();
-	m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
+	m_pD3DDevice->SetSamplerState( 0, D3DSAMP_MAGFILTER, D3DTEXF_ANISOTROPIC );
 	g_graphicsContext.TUnlock();
-#endif
+
+	g_graphicsContext.TLock();
+	m_pD3DDevice->SetSamplerState( 0, D3DSAMP_MINFILTER, D3DTEXF_ANISOTROPIC );
+	g_graphicsContext.TUnlock();
+
+	g_graphicsContext.TLock();
+	m_pD3DDevice->SetSamplerState( 0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR );
+	g_graphicsContext.TUnlock();
+
+	g_graphicsContext.TLock();
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
+	g_graphicsContext.TUnlock();
+
+	g_graphicsContext.TLock();
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
+	g_graphicsContext.TUnlock();
+
+	g_graphicsContext.TLock();
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA );
+	g_graphicsContext.TUnlock();
+
+	g_graphicsContext.TLock();
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
+	g_graphicsContext.TUnlock();
+
+	g_graphicsContext.TLock();
+	m_pD3DDevice->SetVertexDeclaration( m_pVertexDecl );
+	g_graphicsContext.TUnlock();
+
+	g_graphicsContext.TLock();
+	m_pD3DDevice->SetVertexShader( m_pVertexShader );
+	g_graphicsContext.TUnlock();
+
+	g_graphicsContext.TLock();
+	m_pD3DDevice->SetPixelShader( m_pPixelShader );
+	g_graphicsContext.TUnlock();
+
+	g_graphicsContext.TLock();
+	m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, Vertices, sizeof(COLORVERTEX));
+	g_graphicsContext.TUnlock();
 }
 
 CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr)
@@ -620,29 +739,19 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character *ch)
 				LPDIRECT3DSURFACE9 pTarget, pSource;
 				newTexture->GetSurfaceLevel(0, &pTarget);
 				m_texture->GetSurfaceLevel(0, &pSource);
-#if 1 // 360
+				
 				g_graphicsContext.TLock();
-
-				D3DXLoadSurfaceFromSurface(
-					pTarget,   //LPDIRECT3DSURFACE9 pDestSurface,
-					NULL,      // CONST PALETTEENTRY *pDestPalette,
-					NULL,     // CONST RECT *pDestRect,
-					pSource,  // LPDIRECT3DSURFACE9 pSrcSurface,
-					NULL,     // CONST PALETTEENTRY *pSrcPalette,
-					NULL,     // CONST RECT *pSrcRect,
-					D3DX_FILTER_NONE,  // DWORD Filter,
-					0); //  D3DCOLOR ColorKey
-
+				D3DXLoadSurfaceFromSurface( pTarget, NULL, NULL, pSource, NULL, NULL, D3DX_FILTER_NONE,	0);
 				g_graphicsContext.TUnlock();
-#else // OG
-				m_pD3DDevice->CopyRects(pSource, NULL, 0, pTarget, NULL);
-#endif
+
 				g_graphicsContext.TLock();
 				SAFE_RELEASE(pTarget);
 				g_graphicsContext.TUnlock();
+
 				g_graphicsContext.TLock();
 				SAFE_RELEASE(pSource);
 				g_graphicsContext.TUnlock();
+
 				g_graphicsContext.TLock();
 				SAFE_RELEASE(m_texture);
 				g_graphicsContext.TUnlock();
@@ -686,10 +795,6 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character *ch)
 		D3DXLoadSurfaceFromMemory( target, NULL, &targetrect,
 			bitmap.buffer, D3DFMT_LIN_A8, bitmap.pitch, NULL, &sourcerect,
 			false, 0, 0, D3DX_FILTER_NONE, 0x00000000);
-
-		g_graphicsContext.TUnlock();
-
-		g_graphicsContext.TLock();
 
 		SAFE_RELEASE(target);
 
@@ -859,7 +964,6 @@ float CGUIFontTTF::GetCharWidthInternal(character_t ch)
   return 0;
 }
 
-
 float CGUIFontTTF::GetTextHeight(float lineSpacing, int numLines) const
 {
 	return (float)(numLines - 1) * GetLineHeight(lineSpacing) + (m_cellHeight - 2); // -2 as we increment this for space in our texture
@@ -894,7 +998,7 @@ void CGUIFontTTF::ObliqueGlyph(FT_GlyphSlot slot)
 	if ( slot->format != FT_GLYPH_FORMAT_OUTLINE )
 		return;
 
-	/* we don't touch the advance width */
+	/* We don't touch the advance width */
 
 	// For italic, simply apply a shear transform, with an angle
 	// of about 12 degrees.
