@@ -41,6 +41,30 @@ void CSplash::Process()
 	image->SetAspectRatio(CAspectRatio::AR_KEEP);
 	image->AllocResources();
 
+	g_graphicsContext.TLock();
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ZENABLE, FALSE );
+	g_graphicsContext.TUnlock();
+
+	g_graphicsContext.TLock();
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
+	g_graphicsContext.TUnlock();
+
+	g_graphicsContext.TLock();
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
+	g_graphicsContext.TUnlock();
+
+	g_graphicsContext.TLock();
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
+	g_graphicsContext.TUnlock();
+
+	g_graphicsContext.TLock();
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
+	g_graphicsContext.TUnlock();
+
+	g_graphicsContext.TLock();
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
+	g_graphicsContext.TUnlock();
+
 	// Store the old gamma ramp
 	g_graphicsContext.TLock();
 	g_graphicsContext.Get3DDevice()->GetGammaRamp(NULL, &oldRamp);
