@@ -38,7 +38,8 @@ public:
 	bool IsVirtualDirectoryRoot() const;
 	bool IsRemovable() const;
 	bool IsFileFolder() const;
-	bool IsInternetStream() const {return false; } ; // TODO
+	bool IsInternetStream() const { return false; } ; // TODO
+	bool IsRemote() const;
 
 	virtual void SetLabel(const CStdString &strLabel);
 	void FillInDefaultIcon();

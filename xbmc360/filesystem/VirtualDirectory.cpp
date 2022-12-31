@@ -94,16 +94,16 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
 			|| pItem->GetPath() == "special://musicplaylists/"
 			|| pItem->GetPath() == "special://videoplaylists/"
 			|| pItem->GetPath() == "musicsearch://")
-		strIcon = "DefaultFolder.png";
+		strIcon = "DefaultFolder.png";*/
 		else if (pItem->IsRemote())
 			strIcon = "DefaultNetwork.png";
-		else if (pItem->IsISO9660())
+/*		else if (pItem->IsISO9660())
 			strIcon = "DefaultDVDRom.png";
 		else if (pItem->IsDVD())
 			strIcon = "DefaultDVDRom.png";
 		else if (pItem->IsCDDA())
 			strIcon = "DefaultCDDA.png";
-		else*/
+*/		else
 			strIcon = "DefaultHardDisk.png";
 
 		pItem->SetIconImage(strIcon);

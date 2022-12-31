@@ -237,6 +237,11 @@ bool CFileItem::IsFileFolder() const
 	return false; //TODO!!!
 }
 
+bool CFileItem::IsRemote() const
+{
+	return URIUtils::IsRemote(m_strPath);
+}
+
 void CFileItem::FillInDefaultIcon()
 {
 	CLog::Log(LOGINFO, "FillInDefaultIcon(%s)", GetLabel().c_str());

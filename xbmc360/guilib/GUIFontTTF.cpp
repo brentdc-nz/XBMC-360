@@ -150,9 +150,9 @@ const char* g_strPixelShader =
     "                                              "
     " float4 main(float2 uv : TEXCOORD) : COLOR    "
     " {                                            "
-	"    float4 originalColor = tex2D( InputTexture, uv.xy);"
-	"    return float4(InputColor[0], InputColor[1], InputColor[2], originalColor.a);"
-	" }                                            ";
+    "    float4 originalColor = tex2D( InputTexture, uv.xy);"
+    "    return float4(InputColor[0], InputColor[1], InputColor[2], originalColor.a);"
+    " }                                            ";
 }
 
 //-----------------------------------------------------------------------
@@ -318,7 +318,7 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, float height, float aspect
     m_pD3DDevice->CreateVertexShader( ( DWORD* )pVertexShaderCode->GetBufferPointer(),
                                       &m_pVertexShader );
 
-    // Compile pixel shader
+	// Compile pixel shader
 	ID3DXBuffer* pPixelShaderCode;
 
 	D3DXCompileShader( D3DFontShaders::g_strPixelShader,
@@ -332,8 +332,8 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, float height, float aspect
                             NULL,
                             NULL );
 
-    // Create pixel shader
-    m_pD3DDevice->CreatePixelShader( ( DWORD* )pPixelShaderCode->GetBufferPointer(),
+	// Create pixel shader
+	m_pD3DDevice->CreatePixelShader( ( DWORD* )pPixelShaderCode->GetBufferPointer(),
                                      &m_pPixelShader );
 
     // Define the vertex elements and
