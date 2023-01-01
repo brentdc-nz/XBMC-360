@@ -484,10 +484,15 @@ void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, D
 
 	g_graphicsContext.TLock();
 
+#pragma warning(push)
+#pragma warning (disable:4244) // Not an issue here
+
 	// Get the color and parse into the pixel shader
-	float fInputColor[3] = { (float)((dwColor>>16)&255), (float)((dwColor>>12)&255), (float)(dwColor&255) };
+	float fInputColor[3] = { ((dwColor >> 16) & 0xFF) / 255.0, ((dwColor >> 8) & 0xFF) / 255.0, ((dwColor) & 0xFF) / 255.0 };
 	m_pD3DDevice->SetPixelShaderConstantF(10, fInputColor, 4);
-	
+
+#pragma warning(pop)
+
 	g_graphicsContext.TUnlock();
 
 	m_numCharactersRendered++;
