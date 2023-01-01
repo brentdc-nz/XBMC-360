@@ -6,8 +6,9 @@
 #include "xbox\XBKernalExports.h"
 #include "utils\StringUtils.h"
 #include "SkinInfo.h"
-
-#include <vector>
+#include "utils\URIUtils.h"
+#include "Settings.h"
+#include "GUISettings.h"
 
 using namespace std;
 
@@ -44,6 +45,7 @@ CGUIInfoManager::CGUIInfoManager(void)
 {
 	m_nextWindowID = WINDOW_INVALID;
 	m_prevWindowID = WINDOW_INVALID;
+	m_stringParameters.push_back("__ZZZZ__"); // To offset the string parameters by 1 to assure that all entries are non-zero
 	m_frameCounter = 0;
 	m_lastFPSTime = 0;
 	m_updateTime = 0;
@@ -222,6 +224,34 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 		
 		if (offset || ret == LISTITEM_ISSELECTED || ret == LISTITEM_ISPLAYING || ret == LISTITEM_IS_FOLDER)
 			return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, 0, offset, INFOFLAG_LISTITEM_WRAP));
+	}
+	else if (strCategory.Equals("skin"))
+	{
+		if (strTest.Equals("skin.currenttheme"))
+			ret = SKIN_THEME;
+		else if (strTest.Equals("skin.currentcolourtheme"))
+			ret = SKIN_COLOUR_THEME;
+		else if (strTest.Left(12).Equals("skin.string("))
+		{
+			int pos = strTest.Find(",");
+
+			if (pos >= 0)
+			{
+				int skinOffset = g_settings.TranslateSkinString(strTest.Mid(12, pos - 12));
+				int compareString = ConditionalStringParameter(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
+				return AddMultiInfo(GUIInfo(bNegate ? -SKIN_STRING : SKIN_STRING, skinOffset, compareString));
+			}
+			
+			int skinOffset = g_settings.TranslateSkinString(strTest.Mid(12, strTest.GetLength() - 13));
+			return AddMultiInfo(GUIInfo(bNegate ? -SKIN_STRING : SKIN_STRING, skinOffset));
+		}
+		else if (strTest.Left(16).Equals("skin.hassetting("))
+		{
+			int skinOffset = g_settings.TranslateSkinBool(strTest.Mid(16, strTest.GetLength() - 17));
+			return AddMultiInfo(GUIInfo(bNegate ? -SKIN_BOOL : SKIN_BOOL, skinOffset));
+		}
+		else if (strTest.Left(14).Equals("skin.hastheme("))
+			ret = SKIN_HAS_THEME_START + ConditionalStringParameter(strTest.Mid(14, strTest.GetLength() -  15));
 	}
 
 	return bNegate ? -ret : ret;
@@ -403,6 +433,18 @@ int CGUIInfoManager::TranslateBooleanExpression(const CStdString &expression)
 	return comb.m_id;
 }
 
+int CGUIInfoManager::ConditionalStringParameter(const CStdString &parameter, bool caseSensitive /*= false*/)
+{
+	// Check to see if we have this parameter already
+	for (unsigned int i = 0; i < m_stringParameters.size(); i++)
+		if (parameter.Equals(m_stringParameters[i], caseSensitive))
+			return (int)i;
+
+	// Return the new offset
+	m_stringParameters.push_back(parameter);
+	return (int)m_stringParameters.size() - 1;
+}
+
 CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
 {
 	if (!item) return "";
@@ -480,6 +522,20 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
 			GlobalMemoryStatus(&stat);
 			strLabel.Format("%iMB", stat.dwAvailPhys /MB);
 		}
+		break;
+
+		// Skin theme
+		case SKIN_THEME:
+			if (g_guiSettings.GetString("lookandfeel.skintheme").Equals("skindefault"))
+				strLabel = "skindefault";
+			else
+				strLabel = g_guiSettings.GetString("lookandfeel.skintheme");
+		break;
+		case SKIN_COLOUR_THEME:
+			if (g_guiSettings.GetString("lookandfeel.skincolors").Equals("skindefault"))
+				strLabel = "skindefault";
+			else
+				strLabel = g_guiSettings.GetString("lookandfeel.skincolors");
 		break;
 
 		// Network section
@@ -604,6 +660,16 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
 		bReturn = false;
 	else if(condition == PLAYER_SHOWCODEC)
 		bReturn = m_playerShowCodec;
+	else if (condition >= SKIN_HAS_THEME_START && condition <= SKIN_HAS_THEME_END)
+	{
+		// Note that the code used here could probably be extended to general
+		// settings conditions (parameter would need to store both the setting name an
+		// the and the comparison string)
+		CStdString theme = g_guiSettings.GetString("lookandfeel.skintheme");
+		theme.ToLower();
+		URIUtils::RemoveExtension(theme);
+		bReturn = theme.Equals(m_stringParameters[condition - SKIN_HAS_THEME_START]);
+	}
 	else if(condition >= MULTI_INFO_START && condition <= MULTI_INFO_END)
 	{
 		// Cache return value
@@ -726,7 +792,20 @@ int CGUIInfoManager::AddMultiInfo(const GUIInfo &info)
 // Examines the multi information sent and returns the string as appropriate
 CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWindow)
 {
-	return CStringUtils::EmptyString; // TODO
+	if (info.m_info == SKIN_STRING)
+	{
+		return g_settings.GetSkinString(info.GetData1());
+	}
+	else if (info.m_info == SKIN_BOOL)
+	{
+		bool bInfo = g_settings.GetSkinBool(info.GetData1());
+		if (bInfo)
+			return g_localizeStrings.Get(20122);
+	}
+
+	 // TODO - Add more!
+
+	return CStringUtils::EmptyString;
 }
 
 // Examines the multi information sent and returns true or false accordingly.
@@ -737,6 +816,19 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow)
 
     switch (condition)
     {
+		case SKIN_BOOL:
+        {
+			bReturn = g_settings.GetSkinBool(info.GetData1());
+        }
+        break;
+		case SKIN_STRING:
+		{
+			if (info.GetData2())
+				bReturn = g_settings.GetSkinString(info.GetData1()).Equals(m_stringParameters[info.GetData2()]);
+			else
+				bReturn = !g_settings.GetSkinString(info.GetData1()).IsEmpty();
+		}
+		break;
 		case CONTROL_HAS_FOCUS:
         {
 			CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());

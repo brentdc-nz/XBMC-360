@@ -1126,6 +1126,7 @@ void CApplication::Cleanup()
 
 		g_localizeStrings.Clear();
 		g_guiSettings.Clear();
+		g_guiSettings.Clear();
 		g_advancedSettings.Clear();
 		g_buttonTranslator.Clear();
 		g_infoManager.Clear();

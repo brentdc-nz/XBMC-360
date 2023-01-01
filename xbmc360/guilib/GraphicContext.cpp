@@ -239,117 +239,126 @@ void CGraphicContext::SetViewWindow(float left, float top, float right, float bo
 
 bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheight, bool intersectPrevious /* = false */)
 {
-  D3DVIEWPORT9 newviewport;
-  D3DVIEWPORT9 *oldviewport = new D3DVIEWPORT9;
+	D3DVIEWPORT9 newviewport;
+	D3DVIEWPORT9 *oldviewport = new D3DVIEWPORT9;
 
-  TLock();
-  Get3DDevice()->GetViewport(oldviewport);
-  TUnlock();
-  // transform coordinates - we may have a rotation which changes the positioning of the
-  // minimal and maximal viewport extents.  We currently go to the maximal extent.
-  float x[4], y[4];
-  x[0] = x[3] = fx;
-  x[1] = x[2] = fx + fwidth;
-  y[0] = y[1] = fy;
-  y[2] = y[3] = fy + fheight;
-  float minX = (float)m_iScreenWidth;
-  float maxX = 0;
-  float minY = (float)m_iScreenHeight;
-  float maxY = 0;
-  for (int i = 0; i < 4; i++)
-  {
-    float z = 0;
-    ScaleFinalCoords(x[i], y[i], z);
-    if (x[i] < minX) minX = x[i];
-    if (x[i] > maxX) maxX = x[i];
-    if (y[i] < minY) minY = y[i];
-    if (y[i] > maxY) maxY = y[i];
+	TLock();
+	Get3DDevice()->GetViewport(oldviewport);
+	TUnlock();
+	
+	// Transform coordinates - we may have a rotation which changes the positioning of the
+	// minimal and maximal viewport extents. We currently go to the maximal extent.
+	float x[4], y[4];
+	x[0] = x[3] = fx;
+	x[1] = x[2] = fx + fwidth;
+	y[0] = y[1] = fy;
+	y[2] = y[3] = fy + fheight;
+	float minX = (float)m_iScreenWidth;
+	float maxX = 0;
+	float minY = (float)m_iScreenHeight;
+	float maxY = 0;
+	
+	for (int i = 0; i < 4; i++)
+	{
+		float z = 0;
+		ScaleFinalCoords(x[i], y[i], z);
+		if (x[i] < minX) minX = x[i];
+		if (x[i] > maxX) maxX = x[i];
+		if (y[i] < minY) minY = y[i];
+		if (y[i] > maxY) maxY = y[i];
   }
 
-  int newLeft = (int)(minX + 0.5f);
-  int newTop = (int)(minY + 0.5f);
-  int newRight = (int)(maxX + 0.5f);
-  int newBottom = (int)(maxY + 0.5f);
-  if (intersectPrevious)
-  {
-    // do the intersection
-    int oldLeft = (int)oldviewport->X;
-    int oldTop = (int)oldviewport->Y;
-    int oldRight = (int)oldviewport->X + oldviewport->Width;
-    int oldBottom = (int)oldviewport->Y + oldviewport->Height;
-    if (newLeft >= oldRight || newTop >= oldBottom || newRight <= oldLeft || newBottom <= oldTop)
-    { // empty intersection - return false to indicate no rendering should occur
+	int newLeft = (int)(minX + 0.5f);
+	int newTop = (int)(minY + 0.5f);
+	int newRight = (int)(maxX + 0.5f);
+	int newBottom = (int)(maxY + 0.5f);
+	
+	if (intersectPrevious)
+	{
+		// Do the intersection
+		int oldLeft = (int)oldviewport->X;
+		int oldTop = (int)oldviewport->Y;
+		int oldRight = (int)oldviewport->X + oldviewport->Width;
+		int oldBottom = (int)oldviewport->Y + oldviewport->Height;
+	
+		if (newLeft >= oldRight || newTop >= oldBottom || newRight <= oldLeft || newBottom <= oldTop)
+		{
+			// Empty intersection - return false to indicate no rendering should occur
 #if defined(HAS_SDL_OPENGL)
-      delete [] oldviewport;
+			delete [] oldviewport;
 #else
-      delete oldviewport;
+			delete oldviewport;
 #endif
-      return false;
-    }
-    // ok, they intersect, do the intersection
-    if (newLeft < oldLeft) newLeft = oldLeft;
-    if (newTop < oldTop) newTop = oldTop;
-    if (newRight > oldRight) newRight = oldRight;
-    if (newBottom > oldBottom) newBottom = oldBottom;
-  }
-  // check range against screen size
-  if (newRight <= 0 || newBottom <= 0 ||
-      newTop >= m_iScreenHeight || newLeft >= m_iScreenWidth ||
-      newLeft >= newRight || newTop >= newBottom)
-  { // no intersection with the screen
-
+			return false;
+		}
+		
+		// ok, they intersect, do the intersection
+		if (newLeft < oldLeft) newLeft = oldLeft;
+		if (newTop < oldTop) newTop = oldTop;
+		if (newRight > oldRight) newRight = oldRight;
+		if (newBottom > oldBottom) newBottom = oldBottom;
+	}
+	
+	// Check range against screen size
+	if (newRight <= 0 || newBottom <= 0 ||
+		newTop >= m_iScreenHeight || newLeft >= m_iScreenWidth ||
+		newLeft >= newRight || newTop >= newBottom)
+	{
+		// no intersection with the screen
 #if defined(HAS_SDL_OPENGL)
-   delete [] oldviewport;
+		delete [] oldviewport;
 #else
-   delete oldviewport;
+		delete oldviewport;
 #endif
-    return false;
-  }
-  // intersection with the screen
-  if (newLeft < 0) newLeft = 0;
-  if (newTop < 0) newTop = 0;
-  if (newRight > m_iScreenWidth) newRight = m_iScreenWidth;
-  if (newBottom > m_iScreenHeight) newBottom = m_iScreenHeight;
+		return false;
+	}
+	
+	// Intersection with the screen
+	if (newLeft < 0) newLeft = 0;
+	if (newTop < 0) newTop = 0;
+	if (newRight > m_iScreenWidth) newRight = m_iScreenWidth;
+	if (newBottom > m_iScreenHeight) newBottom = m_iScreenHeight;
 
-  ASSERT(newLeft < newRight);
-  ASSERT(newTop < newBottom);
+	ASSERT(newLeft < newRight);
+	ASSERT(newTop < newBottom);
 
-  newviewport.MinZ = 0.0f;
-  newviewport.MaxZ = 1.0f;
-  newviewport.X = newLeft;
-  newviewport.Y = newTop;
-  newviewport.Width = newRight - newLeft;
-  newviewport.Height = newBottom - newTop;
+	newviewport.MinZ = 0.0f;
+	newviewport.MaxZ = 1.0f;
+	newviewport.X = newLeft;
+	newviewport.Y = newTop;
+	newviewport.Width = newRight - newLeft;
+	newviewport.Height = newBottom - newTop;
 
-  TLock();
-  m_pd3dDevice->SetViewport(&newviewport);
-  TUnlock();
-  m_viewStack.push(oldviewport);
+	TLock();
+	m_pd3dDevice->SetViewport(&newviewport);
+	TUnlock();
+	m_viewStack.push(oldviewport);
 
-  UpdateCameraPosition(m_cameras.top());
-  return true;
+	UpdateCameraPosition(m_cameras.top());
+	return true;
 }
 
 void CGraphicContext::RestoreViewPort()
 {
-  if (!m_viewStack.size()) return;
-  D3DVIEWPORT9 *oldviewport = (D3DVIEWPORT9*)m_viewStack.top();
-  m_viewStack.pop();
+	if (!m_viewStack.size()) return;
+	
+	D3DVIEWPORT9 *oldviewport = (D3DVIEWPORT9*)m_viewStack.top();
+	m_viewStack.pop();
 
-  TLock();
-  Get3DDevice()->SetViewport(oldviewport);
-  TUnlock();
+	TLock();
+	Get3DDevice()->SetViewport(oldviewport);
+	TUnlock();
 
-  if (oldviewport)
-  {
+	if (oldviewport)
+	{
 #if defined(HAS_SDL_OPENGL)
-    delete [] oldviewport;
+		delete [] oldviewport;
 #else
-    delete oldviewport;
+		delete oldviewport;
 #endif
-  }
+	}
 
-  UpdateCameraPosition(m_cameras.top());
+	UpdateCameraPosition(m_cameras.top());
 }
 
 void CGraphicContext::SetFullScreenVideo(bool bOnOff)
@@ -673,6 +682,7 @@ bool CGraphicContext::RectIsAngled(float x1, float y1, float x2, float y2) const
 	if (m_finalTransform.TransformZCoord(x1, y1, 0)) return true;
 	if (m_finalTransform.TransformZCoord(x2, y2, 0)) return true;
 	if (m_finalTransform.TransformZCoord(x1, y2, 0)) return true;
+
 	return false;
 }
 
@@ -722,69 +732,79 @@ void CGraphicContext::Clear(DWORD color /*= 0x00010001*/)
 	Unlock();
 }
 
-
-// add a new clip region, intersecting with the previous clip region.
+// Add a new clip region, intersecting with the previous clip region.
 bool CGraphicContext::SetClipRegion(float x, float y, float w, float h)
-{ // transform from our origin
-  CPoint origin;
-  if (m_origins.size())
-    origin = m_origins.top();
-  // ok, now intersect with our old clip region
-  CRect rect(x, y, x + w, y + h);
-  rect += origin;
-  if (m_clipRegions.size())
-  { // intersect with original clip region
-    rect.Intersect(m_clipRegions.top());
-  }
-  if (rect.IsEmpty())
-    return false;
-  m_clipRegions.push(rect);
+{
+	// Transform from our origin
+	CPoint origin;
+	
+	if (m_origins.size())
+		origin = m_origins.top();
+	
+	// ok, now intersect with our old clip region
+	CRect rect(x, y, x + w, y + h);
+	rect += origin;
+	
+	if (m_clipRegions.size())
+	{
+		// Intersect with original clip region
+		rect.Intersect(m_clipRegions.top());
+	}
+	
+	if (rect.IsEmpty())
+		return false;
+	
+	m_clipRegions.push(rect);
 
-  // here we could set the hardware clipping, if applicable
-  return true;
+	// here we could set the hardware clipping, if applicable
+	return true;
 }
 
 void CGraphicContext::RestoreClipRegion()
 {
-  if (m_clipRegions.size())
-    m_clipRegions.pop();
+	if (m_clipRegions.size())
+		m_clipRegions.pop();
 
-  // here we could reset the hardware clipping, if applicable
+	// here we could reset the hardware clipping, if applicable
 }
 
 void CGraphicContext::ClipRect(CRect &vertex, CRect &texture, CRect *texture2)
 {
-  // this is the software clipping routine.  If the graphics hardware is set to do the clipping
-  // (eg via SetClipPlane in D3D for instance) then this routine is unneeded.
-  if (m_clipRegions.size())
-  {
-    // take a copy of the vertex rectangle and intersect
-    // it with our clip region (moved to the same coordinate system)
-    CRect clipRegion(m_clipRegions.top());
-    if (m_origins.size())
-      clipRegion -= m_origins.top();
-    CRect original(vertex);
-    vertex.Intersect(clipRegion);
-    // and use the original to compute the texture coordinates
-    if (original != vertex)
-    {
-      float scaleX = texture.Width() / original.Width();
-      float scaleY = texture.Height() / original.Height();
-      texture.x1 += (vertex.x1 - original.x1) * scaleX;
-      texture.y1 += (vertex.y1 - original.y1) * scaleY;
-      texture.x2 += (vertex.x2 - original.x2) * scaleX;
-      texture.y2 += (vertex.y2 - original.y2) * scaleY;
-      if (texture2)
-      {
-        scaleX = texture2->Width() / original.Width();
-        scaleY = texture2->Height() / original.Height();
-        texture2->x1 += (vertex.x1 - original.x1) * scaleX;
-        texture2->y1 += (vertex.y1 - original.y1) * scaleY;
-        texture2->x2 += (vertex.x2 - original.x2) * scaleX;
-        texture2->y2 += (vertex.y2 - original.y2) * scaleY;
-      }
-    }
-  }
+	// This is the software clipping routine.  If the graphics hardware is set to do the clipping
+	// (eg via SetClipPlane in D3D for instance) then this routine is unneeded.
+	if (m_clipRegions.size())
+	{
+		// Take a copy of the vertex rectangle and intersect
+		// it with our clip region (moved to the same coordinate system)
+		CRect clipRegion(m_clipRegions.top());
+		
+		if (m_origins.size())
+			clipRegion -= m_origins.top();
+		
+		CRect original(vertex);
+		vertex.Intersect(clipRegion);
+		
+		// and use the original to compute the texture coordinates
+		if (original != vertex)
+		{
+			float scaleX = texture.Width() / original.Width();
+			float scaleY = texture.Height() / original.Height();
+			texture.x1 += (vertex.x1 - original.x1) * scaleX;
+			texture.y1 += (vertex.y1 - original.y1) * scaleY;
+			texture.x2 += (vertex.x2 - original.x2) * scaleX;
+			texture.y2 += (vertex.y2 - original.y2) * scaleY;
+			
+			if (texture2)
+			{
+				scaleX = texture2->Width() / original.Width();
+				scaleY = texture2->Height() / original.Height();
+				texture2->x1 += (vertex.x1 - original.x1) * scaleX;
+				texture2->y1 += (vertex.y1 - original.y1) * scaleY;
+				texture2->x2 += (vertex.x2 - original.x2) * scaleX;
+				texture2->y2 += (vertex.y2 - original.y2) * scaleY;
+			}
+		}
+	}
 }
 
 void CGraphicContext::UpdateFinalTransform(const TransformMatrix &matrix)
@@ -794,4 +814,3 @@ void CGraphicContext::UpdateFinalTransform(const TransformMatrix &matrix)
 	// trouble is that we require the resulting x,y coords to be rounded to
 	// the nearest pixel (vertex shader perhaps?)
 }
-

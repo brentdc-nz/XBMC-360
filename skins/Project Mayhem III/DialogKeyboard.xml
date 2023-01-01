@@ -15,7 +15,7 @@
 			<posy>150</posy>
 			<width>740</width>
 			<height>87</height>
-			<texture>sub-background-grey.png</texture>
+			<texture>sub-background.png</texture>
 		</control>
 		<control type="label" id="311">
 			<description>dialog Heading</description>

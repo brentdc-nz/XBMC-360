@@ -649,6 +649,7 @@ CAnimation *CGUIControl::GetAnimation(ANIMATION_TYPE type, bool checkConditions 
 	for (unsigned int i = 0; i < m_animations.size(); i++)
 	{
 		CAnimation &anim = m_animations[i];
+
 		if (anim.GetType() == type)
 		{
 			if (!checkConditions || !anim.GetCondition() || g_infoManager.GetBool(anim.GetCondition()))
@@ -685,7 +686,7 @@ void CGUIControl::UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentPro
 	}
 	else if (type == ANIM_TYPE_HIDDEN)
 	{
-		if (currentProcess == ANIM_PROCESS_NORMAL)  // A hide animation
+		if (currentProcess == ANIM_PROCESS_NORMAL) // A hide animation
 		{
 			if (currentState == ANIM_STATE_APPLIED)
 				m_visible = HIDDEN; // Finished

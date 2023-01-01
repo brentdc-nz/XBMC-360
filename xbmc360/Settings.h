@@ -11,6 +11,20 @@
 #define SETTINGS_FILE "D:\\settings.xml"
 #define SOURCES_FILE "D:\\sources.xml" //TODO: GetUserDataFolder()
 
+class CSkinString
+{
+public:
+	CStdString name;
+	CStdString value;
+};
+
+class CSkinBool
+{
+public:
+	CStdString name;
+	bool value;
+};
+
 class CSettings
 {
 public:
@@ -18,15 +32,29 @@ public:
 	virtual ~CSettings();
 
 	void Initialize();
+
 	bool LoadSettings(const CStdString& strSettingsFile);
 	bool Load();
 	bool SaveSettings(const CStdString& strSettingsFile) const;
 	void Save() const;
 
+	void Clear();
+
 	bool UpdateShare(const CStdString &type, const CStdString oldName, const CMediaSource &share);
 	bool AddShare(const CStdString &type, const CMediaSource &share);
 	VECSOURCES *GetSourcesFromType(const CStdString &type);
 	bool DeleteSource(const CStdString &strType, const CStdString strName, const CStdString strPath, bool virtualSource = false);
+
+	int TranslateSkinString(const CStdString &setting);
+	const CStdString &GetSkinString(int setting) const;
+	void SetSkinString(int setting, const CStdString &label);
+
+	int TranslateSkinBool(const CStdString &setting);
+	bool GetSkinBool(int setting) const;
+	void SetSkinBool(int setting, bool set);
+
+	void ResetSkinSetting(const CStdString &setting);
+	void ResetSkinSettings();
 
 	CStdString GetVideoExtensions() { return m_strVideoExtensions; };
 	CStdString GetAudioExtensions() { return m_strAudioExtensions; };
@@ -46,6 +74,9 @@ public:
 	VECSOURCES m_videoSources;
 
 protected:
+	std::map<int, CSkinString> m_skinStrings;
+	std::map<int, CSkinBool> m_skinBools;
+
 	void GetSources(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSOURCES& items);
 	bool GetSource(const CStdString &category, const TiXmlNode *source, CMediaSource &share);
 	bool SetSources(TiXmlNode *root, const char *section, const VECSOURCES &shares);

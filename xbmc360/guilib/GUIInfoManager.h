@@ -71,7 +71,18 @@ namespace INFO
 #define CONTAINER_SHOWPLOT          379
 #define CONTAINER_TOTALTIME         380
 
+#define SKIN_HAS_THEME_START        500
+#define SKIN_HAS_THEME_END          599 // Allow for max 100 themes
+
+#define SKIN_BOOL                   600
+#define SKIN_STRING                 601
+#define SKIN_HAS_MUSIC_OVERLAY      602
+#define SKIN_HAS_VIDEO_OVERLAY      603
+
 #define SYSTEM_FREE_MEMORY          648
+
+#define SKIN_THEME                  800
+#define SKIN_COLOUR_THEME           801
 
 #define CONTROL_GROUP_HAS_FOCUS     29999
 
@@ -232,7 +243,7 @@ public:
 	CStdString GetLabel(int info, int contextWindow = 0);
 	CStdString GetImage(int info, int contextWindow);
 
-	bool GetBool(int condition, int contextWindow = 0, const CGUIListItem *item=NULL);
+	bool GetBool(int condition, int contextWindow = 0, const CGUIListItem *item = NULL);
 	int GetInt(int info, int contextWindow = 0) const;
 	void UpdateFPS();
 
@@ -251,7 +262,6 @@ protected:
 	bool CheckWindowCondition(CGUIWindow *window, int condition) const;
 	CGUIWindow *GetWindowWithCondition(int contextWindow, int condition) const;
 
-	int AddMultiInfo(const GUIInfo &info);
 	bool GetMultiInfoBool(const GUIInfo &info, int contextWindow = 0);
 	CStdString GetMultiInfoLabel(const GUIInfo &info, int contextWindow = 0);
 	int TranslateListItem(const CStdString &info);
@@ -267,7 +277,15 @@ protected:
 	int GetTotalPlayTime() const;
 	CStdString GetDuration(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
 
-private:
+protected:
+	// Conditional string parameters for testing are stored in a vector for later retrieval.
+	// The offset into the string parameters array is returned.
+	int ConditionalStringParameter(const CStdString &strParameter, bool caseSensitive = false);
+	int AddMultiInfo(const GUIInfo &info);
+
+	// Conditional string parameters are stored here
+	CStdStringArray m_stringParameters;
+
 	// Fullscreen OSD Stuff
 	bool m_playerShowCodec;
 
