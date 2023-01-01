@@ -660,8 +660,23 @@ bool CGUIWindow::ControlGroupHasFocus(int groupID, int controlID)
 // Override this function and call the base class before doing any dynamic memory freeing
 void CGUIWindow::OnDeinitWindow(int nextWindowID)
 {
-	m_bAllocated = false;
-
+	if (!m_manualRunActions)
+		RunUnloadActions();
+  
+	if (nextWindowID != WINDOW_FULLSCREEN_VIDEO)
+	{
+		// Dialog animations are handled in Close() rather than here
+		if (HasAnimation(ANIM_TYPE_WINDOW_CLOSE) && !IsDialog())
+		{
+			// Perform the window out effect
+			QueueAnimation(ANIM_TYPE_WINDOW_CLOSE);
+			
+			while (IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
+			{
+				g_windowManager.ProcessRenderLoop(true);
+			}
+		}
+	}
 	SaveControlStates();
 }
 
@@ -940,4 +955,9 @@ bool CGUIWindow::SendMessage(int message, int id, int param1 /* = 0*/, int param
 {
 	CGUIMessage msg(message, GetID(), id, param1, param2);
 	return OnMessage(msg);
+}
+
+void CGUIWindow::RunUnloadActions()
+{
+	m_unloadActions.Execute(GetID(), GetParentID());
 }
