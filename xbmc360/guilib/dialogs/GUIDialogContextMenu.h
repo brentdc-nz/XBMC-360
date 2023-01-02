@@ -110,9 +110,35 @@ public:
 	CGUIDialogContextMenu(void);
 	virtual ~CGUIDialogContextMenu(void);
 
-	static bool OnContextButton(const CStdString &type, const CFileItemPtr item, CONTEXT_BUTTON button);
+	virtual bool OnMessage(CGUIMessage &message);
+	virtual void DoModal(int iWindowID = WINDOW_INVALID, const CStdString &param = "");
+	virtual void OnWindowLoaded();
+	virtual void OnWindowUnload();
+	virtual void SetPosition(float posX, float posY);
 
-private:
+	void ClearButtons();
+	int AddButton(const CStdString &label, int value = -1);
+	int GetButton();
+	void OffsetPosition(float offsetX, float offsetY);
+
+	// Positions the current context menu in the middle of the focused control. If it can not
+	// find it then it positions the context menu in the middle of the screen
+	void PositionAtCurrentFocus();
+
+	static bool OnContextButton(const CStdString &type, const CFileItemPtr item, CONTEXT_BUTTON button);
+	static void GetContextButtons(const CStdString &type, const CFileItemPtr item, CContextButtons &buttons);
+
+	// Show the context menu with the given choices
+	// param choices the choices available for the user.
+	// return -1 if no choice is made, else the chosen option.
+	static int ShowAndGetChoice(const CContextButtons &choices);
+
+	static CMediaSource *GetShare(const CStdString &type, const CFileItem *item);
+
+protected:
+	float GetWidth();
+	float GetHeight();
+	virtual void OnInitWindow();
 	int m_clickedButton;
 	CContextButtons m_buttons;
 };

@@ -13,9 +13,10 @@ public:
 	virtual bool OnMessage(CGUIMessage& message);
 
 protected:
-	virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
-	virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
 	virtual bool OnPlayMedia(int iItem);
+	virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
+	virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
+	virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
 };
 
 #endif //GUILIB_GUIWINDOWPROGRAMS_H

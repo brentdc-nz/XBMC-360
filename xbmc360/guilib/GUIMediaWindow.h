@@ -35,8 +35,8 @@ protected:
 	void SetupShares();
 	virtual void GoParentFolder();
 	virtual bool OnClick(int iItem);
-//	virtual bool OnPopupMenu(int iItem); // TODO
-//	virtual void GetContextButtons(int itemNumber, CContextButtons &buttons); // TODO
+	virtual bool OnPopupMenu(int iItem);
+	virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
 	virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
 	virtual void FormatItemLabels(CFileItemList &items, const LABEL_MASKS &labelMasks);
 	virtual void UpdateButtons();

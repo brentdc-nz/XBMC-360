@@ -59,10 +59,29 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
 	return CGUIWindowVideoBase::OnMessage(message);
 }
 
+void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &buttons)
+{
+	CFileItemPtr item;
+	
+	if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
+		item = m_vecItems->Get(itemNumber);
+
+	if (item)
+	{
+		// Are we in the playlists location?
+		if (m_vecItems->IsVirtualDirectoryRoot())
+		{
+			// Get the usual shares, and anything for all media windows
+			CGUIDialogContextMenu::GetContextButtons("video", item, buttons);
+			CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
+		}
+	}
+}
+
 bool CGUIWindowVideoFiles::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
 	CFileItemPtr item;
-
+	
 	if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
 		item = m_vecItems->Get(itemNumber);
 
@@ -71,16 +90,17 @@ bool CGUIWindowVideoFiles::OnContextButton(int itemNumber, CONTEXT_BUTTON button
 		if (CGUIDialogContextMenu::OnContextButton("video", item, button))
 		{
 			// TODO: should we search DB for entries from plugins?
-			if (button == CONTEXT_BUTTON_REMOVE_SOURCE/* && !item->IsPlugin()
-				&& !item->IsLiveTV() &&!item->IsRSS()*/)
+/*			if (button == CONTEXT_BUTTON_REMOVE_SOURCE && !item->IsPlugin()
+				&& !item->IsLiveTV() &&!item->IsRSS())
 			{
-				int iTest = 0;
-//				OnUnAssignContent(itemNumber,20375,20340,20341); // TODO
+				OnUnAssignContent(itemNumber,20375,20340,20341);
 			}
-			Update("");
+*/			Update("");
 			return true;
 		}
 	}
+	
+	// TODO
 
 	return CGUIWindowVideoBase::OnContextButton(itemNumber, button);
 }

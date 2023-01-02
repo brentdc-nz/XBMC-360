@@ -143,34 +143,34 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
 	// The non-contextual menu can be called at any time
 	if (action.GetID() == ACTION_CONTEXT_MENU && !m_viewControl.HasControl(GetFocusedControlID()))
 	{
-//		OnPopupMenu(-1); // TODO
+		OnPopupMenu(-1);
 		return true;
 	}
 
 	// Live filtering
-	if (action.GetID() == ACTION_FILTER_CLEAR) // TODO
+	if (action.GetID() == ACTION_FILTER_CLEAR)
 	{
-/*/		CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS); // TODO
+		CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS);
 		message.SetStringParam("");
 		OnMessage(message);
-*/		return true;
+		return true;
 	}
   
-	if (action.GetID() == ACTION_BACKSPACE) // TODO
+	if (action.GetID() == ACTION_BACKSPACE)
 	{
-/*		CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS, 2); // 2 for delete // TODO
+		CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS, 2); // 2 for delete
 		OnMessage(message);
-*/		return true;
+		return true;
 	}
 
-	if (action.GetID() >= ACTION_FILTER_SMS2 && action.GetID() <= ACTION_FILTER_SMS9) // TODO
+	if (action.GetID() >= ACTION_FILTER_SMS2 && action.GetID() <= ACTION_FILTER_SMS9)
 	{
-/*		CStdString filter;
+		CStdString filter;
 		filter.Format("%i", (int)(action.GetID() - ACTION_FILTER_SMS2 + 2));
-		CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS, 1); // 1 for append // TODO
+		CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS, 1); // 1 for append
 		message.SetStringParam(filter);
 		OnMessage(message);
-*/		return true;
+		return true;
 	}
 
 	return CGUIWindow::OnAction(action);
@@ -266,33 +266,32 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
 				
 				return true;
 			}
-			else if (m_viewControl.HasControl(iControl))  // list/thumb control
+			if (m_viewControl.HasControl(iControl))  // list/thumb control
 			{
 				int iItem = m_viewControl.GetSelectedItem();
 				int iAction = message.GetParam1();
-
 				if (iItem < 0) break;
-#ifdef _HAS_MOUSE				
+
+#ifdef _HAS_MOUSE
 				if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
+#else
+				if (iAction == ACTION_SELECT_ITEM)
+#endif
 				{
 					OnClick(iItem);
 				}
+#ifdef _HAS_MOUSE
 				else if (iAction == ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
+#else
+				else if (iAction == ACTION_CONTEXT_MENU)
+#endif
 				{
+					if(g_windowManager.GetActiveWindow() == WINDOW_DIALOG_CONTEXT_MENU)
+						return true;
+
 					OnPopupMenu(iItem);
 					return true;
 				}
-#else
-				if (iAction == ACTION_SELECT_ITEM)
-				{
-					OnClick(iItem);
-				}
-				else if (iAction == ACTION_CONTEXT_MENU)
-				{
-//					OnPopupMenu(iItem); // TODO
-					return true;
-				}
-#endif
 			}
 		}
 		break;
@@ -1348,8 +1347,7 @@ void CGUIMediaWindow::SetupShares()
 	}
 }
 
-/*
-bool CGUIMediaWindow::OnPopupMenu(int iItem) // TODO
+bool CGUIMediaWindow::OnPopupMenu(int iItem)
 {
 	// Popup the context menu
 	// grab our context menu
@@ -1373,10 +1371,8 @@ bool CGUIMediaWindow::OnPopupMenu(int iItem) // TODO
 	}
 	return false;
 }
-*/
 
-/*
-void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons) // TODO
+void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
 	CFileItemPtr item = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : CFileItemPtr();
 
@@ -1402,7 +1398,8 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
 		buttons.Add((CONTEXT_BUTTON)i, item->GetProperty(label));
 	}
 
-	if (item->IsPlugin() && !item->IsPluginRoot() && item->m_bIsFolder)
+//TODO: Plugin context buttons
+/*	if (item->IsPlugin() && !item->IsPluginRoot() && item->m_bIsFolder)
 	{
 		if (CPluginSettings::SettingsExist(item->GetPath()))
 			buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
@@ -1415,11 +1412,11 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
 			buttons.Add(CONTEXT_BUTTON_DELETE_PLUGIN, 117);
 		}
 	}
-
+*/
 	if (item->GetPropertyBOOL("pluginreplacecontextitems"))
 		return;
-
-	// TODO: FAVOURITES Conditions on masterlock and localisation
+	
+/*	// TODO: FAVOURITES Conditions on masterlock and localisation
 	if (item && !item->IsParentFolder() && !item->GetPath().Equals("add") && !item->GetPath().Equals("newplaylist://") && !item->GetPath().Left(19).Equals("newsmartplaylist://"))
 	{
 		if (CFavourites::IsFavourite(item.get(), GetID()))
@@ -1427,8 +1424,8 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
 		else
 			buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14076); // Add To Favourites;
 	}
-}
 */
+}
 
 bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button) // TODO
 {

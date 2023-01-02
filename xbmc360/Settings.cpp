@@ -244,8 +244,26 @@ VECSOURCES *CSettings::GetSourcesFromType(const CStdString &type)
 
 bool CSettings::DeleteSource(const CStdString &strType, const CStdString strName, const CStdString strPath, bool virtualSource)
 {
+	VECSOURCES *pShares = GetSourcesFromType(strType);
+	if (!pShares) return false;
 
-	return false;
+	bool found(false);
+
+	for (IVECSOURCES it = pShares->begin(); it != pShares->end(); it++)
+	{
+		if ((*it).strName == strName && (*it).strPath == strPath)
+		{
+			CLog::Log(LOGDEBUG,"found share, removing!");
+			pShares->erase(it);
+			found = true;
+			break;
+		}
+	}
+
+	if (virtualSource)
+		return found;
+
+	return SaveSources();
 }
 
 void CSettings::Clear()

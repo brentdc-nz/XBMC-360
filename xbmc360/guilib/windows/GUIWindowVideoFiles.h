@@ -17,6 +17,7 @@ public:
 	virtual bool OnMessage(CGUIMessage& message);
 
 protected:
+	virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
 	virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
 };
 
