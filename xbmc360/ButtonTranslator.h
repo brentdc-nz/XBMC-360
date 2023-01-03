@@ -22,17 +22,16 @@ public:
 	CButtonTranslator();
 	virtual ~CButtonTranslator();
 
-	bool Load();
-	WORD TranslateWindowString(const char *szWindow);
-	 static bool TranslateActionString(const char *szAction, int &action);
+	static bool TranslateActionString(const char *szAction, int &action);
 	void GetAction(WORD wWindow, const CKey &key, CAction &action);
+	
+	bool Load();
+	void Clear(); // Clears the maps
 
 	// Translate between a window name and it's id
 	// param window name of the window
 	// return id of the window, or WINDOW_INVALID if not found
 	static int TranslateWindow(const CStdString &window);
-
-	void Clear();
 
 private:
 	typedef std::multimap<WORD, CButtonAction> buttonMap; // Our button map to fill in

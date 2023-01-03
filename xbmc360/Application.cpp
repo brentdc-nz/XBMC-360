@@ -452,6 +452,9 @@ bool CApplication::OnKey(CKey& key) // TODO - Update to OnAction
 {
 	CAction action;
 
+	// Get the current active window
+	int iWin = g_windowManager.GetActiveWindow();
+
 	// A key has been pressed.
 	// Reset the screensaver timer
 	// but not for the analog thumbsticks/triggers
@@ -463,8 +466,11 @@ bool CApplication::OnKey(CKey& key) // TODO - Update to OnAction
 			return true;
 	}
 
-	// Get the current active window
-	int iWin = g_windowManager.GetActiveWindow();
+	// Change this if we have a dialog up
+	if (g_windowManager.HasModalDialog())
+	{
+		iWin = g_windowManager.GetTopMostModalDialogID();
+	}
 
 	g_buttonTranslator.GetAction(iWin, key, action);
 

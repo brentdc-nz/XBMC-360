@@ -89,30 +89,34 @@ bool CButtonTranslator::Load()
 
 	TiXmlElement* pRoot = xmlDoc.RootElement();
 	CStdString strValue = pRoot->Value();
-	if ( strValue != "keymap")
+	
+	if (strValue != "keymap")
 	{
-		g_LoadErrorStr.Format("Q:\\keymap.xml Doesn't contain <keymap>");
+		CLog::Log(LOGERROR, "%s Doesn't contain <keymap>", "D:\\keymap.xml");
 		return false;
 	}
-
-	// run through our window groups
+	
+	// Run through our window groups
 	TiXmlNode* pWindow = pRoot->FirstChild();
+	
 	while (pWindow)
 	{
-		WORD wWindowID = WINDOW_INVALID;
-		const char *szWindow = pWindow->Value();
-		if (szWindow)
+		if (pWindow->Type() == TiXmlNode::ELEMENT)
 		{
-			if (strcmpi(szWindow, "global") == 0)
-				wWindowID = -1;
-			else
-				wWindowID = TranslateWindowString(szWindow);
+			int windowID = WINDOW_INVALID;
+			const char *szWindow = pWindow->Value();
+			
+			if (szWindow)
+			{
+				if (strcmpi(szWindow, "global") == 0)
+					windowID = -1;
+				else
+					windowID = TranslateWindow(szWindow);
+			}
+			MapWindowActions(pWindow, windowID);
 		}
-		MapWindowActions(pWindow, wWindowID);
 		pWindow = pWindow->NextSibling();
 	}
-  
-	// Done!
 	return true;
 }
 
@@ -126,7 +130,7 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, WORD wWindowID)
 	TiXmlNode* pDevice;
 	if ((pDevice = pWindow->FirstChild("gamepad")) != NULL)
 	{
-		// map gamepad actions
+		// Aap gamepad actions
 		TiXmlElement *pButton = pDevice->FirstChildElement();
 		while (pButton)
 		{
@@ -139,7 +143,7 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, WORD wWindowID)
 		}
 	}
 	
-	// add our map to our table
+	// Add our map to our table
 	if (map.size() > 0)
 		translatorMap.insert(pair<WORD, buttonMap>( wWindowID, map));
 }
@@ -218,48 +222,6 @@ void CButtonTranslator::MapAction(WORD wButtonCode, const char *szAction, button
 		button.strID = szAction;
 		map.insert(pair<WORD, CButtonAction>(wButtonCode, button));
 	}
-}
-
-WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
-{
-	WORD wWindowID = WINDOW_INVALID;
-	CStdString strWindow = szWindow;
-	if (strWindow.IsEmpty()) return wWindowID;
-	strWindow.ToLower();
-
-	// window12345, for custom window to be keymapped
-	if (strWindow.length() > 6 && strWindow.Left(6).Equals("window"))
-		strWindow = strWindow.Mid(6);
-	if (CStringUtils::IsNaturalNumber(strWindow))
-	{
-		// Allow a full window id or a delta id
-		int iWindow = atoi(strWindow.c_str());
-		if (iWindow > WINDOW_INVALID) 
-			wWindowID = iWindow;
-		else 
-			wWindowID = WINDOW_HOME + iWindow;
-	}
-	// Windows
-	else if (strWindow.Equals("home")) wWindowID = WINDOW_HOME;
-	else if (strWindow.Equals("myprograms")) wWindowID = WINDOW_PROGRAMS;
-	else if (strWindow.Equals("fullscreenvideo")) wWindowID = WINDOW_FULLSCREEN_VIDEO;
-	else if (strWindow.Equals("myprograms")) wWindowID = WINDOW_PROGRAMS;
-	else if (strWindow.Equals("myvideos")) wWindowID = WINDOW_VIDEOS;
-	else if (strWindow.Equals("mymusic")) wWindowID = WINDOW_MUSIC;
-	else if (strWindow.Equals("mypictures")) wWindowID = WINDOW_PICTURES;
-	else if (strWindow.Equals("settings")) wWindowID = WINDOW_SETTINGS;
-	else if (strWindow.Equals("appearancesettings")) wWindowID = WINDOW_SETTINGS_APPEARANCE;
-	else if (strWindow.Equals("screensaver")) wWindowID = WINDOW_SCREENSAVER;
-	else if (strWindow.Equals("systeminfo")) wWindowID = WINDOW_SYSTEM_INFORMATION;
-	// Dialogs
-	else if (strWindow.Equals("shutdownmenu")) wWindowID = WINDOW_DIALOG_BUTTON_MENU;
-	else if (strWindow.Equals("seekbar")) wWindowID = WINDOW_DIALOG_SEEK_BAR;
-	else if (strWindow.Equals("mediasource")) wWindowID = WINDOW_DIALOG_MEDIA_SOURCE;
-	else
-		CLog::Log(LOGERROR, "Window Translator: Can't find window %s", strWindow.c_str());
-
-	CLog::Log(LOGDEBUG, "CButtonTranslator::TranslateWindowString(%s) returned Window ID (%i)", szWindow, wWindowID);
-	return wWindowID;
 }
 
 WORD CButtonTranslator::GetActionCode(WORD wWindow, const CKey &key, CStdString &strAction)
