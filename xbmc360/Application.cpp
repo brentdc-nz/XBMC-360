@@ -41,6 +41,7 @@
 #include "guilib\dialogs\GUIDialogMediaSource.h"
 #include "guilib\dialogs\GUIDialogContextMenu.h"
 #include "guilib\dialogs\GUIDialogYesNo.h"
+#include "guilib\dialogs\GUIDialogProgress.h"
 #include "guilib\dialogs\GUIDialogKeyboard.h"
 #include "guilib\dialogs\GUIDialogNumeric.h"
 #include "guilib\dialogs\GUIDialogOK.h"
@@ -192,6 +193,7 @@ bool CApplication::Initialize()
 
 	// Dialogs
 	g_windowManager.Add(new CGUIDialogYesNo);           // window id = 100
+	g_windowManager.Add(new CGUIDialogProgress);        // window id = 101
 	g_windowManager.Add(new CGUIDialogKeyboard);        // window id = 103
 	g_windowManager.Add(new CGUIDialogContextMenu);     // window id = 106
 	g_windowManager.Add(new CGUIDialogNumeric);         // window id = 109
@@ -1116,6 +1118,7 @@ void CApplication::Cleanup()
 
 		// Dialogs
 		g_windowManager.Delete(WINDOW_DIALOG_YES_NO);
+		g_windowManager.Delete(WINDOW_DIALOG_PROGRESS);
 		g_windowManager.Delete(WINDOW_DIALOG_CONTEXT_MENU);
 		g_windowManager.Delete(WINDOW_DIALOG_BUTTON_MENU);
 		g_windowManager.Delete(WINDOW_DIALOG_MEDIA_SOURCE);

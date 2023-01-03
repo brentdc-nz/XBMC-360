@@ -3,6 +3,7 @@
 #include "utils\Util.h"
 #include "utils\XEXUtils.h"
 #include "guilib\dialogs\GUIDialogMediaSource.h"
+#include "guilib\GUIWindowManager.h"
 #include "utils\URIUtils.h"
 #include "filesystem\File.h"
 
@@ -11,6 +12,7 @@ using namespace XFILE;
 CGUIWindowPrograms::CGUIWindowPrograms(void)
 	: CGUIMediaWindow(WINDOW_PROGRAMS, "MyPrograms.xml")
 {
+	m_dlgProgress = NULL;
 	m_rootDir.AllowNonLocalSources(false); // No nonlocal shares for this window please
 }
 
@@ -33,15 +35,15 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 
 		case GUI_MSG_WINDOW_INIT: // TODO
 		{
-/*			m_iRegionSet = 0;
+//			m_iRegionSet = 0;
 			m_dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-*/
+
 			// Is this the first time accessing this window?
 			if (m_vecItems->GetPath() == "?" && message.GetStringParam().IsEmpty())
 				message.SetStringParam(/*g_settings.m_defaultProgramSource*/""); // TODO
 
-/*			m_database.Open();
-*/
+//			m_database.Open();
+
 			return CGUIMediaWindow::OnMessage(message);
 		}
 		break;
@@ -84,7 +86,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 
 bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
-	bool bFlattened=false;
+	bool bFlattened = false;
 	
 /*	if (URIUtils::IsDVD(strDirectory)) // TODO
 	{
@@ -118,16 +120,16 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
 	}
 */
 	// Flatten any folders
-/*	m_database.BeginTransaction(); // TODO
-	DWORD dwTick = timeGetTime();
+//	m_database.BeginTransaction();
+	DWORD dwTick = CTimeUtils::timeGetTime();
 	bool bProgressVisible = false;
-*/	
+	
 	for (int i = 0; i < items.Size(); i++)
 	{
 		CStdString shortcutPath;
 		CFileItemPtr item = items[i];
-/*		
-		if (!bProgressVisible && timeGetTime()-dwTick>1500 && m_dlgProgress) // TODO
+		
+		if (!bProgressVisible && CTimeUtils::timeGetTime()-dwTick>1500 && m_dlgProgress)
 		{
 			// Tag loading takes more then 1.5 secs, show a progress dialog
 			m_dlgProgress->SetHeading(189);
@@ -143,7 +145,7 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
 			m_dlgProgress->SetLine(2,item->GetLabel());
 			m_dlgProgress->Progress();
 		}
-*/	
+
 		if (item->m_bIsFolder && !item->IsParentFolder()/* && !item->IsPlugin()*/)
 		{
 			// Folder item - let's check for a default.xbe file, and flatten if we have one
@@ -230,9 +232,9 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
 	
 	if (!items.HasThumbnail())
 		items.SetUserProgramThumb();
-
+*/
 	if (bProgressVisible)
-		m_dlgProgress->Close();*/
+		m_dlgProgress->Close();
 
 	return true;
 }

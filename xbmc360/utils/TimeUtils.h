@@ -23,9 +23,10 @@ int64_t CurrentHostFrequency(void);
 class CTimeUtils
 {
 public:
-	static void UpdateFrameTime();      ///< update the frame time.  Not threadsafe
-	static unsigned int GetFrameTime(); ///< returns the frame time in MS.  Not threadsafe
+	static void UpdateFrameTime(); // Update the frame time.  Not threadsafe
+	static unsigned int GetFrameTime(); // Returns the frame time in MS.  Not threadsafe
 	static unsigned int GetTimeMS();
+	static DWORD timeGetTime(); // Missing from Xbox 360 XDK
 
 private:
 	static unsigned int frameTime;

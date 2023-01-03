@@ -130,6 +130,7 @@
 
 // Dialogs
 #define WINDOW_DIALOG_YES_NO              10100
+#define WINDOW_DIALOG_PROGRESS            10101
 #define WINDOW_DIALOG_CONTEXT_MENU        10106
 #define WINDOW_DIALOG_NUMERIC             10109
 #define WINDOW_DIALOG_BUTTON_MENU         10111

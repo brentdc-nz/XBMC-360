@@ -722,3 +722,27 @@ void CURL::Decode(CStdString& strURLData)
 	}
 	strURLData = strResult;
 }
+
+void CURL::Encode(CStdString& strURLData)
+{
+	CStdString strResult;
+
+	// Wonder what a good value is here is, depends on how often it occurs
+	strResult.reserve( strURLData.length() * 2 );
+
+	for (int i = 0; i < (int)strURLData.size(); ++i)
+	{
+		int kar = (unsigned char)strURLData[i];
+
+		//if (kar == ' ') strResult += '+';
+		if (isalnum(kar)) strResult
+			+= kar;
+		else
+		{
+			CStdString strTmp;
+			strTmp.Format("%%%02.2x", kar);
+			strResult += strTmp;
+		}
+	}
+	strURLData = strResult;
+}

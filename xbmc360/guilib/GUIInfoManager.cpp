@@ -9,6 +9,7 @@
 #include "utils\URIUtils.h"
 #include "Settings.h"
 #include "GUISettings.h"
+#include "dialogs\GUIDialogProgress.h"
 
 using namespace std;
 
@@ -182,6 +183,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 		else if(strTest.Equals("system.cputemperature")) ret = SYSTEM_CPU_TEMPERATURE;
 		else if(strTest.Equals("system.gputemperature")) ret = SYSTEM_GPU_TEMPERATURE;
 		else if(strTest.Equals("system.memory(free)") || strTest.Equals("system.freememory")) ret = SYSTEM_FREE_MEMORY;
+		else if (strTest.Equals("system.progressbar")) ret = SYSTEM_PROGRESS_BAR;
 	}
 	else if(strCategory.Equals("player"))
 	{
@@ -523,6 +525,13 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
 			strLabel.Format("%iMB", stat.dwAvailPhys /MB);
 		}
 		break;
+		case SYSTEM_PROGRESS_BAR:
+		{
+			int percent = GetInt(SYSTEM_PROGRESS_BAR);
+			if (percent)
+				strLabel.Format("%i", percent);
+		}
+		break;
 
 		// Skin theme
 		case SKIN_THEME:
@@ -711,6 +720,12 @@ int CGUIInfoManager::GetInt(int info, int contextWindow) const
 			}
 		}
 		break;
+		case SYSTEM_PROGRESS_BAR:
+		{
+			CGUIDialogProgress *bar = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+			if (bar && bar->IsDialogRunning())
+				return bar->GetPercentage();
+		}
 	}
 	return 0; // Not found
 }

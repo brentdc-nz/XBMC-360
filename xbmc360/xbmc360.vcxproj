@@ -384,6 +384,7 @@
     <ClInclude Include="guilib\dialogs\GUIDialogNetworkSetup.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogNumeric.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogOK.h" />
+    <ClInclude Include="guilib\dialogs\GUIDialogProgress.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogSeekBar.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogSlider.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogYesNo.h" />
@@ -613,6 +614,7 @@
     <ClCompile Include="guilib\dialogs\GUIDialogNetworkSetup.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogNumeric.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogOK.cpp" />
+    <ClCompile Include="guilib\dialogs\GUIDialogProgress.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogSeekBar.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogSlider.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogYesNo.cpp" />

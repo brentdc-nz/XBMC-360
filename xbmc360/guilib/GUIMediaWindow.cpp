@@ -651,7 +651,7 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
 	}
 	else
 	{
-		DWORD time = GetTickCount();//timeGetTime(); // FIXME // TODO
+		DWORD time = CTimeUtils::timeGetTime();
 
 		if (strDirectory.IsEmpty())
 			SetupShares();
@@ -660,7 +660,7 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
 			return false;
 
 		// Took over a second, and not normally cached, so cache it
-		if (time + 1000 < /*timeGetTime()*/GetTickCount() && items.CacheToDiscIfSlow()) // FIXME // TODO
+		if (time + 1000 < CTimeUtils::timeGetTime() && items.CacheToDiscIfSlow())
 			items.Save(GetID());
 
 		// If these items should replace the current listing, then pop it off the top

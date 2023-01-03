@@ -1,14 +1,21 @@
+#include "utils\log.h"
 #include "MultiPathDirectory.h"
-#include "utils\Log.h"
-#include "utils\StringUtils.h"
 #include "Directory.h"
+#include "utils\Util.h" // TODO
+#include "utils\URIUtils.h"
+#include "utils\StringUtils.h"
+#include "URL.h"
+#include "guilib\GUIWindowManager.h"
+#include "guilib\dialogs\GUIDialogProgress.h"
+#include "FileItem.h"
 
+using namespace std;
 using namespace XFILE;
 
 //
-// Multipath://{path1} , {path2} , {path3} , ... , {path-N}
+// multipath://{path1}/{path2}/{path3}/.../{path-N}
 //
-// Unlike the older virtualpath:// protocol, sub-folders are combined together into a new
+// unlike the older virtualpath:// protocol, sub-folders are combined together into a new
 // multipath:// style url.
 //
 
@@ -23,24 +30,23 @@ CMultiPathDirectory::~CMultiPathDirectory()
 bool CMultiPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
 	CLog::Log(LOGDEBUG,"CMultiPathDirectory::GetDirectory(%s)", strPath.c_str());
-#if 0
+
 	vector<CStdString> vecPaths;
 
-	if(!GetPaths(strPath, vecPaths))
+	if (!GetPaths(strPath, vecPaths))
 		return false;
 
-/*
-	DWORD progressTime = timeGetTime() + 3000L; // Three seconds before showing progress bar
+	DWORD progressTime = CTimeUtils::timeGetTime() + 3000L; // 3 seconds before showing progress bar
 	CGUIDialogProgress* dlgProgress = NULL;
-*/
-	int iFailures = 0;
-	for(int i = 0; i < (int)vecPaths.size(); ++i)
+  
+	unsigned int iFailures = 0;
+	for (unsigned int i = 0; i < vecPaths.size(); ++i)
 	{
 		// Show the progress dialog if we have passed our time limit
-/*		if(timeGetTime() > progressTime && !dlgProgress)
+		if (CTimeUtils::timeGetTime() > progressTime && !dlgProgress)
 		{
-			dlgProgress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-			if(dlgProgress)
+			dlgProgress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+			if (dlgProgress)
 			{
 				dlgProgress->SetHeading(15310);
 				dlgProgress->SetLine(0, 15311);
@@ -52,95 +58,265 @@ bool CMultiPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
 				dlgProgress->Progress();
 			}
 		}
-
-		if(dlgProgress)
+		
+		if (dlgProgress)
 		{
 			CURL url(vecPaths[i]);
-			CStdString strStripped;
-			url.GetURLWithoutUserDetails(strStripped);
-			dlgProgress->SetLine(1, strStripped);
+			dlgProgress->SetLine(1, url.GetWithoutUserDetails());
 			dlgProgress->SetProgressAdvance();
 			dlgProgress->Progress();
 		}
-*/
+
 		CFileItemList tempItems;
 		CLog::Log(LOGDEBUG,"Getting Directory (%s)", vecPaths[i].c_str());
 		
-		if(CDirectory::GetDirectory(vecPaths[i], tempItems, m_strFileMask))
+		if (CDirectory::GetDirectory(vecPaths[i], tempItems, m_strFileMask, m_useFileDirectories, m_allowPrompting, m_cacheDirectory, m_extFileInfo))
 			items.Append(tempItems);
 		else
 		{
 			CLog::Log(LOGERROR,"Error Getting Directory (%s)", vecPaths[i].c_str());
 			iFailures++;
 		}
-/*
-		if(dlgProgress)
+
+		if (dlgProgress)
 		{
 			dlgProgress->SetProgressAdvance();
 			dlgProgress->Progress();
 		}
-*/	}
+	}
 
-//	if(dlgProgress)
-//		dlgProgress->Close();
+	if (dlgProgress)
+		dlgProgress->Close();
 
-	if(iFailures == vecPaths.size())
+	if (iFailures == vecPaths.size())
 		return false;
 
 	// Merge like-named folders into a sub multipath:// style url
 	MergeItems(items);
-#endif
+
 	return true;
 }
-#if 0
+
+bool CMultiPathDirectory::Exists(const char* strPath)
+{
+	CLog::Log(LOGDEBUG,"Testing Existence (%s)", strPath);
+
+	vector<CStdString> vecPaths;
+	
+	if (!GetPaths(strPath, vecPaths))
+		return false;
+
+	for (unsigned int i = 0; i < vecPaths.size(); ++i)
+	{
+		CLog::Log(LOGDEBUG,"Testing Existence (%s)", vecPaths[i].c_str());
+
+		if (CDirectory::Exists(vecPaths[i]))
+			return true;
+	}
+	return false;
+}
+
+bool CMultiPathDirectory::Remove(const char* strPath)
+{
+	vector<CStdString> vecPaths;
+	
+	if (!GetPaths(strPath, vecPaths))
+		return false;
+
+	bool success = false;
+	for (unsigned int i = 0; i < vecPaths.size(); ++i)
+	{
+		if (CDirectory::Remove(vecPaths[i]))
+			success = true;
+	}
+	return success;
+}
+
+CStdString CMultiPathDirectory::GetFirstPath(const CStdString &strPath)
+{
+	int pos = strPath.Find("/", 12);
+	
+	if (pos >= 0)
+	{
+		CStdString firstPath = strPath.Mid(12, pos - 12);
+		CURL::Decode(firstPath);
+		return firstPath;
+	}
+	return "";
+}
+
 bool CMultiPathDirectory::GetPaths(const CStdString& strPath, vector<CStdString>& vecPaths)
 {
 	vecPaths.empty();
 	CStdString strPath1 = strPath;
 
-	// Remove multipath:// from path
+	// Remove multipath:// from path and any trailing / (so that the last path doesn't get any more than it originally had)
 	strPath1 = strPath1.Mid(12);
+	URIUtils::RemoveSlashAtEnd(strPath1);
 
-	// Split on " , "
+	// Split on "/"
 	vector<CStdString> vecTemp;
-	CStringUtils::SplitString(strPath1, " , ", vecTemp);
+	CStringUtils::SplitString(strPath1, "/", vecTemp);
 
-	if(vecTemp.size() == 0)
+	if (vecTemp.size() == 0)
 		return false;
 
 	// Check each item
-	for(int i = 0; i < (int)vecTemp.size(); i++)
+	for (unsigned int i = 0; i < vecTemp.size(); i++)
 	{
 		CStdString tempPath = vecTemp[i];
-
-		// Replace double comma's with single ones.
-		tempPath.Replace(",,", ",");
+		CURL::Decode(tempPath);
 		vecPaths.push_back(tempPath);
 	}
-	
-	if(vecPaths.size() == 0)
-		return false;
-
 	return true;
 }
-#endif
-CStdString CMultiPathDirectory::GetFirstPath(const CStdString &strPath)
-{
-	int pos = strPath.Find(" , ", 12);
 
-	if(pos >= 0)
+bool CMultiPathDirectory::HasPath(const CStdString& strPath, const CStdString& strPathToFind)
+{
+	// Remove multipath:// from path and any trailing / (so that the last path doesn't get any more than it originally had)
+	CStdString strPath1 = strPath.Mid(12);
+	URIUtils::RemoveSlashAtEnd(strPath1);
+
+	// Split on "/"
+	vector<CStdString> vecTemp;
+	CStringUtils::SplitString(strPath1, "/", vecTemp);
+	
+	if (vecTemp.size() == 0)
+		return false;
+
+	// Check each item
+	for (unsigned int i = 0; i < vecTemp.size(); i++)
 	{
-		CStdString firstPath = strPath.Mid(12, pos - 12);
-		firstPath.Replace(",,",",");
-		return firstPath;
+		CStdString tempPath = vecTemp[i];
+		CURL::Decode(tempPath);
+		
+		if(tempPath == strPathToFind)
+			return true;
 	}
-	return "";
+	return false;
+}
+
+CStdString CMultiPathDirectory::ConstructMultiPath(const CFileItemList& items, const vector<int> &stack)
+{
+	// We replace all instances of comma's with double comma's, then separate
+	// the paths using " , "
+	
+	CLog::Log(LOGDEBUG, "Building multipath");
+	CStdString newPath = "multipath://";
+	
+	CLog::Log(LOGDEBUG, "-- adding path: %s", newPath.c_str());
+	
+	for (unsigned int i = 0; i < stack.size(); ++i)
+		AddToMultiPath(newPath, items[stack[i]]->GetPath());
+
+	CLog::Log(LOGDEBUG, "Final path: %s", newPath.c_str());
+	return newPath;
+}
+
+void CMultiPathDirectory::AddToMultiPath(CStdString& strMultiPath, const CStdString& strPath)
+{
+	CStdString strPath1 = strPath;
+	URIUtils::AddSlashAtEnd(strMultiPath);
+	
+	CLog::Log(LOGDEBUG, "-- adding path: %s", strPath.c_str());
+	CURL::Encode(strPath1);  
+	strMultiPath += strPath1;
+	strMultiPath += "/";
+}
+
+CStdString CMultiPathDirectory::ConstructMultiPath(const vector<CStdString> &vecPaths)
+{
+	// We replace all instances of comma's with double comma's, then separate
+	// the paths using " , "
+	
+	CLog::Log(LOGDEBUG, "Building multipath");
+	CStdString newPath = "multipath://";
+	
+	CLog::Log(LOGDEBUG, "-- adding path: %s", newPath.c_str());
+
+	for (unsigned int i = 0; i < vecPaths.size(); ++i)
+		AddToMultiPath(newPath, vecPaths[i]);
+	
+	CLog::Log(LOGDEBUG, "Final path: %s", newPath.c_str());
+	return newPath;
 }
 
 void CMultiPathDirectory::MergeItems(CFileItemList &items)
 {
 	CLog::Log(LOGDEBUG, "CMultiPathDirectory::MergeItems, items = %i", (int)items.Size());
 	DWORD dwTime=GetTickCount();
+	
+	if (items.Size() == 0)
+		return;
+	
+	// Sort items by label
+	// folders are before files in this sort method
+	items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
+	int i = 0;
 
+	// If first item in the sorted list is a file, just abort
+	if (!items.Get(i)->m_bIsFolder)
+		return;
+
+	while (i + 1 < items.Size())
+	{
+		// There are no more folders left, so exit the loop
+		CFileItemPtr pItem1 = items.Get(i);
+
+		if (!pItem1->m_bIsFolder)
+			break;
+
+		vector<int> stack;
+		stack.push_back(i);
+		CLog::Log(LOGDEBUG,"Testing path: [%03i] %s", i, pItem1->GetPath().c_str());
+
+		int j = i + 1;
+		do
+		{
+			CFileItemPtr pItem2 = items.Get(j);
+
+			if (!pItem2->GetLabel().Equals(pItem1->GetLabel()))
+				break;
+
+			// Ignore any filefolders which may coincidently have
+			// the same label as a true folder
+			if (!pItem2->IsFileFolder())
+			{
+				stack.push_back(j);
+				CLog::Log(LOGDEBUG,"  Adding path: [%03i] %s", j, pItem2->GetPath().c_str());
+			}
+			j++;
+		}
+		while (j < items.Size());
+
+		// Do we have anything to combine?
+		if (stack.size() > 1)
+		{
+			// We have a multipath so remove the items and add the new item
+			CStdString newPath = ConstructMultiPath(items, stack);
+			
+			for (unsigned int k = stack.size() - 1; k > 0; --k)
+				items.Remove(stack[k]);
+			
+			pItem1->SetPath(newPath);
+			CLog::Log(LOGDEBUG,"  New path: %s", pItem1->GetPath().c_str());
+		}
+
+		i++;
+	}
 	CLog::Log(LOGDEBUG, "CMultiPathDirectory::MergeItems, items = %i,  took %ld ms", items.Size(), GetTickCount()-dwTime);
+}
+
+bool CMultiPathDirectory::SupportsWriteFileOperations(const CStdString &strPath)
+{
+	vector<CStdString> paths;
+	GetPaths(strPath, paths);
+	
+// TODO: Just writing for now, will address soon
+/*
+	for (unsigned int i = 0; i < paths.size(); ++i)
+		if (CUtil::SupportsWriteFileOperations(paths[i]))
+			return true;
+*/	
+	return false;
 }

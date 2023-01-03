@@ -878,6 +878,9 @@
     <ClInclude Include="guilib\dialogs\GUIDialogOK.h">
       <Filter>Header Files\guilib\dialogs</Filter>
     </ClInclude>
+    <ClInclude Include="guilib\dialogs\GUIDialogProgress.h">
+      <Filter>Header Files\guilib\dialogs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -1583,6 +1586,9 @@
       <Filter>Source Files\guilib\dialogs</Filter>
     </ClCompile>
     <ClCompile Include="guilib\dialogs\GUIDialogOK.cpp">
+      <Filter>Source Files\guilib\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\dialogs\GUIDialogProgress.cpp">
       <Filter>Source Files\guilib\dialogs</Filter>
     </ClCompile>
   </ItemGroup>

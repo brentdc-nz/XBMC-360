@@ -53,3 +53,8 @@ unsigned int CTimeUtils::GetTimeMS()
 {
 	return GetTickCount();
 }
+
+DWORD CTimeUtils::timeGetTime()
+{
+	return GetTickCount();
+}

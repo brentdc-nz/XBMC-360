@@ -30,12 +30,11 @@ void CMediaSource::FromNameAndPaths(const CStdString &category, const CStdString
 	else
 	{
 		// Multiple valid paths?
-		int iTest = 0;
-		//strPath = CMultiPathDirectory::ConstructMultiPath(vecPaths); // TODO
+		strPath = CMultiPathDirectory::ConstructMultiPath(vecPaths);
 	}
 
 	strName = name;
-//	m_iLockMode = LOCK_MODE_EVERYONE; // TODO - Locking
+//	m_iLockMode = LOCK_MODE_EVERYONE; // TODO: Locking
 	m_strLockCode = "0";
 	m_iBadPwdCount = 0;
 	m_iHasLock = 0;

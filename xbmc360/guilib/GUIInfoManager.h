@@ -36,6 +36,7 @@ namespace INFO
 #define PLAYER_DURATION             29
 #define PLAYER_SHOWCODEC            30
 
+#define SYSTEM_PROGRESS_BAR         107
 #define SYSTEM_TIME                 110
 #define SYSTEM_DATE                 111
 #define SYSTEM_CPU_TEMPERATURE      112

@@ -51,6 +51,7 @@ static const ActionMapping windows[] =
         {"networksettings"          , WINDOW_SETTINGS_NETWORK},
         {"appearancesettings"       , WINDOW_SETTINGS_APPEARANCE},
         {"yesnodialog"              , WINDOW_DIALOG_YES_NO},
+        {"progressdialog"           , WINDOW_DIALOG_PROGRESS},
         {"contextmenu"              , WINDOW_DIALOG_CONTEXT_MENU},
         {"shutdownmenu"             , WINDOW_DIALOG_BUTTON_MENU},
         {"seekbar"                  , WINDOW_DIALOG_SEEK_BAR},

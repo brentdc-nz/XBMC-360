@@ -65,10 +65,10 @@ using namespace XFILE;
 IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 {
 	CURL url(strPath);
-
 	CFileItem item;
 
-	IFileDirectory* pDir=CFactoryFileDirectory::Create(strPath, &item);
+	IFileDirectory* pDir = CFactoryFileDirectory::Create(strPath, &item);
+
 	if (pDir)
 		return pDir;
 

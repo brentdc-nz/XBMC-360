@@ -44,6 +44,7 @@ public:
 	bool IsLocal() const;
 	static bool IsFullPath(const CStdString &url); // Return true if the URL includes the full path
 	static void Decode(CStdString& strURLData);
+	static void Encode(CStdString& strURLData);
 
 protected:
 	int m_iPort;
