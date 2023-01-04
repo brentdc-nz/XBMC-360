@@ -33,7 +33,7 @@
 
 #include "compat.h"
 
-#include "md4.h"
+#include "libsmb2md4.h"
 
 /* Constants for MD4Transform routine.
  */

@@ -1,4 +1,60 @@
-/* -*-  mode:c; tab-width:8; c-basic-offset:8; indent-tabs-mode:nil;  -*- */
+#include "md5.h"
+
+typedef unsigned char md5byte;
+
+static void MD5Init(struct MD5Context *context);
+static void MD5Update(struct MD5Context *context, md5byte const *buf, unsigned len);
+static void MD5Final(unsigned char digest[16], struct MD5Context *context);
+static void MD5Transform(uint32_t buf[4], uint32_t const in[16]);
+
+XBMC::XBMC_MD5::XBMC_MD5(void)
+{
+	MD5Init(&m_ctx);
+}
+
+XBMC::XBMC_MD5::~XBMC_MD5(void)
+{
+}
+
+void XBMC::XBMC_MD5::append(const void *inBuf, size_t inLen)
+{
+	MD5Update(&m_ctx, (md5byte*)inBuf, inLen);
+}
+
+void XBMC::XBMC_MD5::append(const CStdString& str)
+{
+	append((unsigned char*) str.c_str(), (unsigned int) str.length());
+}
+
+void XBMC::XBMC_MD5::getDigest(unsigned char digest[16])
+{
+	MD5Final(digest, &m_ctx);
+}
+
+void XBMC::XBMC_MD5::getDigest(CStdString& digest)
+{
+	unsigned char szBuf[16] = {'\0'};
+	getDigest(szBuf);
+	digest.Format("%02X%02X%02X%02X%02X%02X%02X%02X"\
+		"%02X%02X%02X%02X%02X%02X%02X%02X", szBuf[0], szBuf[1], szBuf[2],
+		szBuf[3], szBuf[4], szBuf[5], szBuf[6], szBuf[7], szBuf[8],
+		szBuf[9], szBuf[10], szBuf[11], szBuf[12], szBuf[13], szBuf[14],
+		szBuf[15]);
+}
+
+CStdString XBMC::XBMC_MD5::GetMD5(const CStdString &text)
+{
+	if (text.IsEmpty())
+		return "";
+
+	XBMC_MD5 state;
+	CStdString digest;
+	state.append(text);
+	state.getDigest(digest);
+	
+	return digest;
+}
+
 /*
  * This code implements the MD5 message-digest algorithm.
  * The algorithm is due to Ron Rivest.  This code was
@@ -17,32 +73,23 @@
  *
  * Changed so as no longer to depend on Colin Plumb's `usual.h' header
  * definitions; now uses stuff from dpkg's config.h.
- *  - Ian Jackson <ijackson@nyx.cs.du.edu>.
+ *  - Ian Jackson <ian@chiark.greenend.org.uk>.
  * Still in the public domain.
  */
 
-#ifndef ESP_PLATFORM
-
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
-#ifdef HAVE_SYS_TYPES_H
-#include <sys/types.h>
-#endif
-
-#include "compat.h"
-
 #include "md5.h"
 
-#ifdef WORDS_BIGENDIAN
+#include <sys/types.h> // For stupid systems
+#include <string.h>	// For memcpy()
+
+#if defined (WORDS_BIGENDIAN) || defined(_XBOX) // Xbox 360 usees big endian!
 void
-byteSwap(UWORD32 *buf, unsigned words)
+byteSwap(uint32_t *buf, unsigned words)
 {
 	md5byte *p = (md5byte *)buf;
 
 	do {
-		*buf++ = (UWORD32)((unsigned)p[3] << 8 | p[2]) << 16 |
+		*buf++ = (uint32_t)((unsigned)p[3] << 8 | p[2]) << 16 |
 			((unsigned)p[1] << 8 | p[0]);
 		p += 4;
 	} while (--words);
@@ -55,7 +102,7 @@ byteSwap(UWORD32 *buf, unsigned words)
  * Start MD5 accumulation.  Set bit count to 0 and buffer to mysterious
  * initialization constants.
  */
-void
+static void
 MD5Init(struct MD5Context *ctx)
 {
 	ctx->buf[0] = 0x67452301;
@@ -71,10 +118,10 @@ MD5Init(struct MD5Context *ctx)
  * Update context to reflect the concatenation of another buffer full
  * of bytes.
  */
-void
+static void
 MD5Update(struct MD5Context *ctx, md5byte const *buf, unsigned len)
 {
-	UWORD32 t;
+	uint32_t t;
 
 	/* Update byte count */
 
@@ -87,6 +134,7 @@ MD5Update(struct MD5Context *ctx, md5byte const *buf, unsigned len)
 		memcpy((md5byte *)ctx->in + 64 - t, buf, len);
 		return;
 	}
+
 	/* First chunk is an odd size */
 	memcpy((md5byte *)ctx->in + 64 - t, buf, t);
 	byteSwap(ctx->in, 16);
@@ -111,7 +159,7 @@ MD5Update(struct MD5Context *ctx, md5byte const *buf, unsigned len)
  * Final wrapup - pad to 64-byte boundary with the bit pattern
  * 1 0* (64-bit count of bits processed, MSB-first)
  */
-void
+static void
 MD5Final(md5byte digest[16], struct MD5Context *ctx)
 {
 	int count = ctx->bytes[0] & 0x3f;	/* Number of bytes in ctx->in */
@@ -130,6 +178,7 @@ MD5Final(md5byte digest[16], struct MD5Context *ctx)
 		p = (md5byte *)ctx->in;
 		count = 56;
 	}
+
 	memset(p, 0, count);
 	byteSwap(ctx->in, 14);
 
@@ -155,17 +204,17 @@ MD5Final(md5byte digest[16], struct MD5Context *ctx)
 
 /* This is the central step in the MD5 algorithm. */
 #define MD5STEP(f,w,x,y,z,in,s) \
-	 (w += f(x,y,z) + in, w = (w<<s | w>>(32-s)) + x)
+	(w += f(x,y,z) + in, w = (w<<s | w>>(32-s)) + x)
 
 /*
  * The core of the MD5 algorithm, this alters an existing MD5 hash to
  * reflect the addition of 16 longwords of new data.  MD5Update blocks
  * the data and converts bytes into longwords for this routine.
  */
-void
-MD5Transform(UWORD32 buf[4], UWORD32 const in[16])
+static void
+MD5Transform(uint32_t buf[4], uint32_t const in[16])
 {
-	register UWORD32 a, b, c, d;
+	register uint32_t a, b, c, d;
 
 	a = buf[0];
 	b = buf[1];
@@ -246,7 +295,4 @@ MD5Transform(UWORD32 buf[4], UWORD32 const in[16])
 	buf[3] += d;
 }
 
-#endif
-
-#endif
-
+#endif //ASM_MD5

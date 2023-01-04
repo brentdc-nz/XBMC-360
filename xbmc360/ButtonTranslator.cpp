@@ -52,6 +52,7 @@ static const ActionMapping windows[] =
         {"appearancesettings"       , WINDOW_SETTINGS_APPEARANCE},
         {"yesnodialog"              , WINDOW_DIALOG_YES_NO},
         {"progressdialog"           , WINDOW_DIALOG_PROGRESS},
+        {"virtualkeyboard"          , WINDOW_DIALOG_KEYBOARD},
         {"contextmenu"              , WINDOW_DIALOG_CONTEXT_MENU},
         {"shutdownmenu"             , WINDOW_DIALOG_BUTTON_MENU},
         {"seekbar"                  , WINDOW_DIALOG_SEEK_BAR},
@@ -78,12 +79,14 @@ bool CButtonTranslator::Load()
 	// load our xml file, and fill up our mapping tables
 	TiXmlDocument xmlDoc;
 
-	CLog::Log(LOGINFO, "Loading D:\\keymap.xml");
+	CStdString strPath = "D:\\system\\keymap.xml";
+
+	CLog::Log(LOGINFO, "Loading %s", strPath);
 
 	// Load the config file
-	if (!xmlDoc.LoadFile("D:\\keymap.xml"))
+	if (!xmlDoc.LoadFile(strPath))
 	{
-		g_LoadErrorStr.Format("D:\\keymap.xml, Line %d\n%s", xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+		g_LoadErrorStr.Format("D:\\system\\keymap.xml, Line %d\n%s", xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
 		return false;
 	}
 
@@ -92,7 +95,7 @@ bool CButtonTranslator::Load()
 	
 	if (strValue != "keymap")
 	{
-		CLog::Log(LOGERROR, "%s Doesn't contain <keymap>", "D:\\keymap.xml");
+		CLog::Log(LOGERROR, "%s Doesn't contain <keymap>", strPath);
 		return false;
 	}
 	
@@ -130,7 +133,7 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, WORD wWindowID)
 	TiXmlNode* pDevice;
 	if ((pDevice = pWindow->FirstChild("gamepad")) != NULL)
 	{
-		// Aap gamepad actions
+		// Map gamepad actions
 		TiXmlElement *pButton = pDevice->FirstChildElement();
 		while (pButton)
 		{

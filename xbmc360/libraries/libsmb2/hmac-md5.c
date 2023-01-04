@@ -9,7 +9,7 @@
 
 #include "compat.h"
 
-#include "md5.h"
+#include "libsmb2md5.h"
 
 /*
  * unsigned char*  text;                pointer to data stream/

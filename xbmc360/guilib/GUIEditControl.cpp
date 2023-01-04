@@ -3,10 +3,10 @@
 #include "GUIWindowManager.h"
 #include "utils\CharsetConverter.h"
 #include "dialogs\GUIDialogKeyboard.h"
-//#include "dialogs\GUIDialogNumeric.h" // TODO
+#include "dialogs\GUIDialogNumeric.h"
 #include "LocalizeStrings.h"
 #include "XBDateTime.h"
-//#include "utils\md5.h" // TODO
+#include "utils\md5.h"
 
 using namespace std;
 
@@ -226,7 +226,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
 
 void CGUIEditControl::OnClick()
 {
-	// We received a click - It's not from the keyboard, so pop up the virtual keyboard, unless
+	// We received a click - it's not from the keyboard, so pop up the virtual keyboard, unless
 	// that is where we reside!
 	if (GetParentID() == WINDOW_DIALOG_KEYBOARD)
 		return;
@@ -234,20 +234,20 @@ void CGUIEditControl::OnClick()
 	CStdString utf8;
 	g_charsetConverter.wToUTF8(m_text2, utf8);
 	bool textChanged = false;
-
 	CStdString heading = g_localizeStrings.Get(m_inputHeading ? m_inputHeading : 16028);
-
+	
 	switch (m_inputType)
 	{
 		case INPUT_TYPE_NUMBER:
-//			textChanged = CGUIDialogNumeric::ShowAndGetNumber(utf8, heading); // TODO
+			textChanged = CGUIDialogNumeric::ShowAndGetNumber(utf8, heading);
 		break;
 		case INPUT_TYPE_SECONDS:
-//			textChanged = CGUIDialogNumeric::ShowAndGetSeconds(utf8, g_localizeStrings.Get(21420));
+			textChanged = CGUIDialogNumeric::ShowAndGetSeconds(utf8, g_localizeStrings.Get(21420));
 		break;
-		case INPUT_TYPE_DATE: // TODO
+		case INPUT_TYPE_DATE:
 		{
-/*			CDateTime dateTime;
+/* TODO
+			CDateTime dateTime;
 			dateTime.SetFromDBDate(utf8);
 			
 			if (dateTime < CDateTime(2000,1, 1, 0, 0, 0))
@@ -262,16 +262,16 @@ void CGUIEditControl::OnClick()
 				utf8 = dateTime.GetAsDBDate();
 				textChanged = true;
 			}
-			break;
-*/		}
+*/		break;
+		}
 		case INPUT_TYPE_IPADDRESS:
-//			textChanged = CGUIDialogNumeric::ShowAndGetIPAddress(utf8, heading); // TODO
+			textChanged = CGUIDialogNumeric::ShowAndGetIPAddress(utf8, heading);
 		break;
 		case INPUT_TYPE_SEARCH:
-//			CGUIDialogKeyboard::ShowAndGetFilter(utf8, true); // TODO
+			CGUIDialogKeyboard::ShowAndGetFilter(utf8, true);
 		break;
 		case INPUT_TYPE_FILTER:
-//			CGUIDialogKeyboard::ShowAndGetFilter(utf8, false); // TODO
+			CGUIDialogKeyboard::ShowAndGetFilter(utf8, false);
 		break;
 		case INPUT_TYPE_PASSWORD_MD5:
 			utf8 = ""; // TODO: Ideally we'd send this to the keyboard and tell the keyboard we have this type of input
@@ -281,7 +281,7 @@ void CGUIEditControl::OnClick()
 			textChanged = CGUIDialogKeyboard::ShowAndGetInput(utf8, heading, true, m_inputType == INPUT_TYPE_PASSWORD || m_inputType == INPUT_TYPE_PASSWORD_MD5);
 		break;
 	}
-
+	
 	if (textChanged)
 	{
 		g_charsetConverter.utf8ToW(utf8, m_text2);

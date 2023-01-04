@@ -111,7 +111,7 @@ void CGUIDialogNetworkSetup::OnInitWindow()
 
 	pSpin->Clear();
 	pSpin->AddLabel(g_localizeStrings.Get(20171), NET_PROTOCOL_SMB);
-	// TODO - Add more!
+	// TODO: Add more!
 
 	pSpin->SetValue(m_protocol);
 	OnProtocolChange();
@@ -182,11 +182,11 @@ void CGUIDialogNetworkSetup::UpdateButtons()
 	
 	if (m_protocol == NET_PROTOCOL_SMB)
 	{
-		SET_CONTROL_LABEL(CONTROL_SERVER_ADDRESS, 1010);  // Server name
+		SET_CONTROL_LABEL(CONTROL_SERVER_ADDRESS, 1010); // Server name
 	}
 	else
 	{
-		SET_CONTROL_LABEL(CONTROL_SERVER_ADDRESS, 1009);  // Server Address
+		SET_CONTROL_LABEL(CONTROL_SERVER_ADDRESS, 1009); // Server Address
 	}
 //	if (m_protocol == NET_PROTOCOL_XBMSP || m_protocol == NET_PROTOCOL_DAAP)
 //		SendMessage(GUI_MSG_SET_TYPE, CONTROL_SERVER_ADDRESS, CGUIEditControl::INPUT_TYPE_IPADDRESS, 1016); // TODO
@@ -290,7 +290,7 @@ void CGUIDialogNetworkSetup::SetPath(const CStdString &path)
 	
 	if (protocol == "smb")
 		m_protocol = NET_PROTOCOL_SMB;
-	// TODO - Add other protocols back as we support them!
+	// TODO: Add other protocols back as we support them!
 	else
 		m_protocol = NET_PROTOCOL_SMB; // Default to SMB
 	

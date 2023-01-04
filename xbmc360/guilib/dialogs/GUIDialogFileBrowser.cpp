@@ -74,7 +74,7 @@ bool CGUIDialogFileBrowser::OnAction(const CAction &action)
 		if ((!m_addSourceType.IsEmpty() && iItem != m_vecItems->Size()-1))
 			return OnPopupMenu(iItem);
 		
-//		if (m_addNetworkShareEnabled && g_mediaManager.HasLocation(m_selectedPath)) // TODO
+		if (m_addNetworkShareEnabled && g_mediaManager.HasLocation(m_selectedPath))
 		{
 			// Need to make sure this source is not an auto added location
 			// as users locations might have the same paths
@@ -803,7 +803,7 @@ bool CGUIDialogFileBrowser::ShowAndGetSource(CStdString &path, bool allowNetwork
 		// Now add the network shares...
 		if (allowNetworkShares)
 		{
-//			g_mediaManager.GetNetworkLocations(shares); // TODO
+			g_mediaManager.GetNetworkLocations(shares);
 		}
 	}
 
@@ -855,7 +855,7 @@ void CGUIDialogFileBrowser::OnAddNetworkLocation()
 			m_shares.push_back(share);
 			
 			// Add to our location manager...
-//			g_mediaManager.AddNetworkLocation(path); // TODO
+			g_mediaManager.AddNetworkLocation(path);
 		}
 	}
 	m_rootDir.SetSources(m_shares);
@@ -896,7 +896,7 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
 			
 //			if (CGUIDialogNetworkSetup::ShowAndGetNetworkAddress(newPath)) // TODO
 			{
-//				g_mediaManager.SetLocationPath(strOldPath,newPath); // TODO
+				g_mediaManager.SetLocationPath(strOldPath,newPath);
 				
 				for (unsigned int i=0;i<shares.size();++i)
 				{
@@ -928,7 +928,7 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
 	{
 		if (m_addNetworkShareEnabled)
 		{
-//			g_mediaManager.RemoveLocation(m_selectedPath); // TODO
+			g_mediaManager.RemoveLocation(m_selectedPath);
 
 			for (unsigned int i=0;i<m_shares.size();++i)
 			{

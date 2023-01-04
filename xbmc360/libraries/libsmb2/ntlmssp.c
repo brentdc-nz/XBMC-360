@@ -67,8 +67,8 @@
 #include "libsmb2-raw.h"
 #include "libsmb2-private.h"
 
-#include "md4.h"
-#include "md5.h"
+#include "libsmb2md4.h"
+#include "libsmb2md5.h"
 #include "hmac-md5.h"
 #include "ntlmssp.h"
 

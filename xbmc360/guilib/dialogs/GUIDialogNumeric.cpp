@@ -1,10 +1,10 @@
 #include "guilib\dialogs\GUIDialogNumeric.h"
 #include "guilib\GUILabelControl.h"
-//#include "utils\md5.h" // TODO
+#include "utils\md5.h"
 #include "utils\StringUtils.h"
 //#include "xbox\XKGeneral.h" // TODO
 #include "guilib\GUIWindowManager.h"
-#include "guilib\dialogs\GUIDialogOK.h" // TODO
+#include "guilib\dialogs\GUIDialogOK.h"
 #include "guilib\LocalizeStrings.h"
 
 #define CONTROL_HEADING_LABEL  1
@@ -49,14 +49,14 @@ bool CGUIDialogNumeric::OnAction(const CAction &action)
 	{
 		// Input from the keyboard (vkey, not ascii)
 		BYTE b = action.GetID() & 0xFF;
-		if (b == 0x25) OnPrevious();     // Left
-		else if (b == 0x27) OnNext();  // Right
-		else if (b == 0x0D) OnOK();         // Enter
-		else if (b == 0x08) OnBackSpace();    // Backspace
-		else if (b == 0x1B) OnCancel();        // Escape
+		if (b == 0x25) OnPrevious(); // Left
+		else if (b == 0x27) OnNext(); // Right
+		else if (b == 0x0D) OnOK(); // Enter
+		else if (b == 0x08) OnBackSpace(); // Backspace
+		else if (b == 0x1B) OnCancel(); // Escape
 	}
 #ifdef _HAS_KEYBOARD
-	else if (action.GetID() >= KEY_ASCII) // FIXME make it KEY_UNICODE
+	else if (action.GetID() >= KEY_ASCII) // FIXME: make it KEY_UNICODE
 	{
 		// Input from the keyboard
 		if (action.GetUnicode() == 10 || action.GetUnicode() == 13) OnOK(); // Enter
@@ -724,9 +724,9 @@ bool CGUIDialogNumeric::ShowAndVerifyInput(CStdString& strToVerify, const CStdSt
 	}
   
 	CStdString md5pword2;
-//	XBMC::XBMC_MD5 md5state; // TODO
-//	md5state.append(strInput); // TODO
-//	md5state.getDigest(md5pword2); // TODO
+	XBMC::XBMC_MD5 md5state;
+	md5state.append(strInput);
+	md5state.getDigest(md5pword2);
 
 	if (!bVerifyInput)
 	{

@@ -494,12 +494,6 @@
     <ClInclude Include="libraries\libsmb2\libsmb2-raw.h">
       <Filter>Header Files\libraries\libsmb2</Filter>
     </ClInclude>
-    <ClInclude Include="libraries\libsmb2\md4.h">
-      <Filter>Header Files\libraries\libsmb2</Filter>
-    </ClInclude>
-    <ClInclude Include="libraries\libsmb2\md5.h">
-      <Filter>Header Files\libraries\libsmb2</Filter>
-    </ClInclude>
     <ClInclude Include="libraries\libsmb2\ntlmssp.h">
       <Filter>Header Files\libraries\libsmb2</Filter>
     </ClInclude>
@@ -881,6 +875,15 @@
     <ClInclude Include="guilib\dialogs\GUIDialogProgress.h">
       <Filter>Header Files\guilib\dialogs</Filter>
     </ClInclude>
+    <ClInclude Include="utils\md5.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\libsmb2\libsmb2md5.h">
+      <Filter>Header Files\libraries\libsmb2</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\libsmb2\libsmb2md4.h">
+      <Filter>Header Files\libraries\libsmb2</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -1196,12 +1199,6 @@
       <Filter>Source Files\libraries\libsmb2</Filter>
     </ClCompile>
     <ClCompile Include="libraries\libsmb2\libsmb2.c">
-      <Filter>Source Files\libraries\libsmb2</Filter>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\md4c.c">
-      <Filter>Source Files\libraries\libsmb2</Filter>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\md5.c">
       <Filter>Source Files\libraries\libsmb2</Filter>
     </ClCompile>
     <ClCompile Include="libraries\libsmb2\ntlmssp.c">
@@ -1590,6 +1587,15 @@
     </ClCompile>
     <ClCompile Include="guilib\dialogs\GUIDialogProgress.cpp">
       <Filter>Source Files\guilib\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\md5.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\libsmb2md5.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\libsmb2md4.c">
+      <Filter>Source Files\libraries\libsmb2</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

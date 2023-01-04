@@ -1,5 +1,5 @@
-#ifndef CGUIDIALOGKEYBAORD_H
-#define CGUIDIALOGKEYBAORD_H
+#ifndef GUILIB_CGUIDIALOGGKEYBOARDS_H
+#define GUILIB_CGUIDIALOGGKEYBOARDS_H
 
 #include "guilib\GUIDialog.h"
 
@@ -71,4 +71,4 @@ private:
 	static const char* s_charsSeries[10];
 };
 
-#endif //CGUIDIALOGKEYBAORD_H
+#endif //GUILIB_CGUIDIALOGGKEYBOARDS_H

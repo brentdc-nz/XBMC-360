@@ -122,7 +122,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PreprocessorDefinitions>_DEBUG;_XBOX</PreprocessorDefinitions>
       <CallAttributedProfiling>Callcap</CallAttributedProfiling>
-      <AdditionalIncludeDirectories>..\xbmc360\;..\libraries\freetype\freetype\include;..\libraries\ffmpeg\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\xbmc360\;..\libraries\freetype\freetype\include;..\libraries\ffmpeg\;C:\Users\Brent de Carteret\Documents\GitHub\XBMC-360\libraries\libpcre\libpcre;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/EHa %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -483,8 +483,8 @@
     <ClInclude Include="libraries\libsmb2\libsmb2-private.h" />
     <ClInclude Include="libraries\libsmb2\libsmb2-raw.h" />
     <ClInclude Include="libraries\libsmb2\libsmb2.h" />
-    <ClInclude Include="libraries\libsmb2\md4.h" />
-    <ClInclude Include="libraries\libsmb2\md5.h" />
+    <ClInclude Include="libraries\libsmb2\libsmb2md4.h" />
+    <ClInclude Include="libraries\libsmb2\libsmb2md5.h" />
     <ClInclude Include="libraries\libsmb2\ntlmssp.h" />
     <ClInclude Include="libraries\libsmb2\portable-endian.h" />
     <ClInclude Include="libraries\libsmb2\sha-private.h" />
@@ -520,6 +520,7 @@
     <ClInclude Include="utils\LabelFormatter.h" />
     <ClInclude Include="utils\Log.h" />
     <ClInclude Include="utils\MathUtils.h" />
+    <ClInclude Include="utils\md5.h" />
     <ClInclude Include="utils\POUtils.h" />
     <ClInclude Include="utils\SharedSection.h" />
     <ClInclude Include="utils\SingleLock.h" />
@@ -745,16 +746,12 @@
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
     </ClCompile>
-    <ClCompile Include="libraries\libsmb2\md4c.c">
+    <ClCompile Include="libraries\libsmb2\libsmb2md4.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
     </ClCompile>
-    <ClCompile Include="libraries\libsmb2\md5.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
+    <ClCompile Include="libraries\libsmb2\libsmb2md5.c" />
     <ClCompile Include="libraries\libsmb2\ntlmssp.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
@@ -937,6 +934,7 @@
     <ClCompile Include="utils\Idle.cpp" />
     <ClCompile Include="utils\LabelFormatter.cpp" />
     <ClCompile Include="utils\Log.cpp" />
+    <ClCompile Include="utils\md5.cpp" />
     <ClCompile Include="utils\POUtils.cpp" />
     <ClCompile Include="utils\SharedSection.cpp" />
     <ClCompile Include="utils\SingleLock.cpp" />
