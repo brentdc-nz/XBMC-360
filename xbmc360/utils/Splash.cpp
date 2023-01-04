@@ -24,7 +24,7 @@ void CSplash::OnExit()
 {
 }
 
-void CSplash::Process()	
+void CSplash::Process()
 {
 	D3DGAMMARAMP newRamp;
 	D3DGAMMARAMP oldRamp;
@@ -32,7 +32,7 @@ void CSplash::Process()
 	g_graphicsContext.TLock();
 	g_graphicsContext.Get3DDevice()->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
 	g_graphicsContext.TUnlock();
-
+  
 	g_graphicsContext.SetCameraPosition(CPoint(0, 0));
 	float w = g_graphicsContext.GetWidth() * 0.5f;
 	float h = g_graphicsContext.GetHeight() * 0.5f;
@@ -40,30 +40,6 @@ void CSplash::Process()
 	CGUIImage* image = new CGUIImage(0, 0, w*0.5f, h*0.5f, w, h, m_ImageName);
 	image->SetAspectRatio(CAspectRatio::AR_KEEP);
 	image->AllocResources();
-
-	g_graphicsContext.TLock();
-	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ZENABLE, FALSE );
-	g_graphicsContext.TUnlock();
-
-	g_graphicsContext.TLock();
-	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
-	g_graphicsContext.TUnlock();
-
-	g_graphicsContext.TLock();
-	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
-	g_graphicsContext.TUnlock();
-
-	g_graphicsContext.TLock();
-	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
-	g_graphicsContext.TUnlock();
-
-	g_graphicsContext.TLock();
-	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
-	g_graphicsContext.TUnlock();
-
-	g_graphicsContext.TLock();
-	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
-	g_graphicsContext.TUnlock();
 
 	// Store the old gamma ramp
 	g_graphicsContext.TLock();
@@ -77,46 +53,17 @@ void CSplash::Process()
 		newRamp.green[i] = (int)((float)oldRamp.red[i] * fade);
 		newRamp.blue[i] = (int)((float)oldRamp.red[i] * fade);
 	}
-	
+
 	g_graphicsContext.TLock();
-	g_graphicsContext.Get3DDevice()->SetGammaRamp(NULL, D3DSGR_IMMEDIATE, &newRamp);
+	g_graphicsContext.Get3DDevice()->SetGammaRamp(NULL, NULL, &newRamp);
 	g_graphicsContext.TUnlock();
 
 	// Render splash image
-	g_graphicsContext.TLock();
-	g_graphicsContext.Get3DDevice()->BeginScene();
-	g_graphicsContext.TUnlock();
-
-	// FIXME - Why not alpha blended like all other CGUIImage instances!?
-	g_graphicsContext.TLock();
-	g_graphicsContext.Get3DDevice()->SetRenderState(D3DRS_ALPHAREF, (DWORD)0x0000008f);
-	g_graphicsContext.TUnlock();
-	g_graphicsContext.TLock();
-	g_graphicsContext.Get3DDevice()->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-	g_graphicsContext.TUnlock();
-	g_graphicsContext.TLock();
-	g_graphicsContext.Get3DDevice()->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
-	g_graphicsContext.TUnlock();
-
 	image->Render();
 	image->FreeResources();
 	delete image;
-
+	
 	// Show it on screen
-	g_graphicsContext.TLock();
-	g_graphicsContext.Get3DDevice()->SetRenderState(D3DRS_ALPHAREF, NULL);
-	g_graphicsContext.TUnlock();
-	g_graphicsContext.TLock();
-	g_graphicsContext.Get3DDevice()->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-	g_graphicsContext.TUnlock();
-	g_graphicsContext.TLock();
-	g_graphicsContext.Get3DDevice()->SetRenderState(D3DRS_ALPHAFUNC,  NULL);
-	g_graphicsContext.TUnlock();
-
-	g_graphicsContext.TLock();
-	g_graphicsContext.Get3DDevice()->EndScene();
-	g_graphicsContext.TUnlock();
-
 	g_graphicsContext.TLock();
 	g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
 	g_graphicsContext.TUnlock();
@@ -134,7 +81,7 @@ void CSplash::Process()
 				newRamp.blue[i] = (int)((float)oldRamp.blue[i] * fade);
 			}
 			g_graphicsContext.TLock();
-			g_graphicsContext.Get3DDevice()->SetGammaRamp(NULL, D3DSGR_IMMEDIATE, &newRamp);
+			g_graphicsContext.Get3DDevice()->SetGammaRamp(NULL, NULL, &newRamp);
 			g_graphicsContext.TUnlock();
 			fade += 0.01f;
 		}
@@ -155,16 +102,16 @@ void CSplash::Process()
 		}
 		Sleep(1);
 		g_graphicsContext.TLock();
-		g_graphicsContext.Get3DDevice()->SetGammaRamp(NULL, D3DSGR_IMMEDIATE, &newRamp);
+		g_graphicsContext.Get3DDevice()->SetGammaRamp(NULL, NULL, &newRamp);
 		g_graphicsContext.TUnlock();
 	}
-	
+
 	// Restore original gamma ramp
 	g_graphicsContext.TLock();
 	g_graphicsContext.Get3DDevice()->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
 	g_graphicsContext.TUnlock();
 	g_graphicsContext.TLock();
-	g_graphicsContext.Get3DDevice()->SetGammaRamp(NULL, D3DSGR_IMMEDIATE, &oldRamp);
+	g_graphicsContext.Get3DDevice()->SetGammaRamp(NULL, NULL, &oldRamp);
 	g_graphicsContext.TUnlock();
 	g_graphicsContext.TLock();
 	g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );

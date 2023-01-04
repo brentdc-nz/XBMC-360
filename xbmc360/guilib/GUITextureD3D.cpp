@@ -195,58 +195,92 @@ void CGUITextureD3D::Free()
 
 void CGUITextureD3D::Begin()
 {
-#if 0 // OG_XBOX
-  LPDIRECT3DDEVICE9 p3DDevice = g_graphicsContext.Get3DDevice();
-  // Set state to render the image
-#ifdef HAS_XBOX_D3D
-  if (!m_texture.m_texCoordsArePixels)
-    p3DDevice->SetPalette( 0, m_texture.m_palette);
-  if (m_diffuse.m_palette)
-    p3DDevice->SetPalette( 1, m_diffuse.m_palette);
-#endif
-/*  p3DDevice->SetTexture( 0, m_texture.m_textures[m_currentFrame] );
-  p3DDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR );
-  p3DDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTEXF_LINEAR );
-  p3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
-  p3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-  p3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
-  p3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
-  p3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
-  p3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
-  p3DDevice->SetTextureStageState( 0, D3DTSS_ADDRESSU, D3DTADDRESS_CLAMP );
-  p3DDevice->SetTextureStageState( 0, D3DTSS_ADDRESSV, D3DTADDRESS_CLAMP );
-  if (m_diffuse.size())
-  {
-    p3DDevice->SetTexture( 1, m_diffuse.m_textures[0] );
-    p3DDevice->SetTextureStageState( 1, D3DTSS_MAGFILTER, D3DTEXF_LINEAR );
-    p3DDevice->SetTextureStageState( 1, D3DTSS_MINFILTER, D3DTEXF_LINEAR );
-    p3DDevice->SetTextureStageState( 1, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-    p3DDevice->SetTextureStageState( 1, D3DTSS_COLORARG2, D3DTA_CURRENT );
-    p3DDevice->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_MODULATE );
-    p3DDevice->SetTextureStageState( 1, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
-    p3DDevice->SetTextureStageState( 1, D3DTSS_ALPHAARG2, D3DTA_CURRENT );
-    p3DDevice->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
-    p3DDevice->SetTextureStageState( 1, D3DTSS_ADDRESSU, D3DTADDRESS_CLAMP );
-    p3DDevice->SetTextureStageState( 1, D3DTSS_ADDRESSV, D3DTADDRESS_CLAMP );
-  }
+	LPDIRECT3DDEVICE9 p3DDevice = g_graphicsContext.Get3DDevice();
 
-  p3DDevice->SetRenderState( D3DRS_ALPHATESTENABLE, TRUE );
-  p3DDevice->SetRenderState( D3DRS_ALPHAREF, 0 );
-  p3DDevice->SetRenderState( D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL );
-  p3DDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
-  p3DDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
-  p3DDevice->SetRenderState( D3DRS_FOGTABLEMODE, D3DFOG_NONE );
-  p3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
-  p3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
-  p3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
-  p3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
-  p3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
-  p3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE);
-#ifdef HAS_XBOX_D3D
-  p3DDevice->SetRenderState( D3DRS_YUVENABLE, FALSE);
+	// Set state to render the image
+
+#if 0 //def HAS_XBOX_D3D
+	if (!m_texture.m_texCoordsArePixels)
+		p3DDevice->SetPalette( 0, m_texture.m_palette);
+
+	if (m_diffuse.m_palette)
+		p3DDevice->SetPalette( 1, m_diffuse.m_palette);
 #endif
-  p3DDevice->SetVertexShader( D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX2 );*/
-#endif 
+
+	g_graphicsContext.TLock();
+	p3DDevice->SetTexture( 0, m_texture.m_textures[m_currentFrame] );
+	g_graphicsContext.TUnlock();
+#if 0 // OG Xbox DX8
+	p3DDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR );
+	p3DDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTEXF_LINEAR );
+	p3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
+	p3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+	p3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
+	p3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
+	p3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
+	p3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
+	p3DDevice->SetTextureStageState( 0, D3DTSS_ADDRESSU, D3DTADDRESS_CLAMP );
+	p3DDevice->SetTextureStageState( 0, D3DTSS_ADDRESSV, D3DTADDRESS_CLAMP );
+#endif	
+	if (m_diffuse.size())
+	{
+		g_graphicsContext.TLock();
+		p3DDevice->SetTexture( 1, m_diffuse.m_textures[0] );
+		g_graphicsContext.TUnlock();
+#if 0 // OG Xbox DX8
+		p3DDevice->SetTextureStageState( 1, D3DTSS_MAGFILTER, D3DTEXF_LINEAR );
+		p3DDevice->SetTextureStageState( 1, D3DTSS_MINFILTER, D3DTEXF_LINEAR );
+		p3DDevice->SetTextureStageState( 1, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+		p3DDevice->SetTextureStageState( 1, D3DTSS_COLORARG2, D3DTA_CURRENT );
+		p3DDevice->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_MODULATE );
+		p3DDevice->SetTextureStageState( 1, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
+		p3DDevice->SetTextureStageState( 1, D3DTSS_ALPHAARG2, D3DTA_CURRENT );
+		p3DDevice->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
+		p3DDevice->SetTextureStageState( 1, D3DTSS_ADDRESSU, D3DTADDRESS_CLAMP );
+		p3DDevice->SetTextureStageState( 1, D3DTSS_ADDRESSV, D3DTADDRESS_CLAMP );
+#endif
+	}
+
+	g_graphicsContext.TLock();
+	p3DDevice->SetRenderState( D3DRS_ALPHATESTENABLE, TRUE );
+	g_graphicsContext.TUnlock();
+	g_graphicsContext.TLock();
+	p3DDevice->SetRenderState( D3DRS_ALPHAREF, 0 );
+	g_graphicsContext.TUnlock();
+	g_graphicsContext.TLock();
+	p3DDevice->SetRenderState( D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL );
+	g_graphicsContext.TUnlock();
+	g_graphicsContext.TLock();
+	p3DDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
+	g_graphicsContext.TUnlock();
+#if 0 // OG Xbox DX8
+	p3DDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
+	p3DDevice->SetRenderState( D3DRS_FOGTABLEMODE, D3DFOG_NONE );
+#endif
+	g_graphicsContext.TLock();
+	p3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
+	g_graphicsContext.TUnlock();
+	g_graphicsContext.TLock();
+	p3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
+	g_graphicsContext.TUnlock();
+	g_graphicsContext.TLock();
+	p3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
+	g_graphicsContext.TUnlock();
+	g_graphicsContext.TLock();
+	p3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
+	g_graphicsContext.TUnlock();
+	g_graphicsContext.TLock();
+	p3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
+	g_graphicsContext.TUnlock();
+#if 0 // OG Xbox DX8
+	p3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE);
+#endif
+#if 0 //def HAS_XBOX_D3D
+	p3DDevice->SetRenderState( D3DRS_YUVENABLE, FALSE);
+#endif
+#if 0 // OG Xbox DX8
+	p3DDevice->SetVertexShader( D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX2 );
+#endif
 }
 
 void CGUITextureD3D::End()
@@ -256,9 +290,11 @@ void CGUITextureD3D::End()
 #if 1//def HAS_XBOX_D3D
 	if (g_graphicsContext.RectIsAngled(m_vertex.x1, m_vertex.y1, m_vertex.x2, m_vertex.y2))
 	{
-//		p3DDevice->SetRenderState( D3DRS_MULTISAMPLEANTIALIAS, FALSE );
-//		p3DDevice->SetRenderState( D3DRS_EDGEANTIALIAS, TRUE );
-//		p3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_WIREFRAME );
+		p3DDevice->SetRenderState( D3DRS_MULTISAMPLEANTIALIAS, FALSE );
+#if 0 // OG Xbox DX8
+		p3DDevice->SetRenderState( D3DRS_EDGEANTIALIAS, TRUE );
+#endif
+		p3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_WIREFRAME );
 		float u = m_frameWidth, v = m_frameHeight;
 
 		if (!m_texture.m_texCoordsArePixels)
@@ -269,18 +305,21 @@ void CGUITextureD3D::End()
 
 		Render(m_vertex.x1, m_vertex.y1, m_vertex.x2, m_vertex.y2, 0, 0, u, v, u, v);
 
-//		p3DDevice->SetRenderState( D3DRS_MULTISAMPLEANTIALIAS, TRUE );
-//		p3DDevice->SetRenderState( D3DRS_EDGEANTIALIAS, FALSE );
-//		p3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
+		p3DDevice->SetRenderState( D3DRS_MULTISAMPLEANTIALIAS, TRUE );
+#if 0 // OG Xbox DX8
+		p3DDevice->SetRenderState( D3DRS_EDGEANTIALIAS, FALSE );
+#endif
+		p3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
 	}
 
-//	p3DDevice->SetPalette( 0, NULL);
+#if 0 // OG Xbox DX8
+	p3DDevice->SetPalette( 0, NULL);
 	
-//	if (m_diffuse.m_palette)
-//		p3DDevice->SetPalette( 1, NULL);
-
+	if (m_diffuse.m_palette)
+		p3DDevice->SetPalette( 1, NULL);
 #endif
-
+#endif // HAS_XBOX_D3D
+	
 	// Unset the texture and palette or the texture caching crashes because the runtime still has a reference
 	g_graphicsContext.TLock();
 	g_graphicsContext.Get3DDevice()->SetTexture( 0, NULL );
