@@ -10,6 +10,8 @@
 #include "Settings.h"
 #include "GUISettings.h"
 #include "dialogs\GUIDialogProgress.h"
+#include "ButtonTranslator.h"
+#include "GUIMediaWindow.h"
 
 using namespace std;
 
@@ -254,6 +256,74 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 		}
 		else if (strTest.Left(14).Equals("skin.hastheme("))
 			ret = SKIN_HAS_THEME_START + ConditionalStringParameter(strTest.Mid(14, strTest.GetLength() -  15));
+	}
+	else if (strCategory.Left(6).Equals("window"))
+	{
+		CStdString info = strTest.Mid(strCategory.GetLength() + 1);
+		// Special case for window.xml parameter, fails above
+		if (info.Left(5).Equals("xml)."))
+			info = info.Mid(5, info.GetLength() + 1);
+		if (info.Left(9).Equals("property("))
+		{
+			int winID = 0;
+			if (strTest.Left(7).Equals("window("))
+			{
+				CStdString window(strTest.Mid(7, strTest.Find(")", 7) - 7).ToLower());
+				winID = CButtonTranslator::TranslateWindow(window);
+			}
+			if (winID != WINDOW_INVALID)
+			{
+				int compareString = ConditionalStringParameter(info.Mid(9, info.GetLength() - 10));
+				return AddMultiInfo(GUIInfo(WINDOW_PROPERTY, winID, compareString));
+			}
+		}
+		else if (info.Left(9).Equals("isactive("))
+		{
+			CStdString window(strTest.Mid(16, strTest.GetLength() - 17).ToLower());
+			if (window.Find("xml") >= 0)
+				return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_ACTIVE : WINDOW_IS_ACTIVE, 0, ConditionalStringParameter(window)));
+			int winID = CButtonTranslator::TranslateWindow(window);
+			if (winID != WINDOW_INVALID)
+				return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_ACTIVE : WINDOW_IS_ACTIVE, winID, 0));
+		}
+		else if (info.Left(7).Equals("ismedia"))
+			return WINDOW_IS_MEDIA;
+		else if (info.Left(10).Equals("istopmost("))
+		{
+			CStdString window(strTest.Mid(17, strTest.GetLength() - 18).ToLower());
+			if (window.Find("xml") >= 0)
+				return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_TOPMOST : WINDOW_IS_TOPMOST, 0, ConditionalStringParameter(window)));
+			int winID = CButtonTranslator::TranslateWindow(window);
+			if (winID != WINDOW_INVALID)
+				return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_TOPMOST : WINDOW_IS_TOPMOST, winID, 0));
+		}
+		else if (info.Left(10).Equals("isvisible("))
+		{
+			CStdString window(strTest.Mid(17, strTest.GetLength() - 18).ToLower());
+			if (window.Find("xml") >= 0)
+				return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_VISIBLE : WINDOW_IS_VISIBLE, 0, ConditionalStringParameter(window)));
+			int winID = CButtonTranslator::TranslateWindow(window);
+			if (winID != WINDOW_INVALID)
+				return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_VISIBLE : WINDOW_IS_VISIBLE, winID, 0));
+		}
+		else if (info.Left(9).Equals("previous("))
+		{
+			CStdString window(strTest.Mid(16, strTest.GetLength() - 17).ToLower());
+			if (window.Find("xml") >= 0)
+				return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_PREVIOUS : WINDOW_PREVIOUS, 0, ConditionalStringParameter(window)));
+			int winID = CButtonTranslator::TranslateWindow(window);
+			if (winID != WINDOW_INVALID)
+				return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_PREVIOUS : WINDOW_PREVIOUS, winID, 0));
+		}
+		else if (info.Left(5).Equals("next("))
+		{
+			CStdString window(strTest.Mid(12, strTest.GetLength() - 13).ToLower());
+			if (window.Find("xml") >= 0)
+				return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_NEXT : WINDOW_NEXT, 0, ConditionalStringParameter(window)));
+			int winID = CButtonTranslator::TranslateWindow(window);
+			if (winID != WINDOW_INVALID)
+				return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_NEXT : WINDOW_NEXT, winID, 0));
+		}
 	}
 
 	return bNegate ? -ret : ret;
@@ -817,10 +887,32 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
 		if (bInfo)
 			return g_localizeStrings.Get(20122);
 	}
+	else if (info.m_info == WINDOW_PROPERTY)
+	{
+		CGUIWindow *window = NULL;
+		if (info.GetData1())
+		{
+			// Window specified
+			window = g_windowManager.GetWindow(info.GetData1());//GetWindowWithCondition(contextWindow, 0);
+		}
+		else
+		{
+			// No window specified - assume active
+			window = GetWindowWithCondition(contextWindow, 0);
+		}
 
-	 // TODO - Add more!
+		if (window)
+			return window->GetProperty(m_stringParameters[info.GetData2()]);
+	}
+
+	// TODO - Add more!
 
 	return CStringUtils::EmptyString;
+}
+
+bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
+{
+	return false; // TODO
 }
 
 // Examines the multi information sent and returns true or false accordingly.
@@ -829,35 +921,104 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow)
 	bool bReturn = false;
 	int condition = abs(info.m_info);
 
-    switch (condition)
-    {
-		case SKIN_BOOL:
-        {
-			bReturn = g_settings.GetSkinBool(info.GetData1());
-        }
-        break;
-		case SKIN_STRING:
+	if (condition >= LISTITEM_START && condition <= LISTITEM_END)
+	{
+		// TODO: We currently don't use the item that is passed in to here, as these
+		//       conditions only come from Container(id).ListItem(offset).* at this point.
+		CGUIListItemPtr item;
+		CGUIWindow *window = NULL;
+		
+		int data1 = info.GetData1();
+		if (!data1) // No container specified, so we lookup the current view container
 		{
-			if (info.GetData2())
-				bReturn = g_settings.GetSkinString(info.GetData1()).Equals(m_stringParameters[info.GetData2()]);
-			else
-				bReturn = !g_settings.GetSkinString(info.GetData1()).IsEmpty();
+			window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS);
+			if (window && window->IsMediaWindow())
+				data1 = ((CGUIMediaWindow*)(window))->GetViewContainerID();
 		}
-		break;
-		case CONTROL_HAS_FOCUS:
-        {
-			CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
-			if (window)
-				bReturn = (window->GetFocusedControlID() == (int)info.GetData1());
-        }
-        break;
-		case CONTROL_GROUP_HAS_FOCUS:
-        {
-			CGUIWindow *window = GetWindowWithCondition(contextWindow, 0);
-			if (window)
-				bReturn = window->ControlGroupHasFocus(info.GetData1(), info.GetData2());
-        }
-        break;
+
+		if (!window) // If we don't have a window already (from lookup above), get one
+			window = GetWindowWithCondition(contextWindow, 0);
+
+		if (window)
+		{
+			const CGUIControl *control = window->GetControl(data1);
+			if (control && control->IsContainer())
+				item = ((CGUIBaseContainer *)control)->GetListItem(info.GetData2(), info.GetInfoFlag());
+		}
+
+		if (item) // If we got a valid item, do the lookup
+			bReturn = GetItemBool(item.get(), condition); // Image prioritizes images over labels (in the case of music item ratings for instance)
+	}
+	else
+	{
+		switch (condition)
+		{
+			case SKIN_BOOL:
+			{
+				bReturn = g_settings.GetSkinBool(info.GetData1());
+			}
+			break;
+			case SKIN_STRING:
+			{
+				if (info.GetData2())
+					bReturn = g_settings.GetSkinString(info.GetData1()).Equals(m_stringParameters[info.GetData2()]);
+				else
+					bReturn = !g_settings.GetSkinString(info.GetData1()).IsEmpty();
+			}
+			break;
+			case CONTROL_HAS_FOCUS:
+			{
+				CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
+				if (window)
+					bReturn = (window->GetFocusedControlID() == (int)info.GetData1());
+			}
+			break;
+			case CONTROL_GROUP_HAS_FOCUS:
+			{
+				CGUIWindow *window = GetWindowWithCondition(contextWindow, 0);
+				if (window)
+					bReturn = window->ControlGroupHasFocus(info.GetData1(), info.GetData2());
+			}
+			break;
+			case WINDOW_NEXT:
+			if (info.GetData1())
+				bReturn = ((int)info.GetData1() == m_nextWindowID);
+			else
+			{
+				CGUIWindow *window = g_windowManager.GetWindow(m_nextWindowID);
+				if (window && URIUtils::GetFileName(window->GetProperty("xmlfile")).Equals(m_stringParameters[info.GetData2()]))
+					bReturn = true;
+			}
+			break;
+			case WINDOW_PREVIOUS:
+			if (info.GetData1())
+				bReturn = ((int)info.GetData1() == m_prevWindowID);
+			else
+			{
+				CGUIWindow *window = g_windowManager.GetWindow(m_prevWindowID);
+				if (window && URIUtils::GetFileName(window->GetProperty("xmlfile")).Equals(m_stringParameters[info.GetData2()]))
+					bReturn = true;
+			}
+			break;
+			case WINDOW_IS_VISIBLE:
+			if (info.GetData1())
+				bReturn = g_windowManager.IsWindowVisible(info.GetData1());
+			else
+				bReturn = g_windowManager.IsWindowVisible(m_stringParameters[info.GetData2()]);
+			break;
+			case WINDOW_IS_TOPMOST:
+			if (info.GetData1())
+				bReturn = g_windowManager.IsWindowTopMost(info.GetData1());
+			else
+				bReturn = g_windowManager.IsWindowTopMost(m_stringParameters[info.GetData2()]);
+			break;
+			case WINDOW_IS_ACTIVE:
+			if (info.GetData1())
+				bReturn = g_windowManager.IsWindowActive(info.GetData1());
+			else
+				bReturn = g_windowManager.IsWindowActive(m_stringParameters[info.GetData2()]);
+			break;
+		}
 	}
 
 	return (info.m_info < 0) ? !bReturn : bReturn;

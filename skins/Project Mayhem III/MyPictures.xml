@@ -130,7 +130,7 @@
 		<include>OldListViewCommons</include>
 		<include>AllViewCommonThumbSmall</include>
 		<include>AllViewCommonPageControls</include>
-	
-		</controls>
+		<include>windowswitchtransition</include>
+	</controls>
 </window>
 	

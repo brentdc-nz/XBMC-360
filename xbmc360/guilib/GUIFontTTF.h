@@ -103,7 +103,7 @@ public:
 
 	DWORD m_numCharactersRendered;
 	
-	struct COLORVERTEX
+	struct CUSTOMVERTEX
 	{
 		float fPosition[3];
 		float fTexCoord[2];

@@ -10,11 +10,12 @@ This is early stages and still very much a work in progress.
 
 Usable but many features still need reimplementation or improvements.
 
-### Compiled alpha build (last updated 28-3-22):
-https://drive.google.com/file/d/1dcmh3VyyYTJOLgwtiGUqlMeuGpryqYa5/view
+### Compiled alpha build (last updated 5-1-23):
+https://drive.google.com/file/d/1UPsCVw1v4AYV1yhrBEnbS5AiTGc9Cpzh/view
 
 ### Libraries
-- LibSMB2 - Ported and working (currently not mappable from UI, this is my next task).
+- LibSMB2
+- FreeType
 
 ### Services
 - FTP Server.

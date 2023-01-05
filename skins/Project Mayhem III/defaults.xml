@@ -23,7 +23,6 @@
 		<textcolor>white</textcolor>
 		<disabledcolor>disabled</disabledcolor>
 		<textoffsetx>17</textoffsetx>
-		<textoffsety>6</textoffsety>
 		<aligny>center</aligny>
 	</default>
 	<default type="togglebutton">

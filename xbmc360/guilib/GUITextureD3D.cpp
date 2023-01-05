@@ -3,13 +3,8 @@
 
 namespace D3DTextureShaders
 {
-//-------------------------------------------------------------------------------------
 // Vertex shader
-// We use the register semantic here to directly define the input register
-// matWVP.  Conversely, we could let the HLSL compiler decide and check the
-// constant table.
-//-------------------------------------------------------------------------------------
-const char* g_strVertexShaderProgram =
+const char* g_strVertexShader =
     " float4x4 matWVP : register(c0);              "
     "                                              "
     " struct VS_IN                                 "
@@ -32,21 +27,22 @@ const char* g_strVertexShaderProgram =
     "     return Out;                              "
     " }                                            ";
 
-//-------------------------------------------------------------------------------------
 // Pixel shader
-//-------------------------------------------------------------------------------------
-const char* g_strPixelShaderProgram =
-    " struct PS_IN                                 "
-    " {                                            "
-    "     float2 TexCoord : TEXCOORD;              "
-    " };                                           "  // the vertex shader
-    "                                              "
-    " sampler detail;                              "
-    "                                              "
-    " float4 main( PS_IN In ) : COLOR              "
-    " {                                            "
-    "     return tex2D( detail, In.TexCoord );     "  // Output color
-    " }                                            ";
+const char* g_strPixelShader =
+    " struct PS_IN                                  "
+    " {                                             "
+    "     float2 TexCoord : TEXCOORD;               "
+    " };                                            "
+    "                                               "
+    " float InputAlpha : register(c10);             "
+    " sampler2D InputTexture : register(S0);        "
+    "                                               "
+    " float4 main(float2 uv : TEXCOORD) : COLOR     "
+    " {                                             "
+    "    float4 color = tex2D( InputTexture, uv.xy);"
+    "    color[3] = InputAlpha * color[3];          "
+    "    return color;                              "
+    " }                                             ";
 }
 
 CGUITextureD3D::CGUITextureD3D(float posX, float posY, float width, float height, const CTextureInfo &texture)
@@ -69,8 +65,8 @@ void CGUITextureD3D::Allocate()
 	ID3DXBuffer* pVertexShaderCode;
 	ID3DXBuffer* pVertexErrorMsg;
    
-	D3DXCompileShader( D3DTextureShaders::g_strVertexShaderProgram,
-                                    ( UINT )strlen( D3DTextureShaders::g_strVertexShaderProgram ),
+	D3DXCompileShader( D3DTextureShaders::g_strVertexShader,
+                                    ( UINT )strlen( D3DTextureShaders::g_strVertexShader ),
                                     NULL,
                                     NULL,
                                     "main",
@@ -88,8 +84,8 @@ void CGUITextureD3D::Allocate()
 	ID3DXBuffer* pPixelShaderCode;
     ID3DXBuffer* pPixelErrorMsg;
 
-	D3DXCompileShader( D3DTextureShaders::g_strPixelShaderProgram,
-                            ( UINT )strlen( D3DTextureShaders::g_strPixelShaderProgram ),
+	D3DXCompileShader( D3DTextureShaders::g_strPixelShader,
+                            ( UINT )strlen( D3DTextureShaders::g_strPixelShader ),
                             NULL,
                             NULL,
                             "main",
@@ -103,19 +99,20 @@ void CGUITextureD3D::Allocate()
     m_pd3dDevice->CreatePixelShader( ( DWORD* )pPixelShaderCode->GetBufferPointer(),
                                      &m_pPixelShader );
 
-    // Define the vertex elements and
-    // Create a vertex declaration from the element descriptions.
-    static const D3DVERTEXELEMENT9 VertexElements[3] =
-    {
-        { 0,  0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0 },
-        { 0, 12, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0 },
-        D3DDECL_END()
-    };
+	// Define the vertex elements and
+	// Create a vertex declaration from the element descriptions.
+	static const D3DVERTEXELEMENT9 VertexElements[] =
+	{
+		{ 0,  0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0 },
+		{ 0, 12, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0 },
+		D3DDECL_END()
+	};
+
     m_pd3dDevice->CreateVertexDeclaration( VertexElements, &m_pVertexDecl );
 
     // Create the vertex buffer. Here we are allocating enough memory
     // (from the default pool) to hold all our 3 custom vertices. 
-    m_pd3dDevice->CreateVertexBuffer(4 * sizeof(COLORVERTEX),
+    m_pd3dDevice->CreateVertexBuffer(4 * sizeof(D3DCUSTOMVERTEX),
                                                   D3DUSAGE_WRITEONLY,
                                                   NULL,
                                                   D3DPOOL_MANAGED,
@@ -411,37 +408,48 @@ void CGUITextureD3D::Draw(float *x, float *y, float *z, const CRect &texture, co
 
 	verts[3].color = color;
 
-	COLORVERTEX Vertices[] =
+	D3DCUSTOMVERTEX Vertices[] =
     {
-		{x[1], y[1],  z[1], 1, 0 ,},
-		{x[0], y[0],  z[0], 0, 0 ,},
-		{x[2], y[2],  z[2], 1, 1 ,},
-		{x[3], y[3],  z[3], 0, 1 ,},
+		{x[1], y[1],  z[1], 1, 0, },
+		{x[0], y[0],  z[0], 0, 0, },
+		{x[2], y[2],  z[2], 1, 1, },
+		{x[3], y[3],  z[3], 0, 1  },
     };
 
-    COLORVERTEX* pVertices;
+	D3DCUSTOMVERTEX* pVertices;
 	g_graphicsContext.TLock();
-    m_pVB->Lock(0, 0, (void** )&pVertices, 0);
+	m_pVB->Lock(0, 0, (void** )&pVertices, 0);
 	g_graphicsContext.TUnlock();
 	g_graphicsContext.TLock();
-    memcpy(pVertices, Vertices, 4 * sizeof(COLORVERTEX));
-    m_pVB->Unlock();
+	memcpy(pVertices, Vertices, 4 * sizeof(D3DCUSTOMVERTEX));
+	m_pVB->Unlock();
 	g_graphicsContext.TUnlock();
 
-    // Build the world-view-projection matrix and pass it into the vertex shader
+	// Build the world-view-projection matrix and pass it into the vertex shader
 	g_graphicsContext.TLock();
 	m_pd3dDevice->SetVertexShaderConstantF(0, ( FLOAT* )&g_graphicsContext.GetFinalMatrix(), 4);
 	g_graphicsContext.TUnlock();
 
 	g_graphicsContext.TLock();
-    m_pd3dDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_ANISOTROPIC);
+	m_pd3dDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_ANISOTROPIC);
 	g_graphicsContext.TUnlock();
 	g_graphicsContext.TLock();
-    m_pd3dDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_ANISOTROPIC);
+	m_pd3dDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_ANISOTROPIC);
 	g_graphicsContext.TUnlock();
 	g_graphicsContext.TLock();
-    m_pd3dDevice->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+	m_pd3dDevice->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
 	g_graphicsContext.TUnlock();
+
+#pragma warning(push)
+#pragma warning (disable:4244) // Not an issue here
+
+	float fInputAlpha[] = { (color >> 24 & 0xFF) / 255.0 };
+
+	g_graphicsContext.TLock();
+	m_pd3dDevice->SetPixelShaderConstantF(10, fInputAlpha, 4);
+	g_graphicsContext.TUnlock();
+
+#pragma warning(pop)
 
 	// We are passing the vertices down a "stream", so first we need
     // to specify the source of that stream, which is our vertex buffer. 
@@ -450,13 +458,13 @@ void CGUITextureD3D::Draw(float *x, float *y, float *z, const CRect &texture, co
     m_pd3dDevice->SetVertexDeclaration(m_pVertexDecl);
 	g_graphicsContext.TUnlock();
 	g_graphicsContext.TLock();
-	m_pd3dDevice->SetStreamSource(0, m_pVB, 0, sizeof(COLORVERTEX));
+	m_pd3dDevice->SetStreamSource(0, m_pVB, 0, sizeof(D3DCUSTOMVERTEX));
 	g_graphicsContext.TUnlock();
 	g_graphicsContext.TLock();
-    m_pd3dDevice->SetVertexShader(m_pVertexShader);
+	m_pd3dDevice->SetVertexShader(m_pVertexShader);
 	g_graphicsContext.TUnlock();
 	g_graphicsContext.TLock();
-    m_pd3dDevice->SetPixelShader(m_pPixelShader);
+	m_pd3dDevice->SetPixelShader(m_pPixelShader);
 	g_graphicsContext.TUnlock();
 
 	g_graphicsContext.TLock();

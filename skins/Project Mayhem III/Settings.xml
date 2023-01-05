@@ -35,6 +35,7 @@
 			<font>special13</font>
 		</control>
 		<include>contentpanel</include>
-
+		
+		<include>windowswitchtransition</include>
 	</controls>
 </window>

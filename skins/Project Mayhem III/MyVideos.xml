@@ -96,5 +96,6 @@
 		<include>OldListViewCommons</include>
 		<include>AllViewCommonThumbSmall</include>
 		<include>AllViewCommonPageControls</include>
+		<include>windowswitchtransition</include>
 	</controls>
 </window>		

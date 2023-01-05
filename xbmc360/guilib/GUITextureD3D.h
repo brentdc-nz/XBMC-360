@@ -19,7 +19,7 @@ protected:
 	virtual void Free();
 
 private:
-	struct COLORVERTEX
+	struct D3DCUSTOMVERTEX
 	{
 		float   Position[3];
 		float   TexCoord[2];

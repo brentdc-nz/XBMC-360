@@ -85,6 +85,14 @@ namespace INFO
 #define SKIN_THEME                  800
 #define SKIN_COLOUR_THEME           801
 
+#define WINDOW_PROPERTY             9993
+#define WINDOW_IS_TOPMOST           9994
+#define WINDOW_IS_VISIBLE           9995
+#define WINDOW_NEXT                 9996
+#define WINDOW_PREVIOUS             9997
+#define WINDOW_IS_MEDIA             9998
+#define WINDOW_IS_ACTIVE            9999
+
 #define CONTROL_GROUP_HAS_FOCUS     29999
 
 // The multiple information vector
@@ -266,6 +274,7 @@ protected:
 	bool GetMultiInfoBool(const GUIInfo &info, int contextWindow = 0);
 	CStdString GetMultiInfoLabel(const GUIInfo &info, int contextWindow = 0);
 	int TranslateListItem(const CStdString &info);
+	bool GetItemBool(const CGUIListItem *item, int condition) const;
 
 	CStdString GetTime(bool bSeconds = false);
 	CStdString GetDate(bool bNumbersOnly = false);

@@ -145,13 +145,13 @@ const char* g_strPixelShader =
     "     float2 TexCoord : TEXCOORD;              "
     " };                                           "
     "                                              "
-    " float3 InputColor : register(c10);           "
+    " float4 InputColor : register(c10);           "
 	" sampler2D InputTexture : register(S0);       "
     "                                              "
     " float4 main(float2 uv : TEXCOORD) : COLOR    "
     " {                                            "
     "    float4 originalColor = tex2D( InputTexture, uv.xy);"
-    "    return float4(InputColor[0], InputColor[1], InputColor[2], originalColor.a);"
+    "    return float4(InputColor[0], InputColor[1], InputColor[2], originalColor.a * InputColor[3]);"
     " }                                            ";
 }
 
@@ -488,7 +488,7 @@ void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, D
 #pragma warning (disable:4244) // Not an issue here
 
 	// Get the color and parse into the pixel shader
-	float fInputColor[3] = { ((dwColor >> 16) & 0xFF) / 255.0, ((dwColor >> 8) & 0xFF) / 255.0, ((dwColor) & 0xFF) / 255.0 };
+	float fInputColor[4] = { ((dwColor >> 16) & 0xFF) / 255.0, ((dwColor >> 8) & 0xFF) / 255.0, ((dwColor) & 0xFF) / 255.0, (dwColor >> 24 & 0xFF) / 255.0};
 	m_pD3DDevice->SetPixelShaderConstantF(10, fInputColor, 4);
 
 #pragma warning(pop)
@@ -503,12 +503,12 @@ void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, D
 	float tt = texture.y1 / m_textureHeight;
 	float tb = texture.y2 / m_textureHeight;
 
-	COLORVERTEX Vertices[] =
+	CUSTOMVERTEX Vertices[] =
 	{
-		{ x[0], y1, z1, tl, tt},
-		{ x[1], y2, z2, tr, tt},
-		{ x[2], y3, z3, tr, tb},
-		{ x[3], y4, z4, tl, tb}
+		{ x[0], y1, z1, tl, tt },
+		{ x[1], y2, z2, tr, tt },
+		{ x[2], y3, z3, tr, tb },
+		{ x[3], y4, z4, tl, tb }
 	};
 
 	g_graphicsContext.TLock();
@@ -552,7 +552,7 @@ void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, D
 	g_graphicsContext.TUnlock();
 
 	g_graphicsContext.TLock();
-	m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, Vertices, sizeof(COLORVERTEX));
+	m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, Vertices, sizeof(CUSTOMVERTEX));
 	g_graphicsContext.TUnlock();
 }
 

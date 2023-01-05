@@ -20,6 +20,31 @@
 		<animation effect="slide" tween="elastic" time="800" start="0,0" end="-300,0" acceleration="1.1" condition="[!Skin.HasSetting(animated) + Skin.HasSetting(tween_animated)]">WindowClose</animation>
 	</include>
 
+	<include name="windowswitchtransition">
+		<control type="group">
+			<visible>!Skin.HasSetting(animated) + !Window.Previous(2999)</visible>
+			<animation effect="fade" start="0" end="0" time="1">VisibleChange</animation>
+			<animation effect="fade" start="100" end="0" time="300" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+			<animation effect="fade" start="0" end="100" time="200" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+			<control type="image">
+				<description>background image</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>720</width>
+				<height>88</height>
+				<texture>background-plain.png</texture>
+			</control>
+			<control type="image">
+				<description>background image</description>
+				<posx>0</posx>
+				<posy>88</posy>
+				<width>720</width>
+				<height>500</height>
+				<texture>background-bottom.png</texture>
+			</control>
+		</control>
+	</include>
+
 	<include name="homestatsinfo">
 		<animation effect="fade" time="200">VisibleChange</animation>
 		<animation effect="slide" time="0" start="0,0" end="0,-250" condition="[Player.HasAudio + !Skin.HasSetting(homepageMusicinfo)] | [Player.HasVideo + !Skin.HasSetting(homepageVideoinfo)]">Conditional</animation>
