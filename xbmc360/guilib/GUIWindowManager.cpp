@@ -173,14 +173,16 @@ void CGUIWindowManager::Add(CGUIWindow* pWindow)
 
 	// Push back all the windows if there are more than one covered by this class
 	CSingleLock lock(g_graphicsContext);
+	
 	for (int i = 0; i < pWindow->GetIDRange(); i++)
 	{
 		WindowMap::iterator it = m_mapWindows.find(pWindow->GetID() + i);
+
 		if (it != m_mapWindows.end())
 		{
 			CLog::Log(LOGERROR, "Error, trying to add a second window with id %u "
-						"to the window manager",
-			pWindow->GetID());
+						"to the window manager", pWindow->GetID());
+
 			return;
 		}
 		m_mapWindows.insert(pair<int, CGUIWindow *>(pWindow->GetID() + i, pWindow));
@@ -383,6 +385,7 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const vector<CStd
 
 	// First check existence of the window we wish to activate
 	CGUIWindow *pNewWindow = GetWindow(iWindowID);
+
 	if (!pNewWindow)
 	{
 		// Nothing to see here - move along
@@ -406,6 +409,7 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const vector<CStd
 	// Deactivate any window
 	int currentWindow = GetActiveWindow();
 	CGUIWindow *pWindow = GetWindow(currentWindow);
+
 	if (pWindow)
 	{
 		// Play the window specific deinit sound

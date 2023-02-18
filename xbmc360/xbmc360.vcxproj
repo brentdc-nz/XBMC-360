@@ -550,6 +550,8 @@
     <ClInclude Include="xbox\XBAudioUtils.h" />
     <ClInclude Include="xbox\XBInput.h" />
     <ClInclude Include="xbox\XBKernalExports.h" />
+    <ClInclude Include="xbox\XBTimeZone.h" />
+    <ClInclude Include="xbox\XBVideoConfig.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AdvancedSettings.cpp" />
@@ -983,6 +985,8 @@
     <ClCompile Include="xbox\XBAudioUtils.cpp" />
     <ClCompile Include="xbox\XBInput.cpp" />
     <ClCompile Include="xbox\XBKernalExports.cpp" />
+    <ClCompile Include="xbox\XBTimeZone.cpp" />
+    <ClCompile Include="xbox\XBVideoConfig.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

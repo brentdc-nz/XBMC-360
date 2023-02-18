@@ -13,7 +13,7 @@
 enum RESOLUTION
 {
 	INVALID = -1,
-	HDTV_1080i = 0,
+	HDTV_1080p = 0,
 	HDTV_720p = 1,
 	HDTV_480p_4x3 = 2,
 	HDTV_480p_16x9 = 3,

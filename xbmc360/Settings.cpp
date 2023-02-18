@@ -22,7 +22,7 @@ CSettings::~CSettings()
 
 void CSettings::Initialize()
 {
-	for(int i = HDTV_1080i; i <= PAL60_16x9; i++)
+	for(int i = HDTV_1080p; i <= PAL60_16x9; i++)
 	{
 		g_graphicsContext.ResetScreenParameters((RESOLUTION)i);
 		g_graphicsContext.ResetOverscan((RESOLUTION)i, m_ResInfo[i].Overscan);

@@ -4,6 +4,7 @@
 #include "GuiSettings.h"
 #include "SkinInfo.h"
 #include "GUIFontManager.h"
+#include "xbox\XBVideoConfig.h"
 
 CGraphicContext g_graphicsContext;
 
@@ -62,19 +63,16 @@ void CGraphicContext::SetD3DParameters(D3DPRESENT_PARAMETERS *p3dParams)
 
 void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool forceClear /* = false */)
 {
-	if(res == AUTORES)
-	{
-//		res = g_videoConfig.GetBestMode(); //TODO
-	}
+	if (res == AUTORES)
+		res = g_videoConfig.GetBestMode();
 
-/*
-	if(!IsValidResolution(res)) //TODO
+	if (!g_videoConfig.IsValidResolution(res))
 	{
 		// Choose a failsafe resolution that we can actually display
 		CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
 		res = g_videoConfig.GetSafeMode();
 	}
-*/
+
 	if(!m_pd3dParams)
 	{
 		m_Resolution = res;
@@ -106,7 +104,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
 		m_pd3dParams->BackBufferHeight = g_settings.m_ResInfo[res].iHeight;
 		m_pd3dParams->Flags = g_settings.m_ResInfo[res].dwFlags;
 
-		if(res == HDTV_1080i || res == HDTV_720p || m_bFullScreenVideo)
+		if(res == HDTV_1080p || res == HDTV_720p || m_bFullScreenVideo)
 			m_pd3dParams->BackBufferCount = 1;
 		else
 			m_pd3dParams->BackBufferCount = 2;
@@ -180,7 +178,7 @@ void CGraphicContext::ResetOverscan(RESOLUTION res, OVERSCAN &overscan)
 
 	switch(res)
 	{
-		case HDTV_1080i:
+		case HDTV_1080p:
 			overscan.right = 1920;
 			overscan.bottom = 1080;
 		break;
@@ -406,7 +404,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
   // 1080i
   switch (res)
   {
-  case HDTV_1080i:
+  case HDTV_1080p:
     g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * 1080);
     g_settings.m_ResInfo[res].iWidth = 1920;
     g_settings.m_ResInfo[res].iHeight = 1080;
@@ -534,7 +532,7 @@ void CGraphicContext::SetScalingResolution(RESOLUTION res, bool needsScaling)
 
 		if(!g_guiSkinzoom) // Lookup gui setting if we didn't have it already
 			g_guiSkinzoom = (CSettingInt*)g_guiSettings.GetSetting("lookandfeel.skinzoom");
-	
+
 		if(g_guiSkinzoom)
 			fZoom *= (100 + g_guiSkinzoom->GetData()) * 0.01f;
 
