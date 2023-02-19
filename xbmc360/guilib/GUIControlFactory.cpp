@@ -2,7 +2,7 @@
 #include "GUIControlFactory.h"
 #include "LocalizeStrings.h"
 #include "GUIButtonControl.h"
-//#include "GUIRadioButtonControl.h"
+#include "GUIRadioButtonControl.h"
 #include "GUISpinControl.h"
 //#include "GUIRSSControl.h"
 #include "GUIImage.h"
@@ -1203,18 +1203,18 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
 	}
 	else if (type == CGUIControl::GUICONTROL_RADIO)
 	{
-/*		control = new CGUIRadioButtonControl(
-			parentID, id, posX, posY, width, height,
-			textureFocus, textureNoFocus,
-			labelInfo,
-			textureRadioOn, textureRadioOff);
+		control = new CGUIRadioButtonControl(
+		parentID, id, posX, posY, width, height,
+		textureFocus, textureNoFocus,
+		labelInfo,
+		textureRadioOn, textureRadioOff);
 
 		((CGUIRadioButtonControl *)control)->SetLabel(strLabel);
 		((CGUIRadioButtonControl *)control)->SetRadioDimensions(radioPosX, radioPosY, radioWidth, radioHeight);
 		((CGUIRadioButtonControl *)control)->SetToggleSelect(iToggleSelect);
 		((CGUIRadioButtonControl *)control)->SetClickActions(clickActions);
 		((CGUIRadioButtonControl *)control)->SetFocusActions(focusActions);
-		((CGUIRadioButtonControl *)control)->SetUnFocusActions(unfocusActions);*/
+		((CGUIRadioButtonControl *)control)->SetUnFocusActions(unfocusActions);
 	}
 	else if (type == CGUIControl::GUICONTROL_MULTISELECT)
 	{

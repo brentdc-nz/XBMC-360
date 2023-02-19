@@ -34,6 +34,7 @@ public:
 	static __int64 ToInt64(DWORD dwHigh, DWORD dwLow);
 	static bool ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps);
 	static int GetMatchingSource(const CStdString& strPath, VECSOURCES& VECSOURCES, bool& bIsSourceName);
+	static bool MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTextMaxLength);
 };
 
 #endif //CUTIL_H

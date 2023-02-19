@@ -710,3 +710,69 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
 	}
 	return iIndex;
 }
+
+bool CUtil::MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTextMaxLength)
+{
+	int iStrInputSize = StrInput.size();
+
+	if((iStrInputSize <= 0) || (iTextMaxLength >= iStrInputSize))
+		return false;
+
+	char cDelim = '\0';
+	size_t nGreaterDelim, nPos;
+
+	nPos = StrInput.find_last_of( '\\' );
+	if ( nPos != CStdString::npos )
+		cDelim = '\\';
+	else
+	{
+		nPos = StrInput.find_last_of( '/' );
+		if ( nPos != CStdString::npos )
+			cDelim = '/';
+	}
+	
+	if ( cDelim == '\0' )
+		return false;
+
+	if (nPos == StrInput.size() - 1)
+	{
+		StrInput.erase(StrInput.size() - 1);
+		nPos = StrInput.find_last_of( cDelim );
+	}
+
+	while( iTextMaxLength < iStrInputSize )
+	{
+		nPos = StrInput.find_last_of( cDelim, nPos );
+		nGreaterDelim = nPos;
+		
+		if ( nPos != CStdString::npos )
+			nPos = StrInput.find_last_of( cDelim, nPos - 1 );
+
+		if ( nPos == CStdString::npos ) break;
+		if ( nGreaterDelim > nPos ) StrInput.replace( nPos + 1, nGreaterDelim - nPos - 1, ".." );
+
+		iStrInputSize = StrInput.size();
+	}
+	
+	// Replace any additional /../../ with just /../ if necessary
+	CStdString replaceDots;
+	replaceDots.Format("..%c..", cDelim);
+	
+	while (StrInput.size() > (unsigned int)iTextMaxLength)
+		if (!StrInput.Replace(replaceDots, ".."))
+			break;
+
+	// Finally, truncate our string to force inside our max text length,
+	// replacing the last 2 characters with ".."
+
+	// eg end up with:
+	// "smb://../Playboy Swimsuit Cal.."
+	if (iTextMaxLength > 2 && StrInput.size() > (unsigned int)iTextMaxLength)
+	{
+		StrInput = StrInput.Left(iTextMaxLength - 2);
+		StrInput += "..";
+	}
+
+	StrOutput = StrInput;
+	return true;
+}

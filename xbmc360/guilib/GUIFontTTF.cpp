@@ -180,22 +180,38 @@ CGUIFontTTF::~CGUIFontTTF(void)
 void CGUIFontTTF::Clear()
 {
 	if (m_texture)
+	{
+		g_graphicsContext.TLock();
 		m_texture->Release();
+		g_graphicsContext.TUnlock();
+	}
 
 	m_texture = NULL;
 	
 	if (m_pVertexDecl)
+	{
+		g_graphicsContext.TLock();
 		m_pVertexDecl->Release();
+		g_graphicsContext.TUnlock();
+	}
 
 	m_pVertexDecl = NULL;
 
 	if (m_pVertexShader)
+	{
+		g_graphicsContext.TLock();
 		m_pVertexShader->Release();
+		g_graphicsContext.TUnlock();
+	}
 
 	m_pVertexShader = NULL;
 
 	if (m_pPixelShader)
+	{
+		g_graphicsContext.TLock();	
 		m_pPixelShader->Release();
+		g_graphicsContext.TUnlock();
+	}
 
 	m_pPixelShader = NULL;
 
@@ -933,7 +949,7 @@ void CGUIFontTTF::DrawTextInternal(float x, float y, const vecColors &colors, co
 			}
 		}
 		else if (maxPixelWidth > 0 && cursorX > maxPixelWidth)
-			break;  // Exceeded max allowed width - stop rendering
+			break; // Exceeded max allowed width - stop rendering
 
 		RenderCharacter(startX + cursorX, startY, ch, color, !scrolling);
 		

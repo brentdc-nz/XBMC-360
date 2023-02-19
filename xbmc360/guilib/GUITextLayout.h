@@ -1,7 +1,7 @@
 #ifndef GUILIB_TEXTLAYOUT_H
 #define GUILIB_TEXTLAYOUT_H
 
-#include "utils/StdString.h"
+#include "utils\StdString.h"
 #include "GUIFont.h"
 #include <vector>
 
@@ -43,7 +43,8 @@ public:
 	bool Update(const CStdString &text, float maxWidth = 0, bool forceLTRReadingOrder = false);
 
 	float GetTextWidth() const { return m_textWidth; };
-	 float GetTextWidth(const CStdStringW &text) const;
+	float GetTextWidth(const CStdStringW &text) const;
+	unsigned int GetTextLength() const;
 
 protected:
 	void ParseText(const CStdStringW &text, vecText &parsedText);
@@ -76,6 +77,7 @@ private:
 	{
 		return (letter & 0xffff) == L' ';
 	};
+
 	inline bool CanWrapAtLetter(character_t letter) const
 	{
 		character_t ch = letter & 0xffff;
