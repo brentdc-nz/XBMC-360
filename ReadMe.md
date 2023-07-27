@@ -14,6 +14,7 @@ Usable but many features still need reimplementation or improvements.
 https://drive.google.com/file/d/1UPsCVw1v4AYV1yhrBEnbS5AiTGc9Cpzh/view
 
 ### Libraries
+- FFmpeg
 - LibSMB2
 - FreeType
 
