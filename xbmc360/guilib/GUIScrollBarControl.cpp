@@ -1,3 +1,23 @@
+/*
+ *      Copyright (C) 2005-2013 Team XBMC
+ *      http://xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
+ *
+ */
+
 #include "include.h"
 #include "GUIScrollBarControl.h"
 
@@ -5,11 +25,11 @@
 
 CGUIScrollBar::CGUIScrollBar(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& backGroundTexture, const CTextureInfo& barTexture, const CTextureInfo& barTextureFocus, const CTextureInfo& nibTexture, const CTextureInfo& nibTextureFocus, ORIENTATION orientation, bool showOnePage)
 	: CGUIControl(parentID, controlID, posX, posY, width, height)
-	, m_guiBackground(posX, posY, width, height, backGroundTexture)
-	, m_guiBarNoFocus(posX, posY, width, height, barTexture)
-	, m_guiBarFocus(posX, posY, width, height, barTextureFocus)
-	, m_guiNibNoFocus(posX, posY, width, height, nibTexture)
-	, m_guiNibFocus(posX, posY, width, height, nibTextureFocus)
+    , m_guiBackground(posX, posY, width, height, backGroundTexture)
+    , m_guiBarNoFocus(posX, posY, width, height, barTexture)
+    , m_guiBarFocus(posX, posY, width, height, barTextureFocus)
+    , m_guiNibNoFocus(posX, posY, width, height, nibTexture)
+    , m_guiNibFocus(posX, posY, width, height, nibTextureFocus)
 {
 	m_guiNibNoFocus.SetAspectRatio(CAspectRatio::AR_CENTER);
 	m_guiNibFocus.SetAspectRatio(CAspectRatio::AR_CENTER);
@@ -61,7 +81,7 @@ bool CGUIScrollBar::OnMessage(CGUIMessage& message)
 			return true;
 		case GUI_MSG_PAGE_DOWN:
 			Move(1);
-			return true;
+		return true;
 	}
 	return CGUIControl::OnMessage(message);
 }
@@ -71,36 +91,35 @@ bool CGUIScrollBar::OnAction(const CAction &action)
 	switch ( action.GetID() )
 	{
 		case ACTION_MOVE_LEFT:
-		if (m_orientation == HORIZONTAL)
-		{
-			Move( -1);
-			return true;
-		}
-		break;
+			if (m_orientation == HORIZONTAL)
+			{
+				Move( -1);
+				return true;
+			}
+			break;
 
 		case ACTION_MOVE_RIGHT:
-		if (m_orientation == HORIZONTAL)
-		{
-			Move(1);
-			return true;
-		}
-		break;
-
+			if (m_orientation == HORIZONTAL)
+			{
+				Move(1);
+				return true;
+			}
+			break;
 		case ACTION_MOVE_UP:
-		if (m_orientation == VERTICAL)
-		{
-			Move(-1);
-			return true;
-		}
-		break;
+			if (m_orientation == VERTICAL)
+			{
+				Move(-1);
+				return true;
+			}
+			break;
 
 		case ACTION_MOVE_DOWN:
-		if (m_orientation == VERTICAL)
-		{
-			Move(1);
-			return true;
-		}
-		break;
+			if (m_orientation == VERTICAL)
+			{
+				Move(1);
+				return true;
+			}
+			break;
 	}
 	return CGUIControl::OnAction(action);
 }
@@ -111,7 +130,7 @@ void CGUIScrollBar::Move(int numSteps)
 	
 	if (m_offset > m_numItems - m_pageSize) m_offset = m_numItems - m_pageSize;
 	if (m_offset < 0) m_offset = 0;
-	
+
 	CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetParentID(), GetID(), GUI_MSG_PAGE_CHANGE, m_offset);
 	SendWindowMessage(message);
 	SetInvalid();
@@ -122,14 +141,12 @@ void CGUIScrollBar::SetRange(int pageSize, int numItems)
 	m_pageSize = pageSize;
 	m_numItems = numItems;
 	m_offset = 0;
-
 	SetInvalid();
 }
 
 void CGUIScrollBar::SetValue(int value)
 {
 	m_offset = value;
-
 	SetInvalid();
 }
 
@@ -147,7 +164,7 @@ void CGUIScrollBar::FreeResources(bool immediately)
 void CGUIScrollBar::DynamicResourceAlloc(bool bOnOff)
 {
 	CGUIControl::DynamicResourceAlloc(bOnOff);
-	
+
 	m_guiBackground.DynamicResourceAlloc(bOnOff);
 	m_guiBarNoFocus.DynamicResourceAlloc(bOnOff);
 	m_guiBarFocus.DynamicResourceAlloc(bOnOff);
@@ -158,7 +175,7 @@ void CGUIScrollBar::DynamicResourceAlloc(bool bOnOff)
 void CGUIScrollBar::PreAllocResources()
 {
 	CGUIControl::PreAllocResources();
-	
+
 	m_guiBackground.PreAllocResources();
 	m_guiBarNoFocus.PreAllocResources();
 	m_guiBarFocus.PreAllocResources();
@@ -169,7 +186,7 @@ void CGUIScrollBar::PreAllocResources()
 void CGUIScrollBar::AllocResources()
 {
 	CGUIControl::AllocResources();
-	
+
 	m_guiBackground.AllocResources();
 	m_guiBarNoFocus.AllocResources();
 	m_guiBarFocus.AllocResources();
@@ -235,6 +252,7 @@ bool CGUIScrollBar::HitTest(const CPoint &point) const
 {
 	if (m_guiBackground.HitTest(point)) return true;
 	if (m_guiBarNoFocus.HitTest(point)) return true;
+
 	return false;
 }
 
@@ -246,12 +264,11 @@ void CGUIScrollBar::SetFromPosition(const CPoint &point)
 		fPercent = (point.y - m_guiBackground.GetYPosition() - 0.5f*m_guiBarFocus.GetHeight()) / m_guiBackground.GetHeight();
 	else
 		fPercent = (point.x - m_guiBackground.GetXPosition() - 0.5f*m_guiBarFocus.GetWidth()) / m_guiBackground.GetWidth();
-	
+
 	if (fPercent < 0) fPercent = 0;
-	 if (fPercent > 1) fPercent = 1;
+	if (fPercent > 1) fPercent = 1;
 
-	 m_offset = (int)(floor(fPercent * m_numItems + 0.5f));
-
+	m_offset = (int)(floor(fPercent * m_numItems + 0.5f));
 	CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetParentID(), GetID(), GUI_MSG_PAGE_CHANGE, m_offset);
 	SendWindowMessage(message);
 	SetInvalid();
@@ -291,7 +308,6 @@ bool CGUIScrollBar::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 		Move(1);
 		return true;
 	}
-
 	return false;
 }
 #endif
@@ -300,14 +316,14 @@ CStdString CGUIScrollBar::GetDescription() const
 {
 	CStdString description;
 	description.Format("%i/%i", m_offset, m_numItems);
-	
+
 	return description;
 }
 
 void CGUIScrollBar::UpdateColors()
 {
 	CGUIControl::UpdateColors();
-	
+
 	m_guiBackground.SetDiffuseColor(m_diffuseColor);
 	m_guiBarNoFocus.SetDiffuseColor(m_diffuseColor);
 	m_guiBarFocus.SetDiffuseColor(m_diffuseColor);
@@ -320,6 +336,6 @@ bool CGUIScrollBar::IsVisible() const
 	// Page controls can be optionally disabled if the number of pages is 1
 	if (m_numItems <= m_pageSize && !m_showOnePage)
 		return false;
-	
+
 	return CGUIControl::IsVisible();
 }

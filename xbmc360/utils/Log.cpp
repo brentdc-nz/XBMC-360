@@ -203,6 +203,7 @@ void CLog::MemDump(BYTE *pData, int length)
 void CLog::SetLogLevel(int level)
 {
 	CSingleLock waitLock(critSec);
+	m_logLevel = level;
 	CLog::Log(LOGNOTICE, "Log level changed to %d", m_logLevel);
 }
 

@@ -461,7 +461,7 @@ void CGUIWindow::ChangeButtonToEdit(int id, bool singleLabel /* = false*/)
 
 void CGUIWindow::RunLoadActions()
 {
-  m_loadActions.Execute(GetID(), GetParentID());
+	m_loadActions.Execute(GetID(), GetParentID());
 }
 
 bool CGUIWindow::Initialize()
@@ -602,7 +602,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
 		}
 		break;
 #endif
-/*		case GUI_MSG_NOTIFY_ALL: //TODO
+		case GUI_MSG_NOTIFY_ALL:
 		{
 			// Only process those notifications that come from this window, or those intended for every window
 			if (HasID(message.GetSenderId()) || !message.GetSenderId())
@@ -622,7 +622,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
 			}
 		}
 		break;
-*/	}
+	}
 
 	return SendControlMessage(message);
 }

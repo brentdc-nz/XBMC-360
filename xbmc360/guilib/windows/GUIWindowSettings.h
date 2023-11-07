@@ -3,15 +3,13 @@
 
 #include "..\GUIWindow.h"
 
-class CGUIWindowSettimgs : public CGUIWindow
+class CGUIWindowSettings : public CGUIWindow
 {
 public:
-	CGUIWindowSettimgs(void);
-	virtual ~CGUIWindowSettimgs(void);
+	CGUIWindowSettings(void);
+	virtual ~CGUIWindowSettings(void);
 
-	virtual void Render();
 	virtual bool OnMessage(CGUIMessage& message);
-
 private:
 };
 

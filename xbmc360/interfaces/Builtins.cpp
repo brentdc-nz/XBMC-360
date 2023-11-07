@@ -178,4 +178,6 @@ int CBuiltins::Execute(const CStdString& execString)
 	// WIP - More to be re-added!
 	else
 		return -1;
+
+	return 0;
 }

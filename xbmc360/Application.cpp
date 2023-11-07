@@ -187,7 +187,7 @@ bool CApplication::Initialize()
 	g_windowManager.Add(new CGUIWindowVideoFiles);
 	g_windowManager.Add(new CGUIWindowMusicFiles);
 	g_windowManager.Add(new CGUIWindowPictures);	
-	g_windowManager.Add(new CGUIWindowSettimgs);
+	g_windowManager.Add(new CGUIWindowSettings);
 	g_windowManager.Add(new CGUIWindowSettingsCategory);
 	g_windowManager.Add(new CGUIWindowScreensaver);
 	g_windowManager.Add(new CGUIWindowSystemInfo);

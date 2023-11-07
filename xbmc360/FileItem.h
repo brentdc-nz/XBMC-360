@@ -1,6 +1,26 @@
 #ifndef CFILEITEM_H
 #define CFILEITEM_H
 
+/*
+ *      Copyright (C) 2005-2013 Team XBMC
+ *      http://xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
+ *
+ */
+
 #include "MediaSource.h"
 #include "guilib\GUIListItem.h"
 #include "utils\SingleLock.h"
@@ -95,7 +115,7 @@ typedef bool (*FILEITEMLISTCOMPARISONFUNC) (const CFileItemPtr &pItem1, const CF
 typedef void (*FILEITEMFILLFUNC) (CFileItemPtr &item);
 
 // Represents a list of files
-class CFileItemList	 : public CFileItem
+class CFileItemList : public CFileItem
 {
 public:
 	enum CACHE_TYPE { CACHE_NEVER = 0, CACHE_IF_SLOW, CACHE_ALWAYS };

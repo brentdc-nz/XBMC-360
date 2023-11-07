@@ -2,22 +2,17 @@
 #include "guilib\GUIUserMessages.h"
 #include "guilib\GUIWindowManager.h"
 
-CGUIWindowSettimgs::CGUIWindowSettimgs(void) : CGUIWindow(WINDOW_SETTINGS, "Settings.xml")
-{
-	m_loadOnDemand = false;
-}
-
-CGUIWindowSettimgs::~CGUIWindowSettimgs(void)
+CGUIWindowSettings::CGUIWindowSettings(void) : CGUIWindow(WINDOW_SETTINGS, "Settings.xml")
 {
 }
 
-void CGUIWindowSettimgs::Render()
+CGUIWindowSettings::~CGUIWindowSettings(void)
 {
-
-	CGUIWindow::Render();
 }
 
-bool CGUIWindowSettimgs::OnMessage(CGUIMessage& message)
+bool CGUIWindowSettings::OnMessage(CGUIMessage& message)
 {
+	// TODO
+
 	return CGUIWindow::OnMessage(message);
 }

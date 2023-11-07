@@ -3,6 +3,7 @@
 #include "XMLUtils.h"
 #include "utils\URIUtils.h"
 #include "filesystem\File.h"
+#include "GUIWindowManager.h"
 #include "GUISettings.h"
 #include <assert.h>
 

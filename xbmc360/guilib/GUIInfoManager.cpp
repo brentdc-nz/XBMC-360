@@ -187,6 +187,18 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 		else if(strTest.Equals("system.memory(free)") || strTest.Equals("system.freememory")) ret = SYSTEM_FREE_MEMORY;
 		else if (strTest.Equals("system.progressbar")) ret = SYSTEM_PROGRESS_BAR;
 	}
+	else if (strCategory.Equals("network"))
+	{
+		if (strTest.Equals("network.ipaddress")) ret = NETWORK_IP_ADDRESS;
+		if (strTest.Equals("network.isdhcp")) ret = NETWORK_IS_DHCP;
+		if (strTest.Equals("network.linkstate")) ret = NETWORK_LINK_STATE;
+		if (strTest.Equals("network.macaddress")) ret = NETWORK_MAC_ADDRESS;
+		if (strTest.Equals("network.subnetaddress")) ret = NETWORK_SUBNET_ADDRESS;
+		if (strTest.Equals("network.gatewayaddress")) ret = NETWORK_GATEWAY_ADDRESS;
+		if (strTest.Equals("network.dns1address")) ret = NETWORK_DNS1_ADDRESS;
+		if (strTest.Equals("network.dns2address")) ret = NETWORK_DNS2_ADDRESS;
+		if (strTest.Equals("network.dhcpaddress")) ret = NETWORK_DHCP_ADDRESS;
+	}
 	else if(strCategory.Equals("player"))
 	{
 		if(strTest.Equals("player.hasmedia")) ret = PLAYER_HAS_MEDIA;
@@ -196,16 +208,11 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 		else if(strTest.Equals("player.progress")) ret = PLAYER_PROGRESS;
 		else if (strTest.Equals("player.seeking")) ret = PLAYER_SEEKING;
 	}
-	else if(strCategory.Equals("control"))
+	else if (strTest.Left(17).Equals("control.hasfocus("))
 	{
-		if(strTest.Left(17).Equals("control.hasfocus("))
-		{
-			int controlID = atoi(strTest.Mid(17, strTest.GetLength() - 18).c_str());
-			if(controlID)
-			{
-				return AddMultiInfo(GUIInfo(bNegate ? -CONTROL_HAS_FOCUS : CONTROL_HAS_FOCUS, controlID, 0));
-			}
-		}
+		int controlID = atoi(strTest.Mid(17, strTest.GetLength() - 18).c_str());
+		if (controlID)
+			return AddMultiInfo(GUIInfo(bNegate ? -CONTROL_HAS_FOCUS : CONTROL_HAS_FOCUS, controlID, 0));
 	}
 	else if (strTest.Left(13).Equals("controlgroup("))
 	{
@@ -968,7 +975,13 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow)
 			break;
 			case CONTROL_HAS_FOCUS:
 			{
-				CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
+				CGUIWindow *window = NULL;
+
+				if(g_windowManager.HasDialogOnScreen()) // BRENT : Why is this needed in our code. somthing missing?
+					window = g_windowManager.GetWindow(g_windowManager.GetTopMostModalDialogID());
+				else
+					window = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
+
 				if (window)
 					bReturn = (window->GetFocusedControlID() == (int)info.GetData1());
 			}

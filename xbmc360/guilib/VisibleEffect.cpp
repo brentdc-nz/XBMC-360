@@ -634,6 +634,7 @@ void CAnimation::UpdateCondition(int contextWindow, const CGUIListItem *item)
 void CAnimation::SetInitialCondition(int contextWindow)
 {
 	m_lastCondition = g_infoManager.GetBool(m_condition, contextWindow);
+
 	if (m_lastCondition)
 		ApplyAnimation();
 	else

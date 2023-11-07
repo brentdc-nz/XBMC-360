@@ -10,20 +10,20 @@ const char* g_strVertexShader =
     " struct VS_IN                                 "
     " {                                            "
     "     float4 ObjPos   : POSITION;              "  // Object space position 
-    "     float2 TexCoord : TEXCOORD;              "
+    "     float2 TexCoord : TEXCOORD0;             "  // Note the TEXCOORD0 semantic
     " };                                           "
     "                                              "
     " struct VS_OUT                                "
     " {                                            "
     "     float4 ProjPos  : POSITION;              "  // Projected space position 
-    "     float2 TexCoord : TEXCOORD;              "
+    "     float2 TexCoord : TEXCOORD0;             "  // Note the TEXCOORD0 semantic
     " };                                           "
     "                                              "
     " VS_OUT main( VS_IN In )                      "
     " {                                            "
     "     VS_OUT Out;                              "
     "     Out.ProjPos = mul( matWVP, In.ObjPos );  "  // Transform vertex into
-    "     Out.TexCoord = In.TexCoord;              "
+    "     Out.TexCoord = float2(clamp(In.TexCoord.x, 0.0, 1.0), clamp(In.TexCoord.y, 0.0, 1.0)); "
     "     return Out;                              "
     " }                                            ";
 
@@ -206,7 +206,12 @@ void CGUITextureD3D::Begin()
 
 	g_graphicsContext.TLock();
 	p3DDevice->SetTexture( 0, m_texture.m_textures[m_currentFrame] );
+
+	p3DDevice->SetSamplerState(1, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+	p3DDevice->SetSamplerState(1, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+
 	g_graphicsContext.TUnlock();
+
 #if 0 // OG Xbox DX8
 	p3DDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR );
 	p3DDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTEXF_LINEAR );
@@ -223,7 +228,12 @@ void CGUITextureD3D::Begin()
 	{
 		g_graphicsContext.TLock();
 		p3DDevice->SetTexture( 1, m_diffuse.m_textures[0] );
+
+		p3DDevice->SetSamplerState(1, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+		p3DDevice->SetSamplerState(1, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+
 		g_graphicsContext.TUnlock();
+
 #if 0 // OG Xbox DX8
 		p3DDevice->SetTextureStageState( 1, D3DTSS_MAGFILTER, D3DTEXF_LINEAR );
 		p3DDevice->SetTextureStageState( 1, D3DTSS_MINFILTER, D3DTEXF_LINEAR );
