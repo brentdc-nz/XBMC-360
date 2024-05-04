@@ -14,6 +14,7 @@ public:
 	void SetVolume(float fLevel);
 	float GetVolume();
 	void DeInitialize();
+	float MilliBelsToVolume(int iMilliBel); // Convert milliBels (-6000 to 0) to XAudio2 volume
 
 protected:
 	bool m_bInitialized;

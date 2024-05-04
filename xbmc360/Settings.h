@@ -11,6 +11,11 @@
 #define SETTINGS_FILE "D:\\settings.xml"
 #define SOURCES_FILE "D:\\sources.xml" //TODO: GetUserDataFolder()
 
+#define VOLUME_MINIMUM -6000  // -60dB
+#define VOLUME_MAXIMUM 0      // 0dB
+#define VOLUME_DRC_MINIMUM 0    // 0dB
+#define VOLUME_DRC_MAXIMUM 3000 // 30dB
+
 class CSkinString
 {
 public:
@@ -66,6 +71,11 @@ public:
 	CVideoSettings m_currentVideoSettings;
 
 	RESOLUTION_INFO m_ResInfo[10];
+
+	int m_nVolumeLevel; // Measured in milliBels -60dB -> 0dB range.
+	int m_dynamicRangeCompressionLevel; // Measured in milliBels  0dB -> 30dB range.
+	int m_iPreMuteVolumeLevel; // Save the m_nVolumeLevel for proper restore
+	bool m_bMute;
 
 	VECSOURCES m_programSources;
 	VECSOURCES m_pictureSources;

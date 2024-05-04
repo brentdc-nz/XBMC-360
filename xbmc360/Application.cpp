@@ -199,6 +199,7 @@ bool CApplication::Initialize()
 	g_windowManager.Add(new CGUIDialogContextMenu);     // window id = 106
 	g_windowManager.Add(new CGUIDialogNumeric);         // window id = 109
 	g_windowManager.Add(new CGUIDialogButtonMenu);      // window id = 111
+	g_windowManager.Add(&m_guiDialogVolumeBar);         // window id = 104
 	g_windowManager.Add(&m_guiDialogSeekBar);           // window id = 115
 	g_windowManager.Add(new CGUIDialogNetworkSetup);    // window id = 128
 	g_windowManager.Add(new CGUIDialogMediaSource);     // window id = 129
@@ -207,6 +208,10 @@ bool CApplication::Initialize()
 	g_windowManager.SetCallback(*this);
 
 	g_windowManager.Initialize();
+
+	//  Show mute symbol
+	if (g_settings.m_nVolumeLevel == VOLUME_MINIMUM)
+		Mute();
 
 	m_slowTimer.StartZero();
 
@@ -284,10 +289,12 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	g_fontManager.LoadFonts(strFontPath);
 
 	CLog::Log(LOGINFO, "Initialize new skin...");
+	m_guiDialogVolumeBar.AllocResources(true);
 	m_guiDialogSeekBar.AllocResources(true);
+	m_guiDialogMuteBug.AllocResources(true);
 	g_windowManager.AddMsgTarget(this);
 	g_windowManager.Initialize();
-
+	g_audioManager.Initialize();
 	g_audioManager.Load();
 
 	CLog::Log(LOGINFO, "Skin loaded...");
@@ -314,10 +321,16 @@ void CApplication::ReloadSkin()
 
 void CApplication::UnloadSkin()
 {
+	// These windows are not handled by the windowmanager (why not?) so we should unload them manually
+	CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
+	m_guiDialogMuteBug.OnMessage(msg);
+	m_guiDialogMuteBug.ResetControlStates();
+	m_guiDialogMuteBug.FreeResources(true);
+
 	g_windowManager.DeInitialize();
 	g_TextureManager.Cleanup();
 	g_fontManager.Clear();
-	g_audioManager.Cleanup();
+	g_audioManager.DeInitialize();
 	g_infoManager.Clear();
 }
 
@@ -367,7 +380,7 @@ void CApplication::ProcessSlow()
 // processed.  If OnKey() returns false, then the key press wasn't processed at all,
 // and we can safely process the next key (or next check on the same key in the
 // case of the analog sticks which can produce more than 1 key event.)
-bool CApplication::ProcessGamepad()
+bool CApplication::ProcessGamepad(float frameTime)
 {
 	if(m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_A)
 	{
@@ -429,6 +442,20 @@ bool CApplication::ProcessGamepad()
 		if (OnKey(key)) return true;
 	}
 
+	BYTE bLeftTrigger = 0; // TODO //m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_LEFT_TRIGGER];
+	BYTE bRightTrigger = 0; // TODO //m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_RIGHT_TRIGGER];
+
+	if (m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_LEFT_THUMB)
+	{
+		CKey key(KEY_BUTTON_LEFT_THUMB_BUTTON, bLeftTrigger, bRightTrigger, m_DefaultGamepad.fX1, m_DefaultGamepad.fY1, m_DefaultGamepad.fX2, m_DefaultGamepad.fY2, frameTime);
+		if (OnKey(key)) return true;
+	}
+	if (m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_THUMB)
+	{
+		CKey key(KEY_BUTTON_RIGHT_THUMB_BUTTON, bLeftTrigger, bRightTrigger, m_DefaultGamepad.fX1, m_DefaultGamepad.fY1, m_DefaultGamepad.fX2, m_DefaultGamepad.fY2, frameTime);
+		if (OnKey(key)) return true;
+	}
+
 	if(m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)
 	{
 		CKey key(KEY_BUTTON_LEFT_SHOULDER);		
@@ -441,6 +468,138 @@ bool CApplication::ProcessGamepad()
 		if (OnKey(key)) return true;
 	}
 
+	// Map all controller & remote actions to their keys
+	if (m_DefaultGamepad.fX1 || m_DefaultGamepad.fY1)
+	{
+		CKey key(KEY_BUTTON_LEFT_THUMB_STICK, bLeftTrigger, bRightTrigger, m_DefaultGamepad.fX1, m_DefaultGamepad.fY1, m_DefaultGamepad.fX2, m_DefaultGamepad.fY2, frameTime);
+		if (OnKey(key)) return true;
+	}
+
+	if (m_DefaultGamepad.fX2 || m_DefaultGamepad.fY2)
+	{
+		CKey key(KEY_BUTTON_RIGHT_THUMB_STICK, bLeftTrigger, bRightTrigger, m_DefaultGamepad.fX1, m_DefaultGamepad.fY1, m_DefaultGamepad.fX2, m_DefaultGamepad.fY2, frameTime);
+		if (OnKey(key)) return true;
+	}
+
+	// Direction specific keys (for defining different actions for each direction)
+	// We need to be able to know when it last had a direction, so that we can
+	// post the reset direction code the next time around (to reset scrolling,
+	// fastforwarding and other analog actions)
+
+	// For the sticks, once it is pushed in one direction (eg up) it will only
+	// detect movement in that direction of movement (eg up or down) - the other
+	// direction (eg left and right) will not be registered until the stick has
+	// been recentered for at least 2 frames.
+
+	// First the right stick
+	static int lastRightStickKey = 0;
+	int newRightStickKey = 0;
+	
+	if (lastRightStickKey == KEY_BUTTON_RIGHT_THUMB_STICK_UP || lastRightStickKey == KEY_BUTTON_RIGHT_THUMB_STICK_DOWN)
+	{
+		if (m_DefaultGamepad.fY2 > 0)
+			newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_UP;
+		else if (m_DefaultGamepad.fY2 < 0)
+			newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_DOWN;
+		else if (m_DefaultGamepad.fX2 != 0)
+		{
+			newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_UP;
+			//m_DefaultGamepad.fY2 = 0.00001f; // small amount of movement
+		}
+	}
+	else if (lastRightStickKey == KEY_BUTTON_RIGHT_THUMB_STICK_LEFT || lastRightStickKey == KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT)
+	{
+		if (m_DefaultGamepad.fX2 > 0)
+			newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT;
+		else if (m_DefaultGamepad.fX2 < 0)
+			newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_LEFT;
+		else if (m_DefaultGamepad.fY2 != 0)
+		{
+			newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT;
+			//m_DefaultGamepad.fX2 = 0.00001f; // small amount of movement
+		}
+	}
+	else
+	{
+		if (m_DefaultGamepad.fY2 > 0 && m_DefaultGamepad.fX2*2 < m_DefaultGamepad.fY2 && -m_DefaultGamepad.fX2*2 < m_DefaultGamepad.fY2)
+			newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_UP;
+		else if (m_DefaultGamepad.fY2 < 0 && m_DefaultGamepad.fX2*2 < -m_DefaultGamepad.fY2 && -m_DefaultGamepad.fX2*2 < -m_DefaultGamepad.fY2)
+			newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_DOWN;
+		else if (m_DefaultGamepad.fX2 > 0 && m_DefaultGamepad.fY2*2 < m_DefaultGamepad.fX2 && -m_DefaultGamepad.fY2*2 < m_DefaultGamepad.fX2)
+			newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT;
+		else if (m_DefaultGamepad.fX2 < 0 && m_DefaultGamepad.fY2*2 < -m_DefaultGamepad.fX2 && -m_DefaultGamepad.fY2*2 < -m_DefaultGamepad.fX2)
+			newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_LEFT;
+	}
+
+	if (lastRightStickKey && newRightStickKey != lastRightStickKey)
+	{
+		// Was held down last time - and we have a new key now
+		// post old key reset message...
+		CKey key(lastRightStickKey/*, 0, 0, 0, 0, 0, 0*/);
+		lastRightStickKey = newRightStickKey;
+
+		if (OnKey(key)) return true;
+	}
+
+	lastRightStickKey = newRightStickKey;
+
+	// Post the new key's message
+	if (newRightStickKey)
+	{
+		CKey key(newRightStickKey, bLeftTrigger, bRightTrigger, m_DefaultGamepad.fX1, m_DefaultGamepad.fY1, m_DefaultGamepad.fX2, m_DefaultGamepad.fY2, frameTime);
+		if (OnKey(key))	return true;
+	}
+
+	// Now the left stick
+	static int lastLeftStickKey = 0;
+	int newLeftStickKey = 0;
+	
+	if (lastLeftStickKey == KEY_BUTTON_LEFT_THUMB_STICK_UP || lastLeftStickKey == KEY_BUTTON_LEFT_THUMB_STICK_DOWN)
+	{
+		if (m_DefaultGamepad.fY1 > 0)
+			newLeftStickKey = KEY_BUTTON_LEFT_THUMB_STICK_UP;
+		else if (m_DefaultGamepad.fY1 < 0)
+			newLeftStickKey = KEY_BUTTON_LEFT_THUMB_STICK_DOWN;
+	}
+	else if (lastLeftStickKey == KEY_BUTTON_LEFT_THUMB_STICK_LEFT || lastLeftStickKey == KEY_BUTTON_LEFT_THUMB_STICK_RIGHT)
+	{
+		if (m_DefaultGamepad.fX1 > 0)
+			newLeftStickKey = KEY_BUTTON_LEFT_THUMB_STICK_RIGHT;
+		else if (m_DefaultGamepad.fX1 < 0)
+			newLeftStickKey = KEY_BUTTON_LEFT_THUMB_STICK_LEFT;
+	}
+	else
+	{ 
+		// Check for a new control movement
+		if (m_DefaultGamepad.fY1 > 0 && m_DefaultGamepad.fX1 < m_DefaultGamepad.fY1 && -m_DefaultGamepad.fX1 < m_DefaultGamepad.fY1)
+			newLeftStickKey = KEY_BUTTON_LEFT_THUMB_STICK_UP;
+		else if (m_DefaultGamepad.fY1 < 0 && m_DefaultGamepad.fX1 < -m_DefaultGamepad.fY1 && -m_DefaultGamepad.fX1 < -m_DefaultGamepad.fY1)
+			newLeftStickKey = KEY_BUTTON_LEFT_THUMB_STICK_DOWN;
+		else if (m_DefaultGamepad.fX1 > 0 && m_DefaultGamepad.fY1 < m_DefaultGamepad.fX1 && -m_DefaultGamepad.fY1 < m_DefaultGamepad.fX1)
+			newLeftStickKey = KEY_BUTTON_LEFT_THUMB_STICK_RIGHT;
+		else if (m_DefaultGamepad.fX1 < 0 && m_DefaultGamepad.fY1 < -m_DefaultGamepad.fX1 && -m_DefaultGamepad.fY1 < -m_DefaultGamepad.fX1)
+			newLeftStickKey = KEY_BUTTON_LEFT_THUMB_STICK_LEFT;
+	}
+
+	if (lastLeftStickKey && newLeftStickKey != lastLeftStickKey)
+	{
+		// Was held down last time - and we have a new key now
+		// post old key reset message...
+		CKey key(lastLeftStickKey/*, 0, 0, 0, 0, 0, 0*/);
+		lastLeftStickKey = newLeftStickKey;
+
+		if (OnKey(key))	return true;
+	}
+	
+	lastLeftStickKey = newLeftStickKey;
+	
+	// Post the new key's message
+	if (newLeftStickKey)
+	{
+		CKey key(newLeftStickKey, bLeftTrigger, bRightTrigger, m_DefaultGamepad.fX1, m_DefaultGamepad.fY1, m_DefaultGamepad.fX2, m_DefaultGamepad.fY2, frameTime);
+		if (OnKey(key))	return true;
+	}
+
 	return false;
 }
 
@@ -448,10 +607,8 @@ bool CApplication::ProcessGamepad()
 // The window manager will return true if the event is processed, false otherwise.
 // If not already processed, this routine handles global keypresses.  It returns
 // true if the key has been processed, false otherwise.
-bool CApplication::OnKey(CKey& key) // TODO - Update to OnAction
+bool CApplication::OnKey(CKey& key) // FIXME : Needs updating to match!
 {
-	CAction action;
-
 	// Get the current active window
 	int iWin = g_windowManager.GetActiveWindow();
 
@@ -472,11 +629,29 @@ bool CApplication::OnKey(CKey& key) // TODO - Update to OnAction
 		iWin = g_windowManager.GetTopMostModalDialogID();
 	}
 
-	g_buttonTranslator.GetAction(iWin, key, action);
+	CAction action = g_buttonTranslator.GetAction(iWin, key);
 
-	// Play a sound based on the action
-	g_audioManager.PlayActionSound(action);
+	bool bResult = false;
 
+	// Play sound before the action unless the button is held, 
+	// where we execute after the action as held actions aren't fired every time.
+	if(/*action.GetHoldTime()*/false) //TODO
+	{
+		bResult = OnAction(action);
+		if(bResult)
+			g_audioManager.PlayActionSound(action);
+	}
+	else
+	{
+		g_audioManager.PlayActionSound(action);
+		bResult = OnAction(action);
+	}
+
+	return bResult;
+}
+
+bool CApplication::OnAction(CAction &action)
+{
 	// Special case for switching between GUI & fullscreen mode.
 	if (action.GetID() == ACTION_SHOW_GUI)
 	{ 
@@ -486,8 +661,12 @@ bool CApplication::OnKey(CKey& key) // TODO - Update to OnAction
 	}
 
 	// In normal case
-	// Just pass the action to the current window and let it handle it
-	if (g_windowManager.OnAction(action)) return true;
+	// just pass the action to the current window and let it handle it
+	if (g_windowManager.OnAction(action))
+	{
+//		m_navigationTimer.StartZero(); // TODO
+		return true;
+	}
 
 	/* Handle extra global presses */
 
@@ -515,15 +694,67 @@ bool CApplication::OnKey(CKey& key) // TODO - Update to OnAction
 		}
 	}
 
+	// Check for global volume control
+	if (action.GetAmount() && (action.GetID() == ACTION_VOLUME_UP || action.GetID() == ACTION_VOLUME_DOWN)) // TODO: GetAmount()
+	{
+		// Increase or decrease the volume
+		int volume = g_settings.m_nVolumeLevel + g_settings.m_dynamicRangeCompressionLevel;
+
+		// Calculate speed so that a full press will equal 1 second from min to max
+		float speed = float(VOLUME_MAXIMUM - VOLUME_MINIMUM);
+
+		if(action.GetRepeat())
+			speed *= action.GetRepeat();
+		else
+			speed /= 50; // 50 fps
+		
+		if (g_settings.m_bMute)
+		{
+			// Only unmute if volume is to be increased, otherwise leave muted
+			if (action.GetID() == ACTION_VOLUME_DOWN)
+				return true;
+      
+			if (g_settings.m_iPreMuteVolumeLevel == 0) 
+				SetVolume(1); 
+			else 
+			{
+				// In muted, unmute 
+				Mute();
+			}
+			return true;
+		}
+
+		if (action.GetID() == ACTION_VOLUME_UP)
+			volume += (int)((float)fabs(action.GetAmount()) * action.GetAmount() * speed);
+		else
+			volume -= (int)((float)fabs(action.GetAmount()) * action.GetAmount() * speed);
+
+		SetHardwareVolume(volume);
+		g_audioManager.SetVolume(g_settings.m_nVolumeLevel);
+
+		// Show visual feedback of volume change...
+		m_guiDialogVolumeBar.Show();
+		m_guiDialogVolumeBar.OnAction(action);
+		
+		return true;
+	}
+
 	return false;
 }
 
 void CApplication::FrameMove()
 {
+	// Currently we calculate the repeat time (ie time from last similar keypress) just global as fps
+	float frameTime = m_frameTime.GetElapsedSeconds();
+	m_frameTime.StartZero();
+
+	// Never set a frametime less than 2 fps to avoid problems when debuggin and on breaks
+	if(frameTime > 0.5) frameTime = 0.5;
+
 	ReadInput(); // Read raw inputs
 
 	// Process input actions
-	ProcessGamepad();
+	ProcessGamepad(frameTime);
 
 	g_windowManager.FrameMove();
 }
@@ -547,6 +778,9 @@ bool CApplication::OnMessage(CGUIMessage& message)
 				delete m_pPlayer;
 				m_pPlayer = NULL;
 			}
+
+			if(!IsPlaying())
+				g_audioManager.Enable(true);
 
 			if (!IsPlayingVideo() && g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
 			{
@@ -774,6 +1008,8 @@ bool CApplication::PlayFile(const CFileItem& item)
 				SwitchToFullScreen();
 			}
 		}
+
+		g_audioManager.Enable(false);
 	}
 
 	m_bPlaybackStarting = false;
@@ -1043,6 +1279,86 @@ void CApplication::ActivateScreenSaver()
 	}
 }
 
+int CApplication::GetVolume() const
+{
+	// Converts the hardware volume (in mB) to a percentage
+	return int(((float)(g_settings.m_nVolumeLevel + g_settings.m_dynamicRangeCompressionLevel - VOLUME_MINIMUM)) / (VOLUME_MAXIMUM - VOLUME_MINIMUM)*100.0f + 0.5f);
+}
+
+void CApplication::SetVolume(int iPercent) // TODO
+{
+	// Convert the percentage to a mB (milliBell) value (*100 for dB)
+	long hardwareVolume = (long)((float)iPercent * 0.01f * (VOLUME_MAXIMUM - VOLUME_MINIMUM) + VOLUME_MINIMUM);
+
+	SetHardwareVolume(hardwareVolume);
+	g_audioManager.SetVolume(g_settings.m_nVolumeLevel);
+}
+
+void CApplication::SetHardwareVolume(long hardwareVolume)
+{
+	if (hardwareVolume >= VOLUME_MAXIMUM) // + VOLUME_DRC_MAXIMUM
+		hardwareVolume = VOLUME_MAXIMUM;// + VOLUME_DRC_MAXIMUM;
+	if (hardwareVolume <= VOLUME_MINIMUM)
+		hardwareVolume = VOLUME_MINIMUM;
+
+	// Update our settings
+	if (hardwareVolume > VOLUME_MAXIMUM)
+	{
+		g_settings.m_dynamicRangeCompressionLevel = hardwareVolume - VOLUME_MAXIMUM;
+		g_settings.m_nVolumeLevel = VOLUME_MAXIMUM;
+	}
+	else
+	{
+		g_settings.m_dynamicRangeCompressionLevel = 0;
+		g_settings.m_nVolumeLevel = hardwareVolume;
+	}
+
+	// Update mute state
+	if(!g_settings.m_bMute && hardwareVolume <= VOLUME_MINIMUM) //TODO: WIP Need mute dialog!!
+	{
+		g_settings.m_bMute = true;
+
+		if (!m_guiDialogMuteBug.IsDialogRunning())
+			m_guiDialogMuteBug.Show();
+	}
+	else if(g_settings.m_bMute && hardwareVolume > VOLUME_MINIMUM)
+	{
+		g_settings.m_bMute = false;
+
+		if (m_guiDialogMuteBug.IsDialogRunning())
+			m_guiDialogMuteBug.Close();
+	}
+
+	// and tell our player to update the volume
+	if(m_pPlayer)
+		m_pPlayer->SetVolume(g_settings.m_nVolumeLevel);
+}
+
+void CApplication::Mute(void)
+{
+	if (g_settings.m_bMute)
+	{
+		// Muted - unmute.
+		// In case our premutevolume is 0, return to 100% volume
+		if(g_settings.m_iPreMuteVolumeLevel == 0)
+		{
+			SetVolume(100);
+		}
+		else
+		{
+			SetVolume(g_settings.m_iPreMuteVolumeLevel);
+			g_settings.m_iPreMuteVolumeLevel = 0;
+		}
+		m_guiDialogVolumeBar.Show();
+	}
+	else
+	{
+		// mute
+		g_settings.m_iPreMuteVolumeLevel = GetVolume();
+		SetVolume(0);
+	}
+}
+
 bool CApplication::ExecuteXBMCAction(std::string actionStr)
 {
 	// See if it is a user set string
@@ -1133,12 +1449,19 @@ void CApplication::Cleanup()
 		g_windowManager.Delete(WINDOW_DIALOG_NUMERIC);
 		g_windowManager.Delete(WINDOW_DIALOG_OK);
 
+		g_windowManager.Remove(WINDOW_DIALOG_SEEK_BAR);
+		g_windowManager.Remove(WINDOW_DIALOG_VOLUME_BAR);
+
+		// Reset our d3d params before we destroy
+		g_graphicsContext.SetD3DDevice(NULL);
+		g_graphicsContext.SetD3DParameters(NULL);
+
+		g_infoManager.Clear();
 		g_localizeStrings.Clear();
-		g_guiSettings.Clear();
+		g_settings.Clear();
 		g_guiSettings.Clear();
 		g_advancedSettings.Clear();
 		g_buttonTranslator.Clear();
-		g_infoManager.Clear();
 	}
 	catch(...)
 	{
@@ -1164,15 +1487,15 @@ void CApplication::Stop()
 
 		m_bStop = true;
 
+		CLog::Log(LOGNOTICE, "Stop all services");
+		StopServices();
+
 		if(m_pPlayer)
 		{
 			CLog::Log(LOGNOTICE, "Stop player");
 			delete m_pPlayer;
 			m_pPlayer = NULL;
 		}
-
-		CLog::Log(LOGNOTICE, "Stop all services");
-		StopServices();
 
 		m_applicationMessenger.Cleanup();
 

@@ -1,8 +1,10 @@
+#define NOMINMAX
 #include "XAudio2.h"
 #include "Application.h"
 #include "utils\Log.h"
 #include "utils\TimeUtils.h"
 #include "guilib\AudioContext.h"
+#include "Settings.h"
 
 #define BUFFER CHUNKLEN * 20
 #define CHUNKLEN 512
@@ -101,8 +103,10 @@ CXAudio2::CXAudio2(IAudioCallback* pCallback, int iChannels, unsigned int uiSamp
 	if(m_pXAudio2->CreateSourceVoice(&m_pSourceVoice,(WAVEFORMATEX*)&wfxex, NULL, 1.0f, this) != S_OK)
 		return;
 
+	m_nCurrentVolume = g_settings.m_nVolumeLevel;
+
 	m_pSourceVoice->Stop();
-//	m_pXAudio2->SetVolume(g_stSettings.m_nVolumeLevel); // TODO
+	m_pSourceVoice->SetVolume(g_audioContext.MilliBelsToVolume(m_nCurrentVolume));
 
 	m_bInitialized = true;
 
@@ -206,6 +210,10 @@ long CXAudio2::GetCurrentVolume() const
 
 void CXAudio2::Mute(bool bMute)
 {
+	if(bMute)
+		m_pSourceVoice->SetVolume(0);
+	else
+		m_pSourceVoice->SetVolume(g_audioContext.MilliBelsToVolume(m_nCurrentVolume));
 }
 
 //***********************************************************************************************
@@ -213,7 +221,7 @@ void CXAudio2::Mute(bool bMute)
 HRESULT CXAudio2::SetCurrentVolume(long nVolume)
 {
 	m_nCurrentVolume = nVolume;
-	return true;
+	return m_pSourceVoice->SetVolume(g_audioContext.MilliBelsToVolume(m_nCurrentVolume));
 }
 
 //***********************************************************************************************

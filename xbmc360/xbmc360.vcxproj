@@ -381,12 +381,14 @@
     <ClInclude Include="guilib\dialogs\GUIDialogFileBrowser.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogKeyboard.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogMediaSource.h" />
+    <ClInclude Include="guilib\dialogs\GUIDialogMuteBug.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogNetworkSetup.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogNumeric.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogOK.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogProgress.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogSeekBar.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogSlider.h" />
+    <ClInclude Include="guilib\dialogs\GUIDialogVolumeBar.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogYesNo.h" />
     <ClInclude Include="guilib\Geometry.h" />
     <ClInclude Include="guilib\GraphicContext.h" />
@@ -616,12 +618,14 @@
     <ClCompile Include="guilib\dialogs\GUIDialogFileBrowser.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogKeyboard.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogMediaSource.cpp" />
+    <ClCompile Include="guilib\dialogs\GUIDialogMuteBug.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogNetworkSetup.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogNumeric.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogOK.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogProgress.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogSeekBar.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogSlider.cpp" />
+    <ClCompile Include="guilib\dialogs\GUIDialogVolumeBar.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogYesNo.cpp" />
     <ClCompile Include="guilib\GraphicContext.cpp" />
     <ClCompile Include="guilib\GUIAction.cpp" />
@@ -707,6 +711,7 @@
     <ClCompile Include="guilib\XMLUtils.cpp" />
     <ClCompile Include="GUISettings.cpp" />
     <ClCompile Include="interfaces\Builtins.cpp" />
+    <ClCompile Include="Key.cpp" />
     <ClCompile Include="libraries\libsmb2\aes.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>

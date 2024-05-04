@@ -13,6 +13,8 @@
 #include "ApplicationMessenger.h"
 #include "filesystem\DrivesManager.h"
 #include "guilib\dialogs\GUIDialogSeekBar.h"
+#include "guilib\dialogs\GUIDialogVolumeBar.h"
+#include "guilib\dialogs\GUIDialogMuteBug.h"
 #include "utils\Idle.h"
 
 class CApplication: public CXBApplicationEX, public IPlayerCallback, public IMsgTargetCallback
@@ -75,10 +77,17 @@ public:
 	bool IsInScreenSaver() { return m_bScreenSave; };
 	void CheckScreenSaver();
 
+	int GetVolume() const;
+	void SetVolume(int iPercent);
+	void SetHardwareVolume(long hardwareVolume);
+	void Mute(void);
+
 	DWORD m_dwSkinTime;
 	IPlayer* m_pPlayer;
 
+	CGUIDialogVolumeBar m_guiDialogVolumeBar;
 	CGUIDialogSeekBar m_guiDialogSeekBar;
+	CGUIDialogMuteBug m_guiDialogMuteBug;
 
 	CIdleThread& GetIdleThread() { return m_idleThread; };
 	CNetwork& getNetwork() { return m_network; };
@@ -88,8 +97,9 @@ public:
 	bool ExecuteXBMCAction(std::string action);
 
 protected:
-	bool ProcessGamepad(/*float frameTime*/);
+	bool ProcessGamepad(float frameTime);
 	bool OnKey(CKey& key);
+	bool OnAction(CAction &action);
 	void FatalErrorHandler(bool InitD3D);
 	void ActivateScreenSaver();
 	void ProcessSlow();
@@ -101,6 +111,7 @@ protected:
 	int m_iPlaySpeed;
 
 	// Timer information
+	CStopWatch m_frameTime;
 	CStopWatch m_screenSaverTimer;
 	CStopWatch m_slowTimer;
 

@@ -19,6 +19,7 @@ public:
 	double GetDelay(); // Returns the time it takes to play a packet if we add one at this time
 	double GetCacheTime(); // Returns total amount of data cached in audio output at this time
 	DWORD AddPackets(const DVDAudioFrame &audioframe);
+	void SetVolume(int iVolume);
 	void Destroy();
 	void Flush();
 	void Finish();

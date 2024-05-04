@@ -28,6 +28,11 @@ void CSettings::Initialize()
 		g_graphicsContext.ResetOverscan((RESOLUTION)i, m_ResInfo[i].Overscan);
 	}
 
+	m_nVolumeLevel = 0;
+	m_dynamicRangeCompressionLevel = 0;
+	m_iPreMuteVolumeLevel = 0;
+	m_bMute = false;
+
 	m_strVideoExtensions = ".m4v|.3gp|.nsv|.ts|.ty|.strm|.pls|.rm|.rmvb|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.nrg|.img|.iso|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mp4|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli|.flv|.rar|.001|.wpl|.zip|.vdr|.dvr-ms";
 	m_strAudioExtensions = ".nsv|.m4a|.flac|.aac|.strm|.pls|.rm|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u|.mod|.amf|.669|.dmf|.dsm|.far|.gdm|.imf|.it|.m15|.med|.okt|.s3m|.stm|.sfx|.ult|.uni|.xm|.sid|.ac3|.dts|.cue|.aif|.aiff|.wpl|.ape|.mac|.mpc|.mp+|.mpp|.shn|.zip|.rar|.wv|.nsf|.spc|.gym|.adplug|.adx|.dsp|.adp|.ymf|.ast|.afc|.hps|.xsp|.xwav|.waa|.wvs|.wam|.gcm|.idsp|.mpdsp|.mss|.spt|.rsd";
 	m_strPictureExtensions = ".png|.jpg|.jpeg|.bmp|.gif|.ico|.tif|.tiff|.tga|.pcx|.cbz|.zip|.cbr|.rar|.m3u";
@@ -106,13 +111,46 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		return false;
 	}
 
-//	(pRootElement, "loglevel", g_stSettings.m_iLogLevel, LOGWARNING, LOGDEBUG, LOGNONE); //TODO
+	// My Music settings
+	TiXmlElement *pElement = pRootElement->FirstChildElement("mymusic");
+	if (pElement)
+	{
+		// TODO
+	}
+
+	// My Videos settings
+	pElement = pRootElement->FirstChildElement("myvideos");
+	if (pElement)
+	{
+		// TODO
+	}
+
+	pElement = pRootElement->FirstChildElement("viewstates");
+	if (pElement)
+	{
+		// TODO
+	}
 
 	// General settings
-	TiXmlElement *pElement = pRootElement->FirstChildElement("general");
+	pElement = pRootElement->FirstChildElement("general");
 	if (pElement)
 	{
 		GetInteger(pElement, "systemtotaluptime", m_iSystemTimeTotalUp, 0, 0, INT_MAX);
+	}
+
+	pElement = pRootElement->FirstChildElement("defaultvideosettings");
+	if (pElement)
+	{
+		// TODO
+	}
+
+	// Audio settings
+	pElement = pRootElement->FirstChildElement("audio");
+	if (pElement)
+	{
+		GetInteger(pElement, "volumelevel", m_nVolumeLevel, VOLUME_MAXIMUM, VOLUME_MINIMUM, VOLUME_MAXIMUM);
+		GetInteger(pElement, "dynamicrangecompression", m_dynamicRangeCompressionLevel, VOLUME_DRC_MINIMUM, VOLUME_DRC_MINIMUM, VOLUME_DRC_MAXIMUM);
+		// TODO
 	}
 
 	g_guiSettings.LoadXML(pRootElement);	
@@ -153,6 +191,13 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	TiXmlNode *pNode = pRoot->InsertEndChild(generalNode);
 	if(!pNode) return false;
 	XMLUtils::SetInt(pNode, "systemtotaluptime", m_iSystemTimeTotalUp);
+
+	// Audio settings
+	TiXmlElement volumeNode("audio");
+	pNode = pRoot->InsertEndChild(volumeNode);
+	if (!pNode) return false;
+	XMLUtils::SetInt(pNode, "volumelevel", m_nVolumeLevel);
+	XMLUtils::SetInt(pNode, "dynamicrangecompression", m_dynamicRangeCompressionLevel);
 
 	g_guiSettings.SaveXML(pRoot);
 

@@ -17,6 +17,14 @@
 #define KEY_BUTTON_LEFT_TRIGGER             262
 #define KEY_BUTTON_RIGHT_TRIGGER            263
 
+#define KEY_BUTTON_LEFT_THUMB_STICK         264
+#define KEY_BUTTON_RIGHT_THUMB_STICK        265
+
+#define KEY_BUTTON_RIGHT_THUMB_STICK_UP     266 // right thumb stick directions
+#define KEY_BUTTON_RIGHT_THUMB_STICK_DOWN   267 // for defining different actions per direction
+#define KEY_BUTTON_RIGHT_THUMB_STICK_LEFT   268
+#define KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT  269
+
 #define KEY_BUTTON_DPAD_UP                  270
 #define KEY_BUTTON_DPAD_DOWN                271
 #define KEY_BUTTON_DPAD_LEFT                272
@@ -24,6 +32,14 @@
 
 #define KEY_BUTTON_START                    274
 #define KEY_BUTTON_BACK                     275
+
+#define KEY_BUTTON_LEFT_THUMB_BUTTON        276
+#define KEY_BUTTON_RIGHT_THUMB_BUTTON       277
+
+#define KEY_BUTTON_LEFT_THUMB_STICK_UP      280 // left thumb stick directions
+#define KEY_BUTTON_LEFT_THUMB_STICK_DOWN    281 // for defining different actions per direction
+#define KEY_BUTTON_LEFT_THUMB_STICK_LEFT    282
+#define KEY_BUTTON_LEFT_THUMB_STICK_RIGHT   283
 
 // 0xF000 -> 0xF200 is reserved for the keyboard; a keyboard press is either
 #define KEY_VKEY            0xF000 // A virtual key/functional key e.g. cursor left
@@ -67,6 +83,9 @@
 #define ACTION_BIG_STEP_FORWARD       22 // Seek +10% in the movie. Can be used in videoFullScreen.xml window id=2005
 #define ACTION_BIG_STEP_BACK          23 // Seek -10% in the movie. Can be used in videoFullScreen.xml window id=2005
 #define ACTION_SHOW_CODEC             27 // Show information about file. Can be used in videoFullScreen.xml window id=2005
+
+#define ACTION_VOLUME_UP              88
+#define ACTION_VOLUME_DOWN            89
 
 #define ACTION_NAV_BACK				  92
 #define ACTION_CONTEXT_MENU           117 // Pops up the context menu
@@ -131,9 +150,11 @@
 // Dialogs
 #define WINDOW_DIALOG_YES_NO              10100
 #define WINDOW_DIALOG_PROGRESS            10101
+#define WINDOW_DIALOG_VOLUME_BAR          10104
 #define WINDOW_DIALOG_CONTEXT_MENU        10106
 #define WINDOW_DIALOG_NUMERIC             10109
 #define WINDOW_DIALOG_BUTTON_MENU         10111
+#define WINDOW_DIALOG_MUTE_BUG            10113
 #define WINDOW_DIALOG_SEEK_BAR            10115
 #define WINDOW_DIALOG_MEDIA_SOURCE        10116
 #define WINDOW_DIALOG_FILE_BROWSER        10126
@@ -171,42 +192,97 @@
 class CKey
 {
 public:
-	CKey(int iButtonCode){ m_iButtonCode = iButtonCode; };
-	CKey::~CKey(void){};
+	CKey(void);
+	CKey(uint32_t buttonCode, uint8_t leftTrigger = 0, uint8_t rightTrigger = 0, float leftThumbX = 0.0f, float leftThumbY = 0.0f, float rightThumbX = 0.0f, float rightThumbY = 0.0f, float repeat = 0.0f);
+	CKey(const CKey& key);
 
-	int GetButtonCode()  const { return m_iButtonCode; };
+	virtual ~CKey(void);
+	const CKey& operator=(const CKey& key);
+	uint32_t GetButtonCode() const; // For backwards compatibility only
+	uint8_t GetLeftTrigger() const;
+	uint8_t GetRightTrigger() const;
+	float GetLeftThumbX() const;
+	float GetLeftThumbY() const;
+	float GetRightThumbX() const;
+	float GetRightThumbY() const;
+	float GetRepeat() const;
+	bool IsAnalogButton() const;
+
+	void SetHeld(unsigned int held);
+	unsigned int GetHeld() const;
 
 private:
-	int m_iButtonCode;
+	uint32_t m_buttonCode;
+	uint8_t m_leftTrigger;
+	uint8_t m_rightTrigger;
+	float m_leftThumbX;
+	float m_leftThumbY;
+	float m_rightThumbX;
+	float m_rightThumbY;
+	float m_repeat; // Time since last keypress
+	unsigned int m_held;
 };
 
 class CAction
 {
 public:
-	CAction() { m_id = ACTION_NONE; m_strAction = ""; }
-	CAction(int iID) { m_id = iID; }
+	CAction(int actionID, float amount1 = 1.0f, float amount2 = 0.0f, const CStdString &name = "", unsigned int holdTime = 0);
+	CAction(int actionID, wchar_t unicode);
+	CAction(int actionID, unsigned int state, float posX, float posY, float offsetX, float offsetY);
+	CAction(int actionID, const CStdString &name, const CKey &key);
+
+	/*! \brief Identifier of the action
+	\return id of the action
+	*/
 	int GetID() const { return m_id; };
-	void SetID(int id) { m_id = id; };
-	CStdString GetActionString() { return m_strAction; };
-	void SetActionString(CStdString strAction) { m_strAction = strAction; };
 
-	// Is this an action from the mouse
-	// return true if this is a mouse action, false otherwise
-#ifdef _HAS_MOUSE
-	bool IsMouse() const { return (m_id >= ACTION_MOUSE_START && m_id <= ACTION_MOUSE_END); };
-#else
-	bool IsMouse() const { return false; };
-#endif
+	/*! \brief Is this an action from the mouse
+	\return true if this is a mouse action, false otherwise
+	*/
+	bool IsMouse() const { return false;/*(m_id >= ACTION_MOUSE_START && m_id <= ACTION_MOUSE_END);*/ }; // No mouse on Xbox 360?
 
-	float GetAmount(unsigned int index = 0) const { 
-		CLog::Log(LOGERROR,"CAction::GetAmount not yet implemented!!");
+	/*! \brief Human-readable name of the action
+	\return name of the action
+	*/
+	const CStdString &GetName() const { return m_name; };
 
-		return 0;
-	};
+	/*! \brief Get an amount associated with this action
+	\param zero-based index of amount to retrieve, defaults to 0
+	\return an amount associated with this action
+	*/
+	float GetAmount(unsigned int index = 0) const { return (index < max_amounts) ? m_amount[index] : 0; };
+
+	/*! \brief Unicode value associated with this action
+	\return unicode value associated with this action, for keyboard input.
+	*/
+	wchar_t GetUnicode() const { return m_unicode; };
+
+	/*! \brief Time in ms that the key has been held
+	\return time that the key has been held down in ms.
+	*/
+	unsigned int GetHoldTime() const { return m_holdTime; };
+
+	/*! \brief Time since last repeat in ms
+	\return time since last repeat in ms. Returns 0 if unknown.
+	*/
+	float GetRepeat() const { return m_repeat; };
+
+	/*! \brief Button code that triggered this action
+	\return button code
+	*/
+	unsigned int GetButtonCode() const { return m_buttonCode; };
 
 private:
 	int m_id;
-	CStdString m_strAction;
+	CStdString m_name;
+
+	static const unsigned int max_amounts = 4; // Must be at least 4.
+	float m_amount[max_amounts];
+
+	float m_repeat;
+	unsigned int m_holdTime;
+	unsigned int m_buttonCode;
+	wchar_t m_unicode;
 };
 
 #endif //GUIKEY_H

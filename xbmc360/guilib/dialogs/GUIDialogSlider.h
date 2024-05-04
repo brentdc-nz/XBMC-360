@@ -2,7 +2,7 @@
 #define CGUIDIALOGSLIDER_H
 
 #include "guilib\GUIDialog.h"
-#include "..\GUISliderControl.h"
+#include "guilib\GUISliderControl.h"
 
 class CGUISliderControl;
 

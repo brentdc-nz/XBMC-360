@@ -14,7 +14,7 @@ typedef struct
 
 // Remember the fixed length names (hence max 31 char)!
 static const ActionMapping actions[] = 
-		{{"left"              , ACTION_MOVE_LEFT},
+		{{"left"             , ACTION_MOVE_LEFT},
 		{"right"             , ACTION_MOVE_RIGHT},
 		{"up"                , ACTION_MOVE_UP},
         {"down"              , ACTION_MOVE_DOWN},
@@ -32,6 +32,8 @@ static const ActionMapping actions[] =
         {"codecinfo"         , ACTION_SHOW_CODEC},
         {"close"             , ACTION_NAV_BACK}, // Backwards compatibility
         {"contextmenu"       , ACTION_CONTEXT_MENU},
+        {"volumeup"          , ACTION_VOLUME_UP},
+        {"volumedown"        , ACTION_VOLUME_DOWN},
 };
 
 static const ActionMapping windows[] =
@@ -166,6 +168,18 @@ WORD CButtonTranslator::TranslateGamepadString(const char *szButton)
 	else if (strButton.Equals("leftshoulder")) wButtonCode = KEY_BUTTON_LEFT_SHOULDER;//KEY_BUTTON_BLACK;
 	else if (strButton.Equals("start")) wButtonCode = KEY_BUTTON_START;
 	else if (strButton.Equals("back")) wButtonCode = KEY_BUTTON_BACK;
+	else if (strButton.Equals("leftthumbbutton")) wButtonCode = KEY_BUTTON_LEFT_THUMB_BUTTON;
+	else if (strButton.Equals("rightthumbbutton")) wButtonCode = KEY_BUTTON_RIGHT_THUMB_BUTTON;
+	else if (strButton.Equals("leftthumbstick")) wButtonCode = KEY_BUTTON_LEFT_THUMB_STICK;
+	else if (strButton.Equals("leftthumbstickup")) wButtonCode = KEY_BUTTON_LEFT_THUMB_STICK_UP;
+	else if (strButton.Equals("leftthumbstickdown")) wButtonCode = KEY_BUTTON_LEFT_THUMB_STICK_DOWN;
+	else if (strButton.Equals("leftthumbstickleft")) wButtonCode = KEY_BUTTON_LEFT_THUMB_STICK_LEFT;
+	else if (strButton.Equals("leftthumbstickright")) wButtonCode = KEY_BUTTON_LEFT_THUMB_STICK_RIGHT;
+	else if (strButton.Equals("rightthumbstick")) wButtonCode = KEY_BUTTON_RIGHT_THUMB_STICK;
+	else if (strButton.Equals("rightthumbstickup")) wButtonCode = KEY_BUTTON_RIGHT_THUMB_STICK_UP;
+	else if (strButton.Equals("rightthumbstickdown")) wButtonCode = KEY_BUTTON_RIGHT_THUMB_STICK_DOWN;
+	else if (strButton.Equals("rightthumbstickleft")) wButtonCode = KEY_BUTTON_RIGHT_THUMB_STICK_LEFT;
+	else if (strButton.Equals("rightthumbstickright")) wButtonCode = KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT;
 	else if (strButton.Equals("righttrigger")) wButtonCode = KEY_BUTTON_RIGHT_TRIGGER;
 	else if (strButton.Equals("dpadleft")) wButtonCode = KEY_BUTTON_DPAD_LEFT;
 	else if (strButton.Equals("dpadright")) wButtonCode = KEY_BUTTON_DPAD_RIGHT;
@@ -248,20 +262,23 @@ WORD CButtonTranslator::GetActionCode(WORD wWindow, const CKey &key, CStdString 
 	return wAction;
 }
 
-void CButtonTranslator::GetAction(WORD wWindow, const CKey &key, CAction &action)	
+CAction CButtonTranslator::GetAction(int window, const CKey &key)
 {
 	CStdString strAction;
 	
 	// Try to get the action from the current window
-	WORD wAction = GetActionCode(wWindow, key, strAction);
+	WORD wAction = GetActionCode(window, key, strAction);
 
 	// If it's invalid, try to get it from the global map
 	if (wAction == 0)
 		wAction = GetActionCode( -1, key, strAction);
 	
 	// Now fill our action structure
-	action.SetID((int)wAction);
-	action.SetActionString(strAction);
+//	action.SetID((int)wAction);
+//	action.SetActionString(strAction);
+
+	CAction action((int)wAction, strAction, key);
+	return action;
 }
 
 int CButtonTranslator::TranslateWindow(const CStdString &window)

@@ -7,6 +7,7 @@ CGUISound::CGUISound()
 	m_pSourceVoice = NULL;
 	m_strFileName = "";
 
+	m_fVolume = 1.0;
 	m_dwWaveSize = 0;
 	m_pbWaveData = NULL;
 }
@@ -17,9 +18,10 @@ CGUISound::~CGUISound()
 		m_pSourceVoice->DestroyVoice();
 }
 
-bool CGUISound::Load(const CStdString& strFile)
+bool CGUISound::Load(const CStdString& strFile, int iVolume)
 {
 	m_strFileName = strFile;
+	m_fVolume = g_audioContext.MilliBelsToVolume(iVolume);
 
 	bool bReady = LoadWavFile(strFile);
 
@@ -40,7 +42,7 @@ void CGUISound::Play()
 	buffer.AudioBytes = m_dwWaveSize;
 
 	m_pSourceVoice->SubmitSourceBuffer(&buffer);
-
+	m_pSourceVoice->SetVolume(m_fVolume);
 	m_pSourceVoice->Start(0);
 }
 
@@ -49,12 +51,29 @@ void CGUISound::Stop()
 	m_pSourceVoice->Stop();
 }
 
+bool CGUISound::IsPlaying()
+{
+	if (m_pSourceVoice)
+	{
+		XAUDIO2_VOICE_STATE state;
+		m_pSourceVoice->GetState(&state);
+
+		if(state.BuffersQueued > 0)
+			return true;
+	}
+
+	return false;
+}
+
+void CGUISound::SetVolume(int level)
+{
+	m_fVolume = g_audioContext.MilliBelsToVolume(level);
+}
+
 bool CGUISound::LoadWavFile(const CStdString& strFileName)
 {
 	HRESULT hr;
-
 	IXAudio2* pXAudio2 = NULL;
-
 	pXAudio2 = g_audioContext.GetXAudio2Device();
 
 	if(!pXAudio2)
@@ -80,7 +99,7 @@ bool CGUISound::LoadWavFile(const CStdString& strFileName)
 	m_pbWaveData = new BYTE[m_dwWaveSize];
 	WaveFile.ReadSample(0, m_pbWaveData, m_dwWaveSize, &m_dwWaveSize);
 
-	if(FAILED(hr = pXAudio2->CreateSourceVoice(&m_pSourceVoice, ( WAVEFORMATEX* )&wfx)))
+	if(FAILED(hr = pXAudio2->CreateSourceVoice(&m_pSourceVoice, (WAVEFORMATEX*)&wfx)))
 		return false;
 
 	return true;

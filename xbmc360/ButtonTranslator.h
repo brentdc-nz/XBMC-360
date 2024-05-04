@@ -22,11 +22,11 @@ public:
 	CButtonTranslator();
 	virtual ~CButtonTranslator();
 
-	static bool TranslateActionString(const char *szAction, int &action);
-	void GetAction(WORD wWindow, const CKey &key, CAction &action);
-	
 	bool Load();
 	void Clear(); // Clears the maps
+
+	static bool TranslateActionString(const char *szAction, int &action);
+	CAction GetAction(int window, const CKey &key);
 
 	// Translate between a window name and it's id
 	// param window name of the window

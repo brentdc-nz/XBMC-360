@@ -896,6 +896,12 @@
     <ClInclude Include="guilib\GUIRadioButtonControl.h">
       <Filter>Header Files\guilib</Filter>
     </ClInclude>
+    <ClInclude Include="guilib\dialogs\GUIDialogVolumeBar.h">
+      <Filter>Header Files\guilib\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\dialogs\GUIDialogMuteBug.h">
+      <Filter>Header Files\guilib\dialogs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -1620,6 +1626,15 @@
     </ClCompile>
     <ClCompile Include="guilib\GUIRadioButtonControl.cpp">
       <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\dialogs\GUIDialogVolumeBar.cpp">
+      <Filter>Source Files\guilib\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="Key.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\dialogs\GUIDialogMuteBug.cpp">
+      <Filter>Source Files\guilib\dialogs</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

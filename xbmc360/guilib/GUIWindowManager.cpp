@@ -606,11 +606,6 @@ void CGUIWindowManager::Process_Internal(bool renderOnly /*= false*/)
 			m_pCallback->FrameMove();
 		}
 		m_pCallback->Render();
-#ifndef _XBOX
-		extern CXBMC_PC *g_xbmcPC;
-		g_xbmcPC->ProcessMessage(NULL);
-		Sleep(0);
-#endif
 	}
 }
 

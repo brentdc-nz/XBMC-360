@@ -207,6 +207,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 		else if(strTest.Equals("player.duration")) ret = PLAYER_DURATION;
 		else if(strTest.Equals("player.progress")) ret = PLAYER_PROGRESS;
 		else if (strTest.Equals("player.seeking")) ret = PLAYER_SEEKING;
+		else if (strTest.Equals("player.volume")) ret = PLAYER_VOLUME;
+		else if (strTest.Equals("player.muted")) ret = PLAYER_MUTED;
 	}
 	else if (strTest.Left(17).Equals("control.hasfocus("))
 	{
@@ -591,6 +593,9 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
 		 case SYSTEM_FPS:
 			strLabel.Format("%02.2f", m_fps);
 			break;
+		case PLAYER_VOLUME:
+			strLabel.Format("%2.1f dB", (float)(g_settings.m_nVolumeLevel + g_settings.m_dynamicRangeCompressionLevel) * 0.01f);
+			break;
 		case SYSTEM_CPU_TEMPERATURE:
 		case SYSTEM_GPU_TEMPERATURE:
 			return GetSystemHeatInfo(info);
@@ -746,6 +751,8 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
 		bReturn = false;
 	else if(condition == PLAYER_SHOWCODEC)
 		bReturn = m_playerShowCodec;
+	else if (condition == PLAYER_MUTED)
+		bReturn = g_settings.m_bMute;
 	else if (condition >= SKIN_HAS_THEME_START && condition <= SKIN_HAS_THEME_END)
 	{
 		// Note that the code used here could probably be extended to general
@@ -785,6 +792,8 @@ int CGUIInfoManager::GetInt(int info, int contextWindow) const
 {
 	switch(info)
 	{
+		case PLAYER_VOLUME:
+			return g_application.GetVolume();
 		case PLAYER_PROGRESS:
 		{
 			if(g_application.IsPlaying() && g_application.m_pPlayer)

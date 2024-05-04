@@ -81,6 +81,8 @@ public:
 	void SendMessage(CDVDMsg* pMsg, int priority = 0)     { m_messageQueue.Put(pMsg, priority); }
 	bool IsStalled()                                      { return m_stalled;  }
 	
+	void SetVolume(long nVolume)                          { m_dvdAudio.SetVolume(nVolume); }
+
 	std::string GetPlayerInfo();
 	int GetAudioBitrate();
 

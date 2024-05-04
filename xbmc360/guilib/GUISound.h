@@ -10,15 +10,19 @@ public:
 	CGUISound();
 	~CGUISound();
 
-	bool Load(const CStdString& strFile);
+	bool Load(const CStdString& strFile, int iVolume);
 	void Play();
 	void Stop();
-	void FreeBuffer();
+	bool IsPlaying();
+	void SetVolume(int level);
 
 	CStdString GetFileName() { return m_strFileName; };
 
 private:
 	bool LoadWavFile(const CStdString& strFileName);
+	void FreeBuffer();
+
+	float m_fVolume;
 
 	IXAudio2SourceVoice* m_pSourceVoice;
 	CStdString m_strFileName;

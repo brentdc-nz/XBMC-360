@@ -16,7 +16,7 @@ IPlayer* CPlayerCoreFactory::CreatePlayer(const CStdString& strCore, IPlayerCall
 
 IPlayer* CPlayerCoreFactory::CreatePlayer(const EPLAYERCORES eCore, IPlayerCallback& callback)
 {
-	switch( eCore )
+	switch(eCore)
 	{
 		// We only have DVDPlayer at the momment..
 		case EPC_DVDPLAYER: return new CDVDPlayer(callback);

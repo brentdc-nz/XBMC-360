@@ -70,3 +70,16 @@ void CAudioContext::DeInitialize()
 
 	m_bInitialized = false;
 }
+
+float CAudioContext::MilliBelsToVolume(int iMilliBel) // Convert milliBels (-6000 to 0) to XAudio2 volume
+{
+    // Convert milliBel to the corresponding float value in the range [0.0, 1.0] using a logarithmic scale
+    float fResult = pow(10.0f, static_cast<float>(iMilliBel) / 2000.0f); // 2000 is approximately log10(1000)
+
+    // Normalize the result to the [0.0, 1.0] range
+    fResult = (fResult - pow(10.0f, static_cast<float>(-6000) / 2000.0f)) /
+             (pow(10.0f, static_cast<float>(0) / 2000.0f) -
+              pow(10.0f, static_cast<float>(-6000) / 2000.0f));
+
+    return fResult;
+}

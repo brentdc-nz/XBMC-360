@@ -196,6 +196,12 @@ DWORD CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
 	return total;
 }
 
+void CDVDAudio::SetVolume(int iVolume)
+{
+	CSingleLock lock (m_critSection);
+	if(m_pAudioDecoder) m_pAudioDecoder->SetCurrentVolume(iVolume);
+}
+
 void CDVDAudio::Destroy()
 {
 	CSingleLock lock (m_critSection);

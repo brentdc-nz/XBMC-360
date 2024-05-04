@@ -131,6 +131,8 @@ public:
 
 	virtual bool OnAction(const CAction &action);
 
+	virtual void SetVolume(long nVolume)                          { m_dvdPlayerAudio.SetVolume(nVolume); }
+
 	virtual void SeekPercentage(float iPercent);
 	virtual void Seek(bool bPlus, bool bLargeStep);
 	virtual __int64 GetTime();
