@@ -31,7 +31,7 @@
 //#include "dialogs\GUIDialogOK.h"
 //#include "playlists\PlayList.h"
 //#include "FileSystem\FileDirectoryFactory.h"
-//#include "GUIEditControl.h"
+#include "GUIEditControl.h"
 //#include "dialogs\GUIDialogKeyboard.h"
 
 #define CONTROL_BTNVIEWASICONS     2
@@ -107,7 +107,7 @@ void CGUIMediaWindow::LoadAdditionalTags(TiXmlElement *root)
 
 void CGUIMediaWindow::OnWindowLoaded()
 {
-//	SendMessage(GUI_MSG_SET_TYPE, CONTROL_BTN_FILTER, CGUIEditControl::INPUT_TYPE_FILTER); // TODO
+	SendMessage(GUI_MSG_SET_TYPE, CONTROL_BTN_FILTER, CGUIEditControl::INPUT_TYPE_FILTER);
 	CGUIWindow::OnWindowLoaded();
 	SetupShares();
 }

@@ -36,6 +36,9 @@
 #define KEY_BUTTON_LEFT_THUMB_BUTTON        276
 #define KEY_BUTTON_RIGHT_THUMB_BUTTON       277
 
+#define KEY_BUTTON_LEFT_ANALOG_TRIGGER      278
+#define KEY_BUTTON_RIGHT_ANALOG_TRIGGER     279
+
 #define KEY_BUTTON_LEFT_THUMB_STICK_UP      280 // left thumb stick directions
 #define KEY_BUTTON_LEFT_THUMB_STICK_DOWN    281 // for defining different actions per direction
 #define KEY_BUTTON_LEFT_THUMB_STICK_LEFT    282
@@ -86,10 +89,14 @@
 
 #define ACTION_VOLUME_UP              88
 #define ACTION_VOLUME_DOWN            89
-
+#define ACTION_MUTE                   91
 #define ACTION_NAV_BACK				  92
 #define ACTION_CONTEXT_MENU           117 // Pops up the context menu
 #define ACTION_BUILT_IN_FUNCTION	  122
+
+#define ACTION_ANALOG_SEEK_FORWARD    124 // Seeks forward, and displays the seek bar.
+#define ACTION_ANALOG_SEEK_BACK       125 // Seeks backward, and displays the seek bar.
+
 #define ACTION_ENTER                  135
 
 // Stuff for virtual keyboard shortcuts
@@ -159,6 +166,7 @@
 #define WINDOW_DIALOG_MEDIA_SOURCE        10116
 #define WINDOW_DIALOG_FILE_BROWSER        10126
 #define WINDOW_DIALOG_NETWORK_SETUP       10128
+#define WINDOW_DIALOG_BUSY                10138
 #define WINDOW_DIALOG_SLIDER              10145
 #define WINDOW_DIALOG_KEYBOARD            10103
 #define WINDOW_DIALOG_OK                  12002

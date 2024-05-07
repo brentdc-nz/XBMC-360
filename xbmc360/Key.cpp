@@ -172,11 +172,11 @@ CAction::CAction(int actionID, const CStdString &name, const CKey &key)
 	m_holdTime = key.GetHeld();
 	
 	// Get the action amounts of the analog buttons
-/*	if (key.GetButtonCode() == KEY_BUTTON_LEFT_ANALOG_TRIGGER) // TODO
+	if (key.GetButtonCode() == KEY_BUTTON_LEFT_ANALOG_TRIGGER)
 		m_amount[0] = (float)key.GetLeftTrigger() / 255.0f;
 	else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_ANALOG_TRIGGER)
 		m_amount[0] = (float)key.GetRightTrigger() / 255.0f;
-	else*/ if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK)
+	else if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK)
 	{
 		m_amount[0] = key.GetLeftThumbX();
 		m_amount[1] = key.GetLeftThumbY();

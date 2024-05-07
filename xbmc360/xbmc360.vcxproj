@@ -316,6 +316,7 @@
     <ClInclude Include="AdvancedSettings.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="ApplicationMessenger.h" />
+    <ClInclude Include="ApplicationRenderer.h" />
     <ClInclude Include="BackgroundInfoLoader.h" />
     <ClInclude Include="ButtonTranslator.h" />
     <ClInclude Include="cores\AudioRenderers\IAudioCallback.h" />
@@ -376,6 +377,7 @@
     <ClInclude Include="filesystem\XBFS_Wrap\EmuFileWrapper.h" />
     <ClInclude Include="filesystem\XBFS_Wrap\XBFS_Wrap.h" />
     <ClInclude Include="guilib\AudioContext.h" />
+    <ClInclude Include="guilib\dialogs\GUIDialogBusy.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogButtonMenu.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogContextMenu.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogFileBrowser.h" />
@@ -563,6 +565,7 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">..\xbox360 ffmpeg\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ClCompile Include="ApplicationMessenger.cpp" />
+    <ClCompile Include="ApplicationRenderer.cpp" />
     <ClCompile Include="BackgroundInfoLoader.cpp" />
     <ClCompile Include="ButtonTranslator.cpp" />
     <ClCompile Include="cores\AudioRenderers\NullSound.cpp" />
@@ -613,6 +616,7 @@
     <ClCompile Include="filesystem\VirtualDirectory.cpp" />
     <ClCompile Include="filesystem\XBFS_Wrap\XBFS_Wrap.cpp" />
     <ClCompile Include="guilib\AudioContext.cpp" />
+    <ClCompile Include="guilib\dialogs\GUIDialogBusy.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogButtonMenu.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogContextMenu.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogFileBrowser.cpp" />

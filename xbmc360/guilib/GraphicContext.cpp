@@ -37,7 +37,8 @@ void CGraphicContext::TLock()
 {
 	EnterCriticalSection(*this);
 
-	m_pd3dDevice->AcquireThreadOwnership();
+	if(m_pd3dDevice)
+		m_pd3dDevice->AcquireThreadOwnership();
 }
 
 void CGraphicContext::TUnlock()
@@ -52,13 +53,13 @@ void CGraphicContext::SetD3DDevice(LPDIRECT3DDEVICE9 p3dDevice)
 	m_pd3dDevice = p3dDevice;
 
 	// Release the object for any thread to acquire!
-	m_pd3dDevice->ReleaseThreadOwnership();
+	if(m_pd3dDevice)
+		m_pd3dDevice->ReleaseThreadOwnership();
 }
 
 void CGraphicContext::SetD3DParameters(D3DPRESENT_PARAMETERS *p3dParams)
 {
 	m_pd3dParams = p3dParams;
-
 }
 
 void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool forceClear /* = false */)
@@ -207,6 +208,16 @@ void CGraphicContext::ResetOverscan(RESOLUTION res, OVERSCAN &overscan)
 		default:
 		break;
 	}
+}
+
+int CGraphicContext::GetFPS() const
+{
+	if (m_Resolution == PAL_4x3 || m_Resolution == PAL_16x9)
+		return 50;
+	else if (m_Resolution == HDTV_1080p)
+		return 30;
+
+	return 60;
 }
 
 const RECT& CGraphicContext::GetViewWindow() const

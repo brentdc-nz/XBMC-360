@@ -16,6 +16,7 @@ public:
 	virtual bool OnMessage(CGUIMessage& message);
 
 	virtual void Render();
+	virtual void OnWindowLoaded();
 
 	void RenderFullScreen();
 	bool NeedRenderFullScreen();
@@ -23,7 +24,9 @@ public:
 private:
 	void PreloadDialog(unsigned int windowID);
 	void UnloadDialog(unsigned int windowID);
-	void Seek(bool bPlus, bool bLargeStep);
+
+	bool m_bShowCurrentTime;
+	bool m_bLastRender;
 };
 
 #endif //GUILIB_GUIWINDOWFULLSCREEN_H

@@ -22,6 +22,7 @@ public:
 	CRenderManager();
 	~CRenderManager();
 
+	void Update(bool bPauseDrawing);
 	void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
 	bool PreInit();
 	bool Configure(int width, int height, unsigned flags);
@@ -38,6 +39,7 @@ public:
 protected:
 	CBaseRenderer* m_pRenderer; // Current Renderer
 
+	bool m_bPauseDrawing; // True if we should pause rendering
 	DWORD m_dwPresentTime;
 	bool m_bIsStarted;
 	CSharedSection m_sharedSection;

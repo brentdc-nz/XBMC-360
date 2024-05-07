@@ -8,6 +8,7 @@
 #include "DVDDemuxers\DVDDemuxUtils.h"
 #include "DVDPerformanceCounter.h"
 #include "AdvancedSettings.h"
+#include "guilib\GUIInfoManager.h"
 
 using namespace std;
 
@@ -344,6 +345,12 @@ bool CDVDPlayer::HasVideo() const
 bool CDVDPlayer::HasAudio() const
 {
 	return (m_CurrentAudio.id >= 0);
+}
+
+bool CDVDPlayer::CanSeek()
+{
+	CSingleLock lock(m_StateSection);
+	return m_State.canseek;
 }
 
 void CDVDPlayer::OnStartup()
@@ -1107,6 +1114,9 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
 		return;
 	}
 #endif
+
+	if (!m_State.canseek)
+		return;
 /*
 	if(((bPlus && GetChapter() < GetChapterCount()) //TODO
 	|| (!bPlus && GetChapter() > 1)) && bLargeStep)
@@ -1386,7 +1396,7 @@ void CDVDPlayer::HandleMessages()
 			{
 				CDVDMsgPlayerSeek &msg(*((CDVDMsgPlayerSeek*)pMsg));
 
-//				g_infoManager.SetDisplayAfterSeek(100000); //TODO
+				g_infoManager.SetDisplayAfterSeek(100000);
 				
 				if(msg.GetFlush())
 					SetCaching(CACHESTATE_INIT);
@@ -1416,8 +1426,8 @@ void CDVDPlayer::HandleMessages()
 					CLog::Log(LOGWARNING, "error while seeking");
 
 				// Set flag to indicate we have finished a seeking request
-//				g_infoManager.m_performingSeek = false;  //TODO
-//				g_infoManager.SetDisplayAfterSeek();  //TODO
+				g_infoManager.m_performingSeek = false;
+				g_infoManager.SetDisplayAfterSeek();
 			}
 			else if(pMsg->IsType(CDVDMsg::PLAYER_SEEK_CHAPTER))
 			{
@@ -2361,6 +2371,8 @@ void CDVDPlayer::UpdatePlayState(double timeout)
 		m_State.time_total = m_pDemuxer->GetStreamLength();
 	}
 
+	m_State.canseek      = true;
+
 	if(m_pInputStream)
 	{
 		// Override from input stream if needed
@@ -2406,6 +2418,9 @@ void CDVDPlayer::UpdatePlayState(double timeout)
 		m_State.time        = m_Edl.RemoveCutTime(MathUtils::rint(m_State.time));
 		m_State.time_total  = m_Edl.RemoveCutTime(MathUtils::rint(m_State.time_total));
 	}
+
+	if(m_State.time_total <= 0)
+		m_State.canseek  = false;
 
 	if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
 		m_State.time_offset = DVD_MSEC_TO_TIME(m_State.time) - m_State.dts;

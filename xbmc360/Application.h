@@ -34,6 +34,7 @@ public:
 	virtual void Process();
 	virtual void FrameMove();
 	virtual void Render();
+	virtual void DoRender();
 	virtual void Cleanup();
 	virtual void Stop();
 
@@ -43,6 +44,7 @@ public:
 	virtual bool OnMessage(CGUIMessage& message);
 	bool NeedRenderFullScreen();
 	void RenderFullScreen();
+	void DoRenderFullScreen();
 	bool SwitchToFullScreen();
 	void StopPlaying();
 
@@ -60,6 +62,7 @@ public:
 
 	double GetTime() const;
 	double GetTotalTime() const;
+	void SeekTime( double dTime = 0.0 );
 	float GetPercentage() const;
 
 	bool IsPlayingAudio() const;
@@ -71,6 +74,8 @@ public:
 	void StopTimeServer();
 	void StartFtpServer();
 	void StopFtpServer();
+
+	bool IsCurrentThread() const;
 
 	void ResetScreenSaver();
 	bool ResetScreenSaverWindow();
@@ -95,6 +100,7 @@ public:
 	CApplicationMessenger& getApplicationMessenger() { return m_applicationMessenger; };
 
 	bool ExecuteXBMCAction(std::string action);
+	void RenderMemoryStatus();
 
 protected:
 	bool ProcessGamepad(float frameTime);
@@ -117,6 +123,7 @@ protected:
 
 	CIdleThread m_idleThread;
 	CSplash *m_splash;
+	DWORD m_threadID; // Application thread ID. Used in applicationMessanger to know where we are firing a thread with delay from
 	CNetwork m_network;
 	CNTPClient *m_pNTPClient;
 	CFTPServer *m_pFTPServer;

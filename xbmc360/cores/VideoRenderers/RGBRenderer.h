@@ -2,7 +2,7 @@
 #define RGB_RENDERER_H
 
 #include "BaseRenderer.h"
-#include "..\..\Utils\Stdafx.h"
+#include "utils\Stdafx.h"
 
 class CRGBRenderer : public CBaseRenderer
 {
@@ -10,6 +10,7 @@ public:
 	CRGBRenderer(LPDIRECT3DDEVICE9 pDevice);
 	virtual ~CRGBRenderer();
 
+	virtual void Update(bool bPauseDrawing);
 	virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
 	virtual bool PreInit();
 	virtual void ManageDisplay();

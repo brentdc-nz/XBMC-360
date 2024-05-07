@@ -20,6 +20,7 @@ public:
 	CBaseRenderer() {};
 	virtual ~CBaseRenderer() {};
 
+	virtual void Update(bool bPauseDrawing) = 0;
 	virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255) = 0;
 	virtual bool PreInit() = 0;
 	virtual void ManageDisplay() = 0;

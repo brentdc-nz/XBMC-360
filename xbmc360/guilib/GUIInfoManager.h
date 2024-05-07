@@ -29,7 +29,23 @@ namespace INFO
 #define OPERATOR_OR   1
 
 #define PLAYER_HAS_MEDIA            1
+#define PLAYER_PAUSED               5
+#define PLAYER_REWINDING            6
+#define PLAYER_REWINDING_2x         7
+#define PLAYER_REWINDING_4x         8
+#define PLAYER_REWINDING_8x         9
+#define PLAYER_REWINDING_16x        10
+#define PLAYER_REWINDING_32x        11
+#define PLAYER_FORWARDING           12
+#define PLAYER_FORWARDING_2x        13
+#define PLAYER_FORWARDING_4x        14
+#define PLAYER_FORWARDING_8x        15
+#define PLAYER_FORWARDING_16x       16
+#define PLAYER_FORWARDING_32x       17
+#define PLAYER_DISPLAY_AFTER_SEEK   21
 #define PLAYER_PROGRESS             22
+#define PLAYER_SEEKBAR              23
+#define PLAYER_SEEKTIME             24
 #define PLAYER_SEEKING              25
 #define PLAYER_TIME                 27
 #define PLAYER_TIME_REMAINING       28
@@ -37,6 +53,7 @@ namespace INFO
 #define PLAYER_SHOWCODEC            30
 #define PLAYER_VOLUME               32
 #define PLAYER_MUTED                33
+#define PLAYER_SEEKOFFSET           47
 
 #define SYSTEM_PROGRESS_BAR         107
 #define SYSTEM_TIME                 110
@@ -258,8 +275,12 @@ public:
 	int GetInt(int info, int contextWindow = 0) const;
 	void UpdateFPS();
 
+	bool GetDisplayAfterSeek();
+	void SetDisplayAfterSeek(unsigned int timeOut = 2500, int seekOffset = 0);
+	void SetSeeking(bool seeking) { m_playerSeeking = seeking; };
 	void SetShowCodec(bool showcodec) { m_playerShowCodec = showcodec; };
 	void ToggleShowCodec() { m_playerShowCodec = !m_playerShowCodec; };
+	bool m_performingSeek;
 
 	inline float GetFPS() const { return m_fps; };
 
@@ -268,6 +289,13 @@ public:
 
 	void ResetCache();
 	
+	__int64 GetPlayTime() const; // In ms
+	CStdString GetCurrentPlayTime(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
+	int GetPlayTimeRemaining() const;
+	CStdString GetCurrentPlayTimeRemaining(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
+	int GetTotalPlayTime() const;
+	CStdString GetDuration(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
+
 protected:
 	// Routines for window retrieval
 	bool CheckWindowCondition(CGUIWindow *window, int condition) const;
@@ -276,18 +304,12 @@ protected:
 	bool GetMultiInfoBool(const GUIInfo &info, int contextWindow = 0);
 	CStdString GetMultiInfoLabel(const GUIInfo &info, int contextWindow = 0);
 	int TranslateListItem(const CStdString &info);
+	TIME_FORMAT TranslateTimeFormat(const CStdString &format);
 	bool GetItemBool(const CGUIListItem *item, int condition) const;
 
 	CStdString GetTime(bool bSeconds = false);
 	CStdString GetDate(bool bNumbersOnly = false);
 	CStdString GetSystemHeatInfo(int info);
-
-	__int64 GetPlayTime() const; // In ms
-	CStdString GetCurrentPlayTime(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
-	int GetPlayTimeRemaining() const;
-	CStdString GetCurrentPlayTimeRemaining(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
-	int GetTotalPlayTime() const;
-	CStdString GetDuration(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
 
 protected:
 	// Conditional string parameters for testing are stored in a vector for later retrieval.
@@ -299,6 +321,9 @@ protected:
 	CStdStringArray m_stringParameters;
 
 	// Fullscreen OSD Stuff
+	DWORD m_AfterSeekTimeout;
+	int m_seekOffset;
+	bool m_playerSeeking;
 	bool m_playerShowCodec;
 
 	// FPS counters

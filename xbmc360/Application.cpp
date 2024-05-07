@@ -22,6 +22,7 @@
 #include "guilib\SkinInfo.h"
 #include "interfaces\Builtins.h"
 #include "guilib\GUIColorManager.h"
+#include "ApplicationRenderer.h"
 
 // Window includes
 #include "guilib\windows\GUIWindowHome.h"
@@ -71,8 +72,12 @@ bool CApplication::Create()
 	g_advancedSettings.m_logLevel = LOG_LEVEL_NORMAL;
 #endif
 	CLog::SetLogLevel(g_advancedSettings.m_logLevel);
+
 	g_guiSettings.Initialize();  // Initialize default GUI Settings
 	g_settings.Initialize(); // Initialize default Settings
+
+	// Grab a handle to our thread to be used later in identifying the render thread
+	m_threadID = GetCurrentThreadId();
 
 	// Check logpath
 	CStdString strLogFile, strLogFileOld;
@@ -257,6 +262,27 @@ void CApplication::CancelDelayLoadSkin()
 
 void CApplication::LoadSkin(const CStdString& strSkin)
 {
+	if (g_application.m_pPlayer && g_application.IsPlayingVideo())
+	{
+/*		bPreviousPlayingState = !g_application.m_pPlayer->IsPaused();
+		if (bPreviousPlayingState)
+			g_application.m_pPlayer->Pause();
+
+		if (!g_renderManager.Paused())
+		{
+			if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+			{
+				g_windowManager.ActivateWindow(WINDOW_HOME);
+				bPreviousRenderingState = true;
+			}
+		}*/
+	}
+
+	// Stop the busy renderer if it's running before we lock the graphiccontext or we could deadlock.
+	g_ApplicationRenderer.Stop();
+	// close the music and video overlays (they're re-opened automatically later)
+	CSingleLock lock(g_graphicsContext);
+	
 	m_dwSkinTime = 0;
 
 	CStdString strHomePath;
@@ -298,6 +324,10 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	g_audioManager.Load();
 
 	CLog::Log(LOGINFO, "Skin loaded...");
+
+	// Leave the graphics lock
+	lock.Leave();
+	g_ApplicationRenderer.Start();
 }
 
 void CApplication::ReloadSkin()
@@ -321,6 +351,8 @@ void CApplication::ReloadSkin()
 
 void CApplication::UnloadSkin()
 {
+	g_ApplicationRenderer.Stop();
+
 	// These windows are not handled by the windowmanager (why not?) so we should unload them manually
 	CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
 	m_guiDialogMuteBug.OnMessage(msg);
@@ -442,8 +474,8 @@ bool CApplication::ProcessGamepad(float frameTime)
 		if (OnKey(key)) return true;
 	}
 
-	BYTE bLeftTrigger = 0; // TODO //m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_LEFT_TRIGGER];
-	BYTE bRightTrigger = 0; // TODO //m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_RIGHT_TRIGGER];
+	BYTE bLeftTrigger = m_DefaultGamepad.bLeftTrigger;//m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_LEFT_TRIGGER];
+	BYTE bRightTrigger = m_DefaultGamepad.bRightTrigger;//m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_RIGHT_TRIGGER];
 
 	if (m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_LEFT_THUMB)
 	{
@@ -600,6 +632,32 @@ bool CApplication::ProcessGamepad(float frameTime)
 		if (OnKey(key))	return true;
 	}
 
+	// Trigger detection
+	static int lastTriggerKey = 0;
+	int newTriggerKey = 0;
+	
+	if (bLeftTrigger)
+		newTriggerKey = KEY_BUTTON_LEFT_ANALOG_TRIGGER;
+	else if (bRightTrigger)
+		newTriggerKey = KEY_BUTTON_RIGHT_ANALOG_TRIGGER;
+	if (lastTriggerKey && newTriggerKey != lastTriggerKey)
+	{
+		// was held down last time - and we have a new key now
+		// post old key reset message...
+		CKey key(lastTriggerKey, 0, 0, 0, 0, 0, 0);
+		lastTriggerKey = newTriggerKey;
+		if (OnKey(key)) return true;
+	}
+
+	lastTriggerKey = newTriggerKey;
+	
+	// Post the new key's message
+	if (newTriggerKey)
+	{
+		CKey key(newTriggerKey, bLeftTrigger, bRightTrigger, m_DefaultGamepad.fX1, m_DefaultGamepad.fY1, m_DefaultGamepad.fX2, m_DefaultGamepad.fY2, frameTime);
+		if (OnKey(key)) return true;
+	}
+
 	return false;
 }
 
@@ -612,30 +670,103 @@ bool CApplication::OnKey(CKey& key) // FIXME : Needs updating to match!
 	// Get the current active window
 	int iWin = g_windowManager.GetActiveWindow();
 
+	// This will be checked for certain keycodes that need
+	// special handling if the screensaver is active
+	CAction action = g_buttonTranslator.GetAction(iWin, key);
+
 	// A key has been pressed.
 	// Reset the screensaver timer
 	// but not for the analog thumbsticks/triggers
-
-//	if(!key.IsAnalogButton()) //TODO
+	if(!key.IsAnalogButton())
 	{
 		ResetScreenSaver();
+
+		// Allow some keys to be processed while the screensaver is active
 		if (ResetScreenSaverWindow())
 			return true;
 	}
 
 	// Change this if we have a dialog up
-	if (g_windowManager.HasModalDialog())
+	if(g_windowManager.HasModalDialog())
 	{
-		iWin = g_windowManager.GetTopMostModalDialogID();
+		iWin = g_windowManager.GetTopMostModalDialogID() & WINDOW_ID_MASK;
 	}
 
-	CAction action = g_buttonTranslator.GetAction(iWin, key);
+	if (iWin == WINDOW_FULLSCREEN_VIDEO)
+	{
+		// Current active window is full screen video.
+		if (/*g_application.m_pPlayer && g_application.m_pPlayer->IsInMenu()*/0)
+		{
+			// If player is in some sort of menu, (ie DVDMENU) map buttons differently
+			//action = CButtonTranslator::GetInstance().GetAction(WINDOW_VIDEO_MENU, key);
+		}
+		else
+		{
+			// No then use the fullscreen window section of keymap.xml to map key->action
+			action = /*CButtonTranslator::GetInstance()*/g_buttonTranslator.GetAction(iWin, key);
+		}
+	}
+	else
+	{
+		// Current active window isnt the fullscreen window
+		// just use corresponding section from keymap.xml
+		// to map key->action
+		
+		// First determine if we should use keyboard input directly
+/*		bool useKeyboard = key.FromKeyboard() && (iWin == WINDOW_DIALOG_KEYBOARD || iWin == WINDOW_DIALOG_NUMERIC);
+		CGUIWindow *window = g_windowManager.GetWindow(iWin);
+		
+		if (window)
+		{
+			CGUIControl *control = window->GetFocusedControl();
+			if (control)
+			{
+				if (control->GetControlType() == CGUIControl::GUICONTROL_EDIT ||
+				(control->IsContainer() && g_Keyboard.GetShift()))
+					useKeyboard = true;
+			}
+		}
+		
+		if (useKeyboard)
+		{
+			action = CAction(0); // Reset our action
+			
+			if (key.GetFromHttpApi())
+				action = CAction(key.GetButtonCode() != KEY_INVALID ? key.GetButtonCode() : 0, key.GetUnicode());
+			else
+			{
+				// See if we've got an ascii key
+				if (g_Keyboard.GetUnicode())
+					action = CAction(g_Keyboard.GetAscii() | KEY_ASCII, g_Keyboard.GetUnicode());
+				else
+					action = CAction(g_Keyboard.GetKey() | KEY_VKEY);
+			}
+
+			CLog::Log(LOGDEBUG, "%s: %i pressed, trying keyboard action %i", __FUNCTION__, (int) key.GetButtonCode(), action.GetID());
+
+			if (OnAction(action))
+				return true;
+			
+			// Failed to handle the keyboard action, drop down through to standard action
+		}*/
+
+		if (/*key.GetFromHttpApi()*/0)
+		{
+			if (key.GetButtonCode() != KEY_INVALID)
+				action = /*CButtonTranslator::GetInstance()*/g_buttonTranslator.GetAction(iWin, key);
+		}
+		else
+			action = /*CButtonTranslator::GetInstance()*/g_buttonTranslator.GetAction(iWin, key);
+	}
+
+	if (!key.IsAnalogButton())
+		CLog::Log(LOGDEBUG, "%s: %i pressed, action is %s", __FUNCTION__, (int) key.GetButtonCode(), action.GetName().c_str());
 
 	bool bResult = false;
 
 	// Play sound before the action unless the button is held, 
 	// where we execute after the action as held actions aren't fired every time.
-	if(/*action.GetHoldTime()*/false) //TODO
+	if(action.GetHoldTime())
 	{
 		bResult = OnAction(action);
 		if(bResult)
@@ -670,6 +801,14 @@ bool CApplication::OnAction(CAction &action)
 
 	/* Handle extra global presses */
 
+	// Built in functions : Execute the built-in
+	if (action.GetID() == ACTION_BUILT_IN_FUNCTION)
+	{
+		CBuiltins::Execute(action.GetName());
+//		m_navigationTimer.StartZero();
+		return true;
+	}
+
 	// codec info : Shows the current song, video or picture codec information
 	if (action.GetID() == ACTION_SHOW_CODEC)
 	{
@@ -692,6 +831,12 @@ bool CApplication::OnAction(CAction &action)
 			m_pPlayer->Pause();
 			return true;
 		}
+	}
+
+	if (action.GetID() == ACTION_MUTE)
+	{
+		Mute();
+		return true;
 	}
 
 	// Check for global volume control
@@ -739,7 +884,39 @@ bool CApplication::OnAction(CAction &action)
 		return true;
 	}
 
+	// Check for global seek control
+	if (IsPlaying() && action.GetAmount() && (action.GetID() == ACTION_ANALOG_SEEK_FORWARD || action.GetID() == ACTION_ANALOG_SEEK_BACK))
+	{
+		if(!m_pPlayer->CanSeek()) return false;
+
+		m_guiDialogSeekBar.OnAction(action);
+		return true;
+	}
+
 	return false;
+}
+
+void CApplication::RenderMemoryStatus()
+{
+	g_infoManager.UpdateFPS();
+
+#if !defined(_DEBUG) && !defined(PROFILE)
+	if (LOG_LEVEL_DEBUG_FREEMEM <= g_advancedSettings.m_logLevel)
+#endif
+	{
+		// Reset the window scaling and fade status
+		RESOLUTION res = g_graphicsContext.GetVideoResolution();
+		g_graphicsContext.SetRenderingResolution(res, false);
+
+		CStdStringW wszText;
+		MEMORYSTATUS stat;
+		GlobalMemoryStatus(&stat);
+		wszText.Format(L"FreeMem %d/%d KB, FPS %2.1f, CPU %2.0f%%", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024, g_infoManager.GetFPS(), (1.0f - m_idleThread.GetRelativeUsage())*100);
+
+		float x = 0.04f * g_graphicsContext.GetWidth() + g_settings.m_ResInfo[res].Overscan.left;
+		float y = 0.04f * g_graphicsContext.GetHeight() + g_settings.m_ResInfo[res].Overscan.top;
+		//CGUITextLayout::DrawOutlineText(g_fontManager.GetFont("font13"), x, y, 0xffffffff, 0xff000000, 2, wszText); // TODO
+	}
 }
 
 void CApplication::FrameMove()
@@ -790,6 +967,13 @@ bool CApplication::OnMessage(CGUIMessage& message)
 		}
 		break;
 
+		case GUI_MSG_FULLSCREEN:
+		{
+			// Switch to fullscreen, if we can
+			SwitchToFullScreen();
+			return true;
+		}
+		break;
 		case GUI_MSG_EXECUTE:
 			if (message.GetStringParam().length() > 0)
 				return ExecuteXBMCAction(message.GetStringParam());
@@ -798,61 +982,12 @@ bool CApplication::OnMessage(CGUIMessage& message)
 	return false;
 }
 
-void CApplication::Render()
-{
-	if(!m_pd3dDevice)
-		return;
-
-	// Don't do anything that would require graphiccontext to be locked before here in fullscreen.
-	// that stuff should go into renderfullscreen instead as that is called from the rendering thread
-
-	// Don't show GUI when playing full screen video
-	if(g_graphicsContext.IsFullScreenVideo() /*&& IsPlaying() && !IsPaused()*/)
-	{
-		Sleep(10);
-		ResetScreenSaver();
-//		g_infoManager.ResetCache();
-		return;
-	}
-
-	// Enable/Disable video overlay window
-	if(IsPlayingVideo() && g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO && !m_bScreenSave)
-		g_graphicsContext.EnablePreviewWindow(true);
-	else
-		g_graphicsContext.EnablePreviewWindow(false);
-
-	g_graphicsContext.TLock();
-	m_pd3dDevice->BeginScene();  
-	g_graphicsContext.TUnlock();
-
-	// Update our FPS
-	g_infoManager.UpdateFPS();
-
-	// Draw GUI
-
-	// Render current windows
-	g_windowManager.Render();
-
-	// Now render any dialogs
-	g_windowManager.RenderDialogs();
-
-    // reset the window scaling and fade status
-	g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), false);
-
-	g_graphicsContext.TLock();
-	m_pd3dDevice->EndScene();
-	g_graphicsContext.TUnlock();
-
-	// Present the backbuffer contents to the display
-	g_graphicsContext.TLock();
-	m_pd3dDevice->Present(NULL, NULL, NULL, NULL);
-	g_graphicsContext.TUnlock();
-}
-
 bool CApplication::NeedRenderFullScreen()
 {
 	if(g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
 	{
+		g_windowManager.UpdateModelessVisibility();
+
 		if(g_windowManager.HasDialogOnScreen()) return true;
  
 		CGUIWindowFullScreen *pFSWin = (CGUIWindowFullScreen*)g_windowManager.GetWindow(WINDOW_FULLSCREEN_VIDEO);
@@ -866,17 +1001,85 @@ bool CApplication::NeedRenderFullScreen()
 
 void CApplication::RenderFullScreen()
 {
-	if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
-	{
-//		m_guiVideoOverlay.Close(true); //TODO
-//		m_guiMusicOverlay.Close(true); //TODO
+	g_ApplicationRenderer.Render(true);
+}
 
+void CApplication::DoRenderFullScreen()
+{
+	if (g_graphicsContext.IsFullScreenVideo()) // TODO
+	{
+		// Make sure our overlays are closed
+/*		CGUIDialog *overlay = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_VIDEO_OVERLAY);
+		if (overlay) overlay->Close(true);
+		
+		overlay = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_MUSIC_OVERLAY);
+		if (overlay) overlay->Close(true);
+*/
 		CGUIWindowFullScreen *pFSWin = (CGUIWindowFullScreen *)g_windowManager.GetWindow(WINDOW_FULLSCREEN_VIDEO);
-		if(!pFSWin)
+		if (!pFSWin)
 			return;
-	
+		
 		pFSWin->RenderFullScreen();
+
+		if (g_windowManager.HasDialogOnScreen())
+			g_windowManager.RenderDialogs();
 	}
+}
+
+void CApplication::DoRender()
+{
+	if(!m_pd3dDevice)
+		return;
+
+	g_graphicsContext.Lock();
+
+	m_pd3dDevice->BeginScene();
+
+	g_windowManager.UpdateModelessVisibility();
+
+	//SWATHWIDTH of 4 improves fillrates (performance investigator)
+#ifdef HAS_XBOX_D3D
+  m_pd3dDevice->SetRenderState(D3DRS_SWATHWIDTH, 4);
+#endif
+
+	g_windowManager.Render();
+
+	// Now render any dialogs
+	g_windowManager.RenderDialogs();
+
+	// reset image scaling and effect states
+	g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), false);
+
+	RenderMemoryStatus();
+
+	m_pd3dDevice->EndScene();
+
+	g_graphicsContext.TLock();
+	m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
+	g_graphicsContext.TUnlock();
+
+	g_graphicsContext.Unlock();
+
+	// Reset our info cache - We do this at the end of Render so that it is
+	// fresh for the next process(), or after a windowclose animation (where process()
+	// isn't called)
+	g_infoManager.ResetCache();
+}
+
+void CApplication::Render()
+{
+	// Don't do anything that would require graphiccontext to be locked before here in fullscreen.
+	// that stuff should go into renderfullscreen instead as that is called from the renderin thread
+	// dont show GUI when playing full screen video
+	if (g_graphicsContext.IsFullScreenVideo() && IsPlaying() && !IsPaused())
+	{
+		Sleep(50);
+		ResetScreenSaver();
+		g_infoManager.ResetCache();
+		return;
+	}
+
+	g_ApplicationRenderer.Render();
 }
 
 // SwitchToFullScreen() returns true if a switch is made, else returns false
@@ -1122,6 +1325,51 @@ double CApplication::GetTotalTime() const
 	return dTime;
 }
 
+// Sets the current position of the currently playing media to the specified
+// time in seconds.  Fractional portions of a second are valid. The passed
+// time is the time offset from the beginning of the file as opposed to a
+// delta from the current position.  This method accepts a double to be
+// consistent with GetTime() and GetTotalTime().
+void CApplication::SeekTime( double dTime )
+{
+	if (IsPlaying() && m_pPlayer && (dTime >= 0.0))
+	{
+		if (!m_pPlayer->CanSeek()) return;
+/*		
+		if (m_itemCurrentFile->IsStack() && m_currentStack->Size() > 0)
+		{
+			// find the item in the stack we are seeking to, and load the new
+			// file if necessary, and calculate the correct seek within the new
+			// file.  Otherwise, just fall through to the usual routine if the
+			// time is higher than our total time.
+			for (int i = 0; i < m_currentStack->Size(); i++)
+			{
+				if ((*m_currentStack)[i]->m_lEndOffset > dTime)
+				{
+					long startOfNewFile = (i > 0) ? (*m_currentStack)[i-1]->m_lEndOffset : 0;
+				
+					if (m_currentStackPosition == i)
+						m_pPlayer->SeekTime((__int64)((dTime - startOfNewFile) * 1000.0));
+					else
+					{
+						// seeking to a new file
+						m_currentStackPosition = i;
+						CFileItem item(*(*m_currentStack)[i]);
+						item.m_lStartOffset = (long)((dTime - startOfNewFile) * 75.0);
+					
+						// Don't just call "PlayFile" here, as we are quite likely called from the
+						// player thread, so we won't be able to delete ourselves.
+						m_applicationMessenger.PlayFile(item, true);
+					}
+					return;
+				}
+			}
+		}
+		// Convert to milliseconds and perform seek
+*/		m_pPlayer->SeekTime( static_cast<__int64>(dTime * 1000.0 ));
+	}
+}
+
 float CApplication::GetPercentage() const
 {
 	if(IsPlaying() && m_pPlayer)
@@ -1202,6 +1450,11 @@ void CApplication::StopFtpServer()
 
 		CLog::Log(LOGINFO, "FTP Server: Stopped");
 	}
+}
+
+bool CApplication::IsCurrentThread() const
+{
+	return CThread::IsCurrentThread(m_threadID);
 }
 
 void CApplication::ResetScreenSaver()
@@ -1452,9 +1705,9 @@ void CApplication::Cleanup()
 		g_windowManager.Remove(WINDOW_DIALOG_SEEK_BAR);
 		g_windowManager.Remove(WINDOW_DIALOG_VOLUME_BAR);
 
-		// Reset our d3d params before we destroy
-		g_graphicsContext.SetD3DDevice(NULL);
-		g_graphicsContext.SetD3DParameters(NULL);
+		// Reset our d3d params before we destroy //FIXME - Thead ownership BS
+//		g_graphicsContext.SetD3DDevice(NULL);
+//		g_graphicsContext.SetD3DParameters(NULL);
 
 		g_infoManager.Clear();
 		g_localizeStrings.Clear();

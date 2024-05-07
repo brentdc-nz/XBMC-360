@@ -34,6 +34,11 @@ static const ActionMapping actions[] =
         {"contextmenu"       , ACTION_CONTEXT_MENU},
         {"volumeup"          , ACTION_VOLUME_UP},
         {"volumedown"        , ACTION_VOLUME_DOWN},
+        {"mute"              , ACTION_MUTE},
+        {"scrollup"          , ACTION_SCROLL_UP},
+        {"scrolldown"        , ACTION_SCROLL_DOWN},
+        {"analogseekforward" , ACTION_ANALOG_SEEK_FORWARD},
+        {"analogseekback"    , ACTION_ANALOG_SEEK_BACK},
 };
 
 static const ActionMapping windows[] =
@@ -181,6 +186,8 @@ WORD CButtonTranslator::TranslateGamepadString(const char *szButton)
 	else if (strButton.Equals("rightthumbstickleft")) wButtonCode = KEY_BUTTON_RIGHT_THUMB_STICK_LEFT;
 	else if (strButton.Equals("rightthumbstickright")) wButtonCode = KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT;
 	else if (strButton.Equals("righttrigger")) wButtonCode = KEY_BUTTON_RIGHT_TRIGGER;
+	else if (strButton.Equals("leftanalogtrigger")) wButtonCode = KEY_BUTTON_LEFT_ANALOG_TRIGGER;
+	else if (strButton.Equals("rightanalogtrigger")) wButtonCode = KEY_BUTTON_RIGHT_ANALOG_TRIGGER;
 	else if (strButton.Equals("dpadleft")) wButtonCode = KEY_BUTTON_DPAD_LEFT;
 	else if (strButton.Equals("dpadright")) wButtonCode = KEY_BUTTON_DPAD_RIGHT;
 	else if (strButton.Equals("dpadup")) wButtonCode = KEY_BUTTON_DPAD_UP;

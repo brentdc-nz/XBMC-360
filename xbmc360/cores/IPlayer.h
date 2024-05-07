@@ -58,8 +58,12 @@ public:
 	virtual bool IsPaused() const = 0;
 	virtual bool HasVideo() const = 0;
 	virtual bool HasAudio() const = 0;
+	virtual bool CanSeek() {return true;}
 	virtual void SetVolume(long nVolume){}
 	virtual bool OnAction(const CAction &action){ return false; };
+
+	// Returns true if not playback (paused or stopped beeing filled)
+	virtual bool IsCaching() const {return false;};
 
 protected:
 	IPlayerCallback& m_callback;

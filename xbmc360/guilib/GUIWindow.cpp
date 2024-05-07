@@ -475,9 +475,8 @@ bool CGUIWindow::Initialize()
 void CGUIWindow::DynamicResourceAlloc(bool bOnOff)
 {
 	m_dynamicResourceAlloc = bOnOff;
-
+	CGUIControlGroup::DynamicResourceAlloc(bOnOff);
 }
-
 
 bool CGUIWindow::CheckAnimation(ANIMATION_TYPE animType)
 {
@@ -849,7 +848,7 @@ void CGUIWindow::SetDefaults()
 	m_defaultControl = 0;
 	m_bRelativeCoords = false;
 	m_posX = m_posY = m_width = m_height = 0;
-	m_overlayState = OVERLAY_STATE_PARENT_WINDOW;   // Use parent or previous window's state
+	m_overlayState = OVERLAY_STATE_PARENT_WINDOW; // Use parent or previous window's state
 	m_visibleCondition = 0;
 	m_previousWindow = WINDOW_INVALID;
 	m_animations.clear();
@@ -858,6 +857,18 @@ void CGUIWindow::SetDefaults()
 	m_animationsEnabled = true;
 //	m_hitRect.SetRect(0, 0, (float)g_settings.m_ResInfo[m_coordsRes].iWidth, (float)g_settings.m_ResInfo[m_coordsRes].iHeight); //TODO
 	m_clearBackground = 0xff000000; // opaque black -> clear
+}
+
+FRECT CGUIWindow::GetScaledBounds() const
+{
+	CSingleLock lock(g_graphicsContext);
+	g_graphicsContext.SetScalingResolution(m_coordsRes, m_needsScaling);
+	CPoint pos(GetPosition());
+	FRECT rect = {pos.x, pos.y, pos.x + m_width, pos.y + m_height};
+	float z = 0;
+	g_graphicsContext.ScaleFinalCoords(rect.left, rect.top, z);
+	g_graphicsContext.ScaleFinalCoords(rect.right, rect.bottom, z);
+	return rect;
 }
 
 void CGUIWindow::SetProperty(const CStdString &key, const CStdString &value)

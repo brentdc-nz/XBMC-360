@@ -102,6 +102,14 @@ CRGBRenderer::~CRGBRenderer()
 {
 }
 
+void CRGBRenderer::Update(bool bPauseDrawing)
+{
+	if (!m_bConfigured) return;
+
+	CSingleLock lock(g_graphicsContext);
+	ManageDisplay();
+}
+
 void CRGBRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
 	if(!m_pFrameY || !m_pFrameU || !m_pFrameV)
@@ -455,6 +463,11 @@ void CRGBRenderer::PrepareDisplay()
 			g_application.RenderFullScreen();
 		}
     
+		if (!g_application.IsPaused())
+		{
+			g_application.RenderMemoryStatus();
+		}
+
 //		m_pd3dDevice->KickPushBuffer();
 	}
 

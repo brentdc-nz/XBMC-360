@@ -74,6 +74,7 @@ public:
 	void ResetOverscan(RESOLUTION res, OVERSCAN &overscan);
 	int GetWidth() const { return m_iScreenWidth; }
 	int GetHeight() const { return m_iScreenHeight; }
+	int GetFPS() const;
 	const CStdString& GetMediaDir() const { return m_strMediaDir; }
 	void SetMediaDir(const CStdString &strMediaDir);
 	const RECT& GetViewWindow() const;

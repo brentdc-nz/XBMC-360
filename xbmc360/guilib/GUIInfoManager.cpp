@@ -46,6 +46,9 @@ using namespace INFO;
 
 CGUIInfoManager::CGUIInfoManager(void)
 {
+	m_AfterSeekTimeout = 0;
+	m_seekOffset = 0;
+	m_playerSeeking = false;
 	m_nextWindowID = WINDOW_INVALID;
 	m_prevWindowID = WINDOW_INVALID;
 	m_stringParameters.push_back("__ZZZZ__"); // To offset the string parameters by 1 to assure that all entries are non-zero
@@ -150,7 +153,7 @@ bool CGUIInfoManager::EvaluateBool(const CStdString &expression, int contextWind
 	return result;
 }
 
-// Translates a string as given by the skin into an int that we e
+// Translates a string as given by the skin into an int that we
 // use for morefficient retrieval of data
 int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 {
@@ -203,10 +206,28 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 	{
 		if(strTest.Equals("player.hasmedia")) ret = PLAYER_HAS_MEDIA;
 		else if(strTest.Equals("player.time")) ret = PLAYER_TIME;
+		else if (strTest.Equals("player.paused")) ret = PLAYER_PAUSED;
+		else if (strTest.Equals("player.rewinding")) ret = PLAYER_REWINDING;
+		else if (strTest.Equals("player.forwarding")) ret = PLAYER_FORWARDING;
+		else if (strTest.Equals("player.forwarding")) ret = PLAYER_FORWARDING;
+		else if (strTest.Equals("player.rewinding2x")) ret = PLAYER_REWINDING_2x;
+		else if (strTest.Equals("player.rewinding4x")) ret = PLAYER_REWINDING_4x;
+		else if (strTest.Equals("player.rewinding8x")) ret = PLAYER_REWINDING_8x;
+		else if (strTest.Equals("player.rewinding16x")) ret = PLAYER_REWINDING_16x;
+		else if (strTest.Equals("player.rewinding32x")) ret = PLAYER_REWINDING_32x;
+		else if (strTest.Equals("player.forwarding2x")) ret = PLAYER_FORWARDING_2x;
+		else if (strTest.Equals("player.forwarding4x")) ret = PLAYER_FORWARDING_4x;
+		else if (strTest.Equals("player.forwarding8x")) ret = PLAYER_FORWARDING_8x;
+		else if (strTest.Equals("player.forwarding16x")) ret = PLAYER_FORWARDING_16x;
+		else if (strTest.Equals("player.forwarding32x")) ret = PLAYER_FORWARDING_32x;
 		else if(strTest.Equals("player.timeremaining")) ret = PLAYER_TIME_REMAINING;
 		else if(strTest.Equals("player.duration")) ret = PLAYER_DURATION;
+		else if (strTest.Equals("player.displayafterseek")) ret = PLAYER_DISPLAY_AFTER_SEEK;
 		else if(strTest.Equals("player.progress")) ret = PLAYER_PROGRESS;
-		else if (strTest.Equals("player.seeking")) ret = PLAYER_SEEKING;
+		else if (strTest.Equals("player.seekbar")) ret = PLAYER_SEEKBAR;
+		else if (strTest.Left(15).Equals("player.seektime")) return AddMultiInfo(GUIInfo(PLAYER_SEEKTIME, TranslateTimeFormat(strTest.Mid(15))));
+		else if (strTest.Left(17).Equals("player.seekoffset")) return AddMultiInfo(GUIInfo(PLAYER_SEEKOFFSET, TranslateTimeFormat(strTest.Mid(17))));
+		else if (strTest.Equals("player.seeking"))ret = PLAYER_SEEKING;
 		else if (strTest.Equals("player.volume")) ret = PLAYER_VOLUME;
 		else if (strTest.Equals("player.muted")) ret = PLAYER_MUTED;
 	}
@@ -577,9 +598,26 @@ CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info)
 	return GetItemLabel(item, info);
 }
 
+TIME_FORMAT CGUIInfoManager::TranslateTimeFormat(const CStdString &format)
+{
+	if (format.IsEmpty()) return TIME_FORMAT_GUESS;
+	else if (format.Equals("(hh)")) return TIME_FORMAT_HH;
+	else if (format.Equals("(mm)")) return TIME_FORMAT_MM;
+	else if (format.Equals("(ss)")) return TIME_FORMAT_SS;
+	else if (format.Equals("(hh:mm)")) return TIME_FORMAT_HH_MM;
+	else if (format.Equals("(mm:ss)")) return TIME_FORMAT_MM_SS;
+	else if (format.Equals("(hh:mm:ss)")) return TIME_FORMAT_HH_MM_SS;
+	else if (format.Equals("(h)")) return TIME_FORMAT_H;
+	else if (format.Equals("(h:mm:ss)")) return TIME_FORMAT_H_MM_SS;
+	else if (format.Equals("xx")) return TIME_FORMAT_XX;
+	return TIME_FORMAT_GUESS;
+}
+
 CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
 {
 	CStdString strLabel;
+	if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
+		return GetMultiInfoLabel(m_multiInfo[info - MULTI_INFO_START], contextWindow);
 
 	switch (info)
 	{
@@ -777,7 +815,58 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
 		{
 			case PLAYER_HAS_MEDIA:
 				bReturn = true;
+				break;
+			case PLAYER_PAUSED:
+				bReturn = g_application.IsPaused();
+				break;
+			case PLAYER_REWINDING:
+				bReturn = !g_application.IsPaused() && g_application.GetPlaySpeed() < 1;
+				break;
+			case PLAYER_FORWARDING:
+				bReturn = !g_application.IsPaused() && g_application.GetPlaySpeed() > 1;
+				break;
+			case PLAYER_REWINDING_2x:
+				bReturn = !g_application.IsPaused() && g_application.GetPlaySpeed() == -2;
+				break;
+			case PLAYER_REWINDING_4x:
+				bReturn = !g_application.IsPaused() && g_application.GetPlaySpeed() == -4;
+				break;
+			case PLAYER_REWINDING_8x:
+				bReturn = !g_application.IsPaused() && g_application.GetPlaySpeed() == -8;
+				break;
+			case PLAYER_REWINDING_16x:
+				bReturn = !g_application.IsPaused() && g_application.GetPlaySpeed() == -16;
+				break;
+			case PLAYER_REWINDING_32x:
+				bReturn = !g_application.IsPaused() && g_application.GetPlaySpeed() == -32;
+				break;
+			case PLAYER_FORWARDING_2x:
+				bReturn = !g_application.IsPaused() && g_application.GetPlaySpeed() == 2;
+				break;
+			case PLAYER_FORWARDING_4x:
+				bReturn = !g_application.IsPaused() && g_application.GetPlaySpeed() == 4;
+				break;
+			case PLAYER_FORWARDING_8x:
+				bReturn = !g_application.IsPaused() && g_application.GetPlaySpeed() == 8;
+				break;
+			case PLAYER_FORWARDING_16x:
+				bReturn = !g_application.IsPaused() && g_application.GetPlaySpeed() == 16;
+				break;
+			case PLAYER_FORWARDING_32x:
+				bReturn = !g_application.IsPaused() && g_application.GetPlaySpeed() == 32;
+				break;
+			case PLAYER_DISPLAY_AFTER_SEEK:
+				bReturn = GetDisplayAfterSeek();
+				break;
+			case PLAYER_SEEKBAR:
+			{
+				CGUIDialogSeekBar *seekBar = (CGUIDialogSeekBar*)g_windowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR);
+				bReturn = seekBar ? seekBar->IsDialogRunning() : false;
+			}
 			break;
+			case PLAYER_SEEKING:
+				bReturn = m_playerSeeking;
+				break;
 		}
 	}
 
@@ -795,6 +884,7 @@ int CGUIInfoManager::GetInt(int info, int contextWindow) const
 		case PLAYER_VOLUME:
 			return g_application.GetVolume();
 		case PLAYER_PROGRESS:
+		case PLAYER_SEEKBAR:
 		{
 			if(g_application.IsPlaying() && g_application.m_pPlayer)
 			{
@@ -802,6 +892,11 @@ int CGUIInfoManager::GetInt(int info, int contextWindow) const
 				{
 					case PLAYER_PROGRESS:
 						return (int)(g_application.GetPercentage());
+					case PLAYER_SEEKBAR:
+					{
+						CGUIDialogSeekBar *seekBar = (CGUIDialogSeekBar*)g_windowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR);
+						return seekBar ? (int)seekBar->GetPercentage() : 0;
+					}
 				}
 			}
 		}
@@ -919,6 +1014,26 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
 
 		if (window)
 			return window->GetProperty(m_stringParameters[info.GetData2()]);
+	}
+	else if (info.m_info == PLAYER_SEEKTIME)
+	{
+		TIME_FORMAT format = (TIME_FORMAT)info.GetData1();
+		
+		if (format == TIME_FORMAT_GUESS && GetTotalPlayTime() >= 3600)
+			format = TIME_FORMAT_HH_MM_SS;
+
+		CGUIDialogSeekBar *seekBar = (CGUIDialogSeekBar*)g_windowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR);
+		
+		if(seekBar)
+			return seekBar->GetSeekTimeLabel(format);
+	}
+	else if (info.m_info == PLAYER_SEEKOFFSET)
+	{
+		CStdString seekOffset = CStringUtils::SecondsToTimeString(abs(m_seekOffset), (TIME_FORMAT)info.GetData1());
+		if (m_seekOffset < 0)
+			return "-" + seekOffset;
+		if (m_seekOffset > 0)
+			return "+" + seekOffset;
 	}
 
 	// TODO - Add more!
@@ -1235,6 +1350,28 @@ CStdString CGUIInfoManager::GetSystemHeatInfo(int info)
 			break;
 	}
 	return strTemp;
+}
+
+void CGUIInfoManager::SetDisplayAfterSeek(unsigned int timeOut, int seekOffset)
+{
+	g_infoManager.m_performingSeek = false;
+	if(timeOut>0)
+	{
+		m_AfterSeekTimeout = CTimeUtils::GetFrameTime() +  timeOut;
+		if(seekOffset)
+			m_seekOffset = seekOffset;
+	}
+	else
+		m_AfterSeekTimeout = 0;
+}
+
+bool CGUIInfoManager::GetDisplayAfterSeek()
+{
+	if (CTimeUtils::GetFrameTime() < m_AfterSeekTimeout)
+		return true;
+
+	m_seekOffset = 0;
+	return false;
 }
 
 __int64 CGUIInfoManager::GetPlayTime() const

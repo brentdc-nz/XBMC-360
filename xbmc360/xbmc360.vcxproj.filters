@@ -902,6 +902,12 @@
     <ClInclude Include="guilib\dialogs\GUIDialogMuteBug.h">
       <Filter>Header Files\guilib\dialogs</Filter>
     </ClInclude>
+    <ClInclude Include="ApplicationRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\dialogs\GUIDialogBusy.h">
+      <Filter>Header Files\guilib\dialogs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -1634,6 +1640,12 @@
       <Filter>Source Files\guilib</Filter>
     </ClCompile>
     <ClCompile Include="guilib\dialogs\GUIDialogMuteBug.cpp">
+      <Filter>Source Files\guilib\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="ApplicationRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\dialogs\GUIDialogBusy.cpp">
       <Filter>Source Files\guilib\dialogs</Filter>
     </ClCompile>
   </ItemGroup>

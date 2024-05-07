@@ -26,22 +26,22 @@
 #define GUI_MSG_LABEL_RESET    14  // clear all labels of a control // add label control (for controls supporting more then 1 label)
 
 #define GUI_MSG_ITEM_SELECTED  15  // ask control 2 return the selected item
-#define GUI_MSG_ITEM_SELECT   16  // ask control 2 select a specific item
-#define GUI_MSG_LABEL2_SET   17
+#define GUI_MSG_ITEM_SELECT    16  // ask control 2 select a specific item
+#define GUI_MSG_LABEL2_SET     17
 #define GUI_MSG_SHOWRANGE      18
 
-#define GUI_MSG_FULLSCREEN  19  // should go to fullscreen window (vis or video)
-#define GUI_MSG_EXECUTE    20  // user has clicked on a button with <execute> tag
+#define GUI_MSG_FULLSCREEN     19  // should go to fullscreen window (vis or video)
+#define GUI_MSG_EXECUTE        20  // user has clicked on a button with <execute> tag
 
-#define GUI_MSG_NOTIFY_ALL    21  // message will be send to all active and inactive(!) windows, all active modal and modeless dialogs
+#define GUI_MSG_NOTIFY_ALL     21  // message will be send to all active and inactive(!) windows, all active modal and modeless dialogs
                                   // dwParam1 must contain an additional message the windows should react on
 
 #define GUI_MSG_REFRESH_THUMBS 22 // message is sent to all windows to refresh all thumbs
 
-#define GUI_MSG_MOVE          23 // message is sent to the window from the base control class when it's
-                                 // been asked to move.  dwParam1 contains direction.
+#define GUI_MSG_MOVE           23 // message is sent to the window from the base control class when it's
+                                  // been asked to move.  dwParam1 contains direction.
 
-#define GUI_MSG_LABEL_BIND     24   // bind label control (for controls supporting more then 1 label)
+#define GUI_MSG_LABEL_BIND     24 // bind label control (for controls supporting more then 1 label)
 
 #define GUI_MSG_SELCHANGED  25  // selection within the control has changed
 

@@ -7,7 +7,7 @@
 // Copyright (C) Microsoft Corporation. All rights reserved.
 //--------------------------------------------------------------------------------------
 
-#include "..\utils\stdafx.h"
+#include "utils\stdafx.h"
 #include "XBAudioUtils.h"
 
 namespace ATG

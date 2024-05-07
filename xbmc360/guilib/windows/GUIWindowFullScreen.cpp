@@ -7,16 +7,23 @@
 #include "guilib\AudioContext.h"
 #include "cores\VideoRenderers\RenderManager.h"
 #include "utils\Util.h"
+#include "guilib\GUILabelControl.h"
+#include "Settings.h"
 
 #define BLUE_BAR		100
 #define LABEL_ROW1		10
 #define LABEL_ROW2		11
 #define LABEL_ROW3		12
 
+// Displays current position, visible after seek or when forced
+// Alt, use conditional visibility Player.DisplayAfterSeek
+#define LABEL_CURRENT_TIME               22
+
 CGUIWindowFullScreen::CGUIWindowFullScreen(void)
     : CGUIWindow(WINDOW_FULLSCREEN_VIDEO, "VideoFullScreen.xml")
 {
 		m_loadOnDemand = false;
+		m_bShowCurrentTime = false;
 }
 
 CGUIWindowFullScreen::~CGUIWindowFullScreen(void)
@@ -46,20 +53,17 @@ void CGUIWindowFullScreen::UnloadDialog(unsigned int windowID)
 
 void CGUIWindowFullScreen::AllocResources(bool forceLoad)
 {
-	CGUIWindow::AllocResources();
-
-	PreloadDialog(WINDOW_DIALOG_SEEK_BAR);
+	CGUIWindow::AllocResources(forceLoad);
+	DynamicResourceAlloc(false);
 }
 
 void CGUIWindowFullScreen::FreeResources(bool forceUnload)
 {
+	g_settings.Save();
 	DynamicResourceAlloc(true);
 
-	UnloadDialog(WINDOW_DIALOG_SEEK_BAR);
-
-	CGUIWindow::FreeResources();
+	CGUIWindow::FreeResources(forceUnload);
 }
-
 
 bool CGUIWindowFullScreen::OnAction(const CAction &action)
 {
@@ -80,31 +84,33 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 		
 		case ACTION_STEP_BACK:
 		{	
-			Seek(false, false);
+			g_application.m_pPlayer->Seek(false, false);
 			return true;
 		}
 		break;
 
 		case ACTION_STEP_FORWARD:
 		{
-			Seek(true, false);
+			g_application.m_pPlayer->Seek(true, false);
 			return true;
 		}
 		break;
 
 		case ACTION_BIG_STEP_BACK:
 		{
-			Seek(false, true);
+			g_application.m_pPlayer->Seek(false, true);
 			return true;
 		}
 		break;
 
 		case ACTION_BIG_STEP_FORWARD:
 		{
-			Seek(true, true);
+			g_application.m_pPlayer->Seek(true, true);
 			return true;
 		}
 		break;
+		default:
+			break;
 	}
 
 	return CGUIWindow::OnAction(action);
@@ -125,13 +131,10 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 				return true;
 			}
 
+			m_bLastRender = false;
 			g_infoManager.SetShowCodec(false);
-
-			CGUIWindow::OnMessage(message);
-
-			g_graphicsContext.TLock();
-			g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET, 0xff000000, 1.0f, 0L );
-			g_graphicsContext.TUnlock();
+			m_bShowCurrentTime = false;
+			g_infoManager.SetDisplayAfterSeek(0); // Make sure display after seek is off
 
 			// switch resolution
 			CSingleLock lock (g_graphicsContext);
@@ -139,6 +142,12 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 //			RESOLUTION res = g_renderManager.GetResolution();
 //			g_graphicsContext.SetVideoResolution(res, false, false);
 			lock.Leave();
+
+			// Make sure renderer is uptospeed
+			g_renderManager.Update(false);
+
+			// Now call the base class to load our windows
+			CGUIWindow::OnMessage(message);
 
 			return true;
 		}
@@ -169,11 +178,28 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 	return CGUIWindow::OnMessage(message);
 }
 
+void CGUIWindowFullScreen::OnWindowLoaded()
+{
+	CGUIWindow::OnWindowLoaded();
+
+	// Override the clear colour - We must never clear fullscreen
+	m_clearBackground = 0;
+
+	CGUILabelControl* pLabel = (CGUILabelControl*)GetControl(LABEL_CURRENT_TIME);
+	if(pLabel && pLabel->GetVisibleCondition() == 0)
+	{
+		pLabel->SetVisibleCondition(PLAYER_DISPLAY_AFTER_SEEK, false);
+		pLabel->SetVisible(true);
+		pLabel->SetLabel("$INFO(VIDEOPLAYER.TIME) / $INFO(VIDEOPLAYER.DURATION)");
+	}
+}
+
 // Dummy override of Render() - RenderFullScreen() is where the action takes place
 // this is called via DVDPlayer when the video window is flipped (indicating a frame
 // change) so that we get smooth video playback
 void CGUIWindowFullScreen::Render()
 {
+	g_renderManager.RenderUpdate(true);
 	return;
 }
 
@@ -181,23 +207,44 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
 {
 	CSingleLock lock (g_graphicsContext);
 
-	if (g_application.m_pPlayer)
+	if(g_application.m_pPlayer)
 	{
-		if (g_application.m_pPlayer->IsPaused() ) return true;
-//		if (g_application.m_pPlayer->IsCaching() ) return true; //TODO
-		if (!g_application.m_pPlayer->IsPlaying() ) return true;
+		if (g_application.GetPlaySpeed() != 1) return true;
+		if(g_application.m_pPlayer->IsPaused()) return true;
+//		if(g_application.m_pPlayer->IsCaching()) return true; //TODO
+		if(!g_application.m_pPlayer->IsPlaying()) return true;
 	}
 
-	if (g_infoManager.GetBool(PLAYER_SHOWCODEC)) return true;
+	if(g_infoManager.GetBool(PLAYER_SHOWCODEC)) return true;
+	if(m_bShowCurrentTime) return true;
+	if (IsAnimating(ANIM_TYPE_HIDDEN)) return true; // for the above info conditions
+	if (g_infoManager.GetDisplayAfterSeek()) return true;
+	if (g_infoManager.GetBool(PLAYER_SEEKBAR, GetID())) return true;
+
+	if(m_bLastRender)
+	{
+		m_bLastRender = false;
+	}
 
 	return false;
 }
 
 void CGUIWindowFullScreen::RenderFullScreen()
 {
+	if (g_application.GetPlaySpeed() != 1)
+		g_infoManager.SetDisplayAfterSeek();
+	if (m_bShowCurrentTime)
+		g_infoManager.SetDisplayAfterSeek();
+
+	m_bLastRender = true;
 	if(!g_application.m_pPlayer) return;
 
-	g_infoManager.UpdateFPS();
+	if(g_application.m_pPlayer->IsCaching()) 
+	{
+		g_infoManager.SetDisplayAfterSeek(0); // Make sure these stuff aren't visible now
+	}
+
+	//------------------------
 
 	if (g_infoManager.GetBool(PLAYER_SHOWCODEC))
 	{
@@ -232,20 +279,18 @@ void CGUIWindowFullScreen::RenderFullScreen()
 		}
 	}
 
-	int iSpeed = g_application.GetPlaySpeed();
-
-	if (g_application.m_pPlayer->IsPaused() || iSpeed != 1)
-	{
-		SET_CONTROL_HIDDEN(LABEL_ROW1);
-		SET_CONTROL_HIDDEN(LABEL_ROW2);
-		SET_CONTROL_HIDDEN(LABEL_ROW3);
-		SET_CONTROL_HIDDEN(BLUE_BAR);
-	}
-	else if (g_infoManager.GetBool(PLAYER_SHOWCODEC))
+	if (g_infoManager.GetBool(PLAYER_SHOWCODEC)/* || m_bShowViewModeInfo*/) // TODO
 	{
 		SET_CONTROL_VISIBLE(LABEL_ROW1);
 		SET_CONTROL_VISIBLE(LABEL_ROW2);
 		SET_CONTROL_VISIBLE(LABEL_ROW3);
+		SET_CONTROL_VISIBLE(BLUE_BAR);
+	}
+	else if (/*m_timeCodeShow*/0) // TODO
+	{
+		SET_CONTROL_VISIBLE(LABEL_ROW1);
+		SET_CONTROL_HIDDEN(LABEL_ROW2);
+		SET_CONTROL_HIDDEN(LABEL_ROW3);
 		SET_CONTROL_VISIBLE(BLUE_BAR);
 	}
 	else
@@ -257,21 +302,4 @@ void CGUIWindowFullScreen::RenderFullScreen()
 	}
 
 	CGUIWindow::Render();
-
-	g_windowManager.RenderDialogs();
-}
-
-void CGUIWindowFullScreen::Seek(bool bPlus, bool bLargeStep)
-{
-	CGUIDialogSeekBar* pDialogSeekBar = (CGUIDialogSeekBar*)g_windowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR);
-
-	pDialogSeekBar->Show();
-	pDialogSeekBar->ResetTimer();
-
-	// Temporary solution
-
-	g_application.m_pPlayer->Seek(bPlus, bLargeStep);
-
-	// Make sure gui items are visible
-//	g_infoManager.SetDisplayAfterSeek(); //TODO
 }

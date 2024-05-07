@@ -10,6 +10,7 @@ CRenderManager g_renderManager;
 CRenderManager::CRenderManager()
 {
 	m_pRenderer = NULL;
+	m_bPauseDrawing = false;
 	m_bIsStarted = false;
 	m_dwPresentTime = 0;
 }
@@ -20,6 +21,19 @@ CRenderManager::~CRenderManager()
 	m_bIsStarted = false;	  
 }
 
+void CRenderManager::Update(bool bPauseDrawing)
+{
+	DWORD locks = ExitCriticalSection(g_graphicsContext);
+	CExclusiveLock lock(m_sharedSection);
+	RestoreCriticalSection(g_graphicsContext, locks);
+
+	m_bPauseDrawing = bPauseDrawing;
+	if (m_pRenderer)
+	{
+		m_pRenderer->Update(bPauseDrawing);
+	}
+}
+
 void CRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
 	if (m_pRenderer)
@@ -28,9 +42,12 @@ void CRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
 bool CRenderManager::PreInit()
 {
-	// FIXME Lock and release!
+	DWORD locks = ExitCriticalSection(g_graphicsContext);
+	CExclusiveLock lock(m_sharedSection);
+	RestoreCriticalSection(g_graphicsContext, locks);
 
 	m_bIsStarted = false;
+	m_bPauseDrawing = false;
 
 	if (!m_pRenderer)
 	{ 

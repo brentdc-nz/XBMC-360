@@ -61,6 +61,8 @@ int CXBApplicationEX::Run()
 		Render();
 	}
 
+//	Destroy(); // Called from CApplication derived class
+
 	CLog::Log(LOGNOTICE, "Application stopped..." );
 
 	return 0;
