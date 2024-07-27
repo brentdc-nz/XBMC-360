@@ -13,14 +13,14 @@ static CSettingInt* g_guiSkinzoom = NULL;
 
 CGraphicContext::CGraphicContext(void)
 {
-	m_iScreenWidth = 852;
-	m_iScreenHeight = 480;
-	m_pd3dDevice = NULL;
-	m_pd3dParams = NULL;
-	m_strMediaDir = "";
-	m_Resolution = INVALID;
-	m_guiScaleX = m_guiScaleY = 1.0f;
-	m_windowResolution = INVALID;
+    m_iScreenWidth = 852;
+    m_iScreenHeight = 480;
+    m_pd3dDevice = NULL;
+    m_pd3dParams = NULL;
+    m_strMediaDir = "";
+    m_Resolution = INVALID;
+    m_guiScaleX = m_guiScaleY = 1.0f;
+    m_windowResolution = INVALID;
 }
 
 CGraphicContext::~CGraphicContext(void)
@@ -35,17 +35,18 @@ CGraphicContext::~CGraphicContext(void)
 
 void CGraphicContext::TLock()
 {
-	EnterCriticalSection(*this);
+    EnterCriticalSection(*this);
 
-	if(m_pd3dDevice)
-		m_pd3dDevice->AcquireThreadOwnership();
+    if(m_pd3dDevice)
+        m_pd3dDevice->AcquireThreadOwnership();
 }
 
 void CGraphicContext::TUnlock()
 {
-	m_pd3dDevice->ReleaseThreadOwnership();
+	if(m_pd3dDevice)
+		m_pd3dDevice->ReleaseThreadOwnership();
 
-	LeaveCriticalSection(*this);
+    LeaveCriticalSection(*this);
 }
 
 void CGraphicContext::SetD3DDevice(LPDIRECT3DDEVICE9 p3dDevice)
@@ -142,8 +143,6 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
 		{
 			g_graphicsContext.TLock();
 			m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0x00010001, 1.0f, 0L );
-			g_graphicsContext.TUnlock();
-			g_graphicsContext.TLock();
 			m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
 			g_graphicsContext.TUnlock();
 		}

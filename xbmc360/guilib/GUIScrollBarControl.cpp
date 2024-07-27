@@ -55,12 +55,12 @@ void CGUIScrollBar::Render()
 	if (m_bHasFocus)
 	{
 		m_guiBarFocus.Render();
-		m_guiNibFocus.Render();
+//		m_guiNibFocus.Render(); // FIXME: We have a nib already, why needed?
 	}
 	else
 	{
 		m_guiBarNoFocus.Render();
-		m_guiNibNoFocus.Render();
+//		m_guiNibNoFocus.Render(); // FIXME
 	}
 
 	CGUIControl::Render();

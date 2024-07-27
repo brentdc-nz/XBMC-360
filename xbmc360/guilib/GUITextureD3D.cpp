@@ -133,66 +133,44 @@ void CGUITextureD3D::Allocate()
 
 void CGUITextureD3D::Free()
 {
+	g_graphicsContext.TLock();
+
 	if(m_pVB != NULL)
 	{
-		g_graphicsContext.TLock();
 		m_pd3dDevice->SetStreamSource( NULL, NULL, NULL, NULL );
-		g_graphicsContext.TUnlock();
-
-		g_graphicsContext.TLock();
 		m_pVB->Release();
-		g_graphicsContext.TUnlock();
-		g_graphicsContext.TLock();
 		m_pVB = NULL;
-		g_graphicsContext.TUnlock();
 	}
 
 	if(m_pVertexShader != NULL)
 	{
-		g_graphicsContext.TLock();
 		m_pd3dDevice->SetVertexShader( NULL );
-		g_graphicsContext.TUnlock();
-
-		g_graphicsContext.TLock();
 		m_pVertexShader->Release();
-		g_graphicsContext.TUnlock();
-		g_graphicsContext.TLock();
 		m_pVertexShader = NULL;
-		g_graphicsContext.TUnlock();
 	}
 
 	if(m_pVertexDecl != NULL)
 	{
-		g_graphicsContext.TLock();
 		m_pd3dDevice->SetVertexDeclaration( NULL );
-		g_graphicsContext.TUnlock();
-
-		g_graphicsContext.TLock();
 		m_pVertexDecl->Release();
-		g_graphicsContext.TUnlock();
-		g_graphicsContext.TLock();
 		m_pVertexDecl = NULL;
-		g_graphicsContext.TUnlock();
 	}
 
 	if(m_pPixelShader != NULL)
 	{
-		g_graphicsContext.TLock();
 		m_pd3dDevice->SetPixelShader( NULL );
-		g_graphicsContext.TUnlock();
-
-		g_graphicsContext.TLock();
 		m_pPixelShader->Release();
-		g_graphicsContext.TUnlock();
-		g_graphicsContext.TLock();
 		m_pPixelShader = NULL;
-		g_graphicsContext.TUnlock();
 	}
+
+	g_graphicsContext.TUnlock();
 };
 
 void CGUITextureD3D::Begin()
 {
 	LPDIRECT3DDEVICE9 p3DDevice = g_graphicsContext.Get3DDevice();
+
+	g_graphicsContext.TLock();
 
 	// Set state to render the image
 
@@ -204,13 +182,10 @@ void CGUITextureD3D::Begin()
 		p3DDevice->SetPalette( 1, m_diffuse.m_palette);
 #endif
 
-	g_graphicsContext.TLock();
 	p3DDevice->SetTexture( 0, m_texture.m_textures[m_currentFrame] );
 
 	p3DDevice->SetSamplerState(1, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
 	p3DDevice->SetSamplerState(1, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-
-	g_graphicsContext.TUnlock();
 
 #if 0 // OG Xbox DX8
 	p3DDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR );
@@ -226,13 +201,10 @@ void CGUITextureD3D::Begin()
 #endif	
 	if (m_diffuse.size())
 	{
-		g_graphicsContext.TLock();
 		p3DDevice->SetTexture( 1, m_diffuse.m_textures[0] );
 
 		p3DDevice->SetSamplerState(1, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
 		p3DDevice->SetSamplerState(1, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-
-		g_graphicsContext.TUnlock();
 
 #if 0 // OG Xbox DX8
 		p3DDevice->SetTextureStageState( 1, D3DTSS_MAGFILTER, D3DTEXF_LINEAR );
@@ -248,37 +220,22 @@ void CGUITextureD3D::Begin()
 #endif
 	}
 
-	g_graphicsContext.TLock();
 	p3DDevice->SetRenderState( D3DRS_ALPHATESTENABLE, TRUE );
-	g_graphicsContext.TUnlock();
-	g_graphicsContext.TLock();
 	p3DDevice->SetRenderState( D3DRS_ALPHAREF, 0 );
-	g_graphicsContext.TUnlock();
-	g_graphicsContext.TLock();
 	p3DDevice->SetRenderState( D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL );
-	g_graphicsContext.TUnlock();
-	g_graphicsContext.TLock();
 	p3DDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
-	g_graphicsContext.TUnlock();
+
 #if 0 // OG Xbox DX8
 	p3DDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
 	p3DDevice->SetRenderState( D3DRS_FOGTABLEMODE, D3DFOG_NONE );
 #endif
-	g_graphicsContext.TLock();
+
 	p3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
-	g_graphicsContext.TUnlock();
-	g_graphicsContext.TLock();
 	p3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
-	g_graphicsContext.TUnlock();
-	g_graphicsContext.TLock();
 	p3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
-	g_graphicsContext.TUnlock();
-	g_graphicsContext.TLock();
 	p3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
-	g_graphicsContext.TUnlock();
-	g_graphicsContext.TLock();
 	p3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
-	g_graphicsContext.TUnlock();
+
 #if 0 // OG Xbox DX8
 	p3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE);
 #endif
@@ -288,11 +245,15 @@ void CGUITextureD3D::Begin()
 #if 0 // OG Xbox DX8
 	p3DDevice->SetVertexShader( D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX2 );
 #endif
+
+	g_graphicsContext.TUnlock();
 }
 
 void CGUITextureD3D::End()
 {
 	LPDIRECT3DDEVICE9 p3DDevice = g_graphicsContext.Get3DDevice();
+
+	g_graphicsContext.TLock();
 
 #if 1//def HAS_XBOX_D3D
 	if (g_graphicsContext.RectIsAngled(m_vertex.x1, m_vertex.y1, m_vertex.x2, m_vertex.y2))
@@ -328,16 +289,12 @@ void CGUITextureD3D::End()
 #endif // HAS_XBOX_D3D
 	
 	// Unset the texture and palette or the texture caching crashes because the runtime still has a reference
-	g_graphicsContext.TLock();
 	g_graphicsContext.Get3DDevice()->SetTexture( 0, NULL );
-	g_graphicsContext.TUnlock();
 
 	if (m_diffuse.size())
-	{	
-		g_graphicsContext.TLock();
 		g_graphicsContext.Get3DDevice()->SetTexture( 1, NULL );
-		g_graphicsContext.TUnlock();
-	}
+
+	g_graphicsContext.TUnlock();
 }
 
 void CGUITextureD3D::Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, color_t color, int orientation)
@@ -426,70 +383,43 @@ void CGUITextureD3D::Draw(float *x, float *y, float *z, const CRect &texture, co
 		{x[3], y[3],  z[3], 0, 1  },
     };
 
+	g_graphicsContext.TLock();
+
 	D3DCUSTOMVERTEX* pVertices;
-	g_graphicsContext.TLock();
+
 	m_pVB->Lock(0, 0, (void** )&pVertices, 0);
-	g_graphicsContext.TUnlock();
-	g_graphicsContext.TLock();
+
 	memcpy(pVertices, Vertices, 4 * sizeof(D3DCUSTOMVERTEX));
 	m_pVB->Unlock();
-	g_graphicsContext.TUnlock();
 
 	// Build the world-view-projection matrix and pass it into the vertex shader
-	g_graphicsContext.TLock();
 	m_pd3dDevice->SetVertexShaderConstantF(0, ( FLOAT* )&g_graphicsContext.GetFinalMatrix(), 4);
-	g_graphicsContext.TUnlock();
 
-	g_graphicsContext.TLock();
 	m_pd3dDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_ANISOTROPIC);
-	g_graphicsContext.TUnlock();
-	g_graphicsContext.TLock();
 	m_pd3dDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_ANISOTROPIC);
-	g_graphicsContext.TUnlock();
-	g_graphicsContext.TLock();
 	m_pd3dDevice->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
-	g_graphicsContext.TUnlock();
 
 #pragma warning(push)
 #pragma warning (disable:4244) // Not an issue here
 
 	float fInputAlpha[] = { (color >> 24 & 0xFF) / 255.0 };
-
-	g_graphicsContext.TLock();
 	m_pd3dDevice->SetPixelShaderConstantF(10, fInputAlpha, 4);
-	g_graphicsContext.TUnlock();
 
 #pragma warning(pop)
 
 	// We are passing the vertices down a "stream", so first we need
     // to specify the source of that stream, which is our vertex buffer. 
     // Then we need to let D3D know what vertex and pixel shaders to use.
-	g_graphicsContext.TLock();
     m_pd3dDevice->SetVertexDeclaration(m_pVertexDecl);
-	g_graphicsContext.TUnlock();
-	g_graphicsContext.TLock();
 	m_pd3dDevice->SetStreamSource(0, m_pVB, 0, sizeof(D3DCUSTOMVERTEX));
-	g_graphicsContext.TUnlock();
-	g_graphicsContext.TLock();
 	m_pd3dDevice->SetVertexShader(m_pVertexShader);
-	g_graphicsContext.TUnlock();
-	g_graphicsContext.TLock();
 	m_pd3dDevice->SetPixelShader(m_pPixelShader);
-	g_graphicsContext.TUnlock();
-
-	g_graphicsContext.TLock();
 	m_pd3dDevice->SetTexture(0, m_texture.m_textures[m_currentFrame]);
-	g_graphicsContext.TUnlock();
 
     // Draw the vertices in the vertex buffer
-	g_graphicsContext.TLock();
 	m_pd3dDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
-	g_graphicsContext.TUnlock();
-	g_graphicsContext.TLock();
 	m_pd3dDevice->SetTexture(0,  NULL);
-	g_graphicsContext.TUnlock();
-
-	g_graphicsContext.TLock();
 	m_pd3dDevice->SetStreamSource(NULL, NULL, NULL, NULL);
+
 	g_graphicsContext.TUnlock();
 }

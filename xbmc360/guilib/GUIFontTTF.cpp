@@ -380,8 +380,8 @@ void CGUIFontTTF::Begin()
 		return;
 	}
 
-	g_graphicsContext.TLock();
 	// Pass matrix into the vertex shader
+	g_graphicsContext.TLock();
 	m_pD3DDevice->SetVertexShaderConstantF(0, (FLOAT*)&g_graphicsContext.GetFinalMatrix(), 4);
 	g_graphicsContext.TUnlock();
 
@@ -389,30 +389,18 @@ void CGUIFontTTF::Begin()
 	{
 		// Just have to blit from our texture.
 		g_graphicsContext.TLock();
+
 		m_pD3DDevice->SetTexture( 0, m_texture );
-		g_graphicsContext.TUnlock();
 
-		g_graphicsContext.TLock();
 		m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
-		g_graphicsContext.TUnlock();
-		g_graphicsContext.TLock();
 		m_pD3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
-		g_graphicsContext.TUnlock();
-		g_graphicsContext.TLock();
 		m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
-		g_graphicsContext.TUnlock();
-		g_graphicsContext.TLock();
 		m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
-		g_graphicsContext.TUnlock();
-		g_graphicsContext.TLock();
 		m_pD3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
-		g_graphicsContext.TUnlock();
-		g_graphicsContext.TLock();
 		m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
-		g_graphicsContext.TUnlock();
 
-		g_graphicsContext.TLock();
 		m_pD3DDevice->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
+
 		g_graphicsContext.TUnlock();
 	}
 
@@ -528,47 +516,22 @@ void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, D
 	};
 
 	g_graphicsContext.TLock();
+
 	m_pD3DDevice->SetSamplerState( 0, D3DSAMP_MAGFILTER, D3DTEXF_ANISOTROPIC );
-	g_graphicsContext.TUnlock();
-
-	g_graphicsContext.TLock();
 	m_pD3DDevice->SetSamplerState( 0, D3DSAMP_MINFILTER, D3DTEXF_ANISOTROPIC );
-	g_graphicsContext.TUnlock();
-
-	g_graphicsContext.TLock();
 	m_pD3DDevice->SetSamplerState( 0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR );
-	g_graphicsContext.TUnlock();
 
-	g_graphicsContext.TLock();
 	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
-	g_graphicsContext.TUnlock();
-
-	g_graphicsContext.TLock();
 	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
-	g_graphicsContext.TUnlock();
-
-	g_graphicsContext.TLock();
 	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA );
-	g_graphicsContext.TUnlock();
-
-	g_graphicsContext.TLock();
 	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
-	g_graphicsContext.TUnlock();
 
-	g_graphicsContext.TLock();
 	m_pD3DDevice->SetVertexDeclaration( m_pVertexDecl );
-	g_graphicsContext.TUnlock();
-
-	g_graphicsContext.TLock();
 	m_pD3DDevice->SetVertexShader( m_pVertexShader );
-	g_graphicsContext.TUnlock();
-
-	g_graphicsContext.TLock();
 	m_pD3DDevice->SetPixelShader( m_pPixelShader );
-	g_graphicsContext.TUnlock();
 
-	g_graphicsContext.TLock();
 	m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, Vertices, sizeof(CUSTOMVERTEX));
+
 	g_graphicsContext.TUnlock();
 }
 
@@ -762,19 +725,13 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character *ch)
 				m_texture->GetSurfaceLevel(0, &pSource);
 				
 				g_graphicsContext.TLock();
+
 				D3DXLoadSurfaceFromSurface( pTarget, NULL, NULL, pSource, NULL, NULL, D3DX_FILTER_NONE,	0);
-				g_graphicsContext.TUnlock();
-
-				g_graphicsContext.TLock();
+	
 				SAFE_RELEASE(pTarget);
-				g_graphicsContext.TUnlock();
-
-				g_graphicsContext.TLock();
 				SAFE_RELEASE(pSource);
-				g_graphicsContext.TUnlock();
-
-				g_graphicsContext.TLock();
 				SAFE_RELEASE(m_texture);
+
 				g_graphicsContext.TUnlock();
 			}
 			m_texture = newTexture;

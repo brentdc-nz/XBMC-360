@@ -195,25 +195,50 @@ void CNetwork::NetworkDown()
 
 void CNetwork::NetworkUp()
 {
-	CLog::Log(LOGDEBUG, "%s - Network service is up", __FUNCTION__);
+    CLog::Log(LOGDEBUG, "%s - Network service is up", __FUNCTION__);
   
-	// Get the current status // TODO
-/*	TXNetConfigStatus status;
-	XNetGetConfigStatus(&status);
+    XNADDR xnaddr;
+    IN_ADDR ipaddr, lipaddr;
+    memset(&xnaddr, 0, sizeof(XNADDR));
+    memset(&ipaddr, 0, sizeof(IN_ADDR));
+    memset(&lipaddr, 0, sizeof(IN_ADDR));
+    DWORD dwState;
+	
+    do
+    {
+        dwState = XNetGetTitleXnAddr(&xnaddr);
+    } while (dwState == XNET_GET_XNADDR_PENDING);
 
-	// Fill local network info
-	strcpy(m_networkinfo.ip, inet_ntoa(status.ip));
-	strcpy(m_networkinfo.subnet, inet_ntoa(status.subnet));
-	strcpy(m_networkinfo.gateway, inet_ntoa(status.gateway));
-	strcpy(m_networkinfo.dhcpserver, "");
-	strcpy(m_networkinfo.DNS1, inet_ntoa(status.dns1));
-	strcpy(m_networkinfo.DNS2, inet_ntoa(status.dns2));
+    strcpy(m_networkinfo.ip, "N/A");
 
-	m_networkinfo.DHCP = !(status.dhcp == 0);
-*/
-	m_bNetworkUp = true;
+    ipaddr = xnaddr.ina;
+
+    if(memcmp(&ipaddr, &lipaddr, sizeof(IN_ADDR)) != 0)
+    {
+        char szip[16];
+        XNetInAddrToString(xnaddr.ina, szip, 16);
+        strcpy(m_networkinfo.ip, szip);
+    }
+
+    // TODO - Other network info!
+
+    // Get the current status 
+    /*	TXNetConfigStatus status;
+    XNetGetConfigStatus(&status);
+
+    // Fill local network info
+    strcpy(m_networkinfo.ip, inet_ntoa(status.ip));
+    strcpy(m_networkinfo.subnet, inet_ntoa(status.subnet));
+    strcpy(m_networkinfo.gateway, inet_ntoa(status.gateway));
+    strcpy(m_networkinfo.dhcpserver, "");
+    strcpy(m_networkinfo.DNS1, inet_ntoa(status.dns1));
+    strcpy(m_networkinfo.DNS2, inet_ntoa(status.dns2));
+
+    m_networkinfo.DHCP = !(status.dhcp == 0);
+    */
+    m_bNetworkUp = true;
   
-	g_application.getApplicationMessenger().NetworkMessage(SERVICES_UP, 0);
+    g_application.getApplicationMessenger().NetworkMessage(SERVICES_UP, 0);
 }
 
 void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)

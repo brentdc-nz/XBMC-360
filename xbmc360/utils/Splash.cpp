@@ -109,11 +109,7 @@ void CSplash::Process()
 	// Restore original gamma ramp
 	g_graphicsContext.TLock();
 	g_graphicsContext.Get3DDevice()->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
-	g_graphicsContext.TUnlock();
-	g_graphicsContext.TLock();
 	g_graphicsContext.Get3DDevice()->SetGammaRamp(NULL, NULL, &oldRamp);
-	g_graphicsContext.TUnlock();
-	g_graphicsContext.TLock();
 	g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
 	g_graphicsContext.TUnlock();
 }

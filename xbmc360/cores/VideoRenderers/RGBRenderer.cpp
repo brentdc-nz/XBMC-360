@@ -154,12 +154,10 @@ bool CRGBRenderer::PreInit()
                                     &pVertexShaderCode,
                                     &pVertexErrorMsg,
                                     NULL);
-
 	g_graphicsContext.TLock();
+
 	// Create vertex shader
-	m_pd3dDevice->CreateVertexShader((DWORD*)pVertexShaderCode->GetBufferPointer(),
-                                      &m_pVertexShader);
-	g_graphicsContext.TUnlock();
+	m_pd3dDevice->CreateVertexShader((DWORD*)pVertexShaderCode->GetBufferPointer(), &m_pVertexShader);
 
 	// Compile pixel shader
 	ID3DXBuffer* pPixelShaderCode;
@@ -176,11 +174,8 @@ bool CRGBRenderer::PreInit()
                             &pPixelErrorMsg,
                             NULL);
 
-	g_graphicsContext.TLock();
     // Create pixel shader.
-    m_pd3dDevice->CreatePixelShader((DWORD*)pPixelShaderCode->GetBufferPointer(),
-                                     &m_pPixelShader);
-	g_graphicsContext.TUnlock();
+    m_pd3dDevice->CreatePixelShader((DWORD*)pPixelShaderCode->GetBufferPointer(), &m_pPixelShader);
 
     // Define the vertex elements and
     // create a vertex declaration from the element descriptions
@@ -191,20 +186,16 @@ bool CRGBRenderer::PreInit()
         D3DDECL_END()
     };
 
-	g_graphicsContext.TLock();
     m_pd3dDevice->CreateVertexDeclaration( VertexElements, &m_pVertexDecl );
-	g_graphicsContext.TUnlock();
 
     // Create the vertex buffer. Here we are allocating enough memory
     // (from the default pool) to hold all our 3 custom vertices. 
-	g_graphicsContext.TLock();
 	m_pd3dDevice->CreateVertexBuffer(4 * sizeof(COLORVERTEX),
                                                   D3DUSAGE_WRITEONLY,
                                                   NULL,
                                                   D3DPOOL_MANAGED,
                                                   &m_pVB,
                                                   NULL);
-	
 	g_graphicsContext.TUnlock();
 
 	if(pVertexShaderCode)
@@ -329,13 +320,11 @@ bool CRGBRenderer::GetImage(YV12Image* image)
 	D3DLOCKED_RECT lockRectV;
 
 	g_graphicsContext.TLock();
+
 	m_pFrameY->LockRect(0, &lockRectY, NULL, 0);
-	g_graphicsContext.TUnlock();
-	g_graphicsContext.TLock();
 	m_pFrameU->LockRect(0, &lockRectU, NULL, 0);
-	g_graphicsContext.TUnlock();
-	g_graphicsContext.TLock();
 	m_pFrameV->LockRect(0, &lockRectV, NULL, 0);
+
 	g_graphicsContext.TUnlock();
 
 	image->plane[0] = (uint8_t*)lockRectY.pBits;
@@ -365,83 +354,43 @@ void CRGBRenderer::Render()
 	}
 
 	g_graphicsContext.TLock();
+
 	// Pass matrix into the vertex shader
 	m_pd3dDevice->SetVertexShaderConstantF(0, (FLOAT*)&g_graphicsContext.GetFinalMatrix(), 4);
-	g_graphicsContext.TUnlock();
 
 	// We are passing the vertices down a "stream", so first we need
 	// to specify the source of that stream, which is our vertex buffer
 	// Then we need to let D3D know what vertex and pixel shaders to use
-	g_graphicsContext.TLock();
+
 	m_pd3dDevice->SetVertexDeclaration(m_pVertexDecl);
-	g_graphicsContext.TUnlock();
-	g_graphicsContext.TLock();
+
 	m_pd3dDevice->SetStreamSource(0, m_pVB, 0, sizeof(COLORVERTEX));
-	g_graphicsContext.TUnlock();
-	g_graphicsContext.TLock();
 	m_pd3dDevice->SetVertexShader(m_pVertexShader);
-	g_graphicsContext.TUnlock();
-	g_graphicsContext.TLock();
 	m_pd3dDevice->SetPixelShader(m_pPixelShader);
-	g_graphicsContext.TUnlock();
 
-	g_graphicsContext.TLock();
 	m_pd3dDevice->SetTexture(0, m_pFrameY);
-	g_graphicsContext.TUnlock();
-	g_graphicsContext.TLock();
 	m_pd3dDevice->SetTexture(1, m_pFrameU);
-	g_graphicsContext.TUnlock();
-	g_graphicsContext.TLock();
 	m_pd3dDevice->SetTexture(2, m_pFrameV);
-	g_graphicsContext.TUnlock();
 
-	g_graphicsContext.TLock();
 	m_pd3dDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-	g_graphicsContext.TUnlock();
-	g_graphicsContext.TLock();
 	m_pd3dDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-	g_graphicsContext.TUnlock();
-	g_graphicsContext.TLock();
 	m_pd3dDevice->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
-	g_graphicsContext.TUnlock();
-
-	g_graphicsContext.TLock();
 	m_pd3dDevice->SetSamplerState(1, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-	g_graphicsContext.TUnlock();
-	g_graphicsContext.TLock();
 	m_pd3dDevice->SetSamplerState(1, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-	g_graphicsContext.TUnlock();
-	g_graphicsContext.TLock();
 	m_pd3dDevice->SetSamplerState(1, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
-	g_graphicsContext.TUnlock();
-
-	g_graphicsContext.TLock();
 	m_pd3dDevice->SetSamplerState(2, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-	g_graphicsContext.TUnlock();
-	g_graphicsContext.TLock();
 	m_pd3dDevice->SetSamplerState(2, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-	g_graphicsContext.TUnlock();
-	g_graphicsContext.TLock();
 	m_pd3dDevice->SetSamplerState(2, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
-	g_graphicsContext.TUnlock();
 
 	// Draw the vertices in the vertex buffer
-	g_graphicsContext.TLock();
 	m_pd3dDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
-	g_graphicsContext.TUnlock();
-	
-	g_graphicsContext.TLock();
-	m_pd3dDevice->SetTexture(0, NULL);
-	g_graphicsContext.TUnlock();
-	g_graphicsContext.TLock();
-	m_pd3dDevice->SetTexture(1, NULL);
-	g_graphicsContext.TUnlock();
-	g_graphicsContext.TLock();
-	m_pd3dDevice->SetTexture(2, NULL);
-	g_graphicsContext.TUnlock();
 
-	g_graphicsContext.TLock();
+	m_pd3dDevice->SetTexture(0, NULL);
+	m_pd3dDevice->SetTexture(1, NULL);
+	m_pd3dDevice->SetTexture(2, NULL);
+
 	m_pd3dDevice->SetStreamSource(NULL, NULL, NULL, NULL);
+
 	g_graphicsContext.TUnlock();
 }
 
