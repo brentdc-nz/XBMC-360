@@ -283,6 +283,7 @@
     <ClCompile Include="..\..\libavformat\crcenc.c" />
     <ClCompile Include="..\..\libavformat\cutils.c" />
     <ClCompile Include="..\..\libavformat\daud.c" />
+    <ClCompile Include="..\..\libavformat\xb_smb_file.c" />
     <ClCompile Include="..\external\DllEntry.c" />
     <ClCompile Include="..\..\libavformat\dsicin.c" />
     <ClCompile Include="..\..\libavformat\dtsdec.c" />

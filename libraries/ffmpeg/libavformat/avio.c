@@ -155,11 +155,14 @@ int ffurl_connect(URLContext* uc)
     if (err)
         return err;
     uc->is_connected = 1;
-    //We must be careful here as ffurl_seek() could be slow, for example for http
-    if(   (uc->flags & (AVIO_WRONLY | AVIO_RDWR))
-       || !strcmp(uc->prot->name, "file"))
-        if(!uc->is_streamed && ffurl_seek(uc, 0, SEEK_SET) < 0)
-            uc->is_streamed= 1;
+
+    // We must be careful here as ffurl_seek() could be slow, for example for http
+    if ((uc->flags & (AVIO_WRONLY | AVIO_RDWR)) ||
+        !strcmp(uc->prot->name, "file") ||
+        !strcmp(uc->prot->name, "smb"))
+            if(!uc->is_streamed && ffurl_seek(uc, 0, SEEK_SET) < 0)
+                uc->is_streamed= 1;
+
     return 0;
 }
 
@@ -248,11 +251,8 @@ int ffurl_alloc(URLContext **puc, const char *filename, int flags)
     URLProtocol *up;
     char proto_str[128], proto_nested[128], *ptr;
     size_t proto_len = strspn(filename, URL_SCHEME_CHARS);
-#ifdef _XBOX
-    if (1)
-#else
+
 	if (filename[proto_len] != ':' || is_dos_path(filename))
-#endif
         strcpy(proto_str, "file");
     else
         av_strlcpy(proto_str, filename, FFMIN(proto_len+1, sizeof(proto_str)));

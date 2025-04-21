@@ -435,6 +435,6 @@ void av_register_all(void)
     REGISTER_MUXDEMUX (YUV4MPEGPIPE, yuv4mpegpipe);
 */
 	REGISTER_PROTOCOL (FILE, file);
+	REGISTER_PROTOCOL (SMBFILE, smbfile); // Xbox SMB Files	
 #endif
-
 }

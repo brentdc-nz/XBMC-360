@@ -594,6 +594,9 @@
     <ClCompile Include="..\..\libavformat\yuv4mpeg.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\libavformat\xb_smb_file.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="avformat-52.def">
