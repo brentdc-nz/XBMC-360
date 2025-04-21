@@ -11,7 +11,7 @@ This is early stages and still very much a work in progress.
 Usable but many features still need reimplementation or improvements.
 
 ### Compiled alpha build (last updated 21-04-25):
-https://drive.google.com/file/d/1POr8zs6Kfgz5ipBe0cL_IDjYkAHp5J6C/view
+https://drive.google.com/file/d/1LtW-hOpVpaqf9GdQeiGnDqKy1KLlh1vw/view
 
 ### Libraries
 - FFmpeg
@@ -19,8 +19,8 @@ https://drive.google.com/file/d/1POr8zs6Kfgz5ipBe0cL_IDjYkAHp5J6C/view
 - FreeType
 
 ### Services
-- FTP Server.
-- NTP Client.
+- FTP Server
+- NTP Client
 
 ### Notes:
 Special thanks to XBMC4XBOX and Kodi.

@@ -12,6 +12,10 @@
       <dpadright>Right</dpadright>
       <dpadup>Up</dpadup>
       <dpaddown>Down</dpaddown>
+      <leftanalogtrigger>ScrollUp</leftanalogtrigger>
+      <rightanalogtrigger>ScrollDown</rightanalogtrigger>
+      <rightthumbstickleft>AnalogSeekBack</rightthumbstickleft>
+      <rightthumbstickright>AnalogSeekForward</rightthumbstickright>	  
       <rightthumbstickup>VolumeUp</rightthumbstickup>
       <rightthumbstickdown>VolumeDown</rightthumbstickdown> 
     </gamepad>
