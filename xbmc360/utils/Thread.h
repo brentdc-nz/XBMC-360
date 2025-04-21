@@ -44,6 +44,7 @@ public:
 	// Returns the relative cpu usage of this thread since last call
 	float GetRelativeUsage();
 	bool IsCurrentThread() const;
+	int GetMinPriority(void);
 	static bool IsCurrentThread(const ThreadIdentifier tid);
 
 protected:

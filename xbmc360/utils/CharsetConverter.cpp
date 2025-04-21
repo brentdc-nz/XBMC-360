@@ -11,3 +11,8 @@ void CCharsetConverter::utf8ToW(const CStdStringA& utf8String, CStdStringW &wStr
 {
 	wString = utf8String; // TODO
 }
+
+void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSourceCharset, const CStdStringA& strSource, CStdStringA& strDest)
+{
+	strDest = strSource; // TODO
+}

@@ -6,6 +6,7 @@
 //#include "settings\AdvancedSettings.h"
 #include "guilib\GUIWindowManager.h"
 #include "utils\SingleLock.h"
+#include "utils\TimeUtils.h"
 
 CApplicationRenderer g_ApplicationRenderer;
 

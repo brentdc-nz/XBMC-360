@@ -171,6 +171,18 @@
     <Filter Include="Source Files\guilib\info">
       <UniqueIdentifier>{48de35a2-40c0-4dc4-b81b-31be9fc03932}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\libraries\httpclient">
+      <UniqueIdentifier>{a707bd3d-87c8-40b9-b85a-3bd56f2442b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\libraries\httpclient">
+      <UniqueIdentifier>{b897446a-0bd6-46d2-bbb3-1d349d8530db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\guilib\tinyjson">
+      <UniqueIdentifier>{f3969e67-6dd7-4c2d-931c-02a5fe1f85d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\guilib\tinyjson">
+      <UniqueIdentifier>{07e79c3e-b545-4f20-ae31-fe85efdbd1ca}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -596,9 +608,6 @@
     <ClInclude Include="guilib\dialogs\GUIDialogYesNo.h">
       <Filter>Header Files\guilib\dialogs</Filter>
     </ClInclude>
-    <ClInclude Include="guilib\GUIDialogBoxBase.h">
-      <Filter>Header Files\guilib</Filter>
-    </ClInclude>
     <ClInclude Include="guilib\dialogs\GUIDialogNetworkSetup.h">
       <Filter>Header Files\guilib\dialogs</Filter>
     </ClInclude>
@@ -890,9 +899,6 @@
     <ClInclude Include="xbox\XBTimeZone.h">
       <Filter>Header Files\xbox</Filter>
     </ClInclude>
-    <ClInclude Include="guilib\SettingsControls.h">
-      <Filter>Header Files\guilib</Filter>
-    </ClInclude>
     <ClInclude Include="guilib\GUIRadioButtonControl.h">
       <Filter>Header Files\guilib</Filter>
     </ClInclude>
@@ -907,6 +913,39 @@
     </ClInclude>
     <ClInclude Include="guilib\dialogs\GUIDialogBusy.h">
       <Filter>Header Files\guilib\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\windows\GUIWindowWeather.h">
+      <Filter>Header Files\guilib\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\Job.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\JobManager.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\InfoLoader.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\Weather.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\httpclient\httpclient.h">
+      <Filter>Header Files\libraries\httpclient</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\tinyjson\tinyjson.h">
+      <Filter>Header Files\guilib\tinyjson</Filter>
+    </ClInclude>
+    <ClInclude Include="LangInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\dialogs\GUIDialogSelect.h">
+      <Filter>Header Files\guilib\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\dialogs\GUIDialogBoxBase.h">
+      <Filter>Header Files\guilib\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="Temperature.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1378,9 +1417,6 @@
     <ClCompile Include="guilib\dialogs\GUIDialogYesNo.cpp">
       <Filter>Source Files\guilib\dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="guilib\GUIDialogBoxBase.cpp">
-      <Filter>Source Files\guilib</Filter>
-    </ClCompile>
     <ClCompile Include="guilib\dialogs\GUIDialogNetworkSetup.cpp">
       <Filter>Source Files\guilib\dialogs</Filter>
     </ClCompile>
@@ -1627,9 +1663,6 @@
     <ClCompile Include="xbox\XBTimeZone.cpp">
       <Filter>Source Files\xbox</Filter>
     </ClCompile>
-    <ClCompile Include="guilib\SettingsControls.cpp">
-      <Filter>Source Files\guilib</Filter>
-    </ClCompile>
     <ClCompile Include="guilib\GUIRadioButtonControl.cpp">
       <Filter>Source Files\guilib</Filter>
     </ClCompile>
@@ -1647,6 +1680,36 @@
     </ClCompile>
     <ClCompile Include="guilib\dialogs\GUIDialogBusy.cpp">
       <Filter>Source Files\guilib\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\windows\GUIWindowWeather.cpp">
+      <Filter>Source Files\guilib\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\JobManager.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\InfoLoader.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\Weather.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\httpclient\httpclient.cpp">
+      <Filter>Source Files\libraries\httpclient</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\tinyjson\tinyjson.cpp">
+      <Filter>Source Files\guilib\tinyjson</Filter>
+    </ClCompile>
+    <ClCompile Include="LangInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\dialogs\GUIDialogSelect.cpp">
+      <Filter>Source Files\guilib\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\dialogs\GUIDialogBoxBase.cpp">
+      <Filter>Source Files\guilib\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="Temperature.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

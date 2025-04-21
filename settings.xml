@@ -1,19 +1,33 @@
 <settings>
     <general>
-        <systemtotaluptime>857</systemtotaluptime>
+        <systemtotaluptime>0</systemtotaluptime>
     </general>
-    <LookAndFeel>
-        <Language>English</Language>
-        <Skin>Project Mayhem III</Skin>
-    </LookAndFeel>
-    <ScreenSaver>
-        <Mode>Dim</Mode>
-        <Time>13</Time>
-    </ScreenSaver>
+    <audio>
+        <volumelevel>0</volumelevel>
+        <dynamicrangecompression>0</dynamicrangecompression>
+    </audio>
+    <locale>
+        <country>UK (24h)</country>
+        <language>english</language>
+        <timezone>0</timezone>
+    </locale>
     <lookandfeel>
+        <skin>Project Mayhem III</skin>
         <skinzoom>0</skinzoom>
     </lookandfeel>
+    <screensaver>
+        <mode>Plasma</mode>
+        <time>3</time>
+    </screensaver>
+    <videooutput>
+        <aspect>0</aspect>
+    </videooutput>
     <videoscreen>
         <resolution>10</resolution>
     </videoscreen>
+    <weather>
+        <location1>40.71:-74.01~New York, United States of America</location1>
+        <location2>51.52:-0.11~London, United Kingdom</location2>
+        <location3>35.69:139.69~Tokyo, Japan</location3>
+    </weather>
 </settings>

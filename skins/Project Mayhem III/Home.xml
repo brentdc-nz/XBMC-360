@@ -190,7 +190,82 @@
 				<font>font10</font>
 			</control>
 		</control>
-
+		<!-- weather Info -->
+		<control type="group">
+			<posx>365</posx>
+			<posy>360</posy>
+			<visible>Control.HasFocus(7) + Weather.IsFetched</visible>
+			<include>homestatsinfo</include>
+			<control type="image">
+				<description>weather gradient</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>400</width>
+				<height>100</height>
+				<texture>gradient.png</texture>
+			</control>
+			<control type="image">
+				<description>Weather image bg</description>
+				<posx>240</posx>
+				<posy>0</posy>
+				<width>90</width>
+				<height>100</height>
+				<texture>homeinfo-bg.png</texture>
+			</control>
+			<control type="image">
+				<description>Weather image</description>
+				<posx>250</posx>
+				<posy>10</posy>
+				<width>70</width>
+				<height>80</height>
+				<aspectratio>keep</aspectratio>
+				<info>Weather.Conditions</info>
+			</control>
+			<control type="image">
+				<description>Weather image overlay</description>
+				<posx>240</posx>
+				<posy>0</posy>
+				<width>90</width>
+				<height>100</height>
+				<texture>homeinfo-overlay.png</texture>
+			</control>
+			<control type="label">
+				<description>weather label</description>
+				<width>255</width>
+				<posx>230</posx>
+				<posy>2</posy>
+				<label>20088</label>
+				<align>right</align>
+				<font>special12</font>
+			</control>
+			<control type="label">
+				<description>location label</description>
+				<width>255</width>
+				<posx>230</posx>
+				<posy>27</posy>
+				<info>Weather.Location</info>
+				<align>right</align>
+				<font>special13</font>
+			</control>
+			<control type="label">
+				<description>conditions Label</description>
+				<width>255</width>
+				<posx>230</posx>
+				<posy>57</posy>
+				<label>$INFO[Weather.Conditions]</label>
+				<align>right</align>
+				<font>font10</font>
+			</control>
+			<control type="label">
+				<description>temp Label</description>
+				<width>255</width>
+				<posx>230</posx>
+				<posy>77</posy>
+				<label>$LOCALIZE[143] $INFO[Weather.Temperature]</label>
+				<align>right</align>
+				<font>font10</font>
+			</control>
+		</control>
 		<!-- main buttons -->
 		<control type="group" id="9001">
 
@@ -430,7 +505,6 @@
 		<control type="group">
 			<posx>510</posx>
 			<posy>525</posy>
-
 	
 			<control type="image">
 				<description>submenu button</description>

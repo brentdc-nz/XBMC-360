@@ -120,6 +120,7 @@ void CBackgroundInfoLoader::Load(CFileItemList& items)
 		nThreads = 5;////g_advancedSettings.m_bgInfoLoaderMaxThreads; // TODO
 
 	m_nActiveThreads = nThreads;
+
 	for (int i=0; i < nThreads; i++)
 	{
 		CThread *pThread = new CThread(this); 

@@ -1,5 +1,5 @@
 #include "GUIDialogBoxBase.h"
-#include "LocalizeStrings.h"
+#include "guilib\LocalizeStrings.h"
 
 CGUIDialogBoxBase::CGUIDialogBoxBase(int id, const CStdString &xmlFile)
 	: CGUIDialog(id, xmlFile)
@@ -13,7 +13,7 @@ CGUIDialogBoxBase::~CGUIDialogBoxBase(void)
 
 bool CGUIDialogBoxBase::OnMessage(CGUIMessage& message)
 {
-	switch ( message.GetMessage() )
+	switch (message.GetMessage())
 	{
 		case GUI_MSG_WINDOW_INIT:
 		{

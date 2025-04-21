@@ -8,6 +8,7 @@ class CCharsetConverter // TODO - Empty class
 public:
 	void wToUTF8(const CStdStringW& strSource, CStdStringA &strDest);
 	void utf8ToW(const CStdStringA& utf8String, CStdStringW &wString, bool bVisualBiDiFlip = true, bool forceLTRReadingOrder = false, bool* bWasFlipped = NULL);
+	void stringCharsetToUtf8(const CStdStringA& strSourceCharset, const CStdStringA& strSource, CStdStringA& strDest);
 };
 
 extern CCharsetConverter g_charsetConverter;

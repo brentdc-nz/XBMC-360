@@ -1,7 +1,7 @@
 #ifndef GUILIB_CGUIDIALOGYESNO_H
 #define GUILIB_CGUIDIALOGYESNO_H
 
-#include "..\GUIDialogBoxBase.h"
+#include "GUIDialogBoxBase.h"
 
 class CGUIDialogYesNo : public CGUIDialogBoxBase
 {

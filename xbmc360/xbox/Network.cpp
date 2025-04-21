@@ -1,6 +1,7 @@
 #include "Network.h"
 #include "utils\Log.h"
 #include "Application.h"
+#include "utils/Weather.h"
 
 // Time to wait before we give up on network init
 #define WAIT_TIME 10000
@@ -251,6 +252,7 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
 
 			g_application.StartTimeServer();
 			g_application.StartFtpServer();
+			g_weatherManager.Refresh();
 			// TODO: Add the other services smb, etc
 		}
 		break;

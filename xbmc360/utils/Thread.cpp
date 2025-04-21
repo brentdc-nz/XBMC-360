@@ -240,6 +240,11 @@ bool CThread::IsCurrentThread() const
 	return IsCurrentThread(ThreadId());
 }
 
+int CThread::GetMinPriority(void)
+{
+	return(THREAD_PRIORITY_LOWEST);
+}
+
 bool CThread::IsCurrentThread(const ThreadIdentifier tid)
 {
 	return (::GetCurrentThreadId() == tid);

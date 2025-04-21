@@ -23,6 +23,9 @@
 #define GUI_MSG_MUTE_ON                 GUI_MSG_USER + 14
 #define GUI_MSG_MUTE_OFF                GUI_MSG_USER + 15
 
+// Message is sent by the background info loader when it's finished with fetching a weather location
+#define GUI_MSG_WEATHER_FETCHED       GUI_MSG_USER + 24
+
 // Message is sent to media windows to force a refresh
 #define GUI_MSG_UPDATE                GUI_MSG_USER + 26
 
@@ -34,6 +37,9 @@
 
 // Message sent by search dialog to request a new search be applied
 #define GUI_MSG_SEARCH_UPDATE         GUI_MSG_USER + 28
+
+// Message sent to tell the GUI to update a single item
+#define GUI_MSG_UPDATE_ITEM           GUI_MSG_USER + 29
 
 // Sent from filesystem if a path is known to have changed
 #define GUI_MSG_UPDATE_PATH           GUI_MSG_USER + 33

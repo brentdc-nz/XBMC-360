@@ -1,8 +1,119 @@
 <window id="115">
 	<defaultcontrol>1</defaultcontrol>
 	<include>dialogeffect</include>
-	<visible>!Player.Seeking</visible>
+	<visible>Player.Seeking | Player.DisplayAfterSeek | Player.Paused | Player.Forwarding | Player.Rewinding</visible>
 	<controls>
+		<!-- playstate images -->
+		<control type="image" id="0">
+			<description>pause image</description>
+			<align>right</align>
+			<posx>410</posx>
+			<posy>15</posy>
+			<height>60</height>
+			<width>115</width>
+			<visible>Player.Paused</visible>
+			<texture>video-pause.png</texture>
+		</control>
+		<control type="image" id="0">
+			<description>2x image</description>
+			<align>right</align>
+			<posx>410</posx>
+			<posy>15</posy>
+			<height>60</height>
+			<width>115</width>
+			<visible>Player.Forwarding2x</visible>
+			<texture>video-2x.png</texture>
+		</control>
+		<control type="image" id="0">
+			<description>4x image</description>
+			<align>right</align>
+			<posx>410</posx>
+			<posy>15</posy>
+			<height>60</height>
+			<width>115</width>
+			<visible>Player.Forwarding4x</visible>
+			<texture>video-4x.png</texture>
+		</control>
+		<control type="image" id="0">
+			<description>8x image</description>
+			<align>right</align>
+			<posx>410</posx>
+			<posy>15</posy>
+			<height>60</height>
+			<width>115</width>
+			<visible>Player.Forwarding8x</visible>
+			<texture>video-8x.png</texture>
+		</control>
+		<control type="image" id="0">
+			<description>16x image</description>
+			<align>right</align>
+			<posx>410</posx>
+			<posy>15</posy>
+			<height>60</height>
+			<width>115</width>
+			<visible>Player.Forwarding16x</visible>
+			<texture>video-16x.png</texture>
+		</control>
+		<control type="image" id="0">
+			<description>32x image</description>
+			<align>right</align>
+			<posx>410</posx>
+			<posy>15</posy>
+			<height>60</height>
+			<width>115</width>
+			<visible>Player.Forwarding32x</visible>
+			<texture>video-32x.png</texture>
+		</control>
+		<control type="image" id="0">
+			<description>-2x image</description>
+			<align>right</align>
+			<posx>410</posx>
+			<posy>15</posy>
+			<height>60</height>
+			<width>115</width>
+			<visible>Player.Rewinding2x</visible>
+			<texture>video-2xr.png</texture>
+		</control>
+		<control type="image" id="0">
+			<description>-4x image</description>
+			<align>right</align>
+			<posx>410</posx>
+			<posy>15</posy>
+			<height>60</height>
+			<width>115</width>
+			<visible>Player.Rewinding4x</visible>
+			<texture>video-4xr.png</texture>
+		</control>
+		<control type="image" id="0">
+			<description>-8x image</description>
+			<align>right</align>
+			<posx>410</posx>
+			<posy>15</posy>
+			<height>60</height>
+			<width>115</width>
+			<visible>Player.Rewinding8x</visible>
+			<texture>video-8xr.png</texture>
+		</control>
+		<control type="image" id="0">
+			<description>-16x image</description>
+			<align>right</align>
+			<posx>410</posx>
+			<posy>15</posy>
+			<height>60</height>
+			<width>115</width>
+			<visible>Player.Rewinding16x</visible>
+			<texture>video-16xr.png</texture>
+		</control>
+		<control type="image" id="0">
+			<description>-32x image</description>
+			<align>right</align>
+			<posx>410</posx>
+			<posy>15</posy>
+			<height>60</height>
+			<width>115</width>
+			<visible>Player.Rewinding32x</visible>
+			<texture>video-32xr.png</texture>
+		</control>
 		<!-- progressbar dialog -->
 		<control type="image" id="23">
 			<description>Popup Seek Dialog Background</description>

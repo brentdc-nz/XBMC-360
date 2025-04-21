@@ -4,7 +4,7 @@
 #include "StdString.h"
 #include "Stdafx.h"
 #include "StdString.h"
-#include "TimeUtils.h"
+#include "XBDateTime.h"
 
 class CStringUtils
 {

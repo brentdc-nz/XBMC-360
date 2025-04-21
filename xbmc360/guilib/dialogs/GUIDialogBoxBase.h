@@ -1,7 +1,7 @@
 #ifndef GUILIB_CGUIDIALOGBOXBASE_H
 #define GUILIB_CGUIDIALOGBOXBASE_H
 
-#include "GUIDialog.h"
+#include "guilib\GUIDialog.h"
 
 class CGUIDialogBoxBase : public CGUIDialog
 {

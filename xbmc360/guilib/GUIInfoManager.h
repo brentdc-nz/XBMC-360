@@ -55,6 +55,13 @@ namespace INFO
 #define PLAYER_MUTED                33
 #define PLAYER_SEEKOFFSET           47
 
+#define WEATHER_CONDITIONS          100
+#define WEATHER_TEMPERATURE         101
+#define WEATHER_LOCATION            102
+#define WEATHER_IS_FETCHED          103
+#define WEATHER_FANART_CODE         104
+#define WEATHER_PLUGIN              105
+
 #define SYSTEM_PROGRESS_BAR         107
 #define SYSTEM_TIME                 110
 #define SYSTEM_DATE                 111

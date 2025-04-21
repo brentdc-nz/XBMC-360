@@ -6,6 +6,7 @@
 #include "guilib\GUIWindowManager.h"
 #include "utils\URIUtils.h"
 #include "filesystem\File.h"
+#include "utils\TimeUtils.h"
 
 using namespace XFILE;
 

@@ -11,6 +11,7 @@
 #include "Application.h"
 #include "ApplicationMessenger.h"
 #include "xbox\network.h"
+#include "utils\TimeUtils.h"
 //#include "utils\RegExp.h" // TODO
 //#include "PartyModeManager.h"
 #include "dialogs\GUIDialogMediaSource.h"

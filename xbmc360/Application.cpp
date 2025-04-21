@@ -4,6 +4,7 @@
 #include "utils\Util.h"
 #include "utils\SingleLock.h"
 #include "GUISettings.h"
+#include "LangInfo.h"
 #include "guilib\GUIWindowManager.h"
 #include "cores\VideoRenderers\RenderManager.h"
 #include "guilib\GUIFontManager.h"
@@ -35,6 +36,7 @@
 #include "guilib\windows\GUIWindowSettingsCategory.h"
 #include "guilib\windows\GUIWindowScreensaver.h"
 #include "guilib\windows\GUIWindowSystemInfo.h"
+#include "guilib\windows\GUIWindowWeather.h"
 
 // Dialog includes
 #include "guilib\dialogs\GUIDialogButtonMenu.h"
@@ -46,6 +48,7 @@
 #include "guilib\dialogs\GUIDialogKeyboard.h"
 #include "guilib\dialogs\GUIDialogNumeric.h"
 #include "guilib\dialogs\GUIDialogOK.h"
+#include "guilib\dialogs\GUIDialogSelect.h"
 
 CStdString g_LoadErrorStr;
 
@@ -145,6 +148,13 @@ bool CApplication::Create()
 	CStdString strLanguage = g_guiSettings.GetString("locale.language");
 	strLanguage[0] = toupper(strLanguage[0]);
 
+	// Load the langinfo to have user charset <-> utf-8 conversion
+	CStdString strLangInfoPath;
+	strLangInfoPath.Format("D:\\language\\%s\\langinfo.xml", strLanguage.c_str());
+
+	CLog::Log(LOGINFO, "load language info file:%s", strLangInfoPath.c_str());
+	g_langInfo.Load(strLangInfoPath);
+
 	CStdString strLanguagePath = "D:\\language\\";
 
 	CLog::Log(LOGINFO, "load %s language file, from path: %s", strLanguage.c_str(), strLanguagePath.c_str());
@@ -208,7 +218,9 @@ bool CApplication::Initialize()
 	g_windowManager.Add(&m_guiDialogSeekBar);           // window id = 115
 	g_windowManager.Add(new CGUIDialogNetworkSetup);    // window id = 128
 	g_windowManager.Add(new CGUIDialogMediaSource);     // window id = 129
+	g_windowManager.Add(new CGUIDialogSelect);          // window id = 2000
 	g_windowManager.Add(new CGUIDialogOK);              // window id = 2002
+	g_windowManager.Add(new CGUIWindowWeather);         // Window id = 2600 WEATHER
 
 	g_windowManager.SetCallback(*this);
 
@@ -1690,6 +1702,10 @@ void CApplication::Cleanup()
 		g_windowManager.Delete(WINDOW_SETTINGS_MYPICTURES); // All the settings categories
 		g_windowManager.Delete(WINDOW_SCREENSAVER);
 		g_windowManager.Delete(WINDOW_SYSTEM_INFORMATION);
+		g_windowManager.Delete(WINDOW_WEATHER);
+
+		// Settings Windows
+		g_windowManager.Remove(WINDOW_SETTINGS_MYWEATHER);
 
 		// Dialogs
 		g_windowManager.Delete(WINDOW_DIALOG_YES_NO);
@@ -1700,6 +1716,7 @@ void CApplication::Cleanup()
 		g_windowManager.Delete(WINDOW_DIALOG_NETWORK_SETUP);
 		g_windowManager.Delete(WINDOW_DIALOG_KEYBOARD);
 		g_windowManager.Delete(WINDOW_DIALOG_NUMERIC);
+		g_windowManager.Delete(WINDOW_DIALOG_SELECT);
 		g_windowManager.Delete(WINDOW_DIALOG_OK);
 
 		g_windowManager.Remove(WINDOW_DIALOG_SEEK_BAR);

@@ -1,13 +1,14 @@
 #include "utils\log.h"
 #include "MultiPathDirectory.h"
 #include "Directory.h"
-#include "utils\Util.h" // TODO
+#include "utils\Util.h"
 #include "utils\URIUtils.h"
 #include "utils\StringUtils.h"
 #include "URL.h"
 #include "guilib\GUIWindowManager.h"
 #include "guilib\dialogs\GUIDialogProgress.h"
 #include "FileItem.h"
+#include "utils\TimeUtils.h"
 
 using namespace std;
 using namespace XFILE;

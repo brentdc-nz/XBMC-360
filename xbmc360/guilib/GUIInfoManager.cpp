@@ -12,6 +12,8 @@
 #include "dialogs\GUIDialogProgress.h"
 #include "ButtonTranslator.h"
 #include "GUIMediaWindow.h"
+#include "utils\Weather.h"
+#include "LangInfo.h"
 
 using namespace std;
 
@@ -230,6 +232,15 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 		else if (strTest.Equals("player.seeking"))ret = PLAYER_SEEKING;
 		else if (strTest.Equals("player.volume")) ret = PLAYER_VOLUME;
 		else if (strTest.Equals("player.muted")) ret = PLAYER_MUTED;
+	}
+	else if (strCategory.Equals("weather"))
+	{
+		if (strTest.Equals("weather.conditions")) ret = WEATHER_CONDITIONS;
+		else if (strTest.Equals("weather.temperature")) ret = WEATHER_TEMPERATURE;
+		else if (strTest.Equals("weather.location")) ret = WEATHER_LOCATION;
+		else if (strTest.Equals("weather.isfetched")) ret = WEATHER_IS_FETCHED;
+		else if (strTest.Equals("weather.fanartcode")) ret = WEATHER_FANART_CODE;
+		else if (strTest.Equals("weather.plugin")) ret = WEATHER_PLUGIN;
 	}
 	else if (strTest.Left(17).Equals("control.hasfocus("))
 	{
@@ -621,6 +632,24 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
 
 	switch (info)
 	{
+		// Weather info
+		case WEATHER_CONDITIONS:
+			strLabel = g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_COND);
+			strLabel = strLabel.Trim();
+			break;
+		case WEATHER_TEMPERATURE:
+			strLabel.Format("%s%s", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_TEMP), g_langInfo.GetTempUnitString().c_str());
+			break;
+		case WEATHER_LOCATION:
+			strLabel = g_weatherManager.GetInfo(WEATHER_LABEL_LOCATION);
+			break;
+		case WEATHER_FANART_CODE:
+			strLabel = URIUtils::GetFileName(g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON));
+			URIUtils::RemoveExtension(strLabel);
+			break;
+		case WEATHER_PLUGIN:
+			strLabel = g_guiSettings.GetString("weather.plugin");
+			break;
 		// System Section
 		case SYSTEM_DATE:
 			strLabel = GetDate();
@@ -754,6 +783,8 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
 	{
 		return GetMultiInfoLabel(m_multiInfo[info - MULTI_INFO_START], contextWindow);
 	}
+	else if (info == WEATHER_CONDITIONS)
+		return g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON);
 	else if (info == LISTITEM_THUMB || info == LISTITEM_ICON || info == LISTITEM_ACTUAL_ICON ||
           info == LISTITEM_OVERLAY || info == LISTITEM_RATING || info == LISTITEM_STAR_RATING)
 	{
@@ -809,6 +840,8 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
 //			CacheBool(condition1, contextWindow, result); //TODO
 		return result;
 	}
+	else if (condition == WEATHER_IS_FETCHED)
+		bReturn = g_weatherManager.IsFetched();
 	else if(g_application.IsPlaying())
 	{
 		switch(condition)

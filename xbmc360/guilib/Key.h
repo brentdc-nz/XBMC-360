@@ -152,6 +152,7 @@
 #define WINDOW_SETTINGS_APPEARANCE        10019
 
 #define WINDOW_FULLSCREEN_VIDEO           12005
+#define WINDOW_WEATHER                    12600
 #define WINDOW_SCREENSAVER                12900
 
 // Dialogs
@@ -169,6 +170,7 @@
 #define WINDOW_DIALOG_BUSY                10138
 #define WINDOW_DIALOG_SLIDER              10145
 #define WINDOW_DIALOG_KEYBOARD            10103
+#define WINDOW_DIALOG_SELECT              12000
 #define WINDOW_DIALOG_OK                  12002
 
 #define WINDOW_MUSIC_FILES                10501

@@ -21,7 +21,7 @@
 #ifndef H_CXMLUTILS
 #define H_CXMLUTILS
 
-#include "../utils/StdString.h"
+#include "utils/StdString.h"
 
 class TiXmlDocument;
 class TiXmlNode;

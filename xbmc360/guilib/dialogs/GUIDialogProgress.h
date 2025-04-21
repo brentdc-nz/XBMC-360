@@ -1,7 +1,7 @@
 #ifndef GUILIB_CGUIDIALOGGPROGRESS_H
 #define GUILIB_CGUIDIALOGGPROGRESS_H
 
-#include "guilib\GUIDialogBoxBase.h"
+#include "guilib\dialogs\GUIDialogBoxBase.h"
 #include "IProgressCallback.h"
 
 class CGUIDialogProgress : public CGUIDialogBoxBase, public IProgressCallback

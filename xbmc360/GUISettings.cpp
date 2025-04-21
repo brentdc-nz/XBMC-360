@@ -178,14 +178,18 @@ void CGUISettings::Initialize()
 
 	m_LookAndFeelResolution = HDTV_720p; //FIXME AND REMOVE!!!
 
+	// My Weather settings
+	AddGroup(2, 8);
+	AddCategory(2, "weather", 16000);
+	AddString(1, "weather.location1", 14019, "40.71:-74.01~New York, United States of America", BUTTON_CONTROL_STANDARD);
+	AddString(2, "weather.location2", 14020, "51.52:-0.11~London, United Kingdom", BUTTON_CONTROL_STANDARD);
+	AddString(3, "weather.location3", 14021, "35.69:139.69~Tokyo, Japan", BUTTON_CONTROL_STANDARD);
+
 	// System settings
 	AddGroup(4, 13000);
 
 	AddCategory(4, "videooutput", 21373);
 	AddInt(1, "videooutput.aspect", 21374, VIDEO_NORMAL, VIDEO_NORMAL, 1, VIDEO_WIDESCREEN, SPIN_CONTROL_TEXT);
-	AddBool(2,  "videooutput.hd480p", 21378, true);
-	AddBool(3,  "videooutput.hd720p", 21379, true);
-	AddBool(4,  "videooutput.hd1080p", 21380, false);
 
 	// Appearance settings
 	AddGroup(7, 480);
@@ -195,6 +199,7 @@ void CGUISettings::Initialize()
 
 	AddCategory(7, "locale", 14090);
 	AddString(1, "locale.language",248,"english", SPIN_CONTROL_TEXT);
+	AddString(2, "locale.country", 20026, "UK (24h)", SPIN_CONTROL_TEXT);
 	AddInt(7, "locale.timezone", 14074, 0, 0, 1, g_timezone.GetNumberOfTimeZones(), SPIN_CONTROL_TEXT);
 
 	AddCategory(7, "videoscreen", 131);
