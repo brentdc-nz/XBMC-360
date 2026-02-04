@@ -10,14 +10,14 @@ This is early stages and still very much a work in progress.
 
 Usable but many features still need reimplementation or improvements.
 
-### Compiled alpha build (last updated 21-04-25):
-https://drive.google.com/file/d/1LH2S3iZNbv1-dMT3j5IageKF-eLIWBU1/view
+### Compiled alpha build (last updated 4-02-26):
+https://drive.google.com/file/d/1px4ODnTAvIon-hmnq4vvbPITgD6nnbAk/view
 
 ### Libraries
 - FFmpeg
 - LibSMB2
 - FreeType
-- MilkDrop2 (WIP)(music visualizations)
+- MilkDrop2 (WIP) (music visualizations)
 
 ### Services
 - FTP Server
