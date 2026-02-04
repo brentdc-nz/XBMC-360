@@ -381,6 +381,15 @@ void CLegacyShaders::CreateShaders(D3DDevice* pD3dDevice)
 	return;
 }
 
+void CLegacyShaders::UnbindShaders(D3DDevice* pD3dDevice)
+{
+	if (pD3dDevice)
+	{
+		pD3dDevice->SetVertexShader(NULL);
+		pD3dDevice->SetPixelShader(NULL);
+	}
+}
+
 void CLegacyShaders::DeleteShaders()
 {
     // Release vertex shaders

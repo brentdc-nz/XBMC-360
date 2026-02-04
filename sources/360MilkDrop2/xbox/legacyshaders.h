@@ -17,4 +17,5 @@ class CLegacyShaders
 public:
 	static void CreateShaders(D3DDevice* pD3dDevice);
 	static void DeleteShaders();
+	static void UnbindShaders(D3DDevice* pD3dDevice);
 };

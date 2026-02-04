@@ -17,6 +17,7 @@ https://drive.google.com/file/d/1LH2S3iZNbv1-dMT3j5IageKF-eLIWBU1/view
 - FFmpeg
 - LibSMB2
 - FreeType
+- MilkDrop2 (WIP)(music visualizations)
 
 ### Services
 - FTP Server
