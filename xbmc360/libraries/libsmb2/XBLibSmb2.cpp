@@ -13,12 +13,15 @@ CXBLibSMB2::CXBLibSMB2()
 
 CXBLibSMB2::~CXBLibSMB2()
 {
+	Close(); // Ensure cleanup on destruction
 }
 
 bool CXBLibSMB2::Init()
 {
-	Close(); // Hack: Why are these not been closed properly by the player?!
+	// Close any open file/directory handles, but keep connection alive
+	CloseHandle();
 
+	// Only create context if we don't have one
 	if(!m_pLibSMB2Context)
 	{
 		m_pLibSMB2Context = smb2_init_context();
@@ -31,6 +34,15 @@ bool CXBLibSMB2::Init()
 	}
 
 	return true;
+}
+
+bool CXBLibSMB2::IsConnectedToShare(const char* server, const char* share)
+{
+	if(!m_pLibSMB2Context || m_ConnectedServer.IsEmpty() || m_ConnectedShare.IsEmpty())
+		return false;
+	
+	return (m_ConnectedServer.CompareNoCase(server) == 0 && 
+	        m_ConnectedShare.CompareNoCase(share) == 0);
 }
 
 bool CXBLibSMB2::OpenDir(const CURL& url)
@@ -52,11 +64,16 @@ bool CXBLibSMB2::OpenDir(const CURL& url)
 
 	smb2_set_security_mode(m_pLibSMB2Context, SMB2_NEGOTIATE_SIGNING_ENABLED);
 
-	// Connect to the share 
-	if(smb2_connect_share(m_pLibSMB2Context, m_pLibSMB2Url->server, m_pLibSMB2Url->share, m_pLibSMB2Url->user) != 0)
+	// Only connect if not already connected to this share
+	if(!IsConnectedToShare(m_pLibSMB2Url->server, m_pLibSMB2Url->share))
 	{
-		CLog::Log(LOGERROR, "smb2_connect_share failed. %s", smb2_get_error(m_pLibSMB2Context));
-		return false;
+		if(smb2_connect_share(m_pLibSMB2Context, m_pLibSMB2Url->server, m_pLibSMB2Url->share, m_pLibSMB2Url->user) != 0)
+		{
+			CLog::Log(LOGERROR, "smb2_connect_share failed. %s", smb2_get_error(m_pLibSMB2Context));
+			return false;
+		}
+		m_ConnectedServer = m_pLibSMB2Url->server;
+		m_ConnectedShare = m_pLibSMB2Url->share;
 	}
 
 	m_pLibSMB2H = smb2_opendir(m_pLibSMB2Context, m_pLibSMB2Url->path);
@@ -91,11 +108,16 @@ bool CXBLibSMB2::OpenFile(const CURL& url)
 
 	smb2_set_security_mode(m_pLibSMB2Context, SMB2_NEGOTIATE_SIGNING_ENABLED);
 
-	// Connect to the share 
-	if(smb2_connect_share(m_pLibSMB2Context, m_pLibSMB2Url->server, m_pLibSMB2Url->share, m_pLibSMB2Url->user) != 0)
+	// Only connect if not already connected to this share
+	if(!IsConnectedToShare(m_pLibSMB2Url->server, m_pLibSMB2Url->share))
 	{
-		CLog::Log(LOGERROR, "smb2_connect_share failed. %s", smb2_get_error(m_pLibSMB2Context));
-		return false;
+		if(smb2_connect_share(m_pLibSMB2Context, m_pLibSMB2Url->server, m_pLibSMB2Url->share, m_pLibSMB2Url->user) != 0)
+		{
+			CLog::Log(LOGERROR, "smb2_connect_share failed. %s", smb2_get_error(m_pLibSMB2Context));
+			return false;
+		}
+		m_ConnectedServer = m_pLibSMB2Url->server;
+		m_ConnectedShare = m_pLibSMB2Url->share;
 	}
 
 	m_pLibSMB2FH = smb2_open(m_pLibSMB2Context, m_pLibSMB2Url->path, O_RDONLY | O_BINARY);
@@ -159,31 +181,46 @@ __int64 CXBLibSMB2::GetPosition()
 	return iPos;
 }
 
-void CXBLibSMB2::Close()
+void CXBLibSMB2::CloseHandle()
 {
+	// Close directory handle
 	if(m_pLibSMB2H)
 	{
 		smb2_closedir(m_pLibSMB2Context, m_pLibSMB2H);
-		m_pLibSMB2Context = NULL;
+		m_pLibSMB2H = NULL;
 	}
 
+	// Close file handle
 	if(m_pLibSMB2FH)
 	{
 		smb2_close(m_pLibSMB2Context, m_pLibSMB2FH);
 		m_pLibSMB2FH = NULL;
 	}
 
+	// Destroy URL
 	if(m_pLibSMB2Url)
 	{
 		smb2_destroy_url(m_pLibSMB2Url);
 		m_pLibSMB2Url = NULL;
 	}
 
+	m_FileSize = 0;
+	// Note: Connection stays alive for reuse
+}
+
+void CXBLibSMB2::Close()
+{
+	// First close any open handles
+	CloseHandle();
+
+	// Then disconnect and destroy context
 	if(m_pLibSMB2Context)
 	{
 		smb2_disconnect_share(m_pLibSMB2Context);
+		smb2_destroy_context(m_pLibSMB2Context);
 		m_pLibSMB2Context = NULL;
 	}
 
-	m_FileSize = 0;
+	m_ConnectedServer.Empty();
+	m_ConnectedShare.Empty();
 }

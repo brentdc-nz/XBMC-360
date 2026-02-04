@@ -3,6 +3,7 @@
 
 #include "url.h"
 #include "utils\CriticalSection.h"
+#include "utils\StdString.h"
 extern "C" {
 #include "libsmb2.h"
 #include "smb2.h"
@@ -25,13 +26,18 @@ public:
 	__int64 GetLength();
 	__int64 GetPosition();
 	void Close();
+	void CloseHandle(); // Close file/dir handle but keep connection alive
 
 private:
+	bool IsConnectedToShare(const char* server, const char* share);
+	
 	struct smb2_context*	m_pLibSMB2Context;
 	struct smb2dir*			m_pLibSMB2H;
 	struct smb2_url*		m_pLibSMB2Url;
 	struct smb2fh*			m_pLibSMB2FH;
 
+	CStdString m_ConnectedServer;
+	CStdString m_ConnectedShare;
 	UINT64 m_FileSize;
 };
 
