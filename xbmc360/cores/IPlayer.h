@@ -1,7 +1,7 @@
 #ifndef  IPLAYER_H
 #define  IPLAYER_H
 
-#include <string>
+#include "cores\AudioRenderers\IAudioCallback.h"
 #include "..\FileItem.h"
 #include "..\utils\StdString.h"
 #include "..\guilib\key.h"
@@ -43,6 +43,8 @@ public:
 	IPlayer(IPlayerCallback& callback): m_callback(callback){};
 	virtual ~IPlayer(){};
 
+	virtual void RegisterAudioCallback(IAudioCallback* pCallback) {};
+	virtual void UnRegisterAudioCallback() {};
 	virtual bool OpenFile(const CFileItem& file, const CPlayerOptions& options){ return false;}
 	virtual bool CloseFile(){ return true;};
 	virtual void SeekTime(__int64 iTime = 0){};

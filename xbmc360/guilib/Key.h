@@ -152,6 +152,7 @@
 #define WINDOW_SETTINGS_APPEARANCE        10019
 
 #define WINDOW_FULLSCREEN_VIDEO           12005
+#define WINDOW_VISUALISATION              12006
 #define WINDOW_WEATHER                    12600
 #define WINDOW_SCREENSAVER                12900
 

@@ -67,6 +67,7 @@ static const ActionMapping windows[] =
         {"networksetup"             , WINDOW_DIALOG_NETWORK_SETUP},
         {"mediasource"              , WINDOW_DIALOG_MEDIA_SOURCE},
         {"fullscreenvideo"          , WINDOW_FULLSCREEN_VIDEO},
+        {"visualisation"            , WINDOW_VISUALISATION},
         {"selectdialog"             , WINDOW_DIALOG_SELECT},
         {"okdialog"                 , WINDOW_DIALOG_OK},
         {"weather"                  , WINDOW_WEATHER},

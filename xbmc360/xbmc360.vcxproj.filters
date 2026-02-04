@@ -183,6 +183,12 @@
     <Filter Include="Source Files\guilib\tinyjson">
       <UniqueIdentifier>{07e79c3e-b545-4f20-ae31-fe85efdbd1ca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\visualizations">
+      <UniqueIdentifier>{de9b218c-bdc3-4eb4-8a66-6f6642876150}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\visualizations">
+      <UniqueIdentifier>{3ac451d2-b722-4625-bf26-d50060a3409d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -947,6 +953,21 @@
     <ClInclude Include="Temperature.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="guilib\GUIVisualisationControl.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\windows\GUIWindowVisualisation.h">
+      <Filter>Header Files\guilib\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="visualizations\VisualisationFactory.h">
+      <Filter>Header Files\visualizations</Filter>
+    </ClInclude>
+    <ClInclude Include="visualizations\Visualisation.h">
+      <Filter>Header Files\visualizations</Filter>
+    </ClInclude>
+    <ClInclude Include="visualizations\fft.h">
+      <Filter>Header Files\visualizations</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -1710,6 +1731,21 @@
     </ClCompile>
     <ClCompile Include="Temperature.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\GUIVisualisationControl.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\windows\GUIWindowVisualisation.cpp">
+      <Filter>Source Files\guilib\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="visualizations\VisualisationFactory.cpp">
+      <Filter>Source Files\visualizations</Filter>
+    </ClCompile>
+    <ClCompile Include="visualizations\Visualisation.cpp">
+      <Filter>Source Files\visualizations</Filter>
+    </ClCompile>
+    <ClCompile Include="visualizations\fft.cpp">
+      <Filter>Source Files\visualizations</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

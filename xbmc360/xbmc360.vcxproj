@@ -122,7 +122,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PreprocessorDefinitions>_DEBUG;_XBOX</PreprocessorDefinitions>
       <CallAttributedProfiling>Callcap</CallAttributedProfiling>
-      <AdditionalIncludeDirectories>..\xbmc360\;..\libraries\freetype\freetype\include;..\libraries\ffmpeg\;C:\Users\Brent de Carteret\Documents\GitHub\XBMC-360\libraries\libpcre\libpcre;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\xbmc360\;..\libraries\freetype\freetype\include;..\libraries\ffmpeg\;..\sources\360MilkDrop2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/EHa %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -131,8 +131,8 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
-      <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirenderd.lib;xmediad2.lib;Xonline.lib;libavformat.lib;libavfilter.lib;libavutil.lib;libswscale.lib;libavcodec.lib;pthreads.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\libraries\ffmpeg\vcproj\libavcodec\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\libswscale\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\libavutil\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\libavfilter\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\libavformat\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\pthreads\Debug;..\libraries\freetype\freetype\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirenderd.lib;xmediad2.lib;Xonline.lib;libavformat.lib;libavfilter.lib;libavutil.lib;libswscale.lib;libavcodec.lib;pthreads.lib;freetype.lib;360MilkDrop2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\libraries\ffmpeg\vcproj\libavcodec\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\libswscale\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\libavutil\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\libavfilter\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\libavformat\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\pthreads\Debug;..\libraries\freetype\freetype\Debug;..\sources\360MilkDrop2\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <StackCommitSize>812000</StackCommitSize>
     </Link>
     <Deploy>
@@ -258,7 +258,7 @@
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PreprocessorDefinitions>NDEBUG;_XBOX</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\xbmc360\;..\libraries\freetype\freetype\include;..\libraries\ffmpeg\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\xbmc360\;..\libraries\freetype\freetype\include;..\libraries\ffmpeg\;..\sources\360MilkDrop2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <PreschedulingOptimization>true</PreschedulingOptimization>
@@ -277,8 +277,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
       <SetChecksum>true</SetChecksum>
-      <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirender.lib;xmediad2.lib;xonline.lib;libavformat.lib;libavfilter.lib;libavutil.lib;libswscale.lib;libavcodec.lib;pthreads.lib;freetype.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\libraries\ffmpeg\vcproj\libavcodec\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libswscale\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libavutil\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libavfilter\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libavformat\Xbox 360\Release;..\libraries\ffmpeg\vcproj\pthreads\Release;..\libraries\freetype\freetype\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirender.lib;xmediad2.lib;xonline.lib;libavformat.lib;libavfilter.lib;libavutil.lib;libswscale.lib;libavcodec.lib;pthreads.lib;freetype.lib;360MilkDrop2.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\libraries\ffmpeg\vcproj\libavcodec\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libswscale\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libavutil\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libavfilter\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libavformat\Xbox 360\Release;..\libraries\ffmpeg\vcproj\pthreads\Release;..\libraries\freetype\freetype\Release;..\sources\360MilkDrop2\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Deploy>
       <DeploymentType>CopyToHardDrive</DeploymentType>
@@ -443,6 +443,7 @@
     <ClInclude Include="guilib\GUIUserMessages.h" />
     <ClInclude Include="guilib\GUIVideoControl.h" />
     <ClInclude Include="guilib\GUIViewControl.h" />
+    <ClInclude Include="guilib\GUIVisualisationControl.h" />
     <ClInclude Include="guilib\GUIWindow.h" />
     <ClInclude Include="guilib\GUIWindowManager.h" />
     <ClInclude Include="guilib\GUIWindowVideoBase.h" />
@@ -478,6 +479,7 @@
     <ClInclude Include="guilib\windows\GUIWindowSettingsCategory.h" />
     <ClInclude Include="guilib\windows\GUIWindowSystemInfo.h" />
     <ClInclude Include="guilib\windows\GUIWindowVideoFiles.h" />
+    <ClInclude Include="guilib\windows\GUIWindowVisualisation.h" />
     <ClInclude Include="guilib\windows\GUIWindowWeather.h" />
     <ClInclude Include="guilib\XMLUtils.h" />
     <ClInclude Include="GUISettings.h" />
@@ -553,6 +555,9 @@
     <ClInclude Include="utils\XEXUtils.h" />
     <ClInclude Include="VideoSettings.h" />
     <ClInclude Include="ViewState.h" />
+    <ClInclude Include="visualizations\fft.h" />
+    <ClInclude Include="visualizations\Visualisation.h" />
+    <ClInclude Include="visualizations\VisualisationFactory.h" />
     <ClInclude Include="XBApplicationEx.h" />
     <ClInclude Include="XBDateTime.h" />
     <ClInclude Include="xbox\Network.h" />
@@ -688,6 +693,9 @@
     <ClCompile Include="guilib\GUIToggleButtonControl.cpp" />
     <ClCompile Include="guilib\GUIVideoControl.cpp" />
     <ClCompile Include="guilib\GUIViewControl.cpp" />
+    <ClCompile Include="guilib\GUIVisualisationControl.cpp">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">C:\Users\Brent de Carteret\Documents\Visual Studio 2010\Projects\360Milkdrop2\Release;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
     <ClCompile Include="guilib\GUIWindow.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">MaxSpeed</Optimization>
       <PreschedulingOptimization Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">false</PreschedulingOptimization>
@@ -722,6 +730,7 @@
     <ClCompile Include="guilib\windows\GUIWindowSettingsCategory.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowSystemInfo.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowVideoFiles.cpp" />
+    <ClCompile Include="guilib\windows\GUIWindowVisualisation.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowWeather.cpp" />
     <ClCompile Include="guilib\XMLUtils.cpp" />
     <ClCompile Include="GUISettings.cpp" />
@@ -982,6 +991,9 @@
     <ClCompile Include="utils\Win32Exception.cpp" />
     <ClCompile Include="utils\XEXUtils.cpp" />
     <ClCompile Include="VideoSettings.cpp" />
+    <ClCompile Include="visualizations\fft.cpp" />
+    <ClCompile Include="visualizations\Visualisation.cpp" />
+    <ClCompile Include="visualizations\VisualisationFactory.cpp" />
     <ClCompile Include="XBApplicationEx.cpp" />
     <ClCompile Include="XBDateTime.cpp" />
     <ClCompile Include="xbmc.cpp" />

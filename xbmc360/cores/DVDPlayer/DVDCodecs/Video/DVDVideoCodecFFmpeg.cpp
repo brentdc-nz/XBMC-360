@@ -196,7 +196,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double dts, double pts)
 		{
 			if(!m_dllSwScale.Load())
 				return VC_ERROR;
-#ifdef _X68
+#ifdef _X86
 			m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);    
 #endif
 		}

@@ -36,6 +36,20 @@ CDVDAudio::~CDVDAudio()
 	free(m_pBuffer);
 }
 
+void CDVDAudio::RegisterAudioCallback(IAudioCallback* pCallback)
+{
+	CSingleLock lock (m_critSection);
+	m_pCallback = pCallback;
+	if (m_pCallback && m_pAudioDecoder) m_pAudioDecoder->RegisterAudioCallback(pCallback);
+}
+
+void CDVDAudio::UnRegisterAudioCallback()
+{
+	CSingleLock lock (m_critSection);
+	m_pCallback = NULL;
+	if (m_pAudioDecoder) m_pAudioDecoder->UnRegisterAudioCallback();
+}
+
 bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
 {
 	CLog::Log(LOGNOTICE, "Creating audio device with codec id: %i, channels: %i, sample rate: %i, %s", codec, audioframe.channels, audioframe.sample_rate, audioframe.passthrough ? "pass-through" : "no pass-through");

@@ -1,0 +1,179 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files\projectm-eval">
+      <UniqueIdentifier>{b9b07496-06d9-4d1a-b236-83ac3920700d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\projectm-eval">
+      <UniqueIdentifier>{6be6b73d-06e1-4a1d-ad88-d042798f7586}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\vis_milkdrop2">
+      <UniqueIdentifier>{45e5ed42-494d-4b7b-8624-5947b4cc4d45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\vis_milkdrop2">
+      <UniqueIdentifier>{5598694d-7718-404c-bf9e-1eeeefdd0899}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\xbox">
+      <UniqueIdentifier>{90749551-ec36-4dee-8d18-ef03ecab0c57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\xbox">
+      <UniqueIdentifier>{dde75aca-e564-4342-9ba6-8bfa0eee2c43}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="projectm-eval\CompileContext.h">
+      <Filter>Header Files\projectm-eval</Filter>
+    </ClInclude>
+    <ClInclude Include="projectm-eval\Compiler.h">
+      <Filter>Header Files\projectm-eval</Filter>
+    </ClInclude>
+    <ClInclude Include="projectm-eval\CompilerFunctions.h">
+      <Filter>Header Files\projectm-eval</Filter>
+    </ClInclude>
+    <ClInclude Include="projectm-eval\CompilerTypes.h">
+      <Filter>Header Files\projectm-eval</Filter>
+    </ClInclude>
+    <ClInclude Include="projectm-eval\ExpressionTree.h">
+      <Filter>Header Files\projectm-eval</Filter>
+    </ClInclude>
+    <ClInclude Include="projectm-eval\MemoryBuffer.h">
+      <Filter>Header Files\projectm-eval</Filter>
+    </ClInclude>
+    <ClInclude Include="projectm-eval\ns-eel.h">
+      <Filter>Header Files\projectm-eval</Filter>
+    </ClInclude>
+    <ClInclude Include="projectm-eval\projectm-eval.h">
+      <Filter>Header Files\projectm-eval</Filter>
+    </ClInclude>
+    <ClInclude Include="projectm-eval\Scanner.h">
+      <Filter>Header Files\projectm-eval</Filter>
+    </ClInclude>
+    <ClInclude Include="projectm-eval\TreeFunctions.h">
+      <Filter>Header Files\projectm-eval</Filter>
+    </ClInclude>
+    <ClInclude Include="projectm-eval\TreeVariables.h">
+      <Filter>Header Files\projectm-eval</Filter>
+    </ClInclude>
+    <ClInclude Include="vis_milkdrop2\AutoWide.h">
+      <Filter>Header Files\vis_milkdrop2</Filter>
+    </ClInclude>
+    <ClInclude Include="vis_milkdrop2\defines.h">
+      <Filter>Header Files\vis_milkdrop2</Filter>
+    </ClInclude>
+    <ClInclude Include="vis_milkdrop2\fft.h">
+      <Filter>Header Files\vis_milkdrop2</Filter>
+    </ClInclude>
+    <ClInclude Include="vis_milkdrop2\gstring.h">
+      <Filter>Header Files\vis_milkdrop2</Filter>
+    </ClInclude>
+    <ClInclude Include="vis_milkdrop2\md_defines.h">
+      <Filter>Header Files\vis_milkdrop2</Filter>
+    </ClInclude>
+    <ClInclude Include="vis_milkdrop2\milkdropfs.h">
+      <Filter>Header Files\vis_milkdrop2</Filter>
+    </ClInclude>
+    <ClInclude Include="vis_milkdrop2\plugin.h">
+      <Filter>Header Files\vis_milkdrop2</Filter>
+    </ClInclude>
+    <ClInclude Include="vis_milkdrop2\pluginshell.h">
+      <Filter>Header Files\vis_milkdrop2</Filter>
+    </ClInclude>
+    <ClInclude Include="vis_milkdrop2\shell_defines.h">
+      <Filter>Header Files\vis_milkdrop2</Filter>
+    </ClInclude>
+    <ClInclude Include="vis_milkdrop2\state.h">
+      <Filter>Header Files\vis_milkdrop2</Filter>
+    </ClInclude>
+    <ClInclude Include="vis_milkdrop2\support.h">
+      <Filter>Header Files\vis_milkdrop2</Filter>
+    </ClInclude>
+    <ClInclude Include="vis_milkdrop2\texmgr.h">
+      <Filter>Header Files\vis_milkdrop2</Filter>
+    </ClInclude>
+    <ClInclude Include="vis_milkdrop2\utility.h">
+      <Filter>Header Files\vis_milkdrop2</Filter>
+    </ClInclude>
+    <ClInclude Include="vis_milkdrop2\Vector.h">
+      <Filter>Header Files\vis_milkdrop2</Filter>
+    </ClInclude>
+    <ClInclude Include="xbox\legacyshaders.h">
+      <Filter>Header Files\xbox</Filter>
+    </ClInclude>
+    <ClInclude Include="360MilkDrop2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="projectm-eval\TreeVariables.c">
+      <Filter>Source Files\projectm-eval</Filter>
+    </ClCompile>
+    <ClCompile Include="projectm-eval\TreeFunctions.c">
+      <Filter>Source Files\projectm-eval</Filter>
+    </ClCompile>
+    <ClCompile Include="projectm-eval\Scanner.c">
+      <Filter>Source Files\projectm-eval</Filter>
+    </ClCompile>
+    <ClCompile Include="projectm-eval\projectm-eval.c">
+      <Filter>Source Files\projectm-eval</Filter>
+    </ClCompile>
+    <ClCompile Include="projectm-eval\ns-eel.c">
+      <Filter>Source Files\projectm-eval</Filter>
+    </ClCompile>
+    <ClCompile Include="projectm-eval\MemoryBuffer.c">
+      <Filter>Source Files\projectm-eval</Filter>
+    </ClCompile>
+    <ClCompile Include="projectm-eval\ExpressionTree.c">
+      <Filter>Source Files\projectm-eval</Filter>
+    </ClCompile>
+    <ClCompile Include="projectm-eval\CompilerFunctions.c">
+      <Filter>Source Files\projectm-eval</Filter>
+    </ClCompile>
+    <ClCompile Include="projectm-eval\Compiler.c">
+      <Filter>Source Files\projectm-eval</Filter>
+    </ClCompile>
+    <ClCompile Include="projectm-eval\CompileContext.c">
+      <Filter>Source Files\projectm-eval</Filter>
+    </ClCompile>
+    <ClCompile Include="vis_milkdrop2\fft.cpp">
+      <Filter>Source Files\vis_milkdrop2</Filter>
+    </ClCompile>
+    <ClCompile Include="vis_milkdrop2\milkdropfs.cpp">
+      <Filter>Source Files\vis_milkdrop2</Filter>
+    </ClCompile>
+    <ClCompile Include="vis_milkdrop2\plugin.cpp">
+      <Filter>Source Files\vis_milkdrop2</Filter>
+    </ClCompile>
+    <ClCompile Include="vis_milkdrop2\pluginshell.cpp">
+      <Filter>Source Files\vis_milkdrop2</Filter>
+    </ClCompile>
+    <ClCompile Include="vis_milkdrop2\state.cpp">
+      <Filter>Source Files\vis_milkdrop2</Filter>
+    </ClCompile>
+    <ClCompile Include="vis_milkdrop2\support.cpp">
+      <Filter>Source Files\vis_milkdrop2</Filter>
+    </ClCompile>
+    <ClCompile Include="vis_milkdrop2\texmgr.cpp">
+      <Filter>Source Files\vis_milkdrop2</Filter>
+    </ClCompile>
+    <ClCompile Include="vis_milkdrop2\utility.cpp">
+      <Filter>Source Files\vis_milkdrop2</Filter>
+    </ClCompile>
+    <ClCompile Include="xbox\legacyshaders.cpp">
+      <Filter>Source Files\xbox</Filter>
+    </ClCompile>
+    <ClCompile Include="360MilkDrop2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

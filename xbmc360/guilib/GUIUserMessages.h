@@ -23,6 +23,12 @@
 #define GUI_MSG_MUTE_ON                 GUI_MSG_USER + 14
 #define GUI_MSG_MUTE_OFF                GUI_MSG_USER + 15
 
+// Visualisation messages when loading/unloading
+#define GUI_MSG_VISUALISATION_UNLOADING GUI_MSG_USER + 17 // Sent by vis
+#define GUI_MSG_VISUALISATION_LOADED    GUI_MSG_USER + 18 // Sent by vis
+#define GUI_MSG_GET_VISUALISATION       GUI_MSG_USER + 19 // Request to vis for the visualisation object
+#define GUI_MSG_VISUALISATION_ACTION    GUI_MSG_USER + 20 // Request the vis perform an action
+
 // Message is sent by the background info loader when it's finished with fetching a weather location
 #define GUI_MSG_WEATHER_FETCHED       GUI_MSG_USER + 24
 

@@ -54,17 +54,24 @@ private:
 	CRITICAL_SECTION m_CriticalSection;
     IXAudio2* m_pXAudio2;
 	IXAudio2SourceVoice* m_pSourceVoice;
+	WAVEFORMATEXTENSIBLE m_wfxex;
 
 	bool m_bInitialized;
 	bool m_bPaused;
 
-	unsigned int m_uiSampleRate;
+	unsigned int m_uiSamplesPerSec;
+	unsigned int m_uiBitsPerSample;
 	long m_nCurrentVolume;
 	float m_timePerPacket;
 	int m_packetsSent;
 	long m_lastUpdate;
 
 	void Update();
+
+	PBYTE m_VisBuffer;
+	DWORD m_VisBytes;
+	DWORD m_VisMaxBytes;
+	IAudioCallback* m_pCallback;
 };
 
 #endif //H_CXAUDIO2

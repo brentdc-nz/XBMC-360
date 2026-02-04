@@ -31,6 +31,8 @@ private:
 	IDirect3DVertexDeclaration9*	m_pVertexDecl;   // Vertex format decl
 	IDirect3DVertexShader9*			m_pVertexShader; // Vertex Shader
 	IDirect3DPixelShader9*			m_pPixelShader;  // Pixel Shader
+
+	CRITICAL_SECTION m_CriticalSection;
 };
 
 #endif //GUILIB_GUITEXTURED3D_H

@@ -29,6 +29,7 @@
 #include "guilib\windows\GUIWindowHome.h"
 #include "guilib\windows\GUIWindowPrograms.h"
 #include "guilib\windows\GUIWindowFullScreen.h"
+#include "guilib\windows\GUIWindowVisualisation.h"
 #include "guilib\windows\GUIWindowVideoFiles.h"
 #include "guilib\windows\GUIWindowMusicFiles.h"
 #include "guilib\windows\GUIWindowPictures.h"
@@ -198,6 +199,7 @@ bool CApplication::Initialize()
 
 	// Windows
 	g_windowManager.Add(new CGUIWindowFullScreen);
+	g_windowManager.Add(new CGUIWindowVisualisation);   // window id = 2006
 	g_windowManager.Add(new CGUIWindowPrograms);
 	g_windowManager.Add(new CGUIWindowVideoFiles);
 	g_windowManager.Add(new CGUIWindowMusicFiles);
@@ -975,6 +977,14 @@ bool CApplication::OnMessage(CGUIMessage& message)
 			{
 				g_windowManager.PreviousWindow();
 			}
+
+			if (!IsPlayingAudio() && g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
+			{
+				g_settings.Save(); // Save vis settings
+				ResetScreenSaverWindow();
+				g_windowManager.PreviousWindow();
+			}
+
 			return true;
 		}
 		break;
@@ -1105,6 +1115,15 @@ bool CApplication::SwitchToFullScreen()
 //		g_TextureManager.Flush();
 		return true;
 	}
+	
+	// Special case for switching between GUI & visualisation mode. (only if we're playing an audio song)
+	if (IsPlayingAudio() && g_windowManager.GetActiveWindow() != WINDOW_VISUALISATION)
+	{
+		// Then switch to visualisation
+		g_windowManager.ActivateWindow(WINDOW_VISUALISATION);
+		g_TextureManager.Flush();
+		return true;
+	}
 
 	return false;
 }
@@ -1118,8 +1137,9 @@ void CApplication::StopPlaying()
 		 if(m_pPlayer)
 			m_pPlayer->CloseFile();
 
-		// Turn off visualization window when stopping
-		if(iWin == WINDOW_FULLSCREEN_VIDEO)
+		// Turn off visualisation window when stopping
+		if (iWin == WINDOW_VISUALISATION
+		||  iWin == WINDOW_FULLSCREEN_VIDEO)
 			g_windowManager.PreviousWindow();
 	}
 }
@@ -1205,16 +1225,16 @@ bool CApplication::PlayFile(const CFileItem& item)
 			SetPlaySpeed(iSpeed);
 		}
 
-		if(IsPlayingAudio()) // TODO
+		if(IsPlayingAudio())
 		{
-//			if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
-//				g_windowManager.ActivateWindow(WINDOW_VISUALISATION);
+			if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+				g_windowManager.ActivateWindow(WINDOW_VISUALISATION);
 		}
 
 		if(IsPlayingVideo())
 		{
-//			if (g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)  // TODO
-//				g_windowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
+			if (g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
+				g_windowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
 
 			// if player didn't manage to switch to fullscreen by itself do it here
 			if(g_renderManager.IsStarted()
@@ -1514,8 +1534,8 @@ void CApplication::CheckScreenSaver()
 	if(IsPlayingVideo() && !m_pPlayer->IsPaused()) // Are we playing video and it is not paused?
 		resetTimer = true;
 
-//	if (IsPlayingAudio() && g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION) // Are we playing some music in fullscreen vis?  // TODO
-//		resetTimer = true;
+	if (IsPlayingAudio() && g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION) // Are we playing some music in fullscreen vis?
+		resetTimer = true;
 
 	if(resetTimer)
 	{
@@ -1532,13 +1552,17 @@ void CApplication::CheckScreenSaver()
 
 void CApplication::ActivateScreenSaver()
 {
-	m_bScreenSave = true;
-
 	// Get Screensaver Mode
-	m_screenSaverMode = g_guiSettings.GetString("screensaver.mode");
-
-	if(m_screenSaverMode != "None")
+	if(g_guiSettings.GetString("screensaver.mode") != "None")
 	{
+		if (IsPlayingAudio())
+		{
+			// Activate the visualisation
+			m_screenSaverMode = "Visualisation";
+			g_windowManager.ActivateWindow(WINDOW_VISUALISATION);
+			return;
+		}
+
 		g_windowManager.ActivateWindow(WINDOW_SCREENSAVER);
 		return;
 	}
@@ -1703,6 +1727,7 @@ void CApplication::Cleanup()
 		g_windowManager.Delete(WINDOW_SCREENSAVER);
 		g_windowManager.Delete(WINDOW_SYSTEM_INFORMATION);
 		g_windowManager.Delete(WINDOW_WEATHER);
+		g_windowManager.Delete(WINDOW_VISUALISATION);
 
 		// Settings Windows
 		g_windowManager.Remove(WINDOW_SETTINGS_MYWEATHER);

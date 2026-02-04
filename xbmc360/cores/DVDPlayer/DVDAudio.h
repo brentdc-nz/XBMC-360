@@ -1,7 +1,7 @@
 #ifndef H_CDVDAUDIO
 #define H_CDVDAUDIO
 
-#include "..\..\utils\SingleLock.h"
+#include "utils\SingleLock.h"
 #include "..\AudioRenderers\IAudioRenderer.h"
 #include"..\AudioRenderers\IAudioCallback.h"
 
@@ -13,6 +13,9 @@ class CDVDAudio
 public:
 	CDVDAudio(volatile bool& bStop);
 	~CDVDAudio();
+
+	void RegisterAudioCallback(IAudioCallback* pCallback);
+	void UnRegisterAudioCallback();
 
 	bool Create(const DVDAudioFrame &audioframe, CodecID codec);
 	bool IsValidFormat(const DVDAudioFrame &audioframe);

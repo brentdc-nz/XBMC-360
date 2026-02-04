@@ -208,7 +208,6 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
 	// Register codecs
 	/*m_dllAvFormat.*/av_register_all();
-	/*m_dllAvFormat.*/url_set_interrupt_cb(interrupt_cb);
 
 	m_pInput = pInput;
 	strFile = m_pInput->GetFileName();

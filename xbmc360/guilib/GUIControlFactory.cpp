@@ -21,7 +21,7 @@
 //#include "GUIResizeControl.h"
 //#include "GUIButtonScroller.h"
 #include "GUISpinControlEx.h"
-//#include "GUIVisualisationControl.h"
+#include "GUIVisualisationControl.h"
 //#include "GUISettingsSliderControl.h"
 #include "GUIMultiImage.h"
 #include "GUIControlGroup.h"
@@ -1411,7 +1411,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
 	}
 	else if (type == CGUIControl::GUICONTROL_VISUALISATION)
 	{
-//		control = new CGUIVisualisationControl(parentID, id, posX, posY, width, height);
+		control = new CGUIVisualisationControl(parentID, id, posX, posY, width, height);
 	}
 
 	// Things that apply to all controls

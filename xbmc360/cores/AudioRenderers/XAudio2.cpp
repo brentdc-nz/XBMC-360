@@ -25,6 +25,15 @@ void CXAudio2::OnBufferStart(void * pBufferContext)
 	SSoundData* pSoundData = NULL;
 	pSoundData = (SSoundData*)pBufferContext;
 
+	if (/*dwStatus == XMEDIAPACKET_STATUS_SUCCESS &&*/ m_VisBuffer)
+	{
+		if (m_VisBytes + pSoundData->iSize <= m_VisMaxBytes)
+		{
+			memcpy(m_VisBuffer + m_VisBytes, pSoundData->pVoid, pSoundData->iSize);
+			m_VisBytes += pSoundData->iSize;
+		}
+	}
+
 	LeaveCriticalSection(&m_CriticalSection);
 }
 
@@ -66,24 +75,27 @@ CXAudio2::CXAudio2(IAudioCallback* pCallback, int iChannels, unsigned int uiSamp
 */
 	m_pXAudio2 = NULL;
 	m_pSourceVoice = NULL;
+	m_pCallback = pCallback;
 
 	InitializeCriticalSectionAndSpinCount(&m_CriticalSection, 0x00000400);
 	m_bInitialized = false;
 
 	m_pXAudio2 = g_audioContext.GetXAudio2Device();
   
-	m_uiSampleRate = uiSamplesPerSec;
+	m_uiSamplesPerSec = uiSamplesPerSec;
+	m_uiBitsPerSample = uiBitsPerSample;
 
-	WAVEFORMATEXTENSIBLE wfxex = {0};
-	wfxex.Format.nChannels       = iChannels;
-	wfxex.Format.nSamplesPerSec  = uiSamplesPerSec;
-	wfxex.Format.wBitsPerSample  = uiBitsPerSample;
-	wfxex.Format.nBlockAlign     = uiBitsPerSample / 8 * iChannels;
-	wfxex.Format.nAvgBytesPerSec = wfxex.Format.nBlockAlign * wfxex.Format.nSamplesPerSec;
-	wfxex.Format.wFormatTag      = WAVE_FORMAT_EXTENSIBLE;
-	wfxex.Format.cbSize          = sizeof(WAVEFORMATEXTENSIBLE) - sizeof(WAVEFORMATEX) ;
-	wfxex.SubFormat              = KSDATAFORMAT_SUBTYPE_PCM;  
-	wfxex.Samples.wValidBitsPerSample = uiBitsPerSample;
+	ZeroMemory(&m_wfxex, sizeof(m_wfxex));
+
+	m_wfxex.Format.nChannels       = iChannels;
+	m_wfxex.Format.nSamplesPerSec  = uiSamplesPerSec;
+	m_wfxex.Format.wBitsPerSample  = uiBitsPerSample;
+	m_wfxex.Format.nBlockAlign     = uiBitsPerSample / 8 * iChannels;
+	m_wfxex.Format.nAvgBytesPerSec = m_wfxex.Format.nBlockAlign * m_wfxex.Format.nSamplesPerSec;
+	m_wfxex.Format.wFormatTag      = WAVE_FORMAT_EXTENSIBLE;
+	m_wfxex.Format.cbSize          = sizeof(WAVEFORMATEXTENSIBLE) - sizeof(WAVEFORMATEX) ;
+	m_wfxex.SubFormat              = KSDATAFORMAT_SUBTYPE_PCM;  
+	m_wfxex.Samples.wValidBitsPerSample = uiBitsPerSample;
 
 	DWORD dwMask[] = 
 	{
@@ -96,11 +108,11 @@ CXAudio2::CXAudio2(IAudioCallback* pCallback, int iChannels, unsigned int uiSamp
 	};
 
 	if(iChannels > 0 && iChannels < 7)
-		wfxex.dwChannelMask = dwMask[iChannels-1];
+		m_wfxex.dwChannelMask = dwMask[iChannels-1];
 	else
-		wfxex.dwChannelMask = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT;  
+		m_wfxex.dwChannelMask = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT;  
   
-	if(m_pXAudio2->CreateSourceVoice(&m_pSourceVoice,(WAVEFORMATEX*)&wfxex, NULL, 1.0f, this) != S_OK)
+	if(m_pXAudio2->CreateSourceVoice(&m_pSourceVoice,(WAVEFORMATEX*)&m_wfxex, NULL, 1.0f, this) != S_OK)
 		return;
 
 	m_nCurrentVolume = g_settings.m_nVolumeLevel;
@@ -114,6 +126,16 @@ CXAudio2::CXAudio2(IAudioCallback* pCallback, int iChannels, unsigned int uiSamp
 	m_packetsSent = 0;
 	m_bPaused = false;
 	m_lastUpdate = CTimeUtils::GetTimeMS();
+
+	if (m_pCallback)
+	{
+		m_pCallback->OnInitialize(iChannels, m_uiSamplesPerSec, m_uiBitsPerSample);
+		m_VisBuffer = (PBYTE)malloc(m_VisMaxBytes = iChannels * m_uiSamplesPerSec * (m_uiBitsPerSample / 8) / 20);
+	}
+	else
+		m_VisBuffer = 0;
+	
+	m_VisBytes = 0;
 }
 
 //***********************************************************************************************
@@ -134,6 +156,11 @@ HRESULT CXAudio2::Deinitialize()
 		m_pSourceVoice->FlushSourceBuffers();
 		m_pSourceVoice->DestroyVoice();
 	}
+
+	if (m_VisBuffer)
+		free(m_VisBuffer);
+	
+	m_VisBuffer = NULL;
 
 	m_pXAudio2 = NULL;
 	m_pSourceVoice = NULL;
@@ -196,7 +223,10 @@ HRESULT CXAudio2::Stop()
 		m_pSourceVoice->FlushSourceBuffers();
 
 	Flush();
-	return true;
+
+	m_VisBytes = 0;
+
+	return S_OK;
 }
 
 //***********************************************************************************************
@@ -298,7 +328,7 @@ float CXAudio2::GetCacheTime()
 	XAUDIO2_PERFORMANCE_DATA perfData;
 	m_pXAudio2->GetPerformanceData(&perfData);
 
-	return perfData.CurrentLatencyInSamples / (float)m_uiSampleRate;
+	return perfData.CurrentLatencyInSamples / (float)m_uiSamplesPerSec;
 }
 
 //***********************************************************************************************
@@ -319,12 +349,22 @@ int CXAudio2::SetPlaySpeed(int iSpeed)
 
 void CXAudio2::RegisterAudioCallback(IAudioCallback *pCallback)
 {
+	if (!m_pCallback)
+	{
+		pCallback->OnInitialize(m_wfxex.Format.nChannels, m_wfxex.Format.nSamplesPerSec, m_wfxex.Format.wBitsPerSample);
+		m_VisBuffer = (PBYTE)malloc(m_VisMaxBytes = m_wfxex.Format.nChannels * m_uiSamplesPerSec * (m_uiBitsPerSample / 8) / 20);
+		m_VisBytes = 0;
+	}
+	m_pCallback = pCallback;
 }
 
 //***********************************************************************************************
 
 void CXAudio2::UnRegisterAudioCallback()
 {
+	m_pCallback = NULL;
+	free(m_VisBuffer);
+	m_VisBuffer = NULL;
 }
 
 //***********************************************************************************************
@@ -366,5 +406,11 @@ void CXAudio2::Update()
 			m_packetsSent = 0;
 		
 		m_lastUpdate = currentTime;
+	}
+
+	if (m_VisBytes && m_pCallback)
+	{
+		m_pCallback->OnAudioData(m_VisBuffer, m_VisBytes);
+		m_VisBytes = 0;
 	}
 }
