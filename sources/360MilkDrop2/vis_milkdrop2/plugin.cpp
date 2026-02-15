@@ -502,8 +502,6 @@ Order of Function Calls
 #include "gstring.h"
 #include "AutoWide.h"
 #include "Vector.h"
-#include <fstream>
-#include <sstream> // for ostringstream
 #include <string>
 
 extern CPlugin* g_pPlugin;
@@ -890,6 +888,8 @@ void CPlugin::MyPreInitialize()
 //	m_lpVS[0]				= NULL;
 //	m_lpVS[1]				= NULL;
 	m_lpPrevFrame = NULL;
+    m_lpCurFrame = NULL;
+    m_bShaderParamsUseCurrent = false;
 
 
     #if (NUM_BLUR_TEX>0)
@@ -1035,8 +1035,8 @@ int n=0;
 m_bFirstRun		= true;
 m_bEnableRating = false; // <EnableRating>false</EnableRating>
 m_bHardCutsDisabled = false; // <HardCutsDisabled>false</HardCutsDisabled>
-m_nTexSizeX		= 720; // <TexSize>1024</TexSize>
-m_nTexSizeY = 1280;
+m_nTexSizeX		= 1280; // <TexSize>1024</TexSize> - Width
+m_nTexSizeY = 720; // Height
 m_nGridX		= 32; // <MeshSize>32</MeshSize>
 m_fBlendTimeAuto = 2.0f; // <BlendTimeAuto>2.000000</BlendTimeAuto>
 m_fTimeBetweenPresets = 20.0f; // <TimeBetweenPresets>20.000000</TimeBetweenPresets>
@@ -1046,9 +1046,6 @@ m_fHardCutHalflife = 60.0f; // <HardCutHalflife>60.000000</HardCutHalflife>
 
 // Derived/calculated values
 m_nGridY = m_nGridX*3/4; // 32*3/4 = 24
-
-
-
 
 #endif	
 	
@@ -1066,8 +1063,6 @@ m_nGridY = m_nGridX*3/4; // 32*3/4 = 24
 #endif
 
 }
-
-
 
 #include <iostream>
 #include <string>
@@ -1133,16 +1128,67 @@ int CPlugin::AllocateMyNonDx9Stuff()
     //   but only after displaying a messagebox giving the user some information
     //   about what went wrong.
 
-	ZeroMemory(m_szShaderIncludeText, 32768 * sizeof(char)); // For raw C++ memory
-
+    ZeroMemory(m_szShaderIncludeText, 32768 * sizeof(char)); // For raw C++ memory
     // read in 'm_szShaderIncludeText'
     bool bSuccess = true;
     bSuccess = ReadFileToString(L"D:\\data\\include.fx", m_szShaderIncludeText, sizeof(m_szShaderIncludeText)-4, false);
+    if (bSuccess)
+        StripComments(m_szShaderIncludeText);
 
-	if (!bSuccess) return false;
-	StripComments(m_szShaderIncludeText);
+    bool bIncludeValid = bSuccess && m_szShaderIncludeText[0] &&
+                         strstr(m_szShaderIncludeText, "sampler_main") &&
+                         strstr(m_szShaderIncludeText, "GetBlur1");
 
-	m_nShaderIncludeTextLen = lstrlen(m_szShaderIncludeText);
+    if (!bIncludeValid)
+    {
+        static const char kFallbackInclude[] =
+            "float4 _c0;\n"
+            "float4 _c1;\n"
+            "float4 _c2;\n"
+            "float4 _c3;\n"
+            "float4 _c4;\n"
+            "float4 _c5;\n"
+            "float4 _c6;\n"
+            "float4 _c7;\n"
+            "float4 _c8;\n"
+            "float4 _c9;\n"
+            "float4 _c10;\n"
+            "float4 _c11;\n"
+            "float4 _c12;\n"
+            "float4 _c13;\n"
+            "float4 _qa;\n"
+            "float4 _qb;\n"
+            "float4 _qc;\n"
+            "float4 _qd;\n"
+            "float4 _qe;\n"
+            "float4 _qf;\n"
+            "float4 _qg;\n"
+            "float4 _qh;\n"
+            "float4 rand_frame;\n"
+            "float4 rand_preset;\n"
+            "#define aspect _c0\n"
+            "#define texsize _c7\n"
+            "#define time _c2.x\n"
+            "#define fps _c2.y\n"
+            "#define frame _c2.z\n"
+            "#define progress _c2.w\n"
+            "#define bass _c3.x\n"
+            "#define mid _c3.y\n"
+            "#define treb _c3.z\n"
+            "#define bass_att _c4.x\n"
+            "#define mid_att _c4.y\n"
+            "#define treb_att _c4.z\n"
+            "sampler sampler_main;\n"
+            "sampler sampler_fc_main;\n"
+            "sampler sampler_blur1;\n"
+            "sampler sampler_blur2;\n"
+            "sampler sampler_blur3;\n"
+            "float3 GetBlur1(float2 uv) { return tex2D(sampler_blur1, uv).rgb; }\n"
+            "float3 GetBlur2(float2 uv) { return tex2D(sampler_blur2, uv).rgb; }\n"
+            "float3 GetBlur3(float2 uv) { return tex2D(sampler_blur3, uv).rgb; }\n";
+        lstrcpy(m_szShaderIncludeText, kFallbackInclude);
+    }
+    m_nShaderIncludeTextLen = lstrlen(m_szShaderIncludeText);
 
 	ZeroMemory(&m_szDefaultWarpVShaderText, 32768 * sizeof(char));
 	bSuccess |= ReadFileToString(L"D:\\data\\warp_vs.fx", m_szDefaultWarpVShaderText, sizeof(m_szDefaultWarpVShaderText), true);
@@ -1494,17 +1540,55 @@ int CPlugin::AllocateMyDX9Stuff()
         DWORD vs_flags = D3DUSAGE_RENDERTARGET;// | D3DUSAGE_AUTOGENMIPMAP;//FIXME! (make automipgen optional)
 		bool bRevertedBitDepth = false;
 
-		// Create a single texture to store the previous frame
-		D3DXCreateTexture(
-			GetDevice(), 
-			1280,      // Match back buffer dimensions
-			720, 
-			1, 
-			D3DPOOL_DEFAULT, // Optimize for frequent updates
-			D3DFMT_X8R8G8B8, 
-			D3DPOOL_DEFAULT, 
-			&m_lpPrevFrame
-		);
+        // Create textures to store previous and current frames.
+        // Use the same format as the internal render targets for Resolve compatibility.
+        HRESULT hrPrev = D3DXCreateTexture(
+            GetDevice(),
+            m_nTexSizeX,
+            m_nTexSizeY,
+            1,
+            vs_flags,
+            fmt,
+            D3DPOOL_DEFAULT,
+            &m_lpPrevFrame
+        );
+        if (FAILED(hrPrev))
+        {
+            hrPrev = D3DXCreateTexture(
+                GetDevice(),
+                m_nTexSizeX,
+                m_nTexSizeY,
+                1,
+                vs_flags,
+                D3DFMT_X8R8G8B8,
+                D3DPOOL_DEFAULT,
+                &m_lpPrevFrame
+            );
+        }
+
+        HRESULT hrCur = D3DXCreateTexture(
+            GetDevice(),
+            m_nTexSizeX,
+            m_nTexSizeY,
+            1,
+            vs_flags,
+            fmt,
+            D3DPOOL_DEFAULT,
+            &m_lpCurFrame
+        );
+        if (FAILED(hrCur))
+        {
+            hrCur = D3DXCreateTexture(
+                GetDevice(),
+                m_nTexSizeX,
+                m_nTexSizeY,
+                1,
+                vs_flags,
+                D3DFMT_X8R8G8B8,
+                D3DPOOL_DEFAULT,
+                &m_lpCurFrame
+            );
+        }
 
 
 		do
@@ -2446,7 +2530,7 @@ if (g_pPlugin->m_bNeedRescanTexturesDir)
     texfiles.clear();
 
     char szMask[MAX_PATH];
-    sprintf(szMask, "%stextures\\*.*", /*g_pPlugin->m_szMilkdrop2Path*/ "DL"); // Use narrow string
+    sprintf(szMask, "%stextures\\*.*", /*g_pPlugin->m_szMilkdrop2Path*/ "D:\\"); // Use narrow string
 
     WIN32_FIND_DATAA ffd = {0}; // Narrow version of WIN32_FIND_DATA
     HANDLE hFindFile = FindFirstFileA(szMask, &ffd); // Explicitly use narrow variant
@@ -2586,6 +2670,11 @@ void CShaderParams::CacheParams(LPD3DXCONSTANTTABLE pCT, bool bHardErrors)
 
             // if <szFileName> is "main", map it to the VS...
             if (!wcscmp(L"main", szRootName))
+            {
+                m_texture_bindings[ cd.RegisterIndex ].texptr    = NULL;
+                m_texcode[ cd.RegisterIndex ] = TEX_VS;
+            }
+            else if (!wcscmp(L"fc_main", szRootName))
             {
                 m_texture_bindings[ cd.RegisterIndex ].texptr    = NULL;
                 m_texcode[ cd.RegisterIndex ] = TEX_VS;
@@ -2747,14 +2836,16 @@ void CShaderParams::CacheParams(LPD3DXCONSTANTTABLE pCT, bool bHardErrors)
                     char szFilename[MAX_PATH];
                     for (int z=0; z<sizeof(texture_exts)/sizeof(texture_exts[0]); z++) 
                     {
-						sprintf(szFilename, "%stextures\\%s.%s", "D:\\", "mcode1", texture_exts[z].c_str());
+						//sprintf(szFilename, "%stextures\\%s.%s", "D:\\", "mcode1", texture_exts[z].c_str());
+                        sprintf(szFilename, "%stextures\\%S.%s", "D:\\", szRootName, texture_exts[z].c_str());
 
                         if (GetFileAttributes(szFilename) == 0xFFFFFFFF)
                         {
                             // try again, but in presets dir
-//                            swprintf(szFilename, L"%s%s.%s", g_pPlugin->m_szPresetDir, szRootName, texture_exts[z].c_str());
-//                            if (GetFileAttributesW(szFilename) == 0xFFFFFFFF)
-//                              continue;
+                            sprintf(szFilename, "%s%s.%s", g_pPlugin->m_szPresetDir, szRootName, texture_exts[z].c_str());
+
+                            if (GetFileAttributes(szFilename) == 0xFFFFFFFF)
+								continue;
                         }
                         D3DXIMAGE_INFO desc;
 
@@ -2802,7 +2893,9 @@ void CShaderParams::CacheParams(LPD3DXCONSTANTTABLE pCT, bool bHardErrors)
 //                        else {
 //                            g_plugin.AddError(buf, 6.0f, ERR_PRESET, true);
 //                        }
-		                return;
+                        // Keep caching other samplers; missing disk textures should not
+                        // prevent binding of built-in textures like sampler_main.
+                        continue;
                     }
 
 					g_pPlugin->m_textures.push_back(x);
@@ -2813,7 +2906,7 @@ void CShaderParams::CacheParams(LPD3DXCONSTANTTABLE pCT, bool bHardErrors)
     }
 
     // pass 2: bind all the float4's.  "texsize_XYZ" params will be filled out via knowledge of loaded texture sizes.
-    for (int i=0; i<(int)d.Constants; i++) 
+    for (UINT i=0; i<d.Constants; i++) 
     {
         D3DXHANDLE h = pCT->GetConstant(NULL, i);
         unsigned int count = 1;
@@ -2989,7 +3082,8 @@ bool CPlugin::LoadShaders(PShaderSet* sh, CState* pState, bool bTick)
     // load one of the pixel shaders
     if (!sh->warp.ptr && pState->m_nWarpPSVersion > 0)
     {
-        bool bOK = RecompilePShader(pState->m_szWarpShadersText, &sh->warp, SHADER_WARP, false, pState->m_nWarpPSVersion);
+        int warpPS = min(pState->m_nWarpPSVersion, m_nMaxPSVersion);
+        bool bOK = RecompilePShader(pState->m_szWarpShadersText, &sh->warp, SHADER_WARP, false, warpPS);
         if (!bOK) 
         {
             // switch to fallback shader
@@ -3006,7 +3100,8 @@ bool CPlugin::LoadShaders(PShaderSet* sh, CState* pState, bool bTick)
 
     if (!sh->comp.ptr && pState->m_nCompPSVersion > 0)
     {
-        bool bOK = RecompilePShader(pState->m_szCompShadersText, &sh->comp, SHADER_COMP, false, pState->m_nCompPSVersion);
+        int compPS = min(pState->m_nCompPSVersion, m_nMaxPSVersion);
+        bool bOK = RecompilePShader(pState->m_szCompShadersText, &sh->comp, SHADER_COMP, false, compPS);
         if (!bOK)
         {
             // switch to fallback shader
@@ -3051,7 +3146,7 @@ bool CPlugin::LoadShaderFromMemory( const char* szOrigShaderText, char* szFn, ch
     }
 
     LPD3DXBUFFER pShaderByteCode;
- //   wchar_t title[64];
+//    wchar_t title[64];
     
     *ppShader = NULL;
     *ppConstTable = NULL;
@@ -3190,8 +3285,9 @@ bool CPlugin::LoadShaderFromMemory( const char* szOrigShaderText, char* szFn, ch
     
     // now really try to compile it.
 
-	bool failed=false;
     int len = lstrlen(szShaderText);
+
+    bool failed=false;
     if (D3D_OK != D3DXCompileShader(
         szShaderText,
         len,
@@ -3237,6 +3333,9 @@ bool CPlugin::LoadShaderFromMemory( const char* szOrigShaderText, char* szFn, ch
 			}*/
 			return false;
 		}
+        else
+        {
+        }
 
     HRESULT hr = 1;
     if (szProfile[0] == 'v') 
@@ -3356,6 +3455,9 @@ void CPlugin::CleanUpMyDX9Stuff(int final_cleanup)
 
     SafeRelease( m_pShaderCompileErrors );
 
+    SafeRelease(m_lpPrevFrame);
+    SafeRelease(m_lpCurFrame);
+
     // 2. release stuff
   //  SafeRelease(m_lpVSold[0]);
    // SafeRelease(m_lpVSold[1]);
@@ -3363,31 +3465,31 @@ void CPlugin::CleanUpMyDX9Stuff(int final_cleanup)
 
 	if (m_verts != NULL)
 	{
-		delete m_verts;
+		delete[] m_verts;
 		m_verts = NULL;
 	}
 
 	if (m_verts_temp != NULL)
 	{
-		delete m_verts_temp;
+		delete[] m_verts_temp;
 		m_verts_temp = NULL;
 	}
 
 	if (m_vertinfo != NULL)
 	{
-		delete m_vertinfo;
+		delete[] m_vertinfo;
 		m_vertinfo = NULL;
 	}
 
 	if (m_indices_list != NULL)
 	{
-		delete m_indices_list;
+		delete[] m_indices_list;
 		m_indices_list = NULL;
 	}
 
     if (m_indices_strip != NULL)
 	{
-		delete m_indices_strip;
+		delete[] m_indices_strip;
 		m_indices_strip = NULL;
 	}
 

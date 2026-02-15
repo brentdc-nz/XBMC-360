@@ -16,6 +16,10 @@ class CLegacyShaders
 {
 public:
 	static void CreateShaders(D3DDevice* pD3dDevice);
-	static void DeleteShaders();
+	static void CreateDummyTextures(D3DDevice* pD3dDevice);
+	static void DrawLegacyPrim1(D3DDevice* pD3dDevice);
+	static void DrawLegacyPrim2(D3DDevice* pD3dDevice);
+	static void DrawLegacyPrim3(D3DDevice* pD3dDevice);
 	static void UnbindShaders(D3DDevice* pD3dDevice);
+	static void DeleteShaders();
 };

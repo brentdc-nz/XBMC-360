@@ -53,30 +53,25 @@ int GetNumToSpawn(float fTime, float fDeltaT, float fRate, float fRegularity, in
     // fTime:          sum of all fDeltaT's so far (excluding this one)
     // fDeltaT:        time window for this frame
     // fRate:          avg. rate (spawns per second) of generation
-    // fRegularity:    regularity of generation
-    //					0.0: totally chaotic
-    //					0.2: getting chaotic / very jittered
-    //					0.4: nicely jittered
-    //					0.6: slightly jittered
-    //					0.8: almost perfectly regular
-    //					1.0: perfectly regular
+    // fRegularity:    regularity of generation 
+	//					0.0: totally chaotic
+	//					0.2: getting chaotic / very jittered
+	//					0.4: nicely jittered
+	//					0.6: slightly jittered
+	//					0.8: almost perfectly regular
+	//					1.0: perfectly regular
     // iNumSpawnedSoFar: the total number of spawnings so far
     //
     // RETURN VALUE
     // ------------
     // The number to spawn for this frame (add this to your net count!).
     //
-    // COMMENTS
-    // ------------
-    // The spawn values returned will, over time, match
-    // (within 1%) the theoretical totals expected based on the
-    // amount of time passed and the average generation rate.
-    //
-    // UNRESOLVED ISSUES
-    // -----------------
-    // actual results of mixed gen. (0 < reg < 1) are about 1% too low
-    // in the long run (vs. analytical expectations).  Decided not
-    // to bother fixing it since it's only 1% (and VERY consistent).
+	// COMMENTS
+	// ------------
+	// The spawn values returned will, over time, match
+	// (within 1%) the theoretical totals expected based on the
+	// amount of time passed and the average generation rate.
+	//
 
     float fNumToSpawnReg;
     float fNumToSpawnIrreg;
@@ -86,12 +81,7 @@ int GetNumToSpawn(float fTime, float fDeltaT, float fRate, float fRegularity, in
     fNumToSpawnReg = ((fTime + fDeltaT) * fRate) - iNumSpawnedSoFar;
 
     // compute # spawned based on irregular (random) generation
-    // Adjust rate check for potentially very small fDeltaT
-    if (fRate <= 0.0f || fDeltaT <= 0.0f || fDeltaT * fRate < 1e-6f) // Avoid division by zero or near-zero rate
-    {
-        fNumToSpawnIrreg = 0.0f;
-    }
-    else if (fDeltaT <= 1.0f / fRate)
+    if (fDeltaT <= 1.0f / fRate)
     {
         // case 1: avg. less than 1 spawn per frame
         if ((warand() % 16384)/16384.0f < fDeltaT * fRate)
@@ -106,15 +96,10 @@ int GetNumToSpawn(float fTime, float fDeltaT, float fRate, float fRegularity, in
         fNumToSpawnIrreg *= 2.0f*(warand() % 16384)/16384.0f;
     }
 
-    // Ensure fRegularity is clamped between 0 and 1
-    fRegularity = max(0.0f, min(1.0f, fRegularity));
-
     // get linear combo. of regular & irregular
     fNumToSpawn = fNumToSpawnReg*fRegularity + fNumToSpawnIrreg*(1.0f - fRegularity);
 
-    // round to nearest integer for result
-    // Add check for negative spawn count which can happen with large negative iNumSpawnedSoFar
-    if (fNumToSpawn < 0) fNumToSpawn = 0;
+	// round to nearest integer for result
     return (int)(fNumToSpawn + 0.49f);
 }
 
@@ -218,29 +203,29 @@ void CPlugin::RunPerFrameEquations(int code)
 {
 	// run per-frame calculations
 
-    /*
-      code is only valid when blending.
-          OLDcomp ~ blend-from preset has a composite shader;
-          NEWwarp ~ blend-to preset has a warp shader; etc.
+	/*
+	  code is only valid when blending.
+	      OLDcomp ~ blend-from preset has a composite shader;
+	      NEWwarp ~ blend-to preset has a warp shader; etc.
 
-      code OLDcomp NEWcomp OLDwarp NEWwarp
-        0    
-        1            1
-        2                            1
-        3            1               1
-        4     1
-        5     1      1
-        6     1                      1
-        7     1      1               1
-        8                    1
-        9            1       1
-        10                   1       1
-        11           1       1       1
-        12    1              1
-        13    1      1       1
-        14    1              1       1
-        15    1      1       1       1
-    */
+	  code OLDcomp NEWcomp OLDwarp NEWwarp
+	    0    
+	    1            1
+	    2                            1
+	    3            1               1
+	    4     1
+	    5     1      1
+	    6     1                      1
+	    7     1      1               1
+	    8                    1
+	    9            1       1
+	    10                   1       1
+	    11           1       1       1
+	    12    1              1
+	    13    1      1       1
+	    14    1              1       1
+	    15    1      1       1       1
+	*/
 
     // when blending booleans (like darken, invert, etc) for pre-shader presets,
     // if blending to/from a pixel-shader preset, we can tune the snap point
@@ -401,278 +386,356 @@ void CPlugin::RunPerFrameEquations(int code)
 
 void CPlugin::RenderFrame(int bRedraw)
 {
-    int i;
+	int i;
 
-    float fDeltaT = 1.0f/GetFps(); // Be cautious if GetFps() can be zero or negative
+    float fDeltaT = 1.0f/GetFps();
 
-    // --- Ensure GetFps() is safe ---
-    if (fDeltaT <= 0) fDeltaT = 1.0f / 30.0f; // Default to 30fps if GetFps() is invalid
 
-    // --- State Updates ---
-    if (GetFrame()==0)
-    {
-        m_fStartTime = GetTime();
-        m_fPresetStartTime = GetTime();
-    }
+	if (GetFrame()==0) 
+	{
+		m_fStartTime = GetTime();
+		m_fPresetStartTime = GetTime();
+	}
 
-    if (m_fNextPresetTime < 0)
-    {
-        float dt = m_fTimeBetweenPresetsRand * (warand()%1000)*0.001f;
-        m_fNextPresetTime = GetTime() + m_fBlendTimeAuto + m_fTimeBetweenPresets + dt;
-    }
+	if (m_fNextPresetTime < 0)
+	{
+		float dt = m_fTimeBetweenPresetsRand * (warand()%1000)*0.001f;
+		m_fNextPresetTime = GetTime() + m_fBlendTimeAuto + m_fTimeBetweenPresets + dt;
+	}
 
     if (!bRedraw)
     {
         m_rand_frame = D3DXVECTOR4(FRAND, FRAND, FRAND, FRAND);
 
-        // randomly change the preset, if it's time
-        if (m_fNextPresetTime < GetTime())
-        {
+	    // randomly change the preset, if it's time
+	    if (m_fNextPresetTime < GetTime())
+	    {
             if (m_nLoadingPreset==0) // don't start a load if one is already underway!
-                LoadRandomPreset(m_fBlendTimeAuto);
-        }
+		        LoadRandomPreset(m_fBlendTimeAuto);
+	    }
 
-        // update m_fBlendProgress;
-        if (m_pState->m_bBlending)
-        {
-            m_pState->m_fBlendProgress = (GetTime() - m_pState->m_fBlendStartTime) / m_pState->m_fBlendDuration;
-            if (m_pState->m_fBlendProgress >= 1.0f) // Use >= to ensure it terminates
-            {
-                m_pState->m_fBlendProgress = 1.0f; // Clamp
-                m_pState->m_bBlending = false;
-            }
-            else if (m_pState->m_fBlendProgress < 0.0f) // Clamp negative case too
-            {
-                m_pState->m_fBlendProgress = 0.0f;
-            }
-        }
+	    // update m_fBlendProgress;
+	    if (m_pState->m_bBlending)
+	    {
+		    m_pState->m_fBlendProgress = (GetTime() - m_pState->m_fBlendStartTime) / m_pState->m_fBlendDuration;
+		    if (m_pState->m_fBlendProgress > 1.0f)
+		    {
+			    m_pState->m_bBlending = false;
+		    }
+	    }
 
-        // handle hard cuts here (just after new sound analysis)
-        static float m_fHardCutThresh = m_fHardCutLoudnessThresh * 2.0f; // Initialize here
-        //if (GetFrame() == 0) // Moved initialization outside
-        //    m_fHardCutThresh = m_fHardCutLoudnessThresh*2.0f;
-        if (GetFps() > 1.0f && !m_bHardCutsDisabled && !m_bPresetLockedByUser && !m_bPresetLockedByCode)
-        {
-            if (mysound.imm_rel[0] + mysound.imm_rel[1] + mysound.imm_rel[2] > m_fHardCutThresh*3.0f)
-            {
+	    // handle hard cuts here (just after new sound analysis)
+	    static float m_fHardCutThresh;
+	    if (GetFrame() == 0)
+		    m_fHardCutThresh = m_fHardCutLoudnessThresh*2.0f;
+	    if (GetFps() > 1.0f && !m_bHardCutsDisabled && !m_bPresetLockedByUser && !m_bPresetLockedByCode)
+	    {
+		    if (mysound.imm_rel[0] + mysound.imm_rel[1] + mysound.imm_rel[2] > m_fHardCutThresh*3.0f)
+		    {
                 if (m_nLoadingPreset==0) // don't start a load if one is already underway!
-                    LoadRandomPreset(0.0f);
-                m_fHardCutThresh *= 2.0f;
-            }
-            else
-            {
-                // Ensure GetFps() is valid before division
-                float currentFps = GetFps();
-                if (currentFps > 0.0f && m_fHardCutHalflife > 0.0f) {
-                    float k = -1.3863f / (m_fHardCutHalflife * currentFps);
-                    float single_frame_multiplier = expf(k);
-                    m_fHardCutThresh = (m_fHardCutThresh - m_fHardCutLoudnessThresh)*single_frame_multiplier + m_fHardCutLoudnessThresh;
-                } else {
-                    // Fallback or do nothing if FPS or halflife is invalid
-                    m_fHardCutThresh = m_fHardCutLoudnessThresh; // Reset or decay slowly
-                }
-            }
-        }
+		            LoadRandomPreset(0.0f);
+			    m_fHardCutThresh *= 2.0f;
+		    }
+		    else
+		    {
+			    float k = -1.3863f / (m_fHardCutHalflife*GetFps());
+			    //float single_frame_multiplier = powf(2.7183f, k / GetFps());
+			    float single_frame_multiplier = expf(k);
+			    m_fHardCutThresh = (m_fHardCutThresh - m_fHardCutLoudnessThresh)*single_frame_multiplier + m_fHardCutLoudnessThresh;
+		    }
+	    }
 
-        // smooth & scale the audio data, according to m_state, for display purposes
-        float scale = m_pState->m_fWaveScale.eval(GetTime()) / 128.0f;
-        mysound.fWave[0][0] *= scale;
-        mysound.fWave[1][0] *= scale;
-        float mix2 = m_pState->m_fWaveSmoothing.eval(GetTime());
-        mix2 = max(0.0f, min(1.0f, mix2)); // Clamp smoothing factor
-        float mix1 = scale*(1.0f - mix2);
-        for (i=1; i<576; i++)
-        {
-            mysound.fWave[0][i] = mysound.fWave[0][i]*mix1 + mysound.fWave[0][i-1]*mix2;
-            mysound.fWave[1][i] = mysound.fWave[1][i]*mix1 + mysound.fWave[1][i-1]*mix2;
-        }
+	    // smooth & scale the audio data, according to m_state, for display purposes
+	    float scale = m_pState->m_fWaveScale.eval(GetTime()) / 128.0f;
+	    mysound.fWave[0][0] *= scale;
+	    mysound.fWave[1][0] *= scale;
+	    float mix2 = m_pState->m_fWaveSmoothing.eval(GetTime());
+	    float mix1 = scale*(1.0f - mix2);
+	    for (i=1; i<576; i++)
+	    {
+		    mysound.fWave[0][i] = mysound.fWave[0][i]*mix1 + mysound.fWave[0][i-1]*mix2;
+		    mysound.fWave[1][i] = mysound.fWave[1][i]*mix1 + mysound.fWave[1][i-1]*mix2;
+	    }
     }
 
-    // --- Determine Shader Usage ---
-#if 1 // Hardcode these here rather than Winamp UI
-    m_pOldState->m_nWarpPSVersion = MD2_PS_3_0;
-    m_pState->m_nWarpPSVersion = MD2_PS_3_0;
-    m_pOldState->m_nCompPSVersion = MD2_PS_3_0; // Composite shader usage might be irrelevant now
-    m_pState->m_nCompPSVersion = MD2_PS_3_0;   // Composite shader usage might be irrelevant now
-#else
-    m_pOldState->m_nWarpPSVersion = MD2_PS_NONE;
-    m_pState->m_nWarpPSVersion = MD2_PS_NONE;
-    m_pOldState->m_nCompPSVersion = MD2_PS_NONE;
-    m_pState->m_nCompPSVersion = MD2_PS_NONE;
-#endif
+    // Keep the per-preset shader versions loaded from the preset file.
 
     bool bOldPresetUsesWarpShader = (m_pOldState->m_nWarpPSVersion > 0);
     bool bNewPresetUsesWarpShader = (m_pState->m_nWarpPSVersion > 0);
-    // Composite shader flags are less relevant now as logic is merged into warp pass
-    // bool bOldPresetUsesCompShader = (m_pOldState->m_nCompPSVersion > 0);
-    // bool bNewPresetUsesCompShader = (m_pState->m_nCompPSVersion > 0);
+    bool bOldPresetUsesCompShader = (m_pOldState->m_nCompPSVersion > 0);
+    bool bNewPresetUsesCompShader = (m_pState->m_nCompPSVersion > 0);
 
     // note: 'code' is only meaningful if we are BLENDING.
-    // Code might need adjustment if composite shader flags are no longer used for branching
-    int code = (bOldPresetUsesWarpShader ? 8 : 0) |
-               //(bOldPresetUsesCompShader ? 4 : 0) | // Removed Comp shader flags from code calculation
-               (bNewPresetUsesWarpShader ? 2 : 0);// |
-               //(bNewPresetUsesCompShader ? 1 : 0); // Removed Comp shader flags from code calculation
+    int code = (bOldPresetUsesWarpShader ? 8 : 0) | 
+               (bOldPresetUsesCompShader ? 4 : 0) | 
+               (bNewPresetUsesWarpShader ? 2 : 0) | 
+               (bNewPresetUsesCompShader ? 1 : 0);
 
-    RunPerFrameEquations(code);
+	RunPerFrameEquations(code);
 
     LPDIRECT3DDEVICE9 lpDevice = GetDevice();
     if (!lpDevice)
         return;
 
-    // --- Set up common render states ---
+    // set up render state
     {
         DWORD texaddr = (*m_pState->var_pf_wrap > m_fSnapPoint) ? D3DTADDRESS_WRAP : D3DTADDRESS_CLAMP;
-        // lpDevice->SetRenderState(D3DRS_WRAP0, 0); // WRAP0 is deprecated/not standard D3D9
-        lpDevice->SetSamplerState(0, D3DSAMP_ADDRESSU, texaddr);
-        lpDevice->SetSamplerState(0, D3DSAMP_ADDRESSV, texaddr);
-        lpDevice->SetSamplerState(0, D3DSAMP_ADDRESSW, texaddr); // Often unused for 2D textures
-        lpDevice->SetSamplerState(1, D3DSAMP_ADDRESSU, texaddr); // Assuming stage 1 also needs wrapping control
-        lpDevice->SetSamplerState(1, D3DSAMP_ADDRESSV, texaddr);
-        lpDevice->SetSamplerState(1, D3DSAMP_ADDRESSW, texaddr);
+        lpDevice->SetRenderState(D3DRS_WRAP0, 0);//D3DWRAPCOORD_0|D3DWRAPCOORD_1|D3DWRAPCOORD_2|D3DWRAPCOORD_3);
+        //lpDevice->SetRenderState(D3DRS_WRAP0, (*m_pState->var_pf_wrap) ? D3DWRAP_U|D3DWRAP_V|D3DWRAP_W : 0);
+        //lpDevice->SetRenderState(D3DRS_WRAP1, (*m_pState->var_pf_wrap) ? D3DWRAP_U|D3DWRAP_V|D3DWRAP_W : 0);
+        lpDevice->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);//texaddr);
+        lpDevice->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);//texaddr);
+        lpDevice->SetSamplerState(0, D3DSAMP_ADDRESSW, D3DTADDRESS_WRAP);//texaddr);
+        lpDevice->SetSamplerState(1, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
+        lpDevice->SetSamplerState(1, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
+        lpDevice->SetSamplerState(1, D3DSAMP_ADDRESSW, D3DTADDRESS_WRAP);
 
+///        lpDevice->SetRenderState( D3DRS_SHADEMODE, D3DSHADE_GOURAUD );//BRENT
+// 	    lpDevice->SetRenderState( D3DRS_SPECULARENABLE, FALSE ); //BRENT
         lpDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
         lpDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
         lpDevice->SetRenderState( D3DRS_ZWRITEENABLE, FALSE );
+//        lpDevice->SetRenderState( D3DRS_LIGHTING, FALSE ); //BRENT
+ //       lpDevice->SetRenderState( D3DRS_COLORVERTEX, TRUE );//BRENT
         lpDevice->SetRenderState( D3DRS_FILLMODE,  D3DFILL_SOLID );
-        lpDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE ); // Default, will be overridden by drawing functions
+        lpDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
+//	    lpDevice->SetRenderState( D3DRS_AMBIENT, 0xFFFFFFFF );  //?//BRENT
+//        lpDevice->SetRenderState( D3DRS_CLIPPING, TRUE );//BRENT
 
-        // Set default filtering for stages 0 and 1
-        lpDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+        // stages 0 and 1 always just use bilinear filtering.
+	    lpDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
         lpDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-        lpDevice->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR); // Or D3DTEXF_NONE if not using mipmaps
-        lpDevice->SetSamplerState(1, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-        lpDevice->SetSamplerState(1, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-        lpDevice->SetSamplerState(1, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR); // Or D3DTEXF_NONE
+        lpDevice->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+	    lpDevice->SetSamplerState(1, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+	    lpDevice->SetSamplerState(1, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+	    lpDevice->SetSamplerState(1, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
 
-        // Removed fixed-function texture stage states (BRENT comments) as shaders handle this
+        // note: this texture stage state setup works for 0 or 1 texture.
+        // if you set a texture, it will be modulated with the current diffuse color.
+        // if you don't set a texture, it will just use the current diffuse color.
+  //      lpDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE); //BRENT
+	//    lpDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_DIFFUSE); //BRENT
+	//    lpDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TEXTURE); //BRENT
+   //     lpDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE); //BRENT
+	//    lpDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1 ); //BRENT
+   //     lpDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE ); //BRENT
+//			lpDevice->SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_DISABLE); //BRENT
 
-        lpDevice->SetTexture(0, NULL); // Ensure textures are unbound initially
-        lpDevice->SetTexture(1, NULL);
+        // NOTE: don't forget to call SetTexture and SetVertexShader before drawing!
+        // Examples:
+        //      SPRITEVERTEX verts[4];          // has texcoords
+        //   	lpDevice->SetTexture(0, m_sprite_tex);
+        //      lpDevice->SetVertexShader( SPRITEVERTEX_FORMAT );
+        //      
+        //      WFVERTEX verts[4];              // no texcoords
+        //   	lpDevice->SetTexture(0, NULL);
+        //      lpDevice->SetVertexShader( WFVERTEX_FORMAT );
+  
+
+	    lpDevice->SetTexture(0, NULL);
     }
 
-    // --- Blur Pass ---
-    // NOTE: Disabled because BlurPasses likely requires render targets, which are disallowed.
-    // If blur textures (m_lpBlur) can be created *without* D3DUSAGE_RENDERTARGET
-    // and BlurPasses can be modified to write to them via other means (e.g., LockRect/UnlockRect,
-    // or if the platform allows specific texture copy operations without RT usage),
-    // then this could potentially be re-enabled.
-    // if (m_nMaxPSVersion > 0)
-    //    BlurPasses();
+	// Seed feedback once with a black frame so the first warp pass doesn't sample garbage.
+	{
+		static bool s_feedbackSeeded = false;
+		if (!s_feedbackSeeded)
+		{
+			lpDevice->Clear(0, NULL, D3DCLEAR_TARGET, 0x00000000, 1.0f, 0);
+			D3DRECT srcRect = { 0, 0, (LONG)m_nTexSizeX, (LONG)m_nTexSizeY };
+			D3DPOINT destPoint = { 0, 0 };
+			GetDevice()->Resolve(D3DRESOLVE_RENDERTARGET0, &srcRect, m_lpPrevFrame, &destPoint, 0, 0, NULL, 0.0f, 0, NULL);
+			s_feedbackSeeded = true;
+		}
+	}
 
-    // --- Main Warp/Composite Pass (Renders to Back Buffer) ---
-    // This pass reads m_lpPrevFrame, applies warp, decay, gamma, echo, etc.
-    ComputeGridAlphaValues(); // Prepare vertex data (including warp info and blend alpha)
+	// Clear the backbuffer before warping - with single buffer approach, we render directly to backbuffer
+	// Use alpha=1 (0xFF000000) so that SRC_ALPHA blending during preset transitions works correctly.
+	// The original FFP used ALPHAOP=SELECTARG1/DTA_DIFFUSE (vertex alpha only), but our Legacy
+	// shaders need consistent alpha in the pipeline for the blend to function.
+	lpDevice->Clear(0, NULL, D3DCLEAR_TARGET, 0xFF000000, 1.0f, 0);
 
-    // Set the previous frame texture for the warp pass to read
-    // lpDevice->SetTexture(0, m_lpPrevFrame); // WarpedBlit functions should set this
 
-    if (!m_pState->m_bBlending)
+
+    // Set Identity Matrix for Legacy Shaders (c0-c3)
+    // Many legacy shaders rely on matWVP being c0, but we want a pass-through (Identity).
+    {
+        D3DXMATRIX mIdentity;
+        D3DXMatrixIdentity(&mIdentity);
+        lpDevice->SetVertexShaderConstantF(0, (float*)&mIdentity, 4);
+    }
+
+			m_n16BitGamma = 2;
+
+    ComputeGridAlphaValues();
+
+	// do the warping for this frame [warp shader]
+    if (!m_pState->m_bBlending) 
     {
         // no blend
         if (bNewPresetUsesWarpShader)
-            WarpedBlit_Shaders(1, false, false, false, false); // Pass 1 = New Preset
+	        WarpedBlit_Shaders(1, false, false, false, false);
         else
-            WarpedBlit_NoShaders(1, false, false, false, false); // Pass 1 = New Preset
+	        WarpedBlit_NoShaders(1, false, false, false, false);
     }
     else
     {
         // blending
-        // WarpedBlit now handles both warp and composite effects.
-        // Alpha blending is controlled by vertex alpha calculated in ComputeGridAlphaValues.
-        // bAlphaBlend = true enables blending based on vertex alpha.
-        // bFlipAlpha reverses the blend (useful for fade-out).
-        // bCullTiles optimizes by skipping fully transparent triangles.
-        // bFlipCulling changes which alpha values cause culling (0 or 255).
+        // WarpedBlit( nPass,  bAlphaBlend, bFlipAlpha, bCullTiles, bFlipCulling )
+        // note: alpha values go from 0..1 during a blend.
+        // note: bFlipCulling==false means tiles with alpha>0 will draw.
+        //       bFlipCulling==true  means tiles with alpha<255 will draw.
 
         if (bOldPresetUsesWarpShader && bNewPresetUsesWarpShader)
         {
-            // Draw Old Preset (Pass 0), alpha based on (1-blend), cull fully blended-out tiles
-            WarpedBlit_Shaders  (0, true, true,   true, true);
-            // Draw New Preset (Pass 1) blended over the old, alpha based on blend, cull fully blended-out tiles
-            WarpedBlit_Shaders  (1, true, false,   true, false);
+	        WarpedBlit_Shaders  (0, false, false,   true, true);
+	        WarpedBlit_Shaders  (1, true,  false,   true, false);
         }
         else if (!bOldPresetUsesWarpShader && bNewPresetUsesWarpShader)
         {
-            // Draw Old Preset (Pass 0), alpha based on (1-blend), cull fully blended-out tiles
-            WarpedBlit_NoShaders(0, true, true,   true, true);
-            // Draw New Preset (Pass 1) blended over the old, alpha based on blend, cull fully blended-out tiles
-            WarpedBlit_Shaders  (1, true, false,   true, false);
+	        WarpedBlit_NoShaders(0, false, false,   true, true);  
+	        WarpedBlit_Shaders  (1, true,  false,   true, false);
         }
         else if (bOldPresetUsesWarpShader && !bNewPresetUsesWarpShader)
         {
-            // Draw Old Preset (Pass 0), alpha based on (1-blend), cull fully blended-out tiles
-            WarpedBlit_Shaders  (0, true, true,   true, true);
-            // Draw New Preset (Pass 1) blended over the old, alpha based on blend, cull fully blended-out tiles
-            WarpedBlit_NoShaders(1, true, false,   true, false);
+	        WarpedBlit_Shaders  (0, false, false,   true, true);
+	        WarpedBlit_NoShaders(1, true,  false,   true, false);
         }
-        else // !bOldPresetUsesWarpShader && !bNewPresetUsesWarpShader
+        else if (!bOldPresetUsesWarpShader && !bNewPresetUsesWarpShader)
         {
-            // Vertex positions/UVs are already blended in ComputeGridAlphaValues.
-            // Just draw the final blended state using Pass 1 (New Preset's non-shader logic).
-            // No alpha blending needed here as vertex data handles the mix.
-            WarpedBlit_NoShaders(1, false, false, false, false);
+	        //WarpedBlit_NoShaders(0, false, false,   true, true);
+	        //WarpedBlit_NoShaders(1, true,  false,   true, false);
+
+            // special case - all the blending just happens in the vertex UV's, so just pretend there's no blend.
+	        WarpedBlit_NoShaders(1, false, false, false, false);
         }
     }
-    // --- End Main Warp/Composite Pass ---
+
+	// Xbox 360: Blur pass workaround
+	// Original code renders blur passes to separate render targets (m_lpBlur[]).
+	// Xbox 360 cannot use SetRenderTarget to textures, so we:
+	// 1. Resolve the warped backbuffer to m_lpCurFrame (save it)
+	// 2. For each blur pass, set viewport to blur texture size, draw, resolve to m_lpBlur[]
+	// 3. Restore viewport and redraw m_lpCurFrame to backbuffer
+	if (m_nMaxPSVersion > 0)
+	{
+		// Step 1: Save warped frame to m_lpCurFrame before blur corrupts backbuffer
+		{
+			D3DRECT srcRect = { 0, 0, (LONG)m_nTexSizeX, (LONG)m_nTexSizeY };
+			D3DPOINT destPoint = { 0, 0 };
+			lpDevice->Resolve(D3DRESOLVE_RENDERTARGET0, &srcRect, m_lpCurFrame, &destPoint, 0, 0, NULL, 0.0f, 0, NULL);
+		}
+
+		// Step 2: Run blur passes (this corrupts backbuffer but fills m_lpBlur[] textures)
+		BlurPasses();
+
+		// Step 3: Restore warped frame from m_lpCurFrame back to backbuffer
+		{
+			lpDevice->SetTexture(0, m_lpCurFrame);
+			lpDevice->SetVertexShader(g_pVertexShader_Legacy2);
+			lpDevice->SetPixelShader(g_pPixelShader_Legacy2);
+			lpDevice->SetVertexDeclaration(m_pMyVertDecl);
+			lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+			lpDevice->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
+			lpDevice->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
+			lpDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+			lpDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+			
+			MYVERTEX vRestore[4];
+			memset(vRestore, 0, sizeof(vRestore));
+			vRestore[0].x = -1; vRestore[0].y = -1; vRestore[0].z = 0; vRestore[0].Diffuse = 0xFFFFFFFF; vRestore[0].tu = 0; vRestore[0].tv = 0;
+			vRestore[1].x =  1; vRestore[1].y = -1; vRestore[1].z = 0; vRestore[1].Diffuse = 0xFFFFFFFF; vRestore[1].tu = 1; vRestore[1].tv = 0;
+			vRestore[2].x = -1; vRestore[2].y =  1; vRestore[2].z = 0; vRestore[2].Diffuse = 0xFFFFFFFF; vRestore[2].tu = 0; vRestore[2].tv = 1;
+			vRestore[3].x =  1; vRestore[3].y =  1; vRestore[3].z = 0; vRestore[3].Diffuse = 0xFFFFFFFF; vRestore[3].tu = 1; vRestore[3].tv = 1;
+			lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, vRestore, sizeof(MYVERTEX));
+		}
+	}
+
+	// Change the rendertarget back to the original setup
+	lpDevice->SetTexture(0, NULL);
+
+    // Draw motion vectors to the backbuffer AFTER the warp+blur passes.
+    // In the original MilkDrop, motion vectors are drawn to VS[0] (the feedback INPUT
+    // texture) BEFORE the warp pass, so they get warped with everything else. On Xbox 360,
+    // we cannot render to textures (only Resolve to them), so we draw them here instead.
+    // Compromise: motion vectors won't be warped, but they still participate in the
+    // feedback loop (they are included in the Resolve to m_lpPrevFrame below) and are
+    // drawn UNDER shapes/waves/sprites, matching the original's visual layering.
+    // This does NOT disrupt the preset blend alpha pipeline because:
+    //  - The warp blend tile-culling passes are already complete
+    //  - Motion vectors use their own SRC_ALPHA blend (independent of blend progress alpha)
+    //  - DrawMotionVectors() cleans up ALPHABLENDENABLE=FALSE on exit
+    //  - The composite pass uses m_comp_verts alpha, not backbuffer alpha
+    DrawMotionVectors();
+
+    // Draw overlays that should be part of the feedback loop (Shapes, Waves, Sprites)
+    // before resolving to the texture.
+	DrawCustomShapes();
+	DrawCustomWaves();
+	DrawWave(mysound.fWave[0], mysound.fWave[1]);
+	DrawSprites();
+
+	// Resolve warped+shapes backbuffer into m_lpPrevFrame.
+	// This single texture serves as both:
+	// - feedback for NEXT frame's warp pass (reads m_lpPrevFrame)
+	// - source for this frame's composite pass (reads m_lpPrevFrame)
+	// Using a single Resolve avoids Xbox 360 EDRAM issues with double-resolve.
+	// m_lpCurFrame is only used as scratch during blur save/restore.
+	{
+		D3DRECT srcRect = { 0, 0, (LONG)m_nTexSizeX, (LONG)m_nTexSizeY };
+		D3DPOINT destPoint = { 0, 0 };
+		lpDevice->Resolve(D3DRESOLVE_RENDERTARGET0, &srcRect, m_lpPrevFrame, &destPoint, 0, 0, NULL, 0.0f, 0, NULL);
+	}
 
 
-    // --- Overlay Passes (Render to Back Buffer) ---
-    // These draw over the result of the WarpedBlit pass.
-    DrawMotionVectors(); // Draw motion vectors if enabled
-    DrawCustomShapes();
-    DrawCustomWaves();
-    DrawWave(mysound.fWave[0], mysound.fWave[1]); // Draw standard waveform
-    DrawSprites(); // Draw borders and darken center effect
-    DrawUserSprites(); // Draw user-loaded sprites (texmgr)
-    // --- End Overlay Passes ---
+	// show it to the user [composite shader] – sample the previous frame (feedback) and draw final quad
+	if (!m_pState->m_bBlending) 
+	{
+		// no blend
+		if (bNewPresetUsesCompShader)
+			ShowToUser_Shaders(1, false, false, false, false);
+		else
+			ShowToUser_NoShaders();//1, false, false, false, false);
+	}
+	else
+	{
+		// blending
+		// ShowToUser( nPass,  bAlphaBlend, bFlipAlpha, bCullTiles, bFlipCulling )
+		// note: alpha values go from 0..1 during a blend.
+		// note: bFlipCulling==false means tiles with alpha>0 will draw.
+		//       bFlipCulling==true  means tiles with alpha<255 will draw.
 
+		// NOTE: ShowToUser_NoShaders() must always come before ShowToUser_Shaders(), 
+		//        because it always draws the full quad (it can't do tile culling or alpha blending).
+		//        [third case here]
 
-    // --- Remove ShowToUser calls ---
-    // The logic from ShowToUser_NoShaders is now in WarpedBlit_NoShaders.
-    // The logic from ShowToUser_Shaders should be integrated into the composite/warp shader itself.
-    /*
-    // show it to the user [composite shader] - REMOVED
-    if (!m_pState->m_bBlending)
-    { ... }
-    else
-    { ... }
-    */
+		if (bOldPresetUsesCompShader && bNewPresetUsesCompShader)
+		{
+			ShowToUser_Shaders  (0, false, false, true, true);
+			ShowToUser_Shaders  (1, true,  false, true, false);
+		}
+		else if (!bOldPresetUsesCompShader && bNewPresetUsesCompShader)
+		{
+			ShowToUser_NoShaders();
+			ShowToUser_Shaders  (1, true,  false, true, false);
+		}
+		else if (bOldPresetUsesCompShader && !bNewPresetUsesCompShader)
+		{
+			// THA FUNKY REVERSAL
+			ShowToUser_NoShaders();
+			ShowToUser_Shaders  (0, true, true, true, true);
+		}
+		else if (!bOldPresetUsesCompShader && !bNewPresetUsesCompShader)
+		{
+			// special case - all the blending just happens in the blended state vars, so just pretend there's no blend.
+			ShowToUser_NoShaders();//1, false, false, false, false);
+		}
+	}
 
+	// draw audio data and sprites on top of the composited image
+	DrawUserSprites();
 
-    // --- Feedback Update ---
-    // Copy the final back buffer to m_lpPrevFrame for the next frame's feedback
-    // This MUST happen AFTER all drawing for the current frame is complete.
-    LPDIRECT3DSURFACE9 pBackBufferB = NULL;
-    HRESULT hr_rt = GetDevice()->GetRenderTarget(0, &pBackBufferB);
+	// (feedback resolve already done before composite - no post-composite resolve needed)
 
-    if (SUCCEEDED(hr_rt) && pBackBufferB)
-    {
-        // Use Resolve to copy the potentially anti-aliased back buffer to the texture.
-        // Ensure m_lpPrevFrame was created with compatible format and in D3DPOOL_DEFAULT.
-        // If m_lpPrevFrame is D3DPOOL_MANAGED, you might need GetRenderTargetData instead,
-        // but Resolve is generally preferred on Xbox 360 if possible.
-        D3DRECT srcRect = { 0, 0, 1280, 720 }; // Use actual dimensions
-        D3DPOINT destPoint = { 0, 0 };
-
-        HRESULT hr_res = GetDevice()->Resolve(
-            D3DRESOLVE_RENDERTARGET0,
-            &srcRect,
-            m_lpPrevFrame,
-            &destPoint,
-            0,
-            0,
-            NULL,
-            0.0f,
-            0,
-            NULL
-        );
-        // Optional: Add error checking for hr_res if needed
-
-        // Cleanup
-        pBackBufferB->Release();
-    }
-    // --- End Feedback Update ---
 }
 
 void CPlugin::DrawMotionVectors()
@@ -687,8 +750,13 @@ void CPlugin::DrawMotionVectors()
 
         lpDevice->SetTexture(0, NULL);
         lpDevice->SetVertexShader(g_pVertexShader_Legacy1);
+        {
+            D3DXMATRIX mIdentity;
+            D3DXMatrixIdentity(&mIdentity);
+            lpDevice->SetVertexShaderConstantF(0, (float*)&mIdentity, 4);
+        }
 		lpDevice->SetPixelShader(g_pPixelShader_Legacy1);
-        lpDevice->SetFVF(WFVERTEX_FORMAT);
+        lpDevice->SetVertexDeclaration(m_pWfVertDecl);  // Use vertex declaration for Xbox 360
 
         //-------------------------------------------------------
 
@@ -879,202 +947,191 @@ void CPlugin::GetSafeBlurMinMax(CState* pState, float* blur_min, float* blur_max
 
 void CPlugin::BlurPasses()
 {
-    // NOTE: This function likely requires render targets (m_lpBlur textures).
-    // If render targets are strictly disallowed on the target platform (Xbox 360 EDRAM limits),
-    // this function needs to be disabled or completely rewritten.
-    // The code below assumes m_lpBlur CAN be render targets, but reads initial data
-    // from m_lpPrevFrame instead of an intermediate texture.
+    #if (NUM_BLUR_TEX>0)
 
-    #if (NUM_BLUR_TEX > 0)
+        // Note: Blur is currently a little funky.  It blurs the *current* frame after warp;
+        //         this way, it lines up well with the composite pass.  However, if you switch
+        //         presets instantly, to one whose *warp* shader uses the blur texture,
+        //         it will be outdated (just for one frame).  Oh well.  
+        //       This also means that when sampling the blurred textures in the warp shader, 
+        //         they are one frame old.  This isn't too big a deal.  Getting them to match
+        //         up for the composite pass is probably more important.
+
         LPDIRECT3DDEVICE9 lpDevice = GetDevice();
         if (!lpDevice)
             return;
 
-        // Determine how many blur passes are actually needed based on shader usage
-        int passes = min(NUM_BLUR_TEX, m_nHighestBlurTexUsedThisFrame * 2); // *2 for H/V passes
-        if (passes == 0) {
-            m_nHighestBlurTexUsedThisFrame = 0; // Reset if no blur used
+        int passes = min(NUM_BLUR_TEX, m_nHighestBlurTexUsedThisFrame*2);
+        if (passes==0)
             return;
-        }
-
-        // --- Check if m_lpBlur textures are valid render targets ---
-        // This is a placeholder check. Real validation depends on how they were created.
-        bool blurTargetsValid = true;
-        for(int i = 0; i < passes; ++i) {
-            if (!m_lpBlur[i]) {
-                blurTargetsValid = false;
-                break;
-            }
-            // Optionally, check texture description for D3DUSAGE_RENDERTARGET if possible
-        }
-        if (!blurTargetsValid) {
-             m_nHighestBlurTexUsedThisFrame = 0; // Reset if textures invalid
-             return; // Cannot perform blur if textures aren't valid RTs
-        }
-        // --- End Check ---
 
 
-        // Set common states for blur passes
-        lpDevice->SetVertexShader( m_BlurShaders[0].vs.ptr ); // Assuming one VS for all blur passes
+        //lpDevice->SetFVF( MYVERTEX_FORMAT );
+        lpDevice->SetVertexShader( m_BlurShaders[0].vs.ptr );
         lpDevice->SetVertexDeclaration(m_pMyVertDecl);
         lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-        DWORD wrap = D3DTADDRESS_CLAMP; // Blur usually clamps
+        DWORD wrap   = D3DTADDRESS_CLAMP;//D3DTADDRESS_WRAP;// : D3DTADDRESS_CLAMP;
         lpDevice->SetSamplerState(0, D3DSAMP_ADDRESSU, wrap);
         lpDevice->SetSamplerState(0, D3DSAMP_ADDRESSV, wrap);
         lpDevice->SetSamplerState(0, D3DSAMP_ADDRESSW, wrap);
         lpDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
         lpDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-        lpDevice->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR); // Or NONE
-        // lpDevice->SetSamplerState(0, D3DSAMP_MAXANISOTROPY, 1); // Anisotropy usually not needed for blur
+        lpDevice->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+        lpDevice->SetSamplerState(0, D3DSAMP_MAXANISOTROPY, 1);
 
-        // Clear texture bindings for safety
-        for (int stage = 0; stage < 16; stage++) // Use a reasonable upper limit
-            lpDevice->SetTexture(stage, NULL);
+        IDirect3DSurface9* pNewTarget = NULL;
 
-        // Set up fullscreen quad vertices
+        // clear texture bindings
+        for (int i=0; i<16; i++)
+            lpDevice->SetTexture(i, NULL);
+
+        // set up fullscreen quad
         MYVERTEX v[4];
-        v[0].x = -1; v[0].y =  1; v[0].z = 0; v[0].tu = 0; v[0].tv = 0; // Top-left
-        v[1].x =  1; v[1].y =  1; v[1].z = 0; v[1].tu = 1; v[1].tv = 0; // Top-right
-        v[2].x = -1; v[2].y = -1; v[2].z = 0; v[2].tu = 0; v[2].tv = 1; // Bottom-left
-        v[3].x =  1; v[3].y = -1; v[3].z = 0; v[3].tu = 1; v[3].tv = 1; // Bottom-right
-        // Set dummy diffuse color if needed by FVF/shader
-        v[0].Diffuse = v[1].Diffuse = v[2].Diffuse = v[3].Diffuse = 0xFFFFFFFF;
+    
+        v[0].x = -1; 
+        v[0].y = -1;
+        v[1].x =  1; 
+        v[1].y = -1;
+        v[2].x = -1; 
+        v[2].y =  1;
+        v[3].x =  1; 
+        v[3].y =  1;
 
-        // Get blur parameters
-        const float w[8] = { 4.0f, 3.8f, 3.5f, 2.9f, 1.9f, 1.2f, 0.7f, 0.3f }; // Example weights
+        v[0].tu = 0;    //kiv: upside-down?
+        v[0].tv = 0;
+        v[1].tu = 1;
+        v[1].tv = 0;
+        v[2].tu = 0;
+        v[2].tv = 1;
+        v[3].tu = 1;
+        v[3].tv = 1;
+
+        const float w[8] = { 4.0f, 3.8f, 3.5f, 2.9f, 1.9f, 1.2f, 0.7f, 0.3f };  //<- user can specify these
         float edge_darken = (float)*m_pState->var_pf_blur1_edge_darken;
         float blur_min[3], blur_max[3];
         GetSafeBlurMinMax(m_pState, blur_min, blur_max);
-        float fscale[3], fbias[3];
-        // Calculate scale/bias for progressive blur range mapping (as before)
-        // ... (calculation code remains the same) ...
+
+        float fscale[3];
+        float fbias[3];
+
+        // figure out the progressive scale & bias needed, at each step, 
+        // to go from one [min..max] range to the next.
         float temp_min, temp_max;
-        if (blur_max[0] - blur_min[0] < 1e-6f) { // Avoid division by zero
-             fscale[0] = 1.0f; fbias[0] = 0.0f;
-        } else {
-             fscale[0] = 1.0f / (blur_max[0] - blur_min[0]);
-             fbias [0] = -blur_min[0] * fscale[0];
-        }
-        temp_min  = (blur_min[1] - blur_min[0]) * fscale[0] + fbias[0]; // Map to [0..1] range of previous pass
-        temp_max  = (blur_max[1] - blur_min[0]) * fscale[0] + fbias[0];
-        if (temp_max - temp_min < 1e-6f) {
-             fscale[1] = 1.0f; fbias[1] = 0.0f;
-        } else {
-             fscale[1] = 1.0f / (temp_max - temp_min);
-             fbias [1] = -temp_min * fscale[1];
-        }
-        temp_min  = (blur_min[2] - blur_min[1]) * fscale[1] + fbias[1]; // Map to [0..1] range of previous pass
-        temp_max  = (blur_max[2] - blur_min[1]) * fscale[1] + fbias[1];
-        if (temp_max - temp_min < 1e-6f) {
-             fscale[2] = 1.0f; fbias[2] = 0.0f;
-        } else {
-             fscale[2] = 1.0f / (temp_max - temp_min);
-             fbias [2] = -temp_min * fscale[2];
-        }
+        fscale[0] = 1.0f / (blur_max[0] - blur_min[0]);
+        fbias [0] = -blur_min[0] * fscale[0];
+        temp_min  = (blur_min[1] - blur_min[0]) / (blur_max[0] - blur_min[0]);
+        temp_max  = (blur_max[1] - blur_min[0]) / (blur_max[0] - blur_min[0]);
+        fscale[1] = 1.0f / (temp_max - temp_min);
+        fbias [1] = -temp_min * fscale[1];
+        temp_min  = (blur_min[2] - blur_min[1]) / (blur_max[1] - blur_min[1]);
+        temp_max  = (blur_max[2] - blur_min[1]) / (blur_max[1] - blur_min[1]);
+        fscale[2] = 1.0f / (temp_max - temp_min);
+        fbias [2] = -temp_min * fscale[2];
 
+        // Xbox 360: Save original viewport - we'll resize for each blur pass
+        D3DVIEWPORT9 vpOrig;
+        lpDevice->GetViewport(&vpOrig);
 
-        // --- Blur Loop ---
-        LPDIRECT3DSURFACE9 pOldRT = NULL;
-        lpDevice->GetRenderTarget(0, &pOldRT); // Save original back buffer RT
-
-        for (int i = 0; i < passes; i++)
+        // note: warped blit just rendered from VS0 to VS1.
+        for (int i=0; i<passes; i++)
         {
-            // Set source texture: Previous frame for first pass, previous blur tex otherwise
-            lpDevice->SetTexture(0, (i == 0) ? m_lpPrevFrame : m_lpBlur[i - 1]);
+            // Xbox 360: Set viewport to blur texture size for this pass
+            D3DVIEWPORT9 vpBlur = { 0, 0, (DWORD)m_nBlurTexW[i], (DWORD)m_nBlurTexH[i], 0.0f, 1.0f };
+            lpDevice->SetViewport(&vpBlur);
 
-            // Set Render Target to the current blur texture
-            LPDIRECT3DSURFACE9 pBlurTargetSurface = NULL;
-            // m_lpBlur[i] should be valid based on earlier check
-            m_lpBlur[i]->GetSurfaceLevel(0, &pBlurTargetSurface);
+			// hook up correct source texture - assume there is only one, at stage 0
+			lpDevice->SetTexture(0, (i==0) ? m_lpCurFrame : m_lpBlur[i-1]);
 
-            if (!pBlurTargetSurface) {
-                // Should not happen if initial check passed, but handle defensively
-                lpDevice->SetTexture(0, NULL); // Unbind source
-                continue;
-            }
+            // set pixel shader
+            lpDevice->SetPixelShader (m_BlurShaders[i%2].ps.ptr);
 
-            lpDevice->SetRenderTarget(0, pBlurTargetSurface);
-            pBlurTargetSurface->Release(); // RT holds a reference now
+            // set constants
+            LPD3DXCONSTANTTABLE pCT = m_BlurShaders[i%2].ps.CT;
+            D3DXHANDLE* h = m_BlurShaders[i%2].ps.params.const_handles;
 
-            // Set pixel shader for this pass (horizontal/vertical)
-            lpDevice->SetPixelShader(m_BlurShaders[i % 2].ps.ptr);
+			int srcw = (i==0) ? m_nTexSizeX : m_nBlurTexW[i-1];
+			int srch = (i==0) ? m_nTexSizeY : m_nBlurTexH[i-1];
+            D3DXVECTOR4 srctexsize = D3DXVECTOR4( (float)srcw, (float)srch, 1.0f/(float)srcw, 1.0f/(float)srch );
 
-            // Set shader constants
-            LPD3DXCONSTANTTABLE pCT = m_BlurShaders[i % 2].ps.CT;
-            D3DXHANDLE* h = m_BlurShaders[i % 2].ps.params.const_handles;
+            float fscale_now = fscale[i/2];
+            float fbias_now  = fbias[i/2];
 
-            int srcw = (i == 0) ? GetWidth() : m_nBlurTexW[i - 1];
-            int srch = (i == 0) ? GetHeight() : m_nBlurTexH[i - 1];
-            D3DXVECTOR4 srctexsize = D3DXVECTOR4((float)srcw, (float)srch, (srcw > 0) ? 1.0f / (float)srcw : 0.0f, (srch > 0) ? 1.0f / (float)srch : 0.0f);
-
-            float fscale_now = fscale[i / 2];
-            float fbias_now = fbias[i / 2];
-
-            // Set constants based on pass type (horizontal/vertical)
-            // ... (constant setting logic remains the same) ...
-            if (i%2==0)
+            if (i%2==0) 
             {
                 // pass 1 (long horizontal pass)
+                //-------------------------------------
                 const float w1 = w[0] + w[1];
                 const float w2 = w[2] + w[3];
                 const float w3 = w[4] + w[5];
                 const float w4 = w[6] + w[7];
-                const float d1 = (w1 > 1e-6f) ? (0 + 2*w[1]/w1) : 0;
-                const float d2 = (w2 > 1e-6f) ? (2 + 2*w[3]/w2) : 2;
-                const float d3 = (w3 > 1e-6f) ? (4 + 2*w[5]/w3) : 4;
-                const float d4 = (w4 > 1e-6f) ? (6 + 2*w[7]/w4) : 6;
-                const float w_sum = w1+w2+w3+w4;
-                const float w_div = (w_sum > 1e-6f) ? (0.5f/w_sum) : 0.0f;
+                const float d1 = 0 + 2*w[1]/w1;
+                const float d2 = 2 + 2*w[3]/w2;
+                const float d3 = 4 + 2*w[5]/w3;
+                const float d4 = 6 + 2*w[7]/w4;
+                const float w_div = 0.5f/(w1+w2+w3+w4);
+                //-------------------------------------
+                //float4 _c0; // source texsize (.xy), and inverse (.zw)
+                //float4 _c1; // w1..w4
+                //float4 _c2; // d1..d4
+                //float4 _c3; // scale, bias, w_div, 0
+                //-------------------------------------
                 if (h[0]) pCT->SetVector( lpDevice, h[0], &srctexsize );
                 if (h[1]) pCT->SetVector( lpDevice, h[1], &D3DXVECTOR4( w1,w2,w3,w4 ));
                 if (h[2]) pCT->SetVector( lpDevice, h[2], &D3DXVECTOR4( d1,d2,d3,d4 ));
                 if (h[3]) pCT->SetVector( lpDevice, h[3], &D3DXVECTOR4( fscale_now,fbias_now,w_div,0));
             }
-            else
+            else 
             {
                 // pass 2 (short vertical pass)
+                //-------------------------------------
                 const float w1 = w[0]+w[1] + w[2]+w[3];
                 const float w2 = w[4]+w[5] + w[6]+w[7];
-                const float d1 = (w1 > 1e-6f) ? (0 + 2*((w[2]+w[3])/w1)) : 0;
-                const float d2 = (w2 > 1e-6f) ? (2 + 2*((w[6]+w[7])/w2)) : 2;
-                const float w_sum = (w1+w2);
-                const float w_div = (w_sum > 1e-6f) ? (1.0f/(w_sum*2)) : 0.0f;
+                const float d1 = 0 + 2*((w[2]+w[3])/w1);
+                const float d2 = 2 + 2*((w[6]+w[7])/w2);
+                const float w_div = 1.0f/((w1+w2)*2);
+                //-------------------------------------
+                //float4 _c0; // source texsize (.xy), and inverse (.zw)
+                //float4 _c5; // w1,w2,d1,d2
+                //float4 _c6; // w_div, edge_darken_c1, edge_darken_c2, edge_darken_c3
+                //-------------------------------------
                 if (h[0]) pCT->SetVector( lpDevice, h[0], &srctexsize );
                 if (h[5]) pCT->SetVector( lpDevice, h[5], &D3DXVECTOR4( w1,w2,d1,d2 ));
-                if (h[6])
+                if (h[6]) 
                 {
-                    if (i==1) // Only darken edges on the very first vertical pass
-                        pCT->SetVector( lpDevice, h[6], &D3DXVECTOR4( w_div,(1-edge_darken),edge_darken,5.0f ));
+                    // note: only do this first time; if you do it many times, 
+                    // then the super-blurred levels will have big black lines along the top & left sides.
+                    if (i==1)
+                        pCT->SetVector( lpDevice, h[6], &D3DXVECTOR4( w_div,(1-edge_darken),edge_darken,5.0f )); //darken edges
                     else
-                        pCT->SetVector( lpDevice, h[6], &D3DXVECTOR4( w_div,1.0f,0.0f,5.0f ));
+                        pCT->SetVector( lpDevice, h[6], &D3DXVECTOR4( w_div,1.0f,0.0f,5.0f )); // don't darken
                 }
             }
 
-
-            // Draw fullscreen quad (renders to m_lpBlur[i])
-            // Use DrawPrimitiveUP with TRIANGLESTRIP
+            // draw fullscreen quad
             lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, v, sizeof(MYVERTEX));
 
-            // Clear texture binding for the next pass
+            // Xbox 360: Resolve backbuffer to blur texture (can't use SetRenderTarget)
+            {
+                D3DRECT srcRect = { 0, 0, (LONG)m_nBlurTexW[i], (LONG)m_nBlurTexH[i] };
+                D3DPOINT destPoint = { 0, 0 };
+                lpDevice->Resolve(D3DRESOLVE_RENDERTARGET0, &srcRect, m_lpBlur[i], &destPoint, 0, 0, NULL, 0.0f, 0, NULL);
+            }
+
+            // clear texture bindings
             lpDevice->SetTexture(0, NULL);
         }
 
-        // Restore original render target (back buffer)
-        if (pOldRT) {
-            lpDevice->SetRenderTarget(0, pOldRT);
-            pOldRT->Release();
-        }
+        // Xbox 360: Restore original viewport
+        lpDevice->SetViewport(&vpOrig);
 
-        // Restore default shaders and FVF
-        lpDevice->SetPixelShader( NULL ); // Or restore previous if needed
-        lpDevice->SetVertexShader( NULL ); // Or restore previous if needed
-        // lpDevice->SetFVF( MYVERTEX_FORMAT ); // Restore FVF if changed
+        lpDevice->SetPixelShader( g_pPixelShader_Legacy2 );
+        lpDevice->SetVertexShader( g_pVertexShader_Legacy2 );
+        lpDevice->SetTexture(0, NULL);
+        lpDevice->SetVertexDeclaration(m_pMyVertDecl);  // Use vertex declaration for Xbox 360
+    #endif
 
-    #endif // (NUM_BLUR_TEX > 0)
-
-    m_nHighestBlurTexUsedThisFrame = 0; // Reset for next frame regardless
+    m_nHighestBlurTexUsedThisFrame = 0;
 }
-
 
 void CPlugin::ComputeGridAlphaValues()
 {
@@ -1262,44 +1319,79 @@ void CPlugin::ComputeGridAlphaValues()
 
 void CPlugin::WarpedBlit_NoShaders(int nPass, bool bAlphaBlend, bool bFlipAlpha, bool bCullTiles, bool bFlipCulling)
 {
+//	MungeFPCW(NULL);	// puts us in single-precision mode & disables exceptions
+
     LPDIRECT3DDEVICE9 lpDevice = GetDevice();
     if (!lpDevice)
         return;
 
-    // If preset is invalid, just clear to black and exit.
     if (!wcscmp(m_pState->m_szDesc, INVALID_PRESET_DESC))
     {
+        // if no valid preset loaded, clear the target to black, and return
         lpDevice->Clear(0, NULL, D3DCLEAR_TARGET, 0x00000000, 1.0f, 0);
         return;
     }
 
-    // --- Setup for Warped Blit ---
-    lpDevice->SetTexture(0, m_lpPrevFrame); // Read previous frame for feedback/warp source
-    lpDevice->SetVertexShader( g_pVertexShader_Legacy2 ); // Assumes this handles vertex warp
-    lpDevice->SetPixelShader( g_pPixelShader_Legacy2 );   // Basic texture sampling
-    lpDevice->SetFVF( MYVERTEX_FORMAT );
+	lpDevice->SetTexture(0, m_lpPrevFrame);
 
-    // Set sampler states (filtering, wrapping)
+    lpDevice->SetVertexShader( g_pVertexShader_Legacy2 );
+    {
+        D3DXMATRIX mIdentity;
+        D3DXMatrixIdentity(&mIdentity);
+        lpDevice->SetVertexShaderConstantF(0, (float*)&mIdentity, 4);
+    }
+    lpDevice->SetPixelShader( g_pPixelShader_Legacy2 );
+    lpDevice->SetVertexDeclaration(m_pMyVertDecl);  // Use vertex declaration for Xbox 360
+    lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+
+    // stages 0 and 1 always just use bilinear filtering.
+	lpDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+    lpDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+    lpDevice->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+	lpDevice->SetSamplerState(1, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+	lpDevice->SetSamplerState(1, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+	lpDevice->SetSamplerState(1, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+
+    // note: this texture stage state setup works for 0 or 1 texture.
+    // if you set a texture, it will be modulated with the current diffuse color.
+    // if you don't set a texture, it will just use the current diffuse color.
+//    lpDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+//	lpDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_DIFFUSE);
+//	lpDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TEXTURE);
+//    lpDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
+//	lpDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1 );
+ //   lpDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE );
+ //   lpDevice->SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
+
     DWORD texaddr = (*m_pState->var_pf_wrap > m_fSnapPoint) ? D3DTADDRESS_WRAP : D3DTADDRESS_CLAMP;
     lpDevice->SetSamplerState(0, D3DSAMP_ADDRESSU, texaddr);
     lpDevice->SetSamplerState(0, D3DSAMP_ADDRESSV, texaddr);
     lpDevice->SetSamplerState(0, D3DSAMP_ADDRESSW, texaddr);
-    lpDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-    lpDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-    lpDevice->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR); // Or NONE if not using mipmaps
 
-    // --- Apply Decay ---
-    float fDecay = (float)(*m_pState->var_pf_decay);
-    // Adjust decay for 16-bit targets if necessary (code omitted for brevity, but was present)
-    // Clamp decay to avoid full black/white unless intended
-    fDecay = max(0.0f, min(1.0f, fDecay));
-    D3DCOLOR cDecay = D3DCOLOR_RGBA_01(fDecay, fDecay, fDecay, 1.0f); // Base color for modulation
+	// decay
+	float fDecay = (float)(*m_pState->var_pf_decay);
 
-    // --- Setup Blend States for Warp Pass ---
+	//if (m_pState->m_bBlending)
+	//	fDecay = fDecay*(fCosineBlend) + (1.0f-fCosineBlend)*((float)(*m_pOldState->var_pf_decay));
+
+	if (m_n16BitGamma > 0 && 
+        (D3DFMT_X8R8G8B8==D3DFMT_R5G6B5 || D3DFMT_X8R8G8B8==D3DFMT_X1R5G5B5 || D3DFMT_X8R8G8B8==D3DFMT_A1R5G5B5 || D3DFMT_X8R8G8B8==D3DFMT_A4R4G4B4) && 
+        fDecay < 0.9999f)
+    {
+		fDecay = min(fDecay, (32.0f - m_n16BitGamma)/32.0f);
+    }
+
+	D3DCOLOR cDecay = D3DCOLOR_RGBA_01(fDecay,fDecay,fDecay,1);
+
+	// hurl the triangle strips at the video card
+	int poly;
+	for (poly=0; poly<(m_nGridX+1)*2; poly++)
+		m_verts_temp[poly].Diffuse = cDecay;
+
     if (bAlphaBlend)
     {
         lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-        if (bFlipAlpha)
+        if (bFlipAlpha) 
         {
             lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_INVSRCALPHA);
             lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_SRCALPHA);
@@ -1310,260 +1402,60 @@ void CPlugin::WarpedBlit_NoShaders(int nPass, bool bAlphaBlend, bool bFlipAlpha,
             lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
         }
     }
-    else
-    {
+    else 
         lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-    }
 
-    // --- Draw Warped Mesh ---
-    int nAlphaTestValue = bFlipCulling ? 1 : 0;
-    MYVERTEX tempv[1024 * 3]; // Consider making this dynamic or checking against max verts
-    int max_verts_in_batch = sizeof(tempv)/sizeof(tempv[0]);
-    int max_prims_per_batch = min( GetCaps()->MaxPrimitiveCount, max_verts_in_batch / 3) - 4; // -4 for safety margin
-    if (max_prims_per_batch <= 0) max_prims_per_batch = 1; // Ensure at least 1 primitive can be drawn
+    int nAlphaTestValue = 0;
+    if (bFlipCulling)
+        nAlphaTestValue = 1-nAlphaTestValue;
 
-    int primCount = m_nGridX * m_nGridY * 2;
+    // Hurl the triangles at the video card.
+    // We're going to un-index it, so that we don't stress any crappy (AHEM intel g33)
+    //  drivers out there.  
+    // If we're blending, we'll skip any polygon that is all alpha-blended out.
+    // This also respects the MaxPrimCount limit of the video card.
+    MYVERTEX tempv[1024 * 3];
+    int max_prims_per_batch = min( GetCaps()->MaxPrimitiveCount, (sizeof(tempv)/sizeof(tempv[0]))/3) - 4;
+    int primCount = m_nGridX*m_nGridY*2;  
     int src_idx = 0;
-    while (src_idx < primCount * 3)
+    int prims_sent = 0;
+    while (src_idx < primCount*3)
     {
         int prims_queued = 0;
-        int verts_queued = 0; // Track vertices added to tempv
-        while (prims_queued < max_prims_per_batch && src_idx < primCount * 3)
+        int i=0;
+        while (prims_queued < max_prims_per_batch && src_idx < primCount*3)
         {
-            // Check if adding 3 more verts exceeds buffer
-            if (verts_queued + 3 > max_verts_in_batch) break;
-
-            // Store starting index in case we need to remove the triangle
-            int current_vert_idx = verts_queued;
-
-            // Copy 3 verts for a triangle
-            for (int j = 0; j < 3; j++)
+            // copy 3 verts
+            for (int j=0; j<3; j++) 
             {
-                int mesh_vert_index = m_indices_list[src_idx++];
-                // Basic bounds check for safety, though indices should be valid
-                if (mesh_vert_index < 0 || mesh_vert_index >= (m_nGridX + 1) * (m_nGridY + 1)) {
-                     // Handle error: skip triangle, log, assert?
-                     src_idx -= j; // Backtrack index
-                     verts_queued = current_vert_idx; // Reset vertex count for this attempt
-                     goto next_triangle_attempt; // Skip rest of loop for this triangle
-                }
-
-                tempv[verts_queued] = m_verts[mesh_vert_index];
-                // Apply decay color (modulates texture), keep blend alpha from vertex
-                tempv[verts_queued].Diffuse = (cDecay & 0x00FFFFFF) | (tempv[verts_queued].Diffuse & 0xFF000000);
-                // Flip Y for D3D coordinate system if mesh wasn't already set up this way
-                // tempv[verts_queued].y *= -1.0f; // Assuming mesh Y is already -1 to 1 based on ComputeGridAlphaValues
-                verts_queued++;
+                tempv[i++] = m_verts[ m_indices_list[src_idx++] ];
+                // don't forget to flip sign on Y and factor in the decay color!:
+                tempv[i-1].y *= -1;
+		        tempv[i-1].Diffuse = (cDecay & 0x00FFFFFF) | (tempv[i-1].Diffuse & 0xFF000000);      
             }
-
-            // Cull triangle if blending and alpha is zero/one depending on flip
             if (bCullTiles)
             {
-                DWORD d1 = (tempv[verts_queued - 3].Diffuse >> 24);
-                DWORD d2 = (tempv[verts_queued - 2].Diffuse >> 24);
-                DWORD d3 = (tempv[verts_queued - 1].Diffuse >> 24);
+                DWORD d1 = (tempv[i-3].Diffuse >> 24);
+                DWORD d2 = (tempv[i-2].Diffuse >> 24);
+                DWORD d3 = (tempv[i-1].Diffuse >> 24);
                 bool bIsNeeded;
-                if (nAlphaTestValue) // Cull if alpha is 255 (flipped)
-                    bIsNeeded = ((d1 & d2 & d3) < 255);
-                else // Cull if alpha is 0
-                    bIsNeeded = ((d1 | d2 | d3) > 0);
-
-                if (!bIsNeeded) {
-                    verts_queued -= 3; // Remove triangle vertices from buffer
-                } else {
+                if (nAlphaTestValue) 
+                    bIsNeeded = ((d1 & d2 & d3) < 255);//(d1 < 255) || (d2 < 255) || (d3 < 255);
+                else
+                    bIsNeeded = ((d1|d2|d3) > 0);//(d1 > 0) || (d2 > 0) || (d3 > 0);
+                if (!bIsNeeded) 
+                    i -= 3;
+                else
                     prims_queued++;
-                }
             }
             else
-            {
                 prims_queued++;
-            }
-            next_triangle_attempt:; // Label for goto
         }
-        if (prims_queued > 0)
-            lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, prims_queued, tempv, sizeof(MYVERTEX));
+        if (prims_queued > 0) 
+            lpDevice->DrawPrimitiveUP( D3DPT_TRIANGLELIST, prims_queued, tempv, sizeof(MYVERTEX) );
     }
 
-    // --- Apply Post-Warp Effects (Integrated from ShowToUser_NoShaders) ---
-    // Reset blend state after main warp draw
     lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-
-    // Prepare a full-screen quad for post-processing effects
-    SPRITEVERTEX vPost[4];
-    // Setup vPost vertices for a full-screen quad (-1 to 1) with UVs (0 to 1)
-    vPost[0].x = -1.0f; vPost[0].y =  1.0f; vPost[0].z = 0.0f; vPost[0].tu = 0.0f; vPost[0].tv = 0.0f; vPost[0].Diffuse = 0xFFFFFFFF;
-    vPost[1].x =  1.0f; vPost[1].y =  1.0f; vPost[1].z = 0.0f; vPost[1].tu = 1.0f; vPost[1].tv = 0.0f; vPost[1].Diffuse = 0xFFFFFFFF;
-    vPost[2].x = -1.0f; vPost[2].y = -1.0f; vPost[2].z = 0.0f; vPost[2].tu = 0.0f; vPost[2].tv = 1.0f; vPost[2].Diffuse = 0xFFFFFFFF;
-    vPost[3].x =  1.0f; vPost[3].y = -1.0f; vPost[3].z = 0.0f; vPost[3].tu = 1.0f; vPost[3].tv = 1.0f; vPost[3].Diffuse = 0xFFFFFFFF;
-
-    // Set FVF for post-processing quad
-    lpDevice->SetFVF( SPRITEVERTEX_FORMAT );
-    // Use simple pass-through shaders for post-processing via blend states
-    lpDevice->SetVertexShader( g_pVertexShader_Legacy3 ); // Simple VS
-    lpDevice->SetPixelShader( g_pPixelShader_Legacy3 );   // Simple PS (might just output diffuse color)
-
-
-    // Apply effects using blend states. This requires careful ordering and
-    // knowledge of available blend ops on Xbox 360.
-
-    // --- Video Echo ---
-    // This is difficult without render targets. A simple approach is to redraw
-    // the *warped mesh* again with modified UVs and alpha blending.
-    float fVideoEchoZoom        = (float)(*m_pState->var_pf_echo_zoom);
-    float fVideoEchoAlpha       = (float)(*m_pState->var_pf_echo_alpha);
-    int   nVideoEchoOrientation = (int)  (*m_pState->var_pf_echo_orient) % 4;
-
-    // Handle blending transition for orientation change
-    if (m_pState->m_bBlending &&
-        m_pState->m_fVideoEchoAlpha.eval(GetTime()) > 0.01f && // Check current time eval
-        m_pOldState->m_fVideoEchoAlpha.eval(-1) > 0.01f && // Check old state base value
-        m_pState->m_nVideoEchoOrientation != m_pOldState->m_nVideoEchoOrientation)
-    {
-        if (m_pState->m_fBlendProgress < m_fSnapPoint)
-        {
-            nVideoEchoOrientation = m_pOldState->m_nVideoEchoOrientation;
-            // Fade out the old orientation's echo
-            fVideoEchoAlpha *= (1.0f - m_pState->m_fBlendProgress / m_fSnapPoint);
-        }
-        else
-        {
-             // Fade in the new orientation's echo
-             fVideoEchoAlpha *= (m_pState->m_fBlendProgress - m_fSnapPoint) / (1.0f - m_fSnapPoint);
-        }
-    }
-    fVideoEchoAlpha = max(0.0f, min(1.0f, fVideoEchoAlpha)); // Clamp alpha
-
-
-    if (fVideoEchoAlpha > 0.001f && fVideoEchoZoom != 1.0f) // Only draw if echo is visible and zoom != 1
-    {
-        lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-        // Additive blending for echo is common, but alpha blend might be desired
-        // lpDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
-        // lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
-        lpDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-        lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-
-        // Need to redraw the warped mesh (m_verts) with modified UVs based on echo zoom/orientation
-        // This requires recalculating UVs similar to ComputeGridAlphaValues but applying echo transform
-        // For simplicity here, we'll skip the complex redraw. A full implementation
-        // would iterate through m_verts, calculate echo UVs, apply echo alpha, and draw.
-        // Placeholder: Draw a simple blended quad as a visual cue (won't look like real echo)
-        /*
-        D3DCOLOR echoColor = D3DCOLOR_RGBA_01(fVideoEchoAlpha, fVideoEchoAlpha, fVideoEchoAlpha, fVideoEchoAlpha);
-        vPost[0].Diffuse = vPost[1].Diffuse = vPost[2].Diffuse = vPost[3].Diffuse = echoColor;
-        lpDevice->SetTexture(0, m_lpPrevFrame); // Echo samples previous frame
-        // Setup UVs based on zoom/orientation - complex part omitted
-        lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, vPost, sizeof(SPRITEVERTEX));
-        */
-        // NOTE: Proper video echo without RTs is non-trivial. Consider disabling or simplifying.
-        lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE); // Reset blend state
-    }
-
-
-    // --- Gamma Correction ---
-    float fGammaAdj = (float)(*m_pState->var_pf_gamma);
-    fGammaAdj = max(1.0f, fGammaAdj); // Gamma adjustment usually starts from 1.0
-
-    if (fGammaAdj > 1.001f) // Only apply if gamma > 1
-    {
-        int nPasses = (int)(fGammaAdj - 1.0f); // Number of full additive passes
-        float gamma_remainder = fGammaAdj - 1.0f - nPasses; // Fractional part for final pass
-
-        lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-        lpDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
-        lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE); // Additive blend
-        lpDevice->SetTexture(0, NULL); // Don't sample texture for gamma pass
-
-        // Draw full brightness quads additively
-        vPost[0].Diffuse = vPost[1].Diffuse = vPost[2].Diffuse = vPost[3].Diffuse = 0xFFFFFFFF; // White, full alpha
-        for (int nPass = 0; nPass < nPasses; nPass++)
-        {
-            lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, vPost, sizeof(SPRITEVERTEX));
-        }
-
-        // Draw final fractional gamma pass
-        if (gamma_remainder > 0.001f)
-        {
-            BYTE intensity = (BYTE)(gamma_remainder * 255.0f);
-            D3DCOLOR gammaColor = D3DCOLOR_RGBA(intensity, intensity, intensity, intensity); // Use intensity for alpha too? Or 255?
-            vPost[0].Diffuse = vPost[1].Diffuse = vPost[2].Diffuse = vPost[3].Diffuse = gammaColor;
-            lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, vPost, sizeof(SPRITEVERTEX));
-        }
-        lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-    }
-
-
-    // --- Brighten/Darken/Invert/Solarize ---
-    // These require specific D3DBLEND ops. Check Xbox 360 caps.
-    lpDevice->SetTexture(0, NULL); // Effects applied via blend ops, no texture needed
-
-    // Invert
-    if (*m_pState->var_pf_invert > m_fSnapPoint && (GetCaps()->SrcBlendCaps & D3DPBLENDCAPS_INVDESTCOLOR))
-    {
-        lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-        lpDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_INVDESTCOLOR); // Source = 1 - DestColor
-        lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);       // Dest = Source * SrcBlend = 1 - DestColor
-        vPost[0].Diffuse = vPost[1].Diffuse = vPost[2].Diffuse = vPost[3].Diffuse = 0xFFFFFFFF; // Opaque white quad (doesn't matter)
-        lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, vPost, sizeof(SPRITEVERTEX));
-        lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-    }
-
-    // Darken (Modulate by self)
-    if (*m_pState->var_pf_darken > m_fSnapPoint && (GetCaps()->DestBlendCaps & D3DPBLENDCAPS_DESTCOLOR))
-    {
-        lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-        lpDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ZERO);        // Source = 0
-        lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_DESTCOLOR);  // Dest = Dest * DestBlend = DestColor * DestColor
-        vPost[0].Diffuse = vPost[1].Diffuse = vPost[2].Diffuse = vPost[3].Diffuse = 0xFFFFFFFF; // Doesn't matter
-        lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, vPost, sizeof(SPRITEVERTEX));
-        lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-    }
-
-    // Brighten (Screen blend: 1 - (1-Dest)*(1-Dest)) - Approximated by additive blend?
-    // True screen blend isn't directly available. Additive is a common substitute.
-    if (*m_pState->var_pf_brighten > m_fSnapPoint)
-    {
-        lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-        lpDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);       // Source = 1
-        lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);      // Dest = Dest + Source = Dest + 1 (Clamped)
-        // This brightens but doesn't exactly match screen blend.
-        // A better approximation might involve multiple passes or shader logic.
-        vPost[0].Diffuse = vPost[1].Diffuse = vPost[2].Diffuse = vPost[3].Diffuse = D3DCOLOR_RGBA(64,64,64,64); // Add a small amount?
-        lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, vPost, sizeof(SPRITEVERTEX));
-        lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-    }
-
-
-    // Solarize (Complex blend, often requires multiple passes or shader)
-    // Example: Invert -> Darken -> Invert might approximate some solarize effects.
-    if (*m_pState->var_pf_solarize > m_fSnapPoint &&
-        (GetCaps()->SrcBlendCaps & D3DPBLENDCAPS_INVDESTCOLOR) &&
-        (GetCaps()->DestBlendCaps & D3DPBLENDCAPS_DESTCOLOR))
-    {
-        lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-        // Invert
-        lpDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_INVDESTCOLOR);
-        lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
-        lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, vPost, sizeof(SPRITEVERTEX));
-        // Darken (Square the inverted result)
-        lpDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ZERO);
-        lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_DESTCOLOR);
-        lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, vPost, sizeof(SPRITEVERTEX));
-        // Invert back
-        lpDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_INVDESTCOLOR);
-        lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
-        lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, vPost, sizeof(SPRITEVERTEX));
-
-        lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-    }
-
-
-    // --- Cleanup ---
-    lpDevice->SetTexture(0, NULL); // Unbind texture
-    // Restore default blend state just in case
-    lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-    lpDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-    lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 }
 
 void CPlugin::WarpedBlit_Shaders(int nPass, bool bAlphaBlend, bool bFlipAlpha, bool bCullTiles, bool bFlipCulling)
@@ -1571,48 +1463,44 @@ void CPlugin::WarpedBlit_Shaders(int nPass, bool bAlphaBlend, bool bFlipAlpha, b
     // if nPass==0, it draws old preset (blending 1 of 2).
     // if nPass==1, it draws new preset (blending 2 of 2, OR done blending)
 
+	//MungeFPCW(NULL);	// puts us in single-precision mode & disables exceptions
+
     LPDIRECT3DDEVICE9 lpDevice = GetDevice();
-    if (!lpDevice)
+
+	if (!lpDevice)
         return;
 
-    // If preset is invalid, just clear to black and exit.
+	m_bShaderParamsUseCurrent = false;
+
     if (!wcscmp(m_pState->m_szDesc, INVALID_PRESET_DESC))
     {
+        // if no valid preset loaded, clear the target to black, and return
         lpDevice->Clear(0, NULL, D3DCLEAR_TARGET, 0x00000000, 1.0f, 0);
         return;
     }
 
-    // --- Setup Shaders and FVF ---
-    // The vertex shader (m_fallbackShaders_vs.warp.ptr) likely handles vertex positions
-    // based on the mesh grid. UVs for warping are calculated in ComputeGridAlphaValues
-    // and passed via the MYVERTEX structure.
-    // The pixel shader (si->ptr) handles reading m_lpPrevFrame (via TEX_VS in ApplyShaderParams),
-    // applying decay, gamma, echo, etc., and outputting the final color.
 
-    PShaderInfo* si = (nPass == 0) ? &m_OldShaders.warp : &m_shaders.warp;
-    CState* state = (nPass == 0) ? m_pOldState : m_pState;
-
-    // Check if shader pointers are valid
-    if (!m_fallbackShaders_vs.warp.ptr || !si->ptr) {
-        // Fallback or error handling if shaders are missing
-        // For now, maybe call the NoShaders version?
-        WarpedBlit_NoShaders(nPass, bAlphaBlend, bFlipAlpha, bCullTiles, bFlipCulling);
-        return;
+    lpDevice->SetVertexShader( g_pVertexShader_Legacy2 );
+    {
+        D3DXMATRIX mIdentity;
+        D3DXMatrixIdentity(&mIdentity);
+        lpDevice->SetVertexShaderConstantF(0, (float*)&mIdentity, 4);
     }
+    lpDevice->SetPixelShader (g_pPixelShader_Legacy2);
+    lpDevice->SetVertexDeclaration(m_pMyVertDecl);  // Use vertex declaration for Xbox 360
 
-    lpDevice->SetVertexDeclaration(m_pMyVertDecl); // Ensure correct vertex declaration
-    lpDevice->SetVertexShader(m_fallbackShaders_vs.warp.ptr);
-    lpDevice->SetPixelShader(si->ptr);
+	// texel alignment
+	float texel_offset_x = 0.5f / (float)m_nTexSizeX;
+	float texel_offset_y = 0.5f / (float)m_nTexSizeY;
 
-    // Apply shader constants and textures (including m_lpPrevFrame via TEX_VS)
-    ApplyShaderParams(&(si->params), si->CT, state);
+    int nAlphaTestValue = 0;
+    if (bFlipCulling)
+        nAlphaTestValue = 1-nAlphaTestValue;
 
-    // --- Setup Blend States ---
-    int nAlphaTestValue = bFlipCulling ? 1 : 0;
     if (bAlphaBlend)
     {
         lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-        if (bFlipAlpha)
+        if (bFlipAlpha) 
         {
             lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_INVSRCALPHA);
             lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_SRCALPHA);
@@ -1623,98 +1511,121 @@ void CPlugin::WarpedBlit_Shaders(int nPass, bool bAlphaBlend, bool bFlipAlpha, b
             lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
         }
     }
-    else
-    {
+    else 
         lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-    }
 
-    // --- Draw Warped Mesh ---
-    // Hurl the triangles at the video card. Un-indexed drawing.
-    MYVERTEX tempv[1024 * 3]; // Consider dynamic allocation or checking size
-    int max_verts_in_batch = sizeof(tempv)/sizeof(tempv[0]);
-    int max_prims_per_batch = min( GetCaps()->MaxPrimitiveCount, max_verts_in_batch / 3) - 4; // Safety margin
-    if (max_prims_per_batch <= 0) max_prims_per_batch = 1;
-
-    // The original code split drawing into two halves for an 'ang' hack.
-    // If that hack is still needed, keep the loop. Otherwise, simplify.
-    // Assuming the hack might still be relevant for some shaders:
-    for (int half = 0; half < 2; half++)
+    int pass = nPass;
     {
-        // Hack / restore the ang values along the angle-wrap [0 <-> 2pi] seam...
-        // This modifies the global m_verts array, which might be unexpected.
-        // Consider passing angle differently if possible.
-        float new_ang = half ? 3.14159265358979323846f : -3.14159265358979323846f;
-        int y_offset = (m_nGridY / 2) * (m_nGridX + 1);
-        for (int x = 0; x < m_nGridX / 2; x++) {
-             int vert_idx = y_offset + x;
-             // Bounds check
-             if (vert_idx >= 0 && vert_idx < (m_nGridX + 1) * (m_nGridY + 1)) {
-                 m_verts[vert_idx].ang = new_ang; // Modifying m_verts directly
+        // PASS 0 : draw using *blended per-vertex motion vectors*, but with the OLD warp shader.
+        // PASS 1 : draw using *blended per-vertex motion vectors*, but with the NEW warp shader.
+        PShaderInfo* si = (pass==0) ? &m_OldShaders.warp : &m_shaders.warp;
+        CState* state = (pass==0) ? m_pOldState : m_pState;
+
+        lpDevice->SetVertexDeclaration(m_pMyVertDecl);
+        lpDevice->SetVertexShader(g_pVertexShader_Legacy2);
+
+        if (si->ptr)
+        {
+             lpDevice->SetPixelShader(si->ptr);
+             ApplyShaderParams( &(si->params), si->CT, state );
+        }
+        else
+        {
+             lpDevice->SetPixelShader(g_pPixelShader_Legacy2);
+
+             // Smart Fallback: manually bind Texture 0 based on preset params, 
+             // since Legacy shader only reads Sampler 0.
+             CShaderParams* p = &(si->params);
+             int i = 0; 
+             LPDIRECT3DBASETEXTURE9 pTex = m_lpPrevFrame;
+             DWORD wrap = D3DTADDRESS_WRAP;
+             DWORD filter = D3DTEXF_LINEAR;
+
+			 // If preset has a valid binding for slot 0 that isn't the default VS
+             // Note: TEX_DISK is 0, so checked implicitly by != TEX_VS.
+             if (p->m_texcode[i] != TEX_VS && p->m_texture_bindings[i].texptr != NULL)
+                 pTex = p->m_texture_bindings[i].texptr;
+
+             
+             // Respect sampler states if defined
+			 if (p->m_texcode[i] == TEX_VS || p->m_texcode[i] == TEX_FC || p->m_texture_bindings[i].texptr)
+             {
+                 wrap   = p->m_texture_bindings[i].bWrap ? D3DTADDRESS_WRAP : D3DTADDRESS_CLAMP;
+                 filter = p->m_texture_bindings[i].bBilinear ? D3DTEXF_LINEAR : D3DTEXF_POINT;
              }
+
+             lpDevice->SetTexture(0, pTex);
+             lpDevice->SetSamplerState(0, D3DSAMP_ADDRESSU, wrap);
+             lpDevice->SetSamplerState(0, D3DSAMP_ADDRESSV, wrap);
+             lpDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, filter);
+             lpDevice->SetSamplerState(0, D3DSAMP_MINFILTER, filter);
+             lpDevice->SetSamplerState(0, D3DSAMP_MIPFILTER, filter);
         }
 
-
-        // Draw half of the polys
-        int primCount = m_nGridX * m_nGridY; // Total triangles in half = gridX * gridY
-        int src_idx_offset = half * primCount * 3; // Start index for this half
-        int src_idx = 0; // Index within this half
-
-        while (src_idx < primCount * 3)
+        // Hurl the triangles at the video card.
+        // We're going to un-index it, so that we don't stress any crappy (AHEM intel g33)
+        //  drivers out there.  
+        // We divide it into the two halves of the screen (top/bottom) so we can hack
+        //  the 'ang' values along the angle-wrap seam, halfway through the draw.
+        // If we're blending, we'll skip any polygon that is all alpha-blended out.
+        // This also respects the MaxPrimCount limit of the video card.
+        MYVERTEX tempv[1024 * 3];
+        int max_prims_per_batch = min( GetCaps()->MaxPrimitiveCount, (sizeof(tempv)/sizeof(tempv[0]))/3) - 4;
+        for (int half=0; half<2; half++)
         {
-            int prims_queued = 0;
-            int verts_queued = 0;
-            while (prims_queued < max_prims_per_batch && src_idx < primCount * 3)
+            // hack / restore the ang values along the angle-wrap [0 <-> 2pi] seam...
+            float new_ang = half ? 3.1415926535897932384626433832795f : -3.1415926535897932384626433832795f;
+            int y_offset = (m_nGridY/2) * (m_nGridX+1);
+		    for (int x=0; x<m_nGridX/2; x++)
+                m_verts[y_offset + x].ang = new_ang;
+
+            // send half of the polys
+            int primCount = m_nGridX*m_nGridY*2 / 2;  // in this case, to draw HALF the polys
+            int src_idx = 0;
+            int src_idx_offset = half * primCount*3;
+            int prims_sent = 0;
+            while (src_idx < primCount*3)
             {
-                 // Check if adding 3 more verts exceeds buffer
-                 if (verts_queued + 3 > max_verts_in_batch) break;
-
-                 int current_vert_idx = verts_queued;
-
-                 // Copy 3 verts
-                 for (int j = 0; j < 3; j++) {
-                     int mesh_vert_index = m_indices_list[src_idx_offset + src_idx++];
-                     // Basic bounds check
-                     if (mesh_vert_index < 0 || mesh_vert_index >= (m_nGridX + 1) * (m_nGridY + 1)) {
-                          src_idx -= j; // Backtrack
-                          verts_queued = current_vert_idx;
-                          goto next_shader_triangle_attempt;
-                     }
-                     tempv[verts_queued++] = m_verts[mesh_vert_index];
-                     // Note: Decay is now handled inside the pixel shader, not via vertex color modulation.
-                 }
-
-                 if (bCullTiles)
-                 {
-                     DWORD d1 = (tempv[verts_queued - 3].Diffuse >> 24);
-                     DWORD d2 = (tempv[verts_queued - 2].Diffuse >> 24);
-                     DWORD d3 = (tempv[verts_queued - 1].Diffuse >> 24);
-                     bool bIsNeeded;
-                     if (nAlphaTestValue)
-                         bIsNeeded = ((d1 & d2 & d3) < 255);
-                     else
-                         bIsNeeded = ((d1 | d2 | d3) > 0);
-
-                     if (!bIsNeeded) {
-                         verts_queued -= 3;
-                     } else {
-                         prims_queued++;
-                     }
-                 }
-                 else {
-                     prims_queued++;
-                 }
-                 next_shader_triangle_attempt:;
-            }
-            if (prims_queued > 0) {
-                // Ensure textures are set correctly before draw (ApplyShaderParams should handle this)
-                lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, prims_queued, tempv, sizeof(MYVERTEX));
+                int prims_queued = 0;
+                int i=0;
+                while (prims_queued < max_prims_per_batch && src_idx < primCount*3)
+                {
+                    // copy 3 verts
+                    for (int j=0; j<3; j++)
+                        tempv[i++] = m_verts[ m_indices_list[src_idx_offset + src_idx++] ];
+                    if (bCullTiles)
+                    {
+                        DWORD d1 = (tempv[i-3].Diffuse >> 24);
+                        DWORD d2 = (tempv[i-2].Diffuse >> 24);
+                        DWORD d3 = (tempv[i-1].Diffuse >> 24);
+                        bool bIsNeeded;
+                        if (nAlphaTestValue) 
+                            bIsNeeded = ((d1 & d2 & d3) < 255);//(d1 < 255) || (d2 < 255) || (d3 < 255);
+                        else
+                            bIsNeeded = ((d1|d2|d3) > 0);//(d1 > 0) || (d2 > 0) || (d3 > 0);
+                        if (!bIsNeeded) 
+                            i -= 3;
+                        else
+                            prims_queued++;
+                    }
+                    else
+                        prims_queued++;
+                }
+                if (prims_queued > 0) 
+                    lpDevice->DrawPrimitiveUP( D3DPT_TRIANGLELIST, prims_queued, tempv, sizeof(MYVERTEX) );
             }
         }
     }
 
-    // --- Cleanup ---
-    lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE); // Reset blend state
-    RestoreShaderParams(); // Unbind textures and restore sampler/shader states
+    // NOTE: darken/solarize/invert are NOT applied here.
+    // In the original MilkDrop, these effects are applied only during composite
+    // (ShowToUser_NoShaders), which draws to the backbuffer AFTER the render target
+    // has been switched away from VS1. Applying them here in the warp pass would
+    // put them into the feedback loop, causing exponential darkening and flashing.
+
+    lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+
+    RestoreShaderParams();
 }
 
 void CPlugin::DrawCustomShapes()
@@ -1722,6 +1633,10 @@ void CPlugin::DrawCustomShapes()
     LPDIRECT3DDEVICE9 lpDevice = GetDevice();
     if (!lpDevice)
         return;
+    
+    D3DXMATRIX identity;
+    D3DXMatrixIdentity(&identity);
+
 
 	int num_reps = (m_pState->m_bBlending) ? 2 : 1;
 	for (int rep=0; rep<num_reps; rep++)
@@ -1801,11 +1716,11 @@ void CPlugin::DrawCustomShapes()
                     if ((int)(*pState->m_shape[i].var_pf_textured) != 0)
                     {
                         // draw textured version
-                        lpDevice->SetTexture(0, NULL);
-//						lpDevice->SetVertexShaderConstantF(0, (float*)&matWVP, 4);
+						lpDevice->SetTexture(0, m_lpPrevFrame);  // Use previous frame like original VS[0]
+						lpDevice->SetVertexShaderConstantF(0, (float*)&identity, 4);
                         lpDevice->SetVertexShader( g_pVertexShader_Legacy3 );
 						lpDevice->SetPixelShader(g_pPixelShader_Legacy3);
-                        lpDevice->SetFVF( SPRITEVERTEX_FORMAT );
+                        lpDevice->SetVertexDeclaration(m_pSpriteVertDecl);  // Use vertex declaration for Xbox 360
                         lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, sides, (void*)v, sizeof(SPRITEVERTEX));
                     }
                     else
@@ -1819,10 +1734,10 @@ void CPlugin::DrawCustomShapes()
                             v2[j].Diffuse = v[j].Diffuse;
                         }
                         lpDevice->SetTexture(0, NULL);
-	//					lpDevice->SetVertexShaderConstantF(0, (float*)&matWVP, 4);
+						lpDevice->SetVertexShaderConstantF(0, (float*)&identity, 4);
                         lpDevice->SetVertexShader( g_pVertexShader_Legacy1 );
 						lpDevice->SetPixelShader(g_pPixelShader_Legacy1);
-					    lpDevice->SetFVF( WFVERTEX_FORMAT );
+					    lpDevice->SetVertexDeclaration(m_pWfVertDecl);  // Use vertex declaration for Xbox 360
                         lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, sides, (void*)v2, sizeof(WFVERTEX));
                     }
 
@@ -1830,10 +1745,10 @@ void CPlugin::DrawCustomShapes()
                     if (*pState->m_shape[i].var_pf_border_a > 0)
                     {
                        lpDevice->SetTexture(0, NULL);
-	//					lpDevice->SetVertexShaderConstantF(0, (float*)&matWVP, 4);
+						lpDevice->SetVertexShaderConstantF(0, (float*)&identity, 4);
                         lpDevice->SetVertexShader( g_pVertexShader_Legacy1 );
 						lpDevice->SetPixelShader( g_pPixelShader_Legacy1 );
-                        lpDevice->SetFVF( WFVERTEX_FORMAT );
+                        lpDevice->SetVertexDeclaration(m_pWfVertDecl);  // Use vertex declaration for Xbox 360
 
                         v2[0].Diffuse = 
                             ((((int)(*pState->m_shape[i].var_pf_border_a * 255 * alpha_mult)) & 0xFF) << 24) |
@@ -1864,9 +1779,11 @@ void CPlugin::DrawCustomShapes()
                         }
                     }
 
-                    lpDevice->SetTexture(0, NULL);
-                    lpDevice->SetVertexShader( NULL );
-                    lpDevice->SetFVF( SPRITEVERTEX_FORMAT );
+					lpDevice->SetTexture(0, m_lpPrevFrame);  // Restore previous frame texture
+                    // Xbox 360 requires explicit shaders - restore Legacy3 for SPRITEVERTEX
+                    lpDevice->SetVertexShader( g_pVertexShader_Legacy3 );
+                    lpDevice->SetPixelShader( g_pPixelShader_Legacy3 );
+                    lpDevice->SetVertexDeclaration(m_pSpriteVertDecl);  // Use vertex declaration for Xbox 360
                 }
             }
         }
@@ -1981,9 +1898,14 @@ void CPlugin::DrawCustomWaves()
 
     lpDevice->SetTexture(0, m_lpBlur[1]); // Use your texture resource
     lpDevice->SetTexture(0, NULL);
-    lpDevice->SetVertexShader( g_pVertexShader_Legacy3 );
-	lpDevice->SetPixelShader(g_pPixelShader_Legacy3);
-    lpDevice->SetFVF( WFVERTEX_FORMAT );
+    lpDevice->SetVertexShader( g_pVertexShader_Legacy1 );
+    {
+        D3DXMATRIX identity;
+        D3DXMatrixIdentity(&identity);
+        lpDevice->SetVertexShaderConstantF(0, (float*)&identity, 4);
+    }
+	lpDevice->SetPixelShader(g_pPixelShader_Legacy1);
+    lpDevice->SetVertexDeclaration(m_pWfVertDecl);  // Use vertex declaration for Xbox 360
 
     // note: read in all sound data from CPluginShell's m_sound
 	int num_reps = (m_pState->m_bBlending) ? 2 : 1;
@@ -2155,8 +2077,13 @@ void CPlugin::DrawWave(float *fL, float *fR)
 
     lpDevice->SetTexture(0, NULL);
     lpDevice->SetVertexShader( g_pVertexShader_Legacy1 );
+    {
+        D3DXMATRIX mIdentity;
+        D3DXMatrixIdentity(&mIdentity);
+        lpDevice->SetVertexShaderConstantF(0, (float*)&mIdentity, 4);
+    }
 	lpDevice->SetPixelShader(g_pPixelShader_Legacy1);
-    lpDevice->SetFVF( WFVERTEX_FORMAT );
+    lpDevice->SetVertexDeclaration(m_pWfVertDecl);  // Use vertex declaration for Xbox 360
 
 	int i;
 	WFVERTEX v1[576+1], v2[576+1];
@@ -2481,6 +2408,8 @@ void CPlugin::DrawWave(float *fL, float *fR)
 			if (alpha < 0) alpha = 0;
 			if (alpha > 1) alpha = 1;
 			//color = D3DCOLOR_RGBA_01(cr, cg, cb, alpha);
+            // DEFINITION ADDED BY FIX:
+            DWORD color = D3DCOLOR_RGBA_01(cr, cg, cb, alpha);
 
 			{
 				float ang = 1.57f*fWaveParam2;	// from -PI/2 to PI/2
@@ -2561,7 +2490,7 @@ void CPlugin::DrawWave(float *fL, float *fR)
 					{
 						v[i].x = edge_x[0] + dx*i + perp_dx*0.25f*fL[i + sample_offset];
 						v[i].y = edge_y[0] + dy*i + perp_dy*0.25f*fL[i + sample_offset];
-						//v[i].Diffuse = color;
+						v[i].Diffuse = color;
 					}
 				else if (wave == 8)
 					//256 verts
@@ -2570,7 +2499,7 @@ void CPlugin::DrawWave(float *fL, float *fR)
 						float f = 0.1f*logf(mysound.fSpecLeft[i*2] + mysound.fSpecLeft[i*2+1]);
 						v[i].x = edge_x[0] + dx*i + perp_dx*f;
 						v[i].y = edge_y[0] + dy*i + perp_dy*f;
-						//v[i].Diffuse = color;
+						v[i].Diffuse = color;
 					}
 				else
 				{
@@ -2579,14 +2508,14 @@ void CPlugin::DrawWave(float *fL, float *fR)
 					{
 						v[i].x = edge_x[0] + dx*i + perp_dx*(0.25f*fL[i + sample_offset] + sep);
 						v[i].y = edge_y[0] + dy*i + perp_dy*(0.25f*fL[i + sample_offset] + sep);
-						//v[i].Diffuse = color;
+						v[i].Diffuse = color;
 					}
 
 					for (i=0; i<nVerts; i++)
 					{
 						v[i+nVerts].x = edge_x[0] + dx*i + perp_dx*(0.25f*fR[i + sample_offset] - sep);
 						v[i+nVerts].y = edge_y[0] + dy*i + perp_dy*(0.25f*fR[i + sample_offset] - sep);
-						//v[i+nVerts].Diffuse = color;
+						v[i+nVerts].Diffuse = color;
 					}
 
 					nBreak = nVerts;
@@ -2741,8 +2670,13 @@ void CPlugin::DrawSprites()
 
     lpDevice->SetTexture(0, NULL);
     lpDevice->SetVertexShader( g_pVertexShader_Legacy1 );
+    {
+        D3DXMATRIX mIdentity;
+        D3DXMatrixIdentity(&mIdentity);
+        lpDevice->SetVertexShaderConstantF(0, (float*)&mIdentity, 4);
+    }
 	lpDevice->SetPixelShader (g_pPixelShader_Legacy1 );
-    lpDevice->SetFVF( WFVERTEX_FORMAT );
+    lpDevice->SetVertexDeclaration(m_pWfVertDecl);  // Use vertex declaration for Xbox 360
 
 	if (*m_pState->var_pf_darken_center)
 	{
@@ -2848,8 +2782,15 @@ void CPlugin::DrawUserSprites()	// from system memory, to back buffer.
         return;
 
     lpDevice->SetTexture(0, NULL);
-    lpDevice->SetVertexShader( NULL );
-    lpDevice->SetFVF( SPRITEVERTEX_FORMAT );
+    // Xbox 360 requires explicit shaders - no fixed-function pipeline
+    lpDevice->SetVertexShader( g_pVertexShader_Legacy3 );
+    {
+        D3DXMATRIX mIdentity;
+        D3DXMatrixIdentity(&mIdentity);
+        lpDevice->SetVertexShaderConstantF(0, (float*)&mIdentity, 4);
+    }
+    lpDevice->SetPixelShader( g_pPixelShader_Legacy3 );
+    lpDevice->SetVertexDeclaration(m_pSpriteVertDecl);  // Use vertex declaration for Xbox 360
 
     lpDevice->SetRenderState(D3DRS_WRAP0, 0);
     lpDevice->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
@@ -3178,66 +3119,52 @@ void CPlugin::RestoreShaderParams()
     for (int i=0; i<4; i++) 
         lpDevice->SetTexture( i, NULL );
 
-    lpDevice->SetVertexShader(NULL);
-     //lpDevice->SetVertexDeclaration(NULL);  -directx debug runtime complains heavily about this
-    lpDevice->SetPixelShader(NULL);
+    // Xbox 360 requires explicit shaders - set default Legacy3 shaders
+    lpDevice->SetVertexShader( g_pVertexShader_Legacy3 );
+    {
+        D3DXMATRIX mIdentity;
+        D3DXMatrixIdentity(&mIdentity);
+        lpDevice->SetVertexShaderConstantF(0, (float*)&mIdentity, 4);
+    }
+    lpDevice->SetPixelShader( g_pPixelShader_Legacy3 );
+    //lpDevice->SetVertexDeclaration(NULL);  -directx debug runtime complains heavily about this
 
 }
 
 void CPlugin::ApplyShaderParams(CShaderParams* p, LPD3DXCONSTANTTABLE pCT, CState* pState)
 {
     LPDIRECT3DDEVICE9 lpDevice = GetDevice();
-    if (!lpDevice || !p || !pCT || !pState) return; // Basic validation
+
+    //if (p->texbind_vs      >= 0) lpDevice->SetTexture( p->texbind_vs   , m_lpVS[0]   );
+    //if (p->texbind_noise   >= 0) lpDevice->SetTexture( p->texbind_noise, m_pTexNoise );        
 
     // bind textures
-    for (int i=0; i<sizeof(p->m_texture_bindings)/sizeof(p->m_texture_bindings[0]); i++)
-    {
-        LPDIRECT3DBASETEXTURE9 texToBind = NULL;
+	for (int i=0; i<sizeof(p->m_texture_bindings)/sizeof(p->m_texture_bindings[0]); i++) 
+	{    
+		if (p->m_texcode[i] == TEX_VS || p->m_texcode[i] == TEX_FC)
+			lpDevice->SetTexture(i, m_lpPrevFrame);  // always use m_lpPrevFrame (matches original's VS[0])
+		else 
+			lpDevice->SetTexture(i, p->m_texture_bindings[i].texptr);
 
-        if (p->m_texcode[i] == TEX_VS) {
-            texToBind = m_lpPrevFrame; // *** BIND PREVIOUS FRAME TEXTURE FOR TEX_VS ***
-        } else if (p->m_texcode[i] >= TEX_BLUR1 && p->m_texcode[i] <= TEX_BLUR_LAST) {
-            // NOTE: If BlurPasses is disabled, m_lpBlur might be NULL or contain stale data.
-            // Shaders requesting blur textures might get unexpected results.
-            int blurIdx = (int)p->m_texcode[i] - (int)TEX_BLUR1;
-            if (blurIdx >= 0 && blurIdx < NUM_BLUR_TEX) {
-                texToBind = m_lpBlur[blurIdx];
-            }
-        } else if (p->m_texcode[i] == TEX_BLUR_LAST) {
-             // Explicitly handle TEX_PREV_FRAME if it's different from TEX_VS
-             texToBind = m_lpPrevFrame;
-        } else {
-            // Handle other texture codes (noise, user textures, etc.)
-            texToBind = p->m_texture_bindings[i].texptr; // Use pre-assigned pointer
-        }
-        // else TEX_NONE, texToBind remains NULL
-
-        lpDevice->SetTexture(i, texToBind);
-
-        // also set up sampler stage, if anything is bound here...
-        if (texToBind)
+		// also set up sampler stage, if anything is bound here...
+		if (p->m_texcode[i]==TEX_VS || p->m_texcode[i]==TEX_FC || p->m_texture_bindings[i].texptr) 
         {
-            bool bAniso = false; // Anisotropy likely not needed/supported well here
-            DWORD HQFilter = bAniso ? D3DTEXF_ANISOTROPIC : D3DTEXF_LINEAR;
+            bool bAniso = false;  
+            DWORD HQFilter = bAniso ? D3DTEXF_ANISOTROPIC : D3DTEXF_LINEAR;     
             DWORD wrap   = p->m_texture_bindings[i].bWrap ? D3DTADDRESS_WRAP : D3DTADDRESS_CLAMP;
             DWORD filter = p->m_texture_bindings[i].bBilinear ? HQFilter : D3DTEXF_POINT;
             lpDevice->SetSamplerState(i, D3DSAMP_ADDRESSU, wrap);
             lpDevice->SetSamplerState(i, D3DSAMP_ADDRESSV, wrap);
-            lpDevice->SetSamplerState(i, D3DSAMP_ADDRESSW, wrap); // Usually ignored for 2D
+            lpDevice->SetSamplerState(i, D3DSAMP_ADDRESSW, wrap);
             lpDevice->SetSamplerState(i, D3DSAMP_MAGFILTER, filter);
             lpDevice->SetSamplerState(i, D3DSAMP_MINFILTER, filter);
-            lpDevice->SetSamplerState(i, D3DSAMP_MIPFILTER, filter); // Use D3DTEXF_NONE if no mipmaps
-            // lpDevice->SetSamplerState(i, D3DSAMP_MAXANISOTROPY, bAniso ? 4 : 1);
-        } else {
-             // Ensure sampler states are reasonable even if no texture bound? Optional.
-             // lpDevice->SetSamplerState(i, D3DSAMP_MAGFILTER, D3DTEXF_POINT);
-             // lpDevice->SetSamplerState(i, D3DSAMP_MINFILTER, D3DTEXF_POINT);
-             // lpDevice->SetSamplerState(i, D3DSAMP_MIPFILTER, D3DTEXF_NONE);
+            lpDevice->SetSamplerState(i, D3DSAMP_MIPFILTER, filter);
+            //lpDevice->SetSamplerState(i, D3DSAMP_MAXANISOTROPY, bAniso ? 4 : 1);  //FIXME:ANISO
         }
 
-        // Update highest blur texture used (only if blur is enabled)
-        // if (texToBind && p->m_texcode[i] >= TEX_BLUR1 && p->m_texcode[i] <= TEX_BLUR_LAST)
-        //     m_nHighestBlurTexUsedThisFrame = max(m_nHighestBlurTexUsedThisFrame, ((int)p->m_texcode[i] - (int)TEX_BLUR1) + 1);
+        // finally, if it was a blur texture, note that
+        if (p->m_texcode[i] >= TEX_BLUR1 && p->m_texcode[i] <= TEX_BLUR_LAST)
+            m_nHighestBlurTexUsedThisFrame = max(m_nHighestBlurTexUsedThisFrame, ((int)p->m_texcode[i] - (int)TEX_BLUR1) + 1);
     }
 
     // bind "texsize_XYZ" params
@@ -3245,127 +3172,688 @@ void CPlugin::ApplyShaderParams(CShaderParams* p, LPD3DXCONSTANTTABLE pCT, CStat
     for (int i=0; i<N; i++)
     {
         TexSizeParamInfo* q = &(p->texsize_params[i]);
-        // Check handle validity before setting
-        if (q->texsize_param) {
-            float w = (float)q->w;
-            float h = (float)q->h;
-            pCT->SetVector( lpDevice, q->texsize_param, &D3DXVECTOR4(w, h, (w > 0) ? 1.0f/w : 0.0f, (h > 0) ? 1.0f/h : 0.0f));
-        }
+        pCT->SetVector( lpDevice, q->texsize_param, &D3DXVECTOR4((float)q->w,(float)q->h,1.0f/q->w,1.0f/q->h));
     }
 
-    // --- Bind standard shader constants (time, fps, audio, etc.) ---
-    // (This part remains largely the same as the original code)
     float time_since_preset_start = GetTime() - pState->GetPresetStartTime();
-    float time_since_preset_start_wrapped = time_since_preset_start - floorf(time_since_preset_start/10000.0f)*10000.0f; // Use floorf for safety
+    float time_since_preset_start_wrapped = time_since_preset_start - (int)(time_since_preset_start/10000)*10000;
     float time = GetTime() - m_fStartTime;
-    float progress = (m_fNextPresetTime - m_fPresetStartTime > 1e-6f) ? (GetTime() - m_fPresetStartTime) / (m_fNextPresetTime - m_fPresetStartTime) : 0.0f;
-    progress = max(0.0f, min(1.0f, progress)); // Clamp progress
-
-    float mip_x = (GetWidth() > 0) ? logf((float)GetWidth())/logf(2.0f) : 0.0f;
-    float mip_y = (GetHeight() > 0) ? logf((float)GetHeight())/logf(2.0f) : 0.0f;
+    float progress = (GetTime() - m_fPresetStartTime) / (m_fNextPresetTime - m_fPresetStartTime);
+    float mip_x = logf((float)GetWidth())/logf(2.0f);
+    float mip_y = logf((float)GetWidth())/logf(2.0f);
     float mip_avg = 0.5f*(mip_x + mip_y);
-
-    float aspect_x = 1.0f;
-    float aspect_y = 1.0f;
-    if (GetWidth() > 0 && GetHeight() > 0) { // Avoid division by zero
-        if (GetWidth() > GetHeight())
-            aspect_y = (float)GetHeight() / (float)GetWidth();
-        else
-            aspect_x = (float)GetWidth() / (float)GetHeight();
-    }
-
+    float aspect_x = 1;
+    float aspect_y = 1;
+    if (GetWidth() > GetHeight())
+        aspect_y = GetHeight()/(float)GetWidth();
+    else
+        aspect_x = GetWidth()/(float)GetHeight();
+    
     float blur_min[3], blur_max[3];
     GetSafeBlurMinMax(pState, blur_min, blur_max);
 
     // bind float4's
     if (p->rand_frame ) pCT->SetVector( lpDevice, p->rand_frame , &m_rand_frame );
     if (p->rand_preset) pCT->SetVector( lpDevice, p->rand_preset, &pState->m_rand_preset );
-    D3DXHANDLE* h = p->const_handles;
-    if (h[0]) pCT->SetVector( lpDevice, h[0], &D3DXVECTOR4( aspect_x, aspect_y, (aspect_x != 0.0f) ? 1.0f/aspect_x : 1.0f, (aspect_y != 0.0f) ? 1.0f/aspect_y : 1.0f ));
-    // h[1] seems unused (pixel)
+    D3DXHANDLE* h = p->const_handles; 
+    if (h[0]) pCT->SetVector( lpDevice, h[0], &D3DXVECTOR4( aspect_x, aspect_y, 1.0f/aspect_x, 1.0f/aspect_y ));
+    if (h[1]) pCT->SetVector( lpDevice, h[1], &D3DXVECTOR4(0, 0, 0, 0 ));
     if (h[2]) pCT->SetVector( lpDevice, h[2], &D3DXVECTOR4(time_since_preset_start_wrapped, GetFps(), (float)GetFrame(), progress));
-    float bass = mysound.imm_rel[0]; float mid = mysound.imm_rel[1]; float treb = mysound.imm_rel[2];
-    if (h[3]) pCT->SetVector( lpDevice, h[3], &D3DXVECTOR4(bass, mid, treb, 0.3333f*(bass + mid + treb) ));
-    float bass_att = mysound.avg_rel[0]; float mid_att = mysound.avg_rel[1]; float treb_att = mysound.avg_rel[2];
-    if (h[4]) pCT->SetVector( lpDevice, h[4], &D3DXVECTOR4(bass_att, mid_att, treb_att, 0.3333f*(bass_att + mid_att + treb_att) ));
-    // Blur constants might be irrelevant if blur is disabled
+    if (h[3]) pCT->SetVector( lpDevice, h[3], &D3DXVECTOR4(mysound.imm_rel[0], mysound.imm_rel[1], mysound.imm_rel[2], 0.3333f*(mysound.imm_rel[0], mysound.imm_rel[1], mysound.imm_rel[2]) ));
+    if (h[4]) pCT->SetVector( lpDevice, h[4], &D3DXVECTOR4(mysound.avg_rel[0], mysound.avg_rel[1], mysound.avg_rel[2], 0.3333f*(mysound.avg_rel[0], mysound.avg_rel[1], mysound.avg_rel[2]) ));
     if (h[5]) pCT->SetVector( lpDevice, h[5], &D3DXVECTOR4( blur_max[0]-blur_min[0], blur_min[0], blur_max[1]-blur_min[1], blur_min[1] ));
     if (h[6]) pCT->SetVector( lpDevice, h[6], &D3DXVECTOR4( blur_max[2]-blur_min[2], blur_min[2], blur_min[0], blur_max[0] ));
-    float texw = (float)m_nTexSizeX; float texh = (float)m_nTexSizeY;
-    if (h[7]) pCT->SetVector( lpDevice, h[7], &D3DXVECTOR4(texw, texh, (texw > 0) ? 1.0f/texw : 0.0f, (texh > 0) ? 1.0f/texh : 0.0f ));
-    // Slow trig constants
-    if (h[8]) pCT->SetVector( lpDevice, h[8], &D3DXVECTOR4( 0.5f+0.5f*cosf(time* 0.329f+1.2f), 0.5f+0.5f*cosf(time* 1.293f+3.9f), 0.5f+0.5f*cosf(time* 5.070f+2.5f), 0.5f+0.5f*cosf(time*20.051f+5.4f) ));
-    if (h[9]) pCT->SetVector( lpDevice, h[9], &D3DXVECTOR4( 0.5f+0.5f*sinf(time* 0.329f+1.2f), 0.5f+0.5f*sinf(time* 1.293f+3.9f), 0.5f+0.5f*sinf(time* 5.070f+2.5f), 0.5f+0.5f*sinf(time*20.051f+5.4f) ));
-    // Very slow trig constants
-    if (h[10]) pCT->SetVector( lpDevice, h[10], &D3DXVECTOR4( 0.5f+0.5f*cosf(time*0.0050f+2.7f), 0.5f+0.5f*cosf(time*0.0085f+5.3f), 0.5f+0.5f*cosf(time*0.0133f+4.5f), 0.5f+0.5f*cosf(time*0.0217f+3.8f) ));
-    if (h[11]) pCT->SetVector( lpDevice, h[11], &D3DXVECTOR4( 0.5f+0.5f*sinf(time*0.0050f+2.7f), 0.5f+0.5f*sinf(time*0.0085f+5.3f), 0.5f+0.5f*sinf(time*0.0133f+4.5f), 0.5f+0.5f*sinf(time*0.0217f+3.8f) ));
+    if (h[7]) pCT->SetVector( lpDevice, h[7], &D3DXVECTOR4((float)m_nTexSizeX, (float)m_nTexSizeY, 1.0f/(float)m_nTexSizeX, 1.0f/(float)m_nTexSizeY ));
+    if (h[8]) pCT->SetVector( lpDevice, h[8], &D3DXVECTOR4( 0.5f+0.5f*cosf(time* 0.329f+1.2f),
+                                                              0.5f+0.5f*cosf(time* 1.293f+3.9f), 
+                                                              0.5f+0.5f*cosf(time* 5.070f+2.5f), 
+                                                              0.5f+0.5f*cosf(time*20.051f+5.4f) 
+        ));
+    if (h[9]) pCT->SetVector( lpDevice, h[9], &D3DXVECTOR4( 0.5f+0.5f*sinf(time* 0.329f+1.2f),
+                                                              0.5f+0.5f*sinf(time* 1.293f+3.9f), 
+                                                              0.5f+0.5f*sinf(time* 5.070f+2.5f), 
+                                                              0.5f+0.5f*sinf(time*20.051f+5.4f) 
+        ));
+    if (h[10]) pCT->SetVector( lpDevice, h[10], &D3DXVECTOR4( 0.5f+0.5f*cosf(time*0.0050f+2.7f),
+                                                                0.5f+0.5f*cosf(time*0.0085f+5.3f), 
+                                                                0.5f+0.5f*cosf(time*0.0133f+4.5f), 
+                                                                0.5f+0.5f*cosf(time*0.0217f+3.8f) 
+        ));
+    if (h[11]) pCT->SetVector( lpDevice, h[11], &D3DXVECTOR4( 0.5f+0.5f*sinf(time*0.0050f+2.7f),
+                                                                0.5f+0.5f*sinf(time*0.0085f+5.3f), 
+                                                                0.5f+0.5f*sinf(time*0.0133f+4.5f), 
+                                                                0.5f+0.5f*sinf(time*0.0217f+3.8f) 
+        ));
     if (h[12]) pCT->SetVector( lpDevice, h[12], &D3DXVECTOR4( mip_x, mip_y, mip_avg, 0 ));
-    // More blur constants
     if (h[13]) pCT->SetVector( lpDevice, h[13], &D3DXVECTOR4( blur_min[1], blur_max[1], blur_min[2], blur_max[2] ));
-
 
     // write q vars
     int num_q_float4s = sizeof(p->q_const_handles)/sizeof(p->q_const_handles[0]);
     for (int i=0; i<num_q_float4s; i++)
     {
-        if (p->q_const_handles[i])
-            pCT->SetVector( lpDevice, p->q_const_handles[i], &D3DXVECTOR4(
-                (float)*pState->var_pf_q[i*4+0],
-                (float)*pState->var_pf_q[i*4+1],
-                (float)*pState->var_pf_q[i*4+2],
+        if (p->q_const_handles[i]) 
+            pCT->SetVector( lpDevice, p->q_const_handles[i], &D3DXVECTOR4( 
+                (float)*pState->var_pf_q[i*4+0], 
+                (float)*pState->var_pf_q[i*4+1], 
+                (float)*pState->var_pf_q[i*4+2], 
                 (float)*pState->var_pf_q[i*4+3] ));
     }
 
-    // write matrices (remains the same)
-    // ... (matrix setting code) ...
+    // write matrices
     for (int i=0; i<20; i++)
     {
-        if (p->rot_mat[i])
+        if (p->rot_mat[i]) 
         {
             D3DXMATRIX mx,my,mz,mxlate,temp;
+
             D3DXMatrixRotationX(&mx, pState->m_rot_base[i].x + pState->m_rot_speed[i].x*time);
             D3DXMatrixRotationY(&my, pState->m_rot_base[i].y + pState->m_rot_speed[i].y*time);
             D3DXMatrixRotationZ(&mz, pState->m_rot_base[i].z + pState->m_rot_speed[i].z*time);
             D3DXMatrixTranslation(&mxlate, pState->m_xlate[i].x, pState->m_xlate[i].y, pState->m_xlate[i].z);
+
             D3DXMatrixMultiply(&temp, &mx, &mxlate);
             D3DXMatrixMultiply(&temp, &temp, &mz);
             D3DXMatrixMultiply(&temp, &temp, &my);
+
             pCT->SetMatrix(lpDevice, p->rot_mat[i], &temp);
         }
     }
     // the last 4 are totally random, each frame
     for (int i=20; i<24; i++)
     {
-        if (p->rot_mat[i])
+        if (p->rot_mat[i]) 
         {
             D3DXMATRIX mx,my,mz,mxlate,temp;
-            D3DXMatrixRotationX(&mx, FRAND * 6.283185f);
-            D3DXMatrixRotationY(&my, FRAND * 6.283185f);
-            D3DXMatrixRotationZ(&mz, FRAND * 6.283185f);
-            D3DXMatrixTranslation(&mxlate, FRAND, FRAND, FRAND); // Random translation [-0.5..0.5]? Check FRAND range.
+
+            D3DXMatrixRotationX(&mx, FRAND * 6.28f);
+            D3DXMatrixRotationY(&my, FRAND * 6.28f);
+            D3DXMatrixRotationZ(&mz, FRAND * 6.28f);
+            D3DXMatrixTranslation(&mxlate, FRAND, FRAND, FRAND);
+
             D3DXMatrixMultiply(&temp, &mx, &mxlate);
             D3DXMatrixMultiply(&temp, &temp, &mz);
             D3DXMatrixMultiply(&temp, &temp, &my);
+
             pCT->SetMatrix(lpDevice, p->rot_mat[i], &temp);
         }
     }
 }
 
-// Remove or comment out ShowToUser_NoShaders and ShowToUser_Shaders as their
-// functionality is merged into WarpedBlit_* or the shaders themselves.
-
-void CPlugin::ShowToUser_NoShaders()
+void CPlugin::ShowToUser_NoShaders()//int bRedraw, int nPassOverride)
 {
-    // This function is deprecated. Its logic is merged into WarpedBlit_NoShaders.
-    // If called, it might indicate an issue elsewhere.
-    // For safety, ensure it does nothing or logs a warning.
-    return;
+    // note: this one has to draw the whole screen!  (one big quad)
+
+    LPDIRECT3DDEVICE9 lpDevice = GetDevice();
+    if (!lpDevice)
+        return;
+
+	lpDevice->SetTexture(0, m_lpPrevFrame);
+    lpDevice->SetVertexShader( g_pVertexShader_Legacy3 );
+    {
+        D3DXMATRIX mIdentity;
+        D3DXMatrixIdentity(&mIdentity);
+        lpDevice->SetVertexShaderConstantF(0, (float*)&mIdentity, 4);
+    }
+    lpDevice->SetPixelShader( g_pPixelShader_Legacy3 );
+    lpDevice->SetVertexDeclaration(m_pSpriteVertDecl);  // Use vertex declaration for Xbox 360
+
+    // stages 0 and 1 always just use bilinear filtering.
+	lpDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+    lpDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+    lpDevice->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+	lpDevice->SetSamplerState(1, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+	lpDevice->SetSamplerState(1, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+	lpDevice->SetSamplerState(1, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+
+    // note: this texture stage state setup works for 0 or 1 texture.
+    // if you set a texture, it will be modulated with the current diffuse color.
+    // if you don't set a texture, it will just use the current diffuse color.
+//    lpDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+//	lpDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_DIFFUSE);
+//	lpDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TEXTURE);
+//    lpDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
+//	lpDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1 );
+ //   lpDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE );
+//    lpDevice->SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
+
+	float fZoom = 1.0f;
+	SPRITEVERTEX v3[4];
+	ZeroMemory(v3, sizeof(SPRITEVERTEX)*4);
+
+	// extend the poly we draw by 1 pixel around the viewable image area, 
+	//  in case the video card wraps u/v coords with a +0.5-texel offset 
+	//  (otherwise, a 1-pixel-wide line of the image would wrap at the top and left edges).
+	float fOnePlusInvWidth  = 1.0f + 1.0f/(float)GetWidth();
+	float fOnePlusInvHeight = 1.0f + 1.0f/(float)GetHeight();
+	v3[0].x = -fOnePlusInvWidth;
+	v3[1].x =  fOnePlusInvWidth;
+	v3[2].x = -fOnePlusInvWidth;
+	v3[3].x =  fOnePlusInvWidth;
+	v3[0].y =  fOnePlusInvHeight;
+	v3[1].y =  fOnePlusInvHeight;
+	v3[2].y = -fOnePlusInvHeight;
+	v3[3].y = -fOnePlusInvHeight;
+
+    // Explicitly set UVs because our new Legacy Shader expects them!
+    // Original code relied on Vertex Color (Green/Blue) channels hack.
+    v3[0].tu = 0; v3[0].tv = 0;
+    v3[1].tu = 1; v3[1].tv = 0;
+    v3[2].tu = 0; v3[2].tv = 1;
+    v3[3].tu = 1; v3[3].tv = 1;
+
+	//float aspect = GetWidth() / (float)(GetHeight()/(ASPECT)/**4.0f/3.0f*/);
+	float aspect = GetWidth() / (float)(GetHeight()*m_fInvAspectY/**4.0f/3.0f*/);
+    float x_aspect_mult = 1.0f;
+    float y_aspect_mult = 1.0f;
+
+    if (aspect>1)
+        y_aspect_mult = aspect;
+    else
+        x_aspect_mult = 1.0f/aspect;
+
+	for (int n=0; n<4; n++) 
+    {
+        v3[n].x *= x_aspect_mult;
+        v3[n].y *= y_aspect_mult;
+    }
+    
+	{
+		float shade[4][3] = { 
+			{ 1.0f, 1.0f, 1.0f },
+			{ 1.0f, 1.0f, 1.0f },
+			{ 1.0f, 1.0f, 1.0f },
+			{ 1.0f, 1.0f, 1.0f } };  // for each vertex, then each comp.
+
+		float fShaderAmount = m_pState->m_fShader.eval(GetTime());
+
+		if (fShaderAmount > 0.001f)
+		{
+			for (int i=0; i<4; i++)
+			{
+				shade[i][0] = 0.6f + 0.3f*sinf(GetTime()*30.0f*0.0143f + 3 + i*21 + m_fRandStart[3]);
+				shade[i][1] = 0.6f + 0.3f*sinf(GetTime()*30.0f*0.0107f + 1 + i*13 + m_fRandStart[1]);
+				shade[i][2] = 0.6f + 0.3f*sinf(GetTime()*30.0f*0.0129f + 6 + i*9  + m_fRandStart[2]);
+				float max = ((shade[i][0] > shade[i][1]) ? shade[i][0] : shade[i][1]);
+				if (shade[i][2] > max) max = shade[i][2];
+				for (int k=0; k<3; k++)
+				{
+					shade[i][k] /= max;
+					shade[i][k] = 0.5f + 0.5f*shade[i][k];
+				}
+				for (int k=0; k<3; k++)
+				{
+					shade[i][k] = shade[i][k]*(fShaderAmount) + 1.0f*(1.0f - fShaderAmount);
+				}
+				v3[i].Diffuse = D3DCOLOR_RGBA_01(shade[i][0],shade[i][1],shade[i][2],1);
+			}
+		}
+
+		float fVideoEchoZoom        = (float)(*m_pState->var_pf_echo_zoom);//m_pState->m_fVideoEchoZoom.eval(GetTime());
+		float fVideoEchoAlpha       = (float)(*m_pState->var_pf_echo_alpha);//m_pState->m_fVideoEchoAlpha.eval(GetTime());
+		int   nVideoEchoOrientation = (int)  (*m_pState->var_pf_echo_orient) % 4;//m_pState->m_nVideoEchoOrientation;
+		float fGammaAdj             = (float)(*m_pState->var_pf_gamma);//m_pState->m_fGammaAdj.eval(GetTime());
+
+		if (m_pState->m_bBlending && 
+			m_pState->m_fVideoEchoAlpha.eval(GetTime()) > 0.01f &&
+			m_pState->m_fVideoEchoAlphaOld > 0.01f &&
+			m_pState->m_nVideoEchoOrientation != m_pState->m_nVideoEchoOrientationOld)
+		{
+			if (m_pState->m_fBlendProgress < m_fSnapPoint)
+			{
+				nVideoEchoOrientation = m_pState->m_nVideoEchoOrientationOld;
+				fVideoEchoAlpha *= 1.0f - 2.0f*CosineInterp(m_pState->m_fBlendProgress);
+			}
+			else
+			{
+				fVideoEchoAlpha *= 2.0f*CosineInterp(m_pState->m_fBlendProgress) - 1.0f;
+			}
+		}
+
+		if (fVideoEchoAlpha > 0.001f)
+		{
+			// video echo
+			lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+			lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_ONE);
+			lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
+
+			for (int i=0; i<2; i++)
+			{
+				fZoom = (i==0) ? 1.0f : fVideoEchoZoom;
+
+				float temp_lo = 0.5f - 0.5f/fZoom;
+				float temp_hi = 0.5f + 0.5f/fZoom;
+				v3[0].tu = temp_lo;
+				v3[0].tv = temp_hi;
+				v3[1].tu = temp_hi;
+				v3[1].tv = temp_hi;
+				v3[2].tu = temp_lo;
+				v3[2].tv = temp_lo;
+				v3[3].tu = temp_hi;
+				v3[3].tv = temp_lo;
+
+				// flipping
+				if (i==1)
+				{
+					for (int j=0; j<4; j++)
+					{
+						if (nVideoEchoOrientation % 2)
+							v3[j].tu = 1.0f - v3[j].tu;
+						if (nVideoEchoOrientation >= 2)
+							v3[j].tv = 1.0f - v3[j].tv;
+					}
+				}
+
+				float mix = (i==1) ? fVideoEchoAlpha : 1.0f - fVideoEchoAlpha;
+				for (int k=0; k<4; k++)	
+					v3[k].Diffuse = D3DCOLOR_RGBA_01(mix*shade[k][0],mix*shade[k][1],mix*shade[k][2],1);
+
+                lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, (void*)v3, sizeof(SPRITEVERTEX));
+
+				if (i==0)
+				{
+					lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_ONE);
+					lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+				}
+
+				if (fGammaAdj > 0.001f)
+				{
+					// draw layer 'i' a 2nd (or 3rd, or 4th...) time, additively
+					int nRedraws = (int)(fGammaAdj - 0.0001f);
+					float gamma;
+
+					for (int nRedraw=0; nRedraw < nRedraws; nRedraw++)
+					{
+						if (nRedraw == nRedraws-1)
+							gamma = fGammaAdj - (int)(fGammaAdj - 0.0001f);
+						else
+							gamma = 1.0f;
+
+						for (int k=0; k<4; k++)
+							v3[k].Diffuse = D3DCOLOR_RGBA_01(gamma*mix*shade[k][0],gamma*mix*shade[k][1],gamma*mix*shade[k][2],1);
+                        lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, (void*)v3, sizeof(SPRITEVERTEX));
+					}
+				}
+			}
+		}
+		else
+		{
+			// no video echo
+			v3[0].tu = 0;	v3[1].tu = 1;	v3[2].tu = 0;	v3[3].tu = 1;
+			v3[0].tv = 1;	v3[1].tv = 1;	v3[2].tv = 0;	v3[3].tv = 0;
+
+			lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+			lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_ONE);
+			lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
+
+			// draw it iteratively, solid the first time, and additively after that
+			int nPasses = (int)(fGammaAdj - 0.001f) + 1;
+			float gamma;
+
+			for (int nPass=0; nPass < nPasses; nPass++)
+			{
+				if (nPass == nPasses - 1)
+					gamma = fGammaAdj - (float)nPass;
+				else
+					gamma = 1.0f;
+
+				for (int k=0; k<4; k++)
+					v3[k].Diffuse = D3DCOLOR_RGBA_01(gamma*shade[k][0],gamma*shade[k][1],gamma*shade[k][2],1);
+                lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, (void*)v3, sizeof(SPRITEVERTEX));
+
+				if (nPass==0)
+				{
+					lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+					lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_ONE);
+					lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+				}
+			}
+		}
+
+		SPRITEVERTEX v3[4];
+		ZeroMemory(v3, sizeof(SPRITEVERTEX)*4);
+		float fOnePlusInvWidth  = 1.0f + 1.0f/(float)GetWidth();
+		float fOnePlusInvHeight = 1.0f + 1.0f/(float)GetHeight();
+		v3[0].x = -fOnePlusInvWidth;
+		v3[1].x =  fOnePlusInvWidth;
+		v3[2].x = -fOnePlusInvWidth;
+		v3[3].x =  fOnePlusInvWidth;
+		v3[0].y =  fOnePlusInvHeight;
+		v3[1].y =  fOnePlusInvHeight;
+		v3[2].y = -fOnePlusInvHeight;
+		v3[3].y = -fOnePlusInvHeight;
+        
+        v3[0].tu = 0; v3[0].tv = 0;
+        v3[1].tu = 1; v3[1].tv = 0;
+        v3[2].tu = 0; v3[2].tv = 1;
+        v3[3].tu = 1; v3[3].tv = 1;
+
+		for (int i=0; i<4; i++) v3[i].Diffuse = D3DCOLOR_RGBA_01(1,1,1,1);
+		
+		lpDevice->SetPixelShader(g_pPixelShader_Legacy1);
+        lpDevice->SetVertexShader(g_pVertexShader_Legacy1);
+        {
+             D3DXMATRIX mIdentity;
+             D3DXMatrixIdentity(&mIdentity);
+             lpDevice->SetVertexShaderConstantF(0, (float*)&mIdentity, 4);
+        }
+
+		if (*m_pState->var_pf_brighten &&
+			(GetCaps()->SrcBlendCaps  & D3DPBLENDCAPS_INVDESTCOLOR ) &&
+			(GetCaps()->DestBlendCaps & D3DPBLENDCAPS_DESTCOLOR)
+			)
+		{
+			// square root filter
+
+			//lpDevice->SetRenderState(D3DRS_COLORVERTEX, FALSE);       //?
+			//lpDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_FLAT); //?
+
+			lpDevice->SetTexture(0, NULL);
+			lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+
+			// first, a perfect invert
+			lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_INVDESTCOLOR);
+			lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
+            lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, (void*)v3, sizeof(SPRITEVERTEX));
+
+			// then modulate by self (square it)
+			lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_ZERO);
+			lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_DESTCOLOR);
+            lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, (void*)v3, sizeof(SPRITEVERTEX));
+
+
+			// then another perfect invert
+			lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_INVDESTCOLOR);
+			lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
+            lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, (void*)v3, sizeof(SPRITEVERTEX));
+
+		}
+
+		if (*m_pState->var_pf_darken && 
+			(GetCaps()->DestBlendCaps & D3DPBLENDCAPS_DESTCOLOR)
+			)
+		{
+			// squaring filter
+
+			//lpDevice->SetRenderState(D3DRS_COLORVERTEX, FALSE);          //?
+			//lpDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_FLAT);    //?
+
+			lpDevice->SetTexture(0, NULL);
+			lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+
+			lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_ZERO);
+			lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_DESTCOLOR);
+            lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, (void*)v3, sizeof(SPRITEVERTEX));
+
+
+			//lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_DESTCOLOR);
+			//lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+			//lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, (void*)v3, sizeof(SPRITEVERTEX));
+
+		}
+		
+		if (*m_pState->var_pf_solarize && 
+			(GetCaps()->SrcBlendCaps  & D3DPBLENDCAPS_DESTCOLOR ) &&
+			(GetCaps()->DestBlendCaps & D3DPBLENDCAPS_INVDESTCOLOR)
+			)
+		{
+			//lpDevice->SetRenderState(D3DRS_COLORVERTEX, FALSE);        //?
+			//lpDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_FLAT);  //?
+
+			lpDevice->SetTexture(0, NULL);
+			lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+
+			lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_ZERO);
+			lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVDESTCOLOR);
+            lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, (void*)v3, sizeof(SPRITEVERTEX));
+
+
+			lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_DESTCOLOR);
+			lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+            lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, (void*)v3, sizeof(SPRITEVERTEX));
+
+		}
+
+		if (*m_pState->var_pf_invert && 
+			(GetCaps()->SrcBlendCaps  & D3DPBLENDCAPS_INVDESTCOLOR )
+			)
+		{
+			lpDevice->SetTexture(0, NULL);
+			lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+			lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_INVDESTCOLOR);
+			lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
+			
+            lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, (void*)v3, sizeof(SPRITEVERTEX));
+
+		}
+
+		lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+	}
 }
 
-void CPlugin::ShowToUser_Shaders(int nPass, bool bAlphaBlend, bool bFlipAlpha, bool bCullTiles, bool bFlipCulling)
+void CPlugin::ShowToUser_Shaders(int nPass, bool bAlphaBlend, bool bFlipAlpha, bool bCullTiles, bool bFlipCulling)//int bRedraw, int nPassOverride, bool bFlipAlpha)
 {
-    // This function is deprecated. Its logic should be merged into the warp/composite shader.
-    // If called, it might indicate an issue elsewhere.
-    // For safety, ensure it does nothing or logs a warning.
-    return;
+    LPDIRECT3DDEVICE9 lpDevice = GetDevice();
+
+	if (!lpDevice)
+        return;
+
+	m_bShaderParamsUseCurrent = true;
+
+    lpDevice->SetVertexShader( g_pVertexShader_Legacy2 );
+    {
+        D3DXMATRIX identity;
+        D3DXMatrixIdentity(&identity);
+        lpDevice->SetVertexShaderConstantF(0, (float*)&identity, 4);
+    }
+	lpDevice->SetPixelShader (g_pPixelShader_Legacy2);
+    lpDevice->SetVertexDeclaration(m_pMyVertDecl);  // Use vertex declaration for Xbox 360
+    lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+
+	float fZoom = 1.0f;
+
+	float aspect = GetWidth() / (float)(GetHeight()*m_fInvAspectY/**4.0f/3.0f*/);
+    float x_aspect_mult = 1.0f;
+    float y_aspect_mult = 1.0f;
+
+    if (aspect>1)
+        y_aspect_mult = aspect;
+    else
+        x_aspect_mult = 1.0f/aspect;
+
+    // hue shader
+	float shade[4][3] = { 
+		{ 1.0f, 1.0f, 1.0f },
+		{ 1.0f, 1.0f, 1.0f },
+		{ 1.0f, 1.0f, 1.0f },
+		{ 1.0f, 1.0f, 1.0f } };  // for each vertex, then each comp.
+
+	float fShaderAmount = 1;//since we don't know if shader uses it or not!  m_pState->m_fShader.eval(GetTime());
+
+	if (fShaderAmount > 0.001f || m_pState->m_bBlending)
+	{
+        // pick 4 colors for the 4 corners
+		for (int i=0; i<4; i++)
+		{
+			shade[i][0] = 0.6f + 0.3f*sinf(GetTime()*30.0f*0.0143f + 3 + i*21 + m_fRandStart[3]);
+			shade[i][1] = 0.6f + 0.3f*sinf(GetTime()*30.0f*0.0107f + 1 + i*13 + m_fRandStart[1]);
+			shade[i][2] = 0.6f + 0.3f*sinf(GetTime()*30.0f*0.0129f + 6 + i*9  + m_fRandStart[2]);
+			float max = ((shade[i][0] > shade[i][1]) ? shade[i][0] : shade[i][1]);
+			if (shade[i][2] > max) max = shade[i][2];
+			for (int k=0; k<3; k++)
+			{
+				shade[i][k] /= max;
+				shade[i][k] = 0.5f + 0.5f*shade[i][k];
+			}
+            // note: we now pass the raw hue shader colors down; the shader can only use a certain % if it wants.
+			//for (k=0; k<3; k++)
+			//	shade[i][k] = shade[i][k]*(fShaderAmount) + 1.0f*(1.0f - fShaderAmount);
+			//m_comp_verts[i].Diffuse = D3DCOLOR_RGBA_01(shade[i][0],shade[i][1],shade[i][2],1);
+		}
+
+        // interpolate the 4 colors & apply to all the verts
+        for (int j=0; j<FCGSY; j++) 
+        {
+            for (int i=0; i<FCGSX; i++) 
+            {
+                MYVERTEX* p = &m_comp_verts[i + j*FCGSX];
+                float x = p->x*0.5f + 0.5f;
+                float y = p->y*0.5f + 0.5f; 
+
+                float col[3] = { 1, 1, 1 };
+                if (fShaderAmount > 0.001f) 
+                {
+                    for (int c=0; c<3; c++) 
+                        col[c] = shade[0][c]*(  x)*(  y) + 
+                                 shade[1][c]*(1-x)*(  y) + 
+                                 shade[2][c]*(  x)*(1-y) + 
+                                 shade[3][c]*(1-x)*(1-y);
+                }
+
+                // TO DO: improve interp here?
+                // TO DO: during blend, only send the triangles needed
+
+                // if blending, also set up the alpha values - pull them from the alphas used for the Warped Blit
+                double alpha = 1;
+                if (m_pState->m_bBlending) 
+                {
+                    x *= (m_nGridX + 1);
+                    y *= (m_nGridY + 1);
+                    x = max(min(x,m_nGridX-1),0);
+                    y = max(min(y,m_nGridY-1),0);
+                    int nx = (int)x;
+                    int ny = (int)y;
+                    double dx = x - nx;
+                    double dy = y - ny;
+                    double alpha00 = (m_verts[(ny  )*(m_nGridX+1) + (nx  )].Diffuse >> 24);
+                    double alpha01 = (m_verts[(ny  )*(m_nGridX+1) + (nx+1)].Diffuse >> 24);
+                    double alpha10 = (m_verts[(ny+1)*(m_nGridX+1) + (nx  )].Diffuse >> 24);
+                    double alpha11 = (m_verts[(ny+1)*(m_nGridX+1) + (nx+1)].Diffuse >> 24);
+                    alpha = alpha00*(1-dx)*(1-dy) + 
+                            alpha01*(  dx)*(1-dy) + 
+                            alpha10*(1-dx)*(  dy) + 
+                            alpha11*(  dx)*(  dy);
+                    alpha /= 255.0f;
+                    //if (bFlipAlpha)
+                    //    alpha = 1-alpha;
+
+                    //alpha = (m_verts[y*(m_nGridX+1) + x].Diffuse >> 24) / 255.0f;
+                }
+                p->Diffuse = D3DCOLOR_RGBA_01(col[0],col[1],col[2],alpha);
+            }
+        }
+    }
+
+    int nAlphaTestValue = 0;
+    if (bFlipCulling)
+        nAlphaTestValue = 1-nAlphaTestValue;
+
+    if (bAlphaBlend)
+    {
+        lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+        if (bFlipAlpha) 
+        {
+            lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_INVSRCALPHA);
+            lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_SRCALPHA);
+        }
+        else
+        {
+            lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA);
+            lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+        }
+    }
+    else 
+        lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+
+    // Now do the final composite blit, fullscreen; 
+    //  or do it twice, alpha-blending, if we're blending between two sets of shaders.
+
+    int pass = nPass;
+    {
+        // PASS 0 : draw using *blended per-vertex motion vectors*, but with the OLD comp shader.
+        // PASS 1 : draw using *blended per-vertex motion vectors*, but with the NEW comp shader.
+        PShaderInfo* si = (pass==0) ? &m_OldShaders.comp : &m_shaders.comp;
+        CState* state = (pass==0) ? m_pOldState : m_pState;
+
+        lpDevice->SetVertexDeclaration(m_pMyVertDecl);
+        lpDevice->SetVertexShader(g_pVertexShader_Legacy2);
+        
+        if (si->ptr)
+        {
+             lpDevice->SetPixelShader(si->ptr);
+             ApplyShaderParams( &(si->params), si->CT, state );
+        }
+        else
+        {
+             lpDevice->SetPixelShader(g_pPixelShader_Legacy2);
+
+             // Smart Fallback Binding
+             CShaderParams* p = &(si->params);
+             int i = 0; 
+			 LPDIRECT3DBASETEXTURE9 pTex = m_lpPrevFrame;
+             DWORD wrap = D3DTADDRESS_WRAP;
+             DWORD filter = D3DTEXF_LINEAR;
+
+             // If preset has a valid binding for slot 0 that isn't the default VS
+             if (p->m_texcode[i] != TEX_VS && p->m_texture_bindings[i].texptr != NULL)
+                 pTex = p->m_texture_bindings[i].texptr;
+
+             
+             if (p->m_texcode[i] == TEX_VS || p->m_texture_bindings[i].texptr)
+             {
+                 wrap   = p->m_texture_bindings[i].bWrap ? D3DTADDRESS_WRAP : D3DTADDRESS_CLAMP;
+                 filter = p->m_texture_bindings[i].bBilinear ? D3DTEXF_LINEAR : D3DTEXF_POINT;
+             }
+
+             lpDevice->SetTexture(0, pTex);
+             lpDevice->SetSamplerState(0, D3DSAMP_ADDRESSU, wrap);
+             lpDevice->SetSamplerState(0, D3DSAMP_ADDRESSV, wrap);
+             lpDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, filter);
+             lpDevice->SetSamplerState(0, D3DSAMP_MINFILTER, filter);
+             lpDevice->SetSamplerState(0, D3DSAMP_MIPFILTER, filter);
+        }
+
+        // Hurl the triangles at the video card.
+        // We're going to un-index it, so that we don't stress any crappy (AHEM intel g33)
+        //  drivers out there.  Not a big deal - only ~800 polys / 24kb of data.
+        // If we're blending, we'll skip any polygon that is all alpha-blended out.
+        // This also respects the MaxPrimCount limit of the video card.
+        MYVERTEX tempv[1024 * 3];
+        int primCount = (FCGSX-2)*(FCGSY-2)*2;  // although, some might not be drawn!
+        int max_prims_per_batch = min( GetCaps()->MaxPrimitiveCount, (sizeof(tempv)/sizeof(tempv[0]))/3) - 4;
+        int src_idx = 0;
+        while (src_idx < primCount*3)
+        {
+            int prims_queued = 0;
+            int i=0;
+            while (prims_queued < max_prims_per_batch && src_idx < primCount*3)
+            {
+                // copy 3 verts
+                for (int j=0; j<3; j++)
+                    tempv[i++] = m_comp_verts[ m_comp_indices[src_idx++] ];
+                if (bCullTiles)
+                {
+                    DWORD d1 = (tempv[i-3].Diffuse >> 24);
+                    DWORD d2 = (tempv[i-2].Diffuse >> 24);
+                    DWORD d3 = (tempv[i-1].Diffuse >> 24);
+                    bool bIsNeeded;
+                    if (nAlphaTestValue) 
+                        bIsNeeded = ((d1 & d2 & d3) < 255);//(d1 < 255) || (d2 < 255) || (d3 < 255);
+                    else
+                        bIsNeeded = ((d1|d2|d3) > 0);//(d1 > 0) || (d2 > 0) || (d3 > 0);
+                    if (!bIsNeeded) 
+                        i -= 3;
+                    else
+                        prims_queued++;
+                }
+                else
+                    prims_queued++;
+            }
+            if (prims_queued > 0)
+                lpDevice->DrawPrimitiveUP( D3DPT_TRIANGLELIST, prims_queued, tempv, sizeof(MYVERTEX) );
+        }
+    }
+
+    lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+
+    RestoreShaderParams();
 }

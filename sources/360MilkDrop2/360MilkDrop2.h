@@ -3,7 +3,7 @@
 #ifndef CVISUALISATION_MILKDROP2_H
 #define CVISUALISATION_MILKDROP2_H
 
-class CVisualisationMilkDrop2 : protected CVisualisation
+class CVisualisationMilkDrop2 : public CVisualisation
 {
 public:
 	CVisualisationMilkDrop2(const std::string strVisualisationName);

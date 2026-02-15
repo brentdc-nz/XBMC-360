@@ -362,9 +362,12 @@ void CXAudio2::RegisterAudioCallback(IAudioCallback *pCallback)
 
 void CXAudio2::UnRegisterAudioCallback()
 {
+	EnterCriticalSection(&m_CriticalSection);
 	m_pCallback = NULL;
 	free(m_VisBuffer);
 	m_VisBuffer = NULL;
+	m_VisBytes = 0;
+	LeaveCriticalSection(&m_CriticalSection);
 }
 
 //***********************************************************************************************

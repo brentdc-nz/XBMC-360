@@ -8,7 +8,7 @@ class CVisualisation
 {
 public:
 	CVisualisation(const std::string strVisualisationName);
-	~CVisualisation();
+	virtual ~CVisualisation();
 
 	virtual void Create(LPDIRECT3DDEVICE9 pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight) = 0;
 	virtual void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength) = 0;

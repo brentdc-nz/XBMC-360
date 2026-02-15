@@ -40,7 +40,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gstring.h"
 #include "Vector.h"
 
-typedef enum { TEX_DISK, TEX_VS, TEX_BLUR0, TEX_BLUR1, TEX_BLUR2, TEX_BLUR3, TEX_BLUR4, TEX_BLUR5, TEX_BLUR6, TEX_BLUR_LAST } tex_code;
+typedef enum { TEX_DISK, TEX_VS, TEX_FC, TEX_BLUR0, TEX_BLUR1, TEX_BLUR2, TEX_BLUR3, TEX_BLUR4, TEX_BLUR5, TEX_BLUR6, TEX_BLUR_LAST } tex_code;
 typedef enum { UI_REGULAR, UI_MENU, UI_LOAD, UI_LOAD_DEL, UI_LOAD_RENAME, UI_SAVEAS, UI_SAVE_OVERWRITE, UI_EDIT_MENU_STRING, UI_CHANGEDIR, UI_IMPORT_WAVE, UI_EXPORT_WAVE, UI_IMPORT_SHAPE, UI_EXPORT_SHAPE, UI_UPGRADE_PIXEL_SHADER, UI_MASHUP } ui_mode;
 typedef struct { float rad; float ang; float a; float c;  } td_vertinfo; // blending: mix = max(0,min(1,a*t + c));
 typedef char* CHARPTR;
@@ -416,8 +416,9 @@ public:
 
         // DIRECTX 9:
         IDirect3DTexture9 *m_lpVSold[2];
-		IDirect3DTexture9* m_lpPrevFrame; // Single texture for previous frame
-
+		IDirect3DTexture9* m_lpPrevFrame; // Previous frame (feedback)
+        IDirect3DTexture9* m_lpCurFrame;  // Current frame (post-warp)
+        bool               m_bShaderParamsUseCurrent;
 
         #define NUM_BLUR_TEX 6
         #if (NUM_BLUR_TEX>0)

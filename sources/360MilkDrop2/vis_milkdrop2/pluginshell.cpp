@@ -185,18 +185,16 @@ int CPluginShell::GetHeight()
 
 D3DCAPS9* CPluginShell::GetCaps()
 {
-	D3DCAPS9 pD3DCaps;
-
 	if (m_pD3DDevice)
 	{
+		static D3DCAPS9 pD3DCaps;
 		m_pD3DDevice->GetDeviceCaps(&pD3DCaps);
+
 		return &pD3DCaps;
 	}
 	else
 		return NULL;
 };
-
-
 
 int CPluginShell::PluginPreInitialize(/*HWND hWinampWnd, HINSTANCE hWinampInstance*/)
 {

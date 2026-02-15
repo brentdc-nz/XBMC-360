@@ -21,7 +21,7 @@ CVisualisation* CVisualisationFactory::LoadVisualisation(const CStdString& strVi
 	// We only have MilkDrop2 atm!
 
 	CVisualisation* pVisualisation = NULL;
-	pVisualisation = (CVisualisation*) new CVisualisationMilkDrop2(strName);
+	pVisualisation = new CVisualisationMilkDrop2(strName);
 
 	return pVisualisation;
 

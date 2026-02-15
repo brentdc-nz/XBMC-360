@@ -53,8 +53,10 @@ void GetFast_CLEAR() { fLastFilePtr = NULL; }
 
 bool _GetLineByName(FILE* f, const char* szVarName, char* szRet, int nMaxRetChars)
 {
-    // Static state now tracks multiple files using a simple approach
-    static FILE* fLastFilePtr = nullptr;
+    // Use the global fLastFilePtr (declared above) so that GetFast_CLEAR() can reset it.
+    // Previously a local static 'fLastFilePtr' shadowed the global, making GetFast_CLEAR()
+    // ineffective. When FILE* pointers were reused by the OS, cached data from the previous
+    // preset file would be returned instead of re-parsing the new file.
     static int MyLineNum = 0;
     static std::vector<std::string> line_varName;
     static std::vector<int> line_value_bytepos;
@@ -1031,6 +1033,7 @@ bool CState::Import(std::string szIniFile, float fTime, CState* pOldState, DWORD
     MultiByteToWideChar(CP_UTF8, 0, szIniFile.c_str(), -1, wpath, size_needed);
 
 	FILE* f = _wfopen(wpath, L"rb");
+	delete[] wpath;
 //	FILE* f = _wfopen(/*wpath*/L"D:\\visualisations\\Milkdrop\\default\\test.milk", L"rb");
     if (!f)
         return false;
@@ -1265,6 +1268,40 @@ void CState::StripLinefeedCharsAndComments(char *src, char *dest)
 	dest[i2] = 0;
 }
 
+static void FixSplitIsBeatToken(char *code)
+{
+	if (!code || !code[0])
+		return;
+
+	char temp[MAX_BIGSTRING_LEN * 3];
+	int r = 0;
+	int w = 0;
+	while (code[r] && w < (int)sizeof(temp) - 1)
+	{
+		if (code[r] == 'i' && code[r + 1] == 's' && code[r + 2] == '_')
+		{
+			int look = r + 3;
+			while (code[look] == ' ' || code[look] == '\t')
+				look++;
+			if (code[look] == 'b' && code[look + 1] == 'e' && code[look + 2] == 'a' && code[look + 3] == 't')
+			{
+				temp[w++] = 'i';
+				temp[w++] = 's';
+				temp[w++] = '_';
+				temp[w++] = 'b';
+				temp[w++] = 'e';
+				temp[w++] = 'a';
+				temp[w++] = 't';
+				r = look + 4;
+				continue;
+			}
+		}
+		temp[w++] = code[r++];
+	}
+	temp[w] = 0;
+	strcpy(code, temp);
+}
+
 void CState::RecompileExpressions(int flags, int bReInit)
 {
     // before we get started, if we redo the init code for the preset, we have to redo
@@ -1379,6 +1416,7 @@ void CState::RecompileExpressions(int flags, int bReInit)
         {
             // 1. compile AND EXECUTE preset init code
 		    StripLinefeedCharsAndComments(m_szPerFrameInit, buf);
+			FixSplitIsBeatToken(buf);
 
 	        if (buf[0] && bReInit)
 	        {
@@ -1413,6 +1451,7 @@ void CState::RecompileExpressions(int flags, int bReInit)
 
             // 2. compile preset per-frame code
             StripLinefeedCharsAndComments(m_szPerFrameExpr, buf);
+			FixSplitIsBeatToken(buf);
 	        if (buf[0])
 	        {
 			    if ( ! (m_pf_codehandle = NSEEL_code_compile(m_pf_eel, buf)))
@@ -1483,6 +1522,7 @@ void CState::RecompileExpressions(int flags, int bReInit)
 
                 // 2. compile custom waveform per-frame code
 		        StripLinefeedCharsAndComments(m_wave[i].m_szPerFrame, buf);
+				FixSplitIsBeatToken(buf);
 	            if (buf[0])
                 {
 		            #ifndef _NO_EXPR_
@@ -1554,6 +1594,7 @@ void CState::RecompileExpressions(int flags, int bReInit)
 
                 // 2. compile custom shape per-frame code
 		        StripLinefeedCharsAndComments(m_shape[i].m_szPerFrame, buf);
+				FixSplitIsBeatToken(buf);
 	            if (buf[0])
                 {
 		            #ifndef _NO_EXPR_

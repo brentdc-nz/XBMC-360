@@ -51,8 +51,11 @@ void CVisualisationMilkDrop2::AudioData(const short* pAudioData, int iAudioDataL
 	{
 		for (int i=0; i < iAudioDataLength; i+=2)
 		{
-			waves[0][ipos] = char ((pAudioData[i] / 65535.0f) * 255.0f);
-			waves[1][ipos] = char ((pAudioData[i+1] / 65535.0f) * 255.0f);
+			// pAudioData is signed 16-bit PCM (-32768..+32767), interleaved L/R.
+			// MilkDrop's AnalyzeNewSound expects unsigned 8-bit (0..255) where 128 = silence.
+			// Convert: shift signed range to unsigned (0..65535), then take the high byte.
+			waves[0][ipos] = (unsigned char)((pAudioData[i]   + 32768) >> 8);
+			waves[1][ipos] = (unsigned char)((pAudioData[i+1] + 32768) >> 8);
 			ipos++;
 			if (ipos >= 576) break;
 		}

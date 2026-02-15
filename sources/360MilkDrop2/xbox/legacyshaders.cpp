@@ -13,20 +13,20 @@ const char* g_strVertexShaderProgram_Legacy1 =
 " struct VS_IN                                 "  
 " {                                            " 
 "     float4 ObjPos   : POSITION;              "  // Object space position 
-"     float4 Color    : COLOR;                 "  // Vertex color (used for TexCoord)
+"     float4 Color    : COLOR0;                "  // Vertex color
 " };                                           " 
 "                                              " 
 " struct VS_OUT                                " 
 " {                                            " 
 "     float4 ProjPos  : POSITION;              "  // Projected position
-"     float2 TexCoord : TEXCOORD0;             "  // Output as TEXCOORD0 (float2)
+"     float4 Color    : COLOR0;                "  // Pass-through color
 " };                                           "  
 "                                              "  
 " VS_OUT main( VS_IN In )                      "  
 " {                                            "  
 "     VS_OUT Out;                              "  
 "     Out.ProjPos = mul( matWVP, In.ObjPos );  "  
-"     Out.TexCoord = In.Color.xy;              "  // Use color's XY as TexCoord
+"     Out.Color = In.Color;                    "  // Pass through color
 "     return Out;                              "  
 " }";
 #endif
@@ -53,19 +53,16 @@ const char* g_strVertexShaderProgram_Legacy2 =
 " {                                             \n"  
 "     float3 ObjPos   : POSITION;               \n"  // x, y, z
 "     float4 Diffuse  : COLOR0;                 \n"  // Diffuse color (DWORD packed as ARGB)
-"     float2 TexCoord : TEXCOORD0;              \n"  // tu, tv (dynamic)
-"     float2 TexOrig  : TEXCOORD1;              \n"  // tu_orig, tv_orig (static)
-"     float2 RadAng   : TEXCOORD2;              \n"  // rad, ang (static)
+"     float4 TexData  : TEXCOORD0;              \n"  // tu, tv, tu_orig, tv_orig (Packed Float4)
+"     float2 RadAng   : TEXCOORD1;              \n"  // rad, ang (Moved to 1)
 " };                                            \n"  
 "                                               \n"  
 " struct VS_OUT                                 \n"  
 " {                                             \n"  
 "     float4 ProjPos  : POSITION;               \n"  // Transformed position
 "     float4 Diffuse  : COLOR0;                 \n"  // Pass-through color
-"     float2 TexCoord : TEXCOORD0;              \n"  // Dynamic UVs
-"     float2 TexOrig  : TEXCOORD1;              \n"  // Static UVs
-"     float2 RadAng   : TEXCOORD2;              \n"  // rad, ang
-"     float3 WorldPos : TEXCOORD3;              \n"  // Original x, y, z (optional)
+"     float4 TexCoord : TEXCOORD0;              \n"  // uv, uv_orig packed
+"     float2 RadAng   : TEXCOORD1;              \n"  // rad, ang
 " };                                            \n"  
 "                                               \n"  
 " VS_OUT main(VS_IN In)                         \n"  
@@ -77,15 +74,12 @@ const char* g_strVertexShaderProgram_Legacy2 =
 "                                               \n"  
 "     // Pass-through parameters                \n"  
 "     Out.Diffuse  = In.Diffuse;                \n"  
-"     Out.TexCoord = In.TexCoord;               \n"  
-"     Out.TexOrig  = In.TexOrig;                \n"  
+"     Out.TexCoord = In.TexData;                \n"  
 "     Out.RadAng   = In.RadAng;                 \n"  
-"     Out.WorldPos = In.ObjPos;                 \n"  
 "                                               \n"  
 "     return Out;                               \n"  
 " }                                             \n";  
 #endif
-
 
 typedef struct _MYVERTEX 
 {
@@ -125,7 +119,7 @@ const char* g_strVertexShaderProgram_Legacy3 =
 "     VS_OUT Out;                              \n"
 "     Out.ProjPos  = mul(matWVP, float4(In.ObjPos, 1));  \n"
 "     Out.Color    = In.Color;                 \n"
-"     Out.TexCoord = In.Color.yz;              "  // Use color's YZ (R and G) as TexCoord
+"     Out.TexCoord = In.TexCoord;              \n"  // Pass through texture coordinates
 "     return Out;                              \n"
 " }";
 
@@ -152,12 +146,12 @@ D3DVertexShader*       g_pVertexShader_Legacy3;
 const char* g_strPixelShaderProgram_Legacy1 = 
 " struct PS_IN                                 "
 " {                                            "
-"     float2 TexCoord : TEXCOORD0;             "  // Matches vertex shader
+"     float4 Color    : COLOR0;                "  // Matches vertex shader output
 " };                                           "  
 "                                              "  
 " float4 main( PS_IN In ) : COLOR              "  
 " {                                            "  
-"     return float4(In.TexCoord, 0, 1);        "  // Output RGBA
+"     return In.Color;                         "  // Output Vertex Color
 " }                                            ";
 #endif
 
@@ -175,7 +169,7 @@ const char* g_strPixelShaderProgram_Legacy2 =
 " float4 main(PS_IN In) : COLOR0               \n"
 " {                                            \n"
 "     float4 tex = tex2D(Tex0, In.TexCoord);   \n"
-"     return tex * In.Color;                   \n"
+"     return float4(tex.rgb * In.Color.rgb, In.Color.a); \n"  // Alpha from vertex only (matches original FFP: ALPHAOP=SELECTARG1, ALPHAARG1=DTA_DIFFUSE)
 " }                                            \n";
 #endif
 
@@ -195,12 +189,8 @@ const char* g_strPixelShaderProgram_Legacy3 =
 " {                                            \n"
 "     float4 texcol = tex2D(Tex0, In.TexCoord);\n"
 "                                              \n"
-"     // Combine texture and vertex alpha      \n"
-"     float4 outColor;                         \n"
-"     outColor.rgb = texcol.rgb * In.Color.rgb;\n"
-"     outColor.a   = texcol.a * In.Color.a;    \n"  // FIX: Multiply texture + vertex alpha
-"                                              \n"
-"     return outColor;                         \n"
+"     // Match original FFP: color = tex*diffuse, alpha = diffuse only \n"
+"     return float4(texcol.rgb * In.Color.rgb, In.Color.a); \n"
 " }";
 #endif
 
@@ -372,13 +362,140 @@ IDirect3DTexture9* g_pTextureLegacy1 = nullptr;
 IDirect3DTexture9* g_pTextureLegacy2 = nullptr;
 IDirect3DTexture9* g_pTextureLegacy3 = nullptr;
 
+void CLegacyShaders::CreateDummyTextures(IDirect3DDevice9* pDevice)
+{
+    // Create 2x2 pink/black checkerboard for Legacy1 & Legacy3
+    if (FAILED(D3DXCreateTexture(pDevice, 2, 2, 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED, &g_pTextureLegacy1)))
+        return;
+
+    // Create 2x8 vertical stripes for Legacy2
+    if (FAILED(D3DXCreateTexture(pDevice, 2, 8, 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED, &g_pTextureLegacy2)))
+        return;
+
+    if (FAILED(D3DXCreateTexture(pDevice, 2, 2, 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED, &g_pTextureLegacy3)))
+        return;
+
+    // Fill Legacy1 (2x2 checkerboard)
+    D3DLOCKED_RECT lockedRect;
+    if (SUCCEEDED(g_pTextureLegacy1->LockRect(0, &lockedRect, NULL, 0))) 
+    {
+        DWORD* pData = (DWORD*)lockedRect.pBits;
+        const DWORD pink = 0xFFFF69B4;
+        const DWORD black = 0xFF000000;
+        
+        // Row 0
+        pData[0] = pink;    // (0,0)
+        pData[1] = black;   // (1,0)
+        
+        // Row 1 (using pitch for row alignment)
+        DWORD* pRow1 = (DWORD*)((BYTE*)pData + lockedRect.Pitch);
+        pRow1[0] = black;   // (0,1)
+        pRow1[1] = pink;    // (1,1)
+        
+        g_pTextureLegacy1->UnlockRect(0);
+    }
+
+    // Fill Legacy2 (2x8 vertical stripes)
+    if (SUCCEEDED(g_pTextureLegacy2->LockRect(0, &lockedRect, NULL, 0))) 
+    {
+        DWORD* pData = (DWORD*)lockedRect.pBits;
+        const DWORD pink = 0xFFFF69B4;
+        const DWORD black = 0xFF000000;
+
+        for (UINT y = 0; y < 8; y++) 
+        {
+            DWORD* pRow = (DWORD*)((BYTE*)pData + y * lockedRect.Pitch);
+            pRow[0] = pink;   // Left column
+            pRow[1] = black;  // Right column
+        }
+        g_pTextureLegacy2->UnlockRect(0);
+    }
+
+    // Fill Legacy3 (2x2 checkerboard)
+    if (SUCCEEDED(g_pTextureLegacy3->LockRect(0, &lockedRect, NULL, 0))) 
+    {
+        DWORD* pData = (DWORD*)lockedRect.pBits;
+        const DWORD pink = 0xFFFF69B4;
+        const DWORD black = 0xFF000000;
+        
+        // Row 0
+        pData[0] = pink;    // (0,0)
+        pData[1] = black;   // (1,0)
+        
+        // Row 1
+        DWORD* pRow1 = (DWORD*)((BYTE*)pData + lockedRect.Pitch);
+        pRow1[0] = black;   // (0,1)
+        pRow1[1] = pink;    // (1,1)
+        
+        g_pTextureLegacy3->UnlockRect(0);
+    }
+
+    return;
+}
+
 void CLegacyShaders::CreateShaders(D3DDevice* pD3dDevice)
 {
+	CreateDummyTextures(pD3dDevice);
+
 	DoPixelShader_Legacy1(pD3dDevice);
+
 	DoPixelShader_Legacy2(pD3dDevice);
+
 	DoPixelShader_Legacy3(pD3dDevice);
 
 	return;
+}
+
+void CLegacyShaders::DrawLegacyPrim1(D3DDevice* pD3dDevice)
+{
+    // Legacy1: Uses color's XY as TexCoord
+    pD3dDevice->SetTexture(0, g_pTextureLegacy1);
+    pD3dDevice->SetVertexShader(g_pVertexShader_Legacy1);
+    pD3dDevice->SetPixelShader(g_pPixelShader_Legacy1);
+    pD3dDevice->SetFVF(WFVERTEX_FORMAT);
+
+    WFVERTEX verts1[3] = {
+        // x, y, z, Diffuse (ARGB)
+        {-0.5f, -0.5f, 0.5f, D3DCOLOR_ARGB(255, 0, 0, 0)},    // TexCoord (0,0)
+        { 0.5f, -0.5f, 0.5f, D3DCOLOR_ARGB(255, 255, 0, 0)},  // TexCoord (1,0)
+        { 0.0f, 0.5f, 0.5f, D3DCOLOR_ARGB(255, 0, 255, 0)},   // TexCoord (0,1)
+    };
+
+    pD3dDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 1, verts1, sizeof(WFVERTEX));
+}
+
+void CLegacyShaders::DrawLegacyPrim2(D3DDevice* pD3dDevice)
+{
+    // Legacy2: Uses explicit TexCoords
+    pD3dDevice->SetTexture(0, g_pTextureLegacy2);
+    pD3dDevice->SetVertexShader(g_pVertexShader_Legacy2);
+    pD3dDevice->SetPixelShader(g_pPixelShader_Legacy2);
+    pD3dDevice->SetFVF(MYVERTEX_FORMAT);
+
+    MYVERTEX verts2[3] = {
+        // x, y, z, Diffuse, tu, tv, tu_orig, tv_orig, rad, ang
+        {-0.5f, -0.5f, 0.5f, D3DCOLOR_XRGB(255,255,255), 0.0f,0.0f, 0.0f,0.0f, 1.0f,0.0f},
+        { 0.5f, -0.5f, 0.5f, D3DCOLOR_XRGB(255,255,255), 1.0f,0.0f, 1.0f,0.0f, 1.0f,0.0f},
+        { 0.0f, 0.5f, 0.5f, D3DCOLOR_XRGB(255,255,255), 0.5f,1.0f, 0.5f,1.0f, 1.0f,0.0f},
+    };
+    pD3dDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 1, verts2, sizeof(MYVERTEX));
+}
+
+void CLegacyShaders::DrawLegacyPrim3(D3DDevice* pD3dDevice)
+{
+    // Legacy3: Simple texture + color
+    pD3dDevice->SetTexture(0, g_pTextureLegacy3);
+    pD3dDevice->SetVertexShader(g_pVertexShader_Legacy3);
+    pD3dDevice->SetPixelShader(g_pPixelShader_Legacy3);
+    pD3dDevice->SetFVF(SPRITEVERTEX_FORMAT);
+
+    SPRITEVERTEX verts3[3] = {
+        // x, y, z, Diffuse, tu, tv
+        {-0.5f, -0.5f, 0.5f, D3DCOLOR_XRGB(255,255,255), 0.0f, 0.0f},
+        { 0.5f, -0.5f, 0.5f, D3DCOLOR_XRGB(255,255,255), 1.0f, 0.0f},
+        { 0.0f, 0.5f, 0.5f, D3DCOLOR_XRGB(255,255,255), 0.5f, 1.0f},
+    };
+    pD3dDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 1, verts3, sizeof(SPRITEVERTEX));
 }
 
 void CLegacyShaders::UnbindShaders(D3DDevice* pD3dDevice)
@@ -387,11 +504,35 @@ void CLegacyShaders::UnbindShaders(D3DDevice* pD3dDevice)
 	{
 		pD3dDevice->SetVertexShader(NULL);
 		pD3dDevice->SetPixelShader(NULL);
+		pD3dDevice->SetVertexDeclaration(NULL);
+		pD3dDevice->SetFVF(0);
+
+		// Clear all texture stages so the device doesn't hold
+		// dangling pointers to textures we're about to release
+		for (int i = 0; i < 16; i++)
+			pD3dDevice->SetTexture(i, NULL);
 	}
 }
 
 void CLegacyShaders::DeleteShaders()
 {
+    // Release dummy textures
+    if (g_pTextureLegacy1)
+    {
+        g_pTextureLegacy1->Release();
+        g_pTextureLegacy1 = NULL;
+    }
+    if (g_pTextureLegacy2)
+    {
+        g_pTextureLegacy2->Release();
+        g_pTextureLegacy2 = NULL;
+    }
+    if (g_pTextureLegacy3)
+    {
+        g_pTextureLegacy3->Release();
+        g_pTextureLegacy3 = NULL;
+    }
+
     // Release vertex shaders
     if (g_pVertexShader_Legacy1)
     {

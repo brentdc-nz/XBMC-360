@@ -95,6 +95,14 @@
 			</control>
 		</control>
 		
+		<control type="visualisation">
+			<posx>145</posx>
+			<posy>45</posy>
+			<width>835</width>
+			<height>620</height>
+			<visible>true</visible>
+		</control>	
+		
 		<control type="videowindow" id="1">
 			<description>video preview window</description>
 			<posx>180</posx>
@@ -505,6 +513,7 @@
 		<control type="group">
 			<posx>510</posx>
 			<posy>525</posy>
+
 	
 			<control type="image">
 				<description>submenu button</description>
