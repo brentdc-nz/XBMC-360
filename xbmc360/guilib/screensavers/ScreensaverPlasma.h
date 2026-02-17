@@ -38,6 +38,7 @@ private:
 	int m_iScreenWidth;
 	int m_iScreenHeight;
 
+	double m_fTime;
 	unsigned char m_r[256], m_g[256], m_b[256];
 };
 

@@ -55,6 +55,7 @@ CScreensaverPlasma::CScreensaverPlasma()
 	m_iScreenWidth = 0;
 	m_iScreenHeight = 0;
 	m_initialized = false;
+	m_fTime = 0.0;
 
 	m_pVB = NULL;
 	m_pVertexShader = NULL;
@@ -206,8 +207,6 @@ bool CScreensaverPlasma::Initialize()
 
 void CScreensaverPlasma::Render()
 {
-	uint32_t last_time;
-	double f = 0;
 	float c1;
 	float c2;
 	float c3;
@@ -216,42 +215,36 @@ void CScreensaverPlasma::Render()
 
 	int res;
 
-	last_time = GetTickCount();
+	D3DLOCKED_RECT lockrect;
+
+	// Lock the texture ONCE before writing all pixels
+	m_pTexture->LockRect( 0, &lockrect, NULL, 0);
+
+	D3DCOLOR* pBits = (D3DCOLOR *)lockrect.pBits;
+	int pitch = lockrect.Pitch >> 2; // pitch in DWORDs
 
 	for(y = 0; y < 200; y++)
 	{
 		for(x = 0; x < 320; x++)
 		{
-			c1 = (float)sin(x / 50.0 + f + y / 200.0);
-			c2 = (float)sqrt((sin(0.8 * f) * 160 - x + 160) * (sin(0.8 * f) * 160 - x + 160) + (cos(1.2 * f) * 100 - y + 100) * (cos(1.2 * f) * 100 - y + 100));
+			c1 = (float)sin(x / 50.0 + m_fTime + y / 200.0);
+			c2 = (float)sqrt((sin(0.8 * m_fTime) * 160 - x + 160) * (sin(0.8 * m_fTime) * 160 - x + 160) + (cos(1.2 * m_fTime) * 100 - y + 100) * (cos(1.2 * m_fTime) * 100 - y + 100));
 			c2 = (float)sin(c2 / 50.0);
 			c3 = (c1 + c2) / 2;
 
 			res = (int)ceil((c3 + 1) * 127);
 
-			D3DLOCKED_RECT lockrect;
-
-			D3DCOLOR rgb;
-
-			rgb = D3DCOLOR_ARGB(255, m_r[res], m_g[res], m_b[res]);
-
-			m_pTexture->LockRect( 0, &lockrect, NULL, 0);
-
-			((D3DCOLOR *)lockrect.pBits)[x+(lockrect.Pitch>>2)*y]=rgb;
-
-			m_pTexture->UnlockRect(0);
+			pBits[x + pitch * y] = D3DCOLOR_ARGB(255, m_r[res], m_g[res], m_b[res]);
 		}
 	}
 
+	// Unlock ONCE after all pixels are written
+	m_pTexture->UnlockRect(0);
+
 	UpdateTexture();
 
-	f += 0.1;
-	if(GetTickCount() - last_time < 40)
-	{
-//		Sleep(40 - (GetTickCount() - last_time)); //FIXME - Why so slow?
-	}
-
-	last_time = GetTickCount();
+	// Advance the animation time for the next frame
+	m_fTime += 0.1;
 }
 
 bool CScreensaverPlasma::Close()
