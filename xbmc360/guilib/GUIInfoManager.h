@@ -29,6 +29,8 @@ namespace INFO
 #define OPERATOR_OR   1
 
 #define PLAYER_HAS_MEDIA            1
+#define PLAYER_HAS_AUDIO            2
+#define PLAYER_HAS_VIDEO            3
 #define PLAYER_PAUSED               5
 #define PLAYER_REWINDING            6
 #define PLAYER_REWINDING_2x         7

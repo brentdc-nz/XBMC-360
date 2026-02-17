@@ -267,12 +267,22 @@ smb2_write_to_socket(struct smb2_context *smb2)
 
                 count = writev(smb2->fd, tmpiov, niov);
                 if (count == -1) {
+#if defined(_WIN32) || defined(_XBOX)
+                        int werr = WSAGetLastError();
+                        if (werr == WSAEWOULDBLOCK) {
+                                return 0;
+                        }
+                        smb2_set_error(smb2, "Error when writing to "
+                                       "socket :%d %s", werr,
+                                       smb2_get_error(smb2));
+#else
                         if (errno == EAGAIN || errno == EWOULDBLOCK) {
                                 return 0;
                         }
                         smb2_set_error(smb2, "Error when writing to "
                                        "socket :%d %s", errno,
                                        smb2_get_error(smb2));
+#endif
                         return -1;
                 }
 
@@ -674,7 +684,7 @@ smb2_read_from_buf(struct smb2_context *smb2)
 }
 
 static void
-smb2_close_connecting_fd(struct smb2_context *smb2, int fd)
+smb2_close_connecting_fd(struct smb2_context *smb2, t_socket fd)
 {
         size_t i;
 
@@ -684,7 +694,7 @@ smb2_close_connecting_fd(struct smb2_context *smb2, int fd)
                 if (fd == smb2->connecting_fds[i]) {
                         memmove(&smb2->connecting_fds[i],
                                 &smb2->connecting_fds[i + 1],
-                                smb2->connecting_fds_count - i - 1);
+                                (smb2->connecting_fds_count - i - 1) * sizeof(t_socket));
                         smb2->connecting_fds_count--;
                         return;
                 }
@@ -736,6 +746,14 @@ smb2_service_fd(struct smb2_context *smb2, int fd, int revents)
                         if (err == 0) {
                                 return 0;
                         }
+#ifdef _XBOX
+                } else {
+                        /* Xbox 360 does not support getsockopt(SO_ERROR).
+                         * Report a generic connection error. */
+                        err = WSAECONNREFUSED;
+                        smb2_set_error(smb2, "smb2_service: socket error "
+                                        "during connect (%d).", err);
+#else
                 } else if (getsockopt(fd, SOL_SOCKET, SO_ERROR,
                                (char *)&err, &err_size) != 0 || err != 0) {
                         if (err == 0) {
@@ -747,6 +765,7 @@ smb2_service_fd(struct smb2_context *smb2, int fd, int revents)
                 } else {
                         smb2_set_error(smb2, "smb2_service: POLLERR, "
                                         "Unknown socket error.");
+#endif
                 }
 
                 if (smb2->connect_cb) {
@@ -766,9 +785,17 @@ smb2_service_fd(struct smb2_context *smb2, int fd, int revents)
         if (smb2->fd == -1 && revents & POLLOUT) {
                 int err = 0;
                 socklen_t err_size = sizeof(err);
+                struct sockaddr_in peer_addr;
+                int peer_len = sizeof(peer_addr);
 
-                if (sckemu_getsockopt(fd, SOL_SOCKET, SO_ERROR,
-                               (char *)&err, &err_size) != 0 || err != 0) {
+                /* Use getpeername() to verify the connection actually
+                 * succeeded.  Xbox 360 does not support SO_ERROR, so
+                 * getsockopt would either fail or return misleading
+                 * results.  getpeername() returns 0 only when the
+                 * socket is connected to a remote peer. */
+                if (getpeername(fd, (struct sockaddr *)&peer_addr,
+                                &peer_len) != 0) {
+                        err = WSAGetLastError();
                         if (err == 0) {
                                 err = errno;
                         }
@@ -1020,6 +1047,14 @@ smb2_connect_async(struct smb2_context *smb2, const char *server,
                                "connected.");
                 return -EINVAL;
         }
+
+        /* Clean up any stale state from a previous failed connection
+         * attempt on this context.  Without this, connecting_fds_count
+         * remains non-zero and the next malloc'd connecting_fds buffer
+         * has a non-zero starting index, leaving index 0 uninitialised
+         * (garbage data that gets interpreted as a socket handle). */
+        smb2_close_connecting_fds(smb2);
+        smb2->connecting_fds_count = 0;
 
         addr = strdup(server);
         if (addr == NULL) {

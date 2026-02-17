@@ -277,7 +277,7 @@ int poll(struct pollfd *fds, nfds_t numfds, int timeout)
 
     n = 0;
     for (i = 0; i < numfds; i++) {
-        if (fds[i].fd < 0)
+        if (fds[i].fd == INVALID_SOCKET || (int)fds[i].fd < 0)
             continue;
 #if 0
         if (fds[i].fd >= FD_SETSIZE) {
@@ -290,8 +290,11 @@ int poll(struct pollfd *fds, nfds_t numfds, int timeout)
             FD_SET(fds[i].fd, &read_set);
         if (fds[i].events & POLLOUT)
             FD_SET(fds[i].fd, &write_set);
-        if (fds[i].events & POLLERR)
-            FD_SET(fds[i].fd, &exception_set);
+        /* Always monitor the exception set so that connection
+         * errors (POLLERR) are detected even when not explicitly
+         * requested.  POSIX poll() returns POLLERR regardless of
+         * the requested events mask. */
+        FD_SET(fds[i].fd, &exception_set);
 
         if (fds[i].fd >= n)
             n = fds[i].fd + 1;

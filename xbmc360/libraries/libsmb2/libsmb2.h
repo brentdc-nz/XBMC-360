@@ -83,6 +83,8 @@ struct smb2dirent {
 #if defined(_MSC_VER) && !defined(_XBOX)
 #include <winsock2.h>
 typedef SOCKET t_socket;
+#elif defined(_XBOX)
+typedef SOCKET t_socket;
 #else
 typedef int t_socket;
 #endif

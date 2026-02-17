@@ -207,7 +207,9 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 	else if(strCategory.Equals("player"))
 	{
 		if(strTest.Equals("player.hasmedia")) ret = PLAYER_HAS_MEDIA;
-		else if(strTest.Equals("player.time")) ret = PLAYER_TIME;
+		else if (strTest.Equals("player.hasaudio")) ret = PLAYER_HAS_AUDIO;
+		else if (strTest.Equals("player.hasvideo")) ret = PLAYER_HAS_VIDEO;
+		else if (strTest.Equals("player.time")) ret = PLAYER_TIME;
 		else if (strTest.Equals("player.paused")) ret = PLAYER_PAUSED;
 		else if (strTest.Equals("player.rewinding")) ret = PLAYER_REWINDING;
 		else if (strTest.Equals("player.forwarding")) ret = PLAYER_FORWARDING;
@@ -848,6 +850,12 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
 		{
 			case PLAYER_HAS_MEDIA:
 				bReturn = true;
+				break;
+			case PLAYER_HAS_AUDIO:
+				bReturn = g_application.IsPlayingAudio();
+				break;
+			case PLAYER_HAS_VIDEO:
+				bReturn = g_application.IsPlayingVideo();
 				break;
 			case PLAYER_PAUSED:
 				bReturn = g_application.IsPaused();

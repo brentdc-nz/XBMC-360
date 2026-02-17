@@ -22,6 +22,7 @@
 #ifdef _XBOX
 
 #include "xbox_defines.h"
+#include "libsmb2.h"
 
 #define POLLIN      0x0001    /* There is data to read */
 #define POLLPRI     0x0002    /* There is urgent data to read */
@@ -30,7 +31,7 @@
 #define POLLHUP     0x0010    /* Hung up */
 
 struct pollfd {
-        int fd;
+        t_socket fd;
         short events;
         short revents;
 };

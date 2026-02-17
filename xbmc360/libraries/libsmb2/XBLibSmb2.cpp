@@ -67,6 +67,15 @@ bool CXBLibSMB2::OpenDir(const CURL& url)
 	// Only connect if not already connected to this share
 	if(!IsConnectedToShare(m_pLibSMB2Url->server, m_pLibSMB2Url->share))
 	{
+		// If we were previously connected to a different share, tear down
+		// the old connection first so the context is in a clean state
+		if(!m_ConnectedServer.IsEmpty())
+		{
+			smb2_disconnect_share(m_pLibSMB2Context);
+			m_ConnectedServer.Empty();
+			m_ConnectedShare.Empty();
+		}
+
 		if(smb2_connect_share(m_pLibSMB2Context, m_pLibSMB2Url->server, m_pLibSMB2Url->share, m_pLibSMB2Url->user) != 0)
 		{
 			CLog::Log(LOGERROR, "smb2_connect_share failed. %s", smb2_get_error(m_pLibSMB2Context));
@@ -111,6 +120,15 @@ bool CXBLibSMB2::OpenFile(const CURL& url)
 	// Only connect if not already connected to this share
 	if(!IsConnectedToShare(m_pLibSMB2Url->server, m_pLibSMB2Url->share))
 	{
+		// If we were previously connected to a different share, tear down
+		// the old connection first so the context is in a clean state
+		if(!m_ConnectedServer.IsEmpty())
+		{
+			smb2_disconnect_share(m_pLibSMB2Context);
+			m_ConnectedServer.Empty();
+			m_ConnectedShare.Empty();
+		}
+
 		if(smb2_connect_share(m_pLibSMB2Context, m_pLibSMB2Url->server, m_pLibSMB2Url->share, m_pLibSMB2Url->user) != 0)
 		{
 			CLog::Log(LOGERROR, "smb2_connect_share failed. %s", smb2_get_error(m_pLibSMB2Context));
