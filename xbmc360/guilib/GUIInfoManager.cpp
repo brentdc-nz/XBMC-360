@@ -177,11 +177,49 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 	CStdString strCategory = strTest.Left(strTest.Find("."));
 
 	// Translate conditions...
-	if(strTest.Equals("false") || strTest.Equals("no") || strTest.Equals("off")) 
-		ret = SYSTEM_ALWAYS_FALSE;
-	else if(strTest.Equals("true") || strTest.Equals("yes") || strTest.Equals("on")) 
-		ret = SYSTEM_ALWAYS_TRUE;
-
+	if (strTest.Equals("false") || strTest.Equals("no") || strTest.Equals("off")) ret = SYSTEM_ALWAYS_FALSE;
+	else if (strTest.Equals("true") || strTest.Equals("yes") || strTest.Equals("on")) ret = SYSTEM_ALWAYS_TRUE;
+	
+	if (strCategory.Equals("player"))
+	{
+		if (strTest.Equals("player.hasmedia")) ret = PLAYER_HAS_MEDIA;
+		else if (strTest.Equals("player.hasaudio")) ret = PLAYER_HAS_AUDIO;
+		else if (strTest.Equals("player.hasvideo")) ret = PLAYER_HAS_VIDEO;
+		else if (strTest.Equals("player.paused")) ret = PLAYER_PAUSED;
+		else if (strTest.Equals("player.rewinding")) ret = PLAYER_REWINDING;
+		else if (strTest.Equals("player.forwarding")) ret = PLAYER_FORWARDING;
+		else if (strTest.Equals("player.rewinding2x")) ret = PLAYER_REWINDING_2x;
+		else if (strTest.Equals("player.rewinding4x")) ret = PLAYER_REWINDING_4x;
+		else if (strTest.Equals("player.rewinding8x")) ret = PLAYER_REWINDING_8x;
+		else if (strTest.Equals("player.rewinding16x")) ret = PLAYER_REWINDING_16x;
+		else if (strTest.Equals("player.rewinding32x")) ret = PLAYER_REWINDING_32x;
+		else if (strTest.Equals("player.forwarding2x")) ret = PLAYER_FORWARDING_2x;
+		else if (strTest.Equals("player.forwarding4x")) ret = PLAYER_FORWARDING_4x;
+		else if (strTest.Equals("player.forwarding8x")) ret = PLAYER_FORWARDING_8x;
+		else if (strTest.Equals("player.forwarding16x")) ret = PLAYER_FORWARDING_16x;
+		else if (strTest.Equals("player.forwarding32x")) ret = PLAYER_FORWARDING_32x;
+		else if (strTest.Equals("player.displayafterseek")) ret = PLAYER_DISPLAY_AFTER_SEEK;
+		else if (strTest.Equals("player.seekbar")) ret = PLAYER_SEEKBAR;
+		else if (strTest.Equals("player.progress")) ret = PLAYER_PROGRESS;
+		else if (strTest.Equals("player.seeking")) ret = PLAYER_SEEKING;
+		else if (strTest.Equals("player.showcodec")) ret = PLAYER_SHOWCODEC;
+		else if (strTest.Equals("player.showinfo")) ret = PLAYER_SHOWINFO;
+		else if (strTest.Left(15).Equals("player.seektime")) return AddMultiInfo(GUIInfo(PLAYER_SEEKTIME, TranslateTimeFormat(strTest.Mid(15))));
+		else if (strTest.Left(17).Equals("player.seekoffset")) return AddMultiInfo(GUIInfo(PLAYER_SEEKOFFSET, TranslateTimeFormat(strTest.Mid(17))));
+		else if (strTest.Left(20).Equals("player.timeremaining")) return AddMultiInfo(GUIInfo(PLAYER_TIME_REMAINING, TranslateTimeFormat(strTest.Mid(20))));
+		else if (strTest.Left(11).Equals("player.time")) return AddMultiInfo(GUIInfo(PLAYER_TIME, TranslateTimeFormat(strTest.Mid(11))));
+		else if (strTest.Left(15).Equals("player.duration")) return AddMultiInfo(GUIInfo(PLAYER_DURATION, TranslateTimeFormat(strTest.Mid(15))));
+		else if (strTest.Equals("player.volume")) ret = PLAYER_VOLUME;
+	}
+	else if (strCategory.Equals("weather"))
+	{
+		if (strTest.Equals("weather.conditions")) ret = WEATHER_CONDITIONS;
+		else if (strTest.Equals("weather.temperature")) ret = WEATHER_TEMPERATURE;
+		else if (strTest.Equals("weather.location")) ret = WEATHER_LOCATION;
+		else if (strTest.Equals("weather.isfetched")) ret = WEATHER_IS_FETCHED;
+		else if (strTest.Equals("weather.fanartcode")) ret = WEATHER_FANART_CODE;
+		else if (strTest.Equals("weather.plugin")) ret = WEATHER_PLUGIN;
+	}
 	else if(strCategory.Equals("system"))
 	{
 		if(strTest.Equals("system.date")) ret = SYSTEM_DATE;
@@ -204,45 +242,17 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 		if (strTest.Equals("network.dns2address")) ret = NETWORK_DNS2_ADDRESS;
 		if (strTest.Equals("network.dhcpaddress")) ret = NETWORK_DHCP_ADDRESS;
 	}
-	else if(strCategory.Equals("player"))
+	else if (strCategory.Equals("musicplayer"))
 	{
-		if(strTest.Equals("player.hasmedia")) ret = PLAYER_HAS_MEDIA;
-		else if (strTest.Equals("player.hasaudio")) ret = PLAYER_HAS_AUDIO;
-		else if (strTest.Equals("player.hasvideo")) ret = PLAYER_HAS_VIDEO;
-		else if (strTest.Equals("player.time")) ret = PLAYER_TIME;
-		else if (strTest.Equals("player.paused")) ret = PLAYER_PAUSED;
-		else if (strTest.Equals("player.rewinding")) ret = PLAYER_REWINDING;
-		else if (strTest.Equals("player.forwarding")) ret = PLAYER_FORWARDING;
-		else if (strTest.Equals("player.forwarding")) ret = PLAYER_FORWARDING;
-		else if (strTest.Equals("player.rewinding2x")) ret = PLAYER_REWINDING_2x;
-		else if (strTest.Equals("player.rewinding4x")) ret = PLAYER_REWINDING_4x;
-		else if (strTest.Equals("player.rewinding8x")) ret = PLAYER_REWINDING_8x;
-		else if (strTest.Equals("player.rewinding16x")) ret = PLAYER_REWINDING_16x;
-		else if (strTest.Equals("player.rewinding32x")) ret = PLAYER_REWINDING_32x;
-		else if (strTest.Equals("player.forwarding2x")) ret = PLAYER_FORWARDING_2x;
-		else if (strTest.Equals("player.forwarding4x")) ret = PLAYER_FORWARDING_4x;
-		else if (strTest.Equals("player.forwarding8x")) ret = PLAYER_FORWARDING_8x;
-		else if (strTest.Equals("player.forwarding16x")) ret = PLAYER_FORWARDING_16x;
-		else if (strTest.Equals("player.forwarding32x")) ret = PLAYER_FORWARDING_32x;
-		else if(strTest.Equals("player.timeremaining")) ret = PLAYER_TIME_REMAINING;
-		else if(strTest.Equals("player.duration")) ret = PLAYER_DURATION;
-		else if (strTest.Equals("player.displayafterseek")) ret = PLAYER_DISPLAY_AFTER_SEEK;
-		else if(strTest.Equals("player.progress")) ret = PLAYER_PROGRESS;
-		else if (strTest.Equals("player.seekbar")) ret = PLAYER_SEEKBAR;
-		else if (strTest.Left(15).Equals("player.seektime")) return AddMultiInfo(GUIInfo(PLAYER_SEEKTIME, TranslateTimeFormat(strTest.Mid(15))));
-		else if (strTest.Left(17).Equals("player.seekoffset")) return AddMultiInfo(GUIInfo(PLAYER_SEEKOFFSET, TranslateTimeFormat(strTest.Mid(17))));
-		else if (strTest.Equals("player.seeking"))ret = PLAYER_SEEKING;
-		else if (strTest.Equals("player.volume")) ret = PLAYER_VOLUME;
-		else if (strTest.Equals("player.muted")) ret = PLAYER_MUTED;
+		CStdString info = strTest.Mid(strCategory.GetLength() + 1);
+
+		if (info.Left(4).Equals("time")) return AddMultiInfo(GUIInfo(PLAYER_TIME, TranslateTimeFormat(info.Mid(4))));
+		else if (info.Left(8).Equals("duration")) return AddMultiInfo(GUIInfo(PLAYER_DURATION, TranslateTimeFormat(info.Mid(8))));
 	}
-	else if (strCategory.Equals("weather"))
+	else if (strCategory.Equals("videoplayer"))
 	{
-		if (strTest.Equals("weather.conditions")) ret = WEATHER_CONDITIONS;
-		else if (strTest.Equals("weather.temperature")) ret = WEATHER_TEMPERATURE;
-		else if (strTest.Equals("weather.location")) ret = WEATHER_LOCATION;
-		else if (strTest.Equals("weather.isfetched")) ret = WEATHER_IS_FETCHED;
-		else if (strTest.Equals("weather.fanartcode")) ret = WEATHER_FANART_CODE;
-		else if (strTest.Equals("weather.plugin")) ret = WEATHER_PLUGIN;
+		if (strTest.Left(16).Equals("videoplayer.time")) ret = AddMultiInfo(GUIInfo(PLAYER_TIME, TranslateTimeFormat(strTest.Mid(16))));
+		else if (strTest.Left(20).Equals("videoplayer.duration")) ret = AddMultiInfo(GUIInfo(PLAYER_DURATION, TranslateTimeFormat(strTest.Mid(20))));
 	}
 	else if (strTest.Left(17).Equals("control.hasfocus("))
 	{
@@ -822,6 +832,8 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
 		bReturn = false;
 	else if(condition == PLAYER_SHOWCODEC)
 		bReturn = m_playerShowCodec;
+	else if(condition == PLAYER_SHOWINFO)
+		bReturn = m_playerShowInfo;
 	else if (condition == PLAYER_MUTED)
 		bReturn = g_settings.m_bMute;
 	else if (condition >= SKIN_HAS_THEME_START && condition <= SKIN_HAS_THEME_END)
@@ -1055,6 +1067,18 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
 
 		if (window)
 			return window->GetProperty(m_stringParameters[info.GetData2()]);
+	}
+	else if (info.m_info == PLAYER_TIME)
+	{
+		return GetCurrentPlayTime((TIME_FORMAT)info.GetData1());
+	}
+	else if (info.m_info == PLAYER_TIME_REMAINING)
+	{
+		return GetCurrentPlayTimeRemaining((TIME_FORMAT)info.GetData1());
+	}
+	else if (info.m_info == PLAYER_DURATION)
+	{
+		return GetDuration((TIME_FORMAT)info.GetData1());
 	}
 	else if (info.m_info == PLAYER_SEEKTIME)
 	{

@@ -471,7 +471,7 @@
     <ClInclude Include="guilib\VisibleEffect.h" />
     <ClInclude Include="guilib\windows\GUIWindowFullScreen.h" />
     <ClInclude Include="guilib\windows\GUIWindowHome.h" />
-    <ClInclude Include="guilib\windows\GUIWindowMusicFiles.h" />
+    <ClInclude Include="guilib\windows\GUIWindowMusicSongs.h" />
     <ClInclude Include="guilib\windows\GUIWindowPictures.h" />
     <ClInclude Include="guilib\windows\GUIWindowPrograms.h" />
     <ClInclude Include="guilib\windows\GUIWindowScreensaver.h" />
@@ -511,6 +511,9 @@
     <ClInclude Include="libraries\libsmb2\xbox_defines.h" />
     <ClInclude Include="MediaManager.h" />
     <ClInclude Include="MediaSource.h" />
+    <ClInclude Include="PlayListPlayer.h" />
+    <ClInclude Include="playlists\PlayList.h" />
+    <ClInclude Include="playlists\PlayListFactory.h" />
     <ClInclude Include="services\FTPServer\FTPFileWriter.h" />
     <ClInclude Include="services\FTPServer\FTPServer.h" />
     <ClInclude Include="services\FTPServer\FTPServerConn.h" />
@@ -722,7 +725,7 @@
     <ClCompile Include="guilib\VisibleEffect.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowFullScreen.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowHome.cpp" />
-    <ClCompile Include="guilib\windows\GUIWindowMusicFiles.cpp" />
+    <ClCompile Include="guilib\windows\GUIWindowMusicSongs.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowPictures.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowPrograms.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowScreensaver.cpp" />
@@ -947,6 +950,9 @@
     <ClCompile Include="libraries\libsmb2\XBLibSmb2.cpp" />
     <ClCompile Include="MediaManager.cpp" />
     <ClCompile Include="MediaSource.cpp" />
+    <ClCompile Include="PlayListPlayer.cpp" />
+    <ClCompile Include="playlists\PlayList.cpp" />
+    <ClCompile Include="playlists\PlayListFactory.cpp" />
     <ClCompile Include="services\FTPServer\FTPFileWriter.cpp" />
     <ClCompile Include="services\FTPServer\FTPServer.cpp" />
     <ClCompile Include="services\FTPServer\FTPServerConn.cpp" />

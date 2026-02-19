@@ -28,6 +28,8 @@ void CSettings::Initialize()
 		g_graphicsContext.ResetOverscan((RESOLUTION)i, m_ResInfo[i].Overscan);
 	}
 
+	m_iMyMusicStartWindow = WINDOW_MUSIC_FILES;
+
 	m_nVolumeLevel = 0;
 	m_dynamicRangeCompressionLevel = 0;
 	m_iPreMuteVolumeLevel = 0;

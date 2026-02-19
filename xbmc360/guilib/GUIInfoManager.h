@@ -53,6 +53,7 @@ namespace INFO
 #define PLAYER_TIME_REMAINING       28
 #define PLAYER_DURATION             29
 #define PLAYER_SHOWCODEC            30
+#define PLAYER_SHOWINFO             31
 #define PLAYER_VOLUME               32
 #define PLAYER_MUTED                33
 #define PLAYER_SEEKOFFSET           47
@@ -289,6 +290,8 @@ public:
 	void SetSeeking(bool seeking) { m_playerSeeking = seeking; };
 	void SetShowCodec(bool showcodec) { m_playerShowCodec = showcodec; };
 	void ToggleShowCodec() { m_playerShowCodec = !m_playerShowCodec; };
+	void SetShowInfo(bool showinfo) { m_playerShowInfo = showinfo; };
+	void ToggleShowInfo() { m_playerShowInfo = !m_playerShowInfo; };
 	bool m_performingSeek;
 
 	inline float GetFPS() const { return m_fps; };
@@ -334,6 +337,7 @@ protected:
 	int m_seekOffset;
 	bool m_playerSeeking;
 	bool m_playerShowCodec;
+	bool m_playerShowInfo;
 
 	// FPS counters
 	float m_fps;

@@ -29,6 +29,7 @@ static const ActionMapping actions[] =
         {"stepback"          , ACTION_STEP_BACK},
         {"bigstepforward"    , ACTION_BIG_STEP_FORWARD},
         {"bigstepback"       , ACTION_BIG_STEP_BACK},
+        {"info"              , ACTION_SHOW_INFO},
         {"codecinfo"         , ACTION_SHOW_CODEC},
         {"close"             , ACTION_NAV_BACK}, // Backwards compatibility
         {"contextmenu"       , ACTION_CONTEXT_MENU},
@@ -39,6 +40,8 @@ static const ActionMapping actions[] =
         {"scrolldown"        , ACTION_SCROLL_DOWN},
         {"analogseekforward" , ACTION_ANALOG_SEEK_FORWARD},
         {"analogseekback"    , ACTION_ANALOG_SEEK_BACK},
+        {"osd"               , ACTION_SHOW_OSD},
+        {"smallstepback"     , ACTION_SMALL_STEP_BACK},
 };
 
 static const ActionMapping windows[] =
@@ -66,12 +69,21 @@ static const ActionMapping windows[] =
         {"filebrowser"              , WINDOW_DIALOG_FILE_BROWSER},
         {"networksetup"             , WINDOW_DIALOG_NETWORK_SETUP},
         {"mediasource"              , WINDOW_DIALOG_MEDIA_SOURCE},
+        {"musicplaylist"            , WINDOW_MUSIC_PLAYLIST},
+        {"musicfiles"               , WINDOW_MUSIC_FILES},
+        {"musiclibrary"             , WINDOW_MUSIC_NAV},
+        {"musicplaylisteditor"      , WINDOW_MUSIC_PLAYLIST_EDITOR},
+        {"videofiles"               , WINDOW_VIDEO_FILES},
+        {"videolibrary"             , WINDOW_VIDEO_NAV},
+        {"videoplaylist"            , WINDOW_VIDEO_PLAYLIST},
         {"fullscreenvideo"          , WINDOW_FULLSCREEN_VIDEO},
         {"visualisation"            , WINDOW_VISUALISATION},
         {"selectdialog"             , WINDOW_DIALOG_SELECT},
         {"okdialog"                 , WINDOW_DIALOG_OK},
         {"weather"                  , WINDOW_WEATHER},
         {"screensaver"              , WINDOW_SCREENSAVER},
+        {"startwindow"              , WINDOW_START},
+        {"startup"                  , WINDOW_STARTUP_ANIM},
 };
 
 CButtonTranslator g_buttonTranslator;

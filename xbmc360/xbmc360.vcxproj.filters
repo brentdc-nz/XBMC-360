@@ -189,6 +189,12 @@
     <Filter Include="Source Files\visualizations">
       <UniqueIdentifier>{3ac451d2-b722-4625-bf26-d50060a3409d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\playlists">
+      <UniqueIdentifier>{3b0e123e-620d-4a36-a90a-38401f04f8bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\playlists">
+      <UniqueIdentifier>{d42b38c0-15c5-4e08-8a45-fb18412ed832}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -428,7 +434,7 @@
     <ClInclude Include="ThumbLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="guilib\windows\GUIWindowMusicFiles.h">
+    <ClInclude Include="guilib\windows\GUIWindowMusicSongs.h">
       <Filter>Header Files\guilib\windows</Filter>
     </ClInclude>
     <ClInclude Include="xbox\Network.h">
@@ -968,6 +974,15 @@
     <ClInclude Include="visualizations\fft.h">
       <Filter>Header Files\visualizations</Filter>
     </ClInclude>
+    <ClInclude Include="playlists\PlayList.h">
+      <Filter>Header Files\playlists</Filter>
+    </ClInclude>
+    <ClInclude Include="playlists\PlayListFactory.h">
+      <Filter>Header Files\playlists</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayListPlayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -1201,7 +1216,7 @@
     <ClCompile Include="ThumbLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="guilib\windows\GUIWindowMusicFiles.cpp">
+    <ClCompile Include="guilib\windows\GUIWindowMusicSongs.cpp">
       <Filter>Source Files\guilib\windows</Filter>
     </ClCompile>
     <ClCompile Include="xbox\Network.cpp">
@@ -1746,6 +1761,15 @@
     </ClCompile>
     <ClCompile Include="visualizations\fft.cpp">
       <Filter>Source Files\visualizations</Filter>
+    </ClCompile>
+    <ClCompile Include="playlists\PlayList.cpp">
+      <Filter>Source Files\playlists</Filter>
+    </ClCompile>
+    <ClCompile Include="playlists\PlayListFactory.cpp">
+      <Filter>Source Files\playlists</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayListPlayer.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

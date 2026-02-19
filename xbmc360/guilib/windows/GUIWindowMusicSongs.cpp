@@ -1,4 +1,4 @@
-#include "GUIWindowMusicFiles.h"
+#include "GUIWindowMusicSongs.h"
 #include "utils\Util.h"
 #include "utils\URIUtils.h"
 #include "guilib\GUIInfoManager.h"
@@ -12,17 +12,17 @@
 
 using namespace std;
 
-CGUIWindowMusicFiles::CGUIWindowMusicFiles()
-	: CGUIMediaWindow(WINDOW_MUSIC, "MyMusic.xml")
+CGUIWindowMusicSongs::CGUIWindowMusicSongs()
+	: CGUIMediaWindow(WINDOW_MUSIC_FILES, "MyMusicSongs.xml")
 {
 }
 
-CGUIWindowMusicFiles::~CGUIWindowMusicFiles()
+CGUIWindowMusicSongs::~CGUIWindowMusicSongs()
 {
 }
 
 
-bool CGUIWindowMusicFiles::OnMessage(CGUIMessage& message)
+bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 {
 	switch ( message.GetMessage() )
 	{
@@ -46,7 +46,7 @@ bool CGUIWindowMusicFiles::OnMessage(CGUIMessage& message)
 	return CGUIMediaWindow::OnMessage(message);
 }
 
-void CGUIWindowMusicFiles::GetContextButtons(int itemNumber, CContextButtons &buttons)
+void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
 	CFileItemPtr item;
 
@@ -87,7 +87,7 @@ void CGUIWindowMusicFiles::GetContextButtons(int itemNumber, CContextButtons &bu
 	CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
 }
 
-bool CGUIWindowMusicFiles::OnContextButton(int itemNumber, CONTEXT_BUTTON button)	
+bool CGUIWindowMusicSongs::OnContextButton(int itemNumber, CONTEXT_BUTTON button)	
 {
 	CFileItemPtr item;
 	

@@ -54,7 +54,7 @@ public:
 	virtual void OnPlayBackStopped();
 	virtual void OnQueueNextItem();
 
-	bool PlayFile(const CFileItem& item);
+	bool PlayFile(const CFileItem& item, bool bRestart = false);
 	bool IsPlaying() const;
 	bool IsPaused() const;
 	int GetPlaySpeed() const;
@@ -101,6 +101,8 @@ public:
 
 	bool ExecuteXBMCAction(std::string action);
 	void RenderMemoryStatus();
+
+	CStdString m_strPlayListFile;
 
 protected:
 	bool ProcessGamepad(float frameTime);

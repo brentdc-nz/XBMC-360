@@ -25,6 +25,8 @@ public:
 	CStdString m_videoPPFFmpegDeint;
 	CStdString m_videoPPFFmpegPostProc;
 	int m_iSkipLoopFilter;
+	int m_videoSmallStepBackSeconds;
+	int m_songInfoDuration; // Duration in seconds to show song info in visualisation
 	bool m_bNavVKeyboard; // If true we navigate the virtual keyboard using cursor keys
 };
 

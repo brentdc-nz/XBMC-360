@@ -25,17 +25,31 @@
        <A>Pause</A>
        <B>Stop</B>
 <!--   <Y>AspectRatio</Y> -->
-<!--   <black>CodecInfo</black> -->
-       <start>CodecInfo</start>
-<!--   <white>Info</white> -->
-<!--   <back>SmallStepBack</back> -->
-<!--   <start>OSD</start> -->
+       <rightshoulder>CodecInfo</rightshoulder>    <!-- was black -->
+       <leftshoulder>Info</leftshoulder>           <!-- was white -->
+       <back>SmallStepBack</back>
+       <start>OSD</start>
        <dpadleft>StepBack</dpadleft>
        <dpadright>StepForward</dpadright>
        <dpadup>BigStepForward</dpadup>
        <dpaddown>BigStepBack</dpaddown>
     </gamepad>
   </FullscreenVideo>
+  <Visualisation>
+    <gamepad>
+       <A>Pause</A>
+       <B>Stop</B>
+       <Y>XBMC.ActivateWindow(VisualisationPresetList)</Y>
+       <rightshoulder>CodecInfo</rightshoulder>    <!-- was black -->
+       <leftshoulder>Info</leftshoulder>           <!-- was white -->
+       <start>XBMC.ActivateWindow(MusicOSD)</start>
+       <back>LockPreset</back>
+       <dpadleft>SkipPrevious</dpadleft>
+       <dpadright>SkipNext</dpadright>
+       <dpadup>NextPreset</dpadup>
+       <dpaddown>PreviousPreset</dpaddown>
+    </gamepad>
+  </Visualisation>  
   <ContextMenu>
     <gamepad>
       <rightshoulder>Back</rightshoulder>

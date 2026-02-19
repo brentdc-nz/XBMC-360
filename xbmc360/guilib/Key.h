@@ -77,6 +77,7 @@
 
 #define ACTION_SELECT_ITEM             7
 #define ACTION_PREVIOUS_MENU          10
+#define ACTION_SHOW_INFO              11 // Show information about currently playing item, or toggles info in vis
 #define ACTION_PAUSE                  12
 #define ACTION_STOP                   13
 
@@ -85,7 +86,10 @@
 #define ACTION_STEP_BACK              21 // Seek -1% in the movie. Can be used in videoFullScreen.xml window id=2005
 #define ACTION_BIG_STEP_FORWARD       22 // Seek +10% in the movie. Can be used in videoFullScreen.xml window id=2005
 #define ACTION_BIG_STEP_BACK          23 // Seek -10% in the movie. Can be used in videoFullScreen.xml window id=2005
+#define ACTION_SHOW_OSD               24 // Show/hide OSD. Can be used in videoFullScreen.xml window id=2005
 #define ACTION_SHOW_CODEC             27 // Show information about file. Can be used in videoFullScreen.xml window id=2005
+
+#define ACTION_SMALL_STEP_BACK        76 // Jumps a few seconds back during playback of movie. Can be used in videoFullScreen.xml window id=2005
 
 #define ACTION_VOLUME_UP              88
 #define ACTION_VOLUME_DOWN            89
@@ -141,6 +145,8 @@
 #define WINDOW_SYSTEM_INFORMATION         10007
 
 #define WINDOW_VIDEO_FILES                10024
+#define WINDOW_VIDEO_NAV                  10025
+#define WINDOW_VIDEO_PLAYLIST             10028
 
 #define WINDOW_SETTINGS_MYPICTURES        10012
 #define WINDOW_SETTINGS_MYPROGRAMS        10013
@@ -174,7 +180,10 @@
 #define WINDOW_DIALOG_SELECT              12000
 #define WINDOW_DIALOG_OK                  12002
 
+#define WINDOW_MUSIC_PLAYLIST             10500
 #define WINDOW_MUSIC_FILES                10501
+#define WINDOW_MUSIC_NAV                  10502
+#define WINDOW_MUSIC_PLAYLIST_EDITOR      10503
 #define WINDOW_FILES                      10003
 
 #define WINDOW_START                      12998 // First window to load

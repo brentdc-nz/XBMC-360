@@ -172,6 +172,8 @@ public:
 	// return true if the item exists in the list (and was thus updated), false otherwise.
 	bool UpdateItem(const CFileItem *item);
 
+	bool HasSortDetails() const { return m_sortDetails.size() != 0; };
+
 	// windowID id of the window that's loading this list (defaults to 0)
 	// return true if we loaded from the cache, false otherwise.
 	// sa Save,RemoveDiscCache

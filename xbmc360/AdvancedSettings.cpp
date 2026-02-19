@@ -24,6 +24,8 @@ CAdvancedSettings::CAdvancedSettings()
 	m_videoPPFFmpegDeint = "linblenddeint";
 	m_videoPPFFmpegPostProc = "ha:128:7,va,dr";
 	m_iSkipLoopFilter = 0;
+	m_videoSmallStepBackSeconds = 7;
+	m_songInfoDuration = 10; // 10 seconds default
 	m_bNavVKeyboard = false;
 }
 

@@ -1,13 +1,13 @@
-#ifndef GUILIB_GUIWINDOWMUSIC_H
-#define GUILIB_GUIWINDOWMUSIC_H
+#ifndef GUILIB_GUIWINDOWMUSICSONGS_H
+#define GUILIB_GUIWINDOWMUSICSONGS_H
 
 #include "guilib\GUIMediaWindow.h"
 
-class CGUIWindowMusicFiles : public CGUIMediaWindow
+class CGUIWindowMusicSongs : public CGUIMediaWindow
 {
 public:
-	CGUIWindowMusicFiles(void);
-	virtual ~CGUIWindowMusicFiles(void);
+	CGUIWindowMusicSongs(void);
+	virtual ~CGUIWindowMusicSongs(void);
 	
 	virtual bool OnMessage(CGUIMessage& message);
 
@@ -16,4 +16,4 @@ protected:
 	virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
 };
 
-#endif //GUILIB_GUIWINDOWOMUSIC_H
+#endif //GUILIB_GUIWINDOWMUSICSONGS_H

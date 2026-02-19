@@ -24,6 +24,7 @@
 #include "interfaces\Builtins.h"
 #include "guilib\GUIColorManager.h"
 #include "ApplicationRenderer.h"
+#include "PlayListPlayer.h"
 
 // Window includes
 #include "guilib\windows\GUIWindowHome.h"
@@ -31,7 +32,7 @@
 #include "guilib\windows\GUIWindowFullScreen.h"
 #include "guilib\windows\GUIWindowVisualisation.h"
 #include "guilib\windows\GUIWindowVideoFiles.h"
-#include "guilib\windows\GUIWindowMusicFiles.h"
+#include "guilib\windows\GUIWindowMusicSongs.h"
 #include "guilib\windows\GUIWindowPictures.h"
 #include "guilib\windows\GUIWindowSettings.h"
 #include "guilib\windows\GUIWindowSettingsCategory.h"
@@ -57,6 +58,7 @@ CApplication::CApplication()
 {
 	m_pPlayer = NULL;
 	m_iPlaySpeed = 1;
+	m_strPlayListFile = "";
 	m_bPlaybackStarting = false;
 	m_dwSkinTime = 0;
 	m_bScreenSave = false;
@@ -202,7 +204,7 @@ bool CApplication::Initialize()
 	g_windowManager.Add(new CGUIWindowVisualisation);   // window id = 2006
 	g_windowManager.Add(new CGUIWindowPrograms);
 	g_windowManager.Add(new CGUIWindowVideoFiles);
-	g_windowManager.Add(new CGUIWindowMusicFiles);
+	g_windowManager.Add(new CGUIWindowMusicSongs);
 	g_windowManager.Add(new CGUIWindowPictures);	
 	g_windowManager.Add(new CGUIWindowSettings);
 	g_windowManager.Add(new CGUIWindowSettingsCategory);
@@ -823,6 +825,13 @@ bool CApplication::OnAction(CAction &action)
 		return true;
 	}
 
+	// show info : Shows the current video or song information
+	if (action.GetID() == ACTION_SHOW_INFO)
+	{
+		g_infoManager.ToggleShowInfo();
+		return true;
+	}
+
 	// codec info : Shows the current song, video or picture codec information
 	if (action.GetID() == ACTION_SHOW_CODEC)
 	{
@@ -957,12 +966,12 @@ bool CApplication::OnMessage(CGUIMessage& message)
 		case GUI_MSG_PLAYBACK_STOPPED:
 		case GUI_MSG_PLAYBACK_ENDED:
 		{
-			if (/*message.GetMessage() == GUI_MSG_PLAYBACK_ENDED*/0) // WIP: Always delete the player on close atm
+			if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
 			{
-				// sending true to PlayNext() effectively passes bRestart to PlayFile()
+				// Sending true to PlayNext() effectively passes bRestart to PlayFile()
 				// which is not generally what we want (except for stacks, which are
 				// handled above)
-//				g_playlistPlayer.PlayNext();
+				g_playlistPlayer.PlayNext();
 			}
 			else
 			{
@@ -1181,7 +1190,7 @@ void CApplication::OnPlayBackStopped()
 	g_windowManager.SendThreadMessage(msg);
 }
 
-bool CApplication::PlayFile(const CFileItem& item)
+bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 {
 	// Tell system we are starting a file
 	m_bPlaybackStarting = true;
@@ -1720,7 +1729,7 @@ void CApplication::Cleanup()
 		g_windowManager.Delete(WINDOW_FULLSCREEN_VIDEO);
 		g_windowManager.Delete(WINDOW_PROGRAMS);
 		g_windowManager.Delete(WINDOW_VIDEOS);
-		g_windowManager.Delete(WINDOW_MUSIC);
+		g_windowManager.Delete(WINDOW_MUSIC_FILES);
 		g_windowManager.Delete(WINDOW_PICTURES);
 		g_windowManager.Delete(WINDOW_SETTINGS);
 		g_windowManager.Delete(WINDOW_SETTINGS_MYPICTURES); // All the settings categories

@@ -3,15 +3,15 @@
 #include "guilib\viewstates\GUIViewStateVideo.h"
 #include "guilib\viewstates\GUIViewStatePictures.h"
 #include "guilib\viewstates\GUIViewStatePrograms.h"
-//#include "GUIViewStateScripts.h"
-//#include "GUIViewStateGameSaves.h"
-//#include "PlayListPlayer.h"
+//#include "guilib\viewstates\GUIViewStateScripts.h" // TODO - Not yet implemented
+//#include "guilib\viewstates\GUIViewStateGameSaves.h" // TODO - Not yet implemented
+#include "PlayListPlayer.h"
 #include "utils\URIUtils.h"
 #include "URL.h"
-//#include "GUIPassword.h"
+//#include "GUIPassword.h" // TODO - Not yet implemented
 #include "guilib\GUIBaseContainer.h" // For VIEW_TYPE_*
-//#include "ViewDatabase.h"
-//#include "AutoSwitch.h"
+//#include "ViewDatabase.h" // TODO - Not yet implemented
+//#include "AutoSwitch.h" // TODO - Not yet implemented
 #include "guilib\GUIWindowManager.h"
 #include "ViewState.h"
 #include "Settings.h"
@@ -22,29 +22,32 @@ using namespace std;
 CStdString CGUIViewState::m_strPlaylistDirectory;
 VECSOURCES CGUIViewState::m_sources;
 
-CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& items) // TODO
+CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& items)
 {
 	if (windowId == 0)
 		return GetViewState(g_windowManager.GetActiveWindow(), items);
 
 	const CURL url = items.GetAsUrl();
-/*
+
 	if (items.HasSortDetails())
 		return new CGUIViewStateFromItems(items);
 
+	/* TODO - MusicDatabase not yet implemented
 	if (url.GetProtocol()=="musicdb")
 		return new CGUIViewStateMusicDatabase(items);
 
 	if (url.GetProtocol()=="musicsearch")
 		return new CGUIViewStateMusicSearch(items);
+	*/
 
+	/* TODO - SmartPlayList/UPnP not yet implemented
 	if (items.IsSmartPlayList() || url.GetProtocol() == "upnp")
 	{
 		if (items.GetContent() == "songs")
 			return new CGUIViewStateMusicSmartPlaylist(items);
 		else if (items.GetContent() == "albums")
 			return new CGUIViewStateMusicSmartPlaylist(items);
-		else if (items.GetContent() == "musicvideos") // TODO: Update this
+		else if (items.GetContent() == "musicvideos")
 			return new CGUIViewStateMusicSmartPlaylist(items);
 		else if (items.GetContent() == "tvshows")
 			return new CGUIViewStateVideoTVShows(items);
@@ -53,46 +56,67 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
 		else if (items.GetContent() == "movies")
 			return new CGUIViewStateVideoMovies(items);
 	}
+	*/
 
+	/* TODO - Playlist not yet implemented
 	if (items.IsPlayList())
 		return new CGUIViewStateMusicPlaylist(items);
+	*/
 
+	/* TODO - Shoutcast not yet implemented
 	if (url.GetProtocol() == "shout")
 		return new CGUIViewStateMusicShoutcast(items);
+	*/
 
+	/* TODO - LastFM not yet implemented
 	if (url.GetProtocol() == "lastfm")
 		return new CGUIViewStateMusicLastFM(items);
+	*/
 
+	/* TODO - Music playlists path not yet implemented
 	if (items.GetPath() == "special://musicplaylists/")
 		return new CGUIViewStateWindowMusicSongs(items);
-  
+	*/
+
+	/* TODO - Music Nav not yet implemented
 	if (windowId==WINDOW_MUSIC_NAV)
 		return new CGUIViewStateWindowMusicNav(items);
-*/
-	if (windowId == WINDOW_MUSIC)
-		return new CGUIViewStateWindowMusicFiles(items);
-/*
+	*/
+
+	if (windowId==WINDOW_MUSIC_FILES)
+		return new CGUIViewStateWindowMusicSongs(items);
+
+	/* TODO - Music Playlist windows not yet implemented
 	if (windowId==WINDOW_MUSIC_PLAYLIST)
 		return new CGUIViewStateWindowMusicPlaylist(items);
 
 	if (windowId==WINDOW_MUSIC_PLAYLIST_EDITOR)
 		return new CGUIViewStateWindowMusicSongs(items);
-*/
+	*/
+
 	if (windowId == WINDOW_VIDEO_FILES)
 		return new CGUIViewStateWindowVideoFiles(items);
-/*
+
+	/* TODO - Video Nav not yet implemented
 	if (windowId==WINDOW_VIDEO_NAV)
 		return new CGUIViewStateWindowVideoNav(items);
+	*/
 
+	/* TODO - Video Playlist not yet implemented
 	if (windowId==WINDOW_VIDEO_PLAYLIST)
 		return new CGUIViewStateWindowVideoPlaylist(items);
+	*/
 
+	/* TODO - Scripts window not yet implemented
 	if (windowId==WINDOW_SCRIPTS)
 		return new CGUIViewStateWindowScripts(items);
+	*/
 
+	/* TODO - GameSaves window not yet implemented
 	if (windowId==WINDOW_GAMESAVES)
 		return new CGUIViewStateWindowGameSaves(items);
-*/
+	*/
+
 	if (windowId == WINDOW_PICTURES)
 		return new CGUIViewStateWindowPictures(items);
 
@@ -276,7 +300,7 @@ bool CGUIViewState::DisableAddSourceButtons()
 
 int CGUIViewState::GetPlaylist()
 {
-	return 0; //PLAYLIST_NONE; // TODO
+	return PLAYLIST_NONE;
 }
 
 const CStdString& CGUIViewState::GetPlaylistDirectory()

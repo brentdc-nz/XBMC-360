@@ -69,9 +69,11 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 		m_pCodecContext->extradata = (uint8_t*)/*m_dllAvUtil.*/av_mallocz(hints.extrasize + FF_INPUT_BUFFER_PADDING_SIZE);
 		memcpy(m_pCodecContext->extradata, hints.extradata, hints.extrasize);
 	}
-  
+
+#ifndef _XBOX // We can't use on PPC :(
 	// Set acceleration
 	m_pCodecContext->dsp_mask = FF_MM_FORCE | FF_MM_MMX | FF_MM_MMX2 | FF_MM_SSE;
+#endif
 
 	if(/*m_dllAvCodec.*/avcodec_open(m_pCodecContext, pCodec) < 0)
 	{

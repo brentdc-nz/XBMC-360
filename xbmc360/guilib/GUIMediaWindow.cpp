@@ -4,7 +4,7 @@
 #include "utils\Util.h"
 #include "utils\URIUtils.h"
 //#include "storage\DetectDVDType.h"
-//#include "PlayListPlayer.h"
+#include "PlayListPlayer.h"
 //#include "FileSystem\ZipManager.h"
 //#include "FileSystem\PluginDirectory.h"
 //#include "GUIPassword.h"
@@ -762,7 +762,7 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
 		m_history.ClearPathHistory();
 
 	int iWindow = GetID();
-	bool bOkay = (iWindow == WINDOW_MUSIC_FILES || WINDOW_MUSIC || iWindow == WINDOW_VIDEO_FILES || iWindow == WINDOW_FILES || iWindow == WINDOW_PICTURES || iWindow == WINDOW_PROGRAMS);
+	bool bOkay = (iWindow == WINDOW_MUSIC_FILES || iWindow == WINDOW_VIDEO_FILES || iWindow == WINDOW_FILES || iWindow == WINDOW_PICTURES || iWindow == WINDOW_PROGRAMS);
 	
 	if (strDirectory.IsEmpty() && bOkay && (m_vecItems->Size() == 0 || !m_guiState->DisableAddSourceButtons())) // Add 'add source button'
 	{
@@ -966,11 +966,12 @@ bool CGUIMediaWindow::OnClick(int iItem)
 		if (m_guiState.get() && m_guiState->AutoPlayNextItem()/* && !g_partyModeManager.IsEnabled() && !pItem->IsPlayList()*/)// TODO
 		{
 			// Play and add current directory to temporary playlist
-			int iPlaylist=m_guiState->GetPlaylist();
+			int iPlaylist = m_guiState->GetPlaylist();
 			
-//			if (iPlaylist != PLAYLIST_NONE)
+			if (iPlaylist != PLAYLIST_NONE)
 			{
-/*				g_playlistPlayer.ClearPlaylist(iPlaylist);
+
+				g_playlistPlayer.ClearPlaylist(iPlaylist);
 				g_playlistPlayer.Reset();
 				int songToPlay = 0;
 				CFileItemList queueItems;
@@ -982,7 +983,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
 					if (item->m_bIsFolder)
 						continue;
 
-					if (!item->IsPlayList() && !item->IsZIP() && !item->IsRAR())
+//					if (!item->IsPlayList() && !item->IsZIP() && !item->IsRAR()) // TODO BRENT
 						queueItems.Add(item);
 
 					if (item == pItem)
@@ -993,7 +994,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
 				}
 
 				g_playlistPlayer.Add(iPlaylist, queueItems);
-*/
+
 				// Save current window and directory to know where the selected item was
 				if (m_guiState.get())
 					m_guiState->SetPlaylistDirectory(m_vecItems->GetPath());
@@ -1007,8 +1008,9 @@ bool CGUIMediaWindow::OnClick(int iItem)
 				}
 
 				// Play
-//				g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
-//				g_playlistPlayer.Play(songToPlay);
+				g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
+				g_playlistPlayer.Play(songToPlay);
+
 			}
 			return true;
 		}
@@ -1212,8 +1214,8 @@ bool CGUIMediaWindow::OnPlayMedia(int iItem)
 {
 	// Reset Playlistplayer, playback started now does
 	// not use the playlistplayer.
-//	g_playlistPlayer.Reset(); // TODO
-//	g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE); // TODO
+	g_playlistPlayer.Reset();
+	g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
 
 	CFileItemPtr pItem = m_vecItems->Get(iItem);
 

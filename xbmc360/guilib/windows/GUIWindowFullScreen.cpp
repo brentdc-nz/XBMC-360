@@ -9,6 +9,7 @@
 #include "utils\Util.h"
 #include "guilib\GUILabelControl.h"
 #include "Settings.h"
+#include "AdvancedSettings.h"
 
 #define BLUE_BAR		100
 #define LABEL_ROW1		10
@@ -106,6 +107,23 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 		case ACTION_BIG_STEP_FORWARD:
 		{
 			g_application.m_pPlayer->Seek(true, true);
+			return true;
+		}
+		break;
+
+		case ACTION_SMALL_STEP_BACK:
+		{
+			int iOrgPos = (int)g_application.GetTime();
+			int iJumpSize = g_advancedSettings.m_videoSmallStepBackSeconds; // Secs
+			int iSetPos = (iOrgPos > iJumpSize) ? iOrgPos - iJumpSize : 0;
+			g_application.SeekTime((double)iSetPos);
+			return true;
+		}
+		break;
+
+		case ACTION_SHOW_OSD:
+		{
+			// TODO: Toggle OSD when implemented
 			return true;
 		}
 		break;
