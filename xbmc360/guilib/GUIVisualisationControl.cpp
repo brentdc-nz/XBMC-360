@@ -250,6 +250,9 @@ void CGUIVisualisationControl::Render()
 			catch (...)
 			{
 				CLog::Log(LOGERROR, "Exception in Visualisation::Render()");
+				g_graphicsContext.TUnlock();
+				m_bInitialized = false;
+				FreeVisualisation();
 			}
 
 			// Clear the viewport

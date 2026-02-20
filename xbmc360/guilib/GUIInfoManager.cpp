@@ -1164,13 +1164,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow)
 			break;
 			case CONTROL_HAS_FOCUS:
 			{
-				CGUIWindow *window = NULL;
-
-				if(g_windowManager.HasDialogOnScreen()) // BRENT : Why is this needed in our code. somthing missing?
-					window = g_windowManager.GetWindow(g_windowManager.GetTopMostModalDialogID());
-				else
-					window = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
-
+				CGUIWindow *window = GetWindowWithCondition(contextWindow, 0);
 				if (window)
 					bReturn = (window->GetFocusedControlID() == (int)info.GetData1());
 			}

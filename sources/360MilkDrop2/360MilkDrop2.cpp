@@ -36,7 +36,7 @@ void CVisualisationMilkDrop2::Create(LPDIRECT3DDEVICE9 pd3dDevice, int iPosX, in
 		// Create Milkdrop 2
 		g_pPlugin = new CPlugin;
 		g_pPlugin->PluginPreInitialize();
-		g_pPlugin->PluginInitialize(pd3dDevice, iPosX, iPosX, iWidth, iHeight);
+		g_pPlugin->PluginInitialize(pd3dDevice, iPosX, iPosY, iWidth, iHeight);
 	
 		g_bInitialized = true;
 	}

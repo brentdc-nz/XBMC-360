@@ -10,8 +10,8 @@ This is early stages and still very much a work in progress.
 
 Usable but many features still need reimplementation or improvements.
 
-### Compiled alpha build (last updated 15-02-26):
-https://drive.google.com/file/d/1FMJroEAyfjL4O9onlLV3GkKAmLj_SDBj/view
+### Compiled alpha build (last updated 20-02-26):
+https://drive.google.com/file/d/1ARLem0ejBJ8nvffliGUZztAe1qEyAK0x/view
 
 ### Libraries
 - FFmpeg
