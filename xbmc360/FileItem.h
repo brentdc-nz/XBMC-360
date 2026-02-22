@@ -27,6 +27,7 @@
 #include "XBDateTime.h"
 #include "SortFileItem.h"
 #include "URL.h"
+#include "music\tags\MusicInfoTag.h"
 
 #include <map>
 #include <vector>
@@ -68,6 +69,21 @@ public:
 	bool IsLabelPreformated() const { return m_bLabelPreformated; }
 	CURL GetAsUrl() const;
 
+	// Returns the content type of this item if known. will lookup for http streams
+	const CStdString& GetMimeType(bool lookup = true) const;
+
+	inline bool HasMusicInfoTag() const
+	{
+		return m_musicInfoTag != NULL;
+	}
+
+	MUSIC_INFO::CMusicInfoTag* GetMusicInfoTag();
+
+	inline const MUSIC_INFO::CMusicInfoTag* GetMusicInfoTag() const
+	{
+		return m_musicInfoTag;
+	}
+
 public:
 	bool m_bIsShareOrDrive; // Is this a root share/drive
 	int m_iDriveType; // If \e m_bIsShareOrDrive is \e true, use to get the share type. Types see: CMediaSource::m_iDriveType
@@ -85,6 +101,7 @@ public:
 	bool m_bLabelPreformated;
 
 	CStdString m_mimetype;
+	MUSIC_INFO::CMusicInfoTag* m_musicInfoTag;
 };
 
 /////////////////////////////////////////////////////////////////////////////////

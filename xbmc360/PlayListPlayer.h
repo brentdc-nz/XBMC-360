@@ -35,6 +35,9 @@ public:
 	void Clear();
 
 	void SetCurrentPlaylist(int iPlaylist);
+	int GetCurrentPlaylist() const;
+	int GetCurrentSong() const;
+	void SetCurrentSong(int iSong);
 
 	// Add items via the playlist player
 	void Add(int iPlaylist, CPlayList& playlist);

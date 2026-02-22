@@ -25,6 +25,18 @@ CAdvancedSettings::CAdvancedSettings()
 	m_videoPPFFmpegPostProc = "ha:128:7,va,dr";
 	m_iSkipLoopFilter = 0;
 	m_videoSmallStepBackSeconds = 7;
+
+	// Music seek defaults from Source xbmc4xbox AdvancedSettings.cpp
+	m_musicUseTimeSeeking = true;
+	m_musicTimeSeekForward = 10;
+	m_musicTimeSeekBackward = -10;
+	m_musicTimeSeekForwardBig = 60;
+	m_musicTimeSeekBackwardBig = -60;
+	m_musicPercentSeekForward = 1;
+	m_musicPercentSeekBackward = -1;
+	m_musicPercentSeekForwardBig = 10;
+	m_musicPercentSeekBackwardBig = -10;
+
 	m_songInfoDuration = 10; // 10 seconds default
 	m_bNavVKeyboard = false;
 }

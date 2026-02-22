@@ -56,6 +56,7 @@ namespace INFO
 #define PLAYER_SHOWINFO             31
 #define PLAYER_VOLUME               32
 #define PLAYER_MUTED                33
+#define PLAYER_TIME_SPEED           37
 #define PLAYER_SEEKOFFSET           47
 
 #define WEATHER_CONDITIONS          100
@@ -85,6 +86,75 @@ namespace INFO
 #define NETWORK_DNS1_ADDRESS        196
 #define NETWORK_DNS2_ADDRESS        197
 #define NETWORK_DHCP_ADDRESS        198
+
+#define MUSICPLAYER_TITLE           200
+#define MUSICPLAYER_ALBUM           201
+#define MUSICPLAYER_ARTIST          202
+#define MUSICPLAYER_GENRE           203
+#define MUSICPLAYER_YEAR            204
+#define MUSICPLAYER_DURATION        205
+#define MUSICPLAYER_TRACK_NUMBER    208
+#define MUSICPLAYER_COVER           210
+#define MUSICPLAYER_BITRATE         211
+#define MUSICPLAYER_PLAYLISTLEN     212
+#define MUSICPLAYER_PLAYLISTPOS     213
+#define MUSICPLAYER_CHANNELS        214
+#define MUSICPLAYER_BITSPERSAMPLE   215
+#define MUSICPLAYER_SAMPLERATE      216
+#define MUSICPLAYER_CODEC           217
+#define MUSICPLAYER_DISC_NUMBER     218
+#define MUSICPLAYER_RATING          219
+#define MUSICPLAYER_COMMENT         220
+#define MUSICPLAYER_LYRICS          221
+#define MUSICPLAYER_HASPREVIOUS     222
+#define MUSICPLAYER_HASNEXT         223
+#define MUSICPLAYER_EXISTS          224
+#define MUSICPLAYER_PLAYLISTPLAYING 225
+#define MUSICPLAYER_ALBUM_ARTIST    226
+#define MUSICPLAYER_PLAYCOUNT       227
+#define MUSICPLAYER_LASTPLAYED      228
+#define VIDEOPLAYER_TITLE             250
+#define VIDEOPLAYER_GENRE             251
+#define VIDEOPLAYER_DIRECTOR          252
+#define VIDEOPLAYER_YEAR              253
+#define VIDEOPLAYER_HASSUBTITLES      254
+#define VIDEOPLAYER_SUBTITLESENABLED  255
+#define VIDEOPLAYER_COVER             258
+#define VIDEOPLAYER_USING_OVERLAYS    259
+#define VIDEOPLAYER_ISFULLSCREEN      260
+#define VIDEOPLAYER_HASMENU           261
+#define VIDEOPLAYER_PLAYLISTLEN       262
+#define VIDEOPLAYER_PLAYLISTPOS       263
+#define VIDEOPLAYER_EVENT             264
+#define VIDEOPLAYER_ORIGINALTITLE     265
+#define VIDEOPLAYER_PLOT              266
+#define VIDEOPLAYER_PLOT_OUTLINE      267
+#define VIDEOPLAYER_EPISODE           268
+#define VIDEOPLAYER_SEASON            269
+#define VIDEOPLAYER_RATING            270
+#define VIDEOPLAYER_TVSHOW            271
+#define VIDEOPLAYER_PREMIERED         272
+#define VIDEOPLAYER_CONTENT           273
+#define VIDEOPLAYER_STUDIO            274
+#define VIDEOPLAYER_MPAA              275
+#define VIDEOPLAYER_CAST              276
+#define VIDEOPLAYER_CAST_AND_ROLE     277
+#define VIDEOPLAYER_ARTIST            278
+#define VIDEOPLAYER_ALBUM             279
+#define VIDEOPLAYER_WRITER            280
+#define VIDEOPLAYER_TAGLINE           281
+#define VIDEOPLAYER_HAS_INFO          282
+#define VIDEOPLAYER_TOP250            283
+#define VIDEOPLAYER_RATING_AND_VOTES  284
+#define VIDEOPLAYER_TRAILER           285
+#define VIDEOPLAYER_VIDEO_CODEC       286
+#define VIDEOPLAYER_VIDEO_RESOLUTION  287
+#define VIDEOPLAYER_AUDIO_CODEC       288
+#define VIDEOPLAYER_AUDIO_CHANNELS    289
+#define VIDEOPLAYER_VIDEO_ASPECT      290
+#define VIDEOPLAYER_COUNTRY           292
+#define VIDEOPLAYER_PLAYCOUNT         293
+#define VIDEOPLAYER_LASTPLAYED        294
 
 #define CONTAINER_HAS_FOCUS         367
 #define CONTAINER_ROW               368
@@ -308,6 +378,14 @@ public:
 	int GetTotalPlayTime() const;
 	CStdString GetDuration(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
 
+	void ResetCurrentItem();
+	void SetCurrentItem(CFileItem &item);
+	void SetCurrentSong(CFileItem &item);
+	void SetCurrentMovie(CFileItem &item);
+	CStdString GetMusicLabel(int item);
+	CStdString GetVideoLabel(int item);
+	CStdString GetMusicTagLabel(int info, const CFileItem *item);
+
 protected:
 	// Routines for window retrieval
 	bool CheckWindowCondition(CGUIWindow *window, int condition) const;
@@ -365,6 +443,11 @@ protected:
 	// Array of multiple information mapped to a single integer lookup
 	std::vector<GUIInfo> m_multiInfo;
 	std::vector<std::string> m_listitemProperties;
+
+	// Current playing stuff
+	CFileItem* m_currentFile;
+	unsigned int m_lastMusicBitrateTime;
+	int m_MusicBitrate;
 
 	std::vector<INFO::InfoBool*> m_bools;
 	std::vector<INFO::CSkinVariableString> m_skinVariableStrings;

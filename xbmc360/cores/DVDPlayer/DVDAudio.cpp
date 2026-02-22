@@ -40,14 +40,30 @@ void CDVDAudio::RegisterAudioCallback(IAudioCallback* pCallback)
 {
 	CSingleLock lock (m_critSection);
 	m_pCallback = pCallback;
-	if (m_pCallback && m_pAudioDecoder) m_pAudioDecoder->RegisterAudioCallback(pCallback);
+	if (m_pCallback && m_pAudioDecoder)
+		m_pCallback->OnInitialize(m_iChannels, m_iBitrate, m_iBitsPerSample);
 }
 
 void CDVDAudio::UnRegisterAudioCallback()
 {
 	CSingleLock lock (m_critSection);
 	m_pCallback = NULL;
-	if (m_pAudioDecoder) m_pAudioDecoder->UnRegisterAudioCallback();
+}
+
+void CDVDAudio::DoAudioWork()
+{
+	CSingleLock lock (m_critSection);
+
+	if (m_pCallback && m_pAudioDecoder)
+	{
+		m_visBufferLength = m_pAudioDecoder->GetVisData(m_visBuffer, sizeof(m_visBuffer));
+
+		if (m_visBufferLength)
+		{
+			m_pCallback->OnAudioData(m_visBuffer, m_visBufferLength);
+			m_visBufferLength = 0;
+		}
+	}
 }
 
 bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
@@ -72,8 +88,8 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
 	else
 		codecstring = "PCM";
 
-//	m_pAudioDecoder = new CNullSound(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, codecstring);
-	m_pAudioDecoder = new CXAudio2(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, codecstring);
+//	m_pAudioDecoder = new CNullSound(audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, codecstring);
+	m_pAudioDecoder = new CXAudio2(audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, codecstring);
 
 #if 0
 #ifdef _XBOX

@@ -26,6 +26,16 @@ public:
 	CStdString m_videoPPFFmpegPostProc;
 	int m_iSkipLoopFilter;
 	int m_videoSmallStepBackSeconds;
+	bool m_musicUseTimeSeeking;
+	int m_musicTimeSeekForward;
+	int m_musicTimeSeekBackward;
+	int m_musicTimeSeekForwardBig;
+	int m_musicTimeSeekBackwardBig;
+	int m_musicPercentSeekForward;
+	int m_musicPercentSeekBackward;
+	int m_musicPercentSeekForwardBig;
+	int m_musicPercentSeekBackwardBig;
+
 	int m_songInfoDuration; // Duration in seconds to show song info in visualisation
 	bool m_bNavVKeyboard; // If true we navigate the virtual keyboard using cursor keys
 };

@@ -2,9 +2,9 @@
 #define  IPLAYER_H
 
 #include "cores\AudioRenderers\IAudioCallback.h"
-#include "..\FileItem.h"
-#include "..\utils\StdString.h"
-#include "..\guilib\key.h"
+#include "FileItem.h"
+#include "utils\StdString.h"
+#include "guilib\key.h"
 
 class IPlayerCallback
 {
@@ -45,7 +45,7 @@ public:
 
 	virtual void RegisterAudioCallback(IAudioCallback* pCallback) {};
 	virtual void UnRegisterAudioCallback() {};
-	virtual bool OpenFile(const CFileItem& file, const CPlayerOptions& options){ return false;}
+	virtual bool OpenFile(const CFileItem& file, const CPlayerOptions& options){ return false; }
 	virtual bool CloseFile(){ return true;};
 	virtual void SeekTime(__int64 iTime = 0){};
 	virtual void Seek(bool bPlus, bool bLargeStep) = 0;
@@ -62,7 +62,15 @@ public:
 	virtual bool HasAudio() const = 0;
 	virtual bool CanSeek() {return true;}
 	virtual void SetVolume(long nVolume){}
+	virtual void DoAudioWork(){}
 	virtual bool OnAction(const CAction &action){ return false; };
+	virtual bool QueueNextFile(const CFileItem &file) { return false; }
+	virtual void OnNothingToQueueNotify() {}
+	virtual int GetAudioBitrate(){ return 0; }
+	virtual int GetChannels(){ return 0; }
+	virtual int GetBitsPerSample(){ return 0; }
+	virtual int GetSampleRate(){ return 0; }
+	virtual CStdString GetAudioCodecName(){ return ""; }
 
 	// Returns true if not playback (paused or stopped beeing filled)
 	virtual bool IsCaching() const {return false;};

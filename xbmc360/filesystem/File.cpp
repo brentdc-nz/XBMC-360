@@ -71,7 +71,6 @@ bool CFile::OpenForWrite(const CStdString& strFileName, bool bOverWrite)
 
 unsigned int CFile::Read(void *lpBuf, unsigned int uiBufSize, unsigned flags)
 {
-
     if (m_pFile) 
     {
       if(flags & READ_TRUNCATED)

@@ -23,7 +23,11 @@ bool CFileSMB::Open(const CURL& strURL, bool bBinary)
 
 	xbsmb_f.Init();
 
-	xbsmb_f.OpenFile(strURL);
+	if(!xbsmb_f.OpenFile(strURL))
+	{
+		CLog::Log(LOGERROR, "CFileSMB::Open - Failed to open file");
+		return false;
+	}
 
 	return true;
 }

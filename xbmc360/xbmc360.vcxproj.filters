@@ -195,6 +195,24 @@
     <Filter Include="Source Files\playlists">
       <UniqueIdentifier>{d42b38c0-15c5-4e08-8a45-fb18412ed832}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\cores\PAPlayer">
+      <UniqueIdentifier>{11296600-64e6-4657-841e-8c6a8305f51d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\cores\PAPlayer">
+      <UniqueIdentifier>{3d7eacc0-9320-4b03-8af3-de00be202cdc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\music">
+      <UniqueIdentifier>{e14ac93c-6a30-4b9d-993b-b0a984552fae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\music\tags">
+      <UniqueIdentifier>{01b90597-2556-4f4f-9a43-daed13f46304}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\music">
+      <UniqueIdentifier>{ffc1ea32-11ba-4015-a15a-ab8863437fa8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\music\tags">
+      <UniqueIdentifier>{bbf90e2a-15d1-4879-a3bf-77ef012ede76}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -983,6 +1001,33 @@
     <ClInclude Include="PlayListPlayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="cores\PAPlayer\PAPlayer.h">
+      <Filter>Header Files\cores\PAPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\PAPlayer\AudioDecoder.h">
+      <Filter>Header Files\cores\PAPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\PAPlayer\ICodec.h">
+      <Filter>Header Files\cores\PAPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\RingBuffer.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\PAPlayer\CodecFactory.h">
+      <Filter>Header Files\cores\PAPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\PAPlayer\FLACcodec.h">
+      <Filter>Header Files\cores\PAPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\PAPlayer\MP3codec.h">
+      <Filter>Header Files\cores\PAPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\PAPlayer\CachingCodec.h">
+      <Filter>Header Files\cores\PAPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="music\tags\MusicInfoTag.h">
+      <Filter>Header Files\music\tags</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -1770,6 +1815,27 @@
     </ClCompile>
     <ClCompile Include="PlayListPlayer.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cores\PAPlayer\PAPlayer.cpp">
+      <Filter>Source Files\cores\PAPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="cores\PAPlayer\AudioDecoder.cpp">
+      <Filter>Source Files\cores\PAPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\RingBuffer.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="cores\PAPlayer\CodecFactory.cpp">
+      <Filter>Source Files\cores\PAPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="cores\PAPlayer\FLACcodec.cpp">
+      <Filter>Source Files\cores\PAPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="cores\PAPlayer\MP3codec.cpp">
+      <Filter>Source Files\cores\PAPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="music\tags\MusicInfoTag.cpp">
+      <Filter>Source Files\music\tags</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

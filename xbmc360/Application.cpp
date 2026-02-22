@@ -52,6 +52,8 @@
 #include "guilib\dialogs\GUIDialogOK.h"
 #include "guilib\dialogs\GUIDialogSelect.h"
 
+using namespace PLAYLIST;
+
 CStdString g_LoadErrorStr;
 
 CApplication::CApplication() 
@@ -64,6 +66,8 @@ CApplication::CApplication()
 	m_bScreenSave = false;
 	m_bInitializing = true;
 	m_splash = NULL;
+	m_itemCurrentFile = CFileItemPtr(new CFileItem);
+	m_nextPlaylistItem = -1;
 }
 
 CApplication::~CApplication()
@@ -397,6 +401,10 @@ void CApplication::Process()
 	// Process messages which have to be send to the gui
 	// (this can only be done after g_windowManager.Render())
 	m_applicationMessenger.ProcessWindowMessages();
+
+	// Update sound - Pump visualization data to callback
+	if (m_pPlayer)
+		m_pPlayer->DoAudioWork();
 
 	// Do any processing that isn't needed on each run
 	if(m_slowTimer.GetElapsedMilliseconds() > 500)
@@ -963,6 +971,53 @@ bool CApplication::OnMessage(CGUIMessage& message)
 {
 	switch (message.GetMessage())
 	{
+		case GUI_MSG_PLAYBACK_STARTED:
+		{
+			// Update our infoManager with the new details etc.
+			if (m_nextPlaylistItem >= 0)
+			{
+				// We've started a previously queued item
+				CFileItemPtr item = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist())[m_nextPlaylistItem];
+				
+				// Update the playlist manager
+				int currentSong = g_playlistPlayer.GetCurrentSong();
+				int param = ((currentSong & 0xffff) << 16) | (m_nextPlaylistItem & 0xffff);
+				CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_CHANGED, 0, 0, g_playlistPlayer.GetCurrentPlaylist(), param, item);
+				g_windowManager.SendThreadMessage(msg);
+				g_playlistPlayer.SetCurrentSong(m_nextPlaylistItem);
+				*m_itemCurrentFile = *item;
+			}
+			g_infoManager.SetCurrentItem(*m_itemCurrentFile);
+			return true;
+		}
+		break;
+
+		case GUI_MSG_QUEUE_NEXT_ITEM:
+		{
+			// Check to see if our playlist player has a new item for us,
+			// and if so, we check whether our current player wants the file
+			int iNext = g_playlistPlayer.GetNextSong();
+			CPlayList& playlist = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist());
+
+			if (iNext < 0 || iNext >= playlist.size())
+			{
+				if (m_pPlayer) m_pPlayer->OnNothingToQueueNotify();
+				return true; // Nothing to do
+			}
+
+			// Ok, grab the next song
+			CFileItemPtr item = playlist[iNext];
+
+			// Ok - send the file to the player if it wants it
+			if (m_pPlayer && m_pPlayer->QueueNextFile(*item))
+			{
+				// Player wants the next file
+				m_nextPlaylistItem = iNext;
+			}
+			return true;
+		}
+		break;
+
 		case GUI_MSG_PLAYBACK_STOPPED:
 		case GUI_MSG_PLAYBACK_ENDED:
 		{
@@ -1177,6 +1232,10 @@ void CApplication::OnPlayBackStarted()
 
 void CApplication::OnQueueNextItem()
 {
+	CLog::Log(LOGDEBUG, "Player has asked for the next item");
+
+	CGUIMessage msg(GUI_MSG_QUEUE_NEXT_ITEM, 0, 0);
+	g_windowManager.SendThreadMessage(msg);
 }
 
 void CApplication::OnPlayBackStopped()
@@ -1192,22 +1251,46 @@ void CApplication::OnPlayBackStopped()
 
 bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 {
+	if (!bRestart)
+	{
+		m_iPlaySpeed = 1;
+		*m_itemCurrentFile = item;
+		m_nextPlaylistItem = -1;		
+	}
+	
 	// Tell system we are starting a file
 	m_bPlaybackStarting = true;
 	CPlayerOptions options;
 
-	if(m_pPlayer)
+	PLAYERCOREID eNewCore = EPC_NONE;
+
+	if (bRestart)
 	{
-		// We should restart the player
-		delete m_pPlayer;
-		m_pPlayer = NULL;
+		if (m_eCurrentPlayer == EPC_NONE)
+			eNewCore = CPlayerCoreFactory::GetDefaultPlayer(item);
+		else
+			eNewCore = m_eCurrentPlayer;
+	}
+	else
+	{
+		eNewCore = CPlayerCoreFactory::GetDefaultPlayer(item);
 	}
 
-	if(!m_pPlayer)
+	// We should restart the player, unless the previous and next tracks are using
+	// one of the players that allows gapless playback (paplayer, dvdplayer)
+	if (m_pPlayer)
 	{
-		// We only have DVDPlayer atm..
-		CPlayerCoreFactory factory;
-		m_pPlayer = factory.CreatePlayer("dvdplayer", *this);
+		if ( !(m_eCurrentPlayer == eNewCore && (m_eCurrentPlayer == EPC_DVDPLAYER || m_eCurrentPlayer  == EPC_PAPLAYER)) )
+		{
+			delete m_pPlayer;
+			m_pPlayer = NULL;
+		}
+	}
+
+	if (!m_pPlayer)
+	{
+		m_eCurrentPlayer = eNewCore;
+		m_pPlayer = CPlayerCoreFactory::CreatePlayer(eNewCore, *this);
 	}
 
 	bool bResult;

@@ -357,6 +357,34 @@ const CPlayList& CPlayListPlayer::GetPlaylist(int iPlaylist) const
 	}
 }
 
+
+
+// Change the current song in playlistplayer.
+// param iSong Song in playlist
+void CPlayListPlayer::SetCurrentSong(int iSong)
+{
+	if (iSong >= -1 && iSong < GetPlaylist(m_iCurrentPlayList).size())
+		m_iCurrentSong = iSong;
+}
+
+// Returns to current song in active playlist.
+// return Current song
+int CPlayListPlayer::GetCurrentSong() const
+{
+	return m_iCurrentSong;
+}
+
+// Returns the active playlist.
+// Active playlist
+// Return values can be:
+// - PLAYLIST_NONE No playlist active
+// - PLAYLIST_MUSIC Playlist from music playlist window
+// - PLAYLIST_VIDEO Playlist from music playlist window
+int CPlayListPlayer::GetCurrentPlaylist() const
+{
+	return m_iCurrentPlayList;
+}
+
 // Set active playlist.
 // param iPlayList Playlist to set active
 // Values can be:

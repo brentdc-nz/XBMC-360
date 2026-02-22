@@ -23,19 +23,23 @@
 #include "utils\Util.h"
 #include "utils\URIUtils.h"
 #include "Settings.h"
+#include "music\tags\MusicInfoTag.h"
 
 CFileItem::CFileItem(void)
 {
+	m_musicInfoTag = NULL;
 	Reset();
 }
 
 CFileItem::CFileItem(const CFileItem& item): CGUIListItem()
 {
+	m_musicInfoTag = NULL;
 	*this = item;
 }
 
 CFileItem::CFileItem(const CGUIListItem& item)
 {
+	m_musicInfoTag = NULL;
 	Reset();
 	// Not particularly pretty, but it gets around the issue of Reset() defaulting
 	// parameters in the CGUIListItem base class
@@ -45,12 +49,14 @@ CFileItem::CFileItem(const CGUIListItem& item)
 CFileItem::CFileItem(const CStdString& strLabel)
     : CGUIListItem()
 {
+	m_musicInfoTag = NULL;
 	Reset();
 	SetLabel(strLabel);
 }
 
 CFileItem::CFileItem(const CStdString& strPath, bool bIsFolder)
 {
+	m_musicInfoTag = NULL;
 	Reset();
 	m_strPath = strPath;
 	m_bIsFolder = bIsFolder;
@@ -58,6 +64,7 @@ CFileItem::CFileItem(const CStdString& strPath, bool bIsFolder)
 
 CFileItem::CFileItem(const CMediaSource& share)
 {
+	m_musicInfoTag = NULL;
 	Reset();
 
 	m_bIsFolder = true;
@@ -77,6 +84,8 @@ CFileItem::CFileItem(const CMediaSource& share)
 
 CFileItem::~CFileItem(void)
 {
+	delete m_musicInfoTag;
+	m_musicInfoTag = NULL;
 }
 
 const CFileItem& CFileItem::operator=(const CFileItem& item)
@@ -85,7 +94,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
 
 	CGUIListItem::operator=(item);
 
-	m_bLabelPreformated=item.m_bLabelPreformated;
+	m_bLabelPreformated = item.m_bLabelPreformated;
 
 	FreeMemory();
 
@@ -100,6 +109,16 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
 	m_iprogramCount = item.m_iprogramCount;
 	m_idepth = item.m_idepth;
 	m_mimetype = item.m_mimetype;
+
+	if (item.HasMusicInfoTag())
+	{
+		*GetMusicInfoTag() = *item.GetMusicInfoTag();
+	}
+	else
+	{
+		delete m_musicInfoTag;
+		m_musicInfoTag = NULL;
+	}
 
 	return *this;
 }
@@ -131,8 +150,8 @@ void CFileItem::Reset() // TODO
 //	m_iHasLock = 0;
 //	m_bCanQueue=true;
 	m_mimetype = "";
-//	delete m_musicInfoTag;
-//	m_musicInfoTag = NULL;
+	delete m_musicInfoTag;
+	m_musicInfoTag = NULL;
 //	delete m_videoInfoTag;
 //	m_videoInfoTag = NULL;
 //	delete m_pictureInfoTag;
@@ -384,6 +403,61 @@ void CFileItem::RemoveExtension()
 CURL CFileItem::GetAsUrl() const
 {
 	return CURL(m_strPath);
+}
+
+const CStdString& CFileItem::GetMimeType(bool lookup /*= true*/) const
+{
+	if( m_mimetype.IsEmpty() && lookup)
+	{
+		// Discard const qualifyier
+		CStdString& m_ref = (CStdString&)m_mimetype;
+
+		if( m_bIsFolder )
+			m_ref = "x-directory/normal";
+		else if( m_strPath.Left(8).Equals("shout://")
+			|| m_strPath.Left(7).Equals("http://")
+			|| m_strPath.Left(8).Equals("https://"))
+		{
+/*			CCurlFile::GetMimeType(GetAsUrl(), m_ref); // TODO BRENT
+
+			// Try to get mime-type again but with an NSPlayer User-Agent
+			// in order for server to provide correct mime-type.  Allows us
+			// to properly detect an MMS stream
+			
+			if (m_ref.Left(11).Equals("video/x-ms-"))
+				CCurlFile::GetMimeType(GetAsUrl(), m_ref, "NSPlayer/11.00.6001.7000");
+
+			// Make sure there are no options set in mime-type
+			// mime-type can look like "video/x-ms-asf ; charset=utf8"
+			int i = m_ref.Find(';');
+			
+			if(i>=0)
+				m_ref.Delete(i,m_ref.length()-i);
+			
+			m_ref.Trim();
+*/		}
+
+		// If it's still empty set to an unknown type
+		if( m_ref.IsEmpty() )
+			m_ref = "application/octet-stream";
+	}
+
+	// Change protocol to mms for the following mome-type. Allows us to create proper FileMMS.
+	if( m_mimetype.Left(32).Equals("application/vnd.ms.wms-hdr.asfv1") || m_mimetype.Left(24).Equals("application/x-mms-framed") )
+	{
+		CStdString& m_path = (CStdString&)m_strPath;
+		m_path.Replace("http:", "mms:");
+	}
+
+	return m_mimetype;
+}
+
+MUSIC_INFO::CMusicInfoTag* CFileItem::GetMusicInfoTag()
+{
+	if (!m_musicInfoTag)
+		m_musicInfoTag = new MUSIC_INFO::CMusicInfoTag;
+
+	return m_musicInfoTag;
 }
 
 /////////////////////////////////////////////////////////////////////////////////

@@ -73,6 +73,7 @@ public:
 
 	void RegisterAudioCallback(IAudioCallback* pCallback) { m_dvdAudio.RegisterAudioCallback(pCallback); }
 	void UnRegisterAudioCallback()                        { m_dvdAudio.UnRegisterAudioCallback(); }
+	void DoAudioWork()                                    { m_dvdAudio.DoAudioWork(); }
 
 	bool OpenStream(CDVDStreamInfo &hints);
 	void OpenStream(CDVDStreamInfo &hints, CDVDAudioCodec* codec);

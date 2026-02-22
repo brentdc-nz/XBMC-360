@@ -20,6 +20,9 @@
 // Playback stopped by user
 #define GUI_MSG_PLAYBACK_STOPPED        GUI_MSG_USER + 7
 
+// Queue the next item for playback
+#define GUI_MSG_QUEUE_NEXT_ITEM         GUI_MSG_USER + 16
+
 //  Message is send by the playlistplayer when it starts a playlist
 //  Parameter:
 //  dwParam1 = Current Playlist, can be PLAYLIST_MUSIC, PLAYLIST_TEMP_MUSIC, PLAYLIST_VIDEO or PLAYLIST_TEMP_VIDEO

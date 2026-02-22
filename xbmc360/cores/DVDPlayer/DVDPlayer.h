@@ -113,6 +113,7 @@ public:
 
 	virtual void RegisterAudioCallback(IAudioCallback* pCallback) { m_dvdPlayerAudio.RegisterAudioCallback(pCallback); }
 	virtual void UnRegisterAudioCallback()                        { m_dvdPlayerAudio.UnRegisterAudioCallback(); }
+	virtual void DoAudioWork()                                    { m_dvdPlayerAudio.DoAudioWork(); }
 
 	virtual bool OpenFile(const CFileItem& file, const CPlayerOptions &options);
 	virtual bool CloseFile();

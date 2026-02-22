@@ -4,6 +4,7 @@
 #include "XBApplicationEx.h"
 #include "cores\IPlayer.h"
 #include "guilib\GUIUserMessages.h"
+#include "FileItem.h"
 #include "guilib\IMsgTargetCallback.h"
 #include "utils\Stopwatch.h"
 #include "utils\Splash.h"
@@ -16,6 +17,7 @@
 #include "guilib\dialogs\GUIDialogVolumeBar.h"
 #include "guilib\dialogs\GUIDialogMuteBug.h"
 #include "utils\Idle.h"
+#include "cores\PlayerCoreFactory.h"
 
 class CApplication: public CXBApplicationEX, public IPlayerCallback, public IMsgTargetCallback
 {
@@ -118,6 +120,9 @@ protected:
 	bool m_bPlaybackStarting;
 	int m_iPlaySpeed;
 
+	CFileItemPtr m_itemCurrentFile;
+	int m_nextPlaylistItem;
+
 	// Timer information
 	CStopWatch m_frameTime;
 	CStopWatch m_screenSaverTimer;
@@ -126,6 +131,7 @@ protected:
 	CIdleThread m_idleThread;
 	CSplash *m_splash;
 	DWORD m_threadID; // Application thread ID. Used in applicationMessanger to know where we are firing a thread with delay from
+	PLAYERCOREID m_eCurrentPlayer;
 	CNetwork m_network;
 	CNTPClient *m_pNTPClient;
 	CFTPServer *m_pFTPServer;

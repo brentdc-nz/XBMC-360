@@ -16,6 +16,7 @@ public:
 
 	void RegisterAudioCallback(IAudioCallback* pCallback);
 	void UnRegisterAudioCallback();
+	void DoAudioWork();
 
 	bool Create(const DVDAudioFrame &audioframe, CodecID codec);
 	bool IsValidFormat(const DVDAudioFrame &audioframe);
@@ -39,6 +40,9 @@ protected:
 	DWORD m_iBufferSize;
 	DWORD m_dwPacketSize;
 	CCriticalSection m_critSection;
+
+	BYTE m_visBuffer[4096];
+	unsigned int m_visBufferLength;
 
 	int m_iChannels;
 	int m_iBitrate;

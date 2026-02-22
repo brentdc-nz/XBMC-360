@@ -139,6 +139,129 @@
 			<texture>Home_Top_16x9.png</texture>
 		</control>
 
+		<!-- media infos (video) -->
+		<control type="group">
+			<posx>365</posx>
+			<posy>360</posy>
+			<include>homevideoinfo</include>
+			<control type="image">
+				<description>gradient</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>400</width>
+				<height>100</height>
+				<texture>gradient.png</texture>
+			</control>
+			<control type="image">
+				<description>Video cover</description>
+				<posx>260</posx>
+				<posy>0</posy>
+				<width>72</width>
+				<height>100</height>
+				<info>VideoPlayer.cover</info>
+				<aspectratio>keep</aspectratio>
+			</control>
+			<control type="label">
+				<description>Director label</description>
+				<width>255</width>
+				<posx>250</posx>
+				<posy>2</posy>
+				<info>VideoPlayer.Director</info>
+				<align>right</align>
+				<font>special12</font>
+				<scroll>true</scroll>
+			</control>
+			<control type="label">
+				<description>Title label</description>
+				<width>255</width>
+				<posx>250</posx>
+				<posy>27</posy>
+				<info>VideoPlayer.Title</info>
+				<align>right</align>
+				<font>special13</font>
+				<scroll>true</scroll>
+			</control>
+			<control type="label">
+				<description>Genre label</description>
+				<width>255</width>
+				<posx>250</posx>
+				<posy>57</posy>
+				<info>VideoPlayer.Genre</info>
+				<align>right</align>
+				<font>font10</font>
+				<scroll>true</scroll>
+			</control>
+			<control type="label">
+				<description>Time label</description>
+				<width>255</width>
+				<posx>250</posx>
+				<posy>77</posy>
+				<label>$INFO[VideoPlayer.Time]$INFO[VideoPlayer.Duration, / ]</label>
+				<align>right</align>
+				<font>font10</font>
+			</control>
+		</control>
+		<!-- media infos (music) -->
+		<control type="group">
+			<posx>365</posx>
+			<posy>360</posy>
+			<include>homemediainfo</include>
+			<control type="image">
+				<description>gradient</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>400</width>
+				<height>100</height>
+				<texture>gradient.png</texture>
+			</control>
+			<control type="image">
+				<description>Cover image</description>
+				<posx>260</posx>
+				<posy>0</posy>
+				<width>72</width>
+				<height>100</height>
+				<info>MusicPlayer.Cover</info>
+			</control>
+			<control type="label">
+				<description>Artist label</description>
+				<width>255</width>
+				<posx>250</posx>
+				<posy>2</posy>
+				<info>MusicPlayer.Artist</info>
+				<align>right</align>
+				<font>special12</font>
+				<scroll>true</scroll>
+			</control>
+			<control type="label">
+				<description>Title label</description>
+				<width>255</width>
+				<posx>250</posx>
+				<posy>27</posy>
+				<info>MusicPlayer.Title</info>
+				<align>right</align>
+				<font>special13</font>
+				<scroll>true</scroll>
+			</control>
+			<control type="label">
+				<description>Album label</description>
+				<width>255</width>
+				<posx>250</posx>
+				<posy>57</posy>
+				<label>$INFO[MusicPlayer.Album]</label>
+				<align>right</align>
+				<font>font10</font>
+				<scroll>true</scroll>
+			</control>
+			<control type="label">
+				<description>Time label</description>
+				<width>255</width>
+				<posx>250</posx>
+				<posy>77</posy>
+				<label>$INFO[MusicPlayer.Time]$INFO[MusicPlayer.Duration, / ]</label>
+				<align>right</align>
+				<font>font10</font>
+			</control>
+		</control>
 		<!-- System Info -->
 		<control type="group">
 			<posx>365</posx>
@@ -274,6 +397,7 @@
 				<font>font10</font>
 			</control>
 		</control>
+		
 		<!-- main buttons -->
 		<control type="group" id="9001">
 

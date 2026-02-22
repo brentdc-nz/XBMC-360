@@ -14,7 +14,8 @@
 struct SSoundData
 {
 	int iSize;
-	void* pVoid; 
+	void* pVoid;
+	int iStream;  // Stream index for buffer-played callback
 };
 
 // XAudio2 Callbacks
@@ -44,6 +45,12 @@ void CXAudio2::OnBufferEnd(void * pBufferContext)
 	SSoundData* pSoundData = NULL;
 	pSoundData = (SSoundData*)pBufferContext;
 
+	// Fire the buffer-played callback so PAPlayer can track actual playback position
+	if (m_bufferPlayedCallback && pSoundData)
+	{
+		m_bufferPlayedCallback(m_bufferPlayedContext, pSoundData->iSize, pSoundData->iStream);
+	}
+
 	if(pSoundData->pVoid)
 	{
 		free(pSoundData->pVoid);
@@ -61,21 +68,16 @@ void CXAudio2::OnBufferEnd(void * pBufferContext)
 
 //***********************************************************************************************
 
-CXAudio2::CXAudio2(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, const char* strAudioCodec/* = ""*/, bool bIsMusic/* = false*/)
+CXAudio2::CXAudio2(int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, const char* strAudioCodec/* = ""*/, bool bIsMusic/* = false*/)
 : m_hBufferEndEvent(CreateEvent(NULL, FALSE, FALSE, NULL))
 {
 	CLog::Log(LOGERROR,"Creating XAudio2 Audio Renderer..");
 
 	if(iChannels == 0)
 		iChannels = 2;
-/*
-	bool bAudioOnAllSpeakers(false);
-	g_audioContext.SetupSpeakerConfig(iChannels, bAudioOnAllSpeakers, bIsMusic);
-	g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
-*/
+
 	m_pXAudio2 = NULL;
 	m_pSourceVoice = NULL;
-	m_pCallback = pCallback;
 
 	InitializeCriticalSectionAndSpinCount(&m_CriticalSection, 0x00000400);
 	m_bInitialized = false;
@@ -127,33 +129,40 @@ CXAudio2::CXAudio2(IAudioCallback* pCallback, int iChannels, unsigned int uiSamp
 	m_bPaused = false;
 	m_lastUpdate = CTimeUtils::GetTimeMS();
 
-	if (m_pCallback)
-	{
-		m_pCallback->OnInitialize(iChannels, m_uiSamplesPerSec, m_uiBitsPerSample);
-		m_VisBuffer = (PBYTE)malloc(m_VisMaxBytes = iChannels * m_uiSamplesPerSec * (m_uiBitsPerSample / 8) / 20);
-	}
-	else
-		m_VisBuffer = 0;
-	
+	m_VisBuffer = (PBYTE)malloc(m_VisMaxBytes = iChannels * m_uiSamplesPerSec * (m_uiBitsPerSample / 8) / 20);
 	m_VisBytes = 0;
+
+	m_bufferPlayedCallback = NULL;
+	m_bufferPlayedContext = NULL;
+	m_streamIndex = 0;
 }
 
 //***********************************************************************************************
 
 CXAudio2::~CXAudio2()
 {
-	Deinitialize();
+	if(m_pSourceVoice)
+		Deinitialize();
 }
 
 //***********************************************************************************************
 
 HRESULT CXAudio2::Deinitialize()
 {
-	// Flushing the buffers will stop any leaks,
-	// OnBufferEnd() is called for any queued buffers
 	if(m_pSourceVoice)
 	{
+		m_pSourceVoice->Stop();
 		m_pSourceVoice->FlushSourceBuffers();
+
+		// Wait for all OnBufferEnd callbacks to complete before destroying.
+		// FlushSourceBuffers is async on Xbox 360 - callbacks fire on the
+		// audio thread and must finish their free() calls before we
+		// destroy the voice and delete the critical section they use.
+		XAUDIO2_VOICE_STATE state;
+		do {
+			m_pSourceVoice->GetState(&state);
+		} while (state.BuffersQueued > 0);
+
 		m_pSourceVoice->DestroyVoice();
 	}
 
@@ -166,7 +175,7 @@ HRESULT CXAudio2::Deinitialize()
 	m_pSourceVoice = NULL;
 	m_bInitialized = false;
 
- // g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
+	DeleteCriticalSection(&m_CriticalSection);
 
 	return S_OK;
 }
@@ -214,16 +223,14 @@ HRESULT CXAudio2::Resume()
 
 HRESULT CXAudio2::Stop()
 {
+	if(!m_pSourceVoice) return S_FALSE;
+
 	m_bPaused = true;
 	m_pSourceVoice->Stop();
+	m_pSourceVoice->FlushSourceBuffers();
 
-	// Flushing the buffers will stop any leaks,
-	// OnBufferEnd() is called for any queued buffers
-	if(m_pSourceVoice)
-		m_pSourceVoice->FlushSourceBuffers();
-
-	Flush();
-
+	m_lastUpdate = CTimeUtils::GetTimeMS();
+	m_packetsSent = 0;
 	m_VisBytes = 0;
 
 	return S_OK;
@@ -290,10 +297,11 @@ DWORD CXAudio2::AddPackets(unsigned char* data, DWORD len)
 
 	pSoundData->iSize = len;
 	pSoundData->pVoid = (VOID*)pSnd;
+	pSoundData->iStream = m_streamIndex;
 	
 	SoundBuffer.AudioBytes = len;
 	SoundBuffer.pAudioData = pSnd;
-	SoundBuffer.Flags = XAUDIO2_END_OF_STREAM;
+	SoundBuffer.Flags = 0;  // Do NOT set XAUDIO2_END_OF_STREAM on every buffer
 	SoundBuffer.pContext = (VOID*)pSoundData;
 
 	m_pSourceVoice->SubmitSourceBuffer(&SoundBuffer);
@@ -347,27 +355,22 @@ int CXAudio2::SetPlaySpeed(int iSpeed)
 
 //***********************************************************************************************
 
-void CXAudio2::RegisterAudioCallback(IAudioCallback *pCallback)
-{
-	if (!m_pCallback)
-	{
-		pCallback->OnInitialize(m_wfxex.Format.nChannels, m_wfxex.Format.nSamplesPerSec, m_wfxex.Format.wBitsPerSample);
-		m_VisBuffer = (PBYTE)malloc(m_VisMaxBytes = m_wfxex.Format.nChannels * m_uiSamplesPerSec * (m_uiBitsPerSample / 8) / 20);
-		m_VisBytes = 0;
-	}
-	m_pCallback = pCallback;
-}
-
-//***********************************************************************************************
-
-void CXAudio2::UnRegisterAudioCallback()
+DWORD CXAudio2::GetVisData(BYTE* pDest, DWORD maxLen)
 {
 	EnterCriticalSection(&m_CriticalSection);
-	m_pCallback = NULL;
-	free(m_VisBuffer);
-	m_VisBuffer = NULL;
-	m_VisBytes = 0;
+
+	DWORD len = 0;
+	
+	if (m_VisBytes > 0 && pDest)
+	{
+		len = (m_VisBytes < maxLen) ? m_VisBytes : maxLen;
+		memcpy(pDest, m_VisBuffer, len);
+		m_VisBytes = 0;
+	}
+	
 	LeaveCriticalSection(&m_CriticalSection);
+	
+	return len;
 }
 
 //***********************************************************************************************
@@ -383,6 +386,15 @@ void CXAudio2::WaitCompletion()
 void CXAudio2::SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers)
 {
     return;
+}
+
+//***********************************************************************************************
+
+void CXAudio2::SetBufferPlayedCallback(BufferPlayedCallback callback, void* pCallerContext, int stream)
+{
+	m_bufferPlayedCallback = callback;
+	m_bufferPlayedContext = pCallerContext;
+	m_streamIndex = stream;
 }
 
 //***********************************************************************************************
@@ -409,11 +421,5 @@ void CXAudio2::Update()
 			m_packetsSent = 0;
 		
 		m_lastUpdate = currentTime;
-	}
-
-	if (m_VisBytes && m_pCallback)
-	{
-		m_pCallback->OnAudioData(m_VisBuffer, m_VisBytes);
-		m_VisBytes = 0;
 	}
 }

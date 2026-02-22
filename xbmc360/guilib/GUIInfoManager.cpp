@@ -14,8 +14,13 @@
 #include "GUIMediaWindow.h"
 #include "utils\Weather.h"
 #include "LangInfo.h"
+#include "music\tags\MusicInfoTag.h"
+#include "utils\MathUtils.h"
+#include "utils\TimeUtils.h"
+#include "utils\Util.h"
 
 using namespace std;
+using namespace MUSIC_INFO;
 
 CGUIInfoManager g_infoManager;
 
@@ -54,6 +59,9 @@ CGUIInfoManager::CGUIInfoManager(void)
 	m_nextWindowID = WINDOW_INVALID;
 	m_prevWindowID = WINDOW_INVALID;
 	m_stringParameters.push_back("__ZZZZ__"); // To offset the string parameters by 1 to assure that all entries are non-zero
+	m_currentFile = new CFileItem;
+	m_lastMusicBitrateTime = 0;
+	m_MusicBitrate = 0;
 	m_frameCounter = 0;
 	m_lastFPSTime = 0;
 	m_updateTime = 0;
@@ -61,6 +69,7 @@ CGUIInfoManager::CGUIInfoManager(void)
 
 CGUIInfoManager::~CGUIInfoManager(void)
 {
+	delete m_currentFile;
 }
 
 unsigned int CGUIInfoManager::Register(const CStdString &expression, int context)
@@ -248,11 +257,76 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 
 		if (info.Left(4).Equals("time")) return AddMultiInfo(GUIInfo(PLAYER_TIME, TranslateTimeFormat(info.Mid(4))));
 		else if (info.Left(8).Equals("duration")) return AddMultiInfo(GUIInfo(PLAYER_DURATION, TranslateTimeFormat(info.Mid(8))));
+		else if (info.Equals("title")) ret = MUSICPLAYER_TITLE;
+		else if (info.Equals("album")) ret = MUSICPLAYER_ALBUM;
+		else if (info.Equals("artist")) ret = MUSICPLAYER_ARTIST;
+		else if (info.Equals("albumartist")) ret = MUSICPLAYER_ALBUM_ARTIST;
+		else if (info.Equals("year")) ret = MUSICPLAYER_YEAR;
+		else if (info.Equals("genre")) ret = MUSICPLAYER_GENRE;
+		else if (info.Equals("duration")) ret = MUSICPLAYER_DURATION;
+		else if (info.Equals("tracknumber")) ret = MUSICPLAYER_TRACK_NUMBER;
+		else if (info.Equals("cover")) ret = MUSICPLAYER_COVER;
+		else if (info.Equals("bitrate")) ret = MUSICPLAYER_BITRATE;
+		else if (info.Equals("playlistlength")) ret = MUSICPLAYER_PLAYLISTLEN;
+		else if (info.Equals("playlistposition")) ret = MUSICPLAYER_PLAYLISTPOS;
+		else if (info.Equals("channels")) ret = MUSICPLAYER_CHANNELS;
+		else if (info.Equals("bitspersample")) ret = MUSICPLAYER_BITSPERSAMPLE;
+		else if (info.Equals("samplerate")) ret = MUSICPLAYER_SAMPLERATE;
+		else if (info.Equals("codec")) ret = MUSICPLAYER_CODEC;
+		else if (info.Equals("discnumber")) ret = MUSICPLAYER_DISC_NUMBER;
+		else if (info.Equals("rating")) ret = MUSICPLAYER_RATING;
+		else if (info.Equals("comment")) ret = MUSICPLAYER_COMMENT;
+		else if (info.Equals("lyrics")) ret = MUSICPLAYER_LYRICS;
+		else if (info.Equals("playcount")) ret = MUSICPLAYER_PLAYCOUNT;
+		else if (info.Equals("lastplayed")) ret = MUSICPLAYER_LASTPLAYED;
 	}
 	else if (strCategory.Equals("videoplayer"))
 	{
-		if (strTest.Left(16).Equals("videoplayer.time")) ret = AddMultiInfo(GUIInfo(PLAYER_TIME, TranslateTimeFormat(strTest.Mid(16))));
+		if (strTest.Equals("videoplayer.title")) ret = VIDEOPLAYER_TITLE;
+		else if (strTest.Equals("videoplayer.genre")) ret = VIDEOPLAYER_GENRE;
+		else if (strTest.Equals("videoplayer.country")) ret = VIDEOPLAYER_COUNTRY;
+		else if (strTest.Equals("videoplayer.originaltitle")) ret = VIDEOPLAYER_ORIGINALTITLE;
+		else if (strTest.Equals("videoplayer.director")) ret = VIDEOPLAYER_DIRECTOR;
+		else if (strTest.Equals("videoplayer.year")) ret = VIDEOPLAYER_YEAR;
+		else if (strTest.Left(25).Equals("videoplayer.timeremaining")) ret = AddMultiInfo(GUIInfo(PLAYER_TIME_REMAINING, TranslateTimeFormat(strTest.Mid(25))));
+		else if (strTest.Left(21).Equals("videoplayer.timespeed")) ret = AddMultiInfo(GUIInfo(PLAYER_TIME_SPEED, TranslateTimeFormat(strTest.Mid(21))));
+		else if (strTest.Left(16).Equals("videoplayer.time")) ret = AddMultiInfo(GUIInfo(PLAYER_TIME, TranslateTimeFormat(strTest.Mid(16))));
 		else if (strTest.Left(20).Equals("videoplayer.duration")) ret = AddMultiInfo(GUIInfo(PLAYER_DURATION, TranslateTimeFormat(strTest.Mid(20))));
+		else if (strTest.Equals("videoplayer.cover")) ret = VIDEOPLAYER_COVER;
+		else if (strTest.Equals("videoplayer.usingoverlays")) ret = VIDEOPLAYER_USING_OVERLAYS;
+		else if (strTest.Equals("videoplayer.isfullscreen")) ret = VIDEOPLAYER_ISFULLSCREEN;
+		else if (strTest.Equals("videoplayer.hasmenu")) ret = VIDEOPLAYER_HASMENU;
+		else if (strTest.Equals("videoplayer.playlistlength")) ret = VIDEOPLAYER_PLAYLISTLEN;
+		else if (strTest.Equals("videoplayer.playlistposition")) ret = VIDEOPLAYER_PLAYLISTPOS;
+		else if (strTest.Equals("videoplayer.plot")) ret = VIDEOPLAYER_PLOT;
+		else if (strTest.Equals("videoplayer.plotoutline")) ret = VIDEOPLAYER_PLOT_OUTLINE;
+		else if (strTest.Equals("videoplayer.episode")) ret = VIDEOPLAYER_EPISODE;
+		else if (strTest.Equals("videoplayer.season")) ret = VIDEOPLAYER_SEASON;
+		else if (strTest.Equals("videoplayer.rating")) ret = VIDEOPLAYER_RATING;
+		else if (strTest.Equals("videoplayer.ratingandvotes")) ret = VIDEOPLAYER_RATING_AND_VOTES;
+		else if (strTest.Equals("videoplayer.tvshowtitle")) ret = VIDEOPLAYER_TVSHOW;
+		else if (strTest.Equals("videoplayer.premiered")) ret = VIDEOPLAYER_PREMIERED;
+//		else if (strTest.Left(19).Equals("videoplayer.content")) return AddMultiInfo(GUIInfo(bNegate ? -VIDEOPLAYER_CONTENT : VIDEOPLAYER_CONTENT, ConditionalStringParameter(strTest.Mid(20,strTest.size()-21)), 0)); // TODO
+		else if (strTest.Equals("videoplayer.studio")) ret = VIDEOPLAYER_STUDIO;
+		else if (strTest.Equals("videoplayer.mpaa")) return VIDEOPLAYER_MPAA;
+		else if (strTest.Equals("videoplayer.top250")) return VIDEOPLAYER_TOP250;
+		else if (strTest.Equals("videoplayer.cast")) return VIDEOPLAYER_CAST;
+		else if (strTest.Equals("videoplayer.castandrole")) return VIDEOPLAYER_CAST_AND_ROLE;
+		else if (strTest.Equals("videoplayer.artist")) return VIDEOPLAYER_ARTIST;
+		else if (strTest.Equals("videoplayer.album")) return VIDEOPLAYER_ALBUM;
+		else if (strTest.Equals("videoplayer.writer")) return VIDEOPLAYER_WRITER;
+		else if (strTest.Equals("videoplayer.tagline")) return VIDEOPLAYER_TAGLINE;
+		else if (strTest.Equals("videoplayer.hasinfo")) return VIDEOPLAYER_HAS_INFO;
+		else if (strTest.Equals("videoplayer.trailer")) return VIDEOPLAYER_TRAILER;
+		else if (strTest.Equals("videoplayer.videocodec")) return VIDEOPLAYER_VIDEO_CODEC;
+		else if (strTest.Equals("videoplayer.videoresolution")) return VIDEOPLAYER_VIDEO_RESOLUTION;
+		else if (strTest.Equals("videoplayer.videoaspect")) return VIDEOPLAYER_VIDEO_ASPECT;
+		else if (strTest.Equals("videoplayer.audiocodec")) return VIDEOPLAYER_AUDIO_CODEC;
+		else if (strTest.Equals("videoplayer.audiochannels")) return VIDEOPLAYER_AUDIO_CHANNELS;
+		else if (strTest.Equals("videoplayer.lastplayed")) return VIDEOPLAYER_LASTPLAYED;
+		else if (strTest.Equals("videoplayer.playcount")) return VIDEOPLAYER_PLAYCOUNT;
+		else if (strTest.Equals("videoplayer.hassubtitles")) return VIDEOPLAYER_HASSUBTITLES;
+		else if (strTest.Equals("videoplayer.subtitlesenabled")) return VIDEOPLAYER_SUBTITLESENABLED;
 	}
 	else if (strTest.Left(17).Equals("control.hasfocus("))
 	{
@@ -606,8 +680,52 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
 		}
 		case LISTITEM_THUMB:
 			return item->GetThumbnailImage();
+		case LISTITEM_PLAYCOUNT:
+		{
+			CStdString strPlayCount;
+			if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetPlayCount() > 0)
+				strPlayCount.Format("%i", item->GetMusicInfoTag()->GetPlayCount());
+			return strPlayCount;
+		}
+		case LISTITEM_LASTPLAYED:
+		{
+			if (item->HasMusicInfoTag())
+				return item->GetMusicInfoTag()->GetLastPlayed();
+			break;
+		}
+		case LISTITEM_DISC_NUMBER:
+		{
+			CStdString disc;
+			if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDiscNumber() > 0)
+				disc.Format("%i", item->GetMusicInfoTag()->GetDiscNumber());
+			return disc;
+		}
+		case LISTITEM_RATING:
+		{
+			CStdString rating;
+			if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetRating() > '0')
+			{
+				// song rating.  Images will probably be better than numbers for this in the long run
+				rating.Format("%c", item->GetMusicInfoTag()->GetRating());
+			}
+			return rating;
+		}
+		case LISTITEM_DURATION:
+		{
+			CStdString duration;
+			if (item->HasMusicInfoTag())
+			{
+				if (item->GetMusicInfoTag()->GetDuration() > 0)
+					duration = CStringUtils::SecondsToTimeString(item->GetMusicInfoTag()->GetDuration());
+			}
+			return duration;
+		}
+		case LISTITEM_COMMENT:
+			if (item->HasMusicInfoTag())
+				return item->GetMusicInfoTag()->GetComment();
+			break;
 
-		// TODO - Many missign !!!
+		// TODO - Many missing !!!
 	}
 
 	return "";
@@ -769,6 +887,61 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
 		}
 		break;
 
+		// Music Player Section
+		case MUSICPLAYER_TITLE:
+		case MUSICPLAYER_ALBUM:
+		case MUSICPLAYER_ARTIST:
+		case MUSICPLAYER_ALBUM_ARTIST:
+		case MUSICPLAYER_GENRE:
+		case MUSICPLAYER_YEAR:
+		case MUSICPLAYER_TRACK_NUMBER:
+		case MUSICPLAYER_BITRATE:
+		case MUSICPLAYER_PLAYLISTLEN:
+		case MUSICPLAYER_PLAYLISTPOS:
+		case MUSICPLAYER_CHANNELS:
+		case MUSICPLAYER_BITSPERSAMPLE:
+		case MUSICPLAYER_SAMPLERATE:
+		case MUSICPLAYER_CODEC:
+		case MUSICPLAYER_DISC_NUMBER:
+		case MUSICPLAYER_RATING:
+		case MUSICPLAYER_COMMENT:
+		case MUSICPLAYER_LYRICS:
+		case MUSICPLAYER_PLAYCOUNT:
+		case MUSICPLAYER_LASTPLAYED:
+			strLabel = GetMusicLabel(info);
+		break;
+
+		case VIDEOPLAYER_TITLE:
+		case VIDEOPLAYER_ORIGINALTITLE:
+		case VIDEOPLAYER_GENRE:
+		case VIDEOPLAYER_DIRECTOR:
+		case VIDEOPLAYER_YEAR:
+		case VIDEOPLAYER_PLAYLISTLEN:
+		case VIDEOPLAYER_PLAYLISTPOS:
+		case VIDEOPLAYER_PLOT:
+		case VIDEOPLAYER_PLOT_OUTLINE:
+		case VIDEOPLAYER_EPISODE:
+		case VIDEOPLAYER_SEASON:
+		case VIDEOPLAYER_RATING:
+		case VIDEOPLAYER_RATING_AND_VOTES:
+		case VIDEOPLAYER_TVSHOW:
+		case VIDEOPLAYER_PREMIERED:
+		case VIDEOPLAYER_STUDIO:
+		case VIDEOPLAYER_COUNTRY:
+		case VIDEOPLAYER_MPAA:
+		case VIDEOPLAYER_TOP250:
+		case VIDEOPLAYER_CAST:
+		case VIDEOPLAYER_CAST_AND_ROLE:
+		case VIDEOPLAYER_ARTIST:
+		case VIDEOPLAYER_ALBUM:
+		case VIDEOPLAYER_WRITER:
+		case VIDEOPLAYER_TAGLINE:
+		case VIDEOPLAYER_TRAILER:
+		case VIDEOPLAYER_PLAYCOUNT:
+		case VIDEOPLAYER_LASTPLAYED:
+			strLabel = GetVideoLabel(info);
+		break;
+
 		// Player Section	
 		case PLAYER_TIME:
 			strLabel = GetCurrentPlayTime();
@@ -797,6 +970,20 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
 	}
 	else if (info == WEATHER_CONDITIONS)
 		return g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON);
+	else if (info == MUSICPLAYER_COVER)
+	{
+		if (!g_application.IsPlayingAudio()) return "";
+
+		return m_currentFile->HasThumbnail() ? m_currentFile->GetThumbnailImage() : "DefaultAlbumCover.png";
+	}
+	else if (info == VIDEOPLAYER_COVER)
+	{
+		if (!g_application.IsPlayingVideo()) return "";
+		
+//		if(m_currentMovieThumb.IsEmpty()) // TODO
+			return m_currentFile->HasThumbnail() ? m_currentFile->GetThumbnailImage() : "DefaultVideoCover.png";
+//		else return m_currentMovieThumb;
+  }
 	else if (info == LISTITEM_THUMB || info == LISTITEM_ICON || info == LISTITEM_ACTUAL_ICON ||
           info == LISTITEM_OVERLAY || info == LISTITEM_RATING || info == LISTITEM_STAR_RATING)
 	{
@@ -1500,4 +1687,198 @@ void CGUIInfoManager::ResetCache() // TODO
 	// Reset any animation triggers as well
 //	m_containerMoves.clear();// TODO
 	m_updateTime++;
+}
+
+void CGUIInfoManager::ResetCurrentItem()
+{ 
+	m_currentFile->Reset();
+}
+
+void CGUIInfoManager::SetCurrentItem(CFileItem &item)
+{
+	ResetCurrentItem();
+
+	if (item.IsAudio())
+		SetCurrentSong(item);
+	else
+		SetCurrentMovie(item);
+}
+
+void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
+{
+	CLog::Log(LOGDEBUG, "CGUIInfoManager::SetCurrentMovie(%s)", item.GetPath().c_str());
+	*m_currentFile = item;
+
+	// TODO BRENT - port full SetCurrentMovie from original source:
+	// - CVideoDatabase::LoadVideoInfo() to populate video info tag
+	// - item.SetVideoThumb() to resolve cached/on-disk video thumbnails
+	// - Internet stream thumb lookup
+	// For now, just call FillInDefaultIcon so VIDEOPLAYER_COVER can
+	// fall through to "DefaultVideoCover.png".
+	item.FillInDefaultIcon();
+}
+
+void CGUIInfoManager::SetCurrentSong(CFileItem &item)
+{
+	CLog::Log(LOGDEBUG, "CGUIInfoManager::SetCurrentSong(%s)", item.GetPath().c_str());
+	*m_currentFile = item;
+
+//	m_currentFile->LoadMusicTag(); // TODO - Port LoadMusicTag / MusicInfoTagLoaderFactory
+
+	if (m_currentFile->GetMusicInfoTag()->GetTitle().IsEmpty())
+	{
+		// No title in tag, show filename only
+		m_currentFile->GetMusicInfoTag()->SetTitle(URIUtils::GetFileName(m_currentFile->GetPath()));
+	}
+	
+	m_currentFile->GetMusicInfoTag()->SetLoaded(true);
+}
+
+CStdString CGUIInfoManager::GetMusicLabel(int item)
+{
+	if (!g_application.IsPlayingAudio() || !m_currentFile->HasMusicInfoTag()) return "";
+	switch (item)
+	{
+	case MUSICPLAYER_PLAYLISTLEN:
+		{
+//			if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC) // TODO
+//				return GetPlaylistLabel(PLAYLIST_LENGTH);
+		}
+		break;
+	case MUSICPLAYER_PLAYLISTPOS:
+		{
+//			if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC) // TODO
+//				return GetPlaylistLabel(PLAYLIST_POSITION);
+		}
+		break;
+	case MUSICPLAYER_BITRATE:
+		{
+			float fTimeSpan = (float)(CTimeUtils::GetFrameTime() - m_lastMusicBitrateTime);
+			if (fTimeSpan >= 500.0f)
+			{
+				m_MusicBitrate = g_application.m_pPlayer->GetAudioBitrate();
+				m_lastMusicBitrateTime = CTimeUtils::GetFrameTime();
+			}
+			CStdString strBitrate = "";
+			if (m_MusicBitrate > 0)
+				strBitrate.Format("%i", MathUtils::round_int((double)m_MusicBitrate / 1000.0));
+			return strBitrate;
+		}
+		break;
+	case MUSICPLAYER_CHANNELS:
+		{
+			CStdString strChannels = "";
+			if (g_application.m_pPlayer->GetChannels() > 0)
+			{
+				strChannels.Format("%i", g_application.m_pPlayer->GetChannels());
+			}
+			return strChannels;
+		}
+		break;
+	case MUSICPLAYER_BITSPERSAMPLE:
+		{
+			CStdString strBitsPerSample = "";
+			if (g_application.m_pPlayer->GetBitsPerSample() > 0)
+			{
+				strBitsPerSample.Format("%i", g_application.m_pPlayer->GetBitsPerSample());
+			}
+			return strBitsPerSample;
+		}
+		break;
+	case MUSICPLAYER_SAMPLERATE:
+		{
+			CStdString strSampleRate = "";
+			if (g_application.m_pPlayer->GetSampleRate() > 0)
+			{
+				strSampleRate.Format("%i", g_application.m_pPlayer->GetSampleRate());
+			}
+			return strSampleRate;
+		}
+		break;
+	case MUSICPLAYER_CODEC:
+		{
+			CStdString strCodec;
+			strCodec.Format("%s", g_application.m_pPlayer->GetAudioCodecName().c_str());
+			return strCodec;
+		}
+		break;
+//	case MUSICPLAYER_LYRICS: // TODO - AddListItemProp not yet ported
+//		return GetItemLabel(m_currentFile, AddListItemProp("lyrics"));
+	}
+	return GetMusicTagLabel(item, m_currentFile);
+}
+
+CStdString CGUIInfoManager::GetVideoLabel(int item)
+{
+	if (!g_application.IsPlayingVideo()) 
+		return "";
+
+	if (item == VIDEOPLAYER_TITLE)
+	{
+		// TODO
+//		if (m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->m_strTitle.IsEmpty())
+//			return m_currentFile->GetVideoInfoTag()->m_strTitle;
+
+		// Don't have the title, so use label, or drop down to title from path
+		if (!m_currentFile->GetLabel().IsEmpty())
+			return m_currentFile->GetLabel();
+		
+		return CUtil::GetTitleFromPath(m_currentFile->GetPath());
+	}
+
+	return "";
+}
+
+CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item)
+{
+	if (!item->HasMusicInfoTag()) return "";
+	const CMusicInfoTag &tag = *item->GetMusicInfoTag();
+
+	switch (info)
+	{
+	case MUSICPLAYER_TITLE:
+		if (tag.GetTitle().size()) { return tag.GetTitle(); }
+		break;
+	case MUSICPLAYER_LYRICS:
+		if (tag.GetLyrics().size()) { return tag.GetLyrics(); }
+		break;
+	case MUSICPLAYER_ALBUM:
+		if (tag.GetAlbum().size()) { return tag.GetAlbum(); }
+		break;
+	case MUSICPLAYER_ARTIST:
+		if (tag.GetArtist().size()) { return tag.GetArtist(); }
+		break;
+	case MUSICPLAYER_ALBUM_ARTIST:
+		if (tag.GetAlbumArtist().size()) { return tag.GetAlbumArtist(); }
+		break;
+	case MUSICPLAYER_YEAR:
+		if (tag.GetYear()) { return tag.GetYearString(); }
+		break;
+	case MUSICPLAYER_GENRE:
+		if (tag.GetGenre().size()) { return tag.GetGenre(); }
+		break;
+	case MUSICPLAYER_TRACK_NUMBER:
+		{
+			CStdString strTrack;
+			if (tag.Loaded() && tag.GetTrackNumber() > 0)
+			{
+				strTrack.Format("%02i", tag.GetTrackNumber());
+				return strTrack;
+			}
+		}
+		break;
+	case MUSICPLAYER_DISC_NUMBER:
+		return GetItemLabel(item, LISTITEM_DISC_NUMBER);
+	case MUSICPLAYER_RATING:
+		return GetItemLabel(item, LISTITEM_RATING);
+	case MUSICPLAYER_COMMENT:
+		return GetItemLabel(item, LISTITEM_COMMENT);
+	case MUSICPLAYER_DURATION:
+		return GetItemLabel(item, LISTITEM_DURATION);
+	case MUSICPLAYER_PLAYCOUNT:
+		return GetItemLabel(item, LISTITEM_PLAYCOUNT);
+	case MUSICPLAYER_LASTPLAYED:
+		return GetItemLabel(item, LISTITEM_LASTPLAYED);
+	}
+	return "";
 }

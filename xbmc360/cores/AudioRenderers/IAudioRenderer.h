@@ -5,18 +5,11 @@
 #include <xtl.h>
 #endif
 
-#include "IAudioCallback.h"
-
-extern void RegisterAudioCallback(IAudioCallback* pCallback);
-extern void UnRegisterAudioCallback();
-
 class IAudioRenderer
 {
 public:
 	IAudioRenderer() {};
 	virtual ~IAudioRenderer() {};
-	virtual void UnRegisterAudioCallback() = 0;
-	virtual void RegisterAudioCallback(IAudioCallback* pCallback) = 0;
 	virtual FLOAT GetDelay() = 0;
 	virtual FLOAT GetCacheTime() = 0;
 
@@ -35,8 +28,12 @@ public:
 	virtual void SetDynamicRangeCompression(long drc) {};
 	virtual int SetPlaySpeed(int iSpeed) = 0;
 	virtual void WaitCompletion() = 0;
+	virtual void Flush() {}
 	virtual void DoWork() {}
 	virtual void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers) = 0;
+
+	// Visualization: Pull accumulated PCM data for vis rendering
+	virtual DWORD GetVisData(BYTE* pDest, DWORD maxLen) { return 0; }
 };
 
 #endif // H_CAUDIORENDER

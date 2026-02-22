@@ -145,6 +145,9 @@ bool CXBLibSMB2::OpenFile(const CURL& url)
 
 	m_FileSize = smb2_lseek(m_pLibSMB2Context, m_pLibSMB2FH, 0, SEEK_END, NULL);
 
+	// Seek back to the beginning so reads start from position 0
+	smb2_lseek(m_pLibSMB2Context, m_pLibSMB2FH, 0, SEEK_SET, NULL);
+
 	// We've opened the file!
 	return true;
 }
