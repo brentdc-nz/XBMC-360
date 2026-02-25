@@ -20,10 +20,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include "libavutil/channel_layout.h"
+#include "libavutil/intreadwrite.h"
 #include "avformat.h"
 #include "pcm.h"
-#include "libavutil/intreadwrite.h"
-#include "libavutil/audioconvert.h"
 
 #define AT1_SU_SIZE     212
 
@@ -54,10 +54,9 @@ static int aea_read_probe(AVProbeData *p)
     return 0;
 }
 
-static int aea_read_header(AVFormatContext *s,
-                           AVFormatParameters *ap)
+static int aea_read_header(AVFormatContext *s)
 {
-    AVStream *st = av_new_stream(s, 0);
+    AVStream *st = avformat_new_stream(s, NULL);
     if (!st)
         return AVERROR(ENOMEM);
 
@@ -68,7 +67,7 @@ static int aea_read_header(AVFormatContext *s,
 
 
     st->codec->codec_type     = AVMEDIA_TYPE_AUDIO;
-    st->codec->codec_id       = CODEC_ID_ATRAC1;
+    st->codec->codec_id       = AV_CODEC_ID_ATRAC1;
     st->codec->sample_rate    = 44100;
     st->codec->bit_rate       = 292000;
 
@@ -95,38 +94,18 @@ static int aea_read_packet(AVFormatContext *s, AVPacket *pkt)
 }
 
 AVInputFormat ff_aea_demuxer = {
-#ifndef MSC_STRUCTS
-    "aea",
-    NULL_IF_CONFIG_SMALL("MD STUDIO audio"),
-    0,
-    aea_read_probe,
-    aea_read_header,
-    aea_read_packet,
-    0,
-    pcm_read_seek,
-    .flags= AVFMT_GENERIC_INDEX,
-    .extensions = "aea",
+    "aea", /* name */
+    NULL_IF_CONFIG_SMALL("MD STUDIO audio"), /* long_name */
+    AVFMT_GENERIC_INDEX, /* flags */
+    "aea", /* extensions */
+    0, /* codec_tag */
+    0, /* priv_class */
+    0, /* next */
+    0, /* raw_codec_id */
+    0, /* priv_data_size */
+    aea_read_probe, /* read_probe */
+    aea_read_header, /* read_header */
+    aea_read_packet, /* read_packet */
+    0, /* read_close */
+    ff_pcm_read_seek, /* read_seek */
 };
-#else
-	/*name = */ "aea",
-	/*long_name = */ NULL_IF_CONFIG_SMALL("MD STUDIO audio"),
-	/*priv_data_size = */ 0,
-	/*read_probe = */ aea_read_probe,
-	/*read_header = */ aea_read_header,
-	/*read_packet = */ aea_read_packet,
-	/*read_close = */ 0,
-	/*read_seek = */ pcm_read_seek,
-	/*read_timestamp = */ 0,
-	/*flags = */ AVFMT_GENERIC_INDEX,
-	/*extensions = */ "aea",
-	/*value = */ 0,
-	/*read_play = */ 0,
-	/*read_pause = */ 0,
-	/*codec_tag = */ 0,
-	/*read_seek2 = */ 0,
-	/*metadata_conv = */ 0,
-	/*next = */ 0
-};
-
-#endif
-

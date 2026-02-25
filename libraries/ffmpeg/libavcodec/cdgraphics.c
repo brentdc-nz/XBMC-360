@@ -21,13 +21,14 @@
 
 #include "avcodec.h"
 #include "bytestream.h"
+#include "internal.h"
 
 /**
  * @file
  * @brief CD Graphics Video Decoder
  * @author Michael Tison
- * @sa http://wiki.multimedia.cx/index.php?title=CD_Graphics
- * @sa http://www.ccs.neu.edu/home/bchafy/cdb/info/cdg
+ * @see http://wiki.multimedia.cx/index.php?title=CD_Graphics
+ * @see http://www.ccs.neu.edu/home/bchafy/cdb/info/cdg
  */
 
 /// default screen sizes
@@ -86,7 +87,7 @@ static av_cold int cdg_decode_init(AVCodecContext *avctx)
 
     avctx->width   = CDG_FULL_WIDTH;
     avctx->height  = CDG_FULL_HEIGHT;
-    avctx->pix_fmt = PIX_FMT_PAL8;
+    avctx->pix_fmt = AV_PIX_FMT_PAL8;
 
     return 0;
 }
@@ -126,7 +127,7 @@ static void cdg_load_palette(CDGraphicsContext *cc, uint8_t *data, int low)
         r = ((color >> 8) & 0x000F) * 17;
         g = ((color >> 4) & 0x000F) * 17;
         b = ((color     ) & 0x000F) * 17;
-        palette[i + array_offset] = r << 16 | g << 8 | b;
+        palette[i + array_offset] = 0xFFU << 24 | r << 16 | g << 8 | b;
     }
     cc->frame.palette_has_changed = 1;
 }
@@ -218,7 +219,7 @@ static void cdg_scroll(CDGraphicsContext *cc, uint8_t *data,
     vscmd = (data[2] & 0x30) >> 4;
 
     h_off =  FFMIN(data[1] & 0x07, CDG_BORDER_WIDTH  - 1);
-    v_off =  FFMIN(data[2] & 0x07, CDG_BORDER_HEIGHT - 1);
+    v_off =  FFMIN(data[2] & 0x0F, CDG_BORDER_HEIGHT - 1);
 
     /// find the difference and save the offset for cdg_tile_block usage
     hinc = h_off - cc->hscroll;
@@ -266,7 +267,7 @@ static void cdg_scroll(CDGraphicsContext *cc, uint8_t *data,
 }
 
 static int cdg_decode_frame(AVCodecContext *avctx,
-                            void *data, int *data_size, AVPacket *avpkt)
+                            void *data, int *got_frame, AVPacket *avpkt)
 {
     const uint8_t *buf = avpkt->data;
     int buf_size       = avpkt->size;
@@ -280,18 +281,28 @@ static int cdg_decode_frame(AVCodecContext *avctx,
         av_log(avctx, AV_LOG_ERROR, "buffer too small for decoder\n");
         return AVERROR(EINVAL);
     }
+    if (buf_size > CDG_HEADER_SIZE + CDG_DATA_SIZE) {
+        av_log(avctx, AV_LOG_ERROR, "buffer too big for decoder\n");
+        return AVERROR(EINVAL);
+    }
 
     ret = avctx->reget_buffer(avctx, &cc->frame);
     if (ret) {
         av_log(avctx, AV_LOG_ERROR, "reget_buffer() failed\n");
         return ret;
     }
+    if (!avctx->frame_number) {
+        memset(cc->frame.data[0], 0, cc->frame.linesize[0] * avctx->height);
+        memset(cc->frame.data[1], 0, AVPALETTE_SIZE);
+    }
 
     command = bytestream_get_byte(&buf);
     inst    = bytestream_get_byte(&buf);
     inst    &= CDG_MASK;
     buf += 2;  /// skipping 2 unneeded bytes
-    bytestream_get_buffer(&buf, cdg_data, buf_size - CDG_HEADER_SIZE);
+
+    if (buf_size > CDG_HEADER_SIZE)
+        bytestream_get_buffer(&buf, cdg_data, buf_size - CDG_HEADER_SIZE);
 
     if ((command & CDG_MASK) == CDG_COMMAND) {
         switch (inst) {
@@ -333,7 +344,7 @@ static int cdg_decode_frame(AVCodecContext *avctx,
             }
 
             cdg_init_frame(&new_frame);
-            ret = avctx->get_buffer(avctx, &new_frame);
+            ret = ff_get_buffer(avctx, &new_frame);
             if (ret) {
                 av_log(avctx, AV_LOG_ERROR, "get_buffer() failed\n");
                 return ret;
@@ -347,14 +358,13 @@ static int cdg_decode_frame(AVCodecContext *avctx,
             break;
         }
 
-        *data_size = sizeof(AVFrame);
+        *got_frame = 1;
     } else {
-        *data_size = 0;
-        buf_size   = 0;
+        *got_frame = 0;
     }
 
     *(AVFrame *) data = cc->frame;
-    return buf_size;
+    return avpkt->size;
 }
 
 static av_cold int cdg_decode_end(AVCodecContext *avctx)
@@ -368,35 +378,28 @@ static av_cold int cdg_decode_end(AVCodecContext *avctx)
 }
 
 AVCodec ff_cdgraphics_decoder = {
-#ifndef MSC_STRUCTS
-    "cdgraphics",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_CDGRAPHICS,
-    sizeof(CDGraphicsContext),
-    cdg_decode_init,
-    NULL,
-    cdg_decode_end,
-    cdg_decode_frame,
-    CODEC_CAP_DR1,
-    .max_lowres = 5,
-    .long_name = NULL_IF_CONFIG_SMALL("CD Graphics video"),
-#else
-    /* name = */ "cdgraphics",
-    /* type = */ AVMEDIA_TYPE_VIDEO,
-    /* id = */ CODEC_ID_CDGRAPHICS,
-    /* priv_data_size = */ sizeof(CDGraphicsContext),
-    /* init = */ cdg_decode_init,
-    /* encode = */ NULL,
-    /* close = */ cdg_decode_end,
-    /* decode = */ cdg_decode_frame,
-    /* capabilities = */ CODEC_CAP_DR1,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ 0,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("CD Graphics video"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ 0,
-    /* channel_layouts = */ 0,
-#endif
-};
+        "cdgraphics", /* name */
+        NULL_IF_CONFIG_SMALL("CD Graphics video"), /* long_name */
+        AVMEDIA_TYPE_VIDEO, /* type */
+        AV_CODEC_ID_CDGRAPHICS, /* id */
+        CODEC_CAP_DR1, /* capabilities */
+        0, /* supported_framerates */
+        0, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        0, /* priv_class */
+        0, /* profiles */
+        sizeof(CDGraphicsContext), /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        cdg_decode_init, /* init */
+        0, /* encode_sub */
+        0, /* encode2 */
+        cdg_decode_frame, /* decode */
+        cdg_decode_end, /* close */
+    };

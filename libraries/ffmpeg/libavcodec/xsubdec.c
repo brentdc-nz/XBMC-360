@@ -18,13 +18,15 @@
  * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
+
+#include "libavutil/mathematics.h"
 #include "libavutil/imgutils.h"
 #include "avcodec.h"
 #include "get_bits.h"
 #include "bytestream.h"
 
 static av_cold int decode_init(AVCodecContext *avctx) {
-    avctx->pix_fmt = PIX_FMT_PAL8;
+    avctx->pix_fmt = AV_PIX_FMT_PAL8;
     return 0;
 }
 
@@ -51,19 +53,14 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size,
     AVSubtitle *sub = data;
     const uint8_t *buf_end = buf + buf_size;
     uint8_t *bitmap;
-    int w, h, x, y, rlelen, i;
+    int w, h, x, y, i;
     int64_t packet_time = 0;
     GetBitContext gb;
-
-#ifdef _MSC_VER
-	uint8_t *ff_log2_tab  = get_ff_log2_tab();
-#endif
-
-    memset(sub, 0, sizeof(*sub));
+    int has_alpha = avctx->codec_tag == MKTAG('D','X','S','A');
 
     // check that at least header fits
     if (buf_size < 27 + 7 * 2 + 4 * 3) {
-        av_log(avctx, AV_LOG_ERROR, "coded frame too small\n");
+        av_log(avctx, AV_LOG_ERROR, "coded frame size %d too small\n", buf_size);
         return -1;
     }
 
@@ -73,11 +70,7 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size,
         return -1;
     }
     if (avpkt->pts != AV_NOPTS_VALUE)
-#ifndef _MSC_VER
-        packet_time = av_rescale_q(avpkt->pts, AV_TIME_BASE_Q, (AVRational){1, 1000});
-#else
-        packet_time = av_rescale_q(avpkt->pts, AV_TIME_BASE_Q, av_create_rational(1, 1000));
-#endif
+        packet_time = av_rescale_q(avpkt->pts, AV_TIME_BASE_Q, av_make_q(1, 1000));
     sub->start_display_time = parse_timecode(buf +  1, packet_time);
     sub->end_display_time   = parse_timecode(buf + 14, packet_time);
     buf += 27;
@@ -92,7 +85,11 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size,
     // skip bottom right position, it gives no new information
     bytestream_get_le16(&buf);
     bytestream_get_le16(&buf);
-    rlelen = bytestream_get_le16(&buf);
+    // The following value is supposed to indicate the start offset
+    // (relative to the palette) of the data for the second field,
+    // however there are files in which it has a bogus value and thus
+    // we just ignore it
+    bytestream_get_le16(&buf);
 
     // allocate sub and set values
     sub->rects =  av_mallocz(sizeof(*sub->rects));
@@ -110,12 +107,11 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size,
     for (i = 0; i < sub->rects[0]->nb_colors; i++)
         ((uint32_t*)sub->rects[0]->pict.data[1])[i] = bytestream_get_be24(&buf);
     // make all except background (first entry) non-transparent
-    for (i = 1; i < sub->rects[0]->nb_colors; i++)
-        ((uint32_t*)sub->rects[0]->pict.data[1])[i] |= 0xff000000;
+    for (i = 0; i < sub->rects[0]->nb_colors; i++)
+        ((uint32_t*)sub->rects[0]->pict.data[1])[i] |= (has_alpha ? *buf++ : (i ? 0xff : 0)) << 24;
 
     // process RLE-compressed data
-    rlelen = FFMIN(rlelen, buf_end - buf);
-    init_get_bits(&gb, buf, rlelen * 8);
+    init_get_bits(&gb, buf, (buf_end - buf) * 8);
     bitmap = sub->rects[0]->pict.data[0];
     for (y = 0; y < h; y++) {
         // interlaced: do odd lines
@@ -140,33 +136,27 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size,
 }
 
 AVCodec ff_xsub_decoder = {
-#ifndef MSC_STRUCTS
-    "xsub",
-    AVMEDIA_TYPE_SUBTITLE,
-    CODEC_ID_XSUB,
-    0,
-    decode_init,
-    NULL,
-    NULL,
-    decode_frame,
-    .long_name = NULL_IF_CONFIG_SMALL("XSUB"),
-#else
-    /* name = */ "xsub",
-    /* type = */ AVMEDIA_TYPE_SUBTITLE,
-    /* id = */ CODEC_ID_XSUB,
-    /* priv_data_size = */ 0,
-    /* init = */ decode_init,
-    /* encode = */ NULL,
-    /* close = */ NULL,
-    /* decode = */ decode_frame,
-    /* capabilities = */ 0,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ 0,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("XSUB"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ 0,
-    /* channel_layouts = */ 0,
-#endif
-};
+        "xsub", /* name */
+        NULL_IF_CONFIG_SMALL("XSUB"), /* long_name */
+        AVMEDIA_TYPE_SUBTITLE, /* type */
+        AV_CODEC_ID_XSUB, /* id */
+        0, /* capabilities */
+        0, /* supported_framerates */
+        0, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        0, /* priv_class */
+        0, /* profiles */
+        0, /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        decode_init, /* init */
+        0, /* encode_sub */
+        0, /* encode2 */
+        decode_frame, /* decode */
+    };

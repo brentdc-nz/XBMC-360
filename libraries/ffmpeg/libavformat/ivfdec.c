@@ -19,6 +19,7 @@
  */
 
 #include "avformat.h"
+#include "internal.h"
 #include "riff.h"
 #include "libavutil/intreadwrite.h"
 
@@ -31,7 +32,7 @@ static int probe(AVProbeData *p)
     return 0;
 }
 
-static int read_header(AVFormatContext *s, AVFormatParameters *ap)
+static int read_header(AVFormatContext *s)
 {
     AVStream *st;
     AVRational time_base;
@@ -40,7 +41,7 @@ static int read_header(AVFormatContext *s, AVFormatParameters *ap)
     avio_rl16(s->pb); // version
     avio_rl16(s->pb); // header size
 
-    st = av_new_stream(s, 0);
+    st = avformat_new_stream(s, NULL);
     if (!st)
         return AVERROR(ENOMEM);
 
@@ -61,7 +62,7 @@ static int read_header(AVFormatContext *s, AVFormatParameters *ap)
         return AVERROR_INVALIDDATA;
     }
 
-    av_set_pts_info(st, 64, time_base.num, time_base.den);
+    avpriv_set_pts_info(st, 64, time_base.num, time_base.den);
 
     return 0;
 }
@@ -79,13 +80,18 @@ static int read_packet(AVFormatContext *s, AVPacket *pkt)
     return ret;
 }
 
+static const AVCodecTag *const _ff_ivfdec_tags_14[] = { ff_codec_bmp_tags, 0 };
 AVInputFormat ff_ivf_demuxer = {
-    "ivf",
-    NULL_IF_CONFIG_SMALL("On2 IVF"),
-    0,
-    probe,
-    read_header,
-    read_packet,
-    .flags= AVFMT_GENERIC_INDEX,
-    .codec_tag = (const AVCodecTag*[]){ff_codec_bmp_tags, 0},
+    "ivf", /* name */
+    NULL_IF_CONFIG_SMALL("On2 IVF"), /* long_name */
+    AVFMT_GENERIC_INDEX, /* flags */
+    0, /* extensions */
+    _ff_ivfdec_tags_14, /* codec_tag */
+    0, /* priv_class */
+    0, /* next */
+    0, /* raw_codec_id */
+    0, /* priv_data_size */
+    probe, /* read_probe */
+    read_header, /* read_header */
+    read_packet, /* read_packet */
 };

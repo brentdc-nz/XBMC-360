@@ -19,8 +19,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include <string.h>
+
+#include "libavutil/internal.h"
 #include "libavutil/intreadwrite.h"
+#include "libavutil/pixdesc.h"
 #include "avcodec.h"
+#include "internal.h"
 #include "rle.h"
 #include "targa.h"
 
@@ -38,7 +43,7 @@ typedef struct TargaContext {
  * @param h Image height
  * @return Size of output in bytes, or -1 if larger than out_size
  */
-static int targa_encode_rle(uint8_t *outbuf, int out_size, AVFrame *pic,
+static int targa_encode_rle(uint8_t *outbuf, int out_size, const AVFrame *pic,
                             int bpp, int w, int h)
 {
     int y,ret;
@@ -58,7 +63,7 @@ static int targa_encode_rle(uint8_t *outbuf, int out_size, AVFrame *pic,
     return out - outbuf;
 }
 
-static int targa_encode_normal(uint8_t *outbuf, AVFrame *pic, int bpp, int w, int h)
+static int targa_encode_normal(uint8_t *outbuf, const AVFrame *pic, int bpp, int w, int h)
 {
     int i, n = bpp * w;
     uint8_t *out = outbuf;
@@ -73,11 +78,10 @@ static int targa_encode_normal(uint8_t *outbuf, AVFrame *pic, int bpp, int w, in
     return out - outbuf;
 }
 
-static int targa_encode_frame(AVCodecContext *avctx,
-                              unsigned char *outbuf,
-                              int buf_size, void *data){
-    AVFrame *p = data;
-    int bpp, picsize, datasize = -1;
+static int targa_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
+                              const AVFrame *p, int *got_packet)
+{
+    int bpp, picsize, datasize = -1, ret, i;
     uint8_t *out;
 
     if(avctx->width > 0xffff || avctx->height > 0xffff) {
@@ -85,46 +89,65 @@ static int targa_encode_frame(AVCodecContext *avctx,
         return AVERROR(EINVAL);
     }
     picsize = avpicture_get_size(avctx->pix_fmt, avctx->width, avctx->height);
-    if(buf_size < picsize + 45) {
-        av_log(avctx, AV_LOG_ERROR, "encoded frame too large\n");
-        return AVERROR(EINVAL);
-    }
-
-    p->pict_type= FF_I_TYPE;
-    p->key_frame= 1;
+    if ((ret = ff_alloc_packet2(avctx, pkt, picsize + 45)) < 0)
+        return ret;
 
     /* zero out the header and only set applicable fields */
-    memset(outbuf, 0, 12);
-    AV_WL16(outbuf+12, avctx->width);
-    AV_WL16(outbuf+14, avctx->height);
+    memset(pkt->data, 0, 12);
+    AV_WL16(pkt->data+12, avctx->width);
+    AV_WL16(pkt->data+14, avctx->height);
     /* image descriptor byte: origin is always top-left, bits 0-3 specify alpha */
-    outbuf[17] = 0x20 | (avctx->pix_fmt == PIX_FMT_BGRA ? 8 : 0);
+    pkt->data[17] = 0x20 | (avctx->pix_fmt == AV_PIX_FMT_BGRA ? 8 : 0);
 
+    out = pkt->data + 18;  /* skip past the header we write */
+
+    avctx->bits_per_coded_sample = av_get_bits_per_pixel(av_pix_fmt_desc_get(avctx->pix_fmt));
     switch(avctx->pix_fmt) {
-    case PIX_FMT_GRAY8:
-        outbuf[2] = TGA_BW;      /* uncompressed grayscale image */
-        outbuf[16] = 8;          /* bpp */
+    case AV_PIX_FMT_PAL8: {
+        int pal_bpp = 24; /* Only write 32bit palette if there is transparency information */
+        for (i = 0; i < 256; i++)
+            if (AV_RN32(p->data[1] + 4 * i) >> 24 != 0xFF) {
+                pal_bpp = 32;
+                break;
+            }
+        pkt->data[1]  = 1;          /* palette present */
+        pkt->data[2]  = TGA_PAL;    /* uncompressed palettised image */
+        pkt->data[6]  = 1;          /* palette contains 256 entries */
+        pkt->data[7]  = pal_bpp;    /* palette contains pal_bpp bit entries */
+        pkt->data[16] = 8;          /* bpp */
+        for (i = 0; i < 256; i++)
+            if (pal_bpp == 32) {
+                AV_WL32(pkt->data + 18 + 4 * i, *(uint32_t *)(p->data[1] + i * 4));
+            } else {
+            AV_WL24(pkt->data + 18 + 3 * i, *(uint32_t *)(p->data[1] + i * 4));
+            }
+        out += 32 * pal_bpp;        /* skip past the palette we just output */
         break;
-    case PIX_FMT_RGB555LE:
-        outbuf[2] = TGA_RGB;     /* uncompresses true-color image */
-        outbuf[16] = 16;         /* bpp */
+        }
+    case AV_PIX_FMT_GRAY8:
+        pkt->data[2]  = TGA_BW;     /* uncompressed grayscale image */
+        avctx->bits_per_coded_sample = 0x28;
+        pkt->data[16] = 8;          /* bpp */
         break;
-    case PIX_FMT_BGR24:
-        outbuf[2] = TGA_RGB;     /* uncompressed true-color image */
-        outbuf[16] = 24;         /* bpp */
+    case AV_PIX_FMT_RGB555LE:
+        pkt->data[2]  = TGA_RGB;    /* uncompressed true-color image */
+        avctx->bits_per_coded_sample =
+        pkt->data[16] = 16;         /* bpp */
         break;
-    case PIX_FMT_BGRA:
-        outbuf[2] = TGA_RGB;     /* uncompressed true-color image */
-        outbuf[16] = 32;         /* bpp */
+    case AV_PIX_FMT_BGR24:
+        pkt->data[2]  = TGA_RGB;    /* uncompressed true-color image */
+        pkt->data[16] = 24;         /* bpp */
+        break;
+    case AV_PIX_FMT_BGRA:
+        pkt->data[2]  = TGA_RGB;    /* uncompressed true-color image */
+        pkt->data[16] = 32;         /* bpp */
         break;
     default:
         av_log(avctx, AV_LOG_ERROR, "Pixel format '%s' not supported.\n",
-               avcodec_get_pix_fmt_name(avctx->pix_fmt));
+               av_get_pix_fmt_name(avctx->pix_fmt));
         return AVERROR(EINVAL);
     }
-    bpp = outbuf[16] >> 3;
-
-    out = outbuf + 18;  /* skip past the header we just output */
+    bpp = pkt->data[16] >> 3;
 
     /* try RLE compression */
     if (avctx->coder_type != FF_CODER_TYPE_RAW)
@@ -132,7 +155,7 @@ static int targa_encode_frame(AVCodecContext *avctx,
 
     /* if that worked well, mark the picture as RLE compressed */
     if(datasize >= 0)
-        outbuf[2] |= 8;
+        pkt->data[2] |= TGA_RLE;
 
     /* if RLE didn't make it smaller, go back to no compression */
     else datasize = targa_encode_normal(out, p, bpp, avctx->width, avctx->height);
@@ -144,7 +167,11 @@ static int targa_encode_frame(AVCodecContext *avctx,
      * aspect ratio and encoder ID fields available? */
     memcpy(out, "\0\0\0\0\0\0\0\0TRUEVISION-XFILE.", 26);
 
-    return out + 26 - outbuf;
+    pkt->size   = out + 26 - pkt->data;
+    pkt->flags |= AV_PKT_FLAG_KEY;
+    *got_packet = 1;
+
+    return 0;
 }
 
 static av_cold int targa_encode_init(AVCodecContext *avctx)
@@ -153,40 +180,35 @@ static av_cold int targa_encode_init(AVCodecContext *avctx)
 
     avcodec_get_frame_defaults(&s->picture);
     s->picture.key_frame= 1;
+    s->picture.pict_type = AV_PICTURE_TYPE_I;
     avctx->coded_frame= &s->picture;
 
     return 0;
 }
 
-const enum PixelFormat targa_encoder_formats[] = {PIX_FMT_BGR24,PIX_FMT_BGRA, PIX_FMT_RGB555LE, PIX_FMT_GRAY8, PIX_FMT_NONE};
-
+static const enum AVPixelFormat _ff_targaenc_fmts_150[] = { AV_PIX_FMT_BGR24, AV_PIX_FMT_BGRA, AV_PIX_FMT_RGB555LE, AV_PIX_FMT_GRAY8, AV_PIX_FMT_PAL8,
+        AV_PIX_FMT_NONE };
 AVCodec ff_targa_encoder = {
-#ifndef MSC_STRUCTS
-    .name = "targa",
-    .type = AVMEDIA_TYPE_VIDEO,
-    .id = CODEC_ID_TARGA,
-    .priv_data_size = sizeof(TargaContext),
-    .init = targa_encode_init,
-    .encode = targa_encode_frame,
-    .pix_fmts= (const enum PixelFormat[]){PIX_FMT_BGR24, PIX_FMT_BGRA, PIX_FMT_RGB555LE, PIX_FMT_GRAY8, PIX_FMT_NONE},
-    .long_name= NULL_IF_CONFIG_SMALL("Truevision Targa image"),
-#else
-    /* name = */ "targa",
-    /* type = */ AVMEDIA_TYPE_VIDEO,
-    /* id = */ CODEC_ID_TARGA,
-    /* priv_data_size = */ sizeof(TargaContext),
-    /* init = */ targa_encode_init,
-    /* encode = */ targa_encode_frame,
-    /* close = */ 0,
-    /* decode = */ 0,
-    /* capabilities = */ 0,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ targa_encoder_formats,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("Truevision Targa image"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ 0,
-    /* channel_layouts = */ 0,
-#endif
-};
+        "targa", /* name */
+        NULL_IF_CONFIG_SMALL("Truevision Targa image"), /* long_name */
+        AVMEDIA_TYPE_VIDEO, /* type */
+        AV_CODEC_ID_TARGA, /* id */
+        0, /* capabilities */
+        0, /* supported_framerates */
+        _ff_targaenc_fmts_150, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        0, /* priv_class */
+        0, /* profiles */
+        sizeof(TargaContext), /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        targa_encode_init, /* init */
+        0, /* encode_sub */
+        targa_encode_frame, /* encode2 */
+    };

@@ -31,7 +31,7 @@ static int write_header(AVFormatContext *s)
     AVCodecContext *avctx= s->streams[0]->codec;
     uint8_t *last= NULL;
 
-    if(s->nb_streams != 1 || avctx->codec_id != CODEC_ID_SSA){
+    if(s->nb_streams != 1 || avctx->codec_id != AV_CODEC_ID_SSA){
         av_log(s, AV_LOG_ERROR, "Exactly one ASS/SSA stream is needed.\n");
         return -1;
     }
@@ -72,42 +72,23 @@ static int write_trailer(AVFormatContext *s)
     avio_write(s->pb, avctx->extradata      + ass->extra_index,
                       avctx->extradata_size - ass->extra_index);
 
-    avio_flush(s->pb);
-
     return 0;
 }
 
 AVOutputFormat ff_ass_muxer = {
-#ifndef MSC_STRUCTS
-    "ass",
-    NULL_IF_CONFIG_SMALL("SSA/ASS format"),
-    NULL,
-    "ass,ssa",
-    sizeof(ASSContext),
-    CODEC_ID_NONE,
-    CODEC_ID_NONE,
-    write_header,
-    write_packet,
-    write_trailer,
-    .flags = AVFMT_GLOBALHEADER | AVFMT_NOTIMESTAMPS
+    "ass", /* name */
+    NULL_IF_CONFIG_SMALL("SSA (SubStation Alpha) subtitle"), /* long_name */
+    "text/x-ssa", /* mime_type */
+    "ass,ssa", /* extensions */
+    0, /* audio_codec */
+    0, /* video_codec */
+    AV_CODEC_ID_SSA, /* subtitle_codec */
+    AVFMT_GLOBALHEADER | AVFMT_NOTIMESTAMPS | AVFMT_TS_NONSTRICT, /* flags */
+    0, /* codec_tag */
+    0, /* priv_class */
+    0, /* next */
+    sizeof(ASSContext), /* priv_data_size */
+    write_header, /* write_header */
+    write_packet, /* write_packet */
+    write_trailer, /* write_trailer */
 };
-#else
-	/*name = */ "ass",
-	/*long_name = */ NULL_IF_CONFIG_SMALL("SSA/ASS format"),
-	/*mime_type = */ NULL,
-	/*extensions = */ "ass,ssa",
-	/*priv_data_size = */ sizeof(ASSContext),
-	/*audio_codec = */ CODEC_ID_NONE,
-	/*video_codec = */ CODEC_ID_NONE,
-	/*write_header = */ write_header,
-	/*write_packet = */ write_packet,
-	/*write_trailer = */ write_trailer,
-	/*flags = */ AVFMT_GLOBALHEADER | AVFMT_NOTIMESTAMPS,
-	/*set_parameters = */ 0,
-	/*interleave_packet = */ 0,
-	/*codec_tag = */ 0,
-	/*ubtitle_codec = */ 0,
-	/*metadata_conv = */ 0,
-	/*next = */ 0
-};
-#endif

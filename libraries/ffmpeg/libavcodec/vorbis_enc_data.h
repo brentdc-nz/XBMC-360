@@ -473,32 +473,45 @@ static const struct {
     { 2,   32,   32, codebook13, 0 },
     { 2,   78,   78, codebook14, 0 },
     { 2,  100,  100, codebook15, 0 },
-    { 8, 1641, 6561, codebook16, 1,    -1.0,   1.0, (const uint8_t[]){ 1, 0, 2, } },
-    { 4,  443,  625, codebook17, 1,    -2.0,   1.0, (const uint8_t[]){ 2, 1, 3, 0, 4, } },
-    { 4,  105,  625, codebook18, 1,    -2.0,   1.0, (const uint8_t[]){ 2, 1, 3, 0, 4, } },
-    { 2,   68,   81, codebook19, 1,    -4.0,   1.0, (const uint8_t[]){ 4, 3, 5, 2, 6, 1, 7, 0, 8, } },
-    { 2,   81,   81, codebook20, 1,    -4.0,   1.0, (const uint8_t[]){ 4, 3, 5, 2, 6, 1, 7, 0, 8, } },
-    { 2,  289,  289, codebook21, 1,    -8.0,   1.0, (const uint8_t[]){ 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15, 0, 16, } },
-    { 4,   81,   81, codebook22, 1,   -11.0,  11.0, (const uint8_t[]){ 1, 0, 2, } },
-    { 2,  121,  121, codebook23, 1,    -5.0,   1.0, (const uint8_t[]){ 5, 4, 6, 3, 7, 2, 8, 1, 9, 0, 10, } },
-    { 2,  169,  169, codebook24, 1,   -30.0,   5.0, (const uint8_t[]){ 6, 5, 7, 4, 8, 3, 9, 2, 10, 1, 11, 0, 12, } },
-    { 2,   25,   25, codebook25, 1,    -2.0,   1.0, (const uint8_t[]){ 2, 1, 3, 0, 4, } },
-    { 2,  169,  169, codebook26, 1, -1530.0, 255.0, (const uint8_t[]){ 6, 5, 7, 4, 8, 3, 9, 2, 10, 1, 11, 0, 12, } },
-    { 2,  225,  225, codebook27, 1,  -119.0,  17.0, (const uint8_t[]){ 7, 6, 8, 5, 9, 4, 10, 3, 11, 2, 12, 1, 13, 0, 14, } },
-    { 2,  289,  289, codebook28, 1,    -8.0,   1.0, (const uint8_t[]){ 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15, 0, 16, } },
+    static const uint8_t _cla_vorbis_enc_data_1[] = {1, 0, 2,};
+    { 8, 1641, 6561, codebook16, 1,    -1.0,   1.0, _cla_vorbis_enc_data_1 },
+    static const uint8_t _cla_vorbis_enc_data_2[] = {2, 1, 3, 0, 4,};
+    { 4,  443,  625, codebook17, 1,    -2.0,   1.0, _cla_vorbis_enc_data_2 },
+    static const uint8_t _cla_vorbis_enc_data_3[] = {2, 1, 3, 0, 4,};
+    { 4,  105,  625, codebook18, 1,    -2.0,   1.0, _cla_vorbis_enc_data_3 },
+    static const uint8_t _cla_vorbis_enc_data_4[] = {4, 3, 5, 2, 6, 1, 7, 0, 8,};
+    { 2,   68,   81, codebook19, 1,    -4.0,   1.0, _cla_vorbis_enc_data_4 },
+    static const uint8_t _cla_vorbis_enc_data_5[] = {4, 3, 5, 2, 6, 1, 7, 0, 8,};
+    { 2,   81,   81, codebook20, 1,    -4.0,   1.0, _cla_vorbis_enc_data_5 },
+    static const uint8_t _cla_vorbis_enc_data_6[] = {8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15, 0, 16,};
+    { 2,  289,  289, codebook21, 1,    -8.0,   1.0, _cla_vorbis_enc_data_6 },
+    static const uint8_t _cla_vorbis_enc_data_7[] = {1, 0, 2,};
+    { 4,   81,   81, codebook22, 1,   -11.0,  11.0, _cla_vorbis_enc_data_7 },
+    static const uint8_t _cla_vorbis_enc_data_8[] = {5, 4, 6, 3, 7, 2, 8, 1, 9, 0, 10,};
+    { 2,  121,  121, codebook23, 1,    -5.0,   1.0, _cla_vorbis_enc_data_8 },
+    static const uint8_t _cla_vorbis_enc_data_9[] = {6, 5, 7, 4, 8, 3, 9, 2, 10, 1, 11, 0, 12,};
+    { 2,  169,  169, codebook24, 1,   -30.0,   5.0, _cla_vorbis_enc_data_9 },
+    static const uint8_t _cla_vorbis_enc_data_10[] = {2, 1, 3, 0, 4,};
+    { 2,   25,   25, codebook25, 1,    -2.0,   1.0, _cla_vorbis_enc_data_10 },
+    static const uint8_t _cla_vorbis_enc_data_11[] = {6, 5, 7, 4, 8, 3, 9, 2, 10, 1, 11, 0, 12,};
+    { 2,  169,  169, codebook26, 1, -1530.0, 255.0, _cla_vorbis_enc_data_11 },
+    static const uint8_t _cla_vorbis_enc_data_12[] = {7, 6, 8, 5, 9, 4, 10, 3, 11, 2, 12, 1, 13, 0, 14,};
+    { 2,  225,  225, codebook27, 1,  -119.0,  17.0, _cla_vorbis_enc_data_12 },
+    static const uint8_t _cla_vorbis_enc_data_13[] = {8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15, 0, 16,};
+    { 2,  289,  289, codebook28, 1,    -8.0,   1.0, _cla_vorbis_enc_data_13 },
 };
 
 static const struct {
     int dim;
     int subclass;
     int masterbook;
-    const int *nbooks;
+    const int nbooks[4];
 } floor_classes[] = {
-    { 3, 0, 0, (const int[]){  4             } },
-    { 4, 1, 0, (const int[]){  5,  6         } },
-    { 3, 1, 1, (const int[]){  7,  8         } },
-    { 4, 2, 2, (const int[]){ -1,  9, 10, 11 } },
-    { 3, 2, 3, (const int[]){ -1, 12, 13, 14 } },
+    { 3, 0, 0, {  4             } },
+    { 4, 1, 0, {  5,  6         } },
+    { 3, 1, 1, {  7,  8         } },
+    { 4, 2, 2, { -1,  9, 10, 11 } },
+    { 3, 2, 3, { -1, 12, 13, 14 } },
 };
 
 #endif /* AVCODEC_VORBIS_ENC_DATA_H */

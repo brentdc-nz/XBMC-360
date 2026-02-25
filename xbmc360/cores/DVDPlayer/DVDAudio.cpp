@@ -66,7 +66,7 @@ void CDVDAudio::DoAudioWork()
 	}
 }
 
-bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
+bool CDVDAudio::Create(const DVDAudioFrame &audioframe, AVCodecID codec)
 {
 	CLog::Log(LOGNOTICE, "Creating audio device with codec id: %i, channels: %i, sample rate: %i, %s", codec, audioframe.channels, audioframe.sample_rate, audioframe.passthrough ? "pass-through" : "no pass-through");
 
@@ -75,15 +75,15 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
 
 	const char* codecstring = "";
 
-	if(codec == CODEC_ID_AAC)
+	if(codec == AV_CODEC_ID_AAC)
 #ifdef USE_LIBFAAD
 		codecstring = "AAC";
 #else
 		codecstring = "FF-AAC"; // ffmpeg decodes aac with a different channel order so we need to differentiate
 #endif
-	else if(codec == CODEC_ID_VORBIS)
+	else if(codec == AV_CODEC_ID_VORBIS)
 		codecstring = "Vorbis";
-	else if(codec == CODEC_ID_AC3 || codec == CODEC_ID_DTS)
+	else if(codec == AV_CODEC_ID_AC3 || codec == AV_CODEC_ID_DTS)
 		codecstring = ""; // TODO, fix ac3 and dts decoder to output standard windows mapping
 	else
 		codecstring = "PCM";

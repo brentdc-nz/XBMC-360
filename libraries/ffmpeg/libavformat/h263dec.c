@@ -35,7 +35,7 @@ static int h263_probe(AVProbeData *p)
     for(i=0; i<p->buf_size; i++){
         code = (code<<8) + p->buf[i];
         if ((code & 0xfffffc0000) == 0x800000) {
-            src_fmt= (code>>2)&3;
+            src_fmt= (code>>2)&7;
             if(   src_fmt != last_src_fmt
                && last_src_fmt>0 && last_src_fmt<6
                && src_fmt<6)
@@ -55,8 +55,6 @@ static int h263_probe(AVProbeData *p)
                 last_gn= gn;
         }
     }
-//av_log(NULL, AV_LOG_ERROR, "h263_probe: psc:%d invalid:%d res_change:%d\n", valid_psc, invalid_psc, res_change);
-//h263_probe: psc:3 invalid:0 res_change:0 (1588/recent_ffmpeg_parses_mpg_incorrectly.mpg)
     if(valid_psc > 2*invalid_psc + 2*res_change + 3){
         return 50;
     }else if(valid_psc > 2*invalid_psc)
@@ -64,36 +62,4 @@ static int h263_probe(AVProbeData *p)
     return 0;
 }
 
-AVInputFormat ff_h263_demuxer = {
-#ifndef MSC_STRUCTS
-    "h263",
-    NULL_IF_CONFIG_SMALL("raw H.263"),
-    0,
-    h263_probe,
-    video_read_header,
-    ff_raw_read_partial_packet,
-    .flags= AVFMT_GENERIC_INDEX,
-//    .extensions = "h263", //FIXME remove after writing mpeg4_probe
-    .value = CODEC_ID_H263,
-};
-#else
-	"h263",
-	NULL_IF_CONFIG_SMALL("raw H.263"),
-	0,
-	h263_probe,
-	ff_raw_video_read_header,
-	ff_raw_read_partial_packet,
-	/*read_close = */ 0,
-	/*read_seek = */ 0,
-	/*read_timestamp = */ 0,
-	/*flags = */ AVFMT_GENERIC_INDEX,
-	/*extensions = */ 0,
-	/*value = */ CODEC_ID_H263,
-	/*read_play = */ 0,
-	/*read_pause = */ 0,
-	/*codec_tag = */ 0,
-	/*read_seek2 = */ 0,
-	/*metadata_conv = */ 0,
-	/*next = */ 0
-};
-#endif
+FF_DEF_RAWVIDEO_DEMUXER(h263, "raw H.263", h263_probe, NULL, AV_CODEC_ID_H263)

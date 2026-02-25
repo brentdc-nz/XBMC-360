@@ -55,7 +55,7 @@ static int avs_probe(AVProbeData * p)
     return 0;
 }
 
-static int avs_read_header(AVFormatContext * s, AVFormatParameters * ap)
+static int avs_read_header(AVFormatContext * s)
 {
     AvsFormat *avs = s->priv_data;
 
@@ -124,7 +124,7 @@ static int avs_read_audio_packet(AVFormatContext * s, AVPacket * pkt)
     int ret, size;
 
     size = avio_tell(s->pb);
-    ret = voc_get_packet(s, pkt, avs->st_audio, avs->remaining_audio_size);
+    ret = ff_voc_get_packet(s, pkt, avs->st_audio, avs->remaining_audio_size);
     size = avio_tell(s->pb) - size;
     avs->remaining_audio_size -= size;
 
@@ -163,10 +163,14 @@ static int avs_read_packet(AVFormatContext * s, AVPacket * pkt)
             sub_type = avio_r8(s->pb);
             type = avio_r8(s->pb);
             size = avio_rl16(s->pb);
+            if (size < 4)
+                return AVERROR_INVALIDDATA;
             avs->remaining_frame_size -= size;
 
             switch (type) {
             case AVS_PALETTE:
+                if (size - 4 > sizeof(palette))
+                    return AVERROR_INVALIDDATA;
                 ret = avio_read(s->pb, palette, size - 4);
                 if (ret < size - 4)
                     return AVERROR(EIO);
@@ -175,24 +179,26 @@ static int avs_read_packet(AVFormatContext * s, AVPacket * pkt)
 
             case AVS_VIDEO:
                 if (!avs->st_video) {
-                    avs->st_video = av_new_stream(s, AVS_VIDEO);
+                    avs->st_video = avformat_new_stream(s, NULL);
                     if (avs->st_video == NULL)
                         return AVERROR(ENOMEM);
                     avs->st_video->codec->codec_type = AVMEDIA_TYPE_VIDEO;
-                    avs->st_video->codec->codec_id = CODEC_ID_AVS;
+                    avs->st_video->codec->codec_id = AV_CODEC_ID_AVS;
                     avs->st_video->codec->width = avs->width;
                     avs->st_video->codec->height = avs->height;
                     avs->st_video->codec->bits_per_coded_sample=avs->bits_per_sample;
                     avs->st_video->nb_frames = avs->nb_frames;
-                    avs->st_video->codec->time_base = av_create_rational(
-                    1, avs->fps);
+#if FF_API_R_FRAME_RATE
+                    avs->st_video->r_frame_rate =
+#endif
+                    avs->st_video->avg_frame_rate = av_make_q(avs->fps, 1);
                 }
                 return avs_read_video_packet(s, pkt, type, sub_type, size,
                                              palette, palette_size);
 
             case AVS_AUDIO:
                 if (!avs->st_audio) {
-                    avs->st_audio = av_new_stream(s, AVS_AUDIO);
+                    avs->st_audio = avformat_new_stream(s, NULL);
                     if (avs->st_audio == NULL)
                         return AVERROR(ENOMEM);
                     avs->st_audio->codec->codec_type = AVMEDIA_TYPE_AUDIO;
@@ -216,11 +222,17 @@ static int avs_read_close(AVFormatContext * s)
 }
 
 AVInputFormat ff_avs_demuxer = {
-    "avs",
-    NULL_IF_CONFIG_SMALL("AVS format"),
-    sizeof(AvsFormat),
-    avs_probe,
-    avs_read_header,
-    avs_read_packet,
-    avs_read_close,
+    "avs", /* name */
+    NULL_IF_CONFIG_SMALL("AVS"), /* long_name */
+    0, /* flags */
+    0, /* extensions */
+    0, /* codec_tag */
+    0, /* priv_class */
+    0, /* next */
+    0, /* raw_codec_id */
+    sizeof(AvsFormat), /* priv_data_size */
+    avs_probe, /* read_probe */
+    avs_read_header, /* read_header */
+    avs_read_packet, /* read_packet */
+    avs_read_close, /* read_close */
 };

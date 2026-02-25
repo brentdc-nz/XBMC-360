@@ -25,9 +25,11 @@
  */
 
 #include "avcodec.h"
+#include "internal.h"
+#include "libavutil/common.h"
 
 /*
- * Adapted to ffmpeg by Francois Revol <revol@free.fr>
+ * Adapted to libavcodec by Francois Revol <revol@free.fr>
  * (removed 68k REG stuff, changed types, added some statics and consts,
  * libavcodec api, context stuff, interlaced stereo out).
  */
@@ -185,9 +187,7 @@ static int16_t read_table(ChannelData *chd, uint8_t val, int tab_idx)
     return current;
 }
 
-static void chomp3(ChannelData *chd, int16_t *output, uint8_t val,
-                   int tab_idx,
-                   uint32_t numChannels)
+static void chomp3(ChannelData *chd, int16_t *output, uint8_t val, int tab_idx)
 {
 
     int16_t current = read_table(chd, val, tab_idx);
@@ -198,9 +198,7 @@ static void chomp3(ChannelData *chd, int16_t *output, uint8_t val,
     *output = QT_8S_2_16S(current);
 }
 
-static void chomp6(ChannelData *chd, int16_t *output, uint8_t val,
-                   int tab_idx,
-                   uint32_t numChannels)
+static void chomp6(ChannelData *chd, int16_t *output, uint8_t val, int tab_idx)
 {
     int16_t current = read_table(chd, val, tab_idx);
 
@@ -220,38 +218,42 @@ static void chomp6(ChannelData *chd, int16_t *output, uint8_t val,
 
     output[0] = QT_8S_2_16S(chd->previous + chd->prev2 -
                             ((chd->prev2-current) >> 2));
-    output[numChannels] = QT_8S_2_16S(chd->previous + current +
-                                      ((chd->prev2-current) >> 2));
+    output[1] = QT_8S_2_16S(chd->previous + current +
+                            ((chd->prev2-current) >> 2));
     chd->prev2 = chd->previous;
     chd->previous = current;
 }
 
 static av_cold int mace_decode_init(AVCodecContext * avctx)
 {
-    if (avctx->channels > 2)
+    if (avctx->channels > 2 || avctx->channels <= 0)
         return -1;
-    avctx->sample_fmt = AV_SAMPLE_FMT_S16;
+    avctx->sample_fmt = AV_SAMPLE_FMT_S16P;
+
     return 0;
 }
 
-static int mace_decode_frame(AVCodecContext *avctx,
-                              void *data, int *data_size,
-                              AVPacket *avpkt)
+static int mace_decode_frame(AVCodecContext *avctx, void *data,
+                             int *got_frame_ptr, AVPacket *avpkt)
 {
+    AVFrame *frame     = data;
     const uint8_t *buf = avpkt->data;
     int buf_size = avpkt->size;
-    int16_t *samples = data;
+    int16_t **samples;
     MACEContext *ctx = avctx->priv_data;
-    int i, j, k, l;
-    int is_mace3 = (avctx->codec_id == CODEC_ID_MACE3);
+    int i, j, k, l, ret;
+    int is_mace3 = (avctx->codec_id == AV_CODEC_ID_MACE3);
 
-    if (*data_size < (3 * buf_size << (2-is_mace3))) {
-        av_log(avctx, AV_LOG_ERROR, "Output buffer too small!\n");
-        return -1;
+    /* get output buffer */
+    frame->nb_samples = 3 * (buf_size << (1 - is_mace3)) / avctx->channels;
+    if ((ret = ff_get_buffer(avctx, frame)) < 0) {
+        av_log(avctx, AV_LOG_ERROR, "get_buffer() failed\n");
+        return ret;
     }
+    samples = (int16_t **)frame->extended_data;
 
     for(i = 0; i < avctx->channels; i++) {
-        int16_t *output = samples + i;
+        int16_t *output = samples[i];
 
         for (j=0; j < buf_size / (avctx->channels << is_mace3); j++)
             for (k=0; k < (1 << is_mace3); k++) {
@@ -263,83 +265,72 @@ static int mace_decode_frame(AVCodecContext *avctx,
 
                 for (l=0; l < 3; l++) {
                     if (is_mace3)
-                        chomp3(&ctx->chd[i], output, val[1][l], l,
-                               avctx->channels);
+                        chomp3(&ctx->chd[i], output, val[1][l], l);
                     else
-                        chomp6(&ctx->chd[i], output, val[0][l], l,
-                               avctx->channels);
+                        chomp6(&ctx->chd[i], output, val[0][l], l);
 
-                    output += avctx->channels << (1-is_mace3);
+                    output += 1 << (1-is_mace3);
                 }
             }
     }
 
-    *data_size = 3 * buf_size << (2-is_mace3);
+    *got_frame_ptr = 1;
 
     return buf_size;
 }
 
+static const enum AVSampleFormat _ff_mace_fmts_90[] = { AV_SAMPLE_FMT_S16P,
+                                                      AV_SAMPLE_FMT_NONE };
 AVCodec ff_mace3_decoder = {
-#ifndef MSC_STRUCTS
-    "mace3",
-    AVMEDIA_TYPE_AUDIO,
-    CODEC_ID_MACE3,
-    sizeof(MACEContext),
-    mace_decode_init,
-    NULL,
-    NULL,
-    mace_decode_frame,
-    .long_name = NULL_IF_CONFIG_SMALL("MACE (Macintosh Audio Compression/Expansion) 3:1"),
-#else
-    /* name = */ "mace3",
-    /* type = */ AVMEDIA_TYPE_AUDIO,
-    /* id = */ CODEC_ID_MACE3,
-    /* priv_data_size = */ sizeof(MACEContext),
-    /* init = */ mace_decode_init,
-    /* encode = */ NULL,
-    /* close = */ NULL,
-    /* decode = */ mace_decode_frame,
-    /* capabilities = */ 0,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ 0,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("MACE (Macintosh Audio Compression/Expansion) 3:1"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ 0,
-    /* channel_layouts = */ 0,
-#endif
-};
+        "mace3", /* name */
+        NULL_IF_CONFIG_SMALL("MACE (Macintosh Audio Compression/Expansion) 3:1"), /* long_name */
+        AVMEDIA_TYPE_AUDIO, /* type */
+        AV_CODEC_ID_MACE3, /* id */
+        CODEC_CAP_DR1, /* capabilities */
+        0, /* supported_framerates */
+        0, /* pix_fmts */
+        0, /* supported_samplerates */
+        _ff_mace_fmts_90, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        0, /* priv_class */
+        0, /* profiles */
+        sizeof(MACEContext), /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        mace_decode_init, /* init */
+        0, /* encode_sub */
+        0, /* encode2 */
+        mace_decode_frame, /* decode */
+    };
 
+static const enum AVSampleFormat _ff_mace_fmts_91[] = { AV_SAMPLE_FMT_S16P,
+                                                      AV_SAMPLE_FMT_NONE };
 AVCodec ff_mace6_decoder = {
-#ifndef MSC_STRUCTS
-    "mace6",
-    AVMEDIA_TYPE_AUDIO,
-    CODEC_ID_MACE6,
-    sizeof(MACEContext),
-    mace_decode_init,
-    NULL,
-    NULL,
-    mace_decode_frame,
-    .long_name = NULL_IF_CONFIG_SMALL("MACE (Macintosh Audio Compression/Expansion) 6:1"),
-#else
-    /* name = */ "mace6",
-    /* type = */ AVMEDIA_TYPE_AUDIO,
-    /* id = */ CODEC_ID_MACE6,
-    /* priv_data_size = */ sizeof(MACEContext),
-    /* init = */ mace_decode_init,
-    /* encode = */ NULL,
-    /* close = */ NULL,
-    /* decode = */ mace_decode_frame,
-    /* capabilities = */ 0,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ 0,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("MACE (Macintosh Audio Compression/Expansion) 6:1"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ 0,
-    /* channel_layouts = */ 0,
-#endif
-};
-
+        "mace6", /* name */
+        NULL_IF_CONFIG_SMALL("MACE (Macintosh Audio Compression/Expansion) 6:1"), /* long_name */
+        AVMEDIA_TYPE_AUDIO, /* type */
+        AV_CODEC_ID_MACE6, /* id */
+        CODEC_CAP_DR1, /* capabilities */
+        0, /* supported_framerates */
+        0, /* pix_fmts */
+        0, /* supported_samplerates */
+        _ff_mace_fmts_91, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        0, /* priv_class */
+        0, /* profiles */
+        sizeof(MACEContext), /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        mace_decode_init, /* init */
+        0, /* encode_sub */
+        0, /* encode2 */
+        mace_decode_frame, /* decode */
+    };

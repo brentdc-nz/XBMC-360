@@ -23,6 +23,7 @@
 
 #include "avformat.h"
 #include "ffmeta.h"
+#include "libavutil/dict.h"
 
 
 static void write_escape_str(AVIOContext *s, const uint8_t *str)
@@ -37,10 +38,10 @@ static void write_escape_str(AVIOContext *s, const uint8_t *str)
     }
 }
 
-static void write_tags(AVIOContext *s, AVMetadata *m)
+static void write_tags(AVIOContext *s, AVDictionary *m)
 {
-    AVMetadataTag *t = NULL;
-    while ((t = av_metadata_get(m, "", t, AV_METADATA_IGNORE_SUFFIX))) {
+    AVDictionaryEntry *t = NULL;
+    while ((t = av_dict_get(m, "", t, AV_DICT_IGNORE_SUFFIX))) {
         write_escape_str(s, t->key);
         avio_w8(s, '=');
         write_escape_str(s, t->value);
@@ -79,8 +80,6 @@ static int write_trailer(AVFormatContext *s)
         write_tags(s->pb, ch->metadata);
     }
 
-    avio_flush(s->pb);
-
     return 0;
 }
 
@@ -90,11 +89,19 @@ static int write_packet(AVFormatContext *s, AVPacket *pkt)
 }
 
 AVOutputFormat ff_ffmetadata_muxer = {
-    .name          = "ffmetadata",
-    .long_name     = NULL_IF_CONFIG_SMALL("FFmpeg metadata in text format"),
-    .extensions    = "ffmeta",
-    .write_header  = write_header,
-    .write_packet  = write_packet,
-    .write_trailer = write_trailer,
-    .flags         = AVFMT_NOTIMESTAMPS | AVFMT_NOSTREAMS,
+    "ffmetadata", /* name */
+    NULL_IF_CONFIG_SMALL("FFmpeg metadata in text"), /* long_name */
+    0, /* mime_type */
+    "ffmeta", /* extensions */
+    0, /* audio_codec */
+    0, /* video_codec */
+    0, /* subtitle_codec */
+    AVFMT_NOTIMESTAMPS | AVFMT_NOSTREAMS, /* flags */
+    0, /* codec_tag */
+    0, /* priv_class */
+    0, /* next */
+    0, /* priv_data_size */
+    write_header, /* write_header */
+    write_packet, /* write_packet */
+    write_trailer, /* write_trailer */
 };

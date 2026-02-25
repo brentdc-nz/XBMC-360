@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
     </Filter>
-    <Filter Include="n">
-      <UniqueIdentifier>{3ef9a772-a1b4-447a-b4fa-3fa0682b7097}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\libavutil\adler32.c">
@@ -94,22 +91,22 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\libavutil\audioconvert.c">
-      <Filter>n</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\libavutil\imgutils.c">
-      <Filter>n</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\libavutil\inverse.c">
-      <Filter>n</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\libavutil\opt.c">
-      <Filter>n</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\libavutil\parseutils.c">
-      <Filter>n</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\libavutil\samplefmt.c">
-      <Filter>n</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -221,10 +218,10 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\libavutil\audioconvert.h">
-      <Filter>n</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\libavutil\parseutils.h">
-      <Filter>n</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

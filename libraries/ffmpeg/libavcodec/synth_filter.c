@@ -60,7 +60,5 @@ av_cold void ff_synth_filter_init(SynthFilterContext *c)
 {
     c->synth_filter_float = synth_filter_float;
 
-#ifndef _MSC_VER
     if (ARCH_ARM) ff_synth_filter_init_arm(c);
-#endif
 }

@@ -37,6 +37,16 @@
 #include "config.h"
 #include "attributes.h"
 #include "timer.h"
+#include "cpu.h"
+#include "dict.h"
+
+#if ARCH_X86
+#   include "x86/emms.h"
+#endif
+
+#ifndef emms_c
+#   define emms_c()
+#endif
 
 #ifndef attribute_align_arg
 #if ARCH_X86_32 && AV_GCC_VERSION_AT_LEAST(4,2)
@@ -46,108 +56,40 @@
 #endif
 #endif
 
-#ifndef INT16_MIN
-#define INT16_MIN       (-0x7fff - 1)
-#endif
-
-#ifndef INT16_MAX
-#define INT16_MAX       0x7fff
-#endif
-
-#ifndef INT32_MIN
-#define INT32_MIN       (-0x7fffffff - 1)
-#endif
-
-#ifndef INT32_MAX
-#define INT32_MAX       0x7fffffff
-#endif
-
-#ifndef UINT32_MAX
-#define UINT32_MAX      0xffffffff
-#endif
-
-#ifndef INT64_MIN
-#define INT64_MIN       (-0x7fffffffffffffffLL - 1)
-#endif
-
-#ifndef INT64_MAX
-#define INT64_MAX INT64_C(9223372036854775807)
-#endif
-
-#ifndef UINT64_MAX
-#define UINT64_MAX UINT64_C(0xFFFFFFFFFFFFFFFF)
+#if defined(_MSC_VER) && CONFIG_SHARED
+#    define av_export __declspec(dllimport)
+#else
+#    define av_export
 #endif
 
 #ifndef INT_BIT
 #    define INT_BIT (CHAR_BIT * sizeof(int))
 #endif
 
-#ifndef offsetof
-#    define offsetof(T, F) ((unsigned int)((char *)&((T *)0)->F))
-#endif
+// Some broken preprocessors need a second expansion
+// to be forced to tokenize __VA_ARGS__
+#define E1(x) x
 
-/* Use to export labels from asm. */
-#define LABEL_MANGLE(a) EXTERN_PREFIX #a
+#define LOCAL_ALIGNED_A(a, t, v, s, o, ...)             \
+    uint8_t la_##v[sizeof(t s o) + (a)];                \
+    t (*v) o = (void *)FFALIGN((uintptr_t)la_##v, a)
 
-// Use rip-relative addressing if compiling PIC code on x86-64.
-#if ARCH_X86_64 && defined(PIC)
-#    define LOCAL_MANGLE(a) #a "(%%rip)"
+#define LOCAL_ALIGNED_D(a, t, v, s, o, ...)             \
+    DECLARE_ALIGNED(a, t, la_##v) s o;                  \
+    t (*v) o = la_##v
+
+#define LOCAL_ALIGNED(a, t, v, ...) E1(LOCAL_ALIGNED_A(a, t, v, __VA_ARGS__,,))
+
+#if HAVE_LOCAL_ALIGNED_8
+#   define LOCAL_ALIGNED_8(t, v, ...) E1(LOCAL_ALIGNED_D(8, t, v, __VA_ARGS__,,))
 #else
-#    define LOCAL_MANGLE(a) #a
+#   define LOCAL_ALIGNED_8(t, v, ...) LOCAL_ALIGNED(8, t, v, __VA_ARGS__)
 #endif
 
-#define MANGLE(a) EXTERN_PREFIX LOCAL_MANGLE(a)
-
-/* debug stuff */
-
-#define av_abort()      do { av_log(NULL, AV_LOG_ERROR, "Abort at %s:%d\n", __FILE__, __LINE__); abort(); } while (0)
-
-/* math */
-
-#if ARCH_X86
-#define MASK_ABS(mask, level)\
-            __asm__ volatile(\
-                "cltd                   \n\t"\
-                "xorl %1, %0            \n\t"\
-                "subl %1, %0            \n\t"\
-                : "+a" (level), "=&d" (mask)\
-            );
+#if HAVE_LOCAL_ALIGNED_16
+#   define LOCAL_ALIGNED_16(t, v, ...) E1(LOCAL_ALIGNED_D(16, t, v, __VA_ARGS__,,))
 #else
-#define MASK_ABS(mask, level)\
-            mask  = level >> 31;\
-            level = (level ^ mask) - mask;
-#endif
-
-/* avoid usage of dangerous/inappropriate system functions */
-#undef  malloc
-#define malloc please_use_av_malloc
-#undef  free
-#define free please_use_av_free
-#undef  realloc
-#define realloc please_use_av_realloc
-#undef  time
-#define time time_is_forbidden_due_to_security_issues
-#undef  rand
-#define rand rand_is_forbidden_due_to_state_trashing_use_av_lfg_get
-#undef  srand
-#define srand srand_is_forbidden_due_to_state_trashing_use_av_lfg_init
-#undef  random
-#define random random_is_forbidden_due_to_state_trashing_use_av_lfg_get
-#undef  sprintf
-#define sprintf sprintf_is_forbidden_due_to_security_issues_use_snprintf
-#undef  strcat
-#define strcat strcat_is_forbidden_due_to_security_issues_use_av_strlcat
-#undef  exit
-#define exit exit_is_forbidden
-#ifndef LIBAVFORMAT_BUILD
-#undef  printf
-#define printf please_use_av_log_instead_of_printf
-#undef  fprintf
-#define fprintf please_use_av_log_instead_of_fprintf
-#undef  puts
-#define puts please_use_av_log_instead_of_puts
-#undef  perror
-#define perror please_use_av_log_instead_of_perror
+#   define LOCAL_ALIGNED_16(t, v, ...) LOCAL_ALIGNED(16, t, v, __VA_ARGS__)
 #endif
 
 #define FF_ALLOC_OR_GOTO(ctx, p, size, label)\
@@ -210,7 +152,7 @@
 #endif
 
 /**
- * Returns NULL if a threading library has not been enabled.
+ * Return NULL if a threading library has not been enabled.
  * Used to disable threading functions in AVCodec definitions
  * when not needed.
  */
@@ -218,13 +160,6 @@
 #   define ONLY_IF_THREADS_ENABLED(x) x
 #else
 #   define ONLY_IF_THREADS_ENABLED(x) NULL
-#endif
-
-/* dprintf macros */
-#ifdef DEBUG
-#    define dprintf(pctx, ...) av_log(pctx, AV_LOG_DEBUG, __VA_ARGS__)
-#else
-#    define dprintf(pctx, ...)
 #endif
 
 #endif /* AVUTIL_INTERNAL_H */

@@ -20,14 +20,16 @@
  */
 
 /**
- * PCX image encoder
  * @file
+ * PCX image encoder
  * @author Daniel Verkamp
- * @sa http://www.qzx.com/pc-gpe/pcx.txt
+ * @see http://www.qzx.com/pc-gpe/pcx.txt
  */
 
 #include "avcodec.h"
 #include "bytestream.h"
+#include "libavutil/imgutils.h"
+#include "internal.h"
 
 typedef struct PCXContext {
     AVFrame picture;
@@ -95,20 +97,21 @@ static int pcx_rle_encode(      uint8_t *dst, int dst_size,
     return dst - dst_start;
 }
 
-static int pcx_encode_frame(AVCodecContext *avctx,
-                            unsigned char *buf, int buf_size, void *data)
+static int pcx_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
+                            const AVFrame *frame, int *got_packet)
 {
     PCXContext *s = avctx->priv_data;
     AVFrame *const pict = &s->picture;
-    const uint8_t *buf_start = buf;
-    const uint8_t *buf_end   = buf + buf_size;
+    const uint8_t *buf_end;
+    uint8_t *buf;
 
-    int bpp, nplanes, i, y, line_bytes, written;
+    int bpp, nplanes, i, y, line_bytes, written, ret, max_pkt_size, sw, sh;
     const uint32_t *pal = NULL;
+    uint32_t palette256[256];
     const uint8_t *src;
 
-    *pict = *(AVFrame *)data;
-    pict->pict_type = FF_I_TYPE;
+    *pict = *frame;
+    pict->pict_type = AV_PICTURE_TYPE_I;
     pict->key_frame = 1;
 
     if (avctx->width > 65535 || avctx->height > 65535) {
@@ -117,21 +120,26 @@ static int pcx_encode_frame(AVCodecContext *avctx,
     }
 
     switch (avctx->pix_fmt) {
-    case PIX_FMT_RGB24:
+    case AV_PIX_FMT_RGB24:
         bpp = 8;
         nplanes = 3;
         break;
-    case PIX_FMT_RGB8:
-    case PIX_FMT_BGR8:
-    case PIX_FMT_RGB4_BYTE:
-    case PIX_FMT_BGR4_BYTE:
-    case PIX_FMT_GRAY8:
-    case PIX_FMT_PAL8:
+    case AV_PIX_FMT_RGB8:
+    case AV_PIX_FMT_BGR8:
+    case AV_PIX_FMT_RGB4_BYTE:
+    case AV_PIX_FMT_BGR4_BYTE:
+    case AV_PIX_FMT_GRAY8:
+        bpp = 8;
+        nplanes = 1;
+        avpriv_set_systematic_pal2(palette256, avctx->pix_fmt);
+        pal = palette256;
+        break;
+    case AV_PIX_FMT_PAL8:
         bpp = 8;
         nplanes = 1;
         pal = (uint32_t *)pict->data[1];
         break;
-    case PIX_FMT_MONOBLACK:
+    case AV_PIX_FMT_MONOBLACK:
         bpp = 1;
         nplanes = 1;
         pal = monoblack_pal;
@@ -144,6 +152,17 @@ static int pcx_encode_frame(AVCodecContext *avctx,
     line_bytes = (avctx->width * bpp + 7) >> 3;
     line_bytes = (line_bytes + 1) & ~1;
 
+    max_pkt_size = 128 + avctx->height * 2 * line_bytes * nplanes + (pal ? 256*3 + 1 : 0);
+    if ((ret = ff_alloc_packet2(avctx, pkt, max_pkt_size)) < 0)
+        return ret;
+    buf     = pkt->data;
+    buf_end = pkt->data + pkt->size;
+
+    sw = avctx->sample_aspect_ratio.num;
+    sh = avctx->sample_aspect_ratio.den;
+    if (sw > 0xFFFFu || sh > 0xFFFFu)
+        av_reduce(&sw, &sh, sw, sh, 0xFFFFu);
+
     bytestream_put_byte(&buf, 10);                  // manufacturer
     bytestream_put_byte(&buf, 5);                   // version
     bytestream_put_byte(&buf, 1);                   // encoding
@@ -152,15 +171,15 @@ static int pcx_encode_frame(AVCodecContext *avctx,
     bytestream_put_le16(&buf, 0);                   // y min
     bytestream_put_le16(&buf, avctx->width - 1);    // x max
     bytestream_put_le16(&buf, avctx->height - 1);   // y max
-    bytestream_put_le16(&buf, 0);                   // horizontal DPI
-    bytestream_put_le16(&buf, 0);                   // vertical DPI
+    bytestream_put_le16(&buf, sw);                  // horizontal DPI
+    bytestream_put_le16(&buf, sh);                  // vertical DPI
     for (i = 0; i < 16; i++)
         bytestream_put_be24(&buf, pal ? pal[i] : 0);// palette (<= 16 color only)
     bytestream_put_byte(&buf, 0);                   // reserved
     bytestream_put_byte(&buf, nplanes);             // number of planes
     bytestream_put_le16(&buf, line_bytes);          // scanline plane size in bytes
 
-    while (buf - buf_start < 128)
+    while (buf - pkt->data < 128)
         *buf++= 0;
 
     src = pict->data[0];
@@ -186,47 +205,39 @@ static int pcx_encode_frame(AVCodecContext *avctx,
         }
     }
 
-    return buf - buf_start;
+    pkt->size   = buf - pkt->data;
+    pkt->flags |= AV_PKT_FLAG_KEY;
+    *got_packet = 1;
+
+    return 0;
 }
 
-const enum PixelFormat pcx_encoder_formats[] = {
-	PIX_FMT_RGB24,
-	PIX_FMT_RGB8, PIX_FMT_BGR8, PIX_FMT_RGB4_BYTE, PIX_FMT_BGR4_BYTE, PIX_FMT_GRAY8, PIX_FMT_PAL8,
-	PIX_FMT_MONOBLACK,
-	PIX_FMT_NONE};
-
+static const enum AVPixelFormat _ff_pcxenc_fmts_123[] = { AV_PIX_FMT_RGB24,
+        AV_PIX_FMT_RGB8, AV_PIX_FMT_BGR8, AV_PIX_FMT_RGB4_BYTE, AV_PIX_FMT_BGR4_BYTE,
+        AV_PIX_FMT_GRAY8, AV_PIX_FMT_PAL8,
+        AV_PIX_FMT_MONOBLACK,
+        AV_PIX_FMT_NONE };
 AVCodec ff_pcx_encoder = {
-#ifndef MSC_STRUCTS
-    "pcx",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_PCX,
-    sizeof(PCXContext),
-    pcx_encode_init,
-    pcx_encode_frame,
-    NULL,
-	.pix_fmts = (const enum PixelFormat[]){
-		PIX_FMT_RGB24,
-		PIX_FMT_RGB8, PIX_FMT_BGR8, PIX_FMT_RGB4_BYTE, PIX_FMT_BGR4_BYTE, PIX_FMT_GRAY8, PIX_FMT_PAL8,
-		PIX_FMT_MONOBLACK,
-		PIX_FMT_NONE},
-    .long_name = NULL_IF_CONFIG_SMALL("PC Paintbrush PCX image"),
-#else
-    /* name = */ "pcx",
-    /* type = */ AVMEDIA_TYPE_VIDEO,
-    /* id = */ CODEC_ID_PCX,
-    /* priv_data_size = */ sizeof(PCXContext),
-    /* init = */ pcx_encode_init,
-    /* encode = */ pcx_encode_frame,
-    /* close = */ NULL,
-    /* decode = */ 0,
-    /* capabilities = */ 0,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ pcx_encoder_formats,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("PC Paintbrush PCX image"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ 0,
-    /* channel_layouts = */ 0,
-#endif
-};
+        "pcx", /* name */
+        NULL_IF_CONFIG_SMALL("PC Paintbrush PCX image"), /* long_name */
+        AVMEDIA_TYPE_VIDEO, /* type */
+        AV_CODEC_ID_PCX, /* id */
+        0, /* capabilities */
+        0, /* supported_framerates */
+        _ff_pcxenc_fmts_123, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        0, /* priv_class */
+        0, /* profiles */
+        sizeof(PCXContext), /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        pcx_encode_init, /* init */
+        0, /* encode_sub */
+        pcx_encode_frame, /* encode2 */
+    };

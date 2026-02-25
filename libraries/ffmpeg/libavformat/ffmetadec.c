@@ -19,9 +19,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include "libavutil/mathematics.h"
 #include "avformat.h"
 #include "ffmeta.h"
 #include "internal.h"
+#include "libavutil/dict.h"
 
 static int probe(AVProbeData *p)
 {
@@ -73,7 +75,7 @@ static AVChapter *read_chapter(AVFormatContext *s)
         end = AV_NOPTS_VALUE;
     }
 
-    return ff_new_chapter(s, s->nb_chapters, tb, start, end, NULL);
+    return avpriv_new_chapter(s, s->nb_chapters, tb, start, end, NULL);
 }
 
 static uint8_t *unescape(uint8_t *buf, int size)
@@ -93,7 +95,7 @@ static uint8_t *unescape(uint8_t *buf, int size)
     return ret;
 }
 
-static int read_tag(uint8_t *line, AVMetadata **m)
+static int read_tag(uint8_t *line, AVDictionary **m)
 {
     uint8_t *key, *value, *p = line;
 
@@ -117,26 +119,26 @@ static int read_tag(uint8_t *line, AVMetadata **m)
         return AVERROR(ENOMEM);
     }
 
-    av_metadata_set2(m, key, value, AV_METADATA_DONT_STRDUP_KEY | AV_METADATA_DONT_STRDUP_VAL);
+    av_dict_set(m, key, value, AV_DICT_DONT_STRDUP_KEY | AV_DICT_DONT_STRDUP_VAL);
     return 0;
 }
 
-static int read_header(AVFormatContext *s, AVFormatParameters *ap)
+static int read_header(AVFormatContext *s)
 {
-    AVMetadata **m = &s->metadata;
+    AVDictionary **m = &s->metadata;
     uint8_t line[1024];
 
     while(!url_feof(s->pb)) {
         get_line(s->pb, line, sizeof(line));
 
         if (!memcmp(line, ID_STREAM, strlen(ID_STREAM))) {
-            AVStream *st = av_new_stream(s, 0);
+            AVStream *st = avformat_new_stream(s, NULL);
 
             if (!st)
                 return -1;
 
             st->codec->codec_type = AVMEDIA_TYPE_DATA;
-            st->codec->codec_id   = CODEC_ID_FFMETADATA;
+            st->codec->codec_id   = AV_CODEC_ID_FFMETADATA;
 
             m = &st->metadata;
         } else if (!memcmp(line, ID_CHAPTER, strlen(ID_CHAPTER))) {
@@ -165,9 +167,16 @@ static int read_packet(AVFormatContext *s, AVPacket *pkt)
 }
 
 AVInputFormat ff_ffmetadata_demuxer = {
-    .name        = "ffmetadata",
-    .long_name   = NULL_IF_CONFIG_SMALL("FFmpeg metadata in text format"),
-    .read_probe  = probe,
-    .read_header = read_header,
-    .read_packet = read_packet,
+    "ffmetadata", /* name */
+    NULL_IF_CONFIG_SMALL("FFmpeg metadata in text"), /* long_name */
+    0, /* flags */
+    0, /* extensions */
+    0, /* codec_tag */
+    0, /* priv_class */
+    0, /* next */
+    0, /* raw_codec_id */
+    0, /* priv_data_size */
+    probe, /* read_probe */
+    read_header, /* read_header */
+    read_packet, /* read_packet */
 };

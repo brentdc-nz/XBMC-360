@@ -48,14 +48,14 @@ typedef struct AACAC3ParseContext {
     int sample_rate;
     int bit_rate;
     int samples;
-    int64_t channel_layout;
-	int service_type;
+    uint64_t channel_layout;
+    int service_type;
 
     int remaining_size;
     uint64_t state;
 
     int need_next_header;
-    enum CodecID codec_id;
+    enum AVCodecID codec_id;
 } AACAC3ParseContext;
 
 int ff_aac_ac3_parse(AVCodecParserContext *s1,

@@ -50,19 +50,24 @@ static int crc_write_trailer(struct AVFormatContext *s)
 
     snprintf(buf, sizeof(buf), "CRC=0x%08x\n", crc->crcval);
     avio_write(s->pb, buf, strlen(buf));
-    avio_flush(s->pb);
+
     return 0;
 }
 
 AVOutputFormat ff_crc_muxer = {
-    "crc",
-    NULL_IF_CONFIG_SMALL("CRC testing format"),
-    NULL,
-    "",
-    sizeof(CRCState),
-    CODEC_ID_PCM_S16LE,
-    CODEC_ID_RAWVIDEO,
-    crc_write_header,
-    crc_write_packet,
-    crc_write_trailer,
+    "crc", /* name */
+    NULL_IF_CONFIG_SMALL("CRC testing"), /* long_name */
+    0, /* mime_type */
+    0, /* extensions */
+    AV_CODEC_ID_PCM_S16LE, /* audio_codec */
+    AV_CODEC_ID_RAWVIDEO, /* video_codec */
+    0, /* subtitle_codec */
+    AVFMT_NOTIMESTAMPS, /* flags */
+    0, /* codec_tag */
+    0, /* priv_class */
+    0, /* next */
+    sizeof(CRCState), /* priv_data_size */
+    crc_write_header, /* write_header */
+    crc_write_packet, /* write_packet */
+    crc_write_trailer, /* write_trailer */
 };

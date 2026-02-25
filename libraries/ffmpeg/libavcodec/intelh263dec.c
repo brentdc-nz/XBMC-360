@@ -52,24 +52,24 @@ int ff_intel_h263_decode_picture_header(MpegEncContext *s)
     }
     s->h263_plus = 0;
 
-    s->pict_type = FF_I_TYPE + get_bits1(&s->gb);
+    s->pict_type = AV_PICTURE_TYPE_I + get_bits1(&s->gb);
 
-    s->unrestricted_mv = get_bits1(&s->gb);
-    s->h263_long_vectors = s->unrestricted_mv;
+    s->h263_long_vectors = get_bits1(&s->gb);
 
     if (get_bits1(&s->gb) != 0) {
         av_log(s->avctx, AV_LOG_ERROR, "SAC not supported\n");
         return -1;      /* SAC: off */
     }
     s->obmc= get_bits1(&s->gb);
+    s->unrestricted_mv = s->obmc || s->h263_long_vectors;
     s->pb_frame = get_bits1(&s->gb);
 
     if (format < 6) {
-        s->width = h263_format[format][0];
-        s->height = h263_format[format][1];
-        s->avctx->sample_aspect_ratio.num=12;s->avctx->sample_aspect_ratio.den=11;
-    }
-    else {
+        s->width = ff_h263_format[format][0];
+        s->height = ff_h263_format[format][1];
+        s->avctx->sample_aspect_ratio.num = 12;
+        s->avctx->sample_aspect_ratio.den = 11;
+    } else {
         format = get_bits(&s->gb, 3);
         if(format == 0 || format == 7){
             av_log(s->avctx, AV_LOG_ERROR, "Wrong Intel H263 format\n");
@@ -77,7 +77,7 @@ int ff_intel_h263_decode_picture_header(MpegEncContext *s)
         }
         if(get_bits(&s->gb, 2))
             av_log(s->avctx, AV_LOG_ERROR, "Bad value for reserved field\n");
-        s->loop_filter = get_bits1(&s->gb);
+        s->loop_filter = get_bits1(&s->gb) * !s->avctx->lowres;
         if(get_bits1(&s->gb))
             av_log(s->avctx, AV_LOG_ERROR, "Bad value for reserved field\n");
         if(get_bits1(&s->gb))
@@ -95,12 +95,11 @@ int ff_intel_h263_decode_picture_header(MpegEncContext *s)
         if(ar == 15){
             s->avctx->sample_aspect_ratio.num = get_bits(&s->gb, 8); // aspect ratio - width
             s->avctx->sample_aspect_ratio.den = get_bits(&s->gb, 8); // aspect ratio - height
-        }
-        else {
+        } else {
             s->avctx->sample_aspect_ratio = ff_h263_pixel_aspect[ar];
         }
-        if(s->avctx->sample_aspect_ratio.num == 0)
-            av_log(s->avctx, AV_LOG_ERROR, "Invalid aspect ratio\n");
+        if (s->avctx->sample_aspect_ratio.num == 0)
+            av_log(s->avctx, AV_LOG_ERROR, "Invalid aspect ratio.\n");
     }
 
     s->chroma_qscale= s->qscale = get_bits(&s->gb, 5);
@@ -126,36 +125,28 @@ int ff_intel_h263_decode_picture_header(MpegEncContext *s)
 }
 
 AVCodec ff_h263i_decoder = {
-#ifndef MSC_STRUCTS
-    "h263i",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_H263I,
-    sizeof(MpegEncContext),
-    ff_h263_decode_init,
-    NULL,
-    ff_h263_decode_end,
-    ff_h263_decode_frame,
-    CODEC_CAP_DRAW_HORIZ_BAND | CODEC_CAP_DR1,
-    .long_name = NULL_IF_CONFIG_SMALL("Intel H.263"),
-    .pix_fmts= ff_pixfmt_list_420,
-#else
-    /* name = */ "h263i",
-    /* type = */ AVMEDIA_TYPE_VIDEO,
-    /* id = */ CODEC_ID_H263I,
-    /* priv_data_size = */ sizeof(MpegEncContext),
-    /* init = */ ff_h263_decode_init,
-    /* encode = */ NULL,
-    /* close = */ ff_h263_decode_end,
-    /* decode = */ ff_h263_decode_frame,
-    /* capabilities = */ CODEC_CAP_DRAW_HORIZ_BAND | CODEC_CAP_DR1,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ ff_pixfmt_list_420,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("Intel H.263"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ 0,
-    /* channel_layouts = */ 0,
-#endif
-};
-
+        "h263i", /* name */
+        NULL_IF_CONFIG_SMALL("Intel H.263"), /* long_name */
+        AVMEDIA_TYPE_VIDEO, /* type */
+        AV_CODEC_ID_H263I, /* id */
+        CODEC_CAP_DRAW_HORIZ_BAND | CODEC_CAP_DR1, /* capabilities */
+        0, /* supported_framerates */
+        ff_pixfmt_list_420, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        0, /* priv_class */
+        0, /* profiles */
+        sizeof(MpegEncContext), /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        ff_h263_decode_init, /* init */
+        0, /* encode_sub */
+        0, /* encode2 */
+        ff_h263_decode_frame, /* decode */
+        ff_h263_decode_end, /* close */
+    };

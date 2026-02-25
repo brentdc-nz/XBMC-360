@@ -24,8 +24,11 @@
  * Delphine Software International CIN audio/video decoders
  */
 
+#include "libavutil/channel_layout.h"
 #include "avcodec.h"
 #include "bytestream.h"
+#include "internal.h"
+#include "mathops.h"
 
 
 typedef enum CinVideoBitmapIndex {
@@ -43,7 +46,6 @@ typedef struct CinVideoContext {
 } CinVideoContext;
 
 typedef struct CinAudioContext {
-    AVCodecContext *avctx;
     int initial_decode_frame;
     int delta;
 } CinAudioContext;
@@ -85,23 +87,42 @@ static const int16_t cinaudio_delta16_table[256] = {
          0,      0,      0,      0,      0,      0,      0,      0
 };
 
+static av_cold void destroy_buffers(CinVideoContext *cin)
+{
+    int i;
+
+    for (i = 0; i < 3; ++i)
+        av_freep(&cin->bitmap_table[i]);
+}
+
+static av_cold int allocate_buffers(CinVideoContext *cin)
+{
+    int i;
+
+    for (i = 0; i < 3; ++i) {
+        cin->bitmap_table[i] = av_mallocz(cin->bitmap_size);
+        if (!cin->bitmap_table[i]) {
+            av_log(cin->avctx, AV_LOG_ERROR, "Can't allocate bitmap buffers.\n");
+            destroy_buffers(cin);
+            return AVERROR(ENOMEM);
+        }
+    }
+
+    return 0;
+}
 
 static av_cold int cinvideo_decode_init(AVCodecContext *avctx)
 {
     CinVideoContext *cin = avctx->priv_data;
-    unsigned int i;
 
     cin->avctx = avctx;
-    avctx->pix_fmt = PIX_FMT_PAL8;
+    avctx->pix_fmt = AV_PIX_FMT_PAL8;
 
-    cin->frame.data[0] = NULL;
+    avcodec_get_frame_defaults(&cin->frame);
 
     cin->bitmap_size = avctx->width * avctx->height;
-    for (i = 0; i < 3; ++i) {
-        cin->bitmap_table[i] = av_mallocz(cin->bitmap_size);
-        if (!cin->bitmap_table[i])
-            av_log(avctx, AV_LOG_ERROR, "Can't allocate bitmap buffers.\n");
-    }
+    if (allocate_buffers(cin))
+        return AVERROR(ENOMEM);
 
     return 0;
 }
@@ -120,7 +141,7 @@ static int cin_decode_huffman(const unsigned char *src, int src_size, unsigned c
     unsigned char *dst_end = dst + dst_size;
     const unsigned char *src_end = src + src_size;
 
-    memcpy(huff_code_table, src, 15); src += 15; src_size -= 15;
+    memcpy(huff_code_table, src, 15); src += 15;
 
     while (src < src_end) {
         huff_code = *src++;
@@ -145,11 +166,11 @@ static int cin_decode_huffman(const unsigned char *src, int src_size, unsigned c
     return dst_cur - dst;
 }
 
-static void cin_decode_lzss(const unsigned char *src, int src_size, unsigned char *dst, int dst_size)
+static int cin_decode_lzss(const unsigned char *src, int src_size, unsigned char *dst, int dst_size)
 {
     uint16_t cmd;
     int i, sz, offset, code;
-    unsigned char *dst_end = dst + dst_size;
+    unsigned char *dst_end = dst + dst_size, *dst_start = dst;
     const unsigned char *src_end = src + src_size;
 
     while (src < src_end && dst < dst_end) {
@@ -160,6 +181,8 @@ static void cin_decode_lzss(const unsigned char *src, int src_size, unsigned cha
             } else {
                 cmd = AV_RL16(src); src += 2;
                 offset = cmd >> 4;
+                if ((int) (dst - dst_start) < offset + 1)
+                    return AVERROR_INVALIDDATA;
                 sz = (cmd & 0xF) + 2;
                 /* don't use memcpy/memmove here as the decoding routine (ab)uses */
                 /* buffer overlappings to repeat bytes in the destination */
@@ -171,42 +194,43 @@ static void cin_decode_lzss(const unsigned char *src, int src_size, unsigned cha
             }
         }
     }
+
+    return 0;
 }
 
-static void cin_decode_rle(const unsigned char *src, int src_size, unsigned char *dst, int dst_size)
+static int cin_decode_rle(const unsigned char *src, int src_size, unsigned char *dst, int dst_size)
 {
     int len, code;
     unsigned char *dst_end = dst + dst_size;
     const unsigned char *src_end = src + src_size;
 
-    while (src < src_end && dst < dst_end) {
+    while (src + 1 < src_end && dst < dst_end) {
         code = *src++;
         if (code & 0x80) {
             len = code - 0x7F;
             memset(dst, *src++, FFMIN(len, dst_end - dst));
         } else {
             len = code + 1;
+            if (len > src_end-src) {
+                av_log(NULL, AV_LOG_ERROR, "RLE overread\n");
+                return AVERROR_INVALIDDATA;
+            }
             memcpy(dst, src, FFMIN(len, dst_end - dst));
             src += len;
         }
         dst += len;
     }
+    return 0;
 }
 
 static int cinvideo_decode_frame(AVCodecContext *avctx,
-                                 void *data, int *data_size,
+                                 void *data, int *got_frame,
                                  AVPacket *avpkt)
 {
     const uint8_t *buf = avpkt->data;
     int buf_size = avpkt->size;
     CinVideoContext *cin = avctx->priv_data;
-    int i, y, palette_type, palette_colors_count, bitmap_frame_type, bitmap_frame_size;
-
-    cin->frame.buffer_hints = FF_BUFFER_HINTS_VALID | FF_BUFFER_HINTS_PRESERVE | FF_BUFFER_HINTS_REUSABLE;
-    if (avctx->reget_buffer(avctx, &cin->frame)) {
-        av_log(cin->avctx, AV_LOG_ERROR, "delphinecinvideo: reget_buffer() failed to allocate a frame\n");
-        return -1;
-    }
+    int i, y, palette_type, palette_colors_count, bitmap_frame_type, bitmap_frame_size, res = 0;
 
     palette_type = buf[0];
     palette_colors_count = AV_RL16(buf+1);
@@ -216,20 +240,22 @@ static int cinvideo_decode_frame(AVCodecContext *avctx,
     bitmap_frame_size = buf_size - 4;
 
     /* handle palette */
+    if (bitmap_frame_size < palette_colors_count * (3 + (palette_type != 0)))
+        return AVERROR_INVALIDDATA;
     if (palette_type == 0) {
+        if (palette_colors_count > 256)
+            return AVERROR_INVALIDDATA;
         for (i = 0; i < palette_colors_count; ++i) {
-            cin->palette[i] = bytestream_get_le24(&buf);
+            cin->palette[i] = 0xFFU << 24 | bytestream_get_le24(&buf);
             bitmap_frame_size -= 3;
         }
     } else {
         for (i = 0; i < palette_colors_count; ++i) {
-            cin->palette[buf[0]] = AV_RL24(buf+1);
+            cin->palette[buf[0]] = 0xFFU << 24 | AV_RL24(buf+1);
             buf += 4;
             bitmap_frame_size -= 4;
         }
     }
-    memcpy(cin->frame.data[1], cin->palette, sizeof(cin->palette));
-    cin->frame.palette_has_changed = 1;
 
     /* note: the decoding routines below assumes that surface.width = surface.pitch */
     switch (bitmap_frame_type) {
@@ -244,7 +270,7 @@ static int cinvideo_decode_frame(AVCodecContext *avctx,
           cin->bitmap_table[CIN_CUR_BMP], cin->bitmap_size);
         break;
     case 35:
-        cin_decode_huffman(buf, bitmap_frame_size,
+        bitmap_frame_size = cin_decode_huffman(buf, bitmap_frame_size,
           cin->bitmap_table[CIN_INT_BMP], cin->bitmap_size);
         cin_decode_rle(cin->bitmap_table[CIN_INT_BMP], bitmap_frame_size,
           cin->bitmap_table[CIN_CUR_BMP], cin->bitmap_size);
@@ -262,17 +288,31 @@ static int cinvideo_decode_frame(AVCodecContext *avctx,
           cin->bitmap_table[CIN_CUR_BMP], cin->bitmap_size);
         break;
     case 38:
-        cin_decode_lzss(buf, bitmap_frame_size,
-          cin->bitmap_table[CIN_CUR_BMP], cin->bitmap_size);
+        res = cin_decode_lzss(buf, bitmap_frame_size,
+                              cin->bitmap_table[CIN_CUR_BMP],
+                              cin->bitmap_size);
+        if (res < 0)
+            return res;
         break;
     case 39:
-        cin_decode_lzss(buf, bitmap_frame_size,
-          cin->bitmap_table[CIN_CUR_BMP], cin->bitmap_size);
+        res = cin_decode_lzss(buf, bitmap_frame_size,
+                              cin->bitmap_table[CIN_CUR_BMP],
+                              cin->bitmap_size);
+        if (res < 0)
+            return res;
         cin_apply_delta_data(cin->bitmap_table[CIN_PRE_BMP],
           cin->bitmap_table[CIN_CUR_BMP], cin->bitmap_size);
         break;
     }
 
+    cin->frame.buffer_hints = FF_BUFFER_HINTS_VALID | FF_BUFFER_HINTS_PRESERVE | FF_BUFFER_HINTS_REUSABLE;
+    if ((res = avctx->reget_buffer(avctx, &cin->frame))) {
+        av_log(cin->avctx, AV_LOG_ERROR, "failed to allocate a frame\n");
+        return res;
+    }
+
+    memcpy(cin->frame.data[1], cin->palette, sizeof(cin->palette));
+    cin->frame.palette_has_changed = 1;
     for (y = 0; y < cin->avctx->height; ++y)
         memcpy(cin->frame.data[0] + (cin->avctx->height - 1 - y) * cin->frame.linesize[0],
           cin->bitmap_table[CIN_CUR_BMP] + y * cin->avctx->width,
@@ -280,7 +320,7 @@ static int cinvideo_decode_frame(AVCodecContext *avctx,
 
     FFSWAP(uint8_t *, cin->bitmap_table[CIN_CUR_BMP], cin->bitmap_table[CIN_PRE_BMP]);
 
-    *data_size = sizeof(AVFrame);
+    *got_frame = 1;
     *(AVFrame *)data = cin->frame;
 
     return buf_size;
@@ -289,13 +329,11 @@ static int cinvideo_decode_frame(AVCodecContext *avctx,
 static av_cold int cinvideo_decode_end(AVCodecContext *avctx)
 {
     CinVideoContext *cin = avctx->priv_data;
-    int i;
 
     if (cin->frame.data[0])
         avctx->release_buffer(avctx, &cin->frame);
 
-    for (i = 0; i < 3; ++i)
-        av_free(cin->bitmap_table[i]);
+    destroy_buffers(cin);
 
     return 0;
 }
@@ -304,106 +342,102 @@ static av_cold int cinaudio_decode_init(AVCodecContext *avctx)
 {
     CinAudioContext *cin = avctx->priv_data;
 
-    cin->avctx = avctx;
     cin->initial_decode_frame = 1;
-    cin->delta = 0;
-    avctx->sample_fmt = AV_SAMPLE_FMT_S16;
+    cin->delta                = 0;
+    avctx->sample_fmt         = AV_SAMPLE_FMT_S16;
+    avctx->channels           = 1;
+    avctx->channel_layout     = AV_CH_LAYOUT_MONO;
 
     return 0;
 }
 
-static int cinaudio_decode_frame(AVCodecContext *avctx,
-                                 void *data, int *data_size,
-                                 AVPacket *avpkt)
+static int cinaudio_decode_frame(AVCodecContext *avctx, void *data,
+                                 int *got_frame_ptr, AVPacket *avpkt)
 {
+    AVFrame *frame     = data;
     const uint8_t *buf = avpkt->data;
-    int buf_size = avpkt->size;
     CinAudioContext *cin = avctx->priv_data;
-    const uint8_t *src = buf;
-    int16_t *samples = (int16_t *)data;
+    const uint8_t *buf_end = buf + avpkt->size;
+    int16_t *samples;
+    int delta, ret;
 
-    buf_size = FFMIN(buf_size, *data_size/2);
+    /* get output buffer */
+    frame->nb_samples = avpkt->size - cin->initial_decode_frame;
+    if ((ret = ff_get_buffer(avctx, frame)) < 0) {
+        av_log(avctx, AV_LOG_ERROR, "get_buffer() failed\n");
+        return ret;
+    }
+    samples = (int16_t *)frame->data[0];
 
+    delta = cin->delta;
     if (cin->initial_decode_frame) {
         cin->initial_decode_frame = 0;
-        cin->delta = (int16_t)AV_RL16(src); src += 2;
-        *samples++ = cin->delta;
-        buf_size -= 2;
+        delta = sign_extend(AV_RL16(buf), 16);
+        buf += 2;
+        *samples++ = delta;
     }
-    while (buf_size > 0) {
-        cin->delta += cinaudio_delta16_table[*src++];
-        cin->delta = av_clip_int16(cin->delta);
-        *samples++ = cin->delta;
-        --buf_size;
+    while (buf < buf_end) {
+        delta += cinaudio_delta16_table[*buf++];
+        delta = av_clip_int16(delta);
+        *samples++ = delta;
     }
+    cin->delta = delta;
 
-    *data_size = (uint8_t *)samples - (uint8_t *)data;
+    *got_frame_ptr = 1;
 
-    return src - buf;
+    return avpkt->size;
 }
 
 
 AVCodec ff_dsicinvideo_decoder = {
-#ifndef MSC_STRUCTS
-    "dsicinvideo",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_DSICINVIDEO,
-    sizeof(CinVideoContext),
-    cinvideo_decode_init,
-    NULL,
-    cinvideo_decode_end,
-    cinvideo_decode_frame,
-    CODEC_CAP_DR1,
-    .long_name = NULL_IF_CONFIG_SMALL("Delphine Software International CIN video"),
-#else
-    /* name = */ "dsicinvideo",
-    /* type = */ AVMEDIA_TYPE_VIDEO,
-    /* id = */ CODEC_ID_DSICINVIDEO,
-    /* priv_data_size = */ sizeof(CinVideoContext),
-    /* init = */ cinvideo_decode_init,
-    /* encode = */ NULL,
-    /* close = */ cinvideo_decode_end,
-    /* decode = */ cinvideo_decode_frame,
-    /* capabilities = */ CODEC_CAP_DR1,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ 0,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("Delphine Software International CIN video"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ 0,
-    /* channel_layouts = */ 0,
-#endif
-};
+        "dsicinvideo", /* name */
+        NULL_IF_CONFIG_SMALL("Delphine Software International CIN video"), /* long_name */
+        AVMEDIA_TYPE_VIDEO, /* type */
+        AV_CODEC_ID_DSICINVIDEO, /* id */
+        CODEC_CAP_DR1, /* capabilities */
+        0, /* supported_framerates */
+        0, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        0, /* priv_class */
+        0, /* profiles */
+        sizeof(CinVideoContext), /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        cinvideo_decode_init, /* init */
+        0, /* encode_sub */
+        0, /* encode2 */
+        cinvideo_decode_frame, /* decode */
+        cinvideo_decode_end, /* close */
+    };
 
 AVCodec ff_dsicinaudio_decoder = {
-#ifndef MSC_STRUCTS
-    "dsicinaudio",
-    AVMEDIA_TYPE_AUDIO,
-    CODEC_ID_DSICINAUDIO,
-    sizeof(CinAudioContext),
-    cinaudio_decode_init,
-    NULL,
-    NULL,
-    cinaudio_decode_frame,
-    .long_name = NULL_IF_CONFIG_SMALL("Delphine Software International CIN audio"),
-#else
-    /* name = */ "dsicinaudio",
-    /* type = */ AVMEDIA_TYPE_AUDIO,
-    /* id = */ CODEC_ID_DSICINAUDIO,
-    /* priv_data_size = */ sizeof(CinAudioContext),
-    /* init = */ cinaudio_decode_init,
-    /* encode = */ NULL,
-    /* close = */ NULL,
-    /* decode = */ cinaudio_decode_frame,
-    /* capabilities = */ 0,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ 0,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("Delphine Software International CIN audio"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ 0,
-    /* channel_layouts = */ 0,
-#endif
-};
+        "dsicinaudio", /* name */
+        NULL_IF_CONFIG_SMALL("Delphine Software International CIN audio"), /* long_name */
+        AVMEDIA_TYPE_AUDIO, /* type */
+        AV_CODEC_ID_DSICINAUDIO, /* id */
+        CODEC_CAP_DR1, /* capabilities */
+        0, /* supported_framerates */
+        0, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        0, /* priv_class */
+        0, /* profiles */
+        sizeof(CinAudioContext), /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        cinaudio_decode_init, /* init */
+        0, /* encode_sub */
+        0, /* encode2 */
+        cinaudio_decode_frame, /* decode */
+    };

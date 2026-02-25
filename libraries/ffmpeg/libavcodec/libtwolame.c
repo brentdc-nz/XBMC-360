@@ -1,0 +1,209 @@
+/*
+ * Interface to libtwolame for mp2 encoding
+ * Copyright (c) 2012 Paul B Mahol
+ *
+ * This file is part of FFmpeg.
+ *
+ * FFmpeg is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * FFmpeg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with FFmpeg; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
+
+/**
+ * @file
+ * Interface to libtwolame for mp2 encoding.
+ */
+
+#include <twolame.h>
+
+#include "libavutil/opt.h"
+#include "avcodec.h"
+#include "internal.h"
+#include "mpegaudio.h"
+
+typedef struct TWOLAMEContext {
+    AVClass  *class;
+    int      mode;
+    int      psymodel;
+    int      energy;
+    int      error_protection;
+    int      copyright;
+    int      original;
+
+    twolame_options *glopts;
+    int64_t  next_pts;
+} TWOLAMEContext;
+
+static av_cold int twolame_encode_close(AVCodecContext *avctx)
+{
+    TWOLAMEContext *s = avctx->priv_data;
+    twolame_close(&s->glopts);
+    return 0;
+}
+
+static av_cold int twolame_encode_init(AVCodecContext *avctx)
+{
+    TWOLAMEContext *s = avctx->priv_data;
+    int ret;
+
+    avctx->frame_size = TWOLAME_SAMPLES_PER_FRAME;
+
+    s->glopts = twolame_init();
+    if (!s->glopts)
+        return AVERROR(ENOMEM);
+
+    twolame_set_verbosity(s->glopts, 0);
+    twolame_set_mode(s->glopts, s->mode);
+    twolame_set_psymodel(s->glopts, s->psymodel);
+    twolame_set_energy_levels(s->glopts, s->energy);
+    twolame_set_error_protection(s->glopts, s->error_protection);
+
+    twolame_set_num_channels(s->glopts, avctx->channels);
+    twolame_set_in_samplerate(s->glopts, avctx->sample_rate);
+    twolame_set_out_samplerate(s->glopts, avctx->sample_rate);
+    if (avctx->flags & CODEC_FLAG_QSCALE || !avctx->bit_rate) {
+        twolame_set_VBR(s->glopts, TRUE);
+        twolame_set_VBR_level(s->glopts, avctx->global_quality);
+        av_log(avctx, AV_LOG_WARNING, "VBR mode is experimental!\n");
+    } else {
+        twolame_set_bitrate(s->glopts, avctx->bit_rate / 1000);
+    }
+
+    if ((ret = twolame_init_params(s->glopts)))
+        goto error;
+
+    return 0;
+error:
+    twolame_encode_close(avctx);
+    return ret;
+}
+
+static int twolame_encode_frame(AVCodecContext *avctx, AVPacket *avpkt,
+                                const AVFrame *frame, int *got_packet_ptr)
+{
+    TWOLAMEContext *s = avctx->priv_data;
+    int ret;
+
+    if ((ret = ff_alloc_packet2(avctx, avpkt, MPA_MAX_CODED_FRAME_SIZE)) < 0)
+        return ret;
+
+    if (frame) {
+        switch (avctx->sample_fmt) {
+        case AV_SAMPLE_FMT_FLT:
+            ret = twolame_encode_buffer_float32_interleaved(s->glopts,
+                                        frame->data[0],
+                                        frame->nb_samples,
+                                        avpkt->data, avpkt->size);
+            break;
+        case AV_SAMPLE_FMT_FLTP:
+            ret = twolame_encode_buffer_float32(s->glopts,
+                                        frame->data[0], frame->data[1],
+                                        frame->nb_samples,
+                                        avpkt->data, avpkt->size);
+            break;
+        case AV_SAMPLE_FMT_S16:
+            ret = twolame_encode_buffer_interleaved(s->glopts,
+                                        frame->data[0],
+                                        frame->nb_samples,
+                                        avpkt->data, avpkt->size);
+            break;
+        case AV_SAMPLE_FMT_S16P:
+            ret = twolame_encode_buffer(s->glopts,
+                                        frame->data[0], frame->data[1],
+                                        frame->nb_samples,
+                                        avpkt->data, avpkt->size);
+            break;
+        default:
+            return AVERROR_BUG;
+        }
+    } else {
+        ret = twolame_encode_flush(s->glopts, avpkt->data, avpkt->size);
+    }
+
+    if (ret > 0) {
+        avpkt->duration = ff_samples_to_time_base(avctx, avctx->frame_size);
+        if (frame) {
+            if (frame->pts != AV_NOPTS_VALUE)
+                avpkt->pts  = frame->pts;
+        } else {
+            avpkt->pts = s->next_pts;
+        }
+        if (avpkt->pts != AV_NOPTS_VALUE)
+            s->next_pts = avpkt->pts + avpkt->duration;
+
+        avpkt->size     = ret;
+        *got_packet_ptr = 1;
+        return 0;
+    }
+
+    return ret;
+}
+
+#define OFFSET(x) offsetof(TWOLAMEContext, x)
+#define AE AV_OPT_FLAG_AUDIO_PARAM | AV_OPT_FLAG_ENCODING_PARAM
+static const AVOption options[] = {
+    { "mode",         "Mpeg Mode", OFFSET(mode), AV_OPT_TYPE_INT, {TWOLAME_AUTO_MODE }, TWOLAME_AUTO_MODE, TWOLAME_MONO, AE, "mode"},
+    { "auto",         NULL,         0, AV_OPT_TYPE_CONST, {TWOLAME_AUTO_MODE },          0, 0, AE, "mode" },
+    { "stereo",       NULL,         0, AV_OPT_TYPE_CONST, {TWOLAME_STEREO },             0, 0, AE, "mode" },
+    { "joint_stereo", NULL,         0, AV_OPT_TYPE_CONST, {TWOLAME_JOINT_STEREO },       0, 0, AE, "mode" },
+    { "dual_channel", NULL,         0, AV_OPT_TYPE_CONST, {TWOLAME_DUAL_CHANNEL },       0, 0, AE, "mode" },
+    { "mono",         NULL,         0, AV_OPT_TYPE_CONST, {TWOLAME_MONO },               0, 0, AE, "mode" },
+    { "psymodel",    "Psychoacoustic Model",  OFFSET(psymodel), AV_OPT_TYPE_INT, {3 }, -1, 4, AE},
+    { "energy_levels","enable energy levels", OFFSET(energy),   AV_OPT_TYPE_INT, {0 },  0, 1, AE},
+    { "error_protection","enable CRC error protection", OFFSET(error_protection), AV_OPT_TYPE_INT, {0 },  0, 1, AE},
+    { "copyright",    "set MPEG Audio Copyright flag",  OFFSET(copyright), AV_OPT_TYPE_INT, {0 },  0, 1, AE},
+    { "original",     "set MPEG Audio Original flag",   OFFSET(original),  AV_OPT_TYPE_INT, {0 },  0, 1, AE},
+    { NULL },
+};
+
+static const AVClass libtwolame_class = {
+        "libtwolame encoder", /* class_name */
+        av_default_item_name, /* item_name */
+        options, /* option */
+        LIBAVUTIL_VERSION_INT, /* version */
+    };
+
+static const enum AVSampleFormat _ff_libtwolame_fmts_79[] = { AV_SAMPLE_FMT_FLT,
+                                                             AV_SAMPLE_FMT_FLTP,
+                                                             AV_SAMPLE_FMT_S16,
+                                                             AV_SAMPLE_FMT_S16P,
+                                                             AV_SAMPLE_FMT_NONE };
+AVCodec ff_libtwolame_encoder = {
+        "libtwolame", /* name */
+        NULL_IF_CONFIG_SMALL("libtwolame MP2 (MPEG audio layer 2)"), /* long_name */
+        AVMEDIA_TYPE_AUDIO, /* type */
+        AV_CODEC_ID_MP2, /* id */
+        CODEC_CAP_DELAY, /* capabilities */
+        0, /* supported_framerates */
+        0, /* pix_fmts */
+        static const int _cla_libtwolame_1[] = {16000, 22050, 24000, 32000, 44100, 48000, 0};
+        _cla_libtwolame_1, /* supported_samplerates */
+        _ff_libtwolame_fmts_79, /* sample_fmts */
+        (const uint64_t[]) { AV_CH_LAYOUT_MONO,
+                                                  AV_CH_LAYOUT_STEREO,
+                                                  0 }, /* channel_layouts */
+        0, /* max_lowres */
+        &libtwolame_class, /* priv_class */
+        0, /* profiles */
+        sizeof(TWOLAMEContext), /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        twolame_encode_init, /* init */
+        0, /* encode_sub */
+        twolame_encode_frame, /* encode2 */
+        0, /* decode */
+        twolame_encode_close, /* close */
+    };

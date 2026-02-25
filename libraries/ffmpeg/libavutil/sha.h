@@ -23,13 +23,23 @@
 
 #include <stdint.h>
 
-#ifndef _MSC_VER
+#include "attributes.h"
+#include "version.h"
+
+/**
+ * @defgroup lavu_sha SHA
+ * @ingroup lavu_crypto
+ * @{
+ */
+
 extern const int av_sha_size;
-#else
-extern int get_av_sha_size();
-#endif
 
 struct AVSHA;
+
+/**
+ * Allocate an AVSHA context.
+ */
+struct AVSHA *av_sha_alloc(void);
 
 /**
  * Initialize SHA-1 or SHA-2 hashing.
@@ -56,5 +66,9 @@ void av_sha_update(struct AVSHA* context, const uint8_t* data, unsigned int len)
  * @param digest  buffer where output digest value is stored
  */
 void av_sha_final(struct AVSHA* context, uint8_t *digest);
+
+/**
+ * @}
+ */
 
 #endif /* AVUTIL_SHA_H */

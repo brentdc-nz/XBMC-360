@@ -49,7 +49,6 @@
 #include "spdif.h"
 #include "libavcodec/ac3.h"
 #include "libavcodec/dca.h"
-#include "libavcodec/dcadata.h"
 #include "libavcodec/aacadtsdec.h"
 #include "libavutil/opt.h"
 
@@ -86,14 +85,19 @@ typedef struct IEC61937Context {
 } IEC61937Context;
 
 static const AVOption options[] = {
-{ "spdif_flags", "IEC 61937 encapsulation flags", offsetof(IEC61937Context, spdif_flags), FF_OPT_TYPE_FLAGS, 0, 0, INT_MAX, AV_OPT_FLAG_ENCODING_PARAM, "spdif_flags" },
-{ "be", "output in big-endian format (for use as s16be)", 0, FF_OPT_TYPE_CONST, SPDIF_FLAG_BIGENDIAN, 0, INT_MAX, AV_OPT_FLAG_ENCODING_PARAM, "spdif_flags" },
-{ "dtshd_rate", "mux complete DTS frames in HD mode at the specified IEC958 rate (in Hz, default 0=disabled)", offsetof(IEC61937Context, dtshd_rate), FF_OPT_TYPE_INT, 0, 0, 768000, AV_OPT_FLAG_ENCODING_PARAM },
-{ "dtshd_fallback_time", "min secs to strip HD for after an overflow (-1: till the end, default 60)", offsetof(IEC61937Context, dtshd_fallback), FF_OPT_TYPE_INT, 60, -1, INT_MAX, AV_OPT_FLAG_ENCODING_PARAM },
+{ "spdif_flags", "IEC 61937 encapsulation flags", offsetof(IEC61937Context, spdif_flags), AV_OPT_TYPE_FLAGS, { 0 }, 0, INT_MAX, AV_OPT_FLAG_ENCODING_PARAM, "spdif_flags" },
+{ "be", "output in big-endian format (for use as s16be)", 0, AV_OPT_TYPE_CONST, { SPDIF_FLAG_BIGENDIAN },  0, INT_MAX, AV_OPT_FLAG_ENCODING_PARAM, "spdif_flags" },
+{ "dtshd_rate", "mux complete DTS frames in HD mode at the specified IEC958 rate (in Hz, default 0=disabled)", offsetof(IEC61937Context, dtshd_rate), AV_OPT_TYPE_INT, { 0 }, 0, 768000, AV_OPT_FLAG_ENCODING_PARAM },
+{ "dtshd_fallback_time", "min secs to strip HD for after an overflow (-1: till the end, default 60)", offsetof(IEC61937Context, dtshd_fallback), AV_OPT_TYPE_INT, { 60 }, -1, INT_MAX, AV_OPT_FLAG_ENCODING_PARAM },
 { NULL },
 };
 
-static const AVClass class = { "spdif", av_default_item_name, options, LIBAVUTIL_VERSION_INT };
+static const AVClass class = {
+    "spdif", /* class_name */
+    av_default_item_name, /* item_name */
+    options, /* option */
+    LIBAVUTIL_VERSION_INT, /* version */
+};
 
 static int spdif_header_ac3(AVFormatContext *s, AVPacket *pkt)
 {
@@ -215,7 +219,10 @@ static int spdif_header_dts4(AVFormatContext *s, AVPacket *pkt, int core_size,
     }
 
     ctx->out_bytes   = sizeof(dtshd_start_code) + 2 + pkt_size;
-    ctx->length_code = ctx->out_bytes;
+
+    /* Align so that (length_code & 0xf) == 0x8. This is reportedly needed
+     * with some receivers, but the exact requirement is unconfirmed. */
+    ctx->length_code = FFALIGN(ctx->out_bytes + 0x8, 0x10) - 0x8;
 
     av_fast_malloc(&ctx->hd_buf, &ctx->hd_buf_size, ctx->out_bytes);
     if (!ctx->hd_buf)
@@ -245,7 +252,7 @@ static int spdif_header_dts(AVFormatContext *s, AVPacket *pkt)
     case DCA_MARKER_RAW_BE:
         blocks = (AV_RB16(pkt->data + 4) >> 2) & 0x7f;
         core_size = ((AV_RB24(pkt->data + 5) >> 4) & 0x3fff) + 1;
-        sample_rate = dca_sample_rates[(pkt->data[8] >> 2) & 0x0f];
+        sample_rate = avpriv_dca_sample_rates[(pkt->data[8] >> 2) & 0x0f];
         break;
     case DCA_MARKER_RAW_LE:
         blocks = (AV_RL16(pkt->data + 4) >> 2) & 0x7f;
@@ -332,7 +339,7 @@ static int spdif_header_mpeg(AVFormatContext *s, AVPacket *pkt)
         ctx->data_type  = mpeg_data_type [version & 1][layer];
         ctx->pkt_offset = spdif_mpeg_pkt_offset[version & 1][layer];
     }
-    // TODO Data type dependant info (normal/karaoke, dynamic range control)
+    // TODO Data type dependent info (normal/karaoke, dynamic range control)
     return 0;
 }
 
@@ -344,7 +351,7 @@ static int spdif_header_aac(AVFormatContext *s, AVPacket *pkt)
     int ret;
 
     init_get_bits(&gbc, pkt->data, AAC_ADTS_HEADER_SIZE * 8);
-    ret = ff_aac_parse_header(&gbc, &hdr);
+    ret = avpriv_aac_parse_header(&gbc, &hdr);
     if (ret < 0) {
         av_log(s, AV_LOG_ERROR, "Wrong AAC file format\n");
         return AVERROR_INVALIDDATA;
@@ -407,7 +414,7 @@ static int spdif_header_truehd(AVFormatContext *s, AVPacket *pkt)
          * distribute the TrueHD frames in the MAT frame */
         av_log(s, AV_LOG_ERROR, "TrueHD frame too big, %d bytes\n", pkt->size);
         av_log_ask_for_sample(s, NULL);
-        return AVERROR_INVALIDDATA;
+        return AVERROR_PATCHWELCOME;
     }
 
     memcpy(&ctx->hd_buf[ctx->hd_buf_count * TRUEHD_FRAME_OFFSET - BURST_HEADER_SIZE + mat_code_length],
@@ -435,24 +442,24 @@ static int spdif_write_header(AVFormatContext *s)
     IEC61937Context *ctx = s->priv_data;
 
     switch (s->streams[0]->codec->codec_id) {
-    case CODEC_ID_AC3:
+    case AV_CODEC_ID_AC3:
         ctx->header_info = spdif_header_ac3;
         break;
-    case CODEC_ID_EAC3:
+    case AV_CODEC_ID_EAC3:
         ctx->header_info = spdif_header_eac3;
         break;
-    case CODEC_ID_MP1:
-    case CODEC_ID_MP2:
-    case CODEC_ID_MP3:
+    case AV_CODEC_ID_MP1:
+    case AV_CODEC_ID_MP2:
+    case AV_CODEC_ID_MP3:
         ctx->header_info = spdif_header_mpeg;
         break;
-    case CODEC_ID_DTS:
+    case AV_CODEC_ID_DTS:
         ctx->header_info = spdif_header_dts;
         break;
-    case CODEC_ID_AAC:
+    case AV_CODEC_ID_AAC:
         ctx->header_info = spdif_header_aac;
         break;
-    case CODEC_ID_TRUEHD:
+    case AV_CODEC_ID_TRUEHD:
         ctx->header_info = spdif_header_truehd;
         ctx->hd_buf = av_malloc(MAT_FRAME_SIZE);
         if (!ctx->hd_buf)
@@ -513,13 +520,13 @@ static int spdif_write_packet(struct AVFormatContext *s, AVPacket *pkt)
     }
 
     if (ctx->extra_bswap ^ (ctx->spdif_flags & SPDIF_FLAG_BIGENDIAN)) {
-    avio_write(s->pb, ctx->out_buf, ctx->out_bytes & ~1);
+        avio_write(s->pb, ctx->out_buf, ctx->out_bytes & ~1);
     } else {
-    av_fast_malloc(&ctx->buffer, &ctx->buffer_size, ctx->out_bytes + FF_INPUT_BUFFER_PADDING_SIZE);
-    if (!ctx->buffer)
-        return AVERROR(ENOMEM);
-    ff_spdif_bswap_buf16((uint16_t *)ctx->buffer, (uint16_t *)ctx->out_buf, ctx->out_bytes >> 1);
-    avio_write(s->pb, ctx->buffer, ctx->out_bytes & ~1);
+        av_fast_malloc(&ctx->buffer, &ctx->buffer_size, ctx->out_bytes + FF_INPUT_BUFFER_PADDING_SIZE);
+        if (!ctx->buffer)
+            return AVERROR(ENOMEM);
+        ff_spdif_bswap_buf16((uint16_t *)ctx->buffer, (uint16_t *)ctx->out_buf, ctx->out_bytes >> 1);
+        avio_write(s->pb, ctx->buffer, ctx->out_bytes & ~1);
     }
 
     /* a final lone byte has to be MSB aligned */
@@ -536,16 +543,19 @@ static int spdif_write_packet(struct AVFormatContext *s, AVPacket *pkt)
 }
 
 AVOutputFormat ff_spdif_muxer = {
-    "spdif",
-    NULL_IF_CONFIG_SMALL("IEC 61937 (used on S/PDIF - IEC958)"),
-    NULL,
-    "spdif",
-    sizeof(IEC61937Context),
-    CODEC_ID_AC3,
-    CODEC_ID_NONE,
-    spdif_write_header,
-    spdif_write_packet,
-    spdif_write_trailer,
-    .flags = AVFMT_NOTIMESTAMPS,
-    .priv_class = &class,
+    "spdif", /* name */
+    NULL_IF_CONFIG_SMALL("IEC 61937 (used on S/PDIF - IEC958)"), /* long_name */
+    0, /* mime_type */
+    "spdif", /* extensions */
+    AV_CODEC_ID_AC3, /* audio_codec */
+    AV_CODEC_ID_NONE, /* video_codec */
+    0, /* subtitle_codec */
+    AVFMT_NOTIMESTAMPS, /* flags */
+    0, /* codec_tag */
+    &class, /* priv_class */
+    0, /* next */
+    sizeof(IEC61937Context), /* priv_data_size */
+    spdif_write_header, /* write_header */
+    spdif_write_packet, /* write_packet */
+    spdif_write_trailer, /* write_trailer */
 };

@@ -3,6 +3,10 @@
 
 #include "DVDAudioCodec.h"
 
+extern "C" {
+#include "libswresample/swresample.h"
+}
+
 class CDVDAudioCodecFFmpeg : public CDVDAudioCodec
 {
 public:
@@ -22,8 +26,8 @@ public:
 
 protected:
 	AVCodecContext* m_pCodecContext;
-//	AVAudioConvert* m_pConvert;;
-	enum SampleFormat m_iSampleFormat;
+	AVFrame*        m_pFrame;            // FFmpeg 1.2: decode output goes into AVFrame
+	enum AVSampleFormat m_iSampleFormat; // FFmpeg 1.2: renamed from SampleFormat
 
 	BYTE *m_pBuffer1;
 	int   m_iBufferSize1;
@@ -31,8 +35,15 @@ protected:
 	BYTE *m_pBuffer2;
 	int   m_iBufferSize2;
 
+	int   m_iOutputSize;                 // Decoded audio data size from AVFrame
+
 	bool m_bOpenedCodec;
 	int m_iBuffered;
+
+	SwrContext*     m_pConvert;
+	enum AVSampleFormat m_iLastSampleFormat;
+	int             m_iLastChannels;
+	int             m_iLastSampleRate;
 
 #if 0//ndef _HARDLINKED
 	DllAvCodec m_dllAvCodec;

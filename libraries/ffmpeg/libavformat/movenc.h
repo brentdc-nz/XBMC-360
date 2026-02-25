@@ -38,14 +38,17 @@
 // ffmpeg -i testinput.avi  -f psp -r 14.985 -s 320x240 -b 768 -ar 24000 -ab 32 M4V00001.MP4
 #define MODE_3G2  0x10
 #define MODE_IPOD 0x20
+#define MODE_ISM  0x40
+#define MODE_F4V  0x80
 
 typedef struct MOVIentry {
-    unsigned int size;
     uint64_t     pos;
-    unsigned int samplesInChunk;
+    int64_t      dts;
+    unsigned int size;
+    unsigned int samples_in_chunk;
+    unsigned int chunkNum;              ///< Chunk number if the current entry is a chunk start otherwise 0
     unsigned int entries;
     int          cts;
-    int64_t      dts;
 #define MOV_SYNC_SAMPLE         0x0001
 #define MOV_PARTIAL_SYNC_SAMPLE 0x0002
     uint32_t     flags;
@@ -59,62 +62,129 @@ typedef struct HintSample {
     int own_data;
 } HintSample;
 
-typedef struct {
+typedef struct HintSampleQueue {
     int size;
     int len;
     HintSample *samples;
 } HintSampleQueue;
+
+typedef struct MOVFragmentInfo {
+    int64_t offset;
+    int64_t time;
+    int64_t duration;
+    int64_t tfrf_offset;
+} MOVFragmentInfo;
 
 typedef struct MOVIndex {
     int         mode;
     int         entry;
     unsigned    timescale;
     uint64_t    time;
-    int64_t     trackDuration;
-    long        sampleCount;
-    long        sampleSize;
-    int         hasKeyframes;
+    int64_t     track_duration;
+    int         last_sample_is_subtitle_end;
+    long        sample_count;
+    long        sample_size;
+    long        chunkCount;
+    int         has_keyframes;
 #define MOV_TRACK_CTTS         0x0001
 #define MOV_TRACK_STPS         0x0002
     uint32_t    flags;
+#define MOV_TIMECODE_FLAG_DROPFRAME     0x0001
+#define MOV_TIMECODE_FLAG_24HOURSMAX    0x0002
+#define MOV_TIMECODE_FLAG_ALLOWNEGATIVE 0x0004
+    uint32_t    timecode_flags;
     int         language;
-    int         trackID;
+    int         secondary;
+    int         track_id;
     int         tag; ///< stsd fourcc
     AVCodecContext *enc;
 
-    int         vosLen;
-    uint8_t     *vosData;
+    int         vos_len;
+    uint8_t     *vos_data;
     MOVIentry   *cluster;
     int         audio_vbr;
     int         height; ///< active picture (w/o VBI) height for D-10/IMX
     uint32_t    tref_tag;
     int         tref_id; ///< trackID of the referenced track
+    int64_t     start_dts;
 
     int         hint_track;   ///< the track that hints this track, -1 if no hint track is set
-    int         src_track;    ///< the track that this hint track describes
+    int         src_track;    ///< the track that this hint (or tmcd) track describes
     AVFormatContext *rtp_ctx; ///< the format context for the hinting rtp muxer
     uint32_t    prev_rtp_ts;
     int64_t     cur_rtp_ts_unwrapped;
     uint32_t    max_packet_size;
 
+    int64_t     default_duration;
+    uint32_t    default_sample_flags;
+    uint32_t    default_size;
+
     HintSampleQueue sample_queue;
+
+    AVIOContext *mdat_buf;
+    int64_t     moof_size_offset;
+    int64_t     data_offset;
+    int64_t     frag_start;
+    int64_t     tfrf_offset;
+
+    int         nb_frag_info;
+    MOVFragmentInfo *frag_info;
+
+    struct {
+        int64_t struct_offset;
+        int     first_packet_seq;
+        int     first_packet_entry;
+        int     packet_seq;
+        int     packet_entry;
+        int     slices;
+    } vc1_info;
 } MOVTrack;
 
 typedef struct MOVMuxContext {
+    const AVClass *av_class;
     int     mode;
     int64_t time;
     int     nb_streams;
+    int     nb_meta_tmcd;  ///< number of new created tmcd track based on metadata (aka not data copy)
     int     chapter_track; ///< qt chapter track number
     int64_t mdat_pos;
     uint64_t mdat_size;
     MOVTrack *tracks;
+
+    int flags;
+    int rtp_flags;
+    int reserved_moov_size; ///< 0 for disabled, -1 for automatic, size otherwise
+    int64_t reserved_moov_pos;
+
+    int iods_skip;
+    int iods_video_profile;
+    int iods_audio_profile;
+
+    int fragments;
+    int max_fragment_duration;
+    int min_fragment_duration;
+    int max_fragment_size;
+    int ism_lookahead;
+    AVIOContext *mdat_buf;
+
+    int use_editlist;
 } MOVMuxContext;
+
+#define FF_MOV_FLAG_RTP_HINT 1
+#define FF_MOV_FLAG_FRAGMENT 2
+#define FF_MOV_FLAG_EMPTY_MOOV 4
+#define FF_MOV_FLAG_FRAG_KEYFRAME 8
+#define FF_MOV_FLAG_SEPARATE_MOOF 16
+#define FF_MOV_FLAG_FRAG_CUSTOM 32
+#define FF_MOV_FLAG_ISML 64
+#define FF_MOV_FLAG_FASTSTART 128
 
 int ff_mov_write_packet(AVFormatContext *s, AVPacket *pkt);
 
 int ff_mov_init_hinting(AVFormatContext *s, int index, int src_index);
 int ff_mov_add_hinted_packet(AVFormatContext *s, AVPacket *pkt,
-                             int track_index, int sample);
+                             int track_index, int sample,
+                             uint8_t *sample_data, int sample_size);
 void ff_mov_close_hinting(MOVTrack *track);
 
 #endif /* AVFORMAT_MOVENC_H */

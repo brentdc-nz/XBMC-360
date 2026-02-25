@@ -27,37 +27,41 @@
 #include "avio.h"
 #include "url.h"
 
-#define PRIV_SIZE 128
+struct MD5Context {
+    struct AVMD5 *md5;
+};
 
 static int md5_open(URLContext *h, const char *filename, int flags)
 {
-    if (PRIV_SIZE < av_md5_size) {
-        av_log(NULL, AV_LOG_ERROR, "Insuffient size for MD5 context\n");
-        return -1;
-    }
+    struct MD5Context *c = h->priv_data;
 
-    if (flags != AVIO_WRONLY)
+    if (!(flags & AVIO_FLAG_WRITE))
         return AVERROR(EINVAL);
 
-    av_md5_init(h->priv_data);
+    c->md5 = av_md5_alloc();
+    if (!c->md5)
+        return AVERROR(ENOMEM);
+    av_md5_init(c->md5);
 
     return 0;
 }
 
 static int md5_write(URLContext *h, const unsigned char *buf, int size)
 {
-    av_md5_update(h->priv_data, buf, size);
+    struct MD5Context *c = h->priv_data;
+    av_md5_update(c->md5, buf, size);
     return size;
 }
 
 static int md5_close(URLContext *h)
 {
+    struct MD5Context *c = h->priv_data;
     const char *filename = h->filename;
     uint8_t md5[16], buf[64];
     URLContext *out;
     int i, err = 0;
 
-    av_md5_final(h->priv_data, md5);
+    av_md5_final(c->md5, md5);
     for (i = 0; i < sizeof(md5); i++)
         snprintf(buf + i*2, 3, "%02x", md5[i]);
     buf[i*2] = '\n';
@@ -65,7 +69,8 @@ static int md5_close(URLContext *h)
     av_strstart(filename, "md5:", &filename);
 
     if (*filename) {
-        err = ffurl_open(&out, filename, AVIO_WRONLY);
+        err = ffurl_open(&out, filename, AVIO_FLAG_WRITE,
+                         &h->interrupt_callback, NULL);
         if (err)
             return err;
         err = ffurl_write(out, buf, i*2+1);
@@ -75,19 +80,24 @@ static int md5_close(URLContext *h)
             err = AVERROR(errno);
     }
 
+    av_freep(&c->md5);
+
     return err;
 }
 
-static int md5_get_handle(URLContext *h)
-{
-    return (intptr_t)h->priv_data;
-}
 
 URLProtocol ff_md5_protocol = {
-    .name                = "md5",
-    .url_open            = md5_open,
-    .url_write           = md5_write,
-    .url_close           = md5_close,
-    .url_get_file_handle = md5_get_handle,
-    .priv_data_size      = PRIV_SIZE,
+    "md5", /* name */
+    md5_open, /* url_open */
+    0, /* url_read */
+    md5_write, /* url_write */
+    0, /* url_seek */
+    md5_close, /* url_close */
+    0, /* next */
+    0, /* url_read_pause */
+    0, /* url_read_seek */
+    0, /* url_get_file_handle */
+    0, /* url_get_multi_file_handle */
+    0, /* url_shutdown */
+    sizeof(struct MD5Context), /* priv_data_size */
 };

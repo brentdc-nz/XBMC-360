@@ -50,7 +50,6 @@ static av_cold int concat_close(URLContext *h)
         err |= ffurl_close(nodes[i].uc);
 
     av_freep(&data->nodes);
-    av_freep(&h->priv_data);
 
     return err < 0 ? -1 : 0;
 }
@@ -62,15 +61,10 @@ static av_cold int concat_open(URLContext *h, const char *uri, int flags)
     int64_t size;
     size_t  len, i;
     URLContext *uc;
-    struct concat_data  *data;
+    struct concat_data  *data = h->priv_data;
     struct concat_nodes *nodes;
 
     av_strstart(uri, "concat:", &uri);
-
-    /* creating data */
-    if (!(data = av_mallocz(sizeof(*data))))
-        return AVERROR(ENOMEM);
-    h->priv_data = data;
 
     for (i = 0, len = 1; uri[i]; i++)
         if (uri[i] == *AV_CAT_SEPARATOR)
@@ -81,7 +75,6 @@ static av_cold int concat_open(URLContext *h, const char *uri, int flags)
             }
 
     if (!(nodes = av_malloc(sizeof(*nodes) * len))) {
-        av_freep(&h->priv_data);
         return AVERROR(ENOMEM);
     } else
         data->nodes = nodes;
@@ -101,7 +94,8 @@ static av_cold int concat_open(URLContext *h, const char *uri, int flags)
         uri += len + strspn(uri+len, AV_CAT_SEPARATOR);
 
         /* creating URLContext */
-        if ((err = ffurl_open(&uc, node_uri, flags)) < 0)
+        if ((err = ffurl_open(&uc, node_uri, flags,
+                              &h->interrupt_callback, NULL)) < 0)
             break;
 
         /* creating size */
@@ -189,11 +183,18 @@ static int64_t concat_seek(URLContext *h, int64_t pos, int whence)
     return result;
 }
 
-URLProtocol concat_protocol = {
-    "concat",
-    concat_open,
-    concat_read,
-    NULL,
-    concat_seek,
-    concat_close,
+URLProtocol ff_concat_protocol = {
+    "concat", /* name */
+    concat_open, /* url_open */
+    concat_read, /* url_read */
+    0, /* url_write */
+    concat_seek, /* url_seek */
+    concat_close, /* url_close */
+    0, /* next */
+    0, /* url_read_pause */
+    0, /* url_read_seek */
+    0, /* url_get_file_handle */
+    0, /* url_get_multi_file_handle */
+    0, /* url_shutdown */
+    sizeof(struct concat_data), /* priv_data_size */
 };

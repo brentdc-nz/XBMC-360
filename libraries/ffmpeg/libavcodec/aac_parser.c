@@ -34,13 +34,13 @@ static int aac_sync(uint64_t state, AACAC3ParseContext *hdr_info,
     int size;
     union {
         uint64_t u64;
-        uint8_t  u8[8];
+        uint8_t  u8[8 + FF_INPUT_BUFFER_PADDING_SIZE];
     } tmp;
 
     tmp.u64 = av_be2ne64(state);
     init_get_bits(&bits, tmp.u8+8-AAC_ADTS_HEADER_SIZE, AAC_ADTS_HEADER_SIZE * 8);
 
-    if ((size = ff_aac_parse_header(&bits, &hdr)) < 0)
+    if ((size = avpriv_aac_parse_header(&bits, &hdr)) < 0)
         return 0;
     *need_next_header = 0;
     *new_frame_start  = 1;
@@ -61,9 +61,9 @@ static av_cold int aac_parse_init(AVCodecParserContext *s1)
 
 
 AVCodecParser ff_aac_parser = {
-    { CODEC_ID_AAC },
-    sizeof(AACAC3ParseContext),
-    aac_parse_init,
-    ff_aac_ac3_parse,
-    ff_parse_close,
-};
+        { AV_CODEC_ID_AAC }, /* codec_ids */
+        sizeof(AACAC3ParseContext), /* priv_data_size */
+        aac_parse_init, /* parser_init */
+        ff_aac_ac3_parse, /* parser_parse */
+        ff_parse_close, /* parser_close */
+    };

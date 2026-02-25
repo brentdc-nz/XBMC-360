@@ -23,15 +23,17 @@
 
 #include <math.h>
 #include <stdint.h>
+#include <string.h>
 
+#include "libavutil/channel_layout.h"
+#include "libavutil/float_dsp.h"
 #include "libavutil/mathematics.h"
 #include "avcodec.h"
-#define ALT_BITSTREAM_READER_LE
+#define BITSTREAM_READER_LE
 #include "get_bits.h"
-#include "dsputil.h"
+#include "internal.h"
 
 #include "lsp.h"
-#include "celp_math.h"
 #include "acelp_vectors.h"
 #include "acelp_pitch_delay.h"
 #include "acelp_filters.h"
@@ -64,141 +66,71 @@ typedef struct {
     uint8_t gc_index_bits;     ///< size in bits of the gain  codebook indexes
 } SiprModeParam;
 
-#ifndef MSC_STRUCTS
-static const SiprModeParam modes[MODE_COUNT] = {
-    [MODE_16k] = {
-        .mode_name          = "16k",
-        .bits_per_frame     = 160,
-        .subframe_count     = SUBFRAME_COUNT_16k,
-        .frames_per_packet  = 1,
-        .pitch_sharp_factor = 0.00,
-
-        .number_of_fc_indexes = 10,
-        .ma_predictor_bits    = 1,
-        .vq_indexes_bits      = {7, 8, 7, 7, 7},
-        .pitch_delay_bits     = {9, 6},
-        .gp_index_bits        = 4,
-        .fc_index_bits        = {4, 5, 4, 5, 4, 5, 4, 5, 4, 5},
-        .gc_index_bits        = 5
-    },
-
-    [MODE_8k5] = {
-        .mode_name          = "8k5",
-        .bits_per_frame     = 152,
-        .subframe_count     = 3,
-        .frames_per_packet  = 1,
-        .pitch_sharp_factor = 0.8,
-
-        .number_of_fc_indexes = 3,
-        .ma_predictor_bits    = 0,
-        .vq_indexes_bits      = {6, 7, 7, 7, 5},
-        .pitch_delay_bits     = {8, 5, 5},
-        .gp_index_bits        = 0,
-        .fc_index_bits        = {9, 9, 9},
-        .gc_index_bits        = 7
-    },
-
-    [MODE_6k5] = {
-        .mode_name          = "6k5",
-        .bits_per_frame     = 232,
-        .subframe_count     = 3,
-        .frames_per_packet  = 2,
-        .pitch_sharp_factor = 0.8,
-
-        .number_of_fc_indexes = 3,
-        .ma_predictor_bits    = 0,
-        .vq_indexes_bits      = {6, 7, 7, 7, 5},
-        .pitch_delay_bits     = {8, 5, 5},
-        .gp_index_bits        = 0,
-        .fc_index_bits        = {5, 5, 5},
-        .gc_index_bits        = 7
-    },
-
-    [MODE_5k0] = {
-        .mode_name          = "5k0",
-        .bits_per_frame     = 296,
-        .subframe_count     = 5,
-        .frames_per_packet  = 2,
-        .pitch_sharp_factor = 0.85,
-
-        .number_of_fc_indexes = 1,
-        .ma_predictor_bits    = 0,
-        .vq_indexes_bits      = {6, 7, 7, 7, 5},
-        .pitch_delay_bits     = {8, 5, 8, 5, 5},
-        .gp_index_bits        = 0,
-        .fc_index_bits        = {10},
-        .gc_index_bits        = 7
-    }
-};
-#else
-	//MSVC
-
 static const SiprModeParam modes[MODE_COUNT] = {
     {
-        "16k",
-        160,
-        SUBFRAME_COUNT_16k,
-        1,
-        0.00,
+        /* mode_name */ "16k",
+        /* bits_per_frame */ 160,
+        /* subframe_count */ SUBFRAME_COUNT_16k,
+        /* frames_per_packet */ 1,
+        /* pitch_sharp_factor */ 0.00,
 
-        10,
-        1,
-        {7, 8, 7, 7, 7},
-        {9, 6},
-        4,
-        {4, 5, 4, 5, 4, 5, 4, 5, 4, 5},
-        5
+        /* number_of_fc_indexes */ 10,
+        /* ma_predictor_bits */ 1,
+        /* vq_indexes_bits */ {7, 8, 7, 7, 7},
+        /* pitch_delay_bits */ {9, 6},
+        /* gp_index_bits */ 4,
+        /* fc_index_bits */ {4, 5, 4, 5, 4, 5, 4, 5, 4, 5},
+        /* gc_index_bits */ 5
     },
 
     {
-        "8k5",
-        152,
-        3,
-        1,
-        0.8,
+        /* mode_name */ "8k5",
+        /* bits_per_frame */ 152,
+        /* subframe_count */ 3,
+        /* frames_per_packet */ 1,
+        /* pitch_sharp_factor */ 0.8,
 
-        3,
-        0,
-        {6, 7, 7, 7, 5},
-        {8, 5, 5},
-        0,
-        {9, 9, 9},
-        7
+        /* number_of_fc_indexes */ 3,
+        /* ma_predictor_bits */ 0,
+        /* vq_indexes_bits */ {6, 7, 7, 7, 5},
+        /* pitch_delay_bits */ {8, 5, 5},
+        /* gp_index_bits */ 0,
+        /* fc_index_bits */ {9, 9, 9},
+        /* gc_index_bits */ 7
     },
 
     {
-        "6k5",
-        232,
-        3,
-        2,
-        0.8,
+        /* mode_name */ "6k5",
+        /* bits_per_frame */ 232,
+        /* subframe_count */ 3,
+        /* frames_per_packet */ 2,
+        /* pitch_sharp_factor */ 0.8,
 
-        3,
-        0,
-        {6, 7, 7, 7, 5},
-        {8, 5, 5},
-        0,
-        {5, 5, 5},
-        7
+        /* number_of_fc_indexes */ 3,
+        /* ma_predictor_bits */ 0,
+        /* vq_indexes_bits */ {6, 7, 7, 7, 5},
+        /* pitch_delay_bits */ {8, 5, 5},
+        /* gp_index_bits */ 0,
+        /* fc_index_bits */ {5, 5, 5},
+        /* gc_index_bits */ 7
     },
 
     {
-        "5k0",
-        296,
-        5,
-        2,
-        0.85,
+        /* mode_name */ "5k0",
+        /* bits_per_frame */ 296,
+        /* subframe_count */ 5,
+        /* frames_per_packet */ 2,
+        /* pitch_sharp_factor */ 0.85,
 
-        1,
-        0,
-        {6, 7, 7, 7, 5},
-        {8, 5, 8, 5, 5},
-        0,
-        {10},
-        7
+        /* number_of_fc_indexes */ 1,
+        /* ma_predictor_bits */ 0,
+        /* vq_indexes_bits */ {6, 7, 7, 7, 5},
+        /* pitch_delay_bits */ {8, 5, 8, 5, 5},
+        /* gp_index_bits */ 0,
+        /* fc_index_bits */ {10},
+        /* gc_index_bits */ 7
     }
 };
-#endif
 
 const float ff_pow_0_5[] = {
     1.0/(1 <<  1), 1.0/(1 <<  2), 1.0/(1 <<  3), 1.0/(1 <<  4),
@@ -263,14 +195,16 @@ static void decode_parameters(SiprParameters* parms, GetBitContext *pgb,
 {
     int i, j;
 
-    parms->ma_pred_switch           = get_bits(pgb, p->ma_predictor_bits);
+    if (p->ma_predictor_bits)
+        parms->ma_pred_switch       = get_bits(pgb, p->ma_predictor_bits);
 
     for (i = 0; i < 5; i++)
         parms->vq_indexes[i]        = get_bits(pgb, p->vq_indexes_bits[i]);
 
     for (i = 0; i < p->subframe_count; i++) {
         parms->pitch_delay[i]       = get_bits(pgb, p->pitch_delay_bits[i]);
-        parms->gp_index[i]          = get_bits(pgb, p->gp_index_bits);
+        if (p->gp_index_bits)
+            parms->gp_index[i]      = get_bits(pgb, p->gp_index_bits);
 
         for (j = 0; j < p->number_of_fc_indexes; j++)
             parms->fc_indexes[i][j] = get_bits(pgb, p->fc_index_bits[j]);
@@ -477,9 +411,10 @@ static void decode_frame(SiprContext *ctx, SiprParameters *params,
         convolute_with_sparse(fixed_vector, &fixed_cb, impulse_response,
                               SUBFR_SIZE);
 
-        avg_energy =
-            (0.01 + ff_dot_productf(fixed_vector, fixed_vector, SUBFR_SIZE))/
-                SUBFR_SIZE;
+        avg_energy = (0.01 + avpriv_scalarproduct_float_c(fixed_vector,
+                                                          fixed_vector,
+                                                          SUBFR_SIZE)) /
+                     SUBFR_SIZE;
 
         ctx->past_pitch_gain = pitch_gain = gain_cb[params->gc_index[i]][0];
 
@@ -520,9 +455,9 @@ static void decode_frame(SiprContext *ctx, SiprParameters *params,
 
     if (ctx->mode == MODE_5k0) {
         for (i = 0; i < subframe_count; i++) {
-            float energy = ff_dot_productf(ctx->postfilter_syn5k0 + LP_FILTER_ORDER + i*SUBFR_SIZE,
-                                           ctx->postfilter_syn5k0 + LP_FILTER_ORDER + i*SUBFR_SIZE,
-                                           SUBFR_SIZE);
+            float energy = avpriv_scalarproduct_float_c(ctx->postfilter_syn5k0 + LP_FILTER_ORDER + i * SUBFR_SIZE,
+                                                        ctx->postfilter_syn5k0 + LP_FILTER_ORDER + i * SUBFR_SIZE,
+                                                        SUBFR_SIZE);
             ff_adaptive_gain_control(&synth[i * SUBFR_SIZE],
                                      &synth[i * SUBFR_SIZE], energy,
                                      SUBFR_SIZE, 0.9, &ctx->postfilter_agc);
@@ -531,28 +466,19 @@ static void decode_frame(SiprContext *ctx, SiprParameters *params,
         memcpy(ctx->postfilter_syn5k0, ctx->postfilter_syn5k0 + frame_size,
                LP_FILTER_ORDER*sizeof(float));
     }
-    memcpy(ctx->excitation, excitation - PITCH_DELAY_MAX - L_INTERPOL,
+    memmove(ctx->excitation, excitation - PITCH_DELAY_MAX - L_INTERPOL,
            (PITCH_DELAY_MAX + L_INTERPOL) * sizeof(float));
 
-#ifndef _MSC_VER
-    ff_acelp_apply_order_2_transfer_function(out_data, synth,
-                                             (const float[2]) {-1.99997   , 1.000000000},
-                                             (const float[2]) {-1.93307352, 0.935891986},
-                                             0.939805806,
-                                             ctx->highpass_filt_mem,
-                                             frame_size);
-#else
-	{
-	const float a1[2] = {-1.99997   , 1.000000000};
-	const float a2[2] = {-1.93307352, 0.935891986};
-    ff_acelp_apply_order_2_transfer_function(out_data, synth,
-		                                     a1, a2,
-                                             0.939805806,
-                                             ctx->highpass_filt_mem,
-											 frame_size);
-
-	}
-#endif
+    {
+        static const float _tmp_float_473[2] = {-1.99997   , 1.000000000};
+        static const float _tmp_float_474[2] = {-1.93307352, 0.935891986};
+        ff_acelp_apply_order_2_transfer_function(out_data, synth,
+                                                 _tmp_float_473,
+                                                 _tmp_float_474,
+                                                 0.939805806,
+                                                 ctx->highpass_filt_mem,
+                                                 frame_size);
+    }
 }
 
 static av_cold int sipr_decoder_init(AVCodecContext * avctx)
@@ -560,15 +486,29 @@ static av_cold int sipr_decoder_init(AVCodecContext * avctx)
     SiprContext *ctx = avctx->priv_data;
     int i;
 
-    if      (avctx->bit_rate > 12200) ctx->mode = MODE_16k;
-    else if (avctx->bit_rate > 7500 ) ctx->mode = MODE_8k5;
-    else if (avctx->bit_rate > 5750 ) ctx->mode = MODE_6k5;
-    else                              ctx->mode = MODE_5k0;
+    switch (avctx->block_align) {
+    case 20: ctx->mode = MODE_16k; break;
+    case 19: ctx->mode = MODE_8k5; break;
+    case 29: ctx->mode = MODE_6k5; break;
+    case 37: ctx->mode = MODE_5k0; break;
+    default:
+        if      (avctx->bit_rate > 12200) ctx->mode = MODE_16k;
+        else if (avctx->bit_rate > 7500 ) ctx->mode = MODE_8k5;
+        else if (avctx->bit_rate > 5750 ) ctx->mode = MODE_6k5;
+        else                              ctx->mode = MODE_5k0;
+        av_log(avctx, AV_LOG_WARNING,
+               "Invalid block_align: %d. Mode %s guessed based on bitrate: %d\n",
+               avctx->block_align, modes[ctx->mode].mode_name, avctx->bit_rate);
+    }
 
     av_log(avctx, AV_LOG_DEBUG, "Mode: %s\n", modes[ctx->mode].mode_name);
 
-    if (ctx->mode == MODE_16k)
+    if (ctx->mode == MODE_16k) {
         ff_sipr_init_16k(ctx);
+        ctx->decode_frame = ff_sipr_decode_frame_16k;
+    } else {
+        ctx->decode_frame = decode_frame;
+    }
 
     for (i = 0; i < LP_FILTER_ORDER; i++)
         ctx->lsp_history[i] = cos((i+1) * M_PI / (LP_FILTER_ORDER + 1));
@@ -576,90 +516,80 @@ static av_cold int sipr_decoder_init(AVCodecContext * avctx)
     for (i = 0; i < 4; i++)
         ctx->energy_history[i] = -14;
 
-    avctx->sample_fmt = AV_SAMPLE_FMT_FLT;
-
-    dsputil_init(&ctx->dsp, avctx);
+    avctx->channels       = 1;
+    avctx->channel_layout = AV_CH_LAYOUT_MONO;
+    avctx->sample_fmt     = AV_SAMPLE_FMT_FLT;
 
     return 0;
 }
 
-static int sipr_decode_frame(AVCodecContext *avctx, void *datap,
-                             int *data_size, AVPacket *avpkt)
+static int sipr_decode_frame(AVCodecContext *avctx, void *data,
+                             int *got_frame_ptr, AVPacket *avpkt)
 {
     SiprContext *ctx = avctx->priv_data;
+    AVFrame *frame   = data;
     const uint8_t *buf=avpkt->data;
     SiprParameters parm;
     const SiprModeParam *mode_par = &modes[ctx->mode];
     GetBitContext gb;
-    float *data = datap;
+    float *samples;
     int subframe_size = ctx->mode == MODE_16k ? L_SUBFR_16k : SUBFR_SIZE;
-    int i;
+    int i, ret;
 
     ctx->avctx = avctx;
     if (avpkt->size < (mode_par->bits_per_frame >> 3)) {
         av_log(avctx, AV_LOG_ERROR,
                "Error processing packet: packet size (%d) too small\n",
                avpkt->size);
-
-        *data_size = 0;
         return -1;
     }
-    if (*data_size < subframe_size * mode_par->subframe_count * sizeof(float)) {
-        av_log(avctx, AV_LOG_ERROR,
-               "Error processing packet: output buffer (%d) too small\n",
-               *data_size);
 
-        *data_size = 0;
-        return -1;
+    /* get output buffer */
+    frame->nb_samples = mode_par->frames_per_packet * subframe_size *
+                        mode_par->subframe_count;
+    if ((ret = ff_get_buffer(avctx, frame)) < 0) {
+        av_log(avctx, AV_LOG_ERROR, "get_buffer() failed\n");
+        return ret;
     }
+    samples = (float *)frame->data[0];
 
     init_get_bits(&gb, buf, mode_par->bits_per_frame);
 
     for (i = 0; i < mode_par->frames_per_packet; i++) {
         decode_parameters(&parm, &gb, mode_par);
 
-        if (ctx->mode == MODE_16k)
-            ff_sipr_decode_frame_16k(ctx, &parm, data);
-        else
-            decode_frame(ctx, &parm, data);
+        ctx->decode_frame(ctx, &parm, samples);
 
-        data += subframe_size * mode_par->subframe_count;
+        samples += subframe_size * mode_par->subframe_count;
     }
 
-    *data_size = mode_par->frames_per_packet * subframe_size *
-        mode_par->subframe_count * sizeof(float);
+    *got_frame_ptr = 1;
 
     return mode_par->bits_per_frame >> 3;
 }
 
 AVCodec ff_sipr_decoder = {
-#ifndef MSC_STRUCTS
-    "sipr",
-    AVMEDIA_TYPE_AUDIO,
-    CODEC_ID_SIPR,
-    sizeof(SiprContext),
-    sipr_decoder_init,
-    NULL,
-    NULL,
-    sipr_decode_frame,
-    NULL_IF_CONFIG_SMALL("RealAudio SIPR / ACELP.NET"),
-#else
-    /* name = */ "sipr",
-    /* type = */ AVMEDIA_TYPE_AUDIO,
-    /* id = */ CODEC_ID_SIPR,
-    /* priv_data_size = */ sizeof(SiprContext),
-    /* init = */ sipr_decoder_init,
-    /* encode = */ NULL,
-    /* close = */ NULL,
-    /* decode = */ sipr_decode_frame,
-    /* capabilities = */ 0,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ 0,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("RealAudio SIPR / ACELP.NET"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ 0,
-    /* channel_layouts = */ 0,
-#endif
-};
+        "sipr", /* name */
+        NULL_IF_CONFIG_SMALL("RealAudio SIPR / ACELP.NET"), /* long_name */
+        AVMEDIA_TYPE_AUDIO, /* type */
+        AV_CODEC_ID_SIPR, /* id */
+        CODEC_CAP_DR1, /* capabilities */
+        0, /* supported_framerates */
+        0, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        0, /* priv_class */
+        0, /* profiles */
+        sizeof(SiprContext), /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        sipr_decoder_init, /* init */
+        0, /* encode_sub */
+        0, /* encode2 */
+        sipr_decode_frame, /* decode */
+    };

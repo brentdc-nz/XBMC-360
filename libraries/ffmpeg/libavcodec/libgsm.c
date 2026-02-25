@@ -27,56 +27,60 @@
 
 // The idiosyncrasies of GSM-in-WAV are explained at http://kbs.cs.tu-berlin.de/~jutta/toast.html
 
-#if CONFIG_LIBGSM
-
-#include "avcodec.h"
+#include "config.h"
+#if HAVE_GSM_H
+#include <gsm.h>
+#else
 #include <gsm/gsm.h>
+#endif
 
-// gsm.h misses some essential constants
-#define GSM_BLOCK_SIZE 33
-#define GSM_MS_BLOCK_SIZE 65
-#define GSM_FRAME_SIZE 160
+#include "libavutil/channel_layout.h"
+#include "libavutil/common.h"
+#include "avcodec.h"
+#include "internal.h"
+#include "gsm.h"
 
-static av_cold int libgsm_init(AVCodecContext *avctx) {
+static av_cold int libgsm_encode_close(AVCodecContext *avctx) {
+#if FF_API_OLD_ENCODE_AUDIO
+    av_freep(&avctx->coded_frame);
+#endif
+    gsm_destroy(avctx->priv_data);
+    avctx->priv_data = NULL;
+    return 0;
+}
+
+static av_cold int libgsm_encode_init(AVCodecContext *avctx) {
     if (avctx->channels > 1) {
         av_log(avctx, AV_LOG_ERROR, "Mono required for GSM, got %d channels\n",
                avctx->channels);
         return -1;
     }
 
-    if(avctx->codec->decode){
-        if(!avctx->channels)
-            avctx->channels= 1;
-
-        if(!avctx->sample_rate)
-            avctx->sample_rate= 8000;
-
-        avctx->sample_fmt = SAMPLE_FMT_S16;
-    }else{
-        if (avctx->sample_rate != 8000) {
-            av_log(avctx, AV_LOG_ERROR, "Sample rate 8000Hz required for GSM, got %dHz\n",
-                avctx->sample_rate);
-            if(avctx->strict_std_compliance > FF_COMPLIANCE_INOFFICIAL)
-                return -1;
-        }
-        if (avctx->bit_rate != 13000 /* Official */ &&
-            avctx->bit_rate != 13200 /* Very common */ &&
-            avctx->bit_rate != 0 /* Unknown; a.o. mov does not set bitrate when decoding */ ) {
-            av_log(avctx, AV_LOG_ERROR, "Bitrate 13000bps required for GSM, got %dbps\n",
-                avctx->bit_rate);
-            if(avctx->strict_std_compliance > FF_COMPLIANCE_INOFFICIAL)
-                return -1;
-        }
+    if (avctx->sample_rate != 8000) {
+        av_log(avctx, AV_LOG_ERROR, "Sample rate 8000Hz required for GSM, got %dHz\n",
+               avctx->sample_rate);
+        if (avctx->strict_std_compliance > FF_COMPLIANCE_UNOFFICIAL)
+            return -1;
+    }
+    if (avctx->bit_rate != 13000 /* Official */ &&
+        avctx->bit_rate != 13200 /* Very common */ &&
+        avctx->bit_rate != 0 /* Unknown; a.o. mov does not set bitrate when decoding */ ) {
+        av_log(avctx, AV_LOG_ERROR, "Bitrate 13000bps required for GSM, got %dbps\n",
+               avctx->bit_rate);
+        if (avctx->strict_std_compliance > FF_COMPLIANCE_UNOFFICIAL)
+            return -1;
     }
 
     avctx->priv_data = gsm_create();
+    if (!avctx->priv_data)
+        goto error;
 
     switch(avctx->codec_id) {
-    case CODEC_ID_GSM:
+    case AV_CODEC_ID_GSM:
         avctx->frame_size = GSM_FRAME_SIZE;
         avctx->block_align = GSM_BLOCK_SIZE;
         break;
-    case CODEC_ID_GSM_MS: {
+    case AV_CODEC_ID_GSM_MS: {
         int one = 1;
         gsm_option(avctx->priv_data, GSM_OPT_WAV49, &one);
         avctx->frame_size = 2*GSM_FRAME_SIZE;
@@ -84,183 +88,242 @@ static av_cold int libgsm_init(AVCodecContext *avctx) {
         }
     }
 
+#if FF_API_OLD_ENCODE_AUDIO
     avctx->coded_frame= avcodec_alloc_frame();
-    avctx->coded_frame->key_frame= 1;
+    if (!avctx->coded_frame)
+        goto error;
+#endif
 
     return 0;
+error:
+    libgsm_encode_close(avctx);
+    return -1;
 }
 
-static av_cold int libgsm_close(AVCodecContext *avctx) {
-    av_freep(&avctx->coded_frame);
-    gsm_destroy(avctx->priv_data);
-    avctx->priv_data = NULL;
-    return 0;
-}
+static int libgsm_encode_frame(AVCodecContext *avctx, AVPacket *avpkt,
+                               const AVFrame *frame, int *got_packet_ptr)
+{
+    int ret;
+    gsm_signal *samples = (gsm_signal *)frame->data[0];
+    struct gsm_state *state = avctx->priv_data;
 
-static int libgsm_encode_frame(AVCodecContext *avctx,
-                               unsigned char *frame, int buf_size, void *data) {
-    // we need a full block
-    if(buf_size < avctx->block_align) return 0;
+    if ((ret = ff_alloc_packet2(avctx, avpkt, avctx->block_align)) < 0)
+        return ret;
 
     switch(avctx->codec_id) {
-    case CODEC_ID_GSM:
-        gsm_encode(avctx->priv_data,data,frame);
+    case AV_CODEC_ID_GSM:
+        gsm_encode(state, samples, avpkt->data);
         break;
-    case CODEC_ID_GSM_MS:
-        gsm_encode(avctx->priv_data,data,frame);
-        gsm_encode(avctx->priv_data,((short*)data)+GSM_FRAME_SIZE,frame+32);
+    case AV_CODEC_ID_GSM_MS:
+        gsm_encode(state, samples,                  avpkt->data);
+        gsm_encode(state, samples + GSM_FRAME_SIZE, avpkt->data + 32);
     }
-    return avctx->block_align;
+
+    *got_packet_ptr = 1;
+    return 0;
 }
 
-const enum SampleFormat[] libgsm_encoder_samples = {SAMPLE_FMT_S16,SAMPLE_FMT_NONE};
 
-AVCodec libgsm_encoder = {
-#ifndef MSC_STRUCTS
-    "libgsm",
-    AVMEDIA_TYPE_AUDIO,
-    CODEC_ID_GSM,
-    0,
-    libgsm_init,
-    libgsm_encode_frame,
-    libgsm_close,
-    .sample_fmts = (const enum SampleFormat[]){SAMPLE_FMT_S16,SAMPLE_FMT_NONE},
-    .long_name = NULL_IF_CONFIG_SMALL("libgsm GSM"),
-#else
-    /* name = */ "libgsm",
-    /* type = */ AVMEDIA_TYPE_AUDIO,
-    /* id = */ CODEC_ID_GSM,
-    /* priv_data_size = */ 0,
-    /* init = */ libgsm_init,
-    /* encode = */ libgsm_encode_frame,
-    /* close = */ libgsm_close,
-    /* decode = */ 0,
-    /* capabilities = */ 0,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ 0,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("libgsm GSM"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ libgsm_encoder_samples,
-    /* channel_layouts = */ 0,
+#if CONFIG_LIBGSM_ENCODER
+static const enum AVSampleFormat _ff_libgsm_fmts_68[] = { AV_SAMPLE_FMT_S16,
+                                                     AV_SAMPLE_FMT_NONE };
+AVCodec ff_libgsm_encoder = {
+        "libgsm", /* name */
+        NULL_IF_CONFIG_SMALL("libgsm GSM"), /* long_name */
+        AVMEDIA_TYPE_AUDIO, /* type */
+        AV_CODEC_ID_GSM, /* id */
+        0, /* capabilities */
+        0, /* supported_framerates */
+        0, /* pix_fmts */
+        0, /* supported_samplerates */
+        _ff_libgsm_fmts_68, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        0, /* priv_class */
+        0, /* profiles */
+        0, /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        libgsm_encode_init, /* init */
+        0, /* encode_sub */
+        libgsm_encode_frame, /* encode2 */
+        0, /* decode */
+        libgsm_encode_close, /* close */
+    };
 #endif
-};
-
-AVCodec libgsm_ms_encoder = {
-#ifndef MSC_STRUCTS
-    "libgsm_ms",
-    AVMEDIA_TYPE_AUDIO,
-    CODEC_ID_GSM_MS,
-    0,
-    libgsm_init,
-    libgsm_encode_frame,
-    libgsm_close,
-    .sample_fmts = (const enum SampleFormat[]){SAMPLE_FMT_S16,SAMPLE_FMT_NONE},
-    .long_name = NULL_IF_CONFIG_SMALL("libgsm GSM Microsoft variant"),
-#else
-    /* name = */ "libgsm_ms",
-    /* type = */ AVMEDIA_TYPE_AUDIO,
-    /* id = */ CODEC_ID_GSM_MS,
-    /* priv_data_size = */ 0,
-    /* init = */ libgsm_init,
-    /* encode = */ libgsm_encode_frame,
-    /* close = */ libgsm_close,
-    /* decode = */ 0,
-    /* capabilities = */ 0,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ 0,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("libgsm GSM Microsoft variant"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ libgsm_encoder_samples,
-    /* channel_layouts = */ 0,
+#if CONFIG_LIBGSM_MS_ENCODER
+static const enum AVSampleFormat _ff_libgsm_fmts_69[] = { AV_SAMPLE_FMT_S16,
+                                                     AV_SAMPLE_FMT_NONE };
+AVCodec ff_libgsm_ms_encoder = {
+        "libgsm_ms", /* name */
+        NULL_IF_CONFIG_SMALL("libgsm GSM Microsoft variant"), /* long_name */
+        AVMEDIA_TYPE_AUDIO, /* type */
+        AV_CODEC_ID_GSM_MS, /* id */
+        0, /* capabilities */
+        0, /* supported_framerates */
+        0, /* pix_fmts */
+        0, /* supported_samplerates */
+        _ff_libgsm_fmts_69, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        0, /* priv_class */
+        0, /* profiles */
+        0, /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        libgsm_encode_init, /* init */
+        0, /* encode_sub */
+        libgsm_encode_frame, /* encode2 */
+        0, /* decode */
+        libgsm_encode_close, /* close */
+    };
 #endif
-};
 
-static int libgsm_decode_frame(AVCodecContext *avctx,
-                               void *data, int *data_size,
-                               AVPacket *avpkt) {
-    const uint8_t *buf = avpkt->data;
+typedef struct LibGSMDecodeContext {
+    struct gsm_state *state;
+} LibGSMDecodeContext;
+
+static av_cold int libgsm_decode_init(AVCodecContext *avctx) {
+    LibGSMDecodeContext *s = avctx->priv_data;
+
+    avctx->channels       = 1;
+    avctx->channel_layout = AV_CH_LAYOUT_MONO;
+    if (!avctx->sample_rate)
+        avctx->sample_rate = 8000;
+    avctx->sample_fmt     = AV_SAMPLE_FMT_S16;
+
+    s->state = gsm_create();
+
+    switch(avctx->codec_id) {
+    case AV_CODEC_ID_GSM:
+        avctx->frame_size  = GSM_FRAME_SIZE;
+        avctx->block_align = GSM_BLOCK_SIZE;
+        break;
+    case AV_CODEC_ID_GSM_MS: {
+        int one = 1;
+        gsm_option(s->state, GSM_OPT_WAV49, &one);
+        avctx->frame_size  = 2 * GSM_FRAME_SIZE;
+        avctx->block_align = GSM_MS_BLOCK_SIZE;
+        }
+    }
+
+    return 0;
+}
+
+static av_cold int libgsm_decode_close(AVCodecContext *avctx) {
+    LibGSMDecodeContext *s = avctx->priv_data;
+
+    gsm_destroy(s->state);
+    s->state = NULL;
+    return 0;
+}
+
+static int libgsm_decode_frame(AVCodecContext *avctx, void *data,
+                               int *got_frame_ptr, AVPacket *avpkt)
+{
+    int i, ret;
+    LibGSMDecodeContext *s = avctx->priv_data;
+    AVFrame *frame         = data;
+    uint8_t *buf = avpkt->data;
     int buf_size = avpkt->size;
-    *data_size = 0; /* In case of error */
-    if(buf_size < avctx->block_align) return -1;
-    switch(avctx->codec_id) {
-    case CODEC_ID_GSM:
-        if(gsm_decode(avctx->priv_data,buf,data)) return -1;
-        *data_size = GSM_FRAME_SIZE*sizeof(int16_t);
-        break;
-    case CODEC_ID_GSM_MS:
-        if(gsm_decode(avctx->priv_data,buf,data) ||
-           gsm_decode(avctx->priv_data,buf+33,((int16_t*)data)+GSM_FRAME_SIZE)) return -1;
-        *data_size = GSM_FRAME_SIZE*sizeof(int16_t)*2;
+    int16_t *samples;
+
+    if (buf_size < avctx->block_align) {
+        av_log(avctx, AV_LOG_ERROR, "Packet is too small\n");
+        return AVERROR_INVALIDDATA;
     }
+
+    /* get output buffer */
+    frame->nb_samples = avctx->frame_size;
+    if ((ret = ff_get_buffer(avctx, frame)) < 0) {
+        av_log(avctx, AV_LOG_ERROR, "get_buffer() failed\n");
+        return ret;
+    }
+    samples = (int16_t *)frame->data[0];
+
+    for (i = 0; i < avctx->frame_size / GSM_FRAME_SIZE; i++) {
+        if ((ret = gsm_decode(s->state, buf, samples)) < 0)
+            return -1;
+        buf     += GSM_BLOCK_SIZE;
+        samples += GSM_FRAME_SIZE;
+    }
+
+    *got_frame_ptr = 1;
+
     return avctx->block_align;
 }
 
-AVCodec libgsm_decoder = {
-#ifndef MSC_STRUCTS
-    "libgsm",
-    AVMEDIA_TYPE_AUDIO,
-    CODEC_ID_GSM,
-    0,
-    libgsm_init,
-    NULL,
-    libgsm_close,
-    libgsm_decode_frame,
-    .long_name = NULL_IF_CONFIG_SMALL("libgsm GSM"),
-#else
-    /* name = */ "libgsm",
-    /* type = */ AVMEDIA_TYPE_AUDIO,
-    /* id = */ CODEC_ID_GSM,
-    /* priv_data_size = */ 0,
-    /* init = */ libgsm_init,
-    /* encode = */ NULL,
-    /* close = */ libgsm_close,
-    /* decode = */ libgsm_decode_frame,
-    /* capabilities = */ 0,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ 0,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("libgsm GSM"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ 0,
-    /* channel_layouts = */ 0,
-#endif
-};
+static void libgsm_flush(AVCodecContext *avctx) {
+    LibGSMDecodeContext *s = avctx->priv_data;
+    int one = 1;
 
-AVCodec libgsm_ms_decoder = {
-#ifndef MSC_STRUCTS
-    "libgsm_ms",
-    AVMEDIA_TYPE_AUDIO,
-    CODEC_ID_GSM_MS,
-    0,
-    libgsm_init,
-    NULL,
-    libgsm_close,
-    libgsm_decode_frame,
-    .long_name = NULL_IF_CONFIG_SMALL("libgsm GSM Microsoft variant"),
-#else
-    /* name = */ "libgsm_ms",
-    /* type = */ AVMEDIA_TYPE_AUDIO,
-    /* id = */ CODEC_ID_GSM_MS,
-    /* priv_data_size = */ 0,
-    /* init = */ libgsm_init,
-    /* encode = */ NULL,
-    /* close = */ libgsm_close,
-    /* decode = */ libgsm_decode_frame,
-    /* capabilities = */ 0,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ 0,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("libgsm GSM Microsoft variant"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ 0,
-    /* channel_layouts = */ 0,
-#endif
-};
+    gsm_destroy(s->state);
+    s->state = gsm_create();
+    if (avctx->codec_id == AV_CODEC_ID_GSM_MS)
+        gsm_option(s->state, GSM_OPT_WAV49, &one);
+}
 
+#if CONFIG_LIBGSM_DECODER
+AVCodec ff_libgsm_decoder = {
+        "libgsm", /* name */
+        NULL_IF_CONFIG_SMALL("libgsm GSM"), /* long_name */
+        AVMEDIA_TYPE_AUDIO, /* type */
+        AV_CODEC_ID_GSM, /* id */
+        CODEC_CAP_DR1, /* capabilities */
+        0, /* supported_framerates */
+        0, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        0, /* priv_class */
+        0, /* profiles */
+        sizeof(LibGSMDecodeContext), /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        libgsm_decode_init, /* init */
+        0, /* encode_sub */
+        0, /* encode2 */
+        libgsm_decode_frame, /* decode */
+        libgsm_decode_close, /* close */
+        libgsm_flush, /* flush */
+    };
+#endif
+#if CONFIG_LIBGSM_MS_DECODER
+AVCodec ff_libgsm_ms_decoder = {
+        "libgsm_ms", /* name */
+        NULL_IF_CONFIG_SMALL("libgsm GSM Microsoft variant"), /* long_name */
+        AVMEDIA_TYPE_AUDIO, /* type */
+        AV_CODEC_ID_GSM_MS, /* id */
+        CODEC_CAP_DR1, /* capabilities */
+        0, /* supported_framerates */
+        0, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        0, /* priv_class */
+        0, /* profiles */
+        sizeof(LibGSMDecodeContext), /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        libgsm_decode_init, /* init */
+        0, /* encode_sub */
+        0, /* encode2 */
+        libgsm_decode_frame, /* decode */
+        libgsm_decode_close, /* close */
+        libgsm_flush, /* flush */
+    };
 #endif

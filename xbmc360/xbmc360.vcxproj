@@ -120,9 +120,9 @@
       <MinimalRebuild>true</MinimalRebuild>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PreprocessorDefinitions>_DEBUG;_XBOX</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_XBOX;__STDC_CONSTANT_MACROS</PreprocessorDefinitions>
       <CallAttributedProfiling>Callcap</CallAttributedProfiling>
-      <AdditionalIncludeDirectories>..\xbmc360\;..\libraries\freetype\freetype\include;..\libraries\ffmpeg\;..\sources\360MilkDrop2;..\sources\PAPlayer\libFlac\include;..\sources\PAPlayer\libmad\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\xbmc360\;..\libraries\freetype\freetype\include;..\libraries\ffmpeg\;..\libraries\ffmpeg\vcproj\external\include;..\sources\360MilkDrop2;..\sources\PAPlayer\libFlac\include;..\sources\PAPlayer\libmad\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/EHa %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -131,8 +131,8 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
-      <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirenderd.lib;xmediad2.lib;Xonline.lib;libavformat.lib;libavfilter.lib;libavutil.lib;libswscale.lib;libavcodec.lib;pthreads.lib;freetype.lib;360MilkDrop2.lib;libFlac.lib;libmad.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\libraries\ffmpeg\vcproj\libavcodec\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\libswscale\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\libavutil\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\libavfilter\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\libavformat\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\pthreads\Debug;..\libraries\freetype\freetype\Debug;..\sources\360MilkDrop2\Debug;..\sources\PAPlayer\libFlac\Debug;..\sources\PAPlayer\libmad\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirenderd.lib;xmediad2.lib;Xonline.lib;libavformat.lib;libswresample.lib;libavutil.lib;libswscale.lib;libavcodec.lib;zlib.lib;pthreads.lib;freetype.lib;360MilkDrop2.lib;libFlac.lib;libmad.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\libraries\ffmpeg\vcproj\libavcodec\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\libswscale\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\libavutil\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\libavformat\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\libswresample\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\pthreads\Debug;..\libraries\ffmpeg\vcproj\external\zlib\Xbox 360\Debug;..\libraries\freetype\freetype\Debug;..\sources\360MilkDrop2\Debug;..\sources\PAPlayer\libFlac\Debug;..\sources\PAPlayer\libmad\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <StackCommitSize>812000</StackCommitSize>
     </Link>
     <Deploy>
@@ -152,9 +152,9 @@
       <MinimalRebuild>true</MinimalRebuild>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <PreprocessorDefinitions>_XBOX</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_XBOX;__STDC_CONSTANT_MACROS</PreprocessorDefinitions>
       <CallAttributedProfiling>Callcap</CallAttributedProfiling>
-      <AdditionalIncludeDirectories>..\libraries\FFmpeg 0.6 Xbox 360\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\xbmc360\;..\libraries\freetype\freetype\include;..\libraries\ffmpeg\;..\libraries\ffmpeg\vcproj\external\include;..\sources\360MilkDrop2;..\sources\PAPlayer\libFlac\include;..\sources\PAPlayer\libmad\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/EHa %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -166,8 +166,8 @@
     <Link>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
-      <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirender.lib;xmediad2.lib;xonline.lib;libavformat.lib;libavfilter.lib;libavutil.lib;libswscale.lib;libavcodec.lib;pthreads.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\libraries\FFmpeg 0.6 Xbox 360\vcproj\libavcodec\Xbox 360\Release;..\libraries\FFmpeg 0.6 Xbox 360\vcproj\libswscale\Xbox 360\Release;..\libraries\FFmpeg 0.6 Xbox 360\vcproj\libavutil\Xbox 360\Release;..\libraries\FFmpeg 0.6 Xbox 360\vcproj\libavfilter\Xbox 360\Release;..\libraries\FFmpeg 0.6 Xbox 360\vcproj\libavformat\Xbox 360\Release;..\libraries\FFmpeg 0.6 Xbox 360\vcproj\pthreads\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirender.lib;xmediad2.lib;xonline.lib;libavformat.lib;libavutil.lib;libswscale.lib;libavcodec.lib;zlib.lib;pthreads.lib;freetype.lib;360MilkDrop2.lib;libFlac.lib;libmad.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\libraries\ffmpeg\vcproj\libavcodec\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libswscale\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libavutil\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libavformat\Xbox 360\Release;..\libraries\ffmpeg\vcproj\pthreads\Release;..\libraries\ffmpeg\vcproj\external\zlib\Xbox 360\Release;..\libraries\freetype\freetype\Release;..\sources\360MilkDrop2\Release;..\sources\PAPlayer\libFlac\Release;..\sources\PAPlayer\libMad\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Deploy>
       <DeploymentType>CopyToHardDrive</DeploymentType>
@@ -257,8 +257,8 @@
       <ExceptionHandling>false</ExceptionHandling>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <PreprocessorDefinitions>NDEBUG;_XBOX</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\xbmc360\;..\libraries\freetype\freetype\include;..\libraries\ffmpeg\;..\sources\360MilkDrop2;..\sources\PAPlayer\libFlac\include;..\sources\PAPlayer\libmad\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;_XBOX;__STDC_CONSTANT_MACROS</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\xbmc360\;..\libraries\freetype\freetype\include;..\libraries\ffmpeg\;..\libraries\ffmpeg\vcproj\external\include;..\sources\360MilkDrop2;..\sources\PAPlayer\libFlac\include;..\sources\PAPlayer\libmad\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <PreschedulingOptimization>true</PreschedulingOptimization>
@@ -277,8 +277,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
       <SetChecksum>true</SetChecksum>
-      <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirender.lib;xmediad2.lib;xonline.lib;libavformat.lib;libavfilter.lib;libavutil.lib;libswscale.lib;libavcodec.lib;pthreads.lib;freetype.lib;360MilkDrop2.lib;libflac.lib;libmad.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\libraries\ffmpeg\vcproj\libavcodec\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libswscale\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libavutil\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libavfilter\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libavformat\Xbox 360\Release;..\libraries\ffmpeg\vcproj\pthreads\Release;..\libraries\freetype\freetype\Release;..\sources\360MilkDrop2\Release;..\sources\PAPlayer\libFlac\Release;..\sources\PAPlayer\libMad\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirender.lib;xmediad2.lib;xonline.lib;libavformat.lib;libswresample.lib;libavutil.lib;libswscale.lib;libavcodec.lib;pthreads.lib;zlib.lib;freetype.lib;360MilkDrop2.lib;libflac.lib;libmad.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\libraries\ffmpeg\vcproj\libavcodec\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libswscale\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libavutil\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libavformat\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libswresample\Xbox 360\Release;..\libraries\ffmpeg\vcproj\pthreads\Release;..\libraries\ffmpeg\vcproj\external\zlib\Xbox 360\Release;..\libraries\freetype\freetype\Release;..\sources\360MilkDrop2\Release;..\sources\PAPlayer\libFlac\Release;..\sources\PAPlayer\libMad\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Deploy>
       <DeploymentType>CopyToHardDrive</DeploymentType>

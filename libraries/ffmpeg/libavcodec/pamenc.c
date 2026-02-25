@@ -20,81 +20,98 @@
  */
 
 #include "avcodec.h"
-#include "bytestream.h"
+#include "internal.h"
 #include "pnm.h"
 
 
-static int pam_encode_frame(AVCodecContext *avctx, unsigned char *outbuf,
-                            int buf_size, void *data)
+static int pam_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
+                            const AVFrame *pict, int *got_packet)
 {
     PNMContext *s     = avctx->priv_data;
-    AVFrame *pict     = data;
-    AVFrame * const p = (AVFrame*)&s->picture;
-    int i, h, w, n, linesize, depth, maxval;
+    AVFrame * const p = &s->picture;
+    int i, h, w, n, linesize, depth, maxval, ret;
     const char *tuple_type;
     uint8_t *ptr;
-
-    if (buf_size < avpicture_get_size(avctx->pix_fmt, avctx->width, avctx->height) + 200) {
-        av_log(avctx, AV_LOG_ERROR, "encoded frame too large\n");
-        return -1;
-    }
-
-    *p           = *pict;
-    p->pict_type = FF_I_TYPE;
-    p->key_frame = 1;
-
-    s->bytestream_start =
-    s->bytestream       = outbuf;
-    s->bytestream_end   = outbuf+buf_size;
 
     h = avctx->height;
     w = avctx->width;
     switch (avctx->pix_fmt) {
-    case PIX_FMT_MONOWHITE:
-        n          = (w + 7) >> 3;
+    case AV_PIX_FMT_MONOBLACK:
+        n          = w;
         depth      = 1;
         maxval     = 1;
         tuple_type = "BLACKANDWHITE";
         break;
-    case PIX_FMT_GRAY8:
+    case AV_PIX_FMT_GRAY8:
         n          = w;
         depth      = 1;
         maxval     = 255;
         tuple_type = "GRAYSCALE";
         break;
-    case PIX_FMT_RGB24:
+    case AV_PIX_FMT_GRAY16BE:
+        n          = w * 2;
+        depth      = 1;
+        maxval     = 0xFFFF;
+        tuple_type = "GRAYSCALE";
+        break;
+    case AV_PIX_FMT_GRAY8A:
+        n          = w * 2;
+        depth      = 2;
+        maxval     = 255;
+        tuple_type = "GRAYSCALE_ALPHA";
+        break;
+    case AV_PIX_FMT_RGB24:
         n          = w * 3;
         depth      = 3;
         maxval     = 255;
         tuple_type = "RGB";
         break;
-    case PIX_FMT_RGB32:
+    case AV_PIX_FMT_RGBA:
         n          = w * 4;
         depth      = 4;
         maxval     = 255;
         tuple_type = "RGB_ALPHA";
         break;
+    case AV_PIX_FMT_RGB48BE:
+        n          = w * 6;
+        depth      = 3;
+        maxval     = 0xFFFF;
+        tuple_type = "RGB";
+        break;
+    case AV_PIX_FMT_RGBA64BE:
+        n          = w * 8;
+        depth      = 4;
+        maxval     = 0xFFFF;
+        tuple_type = "RGB_ALPHA";
+        break;
     default:
         return -1;
     }
+
+    if ((ret = ff_alloc_packet2(avctx, pkt, n*h + 200)) < 0)
+        return ret;
+
+    *p           = *pict;
+    p->pict_type = AV_PICTURE_TYPE_I;
+    p->key_frame = 1;
+
+    s->bytestream_start =
+    s->bytestream       = pkt->data;
+    s->bytestream_end   = pkt->data + pkt->size;
+
     snprintf(s->bytestream, s->bytestream_end - s->bytestream,
-             "P7\nWIDTH %d\nHEIGHT %d\nDEPTH %d\nMAXVAL %d\nTUPLETYPE %s\nENDHDR\n",
+             "P7\nWIDTH %d\nHEIGHT %d\nDEPTH %d\nMAXVAL %d\nTUPLTYPE %s\nENDHDR\n",
              w, h, depth, maxval, tuple_type);
     s->bytestream += strlen(s->bytestream);
 
     ptr      = p->data[0];
     linesize = p->linesize[0];
 
-    if (avctx->pix_fmt == PIX_FMT_RGB32) {
+    if (avctx->pix_fmt == AV_PIX_FMT_MONOBLACK){
         int j;
-        unsigned int v;
-
         for (i = 0; i < h; i++) {
-            for (j = 0; j < w; j++) {
-                v = ((uint32_t *)ptr)[j];
-                bytestream_put_be24(&s->bytestream, v);
-                *s->bytestream++ = v >> 24;
-            }
+            for (j = 0; j < w; j++)
+                *s->bytestream++ = ptr[j >> 3] >> (7 - j & 7) & 1;
             ptr += linesize;
         }
     } else {
@@ -104,38 +121,36 @@ static int pam_encode_frame(AVCodecContext *avctx, unsigned char *outbuf,
             ptr           += linesize;
         }
     }
-    return s->bytestream - s->bytestream_start;
+
+    pkt->size   = s->bytestream - s->bytestream_start;
+    pkt->flags |= AV_PKT_FLAG_KEY;
+    *got_packet = 1;
+    return 0;
 }
 
-const enum PixelFormat pam_encoder_formats[] = {PIX_FMT_RGB24, PIX_FMT_RGB32, PIX_FMT_GRAY8, PIX_FMT_MONOWHITE, PIX_FMT_NONE};
 
+static const enum AVPixelFormat _ff_pamenc_fmts_119[] = { AV_PIX_FMT_RGB24, AV_PIX_FMT_RGBA, AV_PIX_FMT_RGB48BE, AV_PIX_FMT_RGBA64BE, AV_PIX_FMT_GRAY8, AV_PIX_FMT_GRAY8A, AV_PIX_FMT_GRAY16BE, AV_PIX_FMT_MONOBLACK, AV_PIX_FMT_NONE };
 AVCodec ff_pam_encoder = {
-#ifndef MSC_STRUCTS
-    "pam",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_PAM,
-    sizeof(PNMContext),
-    ff_pnm_init,
-    pam_encode_frame,
-    .pix_fmts  = (const enum PixelFormat[]){PIX_FMT_RGB24, PIX_FMT_RGB32, PIX_FMT_GRAY8, PIX_FMT_MONOWHITE, PIX_FMT_NONE},
-    .long_name = NULL_IF_CONFIG_SMALL("PAM (Portable AnyMap) image"),
-#else
-    /* name = */ "pam",
-    /* type = */ AVMEDIA_TYPE_VIDEO,
-    /* id = */ CODEC_ID_PAM,
-    /* priv_data_size = */ sizeof(PNMContext),
-    /* init = */ ff_pnm_init,
-    /* encode = */ pam_encode_frame,
-    /* close = */ 0,
-    /* decode = */ 0,
-    /* capabilities = */ 0,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ pam_encoder_formats,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("PAM (Portable AnyMap) image"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ 0,
-    /* channel_layouts = */ 0,
-#endif
-};
+        "pam", /* name */
+        NULL_IF_CONFIG_SMALL("PAM (Portable AnyMap) image"), /* long_name */
+        AVMEDIA_TYPE_VIDEO, /* type */
+        AV_CODEC_ID_PAM, /* id */
+        0, /* capabilities */
+        0, /* supported_framerates */
+        _ff_pamenc_fmts_119, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        0, /* priv_class */
+        0, /* profiles */
+        sizeof(PNMContext), /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        ff_pnm_init, /* init */
+        0, /* encode_sub */
+        pam_encode_frame, /* encode2 */
+    };

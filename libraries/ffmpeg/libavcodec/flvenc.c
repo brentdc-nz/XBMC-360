@@ -25,7 +25,7 @@ void ff_flv_encode_picture_header(MpegEncContext * s, int picture_number)
 {
       int format;
 
-      align_put_bits(&s->pb);
+      avpriv_align_put_bits(&s->pb);
 
       put_bits(&s->pb, 17, 1);
       put_bits(&s->pb, 5, (s->h263_flv-1)); /* 0: h263 escape codes 1: 11-bit escape codes */
@@ -53,7 +53,7 @@ void ff_flv_encode_picture_header(MpegEncContext * s, int picture_number)
         put_bits(&s->pb, 16, s->width);
         put_bits(&s->pb, 16, s->height);
       }
-      put_bits(&s->pb, 2, s->pict_type == FF_P_TYPE); /* PictureType */
+      put_bits(&s->pb, 2, s->pict_type == AV_PICTURE_TYPE_P); /* PictureType */
       put_bits(&s->pb, 1, 1); /* DeblockingFlag: on */
       put_bits(&s->pb, 5, s->qscale); /* Quantizer */
       put_bits(&s->pb, 1, 0); /* ExtraInformation */
@@ -84,36 +84,32 @@ void ff_flv2_encode_ac_esc(PutBitContext *pb, int slevel, int level, int run, in
     }
 }
 
-const enum PixelFormat flv_encoder_formats[] = {PIX_FMT_YUV420P, PIX_FMT_NONE};
+FF_MPV_GENERIC_CLASS(flv)
 
+static const enum AVPixelFormat _ff_flvenc_fmts_50[] = { AV_PIX_FMT_YUV420P, AV_PIX_FMT_NONE };
 AVCodec ff_flv_encoder = {
-#ifndef MSC_STRUCTS
-    "flv",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_FLV1,
-    sizeof(MpegEncContext),
-    MPV_encode_init,
-    MPV_encode_picture,
-    MPV_encode_end,
-    .pix_fmts= (const enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_NONE},
-    .long_name= NULL_IF_CONFIG_SMALL("Flash Video (FLV) / Sorenson Spark / Sorenson H.263"),
-#else
-    /* name = */ "flv",
-    /* type = */ AVMEDIA_TYPE_VIDEO,
-    /* id = */ CODEC_ID_FLV1,
-    /* priv_data_size = */ sizeof(MpegEncContext),
-    /* init = */ MPV_encode_init,
-    /* encode = */ MPV_encode_picture,
-    /* close = */ MPV_encode_end,
-    /* decode = */ 0,
-    /* capabilities = */ 0,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ flv_encoder_formats,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("Flash Video (FLV) / Sorenson Spark / Sorenson H.263"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ 0,
-    /* channel_layouts = */ 0,
-#endif
-};
+        "flv", /* name */
+        NULL_IF_CONFIG_SMALL("FLV / Sorenson Spark / Sorenson H.263 (Flash Video)"), /* long_name */
+        AVMEDIA_TYPE_VIDEO, /* type */
+        AV_CODEC_ID_FLV1, /* id */
+        0, /* capabilities */
+        0, /* supported_framerates */
+        _ff_flvenc_fmts_50, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        &flv_class, /* priv_class */
+        0, /* profiles */
+        sizeof(MpegEncContext), /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        ff_MPV_encode_init, /* init */
+        0, /* encode_sub */
+        ff_MPV_encode_picture, /* encode2 */
+        0, /* decode */
+        ff_MPV_encode_end, /* close */
+    };

@@ -21,6 +21,7 @@
 
 #include "libavutil/intreadwrite.h"
 #include "avformat.h"
+#include "internal.h"
 #include "riff.h"
 
 #define DXA_EXTRA_SIZE  9
@@ -50,7 +51,7 @@ static int dxa_probe(AVProbeData *p)
         return 0;
 }
 
-static int dxa_read_header(AVFormatContext *s, AVFormatParameters *ap)
+static int dxa_read_header(AVFormatContext *s)
 {
     AVIOContext *pb = s->pb;
     DXAContext *c = s->priv_data;
@@ -64,12 +65,12 @@ static int dxa_read_header(AVFormatContext *s, AVFormatParameters *ap)
 
     tag = avio_rl32(pb);
     if (tag != MKTAG('D', 'E', 'X', 'A'))
-        return -1;
+        return AVERROR_INVALIDDATA;
     flags = avio_r8(pb);
     c->frames = avio_rb16(pb);
     if(!c->frames){
         av_log(s, AV_LOG_ERROR, "File contains no frames ???\n");
-        return -1;
+        return AVERROR_INVALIDDATA;
     }
 
     fps = avio_rb32(pb);
@@ -87,9 +88,9 @@ static int dxa_read_header(AVFormatContext *s, AVFormatParameters *ap)
     h = avio_rb16(pb);
     c->has_sound = 0;
 
-    st = av_new_stream(s, 0);
+    st = avformat_new_stream(s, NULL);
     if (!st)
-        return -1;
+        return AVERROR(ENOMEM);
 
     // Parse WAV data header
     if(avio_rl32(pb) == MKTAG('W', 'A', 'V', 'E')){
@@ -100,12 +101,14 @@ static int dxa_read_header(AVFormatContext *s, AVFormatParameters *ap)
         avio_skip(pb, 16);
         fsize = avio_rl32(pb);
 
-        ast = av_new_stream(s, 0);
+        ast = avformat_new_stream(s, NULL);
         if (!ast)
-            return -1;
+            return AVERROR(ENOMEM);
         ret = ff_get_wav_header(pb, ast->codec, fsize);
         if (ret < 0)
             return ret;
+        if (ast->codec->sample_rate > 0)
+            avpriv_set_pts_info(ast, 64, 1, ast->codec->sample_rate);
         // find 'data' chunk
         while(avio_tell(pb) < c->vidpos && !url_feof(pb)){
             tag = avio_rl32(pb);
@@ -123,11 +126,11 @@ static int dxa_read_header(AVFormatContext *s, AVFormatParameters *ap)
 
     /* now we are ready: build format streams */
     st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
-    st->codec->codec_id   = CODEC_ID_DXA;
+    st->codec->codec_id   = AV_CODEC_ID_DXA;
     st->codec->width      = w;
     st->codec->height     = h;
     av_reduce(&den, &num, den, num, (1UL<<31)-1);
-    av_set_pts_info(st, 33, num, den);
+    avpriv_set_pts_info(st, 33, num, den);
     /* flags & 0x80 means that image is interlaced,
      * flags & 0x40 means that image has double height
      * either way set true height
@@ -188,7 +191,7 @@ static int dxa_read_packet(AVFormatContext *s, AVPacket *pkt)
             size = AV_RB32(buf + 5);
             if(size > 0xFFFFFF){
                 av_log(s, AV_LOG_ERROR, "Frame size is too big: %d\n", size);
-                return -1;
+                return AVERROR_INVALIDDATA;
             }
             if(av_new_packet(pkt, size + DXA_EXTRA_SIZE + pal_size) < 0)
                 return AVERROR(ENOMEM);
@@ -206,17 +209,23 @@ static int dxa_read_packet(AVFormatContext *s, AVPacket *pkt)
             return 0;
         default:
             av_log(s, AV_LOG_ERROR, "Unknown tag %c%c%c%c\n", buf[0], buf[1], buf[2], buf[3]);
-            return -1;
+            return AVERROR_INVALIDDATA;
         }
     }
-    return AVERROR(EIO);
+    return AVERROR_EOF;
 }
 
 AVInputFormat ff_dxa_demuxer = {
-    "dxa",
-    NULL_IF_CONFIG_SMALL("DXA"),
-    sizeof(DXAContext),
-    dxa_probe,
-    dxa_read_header,
-    dxa_read_packet,
+    "dxa", /* name */
+    NULL_IF_CONFIG_SMALL("DXA"), /* long_name */
+    0, /* flags */
+    0, /* extensions */
+    0, /* codec_tag */
+    0, /* priv_class */
+    0, /* next */
+    0, /* raw_codec_id */
+    sizeof(DXAContext), /* priv_data_size */
+    dxa_probe, /* read_probe */
+    dxa_read_header, /* read_header */
+    dxa_read_packet, /* read_packet */
 };

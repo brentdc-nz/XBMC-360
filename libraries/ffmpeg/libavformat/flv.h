@@ -1,5 +1,4 @@
-/**
- * @file
+/*
  * FLV common header
  *
  * Copyright (c) 2006 The FFmpeg Project
@@ -19,6 +18,11 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
+
+/**
+ * @file
+ * FLV common header
  */
 
 #ifndef AVFORMAT_FLV_H
@@ -59,6 +63,13 @@ enum {
 };
 
 enum {
+    FLV_STREAM_TYPE_VIDEO,
+    FLV_STREAM_TYPE_AUDIO,
+    FLV_STREAM_TYPE_DATA,
+    FLV_STREAM_TYPE_NB,
+};
+
+enum {
     FLV_MONO   = 0,
     FLV_STEREO = 1,
 };
@@ -83,6 +94,8 @@ enum {
     FLV_CODECID_NELLYMOSER_16KHZ_MONO = 4 << FLV_AUDIO_CODECID_OFFSET,
     FLV_CODECID_NELLYMOSER_8KHZ_MONO = 5 << FLV_AUDIO_CODECID_OFFSET,
     FLV_CODECID_NELLYMOSER           = 6 << FLV_AUDIO_CODECID_OFFSET,
+    FLV_CODECID_PCM_ALAW             = 7 << FLV_AUDIO_CODECID_OFFSET,
+    FLV_CODECID_PCM_MULAW            = 8 << FLV_AUDIO_CODECID_OFFSET,
     FLV_CODECID_AAC                  = 10<< FLV_AUDIO_CODECID_OFFSET,
     FLV_CODECID_SPEEX                = 11<< FLV_AUDIO_CODECID_OFFSET,
 };
@@ -94,12 +107,16 @@ enum {
     FLV_CODECID_VP6A    = 5,
     FLV_CODECID_SCREEN2 = 6,
     FLV_CODECID_H264    = 7,
+    FLV_CODECID_REALH263= 8,
+    FLV_CODECID_MPEG4   = 9,
 };
 
 enum {
-    FLV_FRAME_KEY        = 1 << FLV_VIDEO_FRAMETYPE_OFFSET,
-    FLV_FRAME_INTER      = 2 << FLV_VIDEO_FRAMETYPE_OFFSET,
-    FLV_FRAME_DISP_INTER = 3 << FLV_VIDEO_FRAMETYPE_OFFSET,
+    FLV_FRAME_KEY            = 1 << FLV_VIDEO_FRAMETYPE_OFFSET, ///< key frame (for AVC, a seekable frame)
+    FLV_FRAME_INTER          = 2 << FLV_VIDEO_FRAMETYPE_OFFSET, ///< inter frame (for AVC, a non-seekable frame)
+    FLV_FRAME_DISP_INTER     = 3 << FLV_VIDEO_FRAMETYPE_OFFSET, ///< disposable inter frame (H.263 only)
+    FLV_FRAME_GENERATED_KEY  = 4 << FLV_VIDEO_FRAMETYPE_OFFSET, ///< generated key frame (reserved for server use only)
+    FLV_FRAME_VIDEO_INFO_CMD = 5 << FLV_VIDEO_FRAMETYPE_OFFSET, ///< video info/command frame
 };
 
 typedef enum {

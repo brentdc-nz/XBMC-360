@@ -84,9 +84,10 @@ retry:
 }
 
 AVCodecParser ff_pnm_parser = {
-    { CODEC_ID_PGM, CODEC_ID_PGMYUV, CODEC_ID_PPM, CODEC_ID_PBM, CODEC_ID_PAM},
-    sizeof(ParseContext),
-    NULL,
-    pnm_parse,
-    ff_parse_close,
-};
+        { AV_CODEC_ID_PGM, AV_CODEC_ID_PGMYUV, AV_CODEC_ID_PPM,
+                        AV_CODEC_ID_PBM, AV_CODEC_ID_PAM }, /* codec_ids */
+        sizeof(ParseContext), /* priv_data_size */
+        0, /* parser_init */
+        pnm_parse, /* parser_parse */
+        ff_parse_close, /* parser_close */
+    };

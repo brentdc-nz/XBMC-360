@@ -1,5 +1,5 @@
 /*
- * DVD subtitle decoding for ffmpeg
+ * DVD subtitle decoding
  * Copyright (c) 2005 Fabrice Bellard
  *
  * This file is part of FFmpeg.
@@ -19,7 +19,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include <string.h>
+
 #include "libavutil/intreadwrite.h"
+#include "libavutil/mem.h"
 #include "avcodec.h"
 
 /* parser definition */
@@ -42,8 +45,11 @@ static int dvdsub_parse(AVCodecParserContext *s,
     DVDSubParseContext *pc = s->priv_data;
 
     if (pc->packet_index == 0) {
-        if (buf_size < 2)
-            return 0;
+        if (buf_size < 2 || AV_RB16(buf) && buf_size < 6) {
+            if (buf_size)
+                av_log(avctx, AV_LOG_DEBUG, "Parser input %d too small\n", buf_size);
+            return buf_size;
+        }
         pc->packet_len = AV_RB16(buf);
         if (pc->packet_len == 0) /* HD-DVD subpicture packet */
             pc->packet_len = AV_RB32(buf+2);
@@ -77,9 +83,9 @@ static av_cold void dvdsub_parse_close(AVCodecParserContext *s)
 }
 
 AVCodecParser ff_dvdsub_parser = {
-    { CODEC_ID_DVD_SUBTITLE },
-    sizeof(DVDSubParseContext),
-    dvdsub_parse_init,
-    dvdsub_parse,
-    dvdsub_parse_close,
-};
+        { AV_CODEC_ID_DVD_SUBTITLE }, /* codec_ids */
+        sizeof(DVDSubParseContext), /* priv_data_size */
+        dvdsub_parse_init, /* parser_init */
+        dvdsub_parse, /* parser_parse */
+        dvdsub_parse_close, /* parser_close */
+    };

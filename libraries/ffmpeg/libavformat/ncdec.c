@@ -22,6 +22,7 @@
 
 #include "libavutil/intreadwrite.h"
 #include "avformat.h"
+#include "internal.h"
 
 #define NC_VIDEO_FLAG 0x1A5
 
@@ -43,18 +44,18 @@ static int nc_probe(AVProbeData *probe_packet)
     return 0;
 }
 
-static int nc_read_header(AVFormatContext *s, AVFormatParameters *ap)
+static int nc_read_header(AVFormatContext *s)
 {
-    AVStream *st = av_new_stream(s, 0);
+    AVStream *st = avformat_new_stream(s, NULL);
 
     if (!st)
         return AVERROR(ENOMEM);
 
     st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
-    st->codec->codec_id   = CODEC_ID_MPEG4;
+    st->codec->codec_id   = AV_CODEC_ID_MPEG4;
     st->need_parsing      = AVSTREAM_PARSE_FULL;
 
-    av_set_pts_info(st, 64, 1, 100);
+    avpriv_set_pts_info(st, 64, 1, 100);
 
     return 0;
 }
@@ -90,34 +91,17 @@ static int nc_read_packet(AVFormatContext *s, AVPacket *pkt)
     return size;
 }
 
-AVInputFormat nc_demuxer = {
-#ifndef MSC_STRUCTS
-    "nc",
-    NULL_IF_CONFIG_SMALL("NC camera feed format"),
-    0,
-    nc_probe,
-    nc_read_header,
-    nc_read_packet,
-    .extensions = "v",
+AVInputFormat ff_nc_demuxer = {
+    "nc", /* name */
+    NULL_IF_CONFIG_SMALL("NC camera feed"), /* long_name */
+    0, /* flags */
+    "v", /* extensions */
+    0, /* codec_tag */
+    0, /* priv_class */
+    0, /* next */
+    0, /* raw_codec_id */
+    0, /* priv_data_size */
+    nc_probe, /* read_probe */
+    nc_read_header, /* read_header */
+    nc_read_packet, /* read_packet */
 };
-#else
-	"nc",
-	NULL_IF_CONFIG_SMALL("NC camera feed format"),
-	0,
-	nc_probe,
-	nc_read_header,
-	nc_read_packet,
-	/*read_close = */ 0,
-	/*read_seek = */ 0,
-	/*read_timestamp = */ 0,
-	/*flags = */ 0,
-	/*extensions = */ "v",
-	/*value = */ 0,
-	/*read_play = */ 0,
-	/*read_pause = */ 0,
-	/*codec_tag = */ 0,
-	/*read_seek2 = */ 0,
-	/*metadata_conv = */ 0,
-	/*next = */ 0
-};
-#endif

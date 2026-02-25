@@ -28,6 +28,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "libavutil/common.h"
 #include "libavutil/intreadwrite.h"
 #include "avcodec.h"
 
@@ -275,6 +276,11 @@ static int decode_hextile(VmncContext *c, uint8_t* dst, const uint8_t* src, int 
                     }
                     xy = *src++;
                     wh = *src++;
+                    if (   (xy >> 4) + (wh >> 4) + 1 > w - i
+                        || (xy & 0xF) + (wh & 0xF)+1 > h - j) {
+                        av_log(c->avctx, AV_LOG_ERROR, "Rectangle outside picture\n");
+                        return AVERROR_INVALIDDATA;
+                    }
                     paint_rect(dst2, xy >> 4, xy & 0xF, (wh>>4)+1, (wh & 0xF)+1, fg, bpp, stride);
                 }
             }
@@ -284,7 +290,8 @@ static int decode_hextile(VmncContext *c, uint8_t* dst, const uint8_t* src, int 
     return src - ssrc;
 }
 
-static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, AVPacket *avpkt)
+static int decode_frame(AVCodecContext *avctx, void *data, int *got_frame,
+                        AVPacket *avpkt)
 {
     const uint8_t *buf = avpkt->data;
     int buf_size = avpkt->size;
@@ -293,7 +300,7 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, AVPac
     const uint8_t *src = buf;
     int dx, dy, w, h, depth, enc, chunks, res, size_left;
 
-    c->pic.reference = 1;
+    c->pic.reference = 3;
     c->pic.buffer_hints = FF_BUFFER_HINTS_VALID | FF_BUFFER_HINTS_PRESERVE | FF_BUFFER_HINTS_REUSABLE;
     if(avctx->reget_buffer(avctx, &c->pic) < 0){
         av_log(avctx, AV_LOG_ERROR, "reget_buffer() failed\n");
@@ -301,7 +308,7 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, AVPac
     }
 
     c->pic.key_frame = 0;
-    c->pic.pict_type = FF_P_TYPE;
+    c->pic.pict_type = AV_PICTURE_TYPE_P;
 
     //restore screen after cursor
     if(c->screendta) {
@@ -331,6 +338,10 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, AVPac
     src += 2;
     chunks = AV_RB16(src); src += 2;
     while(chunks--) {
+        if(buf_size - (src - buf) < 12) {
+            av_log(avctx, AV_LOG_ERROR, "Premature end of data!\n");
+            return -1;
+        }
         dx = AV_RB16(src); src += 2;
         dy = AV_RB16(src); src += 2;
         w  = AV_RB16(src); src += 2;
@@ -340,6 +351,10 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, AVPac
         size_left = buf_size - (src - buf);
         switch(enc) {
         case MAGIC_WMVd: // cursor
+            if (w*(int64_t)h*c->bpp2 > INT_MAX/2 - 2) {
+                av_log(avctx, AV_LOG_ERROR, "dimensions too large\n");
+                return AVERROR_INVALIDDATA;
+            }
             if(size_left < 2 + w * h * c->bpp2 * 2) {
                 av_log(avctx, AV_LOG_ERROR, "Premature end of data! (need %i got %i)\n", 2 + w * h * c->bpp2 * 2, size_left);
                 return -1;
@@ -374,7 +389,7 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, AVPac
             break;
         case MAGIC_WMVi: // ServerInitialization struct
             c->pic.key_frame = 1;
-            c->pic.pict_type = FF_I_TYPE;
+            c->pic.pict_type = AV_PICTURE_TYPE_I;
             depth = *src++;
             if(depth != c->bpp) {
                 av_log(avctx, AV_LOG_INFO, "Depth mismatch. Container %i bpp, Frame data: %i bpp\n", c->bpp, depth);
@@ -445,7 +460,7 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, AVPac
             put_cursor(outptr, c->pic.linesize[0], c, c->cur_x, c->cur_y);
         }
     }
-    *data_size = sizeof(AVFrame);
+    *got_frame      = 1;
     *(AVFrame*)data = c->pic;
 
     /* always report that the buffer was completely consumed */
@@ -470,19 +485,21 @@ static av_cold int decode_init(AVCodecContext *avctx)
 
     c->bpp = avctx->bits_per_coded_sample;
     c->bpp2 = c->bpp/8;
+    avcodec_get_frame_defaults(&c->pic);
 
     switch(c->bpp){
     case 8:
-        avctx->pix_fmt = PIX_FMT_PAL8;
+        avctx->pix_fmt = AV_PIX_FMT_PAL8;
         break;
     case 16:
-        avctx->pix_fmt = PIX_FMT_RGB555;
+        avctx->pix_fmt = AV_PIX_FMT_RGB555;
         break;
     case 32:
-        avctx->pix_fmt = PIX_FMT_RGB32;
+        avctx->pix_fmt = AV_PIX_FMT_RGB32;
         break;
     default:
         av_log(avctx, AV_LOG_ERROR, "Unsupported bitdepth %i\n", c->bpp);
+        return AVERROR_INVALIDDATA;
     }
 
     return 0;
@@ -509,35 +526,28 @@ static av_cold int decode_end(AVCodecContext *avctx)
 }
 
 AVCodec ff_vmnc_decoder = {
-#ifndef MSC_STRUCTS
-    "vmnc",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_VMNC,
-    sizeof(VmncContext),
-    decode_init,
-    NULL,
-    decode_end,
-    decode_frame,
-    CODEC_CAP_DR1,
-    .long_name = NULL_IF_CONFIG_SMALL("VMware Screen Codec / VMware Video"),
-#else
-    /* name = */ "vmnc",
-    /* type = */ AVMEDIA_TYPE_VIDEO,
-    /* id = */ CODEC_ID_VMNC,
-    /* priv_data_size = */ sizeof(VmncContext),
-    /* init = */ decode_init,
-    /* encode = */ NULL,
-    /* close = */ decode_end,
-    /* decode = */ decode_frame,
-    /* capabilities = */ CODEC_CAP_DR1,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ 0,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("VMware Screen Codec / VMware Video"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ 0,
-    /* channel_layouts = */ 0,
-#endif
-};
-
+        "vmnc", /* name */
+        NULL_IF_CONFIG_SMALL("VMware Screen Codec / VMware Video"), /* long_name */
+        AVMEDIA_TYPE_VIDEO, /* type */
+        AV_CODEC_ID_VMNC, /* id */
+        CODEC_CAP_DR1, /* capabilities */
+        0, /* supported_framerates */
+        0, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        0, /* priv_class */
+        0, /* profiles */
+        sizeof(VmncContext), /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        decode_init, /* init */
+        0, /* encode_sub */
+        0, /* encode2 */
+        decode_frame, /* decode */
+        decode_end, /* close */
+    };

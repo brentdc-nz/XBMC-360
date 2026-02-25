@@ -36,7 +36,7 @@
  * a little more compression by exploiting the fact that adjacent pixels
  * tend to be similar.
  *
- * Note that this decoder could use ffmpeg's optimized VLC facilities
+ * Note that this decoder could use libavcodec's optimized VLC facilities
  * rather than naive, tree-based Huffman decoding. However, there are 256
  * Huffman tables. Plus, the VLC bit coding order is right -> left instead
  * or left -> right, so all of the bits would have to be reversed. Further,
@@ -49,6 +49,8 @@
 #include <string.h>
 
 #include "avcodec.h"
+#include "internal.h"
+#include "libavutil/internal.h"
 
 #define HUFFMAN_TABLE_SIZE 64 * 1024
 #define HUF_TOKENS 256
@@ -72,9 +74,10 @@ typedef struct IdcinContext {
     hnode huff_nodes[256][HUF_TOKENS*2];
     int num_huff_nodes[256];
 
+    uint32_t pal[256];
 } IdcinContext;
 
-/*
+/**
  * Find the lowest probability node in a Huffman table, and mark it as
  * being assigned to a higher probability.
  * @return the node index of the lowest unused node, or -1 if all nodes
@@ -149,7 +152,7 @@ static av_cold int idcin_decode_init(AVCodecContext *avctx)
     unsigned char *histograms;
 
     s->avctx = avctx;
-    avctx->pix_fmt = PIX_FMT_PAL8;
+    avctx->pix_fmt = AV_PIX_FMT_PAL8;
 
     /* make sure the Huffman tables make it */
     if (s->avctx->extradata_size != HUFFMAN_TABLE_SIZE) {
@@ -165,12 +168,12 @@ static av_cold int idcin_decode_init(AVCodecContext *avctx)
         huff_build_tree(s, i);
     }
 
-    s->frame.data[0] = NULL;
+    avcodec_get_frame_defaults(&s->frame);
 
     return 0;
 }
 
-static void idcin_decode_vlcs(IdcinContext *s)
+static int idcin_decode_vlcs(IdcinContext *s)
 {
     hnode *hnodes;
     long x, y;
@@ -189,7 +192,7 @@ static void idcin_decode_vlcs(IdcinContext *s)
                 if(!bit_pos) {
                     if(dat_pos >= s->size) {
                         av_log(s->avctx, AV_LOG_ERROR, "Huffman decode error.\n");
-                        return;
+                        return -1;
                     }
                     bit_pos = 8;
                     v = s->buf[dat_pos++];
@@ -204,16 +207,19 @@ static void idcin_decode_vlcs(IdcinContext *s)
             prev = node_num;
         }
     }
+
+    return 0;
 }
 
 static int idcin_decode_frame(AVCodecContext *avctx,
-                              void *data, int *data_size,
+                              void *data, int *got_frame,
                               AVPacket *avpkt)
 {
     const uint8_t *buf = avpkt->data;
     int buf_size = avpkt->size;
     IdcinContext *s = avctx->priv_data;
-    AVPaletteControl *palette_control = avctx->palctrl;
+    const uint8_t *pal = av_packet_get_side_data(avpkt, AV_PKT_DATA_PALETTE, NULL);
+    int ret;
 
     s->buf = buf;
     s->size = buf_size;
@@ -221,22 +227,22 @@ static int idcin_decode_frame(AVCodecContext *avctx,
     if (s->frame.data[0])
         avctx->release_buffer(avctx, &s->frame);
 
-    if (avctx->get_buffer(avctx, &s->frame)) {
-        av_log(avctx, AV_LOG_ERROR, "  id CIN Video: get_buffer() failed\n");
-        return -1;
+    if ((ret = ff_get_buffer(avctx, &s->frame))) {
+        av_log(avctx, AV_LOG_ERROR, "get_buffer() failed\n");
+        return ret;
     }
 
-    idcin_decode_vlcs(s);
+    if (idcin_decode_vlcs(s))
+        return AVERROR_INVALIDDATA;
 
-    /* make the palette available on the way out */
-    memcpy(s->frame.data[1], palette_control->palette, PALETTE_COUNT * 4);
-    /* If palette changed inform application*/
-    if (palette_control->palette_changed) {
-        palette_control->palette_changed = 0;
+    if (pal) {
         s->frame.palette_has_changed = 1;
+        memcpy(s->pal, pal, AVPALETTE_SIZE);
     }
+    /* make the palette available on the way out */
+    memcpy(s->frame.data[1], s->pal, AVPALETTE_SIZE);
 
-    *data_size = sizeof(AVFrame);
+    *got_frame = 1;
     *(AVFrame*)data = s->frame;
 
     /* report that the buffer was completely consumed */
@@ -254,35 +260,28 @@ static av_cold int idcin_decode_end(AVCodecContext *avctx)
 }
 
 AVCodec ff_idcin_decoder = {
-#ifndef MSC_STRUCTS
-    "idcinvideo",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_IDCIN,
-    sizeof(IdcinContext),
-    idcin_decode_init,
-    NULL,
-    idcin_decode_end,
-    idcin_decode_frame,
-    CODEC_CAP_DR1,
-    .long_name = NULL_IF_CONFIG_SMALL("id Quake II CIN video"),
-#else
-    /* name = */ "idcinvideo",
-    /* type = */ AVMEDIA_TYPE_VIDEO,
-    /* id = */ CODEC_ID_IDCIN,
-    /* priv_data_size = */ sizeof(IdcinContext),
-    /* init = */ idcin_decode_init,
-    /* encode = */ NULL,
-    /* close = */ idcin_decode_end,
-    /* decode = */ idcin_decode_frame,
-    /* capabilities = */ CODEC_CAP_DR1,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ 0,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("id Quake II CIN video"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ 0,
-    /* channel_layouts = */ 0,
-#endif
-};
-
+        "idcinvideo", /* name */
+        NULL_IF_CONFIG_SMALL("id Quake II CIN video"), /* long_name */
+        AVMEDIA_TYPE_VIDEO, /* type */
+        AV_CODEC_ID_IDCIN, /* id */
+        CODEC_CAP_DR1, /* capabilities */
+        0, /* supported_framerates */
+        0, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        0, /* priv_class */
+        0, /* profiles */
+        sizeof(IdcinContext), /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        idcin_decode_init, /* init */
+        0, /* encode_sub */
+        0, /* encode2 */
+        idcin_decode_frame, /* decode */
+        idcin_decode_end, /* close */
+    };

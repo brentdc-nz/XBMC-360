@@ -29,7 +29,7 @@
 #include "h263.h"
 #include "put_bits.h"
 
-void rv20_encode_picture_header(MpegEncContext *s, int picture_number){
+void ff_rv20_encode_picture_header(MpegEncContext *s, int picture_number){
     put_bits(&s->pb, 2, s->pict_type); //I 0 vs. 1 ?
     put_bits(&s->pb, 1, 0);     /* unknown bit */
     put_bits(&s->pb, 5, s->qscale);
@@ -40,14 +40,14 @@ void rv20_encode_picture_header(MpegEncContext *s, int picture_number){
 
     put_bits(&s->pb, 1, s->no_rounding);
 
-    assert(s->f_code == 1);
-    assert(s->unrestricted_mv == 0);
-    assert(s->alt_inter_vlc == 0);
-    assert(s->umvplus == 0);
-    assert(s->modified_quant==1);
-    assert(s->loop_filter==1);
+    av_assert0(s->f_code == 1);
+    av_assert0(s->unrestricted_mv == 0);
+    av_assert0(s->alt_inter_vlc == 0);
+    av_assert0(s->umvplus == 0);
+    av_assert0(s->modified_quant==1);
+    av_assert0(s->loop_filter==1);
 
-    s->h263_aic= s->pict_type == FF_I_TYPE;
+    s->h263_aic= s->pict_type == AV_PICTURE_TYPE_I;
     if(s->h263_aic){
         s->y_dc_scale_table=
         s->c_dc_scale_table= ff_aic_dc_scale_table;
@@ -57,36 +57,32 @@ void rv20_encode_picture_header(MpegEncContext *s, int picture_number){
     }
 }
 
-const enum PixelFormat rv20_encoder_formats[] = {PIX_FMT_YUV420P, PIX_FMT_NONE};
+FF_MPV_GENERIC_CLASS(rv20)
 
+static const enum AVPixelFormat _ff_rv20enc_fmts_141[] = { AV_PIX_FMT_YUV420P, AV_PIX_FMT_NONE };
 AVCodec ff_rv20_encoder = {
-#ifndef MSC_STRUCTS
-    "rv20",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_RV20,
-    sizeof(MpegEncContext),
-    MPV_encode_init,
-    MPV_encode_picture,
-    MPV_encode_end,
-    .pix_fmts= (const enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_NONE},
-    .long_name= NULL_IF_CONFIG_SMALL("RealVideo 2.0"),
-#else
-    /* name = */ "rv20",
-    /* type = */ AVMEDIA_TYPE_VIDEO,
-    /* id = */ CODEC_ID_RV20,
-    /* priv_data_size = */ sizeof(MpegEncContext),
-    /* init = */ MPV_encode_init,
-    /* encode = */ MPV_encode_picture,
-    /* close = */ MPV_encode_end,
-    /* decode = */ 0,
-    /* capabilities = */ 0,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ rv20_encoder_formats,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("RealVideo 2.0"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ 0,
-    /* channel_layouts = */ 0,
-#endif
-};
+        "rv20", /* name */
+        NULL_IF_CONFIG_SMALL("RealVideo 2.0"), /* long_name */
+        AVMEDIA_TYPE_VIDEO, /* type */
+        AV_CODEC_ID_RV20, /* id */
+        0, /* capabilities */
+        0, /* supported_framerates */
+        _ff_rv20enc_fmts_141, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        &rv20_class, /* priv_class */
+        0, /* profiles */
+        sizeof(MpegEncContext), /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        ff_MPV_encode_init, /* init */
+        0, /* encode_sub */
+        ff_MPV_encode_picture, /* encode2 */
+        0, /* decode */
+        ff_MPV_encode_end, /* close */
+    };

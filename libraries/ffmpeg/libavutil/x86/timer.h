@@ -21,23 +21,23 @@
 #ifndef AVUTIL_X86_TIMER_H
 #define AVUTIL_X86_TIMER_H
 
-//JRS: convert
-#ifndef _MSC_VER
-	#include <stdint.h>
-	
-	#define AV_READ_TIME read_time
-	
-	static inline uint64_t read_time(void)
-	{
-	    uint32_t a, d;
-	    __asm__ volatile("rdtsc" : "=a" (a), "=d" (d));
-	    return ((uint64_t)d << 32) + a;
-	}
-#else
+#include <stdint.h>
 
-#if !defined(AV_READ_TIME) && HAVE_GETHRTIME
-#define AV_READ_TIME gethrtime
-#endif
-	
-#endif
+#if HAVE_INLINE_ASM
+
+#define AV_READ_TIME read_time
+
+static inline uint64_t read_time(void)
+{
+    uint32_t a, d;
+    __asm__ volatile("rdtsc" : "=a" (a), "=d" (d));
+    return ((uint64_t)d << 32) + a;
+}
+
+#elif HAVE_RDTSC
+
+#define AV_READ_TIME __rdtsc
+
+#endif /* HAVE_INLINE_ASM */
+
 #endif /* AVUTIL_X86_TIMER_H */

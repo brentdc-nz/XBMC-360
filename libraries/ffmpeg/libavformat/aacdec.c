@@ -22,6 +22,7 @@
 
 #include "libavutil/intreadwrite.h"
 #include "avformat.h"
+#include "internal.h"
 #include "rawdec.h"
 #include "id3v1.h"
 
@@ -30,10 +31,10 @@ static int adts_aac_probe(AVProbeData *p)
 {
     int max_frames = 0, first_frames = 0;
     int fsize, frames;
-    uint8_t *buf0 = p->buf;
-    uint8_t *buf2;
-    uint8_t *buf;
-    uint8_t *end = buf0 + p->buf_size - 7;
+    const uint8_t *buf0 = p->buf;
+    const uint8_t *buf2;
+    const uint8_t *buf;
+    const uint8_t *end = buf0 + p->buf_size - 7;
 
     buf = buf0;
 
@@ -44,9 +45,10 @@ static int adts_aac_probe(AVProbeData *p)
             uint32_t header = AV_RB16(buf2);
             if((header&0xFFF6) != 0xFFF0)
                 break;
-            fsize = (AV_RB32(buf2+3)>>13) & 0x8FFF;
+            fsize = (AV_RB32(buf2 + 3) >> 13) & 0x1FFF;
             if(fsize < 7)
                 break;
+            fsize = FFMIN(fsize, end - buf2);
             buf2 += fsize;
         }
         max_frames = FFMAX(max_frames, frames);
@@ -60,57 +62,37 @@ static int adts_aac_probe(AVProbeData *p)
     else                   return 0;
 }
 
-static int adts_aac_read_header(AVFormatContext *s,
-                                AVFormatParameters *ap)
+static int adts_aac_read_header(AVFormatContext *s)
 {
     AVStream *st;
 
-    st = av_new_stream(s, 0);
+    st = avformat_new_stream(s, NULL);
     if (!st)
         return AVERROR(ENOMEM);
 
     st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
-    st->codec->codec_id = s->iformat->value;
-    st->need_parsing = AVSTREAM_PARSE_FULL;
+    st->codec->codec_id = s->iformat->raw_codec_id;
+    st->need_parsing = AVSTREAM_PARSE_FULL_RAW;
 
     ff_id3v1_read(s);
 
     //LCM of all possible ADTS sample rates
-    av_set_pts_info(st, 64, 1, 28224000);
+    avpriv_set_pts_info(st, 64, 1, 28224000);
 
     return 0;
 }
 
 AVInputFormat ff_aac_demuxer = {
-    #ifndef MSC_STRUCTS
-    "aac",
-    NULL_IF_CONFIG_SMALL("raw ADTS AAC"),
-    0,
-    adts_aac_probe,
-    adts_aac_read_header,
-    ff_raw_read_partial_packet,
-    .flags= AVFMT_GENERIC_INDEX,
-    .extensions = "aac",
-    .value = CODEC_ID_AAC,
+    "aac", /* name */
+    NULL_IF_CONFIG_SMALL("raw ADTS AAC (Advanced Audio Coding)"), /* long_name */
+    AVFMT_GENERIC_INDEX, /* flags */
+    "aac", /* extensions */
+    0, /* codec_tag */
+    0, /* priv_class */
+    0, /* next */
+    AV_CODEC_ID_AAC, /* raw_codec_id */
+    0, /* priv_data_size */
+    adts_aac_probe, /* read_probe */
+    adts_aac_read_header, /* read_header */
+    ff_raw_read_partial_packet, /* read_packet */
 };
-#else
-	"aac",
-	NULL_IF_CONFIG_SMALL("raw ADTS AAC"),
-	0,
-	adts_aac_probe,
-	adts_aac_read_header,
-	ff_raw_read_partial_packet,
-	/*read_close = */ 0,
-	/*read_seek = */ 0,
-	/*read_timestamp = */ 0,
-	/*flags = */ AVFMT_GENERIC_INDEX,
-	/*extensions = */ "aac",
-	/*value = */ CODEC_ID_AAC,
-	/*read_play = */ 0,
-	/*read_pause = */ 0,
-	/*codec_tag = */ 0,
-	/*read_seek2 = */ 0,
-	/*metadata_conv = */ 0,
-	/*next = */ 0
-};
-#endif

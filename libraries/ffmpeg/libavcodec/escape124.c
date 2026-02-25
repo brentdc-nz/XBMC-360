@@ -20,8 +20,9 @@
  */
 
 #include "avcodec.h"
+#include "internal.h"
 
-#define ALT_BITSTREAM_READER_LE
+#define BITSTREAM_READER_LE
 #include "get_bits.h"
 
 typedef union MacroBlock {
@@ -48,8 +49,8 @@ typedef struct Escape124Context {
     CodeBook codebooks[3];
 } Escape124Context;
 
-static int can_safely_read(GetBitContext* gb, int bits) {
-    return get_bits_count(gb) + bits <= gb->size_in_bits;
+static int can_safely_read(GetBitContext* gb, uint64_t bits) {
+    return get_bits_left(gb) >= bits;
 }
 
 /**
@@ -61,7 +62,8 @@ static av_cold int escape124_decode_init(AVCodecContext *avctx)
 {
     Escape124Context *s = avctx->priv_data;
 
-    avctx->pix_fmt = PIX_FMT_RGB555;
+    avcodec_get_frame_defaults(&s->frame);
+    avctx->pix_fmt = AV_PIX_FMT_RGB555;
 
     s->num_superblocks = ((unsigned)avctx->width / 8) *
                          ((unsigned)avctx->height / 8);
@@ -89,7 +91,7 @@ static CodeBook unpack_codebook(GetBitContext* gb, unsigned depth,
     unsigned i, j;
     CodeBook cb = { 0 };
 
-    if (!can_safely_read(gb, size * 34))
+    if (!can_safely_read(gb, (uint64_t)size * 34))
         return cb;
 
     if (size >= INT_MAX / sizeof(MacroBlock))
@@ -162,15 +164,10 @@ static MacroBlock decode_macroblock(Escape124Context* s, GetBitContext* gb,
 
     // This condition can occur with invalid bitstreams and
     // *codebook_index == 2
-    if (block_index >= s->codebooks[*codebook_index].size)
-#ifndef _MSC_VER
-        return (MacroBlock) { { 0 } };
-#else
-		{
-			MacroBlock empty = {0};
-			return empty;
-		}
-#endif
+    if (block_index >= s->codebooks[*codebook_index].size) {
+        MacroBlock zero_block = { { 0 } };
+        return zero_block;
+    }
 
     return s->codebooks[*codebook_index].blocks[block_index];
 }
@@ -203,7 +200,7 @@ static const uint16_t mask_matrix[] = {0x1,   0x2,   0x10,   0x20,
                                        0x400, 0x800, 0x4000, 0x8000};
 
 static int escape124_decode_frame(AVCodecContext *avctx,
-                                  void *data, int *data_size,
+                                  void *data, int *got_frame,
                                   AVPacket *avpkt)
 {
     const uint8_t *buf = avpkt->data;
@@ -221,7 +218,8 @@ static int escape124_decode_frame(AVCodecContext *avctx,
     uint16_t* old_frame_data, *new_frame_data;
     unsigned old_stride, new_stride;
 
-    AVFrame new_frame = { { 0 } };
+    AVFrame new_frame;
+    avcodec_get_frame_defaults(&new_frame);
 
     init_get_bits(&gb, buf, buf_size * 8);
 
@@ -238,7 +236,7 @@ static int escape124_decode_frame(AVCodecContext *avctx,
     if (!(frame_flags & 0x114) || !(frame_flags & 0x7800000)) {
         av_log(NULL, AV_LOG_DEBUG, "Skipping frame\n");
 
-        *data_size = sizeof(AVFrame);
+        *got_frame = 1;
         *(AVFrame*)data = s->frame;
 
         return frame_size;
@@ -273,7 +271,7 @@ static int escape124_decode_frame(AVCodecContext *avctx,
     }
 
     new_frame.reference = 3;
-    if (avctx->get_buffer(avctx, &new_frame)) {
+    if (ff_get_buffer(avctx, &new_frame)) {
         av_log(avctx, AV_LOG_ERROR, "get_buffer() failed\n");
         return -1;
     }
@@ -364,42 +362,35 @@ static int escape124_decode_frame(AVCodecContext *avctx,
         avctx->release_buffer(avctx, &s->frame);
 
     *(AVFrame*)data = s->frame = new_frame;
-    *data_size = sizeof(AVFrame);
+    *got_frame = 1;
 
     return frame_size;
 }
 
 
 AVCodec ff_escape124_decoder = {
-#ifndef MSC_STRUCTS
-    "escape124",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_ESCAPE124,
-    sizeof(Escape124Context),
-    escape124_decode_init,
-    NULL,
-    escape124_decode_close,
-    escape124_decode_frame,
-    CODEC_CAP_DR1,
-    .long_name = NULL_IF_CONFIG_SMALL("Escape 124"),
-#else
-    /* name = */ "escape124",
-    /* type = */ AVMEDIA_TYPE_VIDEO,
-    /* id = */ CODEC_ID_ESCAPE124,
-    /* priv_data_size = */ sizeof(Escape124Context),
-    /* init = */ escape124_decode_init,
-    /* encode = */ NULL,
-    /* close = */ escape124_decode_close,
-    /* decode = */ escape124_decode_frame,
-    /* capabilities = */ CODEC_CAP_DR1,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ 0,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("Escape 124"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ 0,
-    /* channel_layouts = */ 0,
-#endif
-};
-
+        "escape124", /* name */
+        NULL_IF_CONFIG_SMALL("Escape 124"), /* long_name */
+        AVMEDIA_TYPE_VIDEO, /* type */
+        AV_CODEC_ID_ESCAPE124, /* id */
+        CODEC_CAP_DR1, /* capabilities */
+        0, /* supported_framerates */
+        0, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        0, /* priv_class */
+        0, /* profiles */
+        sizeof(Escape124Context), /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        escape124_decode_init, /* init */
+        0, /* encode_sub */
+        0, /* encode2 */
+        escape124_decode_frame, /* decode */
+        escape124_decode_close, /* close */
+    };

@@ -28,21 +28,21 @@
 #include "mpegvideo.h"
 #include "put_bits.h"
 
-void rv10_encode_picture_header(MpegEncContext *s, int picture_number)
+void ff_rv10_encode_picture_header(MpegEncContext *s, int picture_number)
 {
     int full_frame= 0;
 
-    align_put_bits(&s->pb);
+    avpriv_align_put_bits(&s->pb);
 
     put_bits(&s->pb, 1, 1);     /* marker */
 
-    put_bits(&s->pb, 1, (s->pict_type == FF_P_TYPE));
+    put_bits(&s->pb, 1, (s->pict_type == AV_PICTURE_TYPE_P));
 
     put_bits(&s->pb, 1, 0);     /* not PB frame */
 
     put_bits(&s->pb, 5, s->qscale);
 
-    if (s->pict_type == FF_I_TYPE) {
+    if (s->pict_type == AV_PICTURE_TYPE_I) {
         /* specific MPEG like DC coding not used */
     }
     /* if multiple packets per frame are sent, the position at which
@@ -56,36 +56,32 @@ void rv10_encode_picture_header(MpegEncContext *s, int picture_number)
     put_bits(&s->pb, 3, 0);     /* ignored */
 }
 
-const enum PixelFormat rv10_encoder_formats[] = {PIX_FMT_YUV420P, PIX_FMT_NONE};
+FF_MPV_GENERIC_CLASS(rv10)
 
+static const enum AVPixelFormat _ff_rv10enc_fmts_140[] = { AV_PIX_FMT_YUV420P, AV_PIX_FMT_NONE };
 AVCodec ff_rv10_encoder = {
-#ifndef MSC_STRUCTS
-    "rv10",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_RV10,
-    sizeof(MpegEncContext),
-    MPV_encode_init,
-    MPV_encode_picture,
-    MPV_encode_end,
-    .pix_fmts= (const enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_NONE},
-    .long_name= NULL_IF_CONFIG_SMALL("RealVideo 1.0"),
-#else
-    /* name = */ "rv10",
-    /* type = */ AVMEDIA_TYPE_VIDEO,
-    /* id = */ CODEC_ID_RV10,
-    /* priv_data_size = */ sizeof(MpegEncContext),
-    /* init = */ MPV_encode_init,
-    /* encode = */ MPV_encode_picture,
-    /* close = */ MPV_encode_end,
-    /* decode = */ 0,
-    /* capabilities = */ 0,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ rv10_encoder_formats,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("RealVideo 1.0"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ 0,
-    /* channel_layouts = */ 0,
-#endif
-};
+        "rv10", /* name */
+        NULL_IF_CONFIG_SMALL("RealVideo 1.0"), /* long_name */
+        AVMEDIA_TYPE_VIDEO, /* type */
+        AV_CODEC_ID_RV10, /* id */
+        0, /* capabilities */
+        0, /* supported_framerates */
+        _ff_rv10enc_fmts_140, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        &rv10_class, /* priv_class */
+        0, /* profiles */
+        sizeof(MpegEncContext), /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        ff_MPV_encode_init, /* init */
+        0, /* encode_sub */
+        ff_MPV_encode_picture, /* encode2 */
+        0, /* decode */
+        ff_MPV_encode_end, /* close */
+    };

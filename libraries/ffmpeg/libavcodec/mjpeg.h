@@ -127,6 +127,7 @@ static inline void put_marker(PutBitContext *p, int code)
 
 #define PREDICT(ret, topleft, top, left, predictor)\
     switch(predictor){\
+        case 0: ret= 0; break;\
         case 1: ret= left; break;\
         case 2: ret= top; break;\
         case 3: ret= topleft; break;\
@@ -137,16 +138,16 @@ static inline void put_marker(PutBitContext *p, int code)
         case 7: ret= (left + top)>>1; break;\
     }
 
-extern const uint8_t ff_mjpeg_bits_dc_luminance[];
-extern const uint8_t ff_mjpeg_val_dc[];
+extern av_export const uint8_t avpriv_mjpeg_bits_dc_luminance[];
+extern av_export const uint8_t avpriv_mjpeg_val_dc[];
 
-extern const uint8_t ff_mjpeg_bits_dc_chrominance[];
+extern av_export const uint8_t avpriv_mjpeg_bits_dc_chrominance[];
 
-extern const uint8_t ff_mjpeg_bits_ac_luminance[];
-extern const uint8_t ff_mjpeg_val_ac_luminance[];
+extern av_export const uint8_t avpriv_mjpeg_bits_ac_luminance[];
+extern av_export const uint8_t avpriv_mjpeg_val_ac_luminance[];
 
-extern const uint8_t ff_mjpeg_bits_ac_chrominance[];
-extern const uint8_t ff_mjpeg_val_ac_chrominance[];
+extern av_export const uint8_t avpriv_mjpeg_bits_ac_chrominance[];
+extern av_export const uint8_t avpriv_mjpeg_val_ac_chrominance[];
 
 void ff_mjpeg_build_huffman_codes(uint8_t *huff_size, uint16_t *huff_code,
                                   const uint8_t *bits_table,

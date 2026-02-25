@@ -54,7 +54,7 @@ static int h264_probe(AVProbeData *p)
             case     1:   sli++; break;
             case     5:   idr++; break;
             case     7:
-                if(p->buf[i+2]&0x0F)
+                if (p->buf[i + 2] & 0x03)
                     return 0;
                 sps++;
                 break;
@@ -67,36 +67,4 @@ static int h264_probe(AVProbeData *p)
     return 0;
 }
 
-AVInputFormat ff_h264_demuxer = {
-#ifndef MSC_STRUCTS
-    "h264",
-    NULL_IF_CONFIG_SMALL("raw H.264 video format"),
-    0,
-    h264_probe,
-    ff_raw_video_read_header,
-    ff_raw_read_partial_packet,
-    .flags= AVFMT_GENERIC_INDEX,
-    .extensions = "h26l,h264,264", //FIXME remove after writing mpeg4_probe
-    .value = CODEC_ID_H264,
-};
-#else
-	"h264",
-	NULL_IF_CONFIG_SMALL("raw H.264 video format"),
-	0,
-	h264_probe,
-	ff_raw_video_read_header,
-	ff_raw_read_partial_packet,
-	/*read_close = */ 0,
-	/*read_seek = */ 0,
-	/*read_timestamp = */ 0,
-	/*flags = */ AVFMT_GENERIC_INDEX,
-	/*extensions = */ "h26l,h264,264",
-	/*value = */ CODEC_ID_H264,
-	/*read_play = */ 0,
-	/*read_pause = */ 0,
-	/*codec_tag = */ 0,
-	/*read_seek2 = */ 0,
-	/*metadata_conv = */ 0,
-	/*next = */ 0
-};
-#endif
+FF_DEF_RAWVIDEO_DEMUXER(h264 , "raw H.264 video", h264_probe, "h26l,h264,264", AV_CODEC_ID_H264)

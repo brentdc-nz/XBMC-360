@@ -21,8 +21,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#if CONFIG_VDPAU
-
 #include <limits.h>
 #include "avcodec.h"
 #include "h264.h"
@@ -35,20 +33,66 @@
 #include "vdpau_internal.h"
 
 /**
- * \addtogroup VDPAU_Decoding
+ * @addtogroup VDPAU_Decoding
  *
  * @{
  */
 
-void ff_vdpau_h264_set_reference_frames(MpegEncContext *s)
+int ff_vdpau_common_start_frame(AVCodecContext *avctx,
+                                av_unused const uint8_t *buffer,
+                                av_unused uint32_t size)
 {
-    H264Context *h = s->avctx->priv_data;
+    AVVDPAUContext *hwctx = avctx->hwaccel_context;
+
+    hwctx->bitstream_buffers_used = 0;
+    return 0;
+}
+
+int ff_vdpau_mpeg_end_frame(AVCodecContext *avctx)
+{
+    AVVDPAUContext *hwctx = avctx->hwaccel_context;
+    MpegEncContext *s = avctx->priv_data;
+    VdpVideoSurface surf = ff_vdpau_get_surface_id(s->current_picture_ptr);
+
+    hwctx->render(hwctx->decoder, surf, (void *)&hwctx->info,
+                  hwctx->bitstream_buffers_used, hwctx->bitstream_buffers);
+
+    ff_mpeg_draw_horiz_band(s, 0, s->avctx->height);
+    hwctx->bitstream_buffers_used = 0;
+
+    return 0;
+}
+
+int ff_vdpau_add_buffer(AVCodecContext *avctx,
+                        const uint8_t *buf, uint32_t size)
+{
+    AVVDPAUContext *hwctx = avctx->hwaccel_context;
+    VdpBitstreamBuffer *buffers = hwctx->bitstream_buffers;
+
+    buffers = av_fast_realloc(buffers, &hwctx->bitstream_buffers_allocated,
+                              (hwctx->bitstream_buffers_used + 1) * sizeof(*buffers));
+    if (!buffers)
+        return AVERROR(ENOMEM);
+
+    hwctx->bitstream_buffers = buffers;
+    buffers += hwctx->bitstream_buffers_used++;
+
+    buffers->struct_version  = VDP_BITSTREAM_BUFFER_VERSION;
+    buffers->bitstream       = buf;
+    buffers->bitstream_bytes = size;
+    return 0;
+}
+
+/* Obsolete non-hwaccel VDPAU support below... */
+
+void ff_vdpau_h264_set_reference_frames(H264Context *h)
+{
     struct vdpau_render_state *render, *render_ref;
     VdpReferenceFrameH264 *rf, *rf2;
     Picture *pic;
     int i, list, pic_frame_idx;
 
-    render = (struct vdpau_render_state *)s->current_picture_ptr->data[0];
+    render = (struct vdpau_render_state *)h->cur_pic_ptr->f.data[0];
     assert(render);
 
     rf = &render->info.h264.referenceFrames[0];
@@ -60,11 +104,11 @@ void ff_vdpau_h264_set_reference_frames(MpegEncContext *s)
 
         for (i = 0; i < ls; ++i) {
             pic = lp[i];
-            if (!pic || !pic->reference)
+            if (!pic || !pic->f.reference)
                 continue;
             pic_frame_idx = pic->long_ref ? pic->pic_id : pic->frame_num;
 
-            render_ref = (struct vdpau_render_state *)pic->data[0];
+            render_ref = (struct vdpau_render_state *)pic->f.data[0];
             assert(render_ref);
 
             rf2 = &render->info.h264.referenceFrames[0];
@@ -78,8 +122,8 @@ void ff_vdpau_h264_set_reference_frames(MpegEncContext *s)
                 ++rf2;
             }
             if (rf2 != rf) {
-                rf2->top_is_reference    |= (pic->reference & PICT_TOP_FIELD)    ? VDP_TRUE : VDP_FALSE;
-                rf2->bottom_is_reference |= (pic->reference & PICT_BOTTOM_FIELD) ? VDP_TRUE : VDP_FALSE;
+                rf2->top_is_reference    |= (pic->f.reference & PICT_TOP_FIELD)    ? VDP_TRUE : VDP_FALSE;
+                rf2->bottom_is_reference |= (pic->f.reference & PICT_BOTTOM_FIELD) ? VDP_TRUE : VDP_FALSE;
                 continue;
             }
 
@@ -88,8 +132,8 @@ void ff_vdpau_h264_set_reference_frames(MpegEncContext *s)
 
             rf->surface             = render_ref->surface;
             rf->is_long_term        = pic->long_ref;
-            rf->top_is_reference    = (pic->reference & PICT_TOP_FIELD)    ? VDP_TRUE : VDP_FALSE;
-            rf->bottom_is_reference = (pic->reference & PICT_BOTTOM_FIELD) ? VDP_TRUE : VDP_FALSE;
+            rf->top_is_reference    = (pic->f.reference & PICT_TOP_FIELD)    ? VDP_TRUE : VDP_FALSE;
+            rf->bottom_is_reference = (pic->f.reference & PICT_BOTTOM_FIELD) ? VDP_TRUE : VDP_FALSE;
             rf->field_order_cnt[0]  = pic->field_poc[0];
             rf->field_order_cnt[1]  = pic->field_poc[1];
             rf->frame_idx           = pic_frame_idx;
@@ -109,12 +153,9 @@ void ff_vdpau_h264_set_reference_frames(MpegEncContext *s)
     }
 }
 
-void ff_vdpau_add_data_chunk(MpegEncContext *s,
-                             const uint8_t *buf, int buf_size)
+void ff_vdpau_add_data_chunk(uint8_t *data, const uint8_t *buf, int buf_size)
 {
-    struct vdpau_render_state *render;
-
-    render = (struct vdpau_render_state *)s->current_picture_ptr->data[0];
+    struct vdpau_render_state *render = (struct vdpau_render_state*)data;
     assert(render);
 
     render->bitstream_buffers= av_fast_realloc(
@@ -129,17 +170,16 @@ void ff_vdpau_add_data_chunk(MpegEncContext *s,
     render->bitstream_buffers_used++;
 }
 
-void ff_vdpau_h264_picture_start(MpegEncContext *s)
+void ff_vdpau_h264_picture_start(H264Context *h)
 {
-    H264Context *h = s->avctx->priv_data;
     struct vdpau_render_state *render;
     int i;
 
-    render = (struct vdpau_render_state *)s->current_picture_ptr->data[0];
+    render = (struct vdpau_render_state *)h->cur_pic_ptr->f.data[0];
     assert(render);
 
     for (i = 0; i < 2; ++i) {
-        int foc = s->current_picture_ptr->field_poc[i];
+        int foc = h->cur_pic_ptr->field_poc[i];
         if (foc == INT_MAX)
             foc = 0;
         render->info.h264.field_order_cnt[i] = foc;
@@ -148,21 +188,20 @@ void ff_vdpau_h264_picture_start(MpegEncContext *s)
     render->info.h264.frame_num = h->frame_num;
 }
 
-void ff_vdpau_h264_picture_complete(MpegEncContext *s)
+void ff_vdpau_h264_picture_complete(H264Context *h)
 {
-    H264Context *h = s->avctx->priv_data;
     struct vdpau_render_state *render;
 
-    render = (struct vdpau_render_state *)s->current_picture_ptr->data[0];
+    render = (struct vdpau_render_state *)h->cur_pic_ptr->f.data[0];
     assert(render);
 
     render->info.h264.slice_count = h->slice_num;
     if (render->info.h264.slice_count < 1)
         return;
 
-    render->info.h264.is_reference                           = (s->current_picture_ptr->reference & 3) ? VDP_TRUE : VDP_FALSE;
-    render->info.h264.field_pic_flag                         = s->picture_structure != PICT_FRAME;
-    render->info.h264.bottom_field_flag                      = s->picture_structure == PICT_BOTTOM_FIELD;
+    render->info.h264.is_reference                           = (h->cur_pic_ptr->f.reference & 3) ? VDP_TRUE : VDP_FALSE;
+    render->info.h264.field_pic_flag                         = h->picture_structure != PICT_FRAME;
+    render->info.h264.bottom_field_flag                      = h->picture_structure == PICT_BOTTOM_FIELD;
     render->info.h264.num_ref_frames                         = h->sps.ref_frame_count;
     render->info.h264.mb_adaptive_frame_field_flag           = h->sps.mb_aff && !render->info.h264.field_pic_flag;
     render->info.h264.constrained_intra_pred_flag            = h->pps.constrained_intra_pred;
@@ -185,9 +224,10 @@ void ff_vdpau_h264_picture_complete(MpegEncContext *s)
     render->info.h264.deblocking_filter_control_present_flag = h->pps.deblocking_filter_parameters_present;
     render->info.h264.redundant_pic_cnt_present_flag         = h->pps.redundant_pic_cnt_present;
     memcpy(render->info.h264.scaling_lists_4x4, h->pps.scaling_matrix4, sizeof(render->info.h264.scaling_lists_4x4));
-    memcpy(render->info.h264.scaling_lists_8x8, h->pps.scaling_matrix8, sizeof(render->info.h264.scaling_lists_8x8));
+    memcpy(render->info.h264.scaling_lists_8x8[0], h->pps.scaling_matrix8[0], sizeof(render->info.h264.scaling_lists_8x8[0]));
+    memcpy(render->info.h264.scaling_lists_8x8[1], h->pps.scaling_matrix8[3], sizeof(render->info.h264.scaling_lists_8x8[0]));
 
-    ff_draw_horiz_band(s, 0, s->avctx->height);
+    ff_h264_draw_horiz_band(h, 0, h->avctx->height);
     render->bitstream_buffers_used = 0;
 }
 
@@ -199,7 +239,7 @@ void ff_vdpau_mpeg_picture_complete(MpegEncContext *s, const uint8_t *buf,
 
     if (!s->current_picture_ptr) return;
 
-    render = (struct vdpau_render_state *)s->current_picture_ptr->data[0];
+    render = (struct vdpau_render_state *)s->current_picture_ptr->f.data[0];
     assert(render);
 
     /* fill VdpPictureInfoMPEG1Or2 struct */
@@ -227,24 +267,24 @@ void ff_vdpau_mpeg_picture_complete(MpegEncContext *s, const uint8_t *buf,
     render->info.mpeg.backward_reference         = VDP_INVALID_HANDLE;
 
     switch(s->pict_type){
-    case  FF_B_TYPE:
-        next = (struct vdpau_render_state *)s->next_picture.data[0];
+    case  AV_PICTURE_TYPE_B:
+        next = (struct vdpau_render_state *)s->next_picture.f.data[0];
         assert(next);
         render->info.mpeg.backward_reference     = next->surface;
         // no return here, going to set forward prediction
-    case  FF_P_TYPE:
-        last = (struct vdpau_render_state *)s->last_picture.data[0];
+    case  AV_PICTURE_TYPE_P:
+        last = (struct vdpau_render_state *)s->last_picture.f.data[0];
         if (!last) // FIXME: Does this test make sense?
             last = render; // predict second field from the first
         render->info.mpeg.forward_reference      = last->surface;
     }
 
-    ff_vdpau_add_data_chunk(s, buf, buf_size);
+    ff_vdpau_add_data_chunk(s->current_picture_ptr->f.data[0], buf, buf_size);
 
     render->info.mpeg.slice_count                = slice_count;
 
     if (slice_count)
-        ff_draw_horiz_band(s, 0, s->avctx->height);
+        ff_mpeg_draw_horiz_band(s, 0, s->avctx->height);
     render->bitstream_buffers_used               = 0;
 }
 
@@ -254,7 +294,7 @@ void ff_vdpau_vc1_decode_picture(MpegEncContext *s, const uint8_t *buf,
     VC1Context *v = s->avctx->priv_data;
     struct vdpau_render_state *render, *last, *next;
 
-    render = (struct vdpau_render_state *)s->current_picture.data[0];
+    render = (struct vdpau_render_state *)s->current_picture.f.data[0];
     assert(render);
 
     /*  fill LvPictureInfoVC1 struct */
@@ -297,23 +337,23 @@ void ff_vdpau_vc1_decode_picture(MpegEncContext *s, const uint8_t *buf,
         render->info.vc1.picture_type = s->pict_type - 1 + s->pict_type / 3;
 
     switch(s->pict_type){
-    case  FF_B_TYPE:
-        next = (struct vdpau_render_state *)s->next_picture.data[0];
+    case  AV_PICTURE_TYPE_B:
+        next = (struct vdpau_render_state *)s->next_picture.f.data[0];
         assert(next);
         render->info.vc1.backward_reference = next->surface;
         // no break here, going to set forward prediction
-    case  FF_P_TYPE:
-        last = (struct vdpau_render_state *)s->last_picture.data[0];
+    case  AV_PICTURE_TYPE_P:
+        last = (struct vdpau_render_state *)s->last_picture.f.data[0];
         if (!last) // FIXME: Does this test make sense?
             last = render; // predict second field from the first
         render->info.vc1.forward_reference = last->surface;
     }
 
-    ff_vdpau_add_data_chunk(s, buf, buf_size);
+    ff_vdpau_add_data_chunk(s->current_picture_ptr->f.data[0], buf, buf_size);
 
     render->info.vc1.slice_count          = 1;
 
-    ff_draw_horiz_band(s, 0, s->avctx->height);
+    ff_mpeg_draw_horiz_band(s, 0, s->avctx->height);
     render->bitstream_buffers_used        = 0;
 }
 
@@ -325,7 +365,7 @@ void ff_vdpau_mpeg4_decode_picture(MpegEncContext *s, const uint8_t *buf,
 
     if (!s->current_picture_ptr) return;
 
-    render = (struct vdpau_render_state *)s->current_picture_ptr->data[0];
+    render = (struct vdpau_render_state *)s->current_picture_ptr->f.data[0];
     assert(render);
 
     /* fill VdpPictureInfoMPEG4Part2 struct */
@@ -341,7 +381,7 @@ void ff_vdpau_mpeg4_decode_picture(MpegEncContext *s, const uint8_t *buf,
     render->info.mpeg4.interlaced                        = !s->progressive_sequence;
     render->info.mpeg4.quant_type                        = s->mpeg_quant;
     render->info.mpeg4.quarter_sample                    = s->quarter_sample;
-    render->info.mpeg4.short_video_header                = s->avctx->codec->id == CODEC_ID_H263;
+    render->info.mpeg4.short_video_header                = s->avctx->codec->id == AV_CODEC_ID_H263;
     render->info.mpeg4.rounding_control                  = s->no_rounding;
     render->info.mpeg4.alternate_vertical_scan_flag      = s->alternate_scan;
     render->info.mpeg4.top_field_first                   = s->top_field_first;
@@ -353,23 +393,22 @@ void ff_vdpau_mpeg4_decode_picture(MpegEncContext *s, const uint8_t *buf,
     render->info.mpeg4.backward_reference                = VDP_INVALID_HANDLE;
 
     switch (s->pict_type) {
-    case FF_B_TYPE:
-        next = (struct vdpau_render_state *)s->next_picture.data[0];
+    case AV_PICTURE_TYPE_B:
+        next = (struct vdpau_render_state *)s->next_picture.f.data[0];
         assert(next);
         render->info.mpeg4.backward_reference     = next->surface;
         render->info.mpeg4.vop_coding_type        = 2;
         // no break here, going to set forward prediction
-    case FF_P_TYPE:
-        last = (struct vdpau_render_state *)s->last_picture.data[0];
+    case AV_PICTURE_TYPE_P:
+        last = (struct vdpau_render_state *)s->last_picture.f.data[0];
         assert(last);
         render->info.mpeg4.forward_reference      = last->surface;
     }
 
-    ff_vdpau_add_data_chunk(s, buf, buf_size);
+    ff_vdpau_add_data_chunk(s->current_picture_ptr->f.data[0], buf, buf_size);
 
-    ff_draw_horiz_band(s, 0, s->avctx->height);
+    ff_mpeg_draw_horiz_band(s, 0, s->avctx->height);
     render->bitstream_buffers_used = 0;
 }
 
 /* @}*/
-#endif

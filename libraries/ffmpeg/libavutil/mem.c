@@ -24,22 +24,22 @@
  * default memory allocator for libavutil
  */
 
+#define _XOPEN_SOURCE 600
+
 #include "config.h"
 
 #include <limits.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #if HAVE_MALLOC_H
 #include <malloc.h>
 #endif
 
+#include "avassert.h"
 #include "avutil.h"
+#include "intreadwrite.h"
 #include "mem.h"
-
-/* here we can use OS-dependent allocation functions */
-#undef free
-#undef malloc
-#undef realloc
 
 #ifdef MALLOC_PREFIX
 
@@ -57,11 +57,20 @@ void  free(void *ptr);
 
 #endif /* MALLOC_PREFIX */
 
-/* You can redefine av_malloc and av_free in your project to use your
-   memory allocator. You do not need to suppress this file because the
-   linker will do it automatically. */
+#define ALIGN (HAVE_AVX ? 32 : 16)
 
-void *av_malloc(FF_INTERNAL_MEM_TYPE size)
+/* NOTE: if you want to override these functions with your own
+ * implementations (not recommended) you have to link libav* as
+ * dynamic libraries and remove -Wl,-Bsymbolic from the linker flags.
+ * Note that this will cost performance. */
+
+static size_t max_alloc_size= INT_MAX;
+
+void av_max_alloc(size_t max){
+    max_alloc_size = max;
+}
+
+void *av_malloc(size_t size)
 {
     void *ptr = NULL;
 #if CONFIG_MEMALIGN_HACK
@@ -69,78 +78,118 @@ void *av_malloc(FF_INTERNAL_MEM_TYPE size)
 #endif
 
     /* let's disallow possible ambiguous cases */
-    if(size > (INT_MAX-16) )
+    if (size > (max_alloc_size - 32))
         return NULL;
 
 #if CONFIG_MEMALIGN_HACK
-    ptr = malloc(size+16);
-    if(!ptr)
+    ptr = malloc(size + ALIGN);
+    if (!ptr)
         return ptr;
-    diff= ((-(long)ptr - 1)&15) + 1;
-    ptr = (char*)ptr + diff;
-    ((char*)ptr)[-1]= diff;
+    diff              = ((~(long)ptr)&(ALIGN - 1)) + 1;
+    ptr               = (char *)ptr + diff;
+    ((char *)ptr)[-1] = diff;
 #elif HAVE_POSIX_MEMALIGN
-    if (posix_memalign(&ptr,16,size))
+    if (size) //OS X on SDK 10.6 has a broken posix_memalign implementation
+    if (posix_memalign(&ptr, ALIGN, size))
         ptr = NULL;
+#elif HAVE_ALIGNED_MALLOC
+    ptr = _aligned_malloc(size, ALIGN);
 #elif HAVE_MEMALIGN
-    ptr = memalign(16,size);
+#ifndef __DJGPP__
+    ptr = memalign(ALIGN, size);
+#else
+    ptr = memalign(size, ALIGN);
+#endif
     /* Why 64?
-       Indeed, we should align it:
-         on 4 for 386
-         on 16 for 486
-         on 32 for 586, PPro - K6-III
-         on 64 for K7 (maybe for P3 too).
-       Because L1 and L2 caches are aligned on those values.
-       But I don't want to code such logic here!
+     * Indeed, we should align it:
+     *   on  4 for 386
+     *   on 16 for 486
+     *   on 32 for 586, PPro - K6-III
+     *   on 64 for K7 (maybe for P3 too).
+     * Because L1 and L2 caches are aligned on those values.
+     * But I don't want to code such logic here!
      */
-     /* Why 16?
-        Because some CPUs need alignment, for example SSE2 on P4, & most RISC CPUs
-        it will just trigger an exception and the unaligned load will be done in the
-        exception handler or it will just segfault (SSE2 on P4).
-        Why not larger? Because I did not see a difference in benchmarks ...
+    /* Why 32?
+     * For AVX ASM. SSE / NEON needs only 16.
+     * Why not larger? Because I did not see a difference in benchmarks ...
      */
-     /* benchmarks with P3
-        memalign(64)+1          3071,3051,3032
-        memalign(64)+2          3051,3032,3041
-        memalign(64)+4          2911,2896,2915
-        memalign(64)+8          2545,2554,2550
-        memalign(64)+16         2543,2572,2563
-        memalign(64)+32         2546,2545,2571
-        memalign(64)+64         2570,2533,2558
-
-        BTW, malloc seems to do 8-byte alignment by default here.
+    /* benchmarks with P3
+     * memalign(64) + 1          3071, 3051, 3032
+     * memalign(64) + 2          3051, 3032, 3041
+     * memalign(64) + 4          2911, 2896, 2915
+     * memalign(64) + 8          2545, 2554, 2550
+     * memalign(64) + 16         2543, 2572, 2563
+     * memalign(64) + 32         2546, 2545, 2571
+     * memalign(64) + 64         2570, 2533, 2558
+     *
+     * BTW, malloc seems to do 8-byte alignment by default here.
      */
 #else
     ptr = malloc(size);
 #endif
+    if(!ptr && !size) {
+        size = 1;
+        ptr= av_malloc(1);
+    }
+#if CONFIG_MEMORY_POISONING
+    if (ptr)
+        memset(ptr, 0x2a, size);
+#endif
     return ptr;
 }
 
-void *av_realloc(void *ptr, FF_INTERNAL_MEM_TYPE size)
+void *av_realloc(void *ptr, size_t size)
 {
 #if CONFIG_MEMALIGN_HACK
     int diff;
 #endif
 
     /* let's disallow possible ambiguous cases */
-    if(size > (INT_MAX-16) )
+    if (size > (max_alloc_size - 32))
         return NULL;
 
 #if CONFIG_MEMALIGN_HACK
     //FIXME this isn't aligned correctly, though it probably isn't needed
-    if(!ptr) return av_malloc(size);
-    diff= ((char*)ptr)[-1];
-    return (char*)realloc((char*)ptr - diff, size + diff) + diff;
+    if (!ptr)
+        return av_malloc(size);
+    diff = ((char *)ptr)[-1];
+    av_assert0(diff>0 && diff<=ALIGN);
+    ptr = realloc((char *)ptr - diff, size + diff);
+    if (ptr)
+        ptr = (char *)ptr + diff;
+    return ptr;
+#elif HAVE_ALIGNED_MALLOC
+    return _aligned_realloc(ptr, size + !size, ALIGN);
 #else
-    return realloc(ptr, size);
+    return realloc(ptr, size + !size);
 #endif
+}
+
+void *av_realloc_f(void *ptr, size_t nelem, size_t elsize)
+{
+    size_t size;
+    void *r;
+
+    if (av_size_mult(elsize, nelem, &size)) {
+        av_free(ptr);
+        return NULL;
+    }
+    r = av_realloc(ptr, size);
+    if (!r && size)
+        av_free(ptr);
+    return r;
 }
 
 void av_free(void *ptr)
 {
 #if CONFIG_MEMALIGN_HACK
-    if (ptr)
-        free((char*)ptr - ((char*)ptr)[-1]);
+    if (ptr) {
+        int v= ((char *)ptr)[-1];
+        av_assert0(v>0 && v<=ALIGN);
+        free((char *)ptr - v);
+    }
+#elif HAVE_ALIGNED_MALLOC
+    _aligned_free(ptr);
 #else
     free(ptr);
 #endif
@@ -148,12 +197,12 @@ void av_free(void *ptr)
 
 void av_freep(void *arg)
 {
-    void **ptr= (void**)arg;
+    void **ptr = (void **)arg;
     av_free(*ptr);
     *ptr = NULL;
 }
 
-void *av_mallocz(FF_INTERNAL_MEM_TYPE size)
+void *av_mallocz(size_t size)
 {
     void *ptr = av_malloc(size);
     if (ptr)
@@ -161,15 +210,167 @@ void *av_mallocz(FF_INTERNAL_MEM_TYPE size)
     return ptr;
 }
 
+void *av_calloc(size_t nmemb, size_t size)
+{
+    if (size <= 0 || nmemb >= INT_MAX / size)
+        return NULL;
+    return av_mallocz(nmemb * size);
+}
+
 char *av_strdup(const char *s)
 {
-    char *ptr= NULL;
-    if(s){
+    char *ptr = NULL;
+    if (s) {
         int len = strlen(s) + 1;
         ptr = av_malloc(len);
         if (ptr)
             memcpy(ptr, s, len);
     }
     return ptr;
+}
+
+/* add one element to a dynamic array */
+void av_dynarray_add(void *tab_ptr, int *nb_ptr, void *elem)
+{
+    /* see similar ffmpeg.c:grow_array() */
+    int nb, nb_alloc;
+    intptr_t *tab;
+
+    nb = *nb_ptr;
+    tab = *(intptr_t**)tab_ptr;
+    if ((nb & (nb - 1)) == 0) {
+        if (nb == 0)
+            nb_alloc = 1;
+        else
+            nb_alloc = nb * 2;
+        tab = av_realloc(tab, nb_alloc * sizeof(intptr_t));
+        *(intptr_t**)tab_ptr = tab;
+    }
+    tab[nb++] = (intptr_t)elem;
+    *nb_ptr = nb;
+}
+
+static void fill16(uint8_t *dst, int len)
+{
+    uint32_t v = AV_RN16(dst - 2);
+
+    v |= v << 16;
+
+    while (len >= 4) {
+        AV_WN32(dst, v);
+        dst += 4;
+        len -= 4;
+    }
+
+    while (len--) {
+        *dst = dst[-2];
+        dst++;
+    }
+}
+
+static void fill24(uint8_t *dst, int len)
+{
+#if HAVE_BIGENDIAN
+    uint32_t v = AV_RB24(dst - 3);
+    uint32_t a = v << 8  | v >> 16;
+    uint32_t b = v << 16 | v >> 8;
+    uint32_t c = v << 24 | v;
+#else
+    uint32_t v = AV_RL24(dst - 3);
+    uint32_t a = v       | v << 24;
+    uint32_t b = v >> 8  | v << 16;
+    uint32_t c = v >> 16 | v << 8;
+#endif
+
+    while (len >= 12) {
+        AV_WN32(dst,     a);
+        AV_WN32(dst + 4, b);
+        AV_WN32(dst + 8, c);
+        dst += 12;
+        len -= 12;
+    }
+
+    if (len >= 4) {
+        AV_WN32(dst, a);
+        dst += 4;
+        len -= 4;
+    }
+
+    if (len >= 4) {
+        AV_WN32(dst, b);
+        dst += 4;
+        len -= 4;
+    }
+
+    while (len--) {
+        *dst = dst[-3];
+        dst++;
+    }
+}
+
+static void fill32(uint8_t *dst, int len)
+{
+    uint32_t v = AV_RN32(dst - 4);
+
+    while (len >= 4) {
+        AV_WN32(dst, v);
+        dst += 4;
+        len -= 4;
+    }
+
+    while (len--) {
+        *dst = dst[-4];
+        dst++;
+    }
+}
+
+void av_memcpy_backptr(uint8_t *dst, int back, int cnt)
+{
+    const uint8_t *src = &dst[-back];
+    if (!back)
+        return;
+
+    if (back == 1) {
+        memset(dst, *src, cnt);
+    } else if (back == 2) {
+        fill16(dst, cnt);
+    } else if (back == 3) {
+        fill24(dst, cnt);
+    } else if (back == 4) {
+        fill32(dst, cnt);
+    } else {
+        if (cnt >= 16) {
+            int blocklen = back;
+            while (cnt > blocklen) {
+                memcpy(dst, src, blocklen);
+                dst       += blocklen;
+                cnt       -= blocklen;
+                blocklen <<= 1;
+            }
+            memcpy(dst, src, cnt);
+            return;
+        }
+        if (cnt >= 8) {
+            AV_COPY32U(dst,     src);
+            AV_COPY32U(dst + 4, src + 4);
+            src += 8;
+            dst += 8;
+            cnt -= 8;
+        }
+        if (cnt >= 4) {
+            AV_COPY32U(dst, src);
+            src += 4;
+            dst += 4;
+            cnt -= 4;
+        }
+        if (cnt >= 2) {
+            AV_COPY16U(dst, src);
+            src += 2;
+            dst += 2;
+            cnt -= 2;
+        }
+        if (cnt)
+            *dst = *src;
+    }
 }
 

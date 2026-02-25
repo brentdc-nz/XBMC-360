@@ -25,8 +25,8 @@
 #include "avutil.h"
 #include "bswap.h"
 #include "sha.h"
-#include "sha1.h"
 #include "intreadwrite.h"
+#include "mem.h"
 
 /** hash context */
 typedef struct AVSHA {
@@ -38,19 +38,17 @@ typedef struct AVSHA {
     void     (*transform)(uint32_t *state, const uint8_t buffer[64]);
 } AVSHA;
 
-#ifndef _MSC_VER
 const int av_sha_size = sizeof(AVSHA);
-#else
-int get_av_sha_size()
+
+struct AVSHA *av_sha_alloc(void)
 {
-	return sizeof(AVSHA);
+    return av_mallocz(sizeof(struct AVSHA));
 }
-#endif
 
 #define rol(value, bits) (((value) << (bits)) | ((value) >> (32 - (bits))))
 
 /* (R0+R1), R2, R3, R4 are the different operations used in SHA1 */
-#define blk0(i) (block[i] = av_be2ne32(((const uint32_t*)buffer)[i]))
+#define blk0(i) (block[i] = AV_RB32(buffer + 4 * (i)))
 #define blk(i)  (block[i] = rol(block[i-3] ^ block[i-8] ^ block[i-14] ^ block[i-16], 1))
 
 #define R0(v,w,x,y,z,i) z += ((w&(x^y))^y)     + blk0(i) + 0x5A827999 + rol(v, 5); w = rol(w, 30);
@@ -75,7 +73,7 @@ static void sha1_transform(uint32_t state[5], const uint8_t buffer[64])
     for (i = 0; i < 80; i++) {
         int t;
         if (i < 16)
-            t = av_be2ne32(((uint32_t*)buffer)[i]);
+            t = AV_RB32(buffer + 4 * i);
         else
             t = rol(block[i-3] ^ block[i-8] ^ block[i-14] ^ block[i-16], 1);
         block[i] = t;
@@ -189,7 +187,7 @@ static void sha256_transform(uint32_t *state, const uint8_t buffer[64])
 {
     unsigned int i, a, b, c, d, e, f, g, h;
     uint32_t block[64];
-    uint32_t T1, av_unused(T2);
+    uint32_t T1;
 
     a = state[0];
     b = state[1];
@@ -201,6 +199,7 @@ static void sha256_transform(uint32_t *state, const uint8_t buffer[64])
     h = state[7];
 #if CONFIG_SMALL
     for (i = 0; i < 64; i++) {
+        uint32_t T2;
         if (i < 16)
             T1 = blk0(i);
         else
@@ -217,7 +216,7 @@ static void sha256_transform(uint32_t *state, const uint8_t buffer[64])
         a = T1 + T2;
     }
 #else
-    for (i = 0; i < 16;) {
+    for (i = 0; i < 16 - 7;) {
         ROUND256_0_TO_15(a, b, c, d, e, f, g, h);
         ROUND256_0_TO_15(h, a, b, c, d, e, f, g);
         ROUND256_0_TO_15(g, h, a, b, c, d, e, f);
@@ -228,7 +227,7 @@ static void sha256_transform(uint32_t *state, const uint8_t buffer[64])
         ROUND256_0_TO_15(b, c, d, e, f, g, h, a);
     }
 
-    for (; i < 64;) {
+    for (; i < 64 - 7;) {
         ROUND256_16_TO_63(a, b, c, d, e, f, g, h);
         ROUND256_16_TO_63(h, a, b, c, d, e, f, g);
         ROUND256_16_TO_63(g, h, a, b, c, d, e, f);
@@ -331,39 +330,8 @@ void av_sha_final(AVSHA* ctx, uint8_t *digest)
         AV_WB32(digest + i*4, ctx->state[i]);
 }
 
-#if LIBAVUTIL_VERSION_MAJOR < 51
-struct AVSHA1 {
-    AVSHA sha;
-};
-
-#ifndef _MSC_VER
-const int av_sha1_size = sizeof(struct AVSHA1);
-#else
-int get_av_sha1_size()
-{
-	return sizeof(struct AVSHA1);
-}
-#endif
-
-void av_sha1_init(struct AVSHA1* context)
-{
-    av_sha_init(&context->sha, 160);
-}
-
-void av_sha1_update(struct AVSHA1* context, const uint8_t* data, unsigned int len)
-{
-    av_sha_update(&context->sha, data, len);
-}
-
-void av_sha1_final(struct AVSHA1* context, uint8_t digest[20])
-{
-    av_sha_final(&context->sha, digest);
-}
-#endif
-
 #ifdef TEST
 #include <stdio.h>
-#undef printf
 
 int main(void)
 {

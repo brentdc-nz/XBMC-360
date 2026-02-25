@@ -28,8 +28,10 @@
  *  http://wiki.multimedia.cx/index.php?title=Bink_Container
  */
 
+#include "libavutil/channel_layout.h"
 #include "libavutil/intreadwrite.h"
 #include "avformat.h"
+#include "internal.h"
 
 enum BinkAudFlags {
     BINK_AUD_16BITS = 0x4000, ///< prefer 16-bit output
@@ -67,7 +69,7 @@ static int probe(AVProbeData *p)
     return 0;
 }
 
-static int read_header(AVFormatContext *s, AVFormatParameters *ap)
+static int read_header(AVFormatContext *s)
 {
     BinkDemuxContext *bink = s->priv_data;
     AVIOContext *pb = s->pb;
@@ -78,7 +80,7 @@ static int read_header(AVFormatContext *s, AVFormatParameters *ap)
     uint16_t flags;
     int keyframe;
 
-    vst = av_new_stream(s, 0);
+    vst = avformat_new_stream(s, NULL);
     if (!vst)
         return AVERROR(ENOMEM);
 
@@ -109,11 +111,14 @@ static int read_header(AVFormatContext *s, AVFormatParameters *ap)
         av_log(s, AV_LOG_ERROR, "invalid header: invalid fps (%d/%d)\n", fps_num, fps_den);
         return AVERROR(EIO);
     }
-    av_set_pts_info(vst, 64, fps_den, fps_num);
+    avpriv_set_pts_info(vst, 64, fps_den, fps_num);
+    vst->avg_frame_rate = av_inv_q(vst->time_base);
 
     vst->codec->codec_type = AVMEDIA_TYPE_VIDEO;
-    vst->codec->codec_id   = CODEC_ID_BINKVIDEO;
+    vst->codec->codec_id   = AV_CODEC_ID_BINKVIDEO;
     vst->codec->extradata  = av_mallocz(4 + FF_INPUT_BUFFER_PADDING_SIZE);
+    if (!vst->codec->extradata)
+        return AVERROR(ENOMEM);
     vst->codec->extradata_size = 4;
     avio_read(pb, vst->codec->extradata, 4);
 
@@ -130,17 +135,28 @@ static int read_header(AVFormatContext *s, AVFormatParameters *ap)
         avio_skip(pb, 4 * bink->num_audio_tracks);
 
         for (i = 0; i < bink->num_audio_tracks; i++) {
-            ast = av_new_stream(s, 1);
+            ast = avformat_new_stream(s, NULL);
             if (!ast)
                 return AVERROR(ENOMEM);
             ast->codec->codec_type  = AVMEDIA_TYPE_AUDIO;
-            ast->codec->codec_tag   = vst->codec->codec_tag;
+            ast->codec->codec_tag   = 0;
             ast->codec->sample_rate = avio_rl16(pb);
-            av_set_pts_info(ast, 64, 1, ast->codec->sample_rate);
+            avpriv_set_pts_info(ast, 64, 1, ast->codec->sample_rate);
             flags = avio_rl16(pb);
             ast->codec->codec_id = flags & BINK_AUD_USEDCT ?
-                                   CODEC_ID_BINKAUDIO_DCT : CODEC_ID_BINKAUDIO_RDFT;
-            ast->codec->channels = flags & BINK_AUD_STEREO ? 2 : 1;
+                                   AV_CODEC_ID_BINKAUDIO_DCT : AV_CODEC_ID_BINKAUDIO_RDFT;
+            if (flags & BINK_AUD_STEREO) {
+                ast->codec->channels       = 2;
+                ast->codec->channel_layout = AV_CH_LAYOUT_STEREO;
+            } else {
+                ast->codec->channels       = 1;
+                ast->codec->channel_layout = AV_CH_LAYOUT_MONO;
+            }
+            ast->codec->extradata = av_mallocz(4 + FF_INPUT_BUFFER_PADDING_SIZE);
+            if (!ast->codec->extradata)
+                return AVERROR(ENOMEM);
+            ast->codec->extradata_size = 4;
+            AV_WL32(ast->codec->extradata, vst->codec->codec_tag);
         }
 
         for (i = 0; i < bink->num_audio_tracks; i++)
@@ -186,7 +202,7 @@ static int read_packet(AVFormatContext *s, AVPacket *pkt)
         AVStream *st = s->streams[0]; // stream 0 is video stream with index
 
         if (bink->video_pts >= st->duration)
-            return AVERROR(EIO);
+            return AVERROR_EOF;
 
         index_entry = av_index_search_timestamp(st, bink->video_pts,
                                                 AVSEEK_FLAG_ANY);
@@ -251,7 +267,9 @@ static int read_seek(AVFormatContext *s, int stream_index, int64_t timestamp, in
         return -1;
 
     /* seek to the first frame */
-    avio_seek(s->pb, vst->index_entries[0].pos, SEEK_SET);
+    if (avio_seek(s->pb, vst->index_entries[0].pos, SEEK_SET) < 0)
+        return -1;
+
     bink->video_pts = 0;
     memset(bink->audio_pts, 0, sizeof(bink->audio_pts));
     bink->current_track = -1;
@@ -259,12 +277,18 @@ static int read_seek(AVFormatContext *s, int stream_index, int64_t timestamp, in
 }
 
 AVInputFormat ff_bink_demuxer = {
-    "bink",
-    NULL_IF_CONFIG_SMALL("Bink"),
-    sizeof(BinkDemuxContext),
-    probe,
-    read_header,
-    read_packet,
-    NULL,
-    read_seek,
+    "bink", /* name */
+    NULL_IF_CONFIG_SMALL("Bink"), /* long_name */
+    0, /* flags */
+    0, /* extensions */
+    0, /* codec_tag */
+    0, /* priv_class */
+    0, /* next */
+    0, /* raw_codec_id */
+    sizeof(BinkDemuxContext), /* priv_data_size */
+    probe, /* read_probe */
+    read_header, /* read_header */
+    read_packet, /* read_packet */
+    0, /* read_close */
+    read_seek, /* read_seek */
 };

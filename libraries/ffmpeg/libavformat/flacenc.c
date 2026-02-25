@@ -22,7 +22,6 @@
 #include "libavcodec/flac.h"
 #include "avformat.h"
 #include "flacenc.h"
-#include "metadata.h"
 #include "vorbiscomment.h"
 #include "libavcodec/bytestream.h"
 
@@ -39,7 +38,7 @@ static int flac_write_block_padding(AVIOContext *pb, unsigned int n_padding_byte
     return 0;
 }
 
-static int flac_write_block_comment(AVIOContext *pb, AVMetadata **m,
+static int flac_write_block_comment(AVIOContext *pb, AVDictionary **m,
                                     int last_block, int bitexact)
 {
     const char *vendor = bitexact ? "ffmpeg" : LIBAVFORMAT_IDENT;
@@ -70,6 +69,15 @@ static int flac_write_header(struct AVFormatContext *s)
     int ret;
     AVCodecContext *codec = s->streams[0]->codec;
 
+    if (s->nb_streams > 1) {
+        av_log(s, AV_LOG_ERROR, "only one stream is supported\n");
+        return AVERROR(EINVAL);
+    }
+    if (codec->codec_id != AV_CODEC_ID_FLAC) {
+        av_log(s, AV_LOG_ERROR, "unsupported codec\n");
+        return AVERROR(EINVAL);
+    }
+
     ret = ff_flac_write_header(s->pb, codec, 0);
     if (ret)
         return ret;
@@ -95,7 +103,7 @@ static int flac_write_trailer(struct AVFormatContext *s)
     enum FLACExtradataFormat format;
     int64_t file_size;
 
-    if (!ff_flac_is_extradata_valid(s->streams[0]->codec, &format, &streaminfo))
+    if (!avpriv_flac_is_extradata_valid(s->streams[0]->codec, &format, &streaminfo))
         return -1;
 
     if (pb->seekable) {
@@ -118,39 +126,20 @@ static int flac_write_packet(struct AVFormatContext *s, AVPacket *pkt)
     return 0;
 }
 
-
 AVOutputFormat ff_flac_muxer = {
-#ifndef MSC_STRUCTS
-    "flac",
-    NULL_IF_CONFIG_SMALL("raw FLAC"),
-    "audio/x-flac",
-    "flac",
-    0,
-    CODEC_ID_FLAC,
-    CODEC_ID_NONE,
-    flac_write_header,
-    flac_write_packet,
-    flac_write_trailer,
-    .flags= AVFMT_NOTIMESTAMPS,
-    .metadata_conv = ff_vorbiscomment_metadata_conv,
+    "flac", /* name */
+    NULL_IF_CONFIG_SMALL("raw FLAC"), /* long_name */
+    "audio/x-flac", /* mime_type */
+    "flac", /* extensions */
+    AV_CODEC_ID_FLAC, /* audio_codec */
+    AV_CODEC_ID_NONE, /* video_codec */
+    0, /* subtitle_codec */
+    AVFMT_NOTIMESTAMPS, /* flags */
+    0, /* codec_tag */
+    0, /* priv_class */
+    0, /* next */
+    0, /* priv_data_size */
+    flac_write_header, /* write_header */
+    flac_write_packet, /* write_packet */
+    flac_write_trailer, /* write_trailer */
 };
-#else
-	"flac",
-	NULL_IF_CONFIG_SMALL("raw FLAC"),
-	"audio/x-flac",
-	"flac",
-	0,
-	CODEC_ID_FLAC,
-	CODEC_ID_NONE,
-	flac_write_header,
-	flac_write_packet,
-	flac_write_trailer,
-	/*flags = */ AVFMT_NOTIMESTAMPS,
-	/*set_parameters = */ 0,
-	/*interleave_packet = */ 0,
-	/*codec_tag = */ 0,
-	/*ubtitle_codec = */ 0,
-	/*metadata_conv = */ ff_vorbiscomment_metadata_conv,
-	/*next = */ 0
-};
-#endif

@@ -23,7 +23,10 @@
 #include "libavutil/parseutils.h"
 #include "libavutil/random_seed.h"
 #include "libavutil/avstring.h"
+#include "libavutil/dict.h"
 #include "libavutil/intreadwrite.h"
+#include "libavutil/time.h"
+#include "libavutil/dict.h"
 #include "internal.h"
 #include "network.h"
 #include "os_support.h"
@@ -75,6 +78,7 @@ static int sap_write_header(AVFormatContext *s)
     struct sockaddr_storage localaddr;
     socklen_t addrlen = sizeof(localaddr);
     int udp_fd;
+    AVDictionaryEntry* title = av_dict_get(s->metadata, "title", NULL, 0);
 
     if (!ff_network_init())
         return AVERROR(EIO);
@@ -104,8 +108,7 @@ static int sap_write_header(AVFormatContext *s)
     }
 
     if (!announce_addr[0]) {
-        struct addrinfo hints, *ai = NULL;
-        memset(&hints, 0, sizeof(hints));
+        struct addrinfo hints = { 0 }, *ai = NULL;
         hints.ai_family = AF_UNSPEC;
         if (getaddrinfo(host, NULL, &hints, &ai)) {
             av_log(s, AV_LOG_ERROR, "Unable to resolve %s\n", host);
@@ -146,19 +149,25 @@ static int sap_write_header(AVFormatContext *s)
                     "?ttl=%d", ttl);
         if (!same_port)
             base_port += 2;
-        ret = ffurl_open(&fd, url, AVIO_WRONLY);
+        ret = ffurl_open(&fd, url, AVIO_FLAG_WRITE, &s->interrupt_callback, NULL);
         if (ret) {
             ret = AVERROR(EIO);
             goto fail;
         }
-        s->streams[i]->priv_data = contexts[i] =
-            ff_rtp_chain_mux_open(s, s->streams[i], fd, 0);
+        ret = ff_rtp_chain_mux_open(&contexts[i], s, s->streams[i], fd, 0, i);
+        if (ret < 0)
+            goto fail;
+        s->streams[i]->priv_data = contexts[i];
         av_strlcpy(contexts[i]->filename, url, sizeof(contexts[i]->filename));
     }
 
+    if (s->nb_streams > 0 && title)
+        av_dict_set(&contexts[0]->metadata, "title", title->value, 0);
+
     ff_url_join(url, sizeof(url), "udp", NULL, announce_addr, port,
                 "?ttl=%d&connect=1", ttl);
-    ret = ffurl_open(&sap->ann_fd, url, AVIO_WRONLY);
+    ret = ffurl_open(&sap->ann_fd, url, AVIO_FLAG_WRITE,
+                     &s->interrupt_callback, NULL);
     if (ret) {
         ret = AVERROR(EIO);
         goto fail;
@@ -209,7 +218,7 @@ static int sap_write_header(AVFormatContext *s)
     pos += strlen(&sap->ann[pos]) + 1;
 
     if (av_sdp_create(contexts, s->nb_streams, &sap->ann[pos],
-                       sap->ann_size - pos)) {
+                      sap->ann_size - pos)) {
         ret = AVERROR_INVALIDDATA;
         goto fail;
     }
@@ -250,16 +259,19 @@ static int sap_write_packet(AVFormatContext *s, AVPacket *pkt)
 }
 
 AVOutputFormat ff_sap_muxer = {
-    "sap",
-    NULL_IF_CONFIG_SMALL("SAP output format"),
-    NULL,
-    NULL,
-    sizeof(struct SAPState),
-    CODEC_ID_AAC,
-    CODEC_ID_MPEG4,
-    sap_write_header,
-    sap_write_packet,
-    sap_write_close,
-    .flags = AVFMT_NOFILE | AVFMT_GLOBALHEADER,
+    "sap", /* name */
+    NULL_IF_CONFIG_SMALL("SAP output"), /* long_name */
+    0, /* mime_type */
+    0, /* extensions */
+    AV_CODEC_ID_AAC, /* audio_codec */
+    AV_CODEC_ID_MPEG4, /* video_codec */
+    0, /* subtitle_codec */
+    AVFMT_NOFILE | AVFMT_GLOBALHEADER, /* flags */
+    0, /* codec_tag */
+    0, /* priv_class */
+    0, /* next */
+    sizeof(struct SAPState), /* priv_data_size */
+    sap_write_header, /* write_header */
+    sap_write_packet, /* write_packet */
+    sap_write_close, /* write_trailer */
 };
-

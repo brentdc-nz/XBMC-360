@@ -20,23 +20,10 @@
 @
 
 #include "config.h"
-#include "asm.S"
+#include "libavutil/arm/asm.S"
 
-        preserve8
-
-#if !HAVE_PLD
-.macro pld reg
-.endm
-#endif
-
-#if HAVE_ARMV5TE
-function ff_prefetch_arm, export=1
-        subs            r2,  r2,  #1
-        pld             [r0]
-        add             r0,  r0,  r1
-        bne             ff_prefetch_arm
-        bx              lr
-endfunc
+#if !HAVE_ARMV5TE_EXTERNAL
+#define pld @
 #endif
 
 .macro  ALIGN_QWORD_D shift, Rd0, Rd1, Rd2, Rd3, Rn0, Rn1, Rn2, Rn3, Rn4
@@ -554,10 +541,12 @@ endfunc
         and             r9,  r5,  r14
         and             r10, r6,  r14
         and             r11, r7,  r14
+        it              eq
         andeq           r14, r14, r14, \rnd #1
         add             r8,  r8,  r10
         add             r9,  r9,  r11
         ldr             r12, =0xfcfcfcfc >> 2
+        itt             eq
         addeq           r8,  r8,  r14
         addeq           r9,  r9,  r14
         and             r4,  r12, r4,  lsr #2
@@ -633,13 +622,15 @@ function ff_add_pixels_clamped_arm, export=1
         ldrsh           r7,  [r0, #2]
         and             r6,  r4,  #0xFF
         and             r8,  r4,  #0xFF00
-        add             r6,  r5,  r6
+        add             r6,  r6,  r5
         add             r8,  r7,  r8,  lsr #8
         mvn             r5,  r5
         mvn             r7,  r7
         tst             r6,  #0x100
+        it              ne
         movne           r6,  r5,  lsr #24
         tst             r8,  #0x100
+        it              ne
         movne           r8,  r7,  lsr #24
         mov             r9,  r6
         ldrsh           r5,  [r0, #4]           /* moved form [A] */
@@ -654,8 +645,10 @@ function ff_add_pixels_clamped_arm, export=1
         mvn             r5,  r5
         mvn             r7,  r7
         tst             r6,  #0x100
+        it              ne
         movne           r6,  r5,  lsr #24
         tst             r8,  #0x100
+        it              ne
         movne           r8,  r7,  lsr #24
         orr             r9,  r9,  r6,  lsl #16
         ldr             r4,  [r1, #4]           /* moved form [B] */
@@ -671,13 +664,15 @@ function ff_add_pixels_clamped_arm, export=1
         ldrsh           r7,  [r0, #10]
         and             r6,  r4,  #0xFF
         and             r8,  r4,  #0xFF00
-        add             r6,  r5,  r6
+        add             r6,  r6,  r5
         add             r8,  r7,  r8,  lsr #8
         mvn             r5,  r5
         mvn             r7,  r7
         tst             r6,  #0x100
+        it              ne
         movne           r6,  r5,  lsr #24
         tst             r8,  #0x100
+        it              ne
         movne           r8,  r7,  lsr #24
         mov             r9,  r6
         ldrsh           r5,  [r0, #12]          /* moved from [D] */
@@ -692,8 +687,10 @@ function ff_add_pixels_clamped_arm, export=1
         mvn             r5,  r5
         mvn             r7,  r7
         tst             r6,  #0x100
+        it              ne
         movne           r6,  r5,  lsr #24
         tst             r8,  #0x100
+        it              ne
         movne           r8,  r7,  lsr #24
         orr             r9,  r9,  r6,  lsl #16
         add             r0,  r0,  #16           /* moved from [E] */

@@ -38,7 +38,7 @@ public:
 	{
 		iId = 0;
 		iPhysicalId = 0;
-		codec = (CodecID)0; // CODEC_ID_NONE
+		codec = (AVCodecID)0; // AV_CODEC_ID_NONE
 		codec_fourcc = 0;
 		type = STREAM_NONE;
 		source = STREAM_SOURCE_NONE;
@@ -65,7 +65,7 @@ public:
 
 	int iId;         // most of the time starting from 0
 	int iPhysicalId; // id
-	CodecID codec;
+	AVCodecID codec;
 	unsigned int codec_fourcc; // if available
 	StreamType type;
 	int source;

@@ -22,9 +22,15 @@
 #ifndef AVCODEC_MATHOPS_H
 #define AVCODEC_MATHOPS_H
 
-#include "libavutil/common.h"
+#include <stdint.h>
 
-#ifndef _MSC_VER
+#include "libavutil/common.h"
+#include "config.h"
+
+extern const uint32_t ff_inverse[257];
+extern const uint8_t  ff_reverse[256];
+extern const uint8_t ff_sqrt_tab[256];
+
 #if   ARCH_ARM
 #   include "arm/mathops.h"
 #elif ARCH_AVR32
@@ -38,22 +44,20 @@
 #elif ARCH_X86
 #   include "x86/mathops.h"
 #endif
-#else
-
-#endif
 
 /* generic implementation */
 
+#ifndef MUL64
+#   define MUL64(a,b) ((int64_t)(a) * (int64_t)(b))
+#endif
+
 #ifndef MULL
-#   define MULL(a,b,s) (((int64_t)(a) * (int64_t)(b)) >> (s))
+#   define MULL(a,b,s) (MUL64(a, b) >> (s))
 #endif
 
 #ifndef MULH
-//gcc 3.4 creates an incredibly bloated mess out of this
-//#    define MULH(a,b) (((int64_t)(a) * (int64_t)(b))>>32)
-
 static av_always_inline int MULH(int a, int b){
-    return ((int64_t)(a) * (int64_t)(b))>>32;
+    return MUL64(a, b) >> 32;
 }
 #endif
 
@@ -61,10 +65,6 @@ static av_always_inline int MULH(int a, int b){
 static av_always_inline unsigned UMULH(unsigned a, unsigned b){
     return ((uint64_t)(a) * (uint64_t)(b))>>32;
 }
-#endif
-
-#ifndef MUL64
-#   define MUL64(a,b) ((int64_t)(a) * (int64_t)(b))
 #endif
 
 #ifndef MAC64
@@ -122,22 +122,16 @@ static inline av_const int mid_pred(int a, int b, int c)
 #ifndef sign_extend
 static inline av_const int sign_extend(int val, unsigned bits)
 {
-#ifndef _MSC_VER
-	return (val << (INT_BIT - bits)) >> (INT_BIT - bits);
-#else
-	return (val << ((8 * sizeof(int)) - bits)) >> ((8 * sizeof(int)) - bits);
-#endif
+    unsigned shift = 8 * sizeof(int) - bits;
+    union { unsigned u; int s; } v = { (unsigned) val << shift };
+    return v.s >> shift;
 }
 #endif
 
 #ifndef zero_extend
 static inline av_const unsigned zero_extend(unsigned val, unsigned bits)
 {
-#ifndef _MSC_VER
-    return (val << (INT_BIT - bits)) >> (INT_BIT - bits);
-#else
     return (val << ((8 * sizeof(int)) - bits)) >> ((8 * sizeof(int)) - bits);
-#endif
 }
 #endif
 
@@ -148,6 +142,13 @@ if ((y) < (x)) {\
     (a) = (b);\
     (c) = (d);\
 }
+#endif
+
+#ifndef MASK_ABS
+#define MASK_ABS(mask, level) do {              \
+        mask  = level >> 31;                    \
+        level = (level ^ mask) - mask;          \
+    } while (0)
 #endif
 
 #ifndef NEG_SSR32
@@ -190,5 +191,28 @@ if ((y) < (x)) {\
 #   define PACK_2S16(a,b)    PACK_2U16((a)&0xffff, (b)&0xffff)
 #endif
 
-#endif /* AVCODEC_MATHOPS_H */
+#ifndef FASTDIV
+#   define FASTDIV(a,b) ((uint32_t)((((uint64_t)a) * ff_inverse[b]) >> 32))
+#endif /* FASTDIV */
 
+static inline av_const unsigned int ff_sqrt(unsigned int a)
+{
+    unsigned int b;
+
+    if (a < 255) return (ff_sqrt_tab[a + 1] - 1) >> 4;
+    else if (a < (1 << 12)) b = ff_sqrt_tab[a >> 4] >> 2;
+#if !CONFIG_SMALL
+    else if (a < (1 << 14)) b = ff_sqrt_tab[a >> 6] >> 1;
+    else if (a < (1 << 16)) b = ff_sqrt_tab[a >> 8]   ;
+#endif
+    else {
+        int s = av_log2_16bit(a >> 16) >> 1;
+        unsigned int c = a >> (s + 2);
+        b = ff_sqrt_tab[c >> (s + 8)];
+        b = FASTDIV(c,b) + (b << s);
+    }
+
+    return b - (a < b * b);
+}
+
+#endif /* AVCODEC_MATHOPS_H */

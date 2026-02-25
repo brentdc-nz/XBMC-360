@@ -59,7 +59,7 @@ bool CDVDStreamInfo::Equal(const CDemuxStream& right, bool withextradata)
 
 void CDVDStreamInfo::Clear()
 {
-	codec = CODEC_ID_NONE;
+	codec = AV_CODEC_ID_NONE;
 	type = STREAM_NONE;
 	codec_tag  = 0;
 

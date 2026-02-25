@@ -23,10 +23,12 @@
 **/
 
 #include <stdlib.h>
+#include "libavutil/avassert.h"
 #include "libavutil/intreadwrite.h"
 #include "libavcodec/get_bits.h"
 #include "libavcodec/bytestream.h"
 #include "avformat.h"
+#include "internal.h"
 #include "oggdec.h"
 #include "riff.h"
 
@@ -39,7 +41,7 @@ ogm_header(AVFormatContext *s, int idx)
     const uint8_t *p = os->buf + os->pstart;
     uint64_t time_unit;
     uint64_t spu;
-    uint32_t default_len;
+    uint32_t size;
 
     if(!(*p & 1))
         return 0;
@@ -56,7 +58,7 @@ ogm_header(AVFormatContext *s, int idx)
             st->codec->codec_tag = tag;
         } else if (*p == 't') {
             st->codec->codec_type = AVMEDIA_TYPE_SUBTITLE;
-            st->codec->codec_id = CODEC_ID_TEXT;
+            st->codec->codec_id = AV_CODEC_ID_TEXT;
             p += 12;
         } else {
             uint8_t acid[5];
@@ -67,29 +69,39 @@ ogm_header(AVFormatContext *s, int idx)
             acid[4] = 0;
             cid = strtol(acid, NULL, 16);
             st->codec->codec_id = ff_codec_get_id(ff_codec_wav_tags, cid);
-            st->need_parsing = AVSTREAM_PARSE_FULL;
+            // our parser completely breaks AAC in Ogg
+            if (st->codec->codec_id != AV_CODEC_ID_AAC)
+                st->need_parsing = AVSTREAM_PARSE_FULL;
         }
 
-        p += 4;                     /* useless size field */
-
+        size        = bytestream_get_le32(&p);
+        size        = FFMIN(size, os->psize);
         time_unit   = bytestream_get_le64(&p);
         spu         = bytestream_get_le64(&p);
-        default_len = bytestream_get_le32(&p);
-
+        p += 4;                     /* default_len */
         p += 8;                     /* buffersize + bits_per_sample */
 
         if(st->codec->codec_type == AVMEDIA_TYPE_VIDEO){
             st->codec->width = bytestream_get_le32(&p);
             st->codec->height = bytestream_get_le32(&p);
-            st->codec->time_base.den = spu * 10000000;
-            st->codec->time_base.num = time_unit;
-            av_set_pts_info(st, 64, st->codec->time_base.num, st->codec->time_base.den);
+            avpriv_set_pts_info(st, 64, time_unit, spu * 10000000);
         } else {
             st->codec->channels = bytestream_get_le16(&p);
             p += 2;                 /* block_align */
             st->codec->bit_rate = bytestream_get_le32(&p) * 8;
-            st->codec->sample_rate = spu * 10000000 / time_unit;
-            av_set_pts_info(st, 64, 1, st->codec->sample_rate);
+            st->codec->sample_rate = time_unit ? spu * 10000000 / time_unit : 0;
+            avpriv_set_pts_info(st, 64, 1, st->codec->sample_rate);
+            if (size >= 56 && st->codec->codec_id == AV_CODEC_ID_AAC) {
+                p += 4;
+                size -= 4;
+            }
+            if (size > 52) {
+                av_assert0(FF_INPUT_BUFFER_PADDING_SIZE <= 52);
+                size -= 52;
+                st->codec->extradata_size = size;
+                st->codec->extradata = av_malloc(size + FF_INPUT_BUFFER_PADDING_SIZE);
+                bytestream_get_buffer(&p, st->codec->extradata, size);
+            }
         }
     } else if (*p == 3) {
         if (os->psize > 8)
@@ -118,8 +130,7 @@ ogm_dshow_header(AVFormatContext *s, int idx)
     if(t == 0x05589f80){
         st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
         st->codec->codec_id = ff_codec_get_id(ff_codec_bmp_tags, AV_RL32(p + 68));
-        st->codec->time_base.den = 10000000;
-        st->codec->time_base.num = AV_RL64(p + 164);
+        avpriv_set_pts_info(st, 64, AV_RL64(p + 164), 10000000);
         st->codec->width = AV_RL32(p + 176);
         st->codec->height = AV_RL32(p + 180);
     } else if(t == 0x05589f81){
@@ -154,76 +165,46 @@ ogm_packet(AVFormatContext *s, int idx)
     return 0;
 }
 
-#ifndef MSC_STRUCTS
 const struct ogg_codec ff_ogm_video_codec = {
-    .magic = "\001video",
-    .magicsize = 6,
-    .header = ogm_header,
-    .packet = ogm_packet,
-    .granule_is_start = 1,
+    /* magic */     "\001video",
+    /* magicsize */ 6,
+    /* name */      0,
+    /* header */    ogm_header,
+    /* packet */    ogm_packet,
+    /* gptopts */   0,
+    /* granule_is_start */ 1,
+    /* nb_header */ 2,
 };
 
 const struct ogg_codec ff_ogm_audio_codec = {
-    .magic = "\001audio",
-    .magicsize = 6,
-    .header = ogm_header,
-    .packet = ogm_packet,
-    .granule_is_start = 1,
+    /* magic */     "\001audio",
+    /* magicsize */ 6,
+    /* name */      0,
+    /* header */    ogm_header,
+    /* packet */    ogm_packet,
+    /* gptopts */   0,
+    /* granule_is_start */ 1,
+    /* nb_header */ 2,
 };
 
 const struct ogg_codec ff_ogm_text_codec = {
-    .magic = "\001text",
-    .magicsize = 5,
-    .header = ogm_header,
-    .packet = ogm_packet,
-    .granule_is_start = 1,
+    /* magic */     "\001text",
+    /* magicsize */ 5,
+    /* name */      0,
+    /* header */    ogm_header,
+    /* packet */    ogm_packet,
+    /* gptopts */   0,
+    /* granule_is_start */ 1,
+    /* nb_header */ 2,
 };
 
 const struct ogg_codec ff_ogm_old_codec = {
-    .magic = "\001Direct Show Samples embedded in Ogg",
-    .magicsize = 35,
-    .header = ogm_dshow_header,
-    .packet = ogm_packet,
-    .granule_is_start = 1,
+    /* magic */     "\001Direct Show Samples embedded in Ogg",
+    /* magicsize */ 35,
+    /* name */      0,
+    /* header */    ogm_dshow_header,
+    /* packet */    ogm_packet,
+    /* gptopts */   0,
+    /* granule_is_start */ 1,
+    /* nb_header */ 1,
 };
-#else
-const struct ogg_codec ff_ogm_video_codec = {
-    "\001video",
-    6,
-	0,
-    ogm_header,
-	ogm_packet,
-	0,
-    1,
-};
-
-const struct ogg_codec ff_ogm_audio_codec = {
-    "\001audio",
-	6,
-	0,
-    ogm_header,
-	ogm_packet,
-	0,
-    1,
-};
-
-const struct ogg_codec ff_ogm_text_codec = {
-    "\001text",
-	5,
-	0,
-    ogm_header,
-	ogm_packet,
-	0,
-    1,
-};
-
-const struct ogg_codec ff_ogm_old_codec = {
-    "\001Direct Show Samples embedded in Ogg",
-	35,
-	0,
-    ogm_dshow_header,
-	ogm_packet,
-	0,
-    1,
-};
-#endif

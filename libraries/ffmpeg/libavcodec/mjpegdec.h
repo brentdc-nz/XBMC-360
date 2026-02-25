@@ -29,6 +29,8 @@
 #ifndef AVCODEC_MJPEGDEC_H
 #define AVCODEC_MJPEGDEC_H
 
+#include "libavutil/log.h"
+
 #include "avcodec.h"
 #include "get_bits.h"
 #include "dsputil.h"
@@ -36,6 +38,7 @@
 #define MAX_COMPONENTS 4
 
 typedef struct MJpegDecodeContext {
+    AVClass *class;
     AVCodecContext *avctx;
     GetBitContext gb;
 
@@ -55,6 +58,9 @@ typedef struct MJpegDecodeContext {
     int ls;
     int progressive;
     int rgb;
+    int upscale_h;
+    int chroma_height;
+    int upscale_v;
     int rct;            /* standard rct */
     int pegasus_rct;    /* pegasus reversible colorspace transform */
     int bits;           /* bits per component */
@@ -62,7 +68,7 @@ typedef struct MJpegDecodeContext {
     int maxval;
     int near;         ///< near lossless bound (si 0 for lossless)
     int t1,t2,t3;
-    int reset;        ///< context halfing intervall ?rename
+    int reset;        ///< context halfing interval ?rename
 
     int width, height;
     int mb_width, mb_height;
@@ -81,11 +87,12 @@ typedef struct MJpegDecodeContext {
     int quant_index[4];   /* quant table index for each component */
     int last_dc[MAX_COMPONENTS]; /* last DEQUANTIZED dc (XXX: am I right to do that ?) */
     AVFrame picture; /* picture structure */
+    AVFrame *picture_ptr; /* pointer to picture structure */
     int got_picture;                                ///< we found a SOF and picture is valid, too.
     int linesize[MAX_COMPONENTS];                   ///< linesize << interlaced
     int8_t *qscale_table;
-    DECLARE_ALIGNED(16, DCTELEM, block)[64];
-    DCTELEM (*blocks[MAX_COMPONENTS])[64]; ///< intermediate sums (progressive mode)
+    DECLARE_ALIGNED(16, int16_t, block)[64];
+    int16_t (*blocks[MAX_COMPONENTS])[64]; ///< intermediate sums (progressive mode)
     uint8_t *last_nnz[MAX_COMPONENTS];
     uint64_t coefs_finished[MAX_COMPONENTS]; ///< bitmask of which coefs have been completely decoded (progressive mode)
     ScanTable scantable;
@@ -105,16 +112,22 @@ typedef struct MJpegDecodeContext {
 
     uint16_t (*ljpeg_buffer)[4];
     unsigned int ljpeg_buffer_size;
+
+    int extern_huff;
 } MJpegDecodeContext;
 
 int ff_mjpeg_decode_init(AVCodecContext *avctx);
 int ff_mjpeg_decode_end(AVCodecContext *avctx);
 int ff_mjpeg_decode_frame(AVCodecContext *avctx,
-                          void *data, int *data_size,
+                          void *data, int *got_frame,
                           AVPacket *avpkt);
 int ff_mjpeg_decode_dqt(MJpegDecodeContext *s);
 int ff_mjpeg_decode_dht(MJpegDecodeContext *s);
 int ff_mjpeg_decode_sof(MJpegDecodeContext *s);
-int ff_mjpeg_decode_sos(MJpegDecodeContext *s);
+int ff_mjpeg_decode_sos(MJpegDecodeContext *s,
+                        const uint8_t *mb_bitmask, const AVFrame *reference);
+int ff_mjpeg_find_marker(MJpegDecodeContext *s,
+                         const uint8_t **buf_ptr, const uint8_t *buf_end,
+                         const uint8_t **unescaped_buf_ptr, int *unescaped_buf_size);
 
 #endif /* AVCODEC_MJPEGDEC_H */

@@ -18,8 +18,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include "libavutil/common.h"
+#include "libavutil/intreadwrite.h"
 #include "avcodec.h"
-#include "mpegaudio.h"
+#include "mpegaudiodecheader.h"
 
 
 static int mp3_header_compress(AVBitStreamFilterContext *bsfc, AVCodecContext *avctx, const char *args,

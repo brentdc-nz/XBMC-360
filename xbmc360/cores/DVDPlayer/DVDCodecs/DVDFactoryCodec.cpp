@@ -10,7 +10,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint)
 
 /*  // TODO
 	// Dvd's have weird still-frames in it, which is not fully supported in ffmpeg
-	if(hint.stills && (hint.codec == CODEC_ID_MPEG2VIDEO || hint.codec == CODEC_ID_MPEG1VIDEO))
+	if(hint.stills && (hint.codec == AV_CODEC_ID_MPEG2VIDEO || hint.codec == AV_CODEC_ID_MPEG1VIDEO))
 	{
 		if((pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), hint, options))) return pCodec;
 	}
@@ -38,21 +38,21 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec(CDVDStreamInfo &hint)
 
 	switch(hint.codec)
 	{
-		case CODEC_ID_AC3:
+		case AV_CODEC_ID_AC3:
 		{
 //			pCodec = OpenCodec(new CDVDAudioCodecLiba52(), hint, options); //TODO
 			if(pCodec) return pCodec;
 			break;
 		}
-		case CODEC_ID_DTS:
+		case AV_CODEC_ID_DTS:
 		{
 //			pCodec = OpenCodec(new CDVDAudioCodecLibDts(), hint, options); //TODO
 			if(pCodec) return pCodec;
 			break;
 		}
 #ifdef USE_LIBMAD
-		case CODEC_ID_MP2:
-		case CODEC_ID_MP3:
+		case AV_CODEC_ID_MP2:
+		case AV_CODEC_ID_MP3:
 		{
 			pCodec = OpenCodec(new CDVDAudioCodecLibMad(), hint, options);
 			if(pCodec) return pCodec;
@@ -60,40 +60,40 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec(CDVDStreamInfo &hint)
 		}
 #endif
 #ifdef USE_LIBFAAD
-		case CODEC_ID_AAC:
-		//case CODEC_ID_MPEG4AAC:
+		case AV_CODEC_ID_AAC:
+		//case AV_CODEC_ID_MPEG4AAC:
 		{
 			pCodec = OpenCodec(new CDVDAudioCodecLibFaad(), hint, options);
 			if(pCodec) return pCodec;
 			break;
 		}
 #endif
-		case CODEC_ID_PCM_S32LE:
-		case CODEC_ID_PCM_S32BE:
-		case CODEC_ID_PCM_U32LE:
-		case CODEC_ID_PCM_U32BE:
-		case CODEC_ID_PCM_S24LE:
-		case CODEC_ID_PCM_S24BE:
-		case CODEC_ID_PCM_U24LE:
-		case CODEC_ID_PCM_U24BE:
-		case CODEC_ID_PCM_S24DAUD:
-		case CODEC_ID_PCM_S16LE:
-		case CODEC_ID_PCM_S16BE:
-		case CODEC_ID_PCM_U16LE:
-		case CODEC_ID_PCM_U16BE:
-		case CODEC_ID_PCM_S8:
-		case CODEC_ID_PCM_U8:
-		case CODEC_ID_PCM_ALAW:
-		case CODEC_ID_PCM_MULAW:
+		case AV_CODEC_ID_PCM_S32LE:
+		case AV_CODEC_ID_PCM_S32BE:
+		case AV_CODEC_ID_PCM_U32LE:
+		case AV_CODEC_ID_PCM_U32BE:
+		case AV_CODEC_ID_PCM_S24LE:
+		case AV_CODEC_ID_PCM_S24BE:
+		case AV_CODEC_ID_PCM_U24LE:
+		case AV_CODEC_ID_PCM_U24BE:
+		case AV_CODEC_ID_PCM_S24DAUD:
+		case AV_CODEC_ID_PCM_S16LE:
+		case AV_CODEC_ID_PCM_S16BE:
+		case AV_CODEC_ID_PCM_U16LE:
+		case AV_CODEC_ID_PCM_U16BE:
+		case AV_CODEC_ID_PCM_S8:
+		case AV_CODEC_ID_PCM_U8:
+		case AV_CODEC_ID_PCM_ALAW:
+		case AV_CODEC_ID_PCM_MULAW:
 		{
 //			pCodec = OpenCodec(new CDVDAudioCodecPcm(), hint, options); //TODO
 			if(pCodec) return pCodec;
 			break;
 		}
 	#if 0
-		//case CODEC_ID_LPCM_S16BE:
-		//case CODEC_ID_LPCM_S20BE:
-		case CODEC_ID_LPCM_S24BE:
+		//case AV_CODEC_ID_LPCM_S16BE:
+		//case AV_CODEC_ID_LPCM_S20BE:
+		case AV_CODEC_ID_LPCM_S24BE:
 		{
 			pCodec = OpenCodec(new CDVDAudioCodecLPcm(), hint, options);
 			if(pCodec) return pCodec;

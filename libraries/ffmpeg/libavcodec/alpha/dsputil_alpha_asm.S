@@ -53,11 +53,6 @@ put_pixels_axp_asm:
         .frame sp, 0, ra
         .prologue 0
 
-#if CONFIG_GPROF
-        lda     AT, _mcount
-        jsr     AT, (AT), _mcount
-#endif
-
         and     a1, 7, t0
         beq     t0, $aligned
 
@@ -140,7 +135,7 @@ $aligned:
         .end put_pixels_axp_asm
 
 /************************************************************************
- * void put_pixels_clamped_mvi_asm(const DCTELEM *block, uint8_t *pixels,
+ * void put_pixels_clamped_mvi_asm(const int16_t *block, uint8_t *pixels,
  *                                 int line_size)
  */
         .align 6
@@ -149,11 +144,6 @@ $aligned:
 put_pixels_clamped_mvi_asm:
         .frame sp, 0, ra
         .prologue 0
-
-#if CONFIG_GPROF
-        lda     AT, _mcount
-        jsr     AT, (AT), _mcount
-#endif
 
         lda     t8, -1
         lda     t9, 8           # loop counter
@@ -195,7 +185,7 @@ put_pixels_clamped_mvi_asm:
         .end put_pixels_clamped_mvi_asm
 
 /************************************************************************
- * void add_pixels_clamped_mvi_asm(const DCTELEM *block, uint8_t *pixels,
+ * void add_pixels_clamped_mvi_asm(const int16_t *block, uint8_t *pixels,
  *                                 int line_size)
  */
         .align 6
@@ -204,11 +194,6 @@ put_pixels_clamped_mvi_asm:
 add_pixels_clamped_mvi_asm:
         .frame sp, 0, ra
         .prologue 0
-
-#if CONFIG_GPROF
-        lda     AT, _mcount
-        jsr     AT, (AT), _mcount
-#endif
 
         lda     t1, -1
         lda     th, 8

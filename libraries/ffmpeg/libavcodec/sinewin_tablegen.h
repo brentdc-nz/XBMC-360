@@ -20,11 +20,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#ifndef AVCODEC_SINEWIN_TABLEGEN_H
+#define AVCODEC_SINEWIN_TABLEGEN_H
+
 #include <assert.h>
 // do not use libavutil/libm.h since this is compiled both
 // for the host and the target and config.h is only valid for the target
 #include <math.h>
 #include "libavutil/attributes.h"
+#include "libavutil/common.h"
 
 #if !CONFIG_HARDCODED_TABLES
 SINETABLE(  32);
@@ -35,6 +39,7 @@ SINETABLE( 512);
 SINETABLE(1024);
 SINETABLE(2048);
 SINETABLE(4096);
+SINETABLE(8192);
 #else
 #include "libavcodec/sinewin_tables.h"
 #endif
@@ -42,7 +47,7 @@ SINETABLE(4096);
 SINETABLE_CONST float * const ff_sine_windows[] = {
     NULL, NULL, NULL, NULL, NULL, // unused
     ff_sine_32 , ff_sine_64 ,
-    ff_sine_128, ff_sine_256, ff_sine_512, ff_sine_1024, ff_sine_2048, ff_sine_4096
+    ff_sine_128, ff_sine_256, ff_sine_512, ff_sine_1024, ff_sine_2048, ff_sine_4096, ff_sine_8192
 };
 
 // Generate a sine window.
@@ -58,3 +63,5 @@ av_cold void ff_init_ff_sine_windows(int index) {
     ff_sine_window_init(ff_sine_windows[index], 1 << index);
 #endif
 }
+
+#endif /* AVCODEC_SINEWIN_TABLEGEN_H */

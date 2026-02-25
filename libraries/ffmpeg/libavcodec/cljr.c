@@ -25,183 +25,216 @@
  */
 
 #include "avcodec.h"
-#include "dsputil.h"
+#include "libavutil/opt.h"
 #include "get_bits.h"
+#include "internal.h"
+#include "put_bits.h"
 
-/* Disable the encoder. */
-#undef CONFIG_CLJR_ENCODER
-#define CONFIG_CLJR_ENCODER 0
-
-typedef struct CLJRContext{
-    AVCodecContext *avctx;
-    AVFrame picture;
-    int delta[16];
-    int offset[4];
-    GetBitContext gb;
+typedef struct CLJRContext {
+    AVClass        *avclass;
+    AVFrame         picture;
+    int             dither_type;
 } CLJRContext;
 
+static av_cold int common_init(AVCodecContext *avctx)
+{
+    CLJRContext * const a = avctx->priv_data;
+
+    avcodec_get_frame_defaults(&a->picture);
+    avctx->coded_frame = &a->picture;
+
+    return 0;
+}
+
+#if CONFIG_CLJR_DECODER
 static int decode_frame(AVCodecContext *avctx,
-                        void *data, int *data_size,
+                        void *data, int *got_frame,
                         AVPacket *avpkt)
 {
     const uint8_t *buf = avpkt->data;
-    int buf_size = avpkt->size;
+    int buf_size       = avpkt->size;
     CLJRContext * const a = avctx->priv_data;
+    GetBitContext gb;
     AVFrame *picture = data;
-    AVFrame * const p= (AVFrame*)&a->picture;
-    int x, y;
+    AVFrame * const p = &a->picture;
+    int x, y, ret;
 
-    if(p->data[0])
+    if (p->data[0])
         avctx->release_buffer(avctx, p);
 
-    if(buf_size/avctx->height < avctx->width) {
-        av_log(avctx, AV_LOG_ERROR, "Resolution larger than buffer size. Invalid header?\n");
-        return -1;
+    if (avctx->height <= 0 || avctx->width <= 0) {
+        av_log(avctx, AV_LOG_ERROR, "Invalid width or height\n");
+        return AVERROR_INVALIDDATA;
     }
 
-    p->reference= 0;
-    if(avctx->get_buffer(avctx, p) < 0){
+    if (buf_size / avctx->height < avctx->width) {
+        av_log(avctx, AV_LOG_ERROR,
+               "Resolution larger than buffer size. Invalid header?\n");
+        return AVERROR_INVALIDDATA;
+    }
+
+    p->reference = 0;
+    if ((ret = ff_get_buffer(avctx, p)) < 0) {
         av_log(avctx, AV_LOG_ERROR, "get_buffer() failed\n");
-        return -1;
+        return ret;
     }
-    p->pict_type= FF_I_TYPE;
-    p->key_frame= 1;
+    p->pict_type = AV_PICTURE_TYPE_I;
+    p->key_frame = 1;
 
-    init_get_bits(&a->gb, buf, buf_size);
+    init_get_bits(&gb, buf, buf_size * 8);
 
-    for(y=0; y<avctx->height; y++){
-        uint8_t *luma= &a->picture.data[0][ y*a->picture.linesize[0] ];
-        uint8_t *cb= &a->picture.data[1][ y*a->picture.linesize[1] ];
-        uint8_t *cr= &a->picture.data[2][ y*a->picture.linesize[2] ];
-        for(x=0; x<avctx->width; x+=4){
-                luma[3] = get_bits(&a->gb, 5) << 3;
-            luma[2] = get_bits(&a->gb, 5) << 3;
-            luma[1] = get_bits(&a->gb, 5) << 3;
-            luma[0] = get_bits(&a->gb, 5) << 3;
-            luma+= 4;
-            *(cb++) = get_bits(&a->gb, 6) << 2;
-            *(cr++) = get_bits(&a->gb, 6) << 2;
+    for (y = 0; y < avctx->height; y++) {
+        uint8_t *luma = &a->picture.data[0][y * a->picture.linesize[0]];
+        uint8_t *cb   = &a->picture.data[1][y * a->picture.linesize[1]];
+        uint8_t *cr   = &a->picture.data[2][y * a->picture.linesize[2]];
+        for (x = 0; x < avctx->width; x += 4) {
+            luma[3] = (get_bits(&gb, 5)*33) >> 2;
+            luma[2] = (get_bits(&gb, 5)*33) >> 2;
+            luma[1] = (get_bits(&gb, 5)*33) >> 2;
+            luma[0] = (get_bits(&gb, 5)*33) >> 2;
+            luma += 4;
+            *(cb++) = get_bits(&gb, 6) << 2;
+            *(cr++) = get_bits(&gb, 6) << 2;
         }
     }
 
-    *picture= *(AVFrame*)&a->picture;
-    *data_size = sizeof(AVPicture);
-
-    emms_c();
+    *picture   = a->picture;
+    *got_frame = 1;
 
     return buf_size;
 }
 
-#if CONFIG_CLJR_ENCODER
-static int encode_frame(AVCodecContext *avctx, unsigned char *buf, int buf_size, void *data){
-    CLJRContext * const a = avctx->priv_data;
-    AVFrame *pict = data;
-    AVFrame * const p= (AVFrame*)&a->picture;
-    int size;
-
-    *p = *pict;
-    p->pict_type= FF_I_TYPE;
-    p->key_frame= 1;
-
-    emms_c();
-
-    align_put_bits(&a->pb);
-    while(get_bit_count(&a->pb)&31)
-        put_bits(&a->pb, 8, 0);
-
-    size= get_bit_count(&a->pb)/32;
-
-    return size*4;
-}
-#endif
-
-static av_cold void common_init(AVCodecContext *avctx){
-    CLJRContext * const a = avctx->priv_data;
-
-    avctx->coded_frame= (AVFrame*)&a->picture;
-    a->avctx= avctx;
+static av_cold int decode_init(AVCodecContext *avctx)
+{
+    avctx->pix_fmt = AV_PIX_FMT_YUV411P;
+    return common_init(avctx);
 }
 
-static av_cold int decode_init(AVCodecContext *avctx){
+static av_cold int decode_end(AVCodecContext *avctx)
+{
+    CLJRContext *a = avctx->priv_data;
 
-    common_init(avctx);
-
-    avctx->pix_fmt= PIX_FMT_YUV411P;
-
+    if (a->picture.data[0])
+        avctx->release_buffer(avctx, &a->picture);
     return 0;
 }
-
-#if CONFIG_CLJR_ENCODER
-static av_cold int encode_init(AVCodecContext *avctx){
-
-    common_init(avctx);
-
-    return 0;
-}
-#endif
 
 AVCodec ff_cljr_decoder = {
-#ifndef MSC_STRUCTS
-    "cljr",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_CLJR,
-    sizeof(CLJRContext),
-    decode_init,
-    NULL,
-    NULL,
-    decode_frame,
-    CODEC_CAP_DR1,
-    .long_name = NULL_IF_CONFIG_SMALL("Cirrus Logic AccuPak"),
-#else
-    /* name = */ "cljr",
-    /* type = */ AVMEDIA_TYPE_VIDEO,
-    /* id = */ CODEC_ID_CLJR,
-    /* priv_data_size = */ sizeof(CLJRContext),
-    /* init = */ decode_init,
-    /* encode = */ NULL,
-    /* close = */ NULL,
-    /* decode = */ decode_frame,
-    /* capabilities = */ CODEC_CAP_DR1,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ 0,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("Cirrus Logic AccuPak"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ 0,
-    /* channel_layouts = */ 0,
+        "cljr", /* name */
+        NULL_IF_CONFIG_SMALL("Cirrus Logic AccuPak"), /* long_name */
+        AVMEDIA_TYPE_VIDEO, /* type */
+        AV_CODEC_ID_CLJR, /* id */
+        CODEC_CAP_DR1, /* capabilities */
+        0, /* supported_framerates */
+        0, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        0, /* priv_class */
+        0, /* profiles */
+        sizeof(CLJRContext), /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        decode_init, /* init */
+        0, /* encode_sub */
+        0, /* encode2 */
+        decode_frame, /* decode */
+        decode_end, /* close */
+    };
 #endif
-};
 
 #if CONFIG_CLJR_ENCODER
-AVCodec ff_cljr_encoder = {
-#ifndef MSC_STRUCTS
-    "cljr",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_CLJR,
-    sizeof(CLJRContext),
-    encode_init,
-    encode_frame,
-    //encode_end,
-    .long_name = NULL_IF_CONFIG_SMALL("Cirrus Logic AccuPak"),
-#else
-    /* name = */ "cljr",
-    /* type = */ AVMEDIA_TYPE_VIDEO,
-    /* id = */ CODEC_ID_CLJR,
-    /* priv_data_size = */ sizeof(CLJRContext),
-    /* init = */ encode_init,
-    /* encode = */ encode_frame,
-    /* close = */ //encode_end,
-    /* decode = */ 0,
-    /* capabilities = */ 0,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ 0,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("Cirrus Logic AccuPak"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ 0,
-    /* channel_layouts = */ 0,
-#endif
+static int encode_frame(AVCodecContext *avctx, AVPacket *pkt,
+                        const AVFrame *p, int *got_packet)
+{
+    CLJRContext *a = avctx->priv_data;
+    PutBitContext pb;
+    int x, y, ret;
+    uint32_t dither= avctx->frame_number;
+    static const uint32_t ordered_dither[2][2] =
+    {
+        { 0x10400000, 0x104F0000 },
+        { 0xCB2A0000, 0xCB250000 },
+    };
+
+    if ((ret = ff_alloc_packet2(avctx, pkt, 32*avctx->height*avctx->width/4)) < 0)
+        return ret;
+
+    avctx->coded_frame->pict_type = AV_PICTURE_TYPE_I;
+    avctx->coded_frame->key_frame = 1;
+
+    init_put_bits(&pb, pkt->data, pkt->size);
+
+    for (y = 0; y < avctx->height; y++) {
+        uint8_t *luma = &p->data[0][y * p->linesize[0]];
+        uint8_t *cb   = &p->data[1][y * p->linesize[1]];
+        uint8_t *cr   = &p->data[2][y * p->linesize[2]];
+        for (x = 0; x < avctx->width; x += 4) {
+            switch (a->dither_type) {
+            case 0: dither = 0x492A0000;                       break;
+            case 1: dither = dither * 1664525 + 1013904223;    break;
+            case 2: dither = ordered_dither[ y&1 ][ (x>>2)&1 ];break;
+            }
+            put_bits(&pb, 5, (249*(luma[3] +  (dither>>29)   )) >> 11);
+            put_bits(&pb, 5, (249*(luma[2] + ((dither>>26)&7))) >> 11);
+            put_bits(&pb, 5, (249*(luma[1] + ((dither>>23)&7))) >> 11);
+            put_bits(&pb, 5, (249*(luma[0] + ((dither>>20)&7))) >> 11);
+            luma += 4;
+            put_bits(&pb, 6, (253*(*(cb++) + ((dither>>18)&3))) >> 10);
+            put_bits(&pb, 6, (253*(*(cr++) + ((dither>>16)&3))) >> 10);
+        }
+    }
+
+    flush_put_bits(&pb);
+
+    pkt->size   = put_bits_count(&pb) / 8;
+    pkt->flags |= AV_PKT_FLAG_KEY;
+    *got_packet = 1;
+    return 0;
+}
+
+#define OFFSET(x) offsetof(CLJRContext, x)
+#define VE AV_OPT_FLAG_VIDEO_PARAM | AV_OPT_FLAG_ENCODING_PARAM
+static const AVOption options[] = {
+    { "dither_type",   "Dither type",   OFFSET(dither_type),        AV_OPT_TYPE_INT, {1 }, 0, 2, VE},
+    { NULL },
 };
+
+static const AVClass class = {
+        "cljr encoder", /* class_name */
+        av_default_item_name, /* item_name */
+        options, /* option */
+        LIBAVUTIL_VERSION_INT, /* version */
+    };
+
+static const enum AVPixelFormat _ff_cljr_fmts_27[] = { AV_PIX_FMT_YUV411P,
+                                                   AV_PIX_FMT_NONE };
+AVCodec ff_cljr_encoder = {
+        "cljr", /* name */
+        NULL_IF_CONFIG_SMALL("Cirrus Logic AccuPak"), /* long_name */
+        AVMEDIA_TYPE_VIDEO, /* type */
+        AV_CODEC_ID_CLJR, /* id */
+        0, /* capabilities */
+        0, /* supported_framerates */
+        _ff_cljr_fmts_27, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        &class, /* priv_class */
+        0, /* profiles */
+        sizeof(CLJRContext), /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        common_init, /* init */
+        0, /* encode_sub */
+        encode_frame, /* encode2 */
+    };
 #endif

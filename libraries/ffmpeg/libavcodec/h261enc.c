@@ -25,7 +25,7 @@
  * H.261 encoder.
  */
 
-#include "dsputil.h"
+#include "libavutil/avassert.h"
 #include "avcodec.h"
 #include "mpegvideo.h"
 #include "h263.h"
@@ -34,7 +34,7 @@
 
 extern uint8_t ff_h261_rl_table_store[2][2*MAX_RUN + MAX_LEVEL + 3];
 
-static void h261_encode_block(H261Context * h, DCTELEM * block,
+static void h261_encode_block(H261Context * h, int16_t * block,
                               int n);
 
 int ff_h261_get_picture_format(int width, int height){
@@ -53,7 +53,7 @@ void ff_h261_encode_picture_header(MpegEncContext * s, int picture_number){
     H261Context * h = (H261Context *) s;
     int format, temp_ref;
 
-    align_put_bits(&s->pb);
+    avpriv_align_put_bits(&s->pb);
 
     /* Update the pointer to last GOB */
     s->ptr_lastgob = put_bits_ptr(&s->pb);
@@ -128,7 +128,7 @@ static void h261_encode_motion(H261Context * h, int val){
     int sign, code;
     if(val==0){
         code = 0;
-        put_bits(&s->pb,h261_mv_tab[code][1],h261_mv_tab[code][0]);
+        put_bits(&s->pb,ff_h261_mv_tab[code][1],ff_h261_mv_tab[code][0]);
     }
     else{
         if(val > 15)
@@ -137,13 +137,13 @@ static void h261_encode_motion(H261Context * h, int val){
             val+=32;
         sign = val < 0;
         code = sign ? -val : val;
-        put_bits(&s->pb,h261_mv_tab[code][1],h261_mv_tab[code][0]);
+        put_bits(&s->pb,ff_h261_mv_tab[code][1],ff_h261_mv_tab[code][0]);
         put_bits(&s->pb,1,sign);
     }
 }
 
 static inline int get_cbp(MpegEncContext * s,
-                      DCTELEM block[6][64])
+                      int16_t block[6][64])
 {
     int i, cbp;
     cbp= 0;
@@ -154,7 +154,7 @@ static inline int get_cbp(MpegEncContext * s,
     return cbp;
 }
 void ff_h261_encode_mb(MpegEncContext * s,
-         DCTELEM block[6][64],
+         int16_t block[6][64],
          int motion_x, int motion_y)
 {
     H261Context * h = (H261Context *)s;
@@ -182,7 +182,7 @@ void ff_h261_encode_mb(MpegEncContext * s,
     }
 
     /* MB is not skipped, encode MBA */
-    put_bits(&s->pb, h261_mba_bits[(h->current_mba-h->previous_mba)-1], h261_mba_code[(h->current_mba-h->previous_mba)-1]);
+    put_bits(&s->pb, ff_h261_mba_bits[(h->current_mba-h->previous_mba)-1], ff_h261_mba_code[(h->current_mba-h->previous_mba)-1]);
 
     /* calculate MTYPE */
     if(!s->mb_intra){
@@ -194,15 +194,15 @@ void ff_h261_encode_mb(MpegEncContext * s,
             h->mtype+=3;
         if(cbp || s->dquant)
             h->mtype++;
-        assert(h->mtype > 1);
+        av_assert1(h->mtype > 1);
     }
 
     if(s->dquant)
         h->mtype++;
 
-    put_bits(&s->pb, h261_mtype_bits[h->mtype], h261_mtype_code[h->mtype]);
+    put_bits(&s->pb, ff_h261_mtype_bits[h->mtype], ff_h261_mtype_code[h->mtype]);
 
-    h->mtype = h261_mtype_map[h->mtype];
+    h->mtype = ff_h261_mtype_map[h->mtype];
 
     if(IS_QUANT(h->mtype)){
         ff_set_qscale(s,s->qscale+s->dquant);
@@ -221,8 +221,8 @@ void ff_h261_encode_mb(MpegEncContext * s,
     h->previous_mba = h->current_mba;
 
     if(HAS_CBP(h->mtype)){
-        assert(cbp>0);
-        put_bits(&s->pb,h261_cbp_tab[cbp-1][1],h261_cbp_tab[cbp-1][0]);
+        av_assert1(cbp>0);
+        put_bits(&s->pb,ff_h261_cbp_tab[cbp-1][1],ff_h261_cbp_tab[cbp-1][0]);
     }
     for(i=0; i<6; i++) {
         /* encode each block */
@@ -240,7 +240,7 @@ void ff_h261_encode_init(MpegEncContext *s){
 
     if (!done) {
         done = 1;
-        init_rl(&h261_rl_tcoeff, ff_h261_rl_table_store);
+        ff_init_rl(&ff_h261_rl_tcoeff, ff_h261_rl_table_store);
     }
 
     s->min_qcoeff= -127;
@@ -251,16 +251,16 @@ void ff_h261_encode_init(MpegEncContext *s){
 
 
 /**
- * encodes a 8x8 block.
+ * Encode an 8x8 block.
  * @param block the 8x8 block
  * @param n block index (0-3 are luma, 4-5 are chroma)
  */
-static void h261_encode_block(H261Context * h, DCTELEM * block, int n){
+static void h261_encode_block(H261Context * h, int16_t * block, int n){
     MpegEncContext * const s = &h->s;
     int level, run, i, j, last_index, last_non_zero, sign, slevel, code;
     RLTable *rl;
 
-    rl = &h261_rl_tcoeff;
+    rl = &ff_h261_rl_tcoeff;
     if (s->mb_intra) {
         /* DC coef */
         level = block[0];
@@ -307,8 +307,8 @@ static void h261_encode_block(H261Context * h, DCTELEM * block, int n){
             put_bits(&s->pb, rl->table_vlc[code][1], rl->table_vlc[code][0]);
             if (code == rl->n) {
                 put_bits(&s->pb, 6, run);
-                assert(slevel != 0);
-                assert(level <= 127);
+                av_assert1(slevel != 0);
+                av_assert1(level <= 127);
                 put_sbits(&s->pb, 8, slevel);
             } else {
                 put_bits(&s->pb, 1, sign);
@@ -321,37 +321,32 @@ static void h261_encode_block(H261Context * h, DCTELEM * block, int n){
     }
 }
 
-const enum PixelFormat h261_encoder_formats[] = {PIX_FMT_YUV420P, PIX_FMT_NONE};
+FF_MPV_GENERIC_CLASS(h261)
 
+static const enum AVPixelFormat _ff_h261enc_fmts_55[] = { AV_PIX_FMT_YUV420P, AV_PIX_FMT_NONE };
 AVCodec ff_h261_encoder = {
-#ifndef MSC_STRUCTS
-    "h261",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_H261,
-    sizeof(H261Context),
-    MPV_encode_init,
-    MPV_encode_picture,
-    MPV_encode_end,
-    .pix_fmts= (const enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_NONE},
-    .long_name= NULL_IF_CONFIG_SMALL("H.261"),
-#else
-    /* name = */ "h261",
-    /* type = */ AVMEDIA_TYPE_VIDEO,
-    /* id = */ CODEC_ID_H261,
-    /* priv_data_size = */ sizeof(H261Context),
-    /* init = */ MPV_encode_init,
-    /* encode = */ MPV_encode_picture,
-    /* close = */ MPV_encode_end,
-    /* decode = */ 0,
-    /* capabilities = */ 0,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ h261_encoder_formats,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("H.261"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ 0,
-    /* channel_layouts = */ 0,
-#endif
-};
-
+        "h261", /* name */
+        NULL_IF_CONFIG_SMALL("H.261"), /* long_name */
+        AVMEDIA_TYPE_VIDEO, /* type */
+        AV_CODEC_ID_H261, /* id */
+        0, /* capabilities */
+        0, /* supported_framerates */
+        _ff_h261enc_fmts_55, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        &h261_class, /* priv_class */
+        0, /* profiles */
+        sizeof(H261Context), /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        ff_MPV_encode_init, /* init */
+        0, /* encode_sub */
+        ff_MPV_encode_picture, /* encode2 */
+        0, /* decode */
+        ff_MPV_encode_end, /* close */
+    };

@@ -23,12 +23,11 @@
  * VP8 decoder support via libvpx
  */
 
-#if CONFIG_LIBVPX
-
 #define VPX_CODEC_DISABLE_COMPAT 1
 #include <vpx/vpx_decoder.h>
 #include <vpx/vp8dx.h>
 
+#include "libavutil/common.h"
 #include "libavutil/imgutils.h"
 #include "avcodec.h"
 
@@ -36,13 +35,13 @@ typedef struct VP8DecoderContext {
     struct vpx_codec_ctx decoder;
 } VP8Context;
 
-static av_cold int vp8_init(AVCodecContext *avctx)
+static av_cold int vpx_init(AVCodecContext *avctx,
+                            const struct vpx_codec_iface *iface)
 {
     VP8Context *ctx = avctx->priv_data;
-    const struct vpx_codec_iface *iface = &vpx_codec_vp8_dx_algo;
     struct vpx_codec_dec_cfg deccfg = {
         /* token partitions+1 would be a decent choice */
-        .threads = FFMIN(avctx->thread_count, 16)
+        /* threads */ FFMIN(avctx->thread_count, 16)
     };
 
     av_log(avctx, AV_LOG_INFO, "%s\n", vpx_codec_version_str());
@@ -55,12 +54,12 @@ static av_cold int vp8_init(AVCodecContext *avctx)
         return AVERROR(EINVAL);
     }
 
-    avctx->pix_fmt = PIX_FMT_YUV420P;
+    avctx->pix_fmt = AV_PIX_FMT_YUV420P;
     return 0;
 }
 
 static int vp8_decode(AVCodecContext *avctx,
-                      void *data, int *data_size, AVPacket *avpkt)
+                      void *data, int *got_frame, AVPacket *avpkt)
 {
     VP8Context *ctx = avctx->priv_data;
     AVFrame *picture = data;
@@ -101,7 +100,7 @@ static int vp8_decode(AVCodecContext *avctx,
         picture->linesize[1] = img->stride[1];
         picture->linesize[2] = img->stride[2];
         picture->linesize[3] = 0;
-        *data_size           = sizeof(AVPicture);
+        *got_frame           = 1;
     }
     return avpkt->size;
 }
@@ -113,37 +112,70 @@ static av_cold int vp8_free(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec ff_libvpx_decoder = {
-#ifndef MSC_STRUCTS
-    "libvpx",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_VP8,
-    sizeof(VP8Context),
-    vp8_init,
-    NULL, /* encode */
-    vp8_free,
-    vp8_decode,
-    0, /* capabilities */
-    .long_name = NULL_IF_CONFIG_SMALL("libvpx VP8"),
-#else
-    /* name = */ "libvpx",
-    /* type = */ AVMEDIA_TYPE_VIDEO,
-    /* id = */ CODEC_ID_VP8,
-    /* priv_data_size = */ sizeof(VP8Context),
-    /* init = */ vp8_init,
-    /* encode = */ NULL, /* encode */
-    /* close = */ vp8_free,
-    /* decode = */ vp8_decode,
-    /* capabilities = */ 0, /* capabilities */
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ 0,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("libvpx VP8"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ 0,
-    /* channel_layouts = */ 0,
-#endif
-};
+#if CONFIG_LIBVPX_VP8_DECODER
+static av_cold int vp8_init(AVCodecContext *avctx)
+{
+    return vpx_init(avctx, &vpx_codec_vp8_dx_algo);
+}
 
-#endif
+AVCodec ff_libvpx_vp8_decoder = {
+        "libvpx", /* name */
+        NULL_IF_CONFIG_SMALL("libvpx VP8"), /* long_name */
+        AVMEDIA_TYPE_VIDEO, /* type */
+        AV_CODEC_ID_VP8, /* id */
+        CODEC_CAP_AUTO_THREADS, /* capabilities */
+        0, /* supported_framerates */
+        0, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        0, /* priv_class */
+        0, /* profiles */
+        sizeof(VP8Context), /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        vp8_init, /* init */
+        0, /* encode_sub */
+        0, /* encode2 */
+        vp8_decode, /* decode */
+        vp8_free, /* close */
+    };
+#endif /* CONFIG_LIBVPX_VP8_DECODER */
+
+#if CONFIG_LIBVPX_VP9_DECODER
+static av_cold int vp9_init(AVCodecContext *avctx)
+{
+    return vpx_init(avctx, &vpx_codec_vp9_dx_algo);
+}
+
+AVCodec ff_libvpx_vp9_decoder = {
+        "libvpx-vp9", /* name */
+        NULL_IF_CONFIG_SMALL("libvpx VP9"), /* long_name */
+        AVMEDIA_TYPE_VIDEO, /* type */
+        AV_CODEC_ID_VP9, /* id */
+        CODEC_CAP_AUTO_THREADS | CODEC_CAP_EXPERIMENTAL, /* capabilities */
+        0, /* supported_framerates */
+        0, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        0, /* priv_class */
+        0, /* profiles */
+        sizeof(VP8Context), /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        vp9_init, /* init */
+        0, /* encode_sub */
+        0, /* encode2 */
+        vp8_decode, /* decode */
+        vp8_free, /* close */
+    };
+#endif /* CONFIG_LIBVPX_VP9_DECODER */

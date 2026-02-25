@@ -1,5 +1,5 @@
 /*
- * Various utilities for ffmpeg system
+ * various OS-feature replacement utilities
  * Copyright (c) 2000, 2001, 2002 Fabrice Bellard
  * copyright (c) 2002 Francois Revol
  *
@@ -22,28 +22,50 @@
 
 /* needed by inet_aton() */
 #define _SVID_SOURCE
-#define _DARWIN_C_SOURCE
 
 #include "config.h"
 #include "avformat.h"
 #include "os_support.h"
 
-#if CONFIG_NETWORK
-
+#if defined(_WIN32) && !defined(__MINGW32CE__)
+#undef open
 #include <fcntl.h>
-#ifndef _XBOX
-#include <unistd.h>
+#include <io.h>
+#include <windows.h>
+#include <share.h>
+
+int ff_win32_open(const char *filename_utf8, int oflag, int pmode)
+{
+    int fd;
+    int num_chars;
+    wchar_t *filename_w;
+
+    /* convert UTF-8 to wide chars */
+    num_chars = MultiByteToWideChar(CP_UTF8, 0, filename_utf8, -1, NULL, 0);
+    if (num_chars <= 0)
+        return -1;
+    filename_w = av_mallocz(sizeof(wchar_t) * num_chars);
+    MultiByteToWideChar(CP_UTF8, 0, filename_utf8, -1, filename_w, num_chars);
+
+    fd = _wsopen(filename_w, oflag, SH_DENYNO, pmode);
+    av_freep(&filename_w);
+
+    /* filename maybe be in CP_ACP */
+    if (fd == -1 && !(oflag & O_CREAT))
+        return _sopen(filename_utf8, oflag, SH_DENYNO, pmode);
+
+    return fd;
+}
 #endif
+
+#if CONFIG_NETWORK
+#include <fcntl.h>
 #if !HAVE_POLL_H
-#ifndef _XBOX
+#if HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
 #if HAVE_WINSOCK2_H
-#ifndef _XBOX
 #include <winsock2.h>
-#else
-#include <xtl.h>
-#endif
 #elif HAVE_SYS_SELECT_H
 #include <sys/select.h>
 #endif
@@ -52,26 +74,24 @@
 #include "network.h"
 
 #if !HAVE_INET_ATON
-#ifndef _XBOX
 #include <stdlib.h>
-#include <strings.h>
-#endif
 
-int ff_inet_aton (const char * str, struct in_addr * add)
+int ff_inet_aton(const char *str, struct in_addr *add)
 {
     unsigned int add1 = 0, add2 = 0, add3 = 0, add4 = 0;
 
     if (sscanf(str, "%d.%d.%d.%d", &add1, &add2, &add3, &add4) != 4)
         return 0;
 
-    if (!add1 || (add1|add2|add3|add4) > 255) return 0;
+    if (!add1 || (add1 | add2 | add3 | add4) > 255)
+        return 0;
 
     add->s_addr = htonl((add1 << 24) + (add2 << 16) + (add3 << 8) + add4);
 
     return 1;
 }
 #else
-int ff_inet_aton (const char * str, struct in_addr * add)
+int ff_inet_aton(const char *str, struct in_addr *add)
 {
     return inet_aton(str, add);
 }
@@ -79,14 +99,13 @@ int ff_inet_aton (const char * str, struct in_addr * add)
 
 #if !HAVE_GETADDRINFO
 int ff_getaddrinfo(const char *node, const char *service,
-                const struct addrinfo *hints, struct addrinfo **res)
+                   const struct addrinfo *hints, struct addrinfo **res)
 {
     struct hostent *h = NULL;
     struct addrinfo *ai;
     struct sockaddr_in *sin;
 
 #if HAVE_WINSOCK2_H
-#ifndef _XBOX
     int (WSAAPI *win_getaddrinfo)(const char *node, const char *service,
                                   const struct addrinfo *hints,
                                   struct addrinfo **res);
@@ -95,10 +114,9 @@ int ff_getaddrinfo(const char *node, const char *service,
     if (win_getaddrinfo)
         return win_getaddrinfo(node, service, hints, res);
 #endif
-#endif
 
     *res = NULL;
-    sin = av_mallocz(sizeof(struct sockaddr_in));
+    sin  = av_mallocz(sizeof(struct sockaddr_in));
     if (!sin)
         return EAI_FAIL;
     sin->sin_family = AF_INET;
@@ -117,9 +135,9 @@ int ff_getaddrinfo(const char *node, const char *service,
             memcpy(&sin->sin_addr, h->h_addr_list[0], sizeof(struct in_addr));
         }
     } else {
-        if (hints && (hints->ai_flags & AI_PASSIVE)) {
+        if (hints && (hints->ai_flags & AI_PASSIVE))
             sin->sin_addr.s_addr = INADDR_ANY;
-        } else
+        else
             sin->sin_addr.s_addr = INADDR_LOOPBACK;
     }
 
@@ -134,16 +152,22 @@ int ff_getaddrinfo(const char *node, const char *service,
         return EAI_FAIL;
     }
 
-    *res = ai;
-    ai->ai_family = AF_INET;
+    *res            = ai;
+    ai->ai_family   = AF_INET;
     ai->ai_socktype = hints ? hints->ai_socktype : 0;
     switch (ai->ai_socktype) {
-    case SOCK_STREAM: ai->ai_protocol = IPPROTO_TCP; break;
-    case SOCK_DGRAM:  ai->ai_protocol = IPPROTO_UDP; break;
-    default:          ai->ai_protocol = 0;           break;
+    case SOCK_STREAM:
+        ai->ai_protocol = IPPROTO_TCP;
+        break;
+    case SOCK_DGRAM:
+        ai->ai_protocol = IPPROTO_UDP;
+        break;
+    default:
+        ai->ai_protocol = 0;
+        break;
     }
 
-    ai->ai_addr = (struct sockaddr *)sin;
+    ai->ai_addr    = (struct sockaddr *)sin;
     ai->ai_addrlen = sizeof(struct sockaddr_in);
     if (hints && (hints->ai_flags & AI_CANONNAME))
         ai->ai_canonname = h ? av_strdup(h->h_name) : NULL;
@@ -155,7 +179,6 @@ int ff_getaddrinfo(const char *node, const char *service,
 void ff_freeaddrinfo(struct addrinfo *res)
 {
 #if HAVE_WINSOCK2_H
-#ifndef _XBOX
     void (WSAAPI *win_freeaddrinfo)(struct addrinfo *res);
     HMODULE ws2mod = GetModuleHandle("ws2_32.dll");
     win_freeaddrinfo = (void (WSAAPI *)(struct addrinfo *res))
@@ -164,7 +187,6 @@ void ff_freeaddrinfo(struct addrinfo *res)
         win_freeaddrinfo(res);
         return;
     }
-#endif
 #endif
 
     av_free(res->ai_canonname);
@@ -179,7 +201,6 @@ int ff_getnameinfo(const struct sockaddr *sa, int salen,
     const struct sockaddr_in *sin = (const struct sockaddr_in *)sa;
 
 #if HAVE_WINSOCK2_H
-#ifndef _XBOX
     int (WSAAPI *win_getnameinfo)(const struct sockaddr *sa, socklen_t salen,
                                   char *host, DWORD hostlen,
                                   char *serv, DWORD servlen, int flags);
@@ -187,7 +208,6 @@ int ff_getnameinfo(const struct sockaddr *sa, int salen,
     win_getnameinfo = GetProcAddress(ws2mod, "getnameinfo");
     if (win_getnameinfo)
         return win_getnameinfo(sa, salen, host, hostlen, serv, servlen, flags);
-#endif
 #endif
 
     if (sa->sa_family != AF_INET)
@@ -210,50 +230,73 @@ int ff_getnameinfo(const struct sockaddr *sa, int salen,
             a = ntohl(sin->sin_addr.s_addr);
             snprintf(host, hostlen, "%d.%d.%d.%d",
                      ((a >> 24) & 0xff), ((a >> 16) & 0xff),
-                     ((a >>  8) & 0xff), ( a        & 0xff));
+                     ((a >>  8) & 0xff),  (a        & 0xff));
         }
     }
 
     if (serv && servlen > 0) {
         struct servent *ent = NULL;
+#if HAVE_GETSERVBYPORT
         if (!(flags & NI_NUMERICSERV))
             ent = getservbyport(sin->sin_port, flags & NI_DGRAM ? "udp" : "tcp");
+#endif
 
-        if (ent) {
+        if (ent)
             snprintf(serv, servlen, "%s", ent->s_name);
-        } else
+        else
             snprintf(serv, servlen, "%d", ntohs(sin->sin_port));
     }
 
     return 0;
 }
+#endif /* !HAVE_GETADDRINFO */
 
+#if !HAVE_GETADDRINFO || HAVE_WINSOCK2_H
 const char *ff_gai_strerror(int ecode)
 {
-    switch(ecode) {
-    case EAI_FAIL   : return "A non-recoverable error occurred";
-    case EAI_FAMILY : return "The address family was not recognized or the address length was invalid for the specified family";
-    case EAI_NONAME : return "The name does not resolve for the supplied parameters";
+    switch (ecode) {
+    case EAI_AGAIN:
+        return "Temporary failure in name resolution";
+    case EAI_BADFLAGS:
+        return "Invalid flags for ai_flags";
+    case EAI_FAIL:
+        return "A non-recoverable error occurred";
+    case EAI_FAMILY:
+        return "The address family was not recognized or the address "
+               "length was invalid for the specified family";
+    case EAI_MEMORY:
+        return "Memory allocation failure";
+#if EAI_NODATA != EAI_NONAME
+    case EAI_NODATA:
+        return "No address associated with hostname";
+#endif
+    case EAI_NONAME:
+        return "The name does not resolve for the supplied parameters";
+    case EAI_SERVICE:
+        return "servname not supported for ai_socktype";
+    case EAI_SOCKTYPE:
+        return "ai_socktype not supported";
     }
 
     return "Unknown error";
 }
-#endif
+#endif /* !HAVE_GETADDRINFO || HAVE_WINSOCK2_H */
 
 int ff_socket_nonblock(int socket, int enable)
 {
 #if HAVE_WINSOCK2_H
-   return ioctlsocket(socket, FIONBIO, &enable);
+    u_long param = enable;
+    return ioctlsocket(socket, FIONBIO, &param);
 #else
-   if (enable)
-      return fcntl(socket, F_SETFL, fcntl(socket, F_GETFL) | O_NONBLOCK);
-   else
-      return fcntl(socket, F_SETFL, fcntl(socket, F_GETFL) & ~O_NONBLOCK);
+    if (enable)
+        return fcntl(socket, F_SETFL, fcntl(socket, F_GETFL) | O_NONBLOCK);
+    else
+        return fcntl(socket, F_SETFL, fcntl(socket, F_GETFL) & ~O_NONBLOCK);
 #endif
 }
 
 #if !HAVE_POLL_H
-int poll(struct pollfd *fds, nfds_t numfds, int timeout)
+int ff_poll(struct pollfd *fds, nfds_t numfds, int timeout)
 {
     fd_set read_set;
     fd_set write_set;
@@ -273,8 +316,8 @@ int poll(struct pollfd *fds, nfds_t numfds, int timeout)
     FD_ZERO(&write_set);
     FD_ZERO(&exception_set);
 
-    n = -1;
-    for(i = 0; i < numfds; i++) {
+    n = 0;
+    for (i = 0; i < numfds; i++) {
         if (fds[i].fd < 0)
             continue;
 #if !HAVE_WINSOCK2_H
@@ -284,38 +327,43 @@ int poll(struct pollfd *fds, nfds_t numfds, int timeout)
         }
 #endif
 
-        if (fds[i].events & POLLIN)  FD_SET(fds[i].fd, &read_set);
-        if (fds[i].events & POLLOUT) FD_SET(fds[i].fd, &write_set);
-        if (fds[i].events & POLLERR) FD_SET(fds[i].fd, &exception_set);
+        if (fds[i].events & POLLIN)
+            FD_SET(fds[i].fd, &read_set);
+        if (fds[i].events & POLLOUT)
+            FD_SET(fds[i].fd, &write_set);
+        if (fds[i].events & POLLERR)
+            FD_SET(fds[i].fd, &exception_set);
 
-        if (fds[i].fd > n)
-            n = fds[i].fd;
-    };
+        if (fds[i].fd >= n)
+            n = fds[i].fd + 1;
+    }
 
-    if (n == -1)
+    if (n == 0)
         /* Hey!? Nothing to poll, in fact!!! */
         return 0;
 
-    if (timeout < 0)
-        rc = select(n+1, &read_set, &write_set, &exception_set, NULL);
-    else {
-        struct timeval    tv;
-
-        tv.tv_sec = timeout / 1000;
+    if (timeout < 0) {
+        rc = select(n, &read_set, &write_set, &exception_set, NULL);
+    } else {
+        struct timeval tv;
+        tv.tv_sec  = timeout / 1000;
         tv.tv_usec = 1000 * (timeout % 1000);
-        rc = select(n+1, &read_set, &write_set, &exception_set, &tv);
-    };
+        rc         = select(n, &read_set, &write_set, &exception_set, &tv);
+    }
 
     if (rc < 0)
         return rc;
 
-    for(i = 0; i < numfds; i++) {
+    for (i = 0; i < numfds; i++) {
         fds[i].revents = 0;
 
-        if (FD_ISSET(fds[i].fd, &read_set))      fds[i].revents |= POLLIN;
-        if (FD_ISSET(fds[i].fd, &write_set))     fds[i].revents |= POLLOUT;
-        if (FD_ISSET(fds[i].fd, &exception_set)) fds[i].revents |= POLLERR;
-    };
+        if (FD_ISSET(fds[i].fd, &read_set))
+            fds[i].revents |= POLLIN;
+        if (FD_ISSET(fds[i].fd, &write_set))
+            fds[i].revents |= POLLOUT;
+        if (FD_ISSET(fds[i].fd, &exception_set))
+            fds[i].revents |= POLLERR;
+    }
 
     return rc;
 }

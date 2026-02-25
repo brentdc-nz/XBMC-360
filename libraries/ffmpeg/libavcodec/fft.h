@@ -85,6 +85,7 @@ struct FFTContext {
     int fft_permutation;
 #define FF_FFT_PERM_DEFAULT   0
 #define FF_FFT_PERM_SWAP_LSBS 1
+#define FF_FFT_PERM_AVX       2
     int mdct_permutation;
 #define FF_MDCT_PERM_NONE       0
 #define FF_MDCT_PERM_INTERLEAVE 1
@@ -97,7 +98,7 @@ struct FFTContext {
 #endif
 
 #define COSTABLE(size) \
-    COSTABLE_CONST DECLARE_ALIGNED(16, FFTSample, FFT_NAME(ff_cos_##size))[size/2]
+    COSTABLE_CONST DECLARE_ALIGNED(32, FFTSample, FFT_NAME(ff_cos_##size))[size/2]
 
 extern COSTABLE(16);
 extern COSTABLE(32);
@@ -118,7 +119,7 @@ extern COSTABLE_CONST FFTSample* const FFT_NAME(ff_cos_tabs)[17];
 
 /**
  * Initialize the cosine table in ff_cos_tabs[index]
- * \param index index in ff_cos_tabs array of the table to initialize
+ * @param index index in ff_cos_tabs array of the table to initialize
  */
 void ff_init_ff_cos_tabs(int index);
 
@@ -134,8 +135,9 @@ int ff_fft_init(FFTContext *s, int nbits, int inverse);
 
 #if CONFIG_FFT_FLOAT
 void ff_fft_init_altivec(FFTContext *s);
-void ff_fft_init_mmx(FFTContext *s);
+void ff_fft_init_x86(FFTContext *s);
 void ff_fft_init_arm(FFTContext *s);
+void ff_fft_init_mips(FFTContext *s);
 #else
 void ff_fft_fixed_init_arm(FFTContext *s);
 #endif

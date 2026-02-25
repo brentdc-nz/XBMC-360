@@ -59,6 +59,7 @@
 #include "roqvideo.h"
 #include "bytestream.h"
 #include "elbg.h"
+#include "internal.h"
 #include "mathops.h"
 
 #define CHROMA_BIAS 1
@@ -112,7 +113,7 @@ static inline int square(int x)
     return x*x;
 }
 
-static inline int eval_sse(uint8_t *a, uint8_t *b, int count)
+static inline int eval_sse(const uint8_t *a, const uint8_t *b, int count)
 {
     int diff=0;
 
@@ -124,8 +125,8 @@ static inline int eval_sse(uint8_t *a, uint8_t *b, int count)
 
 // FIXME Could use DSPContext.sse, but it is not so speed critical (used
 // just for motion estimation).
-static int block_sse(uint8_t **buf1, uint8_t **buf2, int x1, int y1, int x2,
-                     int y2, int *stride1, int *stride2, int size)
+static int block_sse(uint8_t * const *buf1, uint8_t * const *buf2, int x1, int y1,
+                     int x2, int y2, const int *stride1, const int *stride2, int size)
 {
     int i, k;
     int sse=0;
@@ -260,7 +261,7 @@ static void create_cel_evals(RoqContext *enc, RoqTempdata *tempData)
 /**
  * Get macroblocks from parts of the image
  */
-static void get_frame_mb(AVFrame *frame, int x, int y, uint8_t mb[], int dim)
+static void get_frame_mb(const AVFrame *frame, int x, int y, uint8_t mb[], int dim)
 {
     int i, j, cp;
 
@@ -337,15 +338,8 @@ static void motion_search(RoqContext *enc, int blocksize)
 
     for (i=0; i<enc->height; i+=blocksize)
         for (j=0; j<enc->width; j+=blocksize) {
-#ifndef _XBOX
-			lowestdiff = eval_motion_dist(enc, j, i, (motion_vect) {{0,0}},
+            lowestdiff = eval_motion_dist(enc, j, i, (motion_vect) {{0,0}},
                                           blocksize);
-#else
-			motion_vect tmp_mv = {0,0};
-			lowestdiff = eval_motion_dist(enc, j, i, tmp_mv,
-                                          blocksize);
-#endif
-            
             bestpick.d[0] = 0;
             bestpick.d[1] = 0;
 
@@ -761,8 +755,8 @@ static void reconstruct_and_encode_image(RoqContext *enc, RoqTempdata *tempData,
 /**
  * Create a single YUV cell from a 2x2 section of the image
  */
-static inline void frame_block_to_cell(uint8_t *block, uint8_t **data,
-                                       int top, int left, int *stride)
+static inline void frame_block_to_cell(uint8_t *block, uint8_t * const *data,
+                                       int top, int left, const int *stride)
 {
     int i, j, u=0, v=0;
 
@@ -782,7 +776,7 @@ static inline void frame_block_to_cell(uint8_t *block, uint8_t **data,
 /**
  * Create YUV clusters for the entire image
  */
-static void create_clusters(AVFrame *frame, int w, int h, uint8_t *yuvClusters)
+static void create_clusters(const AVFrame *frame, int w, int h, uint8_t *yuvClusters)
 {
     int i, j, k, l;
 
@@ -1008,13 +1002,12 @@ static void roq_write_video_info_chunk(RoqContext *enc)
     bytestream_put_byte(&enc->out_buf, 0x00);
 }
 
-static int roq_encode_frame(AVCodecContext *avctx, unsigned char *buf, int buf_size, void *data)
+static int roq_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
+                            const AVFrame *frame, int *got_packet)
 {
     RoqContext *enc = avctx->priv_data;
-    AVFrame *frame= data;
-    uint8_t *buf_start = buf;
+    int size, ret;
 
-    enc->out_buf = buf;
     enc->avctx = avctx;
 
     enc->frame_to_enc = frame;
@@ -1026,10 +1019,10 @@ static int roq_encode_frame(AVCodecContext *avctx, unsigned char *buf, int buf_s
 
     /* 138 bits max per 8x8 block +
      *     256 codebooks*(6 bytes 2x2 + 4 bytes 4x4) + 8 bytes frame header */
-    if (((enc->width*enc->height/64)*138+7)/8 + 256*(6+4) + 8 > buf_size) {
-        av_log(avctx, AV_LOG_ERROR, "  RoQ: Output buffer too small!\n");
-        return -1;
-    }
+    size = ((enc->width * enc->height / 64) * 138 + 7) / 8 + 256 * (6 + 4) + 8;
+    if ((ret = ff_alloc_packet2(avctx, pkt, size)) < 0)
+        return ret;
+    enc->out_buf = pkt->data;
 
     /* Check for I frame */
     if (enc->framesSinceKeyframe == avctx->gop_size)
@@ -1038,8 +1031,8 @@ static int roq_encode_frame(AVCodecContext *avctx, unsigned char *buf, int buf_s
     if (enc->first_frame) {
         /* Alloc memory for the reconstruction data (we must know the stride
          for that) */
-        if (avctx->get_buffer(avctx, enc->current_frame) ||
-            avctx->get_buffer(avctx, enc->last_frame)) {
+        if (ff_get_buffer(avctx, enc->current_frame) ||
+            ff_get_buffer(avctx, enc->last_frame)) {
             av_log(avctx, AV_LOG_ERROR, "  RoQ: get_buffer() failed\n");
             return -1;
         }
@@ -1053,7 +1046,12 @@ static int roq_encode_frame(AVCodecContext *avctx, unsigned char *buf, int buf_s
     /* Encode the actual frame */
     roq_encode_video(enc);
 
-    return enc->out_buf - buf_start;
+    pkt->size   = enc->out_buf - pkt->data;
+    if (enc->framesSinceKeyframe == 1)
+        pkt->flags |= AV_PKT_FLAG_KEY;
+    *got_packet = 1;
+
+    return 0;
 }
 
 static int roq_encode_end(AVCodecContext *avctx)
@@ -1072,39 +1070,32 @@ static int roq_encode_end(AVCodecContext *avctx)
     return 0;
 }
 
-
-const enum PixelFormat roq_encoder_formats[] = {PIX_FMT_YUV444P, PIX_FMT_NONE};
-const AVRational roq_encoder_framerates[] = {{30,1}, {0,0}};
-AVCodec ff_roq_encoder =
-#ifndef MSC_STRUCTS
-{
-    "roqvideo",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_ROQ,
-    sizeof(RoqContext),
-    roq_encode_init,
-    roq_encode_frame,
-    roq_encode_end,
-    .supported_framerates = (const AVRational[]){{30,1}, {0,0}},
-    .pix_fmts = (const enum PixelFormat[]){PIX_FMT_YUV444P, PIX_FMT_NONE},
-    .long_name = NULL_IF_CONFIG_SMALL("id RoQ video"),
-#else
-    /* name = */ {
-    /* type = */ "roqvideo",
-    /* id = */ AVMEDIA_TYPE_VIDEO,
-    /* priv_data_size = */ CODEC_ID_ROQ,
-    /* init = */ sizeof(RoqContext),
-    /* encode = */ roq_encode_init,
-    /* close = */ roq_encode_frame,
-    /* decode = */ roq_encode_end,
-    /* capabilities = */ 0,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ roq_encoder_framerates,
-    /* pix_fmts = */ roq_encoder_formats,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("id RoQ video"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ 0,
-    /* channel_layouts = */ 0,
-#endif
-};
+static const enum AVPixelFormat _ff_roqvideoenc_fmts_139[] = { AV_PIX_FMT_YUV444P,
+                                                        AV_PIX_FMT_NONE };
+AVCodec ff_roq_encoder = {
+        "roqvideo", /* name */
+        NULL_IF_CONFIG_SMALL("id RoQ video"), /* long_name */
+        AVMEDIA_TYPE_VIDEO, /* type */
+        AV_CODEC_ID_ROQ, /* id */
+        0, /* capabilities */
+        static const AVRational _cla_roqvideoenc_1[] = {{30,1}, {0,0}};
+        _cla_roqvideoenc_1, /* supported_framerates */
+        _ff_roqvideoenc_fmts_139, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        0, /* priv_class */
+        0, /* profiles */
+        sizeof(RoqContext), /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        roq_encode_init, /* init */
+        0, /* encode_sub */
+        roq_encode_frame, /* encode2 */
+        0, /* decode */
+        roq_encode_end, /* close */
+    };

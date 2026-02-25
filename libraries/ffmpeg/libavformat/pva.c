@@ -20,6 +20,7 @@
  */
 
 #include "avformat.h"
+#include "internal.h"
 #include "mpeg.h"
 
 #define PVA_MAX_PAYLOAD_LENGTH  0x17f8
@@ -31,32 +32,45 @@ typedef struct {
     int continue_pes;
 } PVAContext;
 
-static int pva_probe(AVProbeData * pd) {
-    unsigned char *buf = pd->buf;
-
-    if (AV_RB16(buf) == PVA_MAGIC && buf[2] && buf[2] < 3 && buf[4] == 0x55)
-        return AVPROBE_SCORE_MAX / 2;
-
-    return 0;
+static int pva_check(const uint8_t *p) {
+    int length = AV_RB16(p + 6);
+    if (AV_RB16(p) != PVA_MAGIC || !p[2] || p[2] > 2 || p[4] != 0x55 ||
+        (p[5] & 0xe0) || length > PVA_MAX_PAYLOAD_LENGTH)
+        return -1;
+    return length + 8;
 }
 
-static int pva_read_header(AVFormatContext *s, AVFormatParameters *ap) {
+static int pva_probe(AVProbeData * pd) {
+    const unsigned char *buf = pd->buf;
+    int len = pva_check(buf);
+
+    if (len < 0)
+        return 0;
+
+    if (pd->buf_size >= len + 8 &&
+        pva_check(buf + len) >= 0)
+        return AVPROBE_SCORE_MAX / 2;
+
+    return AVPROBE_SCORE_MAX / 4;
+}
+
+static int pva_read_header(AVFormatContext *s) {
     AVStream *st;
 
-    if (!(st = av_new_stream(s, 0)))
+    if (!(st = avformat_new_stream(s, NULL)))
         return AVERROR(ENOMEM);
     st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
-    st->codec->codec_id   = CODEC_ID_MPEG2VIDEO;
+    st->codec->codec_id   = AV_CODEC_ID_MPEG2VIDEO;
     st->need_parsing      = AVSTREAM_PARSE_FULL;
-    av_set_pts_info(st, 32, 1, 90000);
+    avpriv_set_pts_info(st, 32, 1, 90000);
     av_add_index_entry(st, 0, 0, 0, 0, AVINDEX_KEYFRAME);
 
-    if (!(st = av_new_stream(s, 1)))
+    if (!(st = avformat_new_stream(s, NULL)))
         return AVERROR(ENOMEM);
     st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
-    st->codec->codec_id   = CODEC_ID_MP2;
+    st->codec->codec_id   = AV_CODEC_ID_MP2;
     st->need_parsing      = AVSTREAM_PARSE_FULL;
-    av_set_pts_info(st, 33, 1, 90000);
+    avpriv_set_pts_info(st, 33, 1, 90000);
     av_add_index_entry(st, 0, 0, 0, 0, AVINDEX_KEYFRAME);
 
     /* the parameters will be extracted from the compressed bitstream */
@@ -200,34 +214,20 @@ static int64_t pva_read_timestamp(struct AVFormatContext *s, int stream_index,
     return res;
 }
 
-AVInputFormat pva_demuxer = {
-#ifndef MSC_STRUCTS
-    "pva",
-    NULL_IF_CONFIG_SMALL("TechnoTrend PVA file and stream format"),
-    sizeof(PVAContext),
-    pva_probe,
-    pva_read_header,
-    pva_read_packet,
-    .read_timestamp = pva_read_timestamp
+AVInputFormat ff_pva_demuxer = {
+    "pva", /* name */
+    NULL_IF_CONFIG_SMALL("TechnoTrend PVA"), /* long_name */
+    0, /* flags */
+    0, /* extensions */
+    0, /* codec_tag */
+    0, /* priv_class */
+    0, /* next */
+    0, /* raw_codec_id */
+    sizeof(PVAContext), /* priv_data_size */
+    pva_probe, /* read_probe */
+    pva_read_header, /* read_header */
+    pva_read_packet, /* read_packet */
+    0, /* read_close */
+    0, /* read_seek */
+    pva_read_timestamp, /* read_timestamp */
 };
-#else
-	"pva",
-	NULL_IF_CONFIG_SMALL("TechnoTrend PVA file and stream format"),
-	sizeof(PVAContext),
-	pva_probe,
-	pva_read_header,
-	pva_read_packet,
-	/*read_close = */ 0,
-	/*read_seek = */ 0,
-	/*read_timestamp = */ pva_read_timestamp,
-	/*flags = */ 0,
-	/*extensions = */ 0,
-	/*value = */ 0,
-	/*read_play = */ 0,
-	/*read_pause = */ 0,
-	/*codec_tag = */ 0,
-	/*read_seek2 = */ 0,
-	/*metadata_conv = */ 0,
-	/*next = */ 0
-};
-#endif

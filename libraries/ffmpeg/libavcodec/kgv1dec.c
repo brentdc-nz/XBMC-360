@@ -24,63 +24,76 @@
  * Kega Game Video decoder
  */
 
+#include "libavutil/common.h"
 #include "libavutil/intreadwrite.h"
 #include "libavutil/imgutils.h"
 #include "avcodec.h"
+#include "internal.h"
 
 typedef struct {
     AVCodecContext *avctx;
-    AVFrame pic;
-    uint16_t *prev, *cur;
+    AVFrame prev, cur;
 } KgvContext;
 
-static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, AVPacket *avpkt)
+static void decode_flush(AVCodecContext *avctx)
+{
+    KgvContext * const c = avctx->priv_data;
+
+    if (c->prev.data[0])
+        avctx->release_buffer(avctx, &c->prev);
+}
+
+static int decode_frame(AVCodecContext *avctx, void *data, int *got_frame,
+                        AVPacket *avpkt)
 {
     const uint8_t *buf = avpkt->data;
     const uint8_t *buf_end = buf + avpkt->size;
     KgvContext * const c = avctx->priv_data;
-    int offsets[7];
-    uint16_t *out, *prev;
+    int offsets[8];
+    uint8_t *out, *prev;
     int outcnt = 0, maxcnt;
-    int w, h, i;
+    int w, h, i, res;
 
     if (avpkt->size < 2)
-        return -1;
+        return AVERROR_INVALIDDATA;
 
     w = (buf[0] + 1) * 8;
     h = (buf[1] + 1) * 8;
     buf += 2;
 
-    if (av_image_check_size(w, h, 0, avctx))
-        return -1;
+    if ((res = av_image_check_size(w, h, 0, avctx)) < 0)
+        return res;
 
-    if (w != avctx->width || h != avctx->height)
+    if (w != avctx->width || h != avctx->height) {
+        if (c->prev.data[0])
+            avctx->release_buffer(avctx, &c->prev);
         avcodec_set_dimensions(avctx, w, h);
+    }
 
     maxcnt = w * h;
 
-    out = av_realloc(c->cur, w * h * 2);
-    if (!out)
-        return -1;
-    c->cur = out;
+    c->cur.reference = 3;
+    if ((res = ff_get_buffer(avctx, &c->cur)) < 0)
+        return res;
+    out  = c->cur.data[0];
+    if (c->prev.data[0]) {
+        prev = c->prev.data[0];
+    } else {
+        prev = NULL;
+    }
 
-    prev = av_realloc(c->prev, w * h * 2);
-    if (!prev)
-        return -1;
-    c->prev = prev;
-
-    for (i = 0; i < 7; i++)
+    for (i = 0; i < 8; i++)
         offsets[i] = -1;
 
-    while (outcnt < maxcnt && buf_end - 2 > buf) {
+    while (outcnt < maxcnt && buf_end - 2 >= buf) {
         int code = AV_RL16(buf);
         buf += 2;
 
         if (!(code & 0x8000)) {
-            out[outcnt++] = code; // rgb555 pixel coded directly
+            AV_WN16A(&out[2 * outcnt], code); // rgb555 pixel coded directly
+            outcnt++;
         } else {
             int count;
-            uint16_t *inp;
 
             if ((code & 0x6000) == 0x6000) {
                 // copy from previous frame
@@ -98,10 +111,16 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, AVPac
 
                 start = (outcnt + offsets[oidx]) % maxcnt;
 
-                if (maxcnt - start < count)
+                if (maxcnt - start < count || maxcnt - outcnt < count)
                     break;
 
-                inp = prev + start;
+                if (!prev) {
+                    av_log(avctx, AV_LOG_ERROR,
+                           "Frame reference does not exist\n");
+                    break;
+                }
+
+                memcpy(out + 2 * outcnt, prev + 2 * start, 2 * count);
             } else {
                 // copy from earlier in this frame
                 int offset = (code & 0x1FFF) + 1;
@@ -116,30 +135,24 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, AVPac
                     count = 4 + *buf++;
                 }
 
-                if (outcnt < offset)
+                if (outcnt < offset || maxcnt - outcnt < count)
                     break;
 
-                inp = out + outcnt - offset;
+                av_memcpy_backptr(out + 2 * outcnt, 2 * offset, 2 * count);
             }
-
-            if (maxcnt - outcnt < count)
-                break;
-
-            for (i = 0; i < count; i++)
-                out[outcnt++] = inp[i];
+            outcnt += count;
         }
     }
 
     if (outcnt - maxcnt)
         av_log(avctx, AV_LOG_DEBUG, "frame finished with %d diff\n", outcnt - maxcnt);
 
-    c->pic.data[0]     = (uint8_t *)c->cur;
-    c->pic.linesize[0] = w * 2;
+    *got_frame = 1;
+    *(AVFrame*)data = c->cur;
 
-    *data_size = sizeof(AVFrame);
-    *(AVFrame*)data = c->pic;
-
-    FFSWAP(uint16_t *, c->cur, c->prev);
+    if (c->prev.data[0])
+        avctx->release_buffer(avctx, &c->prev);
+    FFSWAP(AVFrame, c->cur, c->prev);
 
     return avpkt->size;
 }
@@ -149,50 +162,42 @@ static av_cold int decode_init(AVCodecContext *avctx)
     KgvContext * const c = avctx->priv_data;
 
     c->avctx = avctx;
-    avctx->pix_fmt = PIX_FMT_RGB555;
+    avctx->pix_fmt = AV_PIX_FMT_RGB555;
+    avctx->flags  |= CODEC_FLAG_EMU_EDGE;
 
     return 0;
 }
 
 static av_cold int decode_end(AVCodecContext *avctx)
 {
-    KgvContext * const c = avctx->priv_data;
-
-    av_freep(&c->cur);
-    av_freep(&c->prev);
-
+    decode_flush(avctx);
     return 0;
 }
 
 AVCodec ff_kgv1_decoder = {
-#ifndef MSC_STRUCTS
-    "kgv1",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_KGV1,
-    sizeof(KgvContext),
-    decode_init,
-    NULL,
-    decode_end,
-    decode_frame,
-    .max_lowres = 1,
-    .long_name = NULL_IF_CONFIG_SMALL("Kega Game Video"),
-#else
-    /* name = */ "kgv1",
-    /* type = */ AVMEDIA_TYPE_VIDEO,
-    /* id = */ CODEC_ID_KGV1,
-    /* priv_data_size = */ sizeof(KgvContext),
-    /* init = */ decode_init,
-    /* encode = */ NULL,
-    /* close = */ decode_end,
-    /* decode = */ decode_frame,
-    /* capabilities = */ 0,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ 0,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("Kega Game Video"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ 0,
-    /* channel_layouts = */ 0,
-#endif
-};
+        "kgv1", /* name */
+        NULL_IF_CONFIG_SMALL("Kega Game Video"), /* long_name */
+        AVMEDIA_TYPE_VIDEO, /* type */
+        AV_CODEC_ID_KGV1, /* id */
+        CODEC_CAP_DR1, /* capabilities */
+        0, /* supported_framerates */
+        0, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        0, /* priv_class */
+        0, /* profiles */
+        sizeof(KgvContext), /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        decode_init, /* init */
+        0, /* encode_sub */
+        0, /* encode2 */
+        decode_frame, /* decode */
+        decode_end, /* close */
+        decode_flush, /* flush */
+    };

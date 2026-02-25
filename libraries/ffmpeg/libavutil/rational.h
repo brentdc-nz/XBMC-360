@@ -33,6 +33,11 @@
 #include "attributes.h"
 
 /**
+ * @addtogroup lavu_math
+ * @{
+ */
+
+/**
  * rational number numerator/denominator
  */
 typedef struct AVRational{
@@ -40,13 +45,17 @@ typedef struct AVRational{
     int den; ///< denominator
 } AVRational;
 
-
-#ifdef _MSC_VER
-static inline AVRational av_create_rational(int num, int den){
-	AVRational ret = {num, den};
-	return ret;
+/**
+ * Create an AVRational.
+ * C89-compatible replacement for av_make_q(num, den) compound literals.
+ */
+static av_always_inline AVRational av_make_q(int num, int den)
+{
+    AVRational r;
+    r.num = num;
+    r.den = den;
+    return r;
 }
-#endif
 
 /**
  * Compare two rationals.
@@ -118,6 +127,17 @@ AVRational av_add_q(AVRational b, AVRational c) av_const;
 AVRational av_sub_q(AVRational b, AVRational c) av_const;
 
 /**
+ * Invert a rational.
+ * @param q value
+ * @return 1 / q
+ */
+static av_always_inline AVRational av_inv_q(AVRational q)
+{
+    AVRational r = { q.den, q.num };
+    return r;
+}
+
+/**
  * Convert a double precision floating point number to a rational.
  * inf is expressed as {1,0} or {-1,0} depending on the sign.
  *
@@ -139,5 +159,9 @@ int av_nearer_q(AVRational q, AVRational q1, AVRational q2);
  * @return the index of the nearest value found in the array
  */
 int av_find_nearest_q_idx(AVRational q, const AVRational* q_list);
+
+/**
+ * @}
+ */
 
 #endif /* AVUTIL_RATIONAL_H */

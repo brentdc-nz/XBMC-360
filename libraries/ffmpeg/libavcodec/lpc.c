@@ -1,4 +1,4 @@
-/**
+/*
  * LPC utility code
  * Copyright (c) 2006  Justin Ruggles <justin.ruggles@gmail.com>
  *
@@ -19,10 +19,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include "libavutil/common.h"
 #include "libavutil/lls.h"
 
 #define LPC_USE_DOUBLE
 #include "lpc.h"
+#include "libavutil/avassert.h"
 
 
 /**
@@ -35,8 +37,9 @@ static void lpc_apply_welch_window_c(const int32_t *data, int len,
     double w;
     double c;
 
-    assert(!(len&1)); //the optimization in r11881 does not support odd len
-                      //if someone wants odd len extend the change in r11881
+    /* The optimization in commit fa4ed8c does not support odd len.
+     * If someone wants odd len extend that change. */
+    av_assert2(!(len & 1));
 
     n2 = (len >> 1);
     c = 2.0 / (len - 1.0);
@@ -146,19 +149,29 @@ static int estimate_best_order(double *ref, int min_order, int max_order)
     return est;
 }
 
+int ff_lpc_calc_ref_coefs(LPCContext *s,
+                          const int32_t *samples, int order, double *ref)
+{
+    double autoc[MAX_LPC_ORDER + 1];
+
+    s->lpc_apply_welch_window(samples, s->blocksize, s->windowed_samples);
+    s->lpc_compute_autocorr(s->windowed_samples, s->blocksize, order, autoc);
+    compute_ref_coefs(autoc, order, ref, NULL);
+
+    return order;
+}
+
 /**
  * Calculate LPC coefficients for multiple orders
  *
- * @param use_lpc LPC method for determining coefficients
- * 0  = LPC with fixed pre-defined coeffs
- * 1  = LPC with coeffs determined by Levinson-Durbin recursion
- * 2+ = LPC with coeffs determined by Cholesky factorization using (use_lpc-1) passes.
+ * @param lpc_type LPC method for determining coefficients,
+ *                 see #FFLPCType for details
  */
 int ff_lpc_calc_coefs(LPCContext *s,
                       const int32_t *samples, int blocksize, int min_order,
                       int max_order, int precision,
                       int32_t coefs[][MAX_LPC_ORDER], int *shift,
-                      enum AVLPCType lpc_type, int lpc_passes,
+                      enum FFLPCType lpc_type, int lpc_passes,
                       int omethod, int max_shift, int zero_shift)
 {
     double autoc[MAX_LPC_ORDER+1];
@@ -167,8 +180,8 @@ int ff_lpc_calc_coefs(LPCContext *s,
     int i, j, pass;
     int opt_order;
 
-    assert(max_order >= MIN_LPC_ORDER && max_order <= MAX_LPC_ORDER &&
-           lpc_type > AV_LPC_TYPE_FIXED);
+    av_assert2(max_order >= MIN_LPC_ORDER && max_order <= MAX_LPC_ORDER &&
+           lpc_type > FF_LPC_TYPE_FIXED);
 
     /* reinit LPC context if parameters have changed */
     if (blocksize != s->blocksize || max_order != s->max_order ||
@@ -177,23 +190,24 @@ int ff_lpc_calc_coefs(LPCContext *s,
         ff_lpc_init(s, blocksize, max_order, lpc_type);
     }
 
-    if (lpc_type == AV_LPC_TYPE_LEVINSON) {
-        double *windowed_samples = s->windowed_samples + max_order;
+    if (lpc_type == FF_LPC_TYPE_LEVINSON) {
+        s->lpc_apply_welch_window(samples, blocksize, s->windowed_samples);
 
-        s->lpc_apply_welch_window(samples, blocksize, windowed_samples);
-
-        s->lpc_compute_autocorr(windowed_samples, blocksize, max_order, autoc);
+        s->lpc_compute_autocorr(s->windowed_samples, blocksize, max_order, autoc);
 
         compute_lpc_coefs(autoc, max_order, &lpc[0][0], MAX_LPC_ORDER, 0, 1);
 
         for(i=0; i<max_order; i++)
             ref[i] = fabs(lpc[i][i]);
-    } else if (lpc_type == AV_LPC_TYPE_CHOLESKY) {
+    } else if (lpc_type == FF_LPC_TYPE_CHOLESKY) {
         LLSModel m[2];
         double var[MAX_LPC_ORDER+1], av_uninit(weight);
 
+        if(lpc_passes <= 0)
+            lpc_passes = 2;
+
         for(pass=0; pass<lpc_passes; pass++){
-            av_init_lls(&m[pass&1], max_order);
+            avpriv_init_lls(&m[pass&1], max_order);
 
             weight=0;
             for(i=max_order; i<blocksize; i++){
@@ -202,7 +216,7 @@ int ff_lpc_calc_coefs(LPCContext *s,
 
                 if(pass){
                     double eval, inv, rinv;
-                    eval= av_evaluate_lls(&m[(pass-1)&1], var+1, max_order-1);
+                    eval= avpriv_evaluate_lls(&m[(pass-1)&1], var+1, max_order-1);
                     eval= (512>>pass) + fabs(eval - var[0]);
                     inv = 1/eval;
                     rinv = sqrt(inv);
@@ -212,9 +226,9 @@ int ff_lpc_calc_coefs(LPCContext *s,
                 }else
                     weight++;
 
-                av_update_lls(&m[pass&1], var, 1.0);
+                avpriv_update_lls(&m[pass&1], var, 1.0);
             }
-            av_solve_lls(&m[pass&1], 0.001, 0);
+            avpriv_solve_lls(&m[pass&1], 0.001, 0);
         }
 
         for(i=0; i<max_order; i++){
@@ -224,7 +238,8 @@ int ff_lpc_calc_coefs(LPCContext *s,
         }
         for(i=max_order-1; i>0; i--)
             ref[i] = ref[i-1] - ref[i];
-    }
+    } else
+        av_assert0(0);
     opt_order = max_order;
 
     if(omethod == ORDER_METHOD_EST) {
@@ -241,17 +256,18 @@ int ff_lpc_calc_coefs(LPCContext *s,
 }
 
 av_cold int ff_lpc_init(LPCContext *s, int blocksize, int max_order,
-                        enum AVLPCType lpc_type)
+                        enum FFLPCType lpc_type)
 {
     s->blocksize = blocksize;
     s->max_order = max_order;
     s->lpc_type  = lpc_type;
 
-    if (lpc_type == AV_LPC_TYPE_LEVINSON) {
-        s->windowed_samples = av_mallocz((blocksize + max_order + 2) *
-                                         sizeof(*s->windowed_samples));
-        if (!s->windowed_samples)
+    if (lpc_type == FF_LPC_TYPE_LEVINSON) {
+        s->windowed_buffer = av_mallocz((blocksize + 2 + FFALIGN(max_order, 4)) *
+                                        sizeof(*s->windowed_samples));
+        if (!s->windowed_buffer)
             return AVERROR(ENOMEM);
+        s->windowed_samples = s->windowed_buffer + FFALIGN(max_order, 4);
     } else {
         s->windowed_samples = NULL;
     }
@@ -259,7 +275,7 @@ av_cold int ff_lpc_init(LPCContext *s, int blocksize, int max_order,
     s->lpc_apply_welch_window = lpc_apply_welch_window_c;
     s->lpc_compute_autocorr   = lpc_compute_autocorr_c;
 
-    if (HAVE_MMX)
+    if (ARCH_X86)
         ff_lpc_init_x86(s);
 
     return 0;
@@ -267,5 +283,5 @@ av_cold int ff_lpc_init(LPCContext *s, int blocksize, int max_order,
 
 av_cold void ff_lpc_end(LPCContext *s)
 {
-    av_freep(&s->windowed_samples);
+    av_freep(&s->windowed_buffer);
 }

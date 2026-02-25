@@ -21,6 +21,7 @@
 #include "libavcodec/get_bits.h"
 #include "libavcodec/dirac.h"
 #include "avformat.h"
+#include "internal.h"
 #include "oggdec.h"
 
 static int dirac_header(AVFormatContext *s, int idx)
@@ -32,17 +33,17 @@ static int dirac_header(AVFormatContext *s, int idx)
     GetBitContext gb;
 
     // already parsed the header
-    if (st->codec->codec_id == CODEC_ID_DIRAC)
+    if (st->codec->codec_id == AV_CODEC_ID_DIRAC)
         return 0;
 
     init_get_bits(&gb, os->buf + os->pstart + 13, (os->psize - 13) * 8);
-    if (ff_dirac_parse_sequence_header(st->codec, &gb, &source) < 0)
+    if (avpriv_dirac_parse_sequence_header(st->codec, &gb, &source) < 0)
         return -1;
 
     st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
-    st->codec->codec_id = CODEC_ID_DIRAC;
+    st->codec->codec_id = AV_CODEC_ID_DIRAC;
     // dirac in ogg always stores timestamps as though the video were interlaced
-    av_set_pts_info(st, 64, st->codec->time_base.num, 2*st->codec->time_base.den);
+    avpriv_set_pts_info(st, 64, st->codec->time_base.num, 2*st->codec->time_base.den);
     return 1;
 }
 
@@ -78,8 +79,8 @@ static int old_dirac_header(AVFormatContext *s, int idx)
         return 0;
 
     st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
-    st->codec->codec_id = CODEC_ID_DIRAC;
-    av_set_pts_info(st, 64, AV_RB32(buf+12), AV_RB32(buf+8));
+    st->codec->codec_id = AV_CODEC_ID_DIRAC;
+    avpriv_set_pts_info(st, 64, AV_RB32(buf+12), AV_RB32(buf+8));
     return 1;
 }
 
@@ -97,38 +98,24 @@ static uint64_t old_dirac_gptopts(AVFormatContext *s, int idx, uint64_t gp,
     return iframe + pframe;
 }
 
-#ifndef MSC_STRUCTS
 const struct ogg_codec ff_dirac_codec = {
-    .magic = "BBCD\0",
-    .magicsize = 5,
-    .header = dirac_header,
-    .gptopts = dirac_gptopts,
-    .granule_is_start = 1,
+    /* magic */     "BBCD\0",
+    /* magicsize */ 5,
+    /* name */      0,
+    /* header */    dirac_header,
+    /* packet */    0,
+    /* gptopts */   dirac_gptopts,
+    /* granule_is_start */ 1,
+    /* nb_header */ 1,
 };
 
 const struct ogg_codec ff_old_dirac_codec = {
-    .magic = "KW-DIRAC",
-    .magicsize = 8,
-    .header = old_dirac_header,
-    .gptopts = old_dirac_gptopts,
-    .granule_is_start = 1,
+    /* magic */     "KW-DIRAC",
+    /* magicsize */ 8,
+    /* name */      0,
+    /* header */    old_dirac_header,
+    /* packet */    0,
+    /* gptopts */   old_dirac_gptopts,
+    /* granule_is_start */ 1,
+    /* nb_header */ 1,
 };
-#else
-const struct ogg_codec ff_dirac_codec = {
-    "BBCD\0",
-    5,
-    dirac_header,
-	NULL,
-    dirac_gptopts,
-    1,
-};
-
-const struct ogg_codec ff_old_dirac_codec = {
-    "KW-DIRAC",
-    8,
-    old_dirac_header,
-	NULL,
-    old_dirac_gptopts,
-    1,
-};
-#endif

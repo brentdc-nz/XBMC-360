@@ -19,9 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "asm.S"
-
-        preserve8
+#include "libavutil/arm/asm.S"
 
 function ff_rdft_calc_neon, export=1
         push            {r4-r8,lr}
@@ -137,6 +135,7 @@ function ff_rdft_calc_neon, export=1
         vst1.32         {d22},    [r5,:64]
 
         cmp             r6,  #0
+        it              eq
         popeq           {r4-r8,pc}
 
         vmul.f32        d22, d22, d18

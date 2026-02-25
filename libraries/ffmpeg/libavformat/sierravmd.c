@@ -27,8 +27,11 @@
  *   http://www.pcisys.net/~melanson/codecs/
  */
 
+#include "libavutil/channel_layout.h"
 #include "libavutil/intreadwrite.h"
 #include "avformat.h"
+#include "internal.h"
+#include "avio_internal.h"
 
 #define VMD_HEADER_SIZE 0x0330
 #define BYTES_PER_FRAME_RECORD 16
@@ -77,8 +80,7 @@ static int vmd_probe(AVProbeData *p)
     return AVPROBE_SCORE_MAX / 2;
 }
 
-static int vmd_read_header(AVFormatContext *s,
-                           AVFormatParameters *ap)
+static int vmd_read_header(AVFormatContext *s)
 {
     VmdDemuxContext *vmd = s->priv_data;
     AVIOContext *pb = s->pb;
@@ -104,13 +106,13 @@ static int vmd_read_header(AVFormatContext *s,
     else
         vmd->is_indeo3 = 0;
     /* start up the decoders */
-    vst = av_new_stream(s, 0);
+    vst = avformat_new_stream(s, NULL);
     if (!vst)
         return AVERROR(ENOMEM);
-    av_set_pts_info(vst, 33, 1, 10);
+    avpriv_set_pts_info(vst, 33, 1, 10);
     vmd->video_stream_index = vst->index;
     vst->codec->codec_type = AVMEDIA_TYPE_VIDEO;
-    vst->codec->codec_id = vmd->is_indeo3 ? CODEC_ID_INDEO3 : CODEC_ID_VMDVIDEO;
+    vst->codec->codec_id = vmd->is_indeo3 ? AV_CODEC_ID_INDEO3 : AV_CODEC_ID_VMDVIDEO;
     vst->codec->codec_tag = 0;  /* no fourcc */
     vst->codec->width = AV_RL16(&vmd->vmd_header[12]);
     vst->codec->height = AV_RL16(&vmd->vmd_header[14]);
@@ -125,14 +127,20 @@ static int vmd_read_header(AVFormatContext *s,
     /* if sample rate is 0, assume no audio */
     vmd->sample_rate = AV_RL16(&vmd->vmd_header[804]);
     if (vmd->sample_rate) {
-        st = av_new_stream(s, 0);
+        st = avformat_new_stream(s, NULL);
         if (!st)
             return AVERROR(ENOMEM);
         vmd->audio_stream_index = st->index;
         st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
-        st->codec->codec_id = CODEC_ID_VMDAUDIO;
+        st->codec->codec_id = AV_CODEC_ID_VMDAUDIO;
         st->codec->codec_tag = 0;  /* no fourcc */
-        st->codec->channels = (vmd->vmd_header[811] & 0x80) ? 2 : 1;
+        if (vmd->vmd_header[811] & 0x80) {
+            st->codec->channels       = 2;
+            st->codec->channel_layout = AV_CH_LAYOUT_STEREO;
+        } else {
+            st->codec->channels       = 1;
+            st->codec->channel_layout = AV_CH_LAYOUT_MONO;
+        }
         st->codec->sample_rate = vmd->sample_rate;
         st->codec->block_align = AV_RL16(&vmd->vmd_header[806]);
         if (st->codec->block_align & 0x8000) {
@@ -147,9 +155,9 @@ static int vmd_read_header(AVFormatContext *s,
         /* calculate pts */
         num = st->codec->block_align;
         den = st->codec->sample_rate * st->codec->channels;
-        av_reduce(&den, &num, den, num, (1UL<<31)-1);
-        av_set_pts_info(vst, 33, num, den);
-        av_set_pts_info(st, 33, num, den);
+        av_reduce(&num, &den, num, den, (1UL<<31)-1);
+        avpriv_set_pts_info(vst, 33, num, den);
+        avpriv_set_pts_info(st, 33, num, den);
     }
 
     toc_offset = AV_RL32(&vmd->vmd_header[812]);
@@ -205,7 +213,7 @@ static int vmd_read_header(AVFormatContext *s,
                 vmd->frame_table[total_frames].pts = current_audio_pts;
                 total_frames++;
                 if(!current_audio_pts)
-                    current_audio_pts += sound_buffers;
+                    current_audio_pts += sound_buffers - 1;
                 else
                     current_audio_pts++;
                 break;
@@ -239,12 +247,14 @@ static int vmd_read_packet(AVFormatContext *s,
     vmd_frame *frame;
 
     if (vmd->current_frame >= vmd->frame_count)
-        return AVERROR(EIO);
+        return AVERROR_EOF;
 
     frame = &vmd->frame_table[vmd->current_frame];
     /* position the stream (will probably be there already) */
     avio_seek(pb, frame->frame_offset, SEEK_SET);
 
+    if(ffio_limit(pb, frame->frame_size) != frame->frame_size)
+        return AVERROR(EIO);
     if (av_new_packet(pkt, frame->frame_size + BYTES_PER_FRAME_RECORD))
         return AVERROR(ENOMEM);
     pkt->pos= avio_tell(pb);
@@ -281,11 +291,17 @@ static int vmd_read_close(AVFormatContext *s)
 }
 
 AVInputFormat ff_vmd_demuxer = {
-    "vmd",
-    NULL_IF_CONFIG_SMALL("Sierra VMD format"),
-    sizeof(VmdDemuxContext),
-    vmd_probe,
-    vmd_read_header,
-    vmd_read_packet,
-    vmd_read_close,
+    "vmd", /* name */
+    NULL_IF_CONFIG_SMALL("Sierra VMD"), /* long_name */
+    0, /* flags */
+    0, /* extensions */
+    0, /* codec_tag */
+    0, /* priv_class */
+    0, /* next */
+    0, /* raw_codec_id */
+    sizeof(VmdDemuxContext), /* priv_data_size */
+    vmd_probe, /* read_probe */
+    vmd_read_header, /* read_header */
+    vmd_read_packet, /* read_packet */
+    vmd_read_close, /* read_close */
 };

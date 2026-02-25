@@ -64,10 +64,10 @@ static inline av_const SoftFloat av_normalize1_sf(SoftFloat a){
     return a;
 #elif 1
     int t= a.mant + 0x40000000 < 0;
-    return (SoftFloat){a.exp+t, a.mant>>t};
+        SoftFloat _clr_softfloat_1 = { a.exp+t, a.mant>>t }; return _clr_softfloat_1;
 #else
     int t= (a.mant + 0x40000000U)>>31;
-    return (SoftFloat){a.exp+t, a.mant>>t};
+        SoftFloat _clr_softfloat_2 = { a.exp+t, a.mant>>t }; return _clr_softfloat_2;
 #endif
 }
 

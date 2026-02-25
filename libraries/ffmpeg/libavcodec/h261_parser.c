@@ -70,11 +70,15 @@ static int h261_parse(AVCodecParserContext *s,
     ParseContext *pc = s->priv_data;
     int next;
 
-    next= h261_find_frame_end(pc,avctx, buf, buf_size);
-    if (ff_combine_frame(pc, next, &buf, &buf_size) < 0) {
-        *poutbuf = NULL;
-        *poutbuf_size = 0;
-        return buf_size;
+    if (s->flags & PARSER_FLAG_COMPLETE_FRAMES) {
+        next = buf_size;
+    } else {
+        next= h261_find_frame_end(pc,avctx, buf, buf_size);
+        if (ff_combine_frame(pc, next, &buf, &buf_size) < 0) {
+            *poutbuf = NULL;
+            *poutbuf_size = 0;
+            return buf_size;
+        }
     }
     *poutbuf = buf;
     *poutbuf_size = buf_size;
@@ -82,9 +86,9 @@ static int h261_parse(AVCodecParserContext *s,
 }
 
 AVCodecParser ff_h261_parser = {
-    { CODEC_ID_H261 },
-    sizeof(ParseContext),
-    NULL,
-    h261_parse,
-    ff_parse_close,
-};
+        { AV_CODEC_ID_H261 }, /* codec_ids */
+        sizeof(ParseContext), /* priv_data_size */
+        0, /* parser_init */
+        h261_parse, /* parser_parse */
+        ff_parse_close, /* parser_close */
+    };

@@ -30,8 +30,8 @@
 #ifndef AVCODEC_AAC_H
 #define AVCODEC_AAC_H
 
+#include "libavutil/float_dsp.h"
 #include "avcodec.h"
-#include "dsputil.h"
 #include "fft.h"
 #include "mpeg4audio.h"
 #include "sbr.h"
@@ -81,9 +81,10 @@ enum BandType {
     INTENSITY_BT   = 15,    ///< Scalefactor data are intensity stereo positions.
 };
 
-#define IS_CODEBOOK_UNSIGNED(x) ((x - 1) & 10)
+#define IS_CODEBOOK_UNSIGNED(x) (((x) - 1) & 10)
 
 enum ChannelPosition {
+    AAC_CHANNEL_OFF   = 0,
     AAC_CHANNEL_FRONT = 1,
     AAC_CHANNEL_SIDE  = 2,
     AAC_CHANNEL_BACK  = 3,
@@ -104,17 +105,26 @@ enum CouplingPoint {
  * Output configuration status
  */
 enum OCStatus {
-    OC_NONE,        //< Output unconfigured
-    OC_TRIAL_PCE,   //< Output configuration under trial specified by an inband PCE
-    OC_TRIAL_FRAME, //< Output configuration under trial specified by a frame header
-    OC_GLOBAL_HDR,  //< Output configuration set in a global header but not yet locked
-    OC_LOCKED,      //< Output configuration locked in place
+    OC_NONE,        ///< Output unconfigured
+    OC_TRIAL_PCE,   ///< Output configuration under trial specified by an inband PCE
+    OC_TRIAL_FRAME, ///< Output configuration under trial specified by a frame header
+    OC_GLOBAL_HDR,  ///< Output configuration set in a global header but not yet locked
+    OC_LOCKED,      ///< Output configuration locked in place
 };
+
+typedef struct OutputConfiguration {
+    MPEG4AudioConfig m4ac;
+    uint8_t layout_map[MAX_ELEM_ID*4][3];
+    int layout_map_tags;
+    int channels;
+    uint64_t channel_layout;
+    enum OCStatus status;
+} OutputConfiguration;
 
 /**
  * Predictor State
  */
-typedef struct {
+typedef struct PredictorState {
     float cor0;
     float cor1;
     float var0;
@@ -134,7 +144,7 @@ typedef struct {
 /**
  * Long Term Prediction
  */
-typedef struct {
+typedef struct LongTermPrediction {
     int8_t present;
     int16_t lag;
     float coef;
@@ -144,7 +154,7 @@ typedef struct {
 /**
  * Individual Channel Stream
  */
-typedef struct {
+typedef struct IndividualChannelStream {
     uint8_t max_sfb;            ///< number of scalefactor bands per group
     enum WindowSequence window_sequence[2];
     uint8_t use_kb_window[2];   ///< If set, use Kaiser-Bessel window, otherwise use a sinus window.
@@ -165,7 +175,7 @@ typedef struct {
 /**
  * Temporal Noise Shaping
  */
-typedef struct {
+typedef struct TemporalNoiseShaping {
     int present;
     int n_filt[8];
     int length[8][4];
@@ -177,7 +187,7 @@ typedef struct {
 /**
  * Dynamic Range Control - decoded from the bitstream but not processed further.
  */
-typedef struct {
+typedef struct DynamicRangeControl {
     int pce_instance_tag;                           ///< Indicates with which program the DRC info is associated.
     int dyn_rng_sgn[17];                            ///< DRC sign information; 0 - positive, 1 - negative
     int dyn_rng_ctl[17];                            ///< DRC magnitude information
@@ -190,7 +200,7 @@ typedef struct {
                                                      */
 } DynamicRangeControl;
 
-typedef struct {
+typedef struct Pulse {
     int num_pulse;
     int start;
     int pos[4];
@@ -200,7 +210,7 @@ typedef struct {
 /**
  * coupling parameters
  */
-typedef struct {
+typedef struct ChannelCoupling {
     enum CouplingPoint coupling_point;  ///< The point during decoding at which coupling is applied.
     int num_coupled;       ///< number of target elements
     enum RawDataBlockType type[8];   ///< Type of channel element to be coupled - SCE or CPE.
@@ -214,7 +224,7 @@ typedef struct {
 /**
  * Single Channel Element - used for both SCE and LFE elements.
  */
-typedef struct {
+typedef struct SingleChannelElement {
     IndividualChannelStream ics;
     TemporalNoiseShaping tns;
     Pulse pulse;
@@ -223,17 +233,18 @@ typedef struct {
     float sf[120];                                  ///< scalefactors
     int sf_idx[128];                                ///< scalefactor indices (used by encoder)
     uint8_t zeroes[128];                            ///< band is not coded (used by encoder)
-    DECLARE_ALIGNED(16, float,   coeffs)[1024];     ///< coefficients for IMDCT
-    DECLARE_ALIGNED(16, float,   saved)[1024];      ///< overlap
-    DECLARE_ALIGNED(16, float,   ret)[2048];        ///< PCM output
-    DECLARE_ALIGNED(16, int16_t, ltp_state)[3072];  ///< time signal for LTP
+    DECLARE_ALIGNED(32, float,   coeffs)[1024];     ///< coefficients for IMDCT
+    DECLARE_ALIGNED(32, float,   saved)[1024];      ///< overlap
+    DECLARE_ALIGNED(32, float,   ret_buf)[2048];    ///< PCM output buffer
+    DECLARE_ALIGNED(16, float,   ltp_state)[3072];  ///< time signal for LTP
     PredictorState predictor_state[MAX_PREDICTORS];
+    float *ret;                                     ///< PCM output
 } SingleChannelElement;
 
 /**
  * channel element - generic struct for SCE/CPE/CCE/LFE
  */
-typedef struct {
+typedef struct ChannelElement {
     // CPE specific
     int common_window;        ///< Set if channels share a common 'IndividualChannelStream' in bitstream.
     int     ms_mode;          ///< Signals mid/side stereo flags coding mode (used by encoder)
@@ -248,57 +259,75 @@ typedef struct {
 /**
  * main AAC context
  */
-typedef struct {
+struct AACContext {
+    AVClass        *class;
     AVCodecContext *avctx;
-
-    MPEG4AudioConfig m4ac;
+    AVFrame *frame;
 
     int is_saved;                 ///< Set if elements have stored overlap from previous frame.
     DynamicRangeControl che_drc;
 
     /**
-     * @defgroup elements Channel element related data.
+     * @name Channel element related data
      * @{
      */
-    enum ChannelPosition che_pos[4][MAX_ELEM_ID]; /**< channel element channel mapping with the
-                                                   *   first index as the first 4 raw data block types
-                                                   */
     ChannelElement          *che[4][MAX_ELEM_ID];
     ChannelElement  *tag_che_map[4][MAX_ELEM_ID];
     int tags_mapped;
     /** @} */
 
     /**
-     * @defgroup temporary aligned temporary buffers (We do not want to have these on the stack.)
+     * @name temporary aligned temporary buffers
+     * (We do not want to have these on the stack.)
      * @{
      */
-    DECLARE_ALIGNED(16, float, buf_mdct)[1024];
+    DECLARE_ALIGNED(32, float, buf_mdct)[1024];
     /** @} */
 
     /**
-     * @defgroup tables   Computed / set up during initialization.
+     * @name Computed / set up during initialization
      * @{
      */
     FFTContext mdct;
     FFTContext mdct_small;
     FFTContext mdct_ltp;
-    DSPContext dsp;
     FmtConvertContext fmt_conv;
+    AVFloatDSPContext fdsp;
     int random_state;
     /** @} */
 
     /**
-     * @defgroup output   Members used for output interleaving.
+     * @name Members used for output
      * @{
      */
-    float *output_data[MAX_CHANNELS];                 ///< Points to each element's 'ret' buffer (PCM output).
-    float sf_scale;                                   ///< Pre-scale for correct IMDCT and dsp.float_to_int16.
-    int sf_offset;                                    ///< offset into pow2sf_tab as appropriate for dsp.float_to_int16
+    SingleChannelElement *output_element[MAX_CHANNELS]; ///< Points to each SingleChannelElement
     /** @} */
 
-    DECLARE_ALIGNED(16, float, temp)[128];
 
-    enum OCStatus output_configured;
-} AACContext;
+    /**
+     * @name Japanese DTV specific extension
+     * @{
+     */
+    int force_dmono_mode;///< 0->not dmono, 1->use first channel, 2->use second channel
+    int dmono_mode;      ///< 0->not dmono, 1->use first channel, 2->use second channel
+    /** @} */
+
+    DECLARE_ALIGNED(32, float, temp)[128];
+
+    OutputConfiguration oc[2];
+    int warned_num_aac_frames;
+
+    /* aacdec functions pointers */
+    void (*imdct_and_windowing)(AACContext *ac, SingleChannelElement *sce);
+    void (*apply_ltp)(AACContext *ac, SingleChannelElement *sce);
+    void (*apply_tns)(float coef[1024], TemporalNoiseShaping *tns,
+                      IndividualChannelStream *ics, int decode);
+    void (*windowing_and_mdct_ltp)(AACContext *ac, float *out,
+                                   float *in, IndividualChannelStream *ics);
+    void (*update_ltp)(AACContext *ac, SingleChannelElement *sce);
+
+};
+
+void ff_aacdec_init_mips(AACContext *c);
 
 #endif /* AVCODEC_AAC_H */

@@ -25,6 +25,7 @@
 #include "libavutil/imgutils.h"
 #include "avcodec.h"
 #include "bytestream.h"
+#include "internal.h"
 
 /** Maximum RLE code for bulk copy */
 #define MAX_RLE_BULK   127
@@ -39,6 +40,7 @@ typedef struct QtrleEncContext {
     int pixel_size;
     AVPicture previous_frame;
     unsigned int max_buf_size;
+    int logical_width;
     /**
      * This array will contain at ith position the value of the best RLE code
      * if the line started at pixel i
@@ -62,44 +64,50 @@ typedef struct QtrleEncContext {
 static av_cold int qtrle_encode_init(AVCodecContext *avctx)
 {
     QtrleEncContext *s = avctx->priv_data;
+    int ret;
 
     if (av_image_check_size(avctx->width, avctx->height, 0, avctx) < 0) {
-        return -1;
+        return AVERROR(EINVAL);
     }
     s->avctx=avctx;
+    s->logical_width=avctx->width;
 
     switch (avctx->pix_fmt) {
-    case PIX_FMT_RGB555BE:
+    case AV_PIX_FMT_GRAY8:
+        s->logical_width = avctx->width / 4;
+        s->pixel_size = 4;
+        break;
+    case AV_PIX_FMT_RGB555BE:
         s->pixel_size = 2;
         break;
-    case PIX_FMT_RGB24:
+    case AV_PIX_FMT_RGB24:
         s->pixel_size = 3;
         break;
-    case PIX_FMT_ARGB:
+    case AV_PIX_FMT_ARGB:
         s->pixel_size = 4;
         break;
     default:
         av_log(avctx, AV_LOG_ERROR, "Unsupported colorspace.\n");
         break;
     }
-    avctx->bits_per_coded_sample = s->pixel_size*8;
+    avctx->bits_per_coded_sample = avctx->pix_fmt == AV_PIX_FMT_GRAY8 ? 40 : s->pixel_size*8;
 
-    s->rlecode_table = av_mallocz(s->avctx->width);
-    s->skip_table    = av_mallocz(s->avctx->width);
-    s->length_table  = av_mallocz((s->avctx->width + 1)*sizeof(int));
+    s->rlecode_table = av_mallocz(s->logical_width);
+    s->skip_table    = av_mallocz(s->logical_width);
+    s->length_table  = av_mallocz((s->logical_width + 1)*sizeof(int));
     if (!s->skip_table || !s->length_table || !s->rlecode_table) {
         av_log(avctx, AV_LOG_ERROR, "Error allocating memory.\n");
-        return -1;
+        return AVERROR(ENOMEM);
     }
-    if (avpicture_alloc(&s->previous_frame, avctx->pix_fmt, avctx->width, avctx->height) < 0) {
+    if ((ret = avpicture_alloc(&s->previous_frame, avctx->pix_fmt, avctx->width, avctx->height)) < 0) {
         av_log(avctx, AV_LOG_ERROR, "Error allocating picture\n");
-        return -1;
+        return ret;
     }
 
-    s->max_buf_size = s->avctx->width*s->avctx->height*s->pixel_size /* image base material */
-                      + 15                                           /* header + footer */
-                      + s->avctx->height*2                           /* skip code+rle end */
-                      + s->avctx->width/MAX_RLE_BULK + 1             /* rle codes */;
+    s->max_buf_size = s->logical_width*s->avctx->height*s->pixel_size*2 /* image base material */
+                      + 15                                            /* header + footer */
+                      + s->avctx->height*2                            /* skip code+rle end */
+                      + s->logical_width/MAX_RLE_BULK + 1             /* rle codes */;
     avctx->coded_frame = &s->frame;
     return 0;
 }
@@ -107,14 +115,12 @@ static av_cold int qtrle_encode_init(AVCodecContext *avctx)
 /**
  * Compute the best RLE sequence for a line
  */
-static void qtrle_encode_line(QtrleEncContext *s, AVFrame *p, int line, uint8_t **buf)
+static void qtrle_encode_line(QtrleEncContext *s, const AVFrame *p, int line, uint8_t **buf)
 {
-    int width=s->avctx->width;
+    int width=s->logical_width;
     int i;
     signed char rlecode;
 
-    /* We will use it to compute the best bulk copy sequence */
-    unsigned int bulkcount;
     /* This will be the number of pixels equal to the preivous frame one's
      * starting from the ith pixel */
     unsigned int skipcount;
@@ -123,12 +129,14 @@ static void qtrle_encode_line(QtrleEncContext *s, AVFrame *p, int line, uint8_t 
     unsigned int av_uninit(repeatcount);
 
     /* The cost of the three different possibilities */
-    int total_bulk_cost;
     int total_skip_cost;
     int total_repeat_cost;
 
-    int temp_cost;
-    int j;
+    int base_bulk_cost;
+    int lowest_bulk_cost;
+    int lowest_bulk_cost_index;
+    int sec_lowest_bulk_cost;
+    int sec_lowest_bulk_cost_index;
 
     uint8_t *this_line = p->               data[0] + line*p->               linesize[0] +
         (width - 1)*s->pixel_size;
@@ -138,7 +146,56 @@ static void qtrle_encode_line(QtrleEncContext *s, AVFrame *p, int line, uint8_t 
     s->length_table[width] = 0;
     skipcount = 0;
 
+    /* Initial values */
+    lowest_bulk_cost = INT_MAX / 2;
+    lowest_bulk_cost_index = width;
+    sec_lowest_bulk_cost = INT_MAX / 2;
+    sec_lowest_bulk_cost_index = width;
+
+    base_bulk_cost = 1 + s->pixel_size;
+
     for (i = width - 1; i >= 0; i--) {
+
+        int prev_bulk_cost;
+
+        /* If our lowest bulk cost index is too far away, replace it
+         * with the next lowest bulk cost */
+        if (FFMIN(width, i + MAX_RLE_BULK) < lowest_bulk_cost_index) {
+            lowest_bulk_cost = sec_lowest_bulk_cost;
+            lowest_bulk_cost_index = sec_lowest_bulk_cost_index;
+
+            sec_lowest_bulk_cost = INT_MAX / 2;
+            sec_lowest_bulk_cost_index = width;
+        }
+
+        /* Deal with the first pixel's bulk cost */
+        if (!i) {
+            base_bulk_cost++;
+            lowest_bulk_cost++;
+            sec_lowest_bulk_cost++;
+        }
+
+        /* Look at the bulk cost of the previous loop and see if it is
+         * a new lower bulk cost */
+        prev_bulk_cost = s->length_table[i + 1] + base_bulk_cost;
+        if (prev_bulk_cost <= sec_lowest_bulk_cost) {
+            /* If it's lower than the 2nd lowest, then it may be lower
+             * than the lowest */
+            if (prev_bulk_cost <= lowest_bulk_cost) {
+
+                /* If we have found a new lowest bulk cost,
+                 * then the 2nd lowest bulk cost is now farther than the
+                 * lowest bulk cost, and will never be used */
+                sec_lowest_bulk_cost = INT_MAX / 2;
+
+                lowest_bulk_cost = prev_bulk_cost;
+                lowest_bulk_cost_index = i + 1;
+            } else {
+                /* Then it must be the 2nd lowest bulk cost */
+                sec_lowest_bulk_cost = prev_bulk_cost;
+                sec_lowest_bulk_cost_index = i + 1;
+            }
+        }
 
         if (!s->frame.key_frame && !memcmp(this_line, prev_line, s->pixel_size))
             skipcount = FFMIN(skipcount + 1, MAX_RLE_SKIP);
@@ -175,31 +232,22 @@ static void qtrle_encode_line(QtrleEncContext *s, AVFrame *p, int line, uint8_t 
         }
         else {
             /* We cannot do neither skip nor repeat
-             * thus we search for the best bulk copy to do */
+             * thus we use the best bulk copy  */
 
-            int limit = FFMIN(width - i, MAX_RLE_BULK);
+            s->length_table[i]  = lowest_bulk_cost;
+            s->rlecode_table[i] = lowest_bulk_cost_index - i;
 
-            temp_cost = 1 + s->pixel_size + !i;
-            total_bulk_cost = INT_MAX;
-
-            for (j = 1; j <= limit; j++) {
-                if (s->length_table[i + j] + temp_cost < total_bulk_cost) {
-                    /* We have found a better bulk copy ... */
-                    total_bulk_cost = s->length_table[i + j] + temp_cost;
-                    bulkcount = j;
-                }
-                temp_cost += s->pixel_size;
-            }
-
-            s->length_table[i]  = total_bulk_cost;
-            s->rlecode_table[i] = bulkcount;
         }
+
+        /* These bulk costs increase every iteration */
+        lowest_bulk_cost += s->pixel_size;
+        sec_lowest_bulk_cost += s->pixel_size;
 
         this_line -= s->pixel_size;
         prev_line -= s->pixel_size;
     }
 
-    /* Good ! Now we have the best sequence for this line, let's ouput it */
+    /* Good ! Now we have the best sequence for this line, let's output it */
 
     /* We do a special case for the first pixel so that we avoid testing it in
      * the whole loop */
@@ -224,12 +272,28 @@ static void qtrle_encode_line(QtrleEncContext *s, AVFrame *p, int line, uint8_t 
         }
         else if (rlecode > 0) {
             /* bulk copy */
-            bytestream_put_buffer(buf, this_line + i*s->pixel_size, rlecode*s->pixel_size);
+            if (s->avctx->pix_fmt == AV_PIX_FMT_GRAY8) {
+                int j;
+                // QT grayscale colorspace has 0=white and 255=black, we will
+                // ignore the palette that is included in the AVFrame because
+                // AV_PIX_FMT_GRAY8 has defined color mapping
+                for (j = 0; j < rlecode*s->pixel_size; ++j)
+                    bytestream_put_byte(buf, *(this_line + i*s->pixel_size + j) ^ 0xff);
+            } else {
+                bytestream_put_buffer(buf, this_line + i*s->pixel_size, rlecode*s->pixel_size);
+            }
             i += rlecode;
         }
         else {
             /* repeat the bits */
-            bytestream_put_buffer(buf, this_line + i*s->pixel_size, s->pixel_size);
+            if (s->avctx->pix_fmt == AV_PIX_FMT_GRAY8) {
+                int j;
+                // QT grayscale colorspace has 0=white and 255=black, ...
+                for (j = 0; j < s->pixel_size; ++j)
+                    bytestream_put_byte(buf, *(this_line + i*s->pixel_size + j) ^ 0xff);
+            } else {
+                bytestream_put_buffer(buf, this_line + i*s->pixel_size, s->pixel_size);
+            }
             i -= rlecode;
         }
     }
@@ -237,7 +301,7 @@ static void qtrle_encode_line(QtrleEncContext *s, AVFrame *p, int line, uint8_t 
 }
 
 /** Encode frame including header */
-static int encode_frame(QtrleEncContext *s, AVFrame *p, uint8_t *buf)
+static int encode_frame(QtrleEncContext *s, const AVFrame *p, uint8_t *buf)
 {
     int i;
     int start_line = 0;
@@ -245,7 +309,7 @@ static int encode_frame(QtrleEncContext *s, AVFrame *p, uint8_t *buf)
     uint8_t *orig_buf = buf;
 
     if (!s->frame.key_frame) {
-        unsigned line_size = s->avctx->width * s->pixel_size;
+        unsigned line_size = s->logical_width * s->pixel_size;
         for (start_line = 0; start_line < s->avctx->height; start_line++)
             if (memcmp(p->data[0] + start_line*p->linesize[0],
                        s->previous_frame.data[0] + start_line*s->previous_frame.linesize[0],
@@ -278,36 +342,38 @@ static int encode_frame(QtrleEncContext *s, AVFrame *p, uint8_t *buf)
     return buf - orig_buf;
 }
 
-static int qtrle_encode_frame(AVCodecContext *avctx, uint8_t *buf, int buf_size, void *data)
+static int qtrle_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
+                              const AVFrame *pict, int *got_packet)
 {
     QtrleEncContext * const s = avctx->priv_data;
-    AVFrame *pict = data;
     AVFrame * const p = &s->frame;
-    int chunksize;
+    int ret;
 
     *p = *pict;
 
-    if (buf_size < s->max_buf_size) {
-        /* Upper bound check for compressed data */
-        av_log(avctx, AV_LOG_ERROR, "buf_size %d <  %d\n", buf_size, s->max_buf_size);
-        return -1;
-    }
+    if ((ret = ff_alloc_packet2(avctx, pkt, s->max_buf_size)) < 0)
+        return ret;
 
     if (avctx->gop_size == 0 || (s->avctx->frame_number % avctx->gop_size) == 0) {
         /* I-Frame */
-        p->pict_type = FF_I_TYPE;
+        p->pict_type = AV_PICTURE_TYPE_I;
         p->key_frame = 1;
     } else {
         /* P-Frame */
-        p->pict_type = FF_P_TYPE;
+        p->pict_type = AV_PICTURE_TYPE_P;
         p->key_frame = 0;
     }
 
-    chunksize = encode_frame(s, pict, buf);
+    pkt->size = encode_frame(s, pict, pkt->data);
 
     /* save the current frame */
     av_picture_copy(&s->previous_frame, (AVPicture *)p, avctx->pix_fmt, avctx->width, avctx->height);
-    return chunksize;
+
+    if (p->key_frame)
+        pkt->flags |= AV_PKT_FLAG_KEY;
+    *got_packet = 1;
+
+    return 0;
 }
 
 static av_cold int qtrle_encode_end(AVCodecContext *avctx)
@@ -321,36 +387,30 @@ static av_cold int qtrle_encode_end(AVCodecContext *avctx)
     return 0;
 }
 
-const enum PixelFormat qtrle_encoder_formats[] = {PIX_FMT_RGB24, PIX_FMT_RGB555BE, PIX_FMT_ARGB, PIX_FMT_NONE};
-
+static const enum AVPixelFormat _ff_qtrleenc_fmts_132[] = { AV_PIX_FMT_RGB24, AV_PIX_FMT_RGB555BE, AV_PIX_FMT_ARGB, AV_PIX_FMT_GRAY8, AV_PIX_FMT_NONE };
 AVCodec ff_qtrle_encoder = {
-#ifndef MSC_STRUCTS
-    "qtrle",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_QTRLE,
-    sizeof(QtrleEncContext),
-    qtrle_encode_init,
-    qtrle_encode_frame,
-    qtrle_encode_end,
-    .pix_fmts = (const enum PixelFormat[]){PIX_FMT_RGB24, PIX_FMT_RGB555BE, PIX_FMT_ARGB, PIX_FMT_NONE},
-    .long_name = NULL_IF_CONFIG_SMALL("QuickTime Animation (RLE) video"),
-#else
-    /* name = */ "qtrle",
-    /* type = */ AVMEDIA_TYPE_VIDEO,
-    /* id = */ CODEC_ID_QTRLE,
-    /* priv_data_size = */ sizeof(QtrleEncContext),
-    /* init = */ qtrle_encode_init,
-    /* encode = */ qtrle_encode_frame,
-    /* close = */ qtrle_encode_end,
-    /* decode = */ 0,
-    /* capabilities = */ 0,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ qtrle_encoder_formats,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("QuickTime Animation (RLE) video"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ 0,
-    /* channel_layouts = */ 0,
-#endif
-};
+        "qtrle", /* name */
+        NULL_IF_CONFIG_SMALL("QuickTime Animation (RLE) video"), /* long_name */
+        AVMEDIA_TYPE_VIDEO, /* type */
+        AV_CODEC_ID_QTRLE, /* id */
+        0, /* capabilities */
+        0, /* supported_framerates */
+        _ff_qtrleenc_fmts_132, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        0, /* priv_class */
+        0, /* profiles */
+        sizeof(QtrleEncContext), /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        qtrle_encode_init, /* init */
+        0, /* encode_sub */
+        qtrle_encode_frame, /* encode2 */
+        0, /* decode */
+        qtrle_encode_end, /* close */
+    };

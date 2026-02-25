@@ -31,21 +31,18 @@
 
 
 static int sp5x_decode_frame(AVCodecContext *avctx,
-                              void *data, int *data_size,
+                              void *data, int *got_frame,
                               AVPacket *avpkt)
 {
     const uint8_t *buf = avpkt->data;
     int buf_size = avpkt->size;
     AVPacket avpkt_recoded;
     const int qscale = 5;
-    const uint8_t *buf_ptr;
     uint8_t *recoded;
     int i = 0, j = 0;
 
     if (!avctx->width || !avctx->height)
         return -1;
-
-    buf_ptr = buf;
 
     recoded = av_mallocz(buf_size + 1024);
     if (!recoded)
@@ -71,11 +68,11 @@ static int sp5x_decode_frame(AVCodecContext *avctx,
     memcpy(recoded+j, &sp5x_data_sos[0], sizeof(sp5x_data_sos));
     j += sizeof(sp5x_data_sos);
 
-    if(avctx->codec_id==CODEC_ID_AMV)
+    if(avctx->codec_id==AV_CODEC_ID_AMV)
         for (i = 2; i < buf_size-2 && j < buf_size+1024-2; i++)
             recoded[j++] = buf[i];
     else
-    for (i = 14; i < buf_size && j < buf_size+1024-2; i++)
+    for (i = 14; i < buf_size && j < buf_size+1024-3; i++)
     {
         recoded[j++] = buf[i];
         if (buf[i] == 0xff)
@@ -86,81 +83,69 @@ static int sp5x_decode_frame(AVCodecContext *avctx,
     recoded[j++] = 0xFF;
     recoded[j++] = 0xD9;
 
-    avctx->flags &= ~CODEC_FLAG_EMU_EDGE;
     av_init_packet(&avpkt_recoded);
     avpkt_recoded.data = recoded;
     avpkt_recoded.size = j;
-    i = ff_mjpeg_decode_frame(avctx, data, data_size, &avpkt_recoded);
+    i = ff_mjpeg_decode_frame(avctx, data, got_frame, &avpkt_recoded);
 
     av_free(recoded);
 
-    return i;
+    return i < 0 ? i : avpkt->size;
 }
 
+#if CONFIG_SP5X_DECODER
 AVCodec ff_sp5x_decoder = {
-#ifndef MSC_STRUCTS
-    "sp5x",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_SP5X,
-    sizeof(MJpegDecodeContext),
-    ff_mjpeg_decode_init,
-    NULL,
-    ff_mjpeg_decode_end,
-    sp5x_decode_frame,
-    CODEC_CAP_DR1,
-    NULL,
-    .max_lowres = 5,
-    .long_name = NULL_IF_CONFIG_SMALL("Sunplus JPEG (SP5X)"),
-#else
-    /* name = */ "sp5x",
-    /* type = */ AVMEDIA_TYPE_VIDEO,
-    /* id = */ CODEC_ID_SP5X,
-    /* priv_data_size = */ sizeof(MJpegDecodeContext),
-    /* init = */ ff_mjpeg_decode_init,
-    /* encode = */ NULL,
-    /* close = */ ff_mjpeg_decode_end,
-    /* decode = */ sp5x_decode_frame,
-    /* capabilities = */ CODEC_CAP_DR1,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ 0,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("Sunplus JPEG (SP5X)"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ 0,
-    /* channel_layouts = */ 0,
+        "sp5x", /* name */
+        NULL_IF_CONFIG_SMALL("Sunplus JPEG (SP5X)"), /* long_name */
+        AVMEDIA_TYPE_VIDEO, /* type */
+        AV_CODEC_ID_SP5X, /* id */
+        CODEC_CAP_DR1, /* capabilities */
+        0, /* supported_framerates */
+        0, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        3, /* max_lowres */
+        0, /* priv_class */
+        0, /* profiles */
+        sizeof(MJpegDecodeContext), /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        ff_mjpeg_decode_init, /* init */
+        0, /* encode_sub */
+        0, /* encode2 */
+        sp5x_decode_frame, /* decode */
+        ff_mjpeg_decode_end, /* close */
+    };
 #endif
-};
-
+#if CONFIG_AMV_DECODER
 AVCodec ff_amv_decoder = {
-#ifndef MSC_STRUCTS
-    "amv",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_AMV,
-    sizeof(MJpegDecodeContext),
-    ff_mjpeg_decode_init,
-    NULL,
-    ff_mjpeg_decode_end,
-    sp5x_decode_frame,
-    CODEC_CAP_DR1,
-    .long_name = NULL_IF_CONFIG_SMALL("AMV Video"),
-#else
-    /* name = */ "amv",
-    /* type = */ AVMEDIA_TYPE_VIDEO,
-    /* id = */ CODEC_ID_AMV,
-    /* priv_data_size = */ sizeof(MJpegDecodeContext),
-    /* init = */ ff_mjpeg_decode_init,
-    /* encode = */ NULL,
-    /* close = */ ff_mjpeg_decode_end,
-    /* decode = */ sp5x_decode_frame,
-    /* capabilities = */ CODEC_CAP_DR1,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ 0,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("AMV Video"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ 0,
-    /* channel_layouts = */ 0,
+        "amv", /* name */
+        NULL_IF_CONFIG_SMALL("AMV Video"), /* long_name */
+        AVMEDIA_TYPE_VIDEO, /* type */
+        AV_CODEC_ID_AMV, /* id */
+        0, /* capabilities */
+        0, /* supported_framerates */
+        0, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        0, /* priv_class */
+        0, /* profiles */
+        sizeof(MJpegDecodeContext), /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        ff_mjpeg_decode_init, /* init */
+        0, /* encode_sub */
+        0, /* encode2 */
+        sp5x_decode_frame, /* decode */
+        ff_mjpeg_decode_end, /* close */
+    };
 #endif
-};

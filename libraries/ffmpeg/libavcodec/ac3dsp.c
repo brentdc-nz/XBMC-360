@@ -23,6 +23,7 @@
 #include "avcodec.h"
 #include "ac3.h"
 #include "ac3dsp.h"
+#include "mathops.h"
 
 static void ac3_exponent_min_c(uint8_t *exp, int num_reuse_blocks, int nb_coefs)
 {
@@ -108,7 +109,7 @@ static void ac3_bit_alloc_calc_bap_c(int16_t *mask, int16_t *psd,
                                      int snr_offset, int floor,
                                      const uint8_t *bap_tab, uint8_t *bap)
 {
-    int bin, band;
+    int bin, band, band_end;
 
     /* special case, if snr offset is -960, set all bap's to zero */
     if (snr_offset == -960) {
@@ -120,32 +121,43 @@ static void ac3_bit_alloc_calc_bap_c(int16_t *mask, int16_t *psd,
     band = ff_ac3_bin_to_band_tab[start];
     do {
         int m = (FFMAX(mask[band] - snr_offset - floor, 0) & 0x1FE0) + floor;
-        int band_end = FFMIN(ff_ac3_band_start_tab[band+1], end);
+        band_end = ff_ac3_band_start_tab[++band];
+        band_end = FFMIN(band_end, end);
+
         for (; bin < band_end; bin++) {
             int address = av_clip((psd[bin] - m) >> 5, 0, 63);
             bap[bin] = bap_tab[address];
         }
-    } while (end > ff_ac3_band_start_tab[band++]);
+    } while (end > band_end);
 }
 
-static int ac3_compute_mantissa_size_c(int mant_cnt[5], uint8_t *bap,
-                                       int nb_coefs)
+static void ac3_update_bap_counts_c(uint16_t mant_cnt[16], uint8_t *bap,
+                                    int len)
 {
-    int bits, b, i;
+    while (len-- > 0)
+        mant_cnt[bap[len]]++;
+}
 
-    bits = 0;
-    for (i = 0; i < nb_coefs; i++) {
-        b = bap[i];
-        if (b <= 4) {
-            // bap=1 to bap=4 will be counted in compute_mantissa_size_final
-            mant_cnt[b]++;
-        } else if (b <= 13) {
-            // bap=5 to bap=13 use (bap-1) bits
-            bits += b - 1;
-        } else {
-            // bap=14 uses 14 bits and bap=15 uses 16 bits
-            bits += (b == 14) ? 14 : 16;
-        }
+DECLARE_ALIGNED(16, const uint16_t, ff_ac3_bap_bits)[16] = {
+    0,  0,  0,  3,  0,  4,  5,  6,  7,  8,  9, 10, 11, 12, 14, 16
+};
+
+static int ac3_compute_mantissa_size_c(uint16_t mant_cnt[6][16])
+{
+    int blk, bap;
+    int bits = 0;
+
+    for (blk = 0; blk < AC3_MAX_BLOCKS; blk++) {
+        // bap=1 : 3 mantissas in 5 bits
+        bits += (mant_cnt[blk][1] / 3) * 5;
+        // bap=2 : 3 mantissas in 7 bits
+        // bap=4 : 2 mantissas in 7 bits
+        bits += ((mant_cnt[blk][2] / 3) + (mant_cnt[blk][4] >> 1)) * 7;
+        // bap=3 : 1 mantissa in 3 bits
+        bits += mant_cnt[blk][3] * 3;
+        // bap=5 to 15 : get bits per mantissa from table
+        for (bap = 5; bap < 16; bap++)
+            bits += mant_cnt[blk][bap] * ff_ac3_bap_bits[bap];
     }
     return bits;
 }
@@ -155,19 +167,75 @@ static void ac3_extract_exponents_c(uint8_t *exp, int32_t *coef, int nb_coefs)
     int i;
 
     for (i = 0; i < nb_coefs; i++) {
-        int e;
         int v = abs(coef[i]);
-        if (v == 0)
-            e = 24;
-        else {
-            e = 23 - av_log2(v);
-            if (e >= 24) {
-                e = 24;
-                coef[i] = 0;
+        exp[i] = v ? 23 - av_log2(v) : 24;
+    }
+}
+
+static void ac3_sum_square_butterfly_int32_c(int64_t sum[4],
+                                             const int32_t *coef0,
+                                             const int32_t *coef1,
+                                             int len)
+{
+    int i;
+
+    sum[0] = sum[1] = sum[2] = sum[3] = 0;
+
+    for (i = 0; i < len; i++) {
+        int lt = coef0[i];
+        int rt = coef1[i];
+        int md = lt + rt;
+        int sd = lt - rt;
+        MAC64(sum[0], lt, lt);
+        MAC64(sum[1], rt, rt);
+        MAC64(sum[2], md, md);
+        MAC64(sum[3], sd, sd);
+    }
+}
+
+static void ac3_sum_square_butterfly_float_c(float sum[4],
+                                             const float *coef0,
+                                             const float *coef1,
+                                             int len)
+{
+    int i;
+
+    sum[0] = sum[1] = sum[2] = sum[3] = 0;
+
+    for (i = 0; i < len; i++) {
+        float lt = coef0[i];
+        float rt = coef1[i];
+        float md = lt + rt;
+        float sd = lt - rt;
+        sum[0] += lt * lt;
+        sum[1] += rt * rt;
+        sum[2] += md * md;
+        sum[3] += sd * sd;
+    }
+}
+
+static void ac3_downmix_c(float **samples, float (*matrix)[2],
+                          int out_ch, int in_ch, int len)
+{
+    int i, j;
+    float v0, v1;
+    if (out_ch == 2) {
+        for (i = 0; i < len; i++) {
+            v0 = v1 = 0.0f;
+            for (j = 0; j < in_ch; j++) {
+                v0 += samples[j][i] * matrix[j][0];
+                v1 += samples[j][i] * matrix[j][1];
             }
-            av_assert2(e >= 0);
+            samples[0][i] = v0;
+            samples[1][i] = v1;
         }
-        exp[i] = e;
+    } else if (out_ch == 1) {
+        for (i = 0; i < len; i++) {
+            v0 = 0.0f;
+            for (j = 0; j < in_ch; j++)
+                v0 += samples[j][i] * matrix[j][0];
+            samples[0][i] = v0;
+        }
     }
 }
 
@@ -179,11 +247,17 @@ av_cold void ff_ac3dsp_init(AC3DSPContext *c, int bit_exact)
     c->ac3_rshift_int32 = ac3_rshift_int32_c;
     c->float_to_fixed24 = float_to_fixed24_c;
     c->bit_alloc_calc_bap = ac3_bit_alloc_calc_bap_c;
+    c->update_bap_counts = ac3_update_bap_counts_c;
     c->compute_mantissa_size = ac3_compute_mantissa_size_c;
     c->extract_exponents = ac3_extract_exponents_c;
+    c->sum_square_butterfly_int32 = ac3_sum_square_butterfly_int32_c;
+    c->sum_square_butterfly_float = ac3_sum_square_butterfly_float_c;
+    c->downmix = ac3_downmix_c;
 
     if (ARCH_ARM)
         ff_ac3dsp_init_arm(c, bit_exact);
-    if (HAVE_MMX)
+    if (ARCH_X86)
         ff_ac3dsp_init_x86(c, bit_exact);
+    if (ARCH_MIPS)
+        ff_ac3dsp_init_mips(c, bit_exact);
 }

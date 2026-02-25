@@ -19,20 +19,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include "libavutil/attributes.h"
 #include "libavcodec/dsputil.h"
 #include "dsputil_alpha.h"
 #include "asm.h"
 
-void (*put_pixels_clamped_axp_p)(const DCTELEM *block, uint8_t *pixels,
+void (*put_pixels_clamped_axp_p)(const int16_t *block, uint8_t *pixels,
                                  int line_size);
-void (*add_pixels_clamped_axp_p)(const DCTELEM *block, uint8_t *pixels,
+void (*add_pixels_clamped_axp_p)(const int16_t *block, uint8_t *pixels,
                                  int line_size);
 
 #if 0
 /* These functions were the base for the optimized assembler routines,
    and remain here for documentation purposes.  */
-static void put_pixels_clamped_mvi(const DCTELEM *block, uint8_t *pixels,
-                                   int line_size)
+static void put_pixels_clamped_mvi(const int16_t *block, uint8_t *pixels,
+                                   ptrdiff_t line_size)
 {
     int i = 8;
     uint64_t clampmask = zap(-1, 0xaa); /* 0x00ff00ff00ff00ff */
@@ -55,8 +56,8 @@ static void put_pixels_clamped_mvi(const DCTELEM *block, uint8_t *pixels,
     } while (--i);
 }
 
-void add_pixels_clamped_mvi(const DCTELEM *block, uint8_t *pixels,
-                            int line_size)
+void add_pixels_clamped_mvi(const int16_t *block, uint8_t *pixels,
+                            ptrdiff_t line_size)
 {
     int h = 8;
     /* Keep this function a leaf function by generating the constants
@@ -100,9 +101,9 @@ void add_pixels_clamped_mvi(const DCTELEM *block, uint8_t *pixels,
 }
 #endif
 
-static void clear_blocks_axp(DCTELEM *blocks) {
+static void clear_blocks_axp(int16_t *blocks) {
     uint64_t *p = (uint64_t *) blocks;
-    int n = sizeof(DCTELEM) * 6 * 64;
+    int n = sizeof(int16_t) * 6 * 64;
 
     do {
         p[0] = 0;
@@ -212,7 +213,7 @@ static inline uint64_t avg4(uint64_t l1, uint64_t l2, uint64_t l3, uint64_t l4)
 #define MAKE_OP(OPNAME, SUFF, OPKIND, STORE)                                \
 static void OPNAME ## _pixels ## SUFF ## _axp                               \
         (uint8_t *restrict block, const uint8_t *restrict pixels,           \
-         int line_size, int h)                                              \
+         ptrdiff_t line_size, int h)                                        \
 {                                                                           \
     if ((size_t) pixels & 0x7) {                                            \
         OPKIND(uldq, STORE);                                                \
@@ -223,7 +224,7 @@ static void OPNAME ## _pixels ## SUFF ## _axp                               \
                                                                             \
 static void OPNAME ## _pixels16 ## SUFF ## _axp                             \
         (uint8_t *restrict block, const uint8_t *restrict pixels,           \
-         int line_size, int h)                                              \
+         ptrdiff_t line_size, int h)                                        \
 {                                                                           \
     OPNAME ## _pixels ## SUFF ## _axp(block,     pixels,     line_size, h); \
     OPNAME ## _pixels ## SUFF ## _axp(block + 8, pixels + 8, line_size, h); \
@@ -262,14 +263,17 @@ PIXOP(put_no_rnd, STORE);
 PIXOP(avg_no_rnd, STORE);
 
 static void put_pixels16_axp_asm(uint8_t *block, const uint8_t *pixels,
-                                 int line_size, int h)
+                                 ptrdiff_t line_size, int h)
 {
     put_pixels_axp_asm(block,     pixels,     line_size, h);
     put_pixels_axp_asm(block + 8, pixels + 8, line_size, h);
 }
 
-void dsputil_init_alpha(DSPContext* c, AVCodecContext *avctx)
+av_cold void ff_dsputil_init_alpha(DSPContext *c, AVCodecContext *avctx)
 {
+    const int high_bit_depth = avctx->bits_per_raw_sample > 8;
+
+    if (!high_bit_depth) {
     c->put_pixels_tab[0][0] = put_pixels16_axp_asm;
     c->put_pixels_tab[0][1] = put_pixels16_x2_axp;
     c->put_pixels_tab[0][2] = put_pixels16_y2_axp;
@@ -285,10 +289,10 @@ void dsputil_init_alpha(DSPContext* c, AVCodecContext *avctx)
     c->avg_pixels_tab[0][2] = avg_pixels16_y2_axp;
     c->avg_pixels_tab[0][3] = avg_pixels16_xy2_axp;
 
-    c->avg_no_rnd_pixels_tab[0][0] = avg_no_rnd_pixels16_axp;
-    c->avg_no_rnd_pixels_tab[0][1] = avg_no_rnd_pixels16_x2_axp;
-    c->avg_no_rnd_pixels_tab[0][2] = avg_no_rnd_pixels16_y2_axp;
-    c->avg_no_rnd_pixels_tab[0][3] = avg_no_rnd_pixels16_xy2_axp;
+    c->avg_no_rnd_pixels_tab[0] = avg_no_rnd_pixels16_axp;
+    c->avg_no_rnd_pixels_tab[1] = avg_no_rnd_pixels16_x2_axp;
+    c->avg_no_rnd_pixels_tab[2] = avg_no_rnd_pixels16_y2_axp;
+    c->avg_no_rnd_pixels_tab[3] = avg_no_rnd_pixels16_xy2_axp;
 
     c->put_pixels_tab[1][0] = put_pixels_axp_asm;
     c->put_pixels_tab[1][1] = put_pixels_x2_axp;
@@ -305,19 +309,16 @@ void dsputil_init_alpha(DSPContext* c, AVCodecContext *avctx)
     c->avg_pixels_tab[1][2] = avg_pixels_y2_axp;
     c->avg_pixels_tab[1][3] = avg_pixels_xy2_axp;
 
-    c->avg_no_rnd_pixels_tab[1][0] = avg_no_rnd_pixels_axp;
-    c->avg_no_rnd_pixels_tab[1][1] = avg_no_rnd_pixels_x2_axp;
-    c->avg_no_rnd_pixels_tab[1][2] = avg_no_rnd_pixels_y2_axp;
-    c->avg_no_rnd_pixels_tab[1][3] = avg_no_rnd_pixels_xy2_axp;
-
     c->clear_blocks = clear_blocks_axp;
+    }
 
     /* amask clears all bits that correspond to present features.  */
     if (amask(AMASK_MVI) == 0) {
         c->put_pixels_clamped = put_pixels_clamped_mvi_asm;
         c->add_pixels_clamped = add_pixels_clamped_mvi_asm;
 
-        c->get_pixels       = get_pixels_mvi;
+        if (!high_bit_depth)
+            c->get_pixels   = get_pixels_mvi;
         c->diff_pixels      = diff_pixels_mvi;
         c->sad[0]           = pix_abs16x16_mvi_asm;
         c->sad[1]           = pix_abs8x8_mvi;
@@ -331,7 +332,7 @@ void dsputil_init_alpha(DSPContext* c, AVCodecContext *avctx)
     put_pixels_clamped_axp_p = c->put_pixels_clamped;
     add_pixels_clamped_axp_p = c->add_pixels_clamped;
 
-    if (!avctx->lowres &&
+    if (!avctx->lowres && avctx->bits_per_raw_sample <= 8 &&
         (avctx->idct_algo == FF_IDCT_AUTO ||
          avctx->idct_algo == FF_IDCT_SIMPLEALPHA)) {
         c->idct_put = ff_simple_idct_put_axp;

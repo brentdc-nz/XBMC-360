@@ -19,13 +19,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#if CONFIG_MPEG_XVMC_DECODER
-
 #include <limits.h>
 #include <X11/extensions/XvMC.h>
 
 #include "avcodec.h"
-#include "dsputil.h"
 #include "mpegvideo.h"
 
 #undef NDEBUG
@@ -35,7 +32,7 @@
 #include "xvmc_internal.h"
 
 /**
- * Initializes the block field of the MpegEncContext pointer passed as
+ * Initialize the block field of the MpegEncContext pointer passed as
  * parameter after making sure that the data is not corrupted.
  * In order to implement something like direct rendering instead of decoding
  * coefficients in s->blocks and then copying them, copy them directly
@@ -43,14 +40,14 @@
  */
 void ff_xvmc_init_block(MpegEncContext *s)
 {
-    struct xvmc_pix_fmt *render = (struct xvmc_pix_fmt*)s->current_picture.data[2];
+    struct xvmc_pix_fmt *render = (struct xvmc_pix_fmt*)s->current_picture.f.data[2];
     assert(render && render->xvmc_id == AV_XVMC_ID);
 
-    s->block = (DCTELEM (*)[64])(render->data_blocks + render->next_free_data_block_num * 64);
+    s->block = (int16_t (*)[64])(render->data_blocks + render->next_free_data_block_num * 64);
 }
 
 /**
- * Fills individual block pointers, so there are no gaps in the data_block array
+ * Fill individual block pointers, so there are no gaps in the data_block array
  * in case not all blocks in the macroblock are coded.
  */
 void ff_xvmc_pack_pblocks(MpegEncContext *s, int cbp)
@@ -69,13 +66,13 @@ void ff_xvmc_pack_pblocks(MpegEncContext *s, int cbp)
 }
 
 /**
- * Finds and stores the surfaces that are used as reference frames.
+ * Find and store the surfaces that are used as reference frames.
  * This function should be called for every new field and/or frame.
  * It should be safe to call the function a few times for the same field.
  */
 int ff_xvmc_field_start(MpegEncContext *s, AVCodecContext *avctx)
 {
-    struct xvmc_pix_fmt *last, *next, *render = (struct xvmc_pix_fmt*)s->current_picture.data[2];
+    struct xvmc_pix_fmt *last, *next, *render = (struct xvmc_pix_fmt*)s->current_picture.f.data[2];
     const int mb_block_count = 4 + (1 << s->chroma_format);
 
     assert(avctx);
@@ -112,18 +109,18 @@ int ff_xvmc_field_start(MpegEncContext *s, AVCodecContext *avctx)
     render->p_past_surface    = NULL;
 
     switch(s->pict_type) {
-        case  FF_I_TYPE:
+        case  AV_PICTURE_TYPE_I:
             return 0; // no prediction from other frames
-        case  FF_B_TYPE:
-            next = (struct xvmc_pix_fmt*)s->next_picture.data[2];
+        case  AV_PICTURE_TYPE_B:
+            next = (struct xvmc_pix_fmt*)s->next_picture.f.data[2];
             if (!next)
                 return -1;
             if (next->xvmc_id != AV_XVMC_ID)
                 return -1;
             render->p_future_surface = next->p_surface;
             // no return here, going to set forward prediction
-        case  FF_P_TYPE:
-            last = (struct xvmc_pix_fmt*)s->last_picture.data[2];
+        case  AV_PICTURE_TYPE_P:
+            last = (struct xvmc_pix_fmt*)s->last_picture.f.data[2];
             if (!last)
                 last = render; // predict second field from the first
             if (last->xvmc_id != AV_XVMC_ID)
@@ -136,23 +133,23 @@ return -1;
 }
 
 /**
- * Completes frame/field rendering by passing any remaining blocks.
+ * Complete frame/field rendering by passing any remaining blocks.
  * Normally ff_draw_horiz_band() is called for each slice, however,
  * some leftover blocks, for example from error_resilience(), may remain.
  * It should be safe to call the function a few times for the same field.
  */
 void ff_xvmc_field_end(MpegEncContext *s)
 {
-    struct xvmc_pix_fmt *render = (struct xvmc_pix_fmt*)s->current_picture.data[2];
+    struct xvmc_pix_fmt *render = (struct xvmc_pix_fmt*)s->current_picture.f.data[2];
     assert(render);
 
     if (render->filled_mv_blocks_num > 0)
-        ff_draw_horiz_band(s, 0, 0);
+        ff_mpeg_draw_horiz_band(s, 0, 0);
 }
 
 /**
- * Synthesizes the data needed by XvMC to render one macroblock of data.
- * Fills all relevant fields, if necessary do IDCT.
+ * Synthesize the data needed by XvMC to render one macroblock of data.
+ * Fill all relevant fields, if necessary do IDCT.
  */
 void ff_xvmc_decode_mb(MpegEncContext *s)
 {
@@ -181,10 +178,10 @@ void ff_xvmc_decode_mb(MpegEncContext *s)
 
     // Do I need to export quant when I could not perform postprocessing?
     // Anyway, it doesn't hurt.
-    s->current_picture.qscale_table[mb_xy] = s->qscale;
+    s->current_picture.f.qscale_table[mb_xy] = s->qscale;
 
     // start of XVMC-specific code
-    render = (struct xvmc_pix_fmt*)s->current_picture.data[2];
+    render = (struct xvmc_pix_fmt*)s->current_picture.f.data[2];
     assert(render);
     assert(render->xvmc_id == AV_XVMC_ID);
     assert(render->mv_blocks);
@@ -303,7 +300,7 @@ void ff_xvmc_decode_mb(MpegEncContext *s)
     for (i = 0; i < blocks_per_mb; i++) {
         if (s->block_last_index[i] >= 0) {
             // I do not have unsigned_intra MOCO to test, hope it is OK.
-            if (s->mb_intra && (render->idct || (!render->idct && !render->unsigned_intra)))
+            if (s->mb_intra && (render->idct || !render->unsigned_intra))
                 *s->pblocks[i][0] -= 1 << 10;
             if (!render->idct) {
                 s->dsp.idct(*s->pblocks[i]);
@@ -330,7 +327,5 @@ void ff_xvmc_decode_mb(MpegEncContext *s)
 
 
     if (render->filled_mv_blocks_num == render->allocated_mv_blocks)
-        ff_draw_horiz_band(s, 0, 0);
+        ff_mpeg_draw_horiz_band(s, 0, 0);
 }
-
-#endif

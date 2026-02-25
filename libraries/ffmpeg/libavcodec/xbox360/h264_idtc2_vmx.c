@@ -1,7 +1,7 @@
 #include <xtl.h>
 
 #include "libavcodec/dsputil.h"
-#include "libavcodec/h264data.h"
+#include "libavcodec/h264.h"
 #include "libavcodec/h264dsp.h"
 
 
@@ -9,7 +9,7 @@
 * 28/04/2011: fixed some intrinsics (u8 instead of s16). not tested
 * Working :D
 */
-static av_always_inline void h264_idct_dc_add_internal(uint8_t *dst, DCTELEM *block, int stride, int size)
+static av_always_inline void h264_idct_dc_add_internal(uint8_t *dst, int16_t *block, int stride, int size)
 {
 	__vector4 dc16;//s16
 	__vector4 dcplus, dcminus, v0, v1, v2, v3, aligner;//u8
@@ -160,7 +160,7 @@ static av_always_inline void h264_idct_dc_add_internal(uint8_t *dst, DCTELEM *bl
 	} while (0);
 
 //working :D
-static void ff_h264_idct8_add_altivec( uint8_t *dst, DCTELEM *dct, int stride ) {
+static void ff_h264_idct8_add_altivec( uint8_t *dst, int16_t *dct, int stride ) {
 	__vector4 s0, s1, s2, s3, s4, s5, s6, s7;//s16
 	__vector4 d0, d1, d2, d3, d4, d5, d6, d7;//s16
 	__vector4 idct0, idct1, idct2, idct3, idct4, idct5, idct6, idct7;//s16
@@ -214,18 +214,18 @@ static void ff_h264_idct8_add_altivec( uint8_t *dst, DCTELEM *dct, int stride ) 
 }
 
 
-static void h264_idct_dc_add_altivec(uint8_t *dst, DCTELEM *block, int stride)
+static void h264_idct_dc_add_altivec(uint8_t *dst, int16_t *block, int stride)
 {
 	h264_idct_dc_add_internal(dst, block, stride, 4);
 }
 
-static void ff_h264_idct8_dc_add_altivec(uint8_t *dst, DCTELEM *block, int stride)
+static void ff_h264_idct8_dc_add_altivec(uint8_t *dst, int16_t *block, int stride)
 {
 	h264_idct_dc_add_internal(dst, block, stride, 8);
 }
 
 
-static void ff_h264_idct8_add4_altivec(uint8_t *dst, const int *block_offset, DCTELEM *block, int stride, const uint8_t nnzc[6*8]){
+static void ff_h264_idct8_add4_altivec(uint8_t *dst, const int *block_offset, int16_t *block, int stride, const uint8_t nnzc[6*8]){
 	int i;
 	for(i=0; i<16; i+=4){
 		int nnz = nnzc[ scan8[i] ];

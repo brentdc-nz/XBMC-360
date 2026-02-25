@@ -26,6 +26,7 @@
  */
 
 #include "avformat.h"
+#include "internal.h"
 #include "avio_internal.h"
 #include "rtp.h"
 #include "rtpdec.h"
@@ -41,7 +42,7 @@ struct PayloadContext {
 static int qt_rtp_parse_packet(AVFormatContext *s, PayloadContext *qt,
                                AVStream *st, AVPacket *pkt,
                                uint32_t *timestamp, const uint8_t *buf,
-                               int len, int flags)
+                               int len, uint16_t seq, int flags)
 {
     AVIOContext pb;
     GetBitContext gb;
@@ -98,7 +99,7 @@ static int qt_rtp_parse_packet(AVFormatContext *s, PayloadContext *qt,
         if (!is_start || !is_finish) {
             av_log_missing_feature(s, "RTP-X-QT with payload description "
                                       "split over several packets", 1);
-            return AVERROR(ENOSYS);
+            return AVERROR_PATCHWELCOME;
         }
         skip_bits(&gb, 12); // reserved
         data_len = get_bits(&gb, 16);
@@ -110,7 +111,7 @@ static int qt_rtp_parse_packet(AVFormatContext *s, PayloadContext *qt,
             (st->codec->codec_type == AVMEDIA_TYPE_AUDIO &&
                  tag != MKTAG('s','o','u','n')))
             return AVERROR_INVALIDDATA;
-        av_set_pts_info(st, 32, 1, avio_rb32(&pb));
+        avpriv_set_pts_info(st, 32, 1, avio_rb32(&pb));
 
         if (pos + data_len > len)
             return AVERROR_INVALIDDATA;
@@ -161,7 +162,7 @@ static int qt_rtp_parse_packet(AVFormatContext *s, PayloadContext *qt,
 
     if (has_packet_info) {
         av_log_missing_feature(s, "RTP-X-QT with packet specific info", 1);
-        return AVERROR(ENOSYS);
+        return AVERROR_PATCHWELCOME;
     }
 
     alen = len - avio_tell(&pb);
@@ -224,7 +225,7 @@ static int qt_rtp_parse_packet(AVFormatContext *s, PayloadContext *qt,
 
     default:  /* unimplemented */
         av_log_missing_feature(NULL, "RTP-X-QT with packing scheme 2", 1);
-        return AVERROR(ENOSYS);
+        return AVERROR_PATCHWELCOME;
     }
 }
 
@@ -241,12 +242,12 @@ static void qt_rtp_free(PayloadContext *qt)
 
 #define RTP_QT_HANDLER(m, n, s, t) \
 RTPDynamicProtocolHandler ff_ ## m ## _rtp_ ## n ## _handler = { \
-    .enc_name         = s, \
-    .codec_type       = t, \
-    .codec_id         = CODEC_ID_NONE, \
-    .open             = qt_rtp_new,    \
-    .close            = qt_rtp_free,   \
-    .parse_packet     = qt_rtp_parse_packet, \
+    /* enc_name */ s, \
+    /* codec_type */ t, \
+    /* codec_id */ AV_CODEC_ID_NONE, \
+    /* alloc */ qt_rtp_new,    \
+    /* free */ qt_rtp_free,   \
+    /* parse_packet */ qt_rtp_parse_packet, \
 }
 
 RTP_QT_HANDLER(qt,        vid, "X-QT",        AVMEDIA_TYPE_VIDEO);

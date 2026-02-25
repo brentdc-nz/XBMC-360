@@ -51,10 +51,9 @@
  */
 int ff_jpegls_decode_lse(MJpegDecodeContext *s)
 {
-    int len, id;
+    int id;
 
-    /* XXX: verify len field validity */
-    len = get_bits(&s->gb, 16);
+    skip_bits(&s->gb, 16);  /* length: FIXME: verify field validity */
     id = get_bits(&s->gb, 8);
 
     switch(id){
@@ -79,7 +78,7 @@ int ff_jpegls_decode_lse(MJpegDecodeContext *s)
         av_log(s->avctx, AV_LOG_ERROR, "invalid id %d\n", id);
         return -1;
     }
-//    av_log(s->avctx, AV_LOG_DEBUG, "ID=%i, T=%i,%i,%i\n", id, s->t1, s->t2, s->t3);
+    av_dlog(s->avctx, "ID=%i, T=%i,%i,%i\n", id, s->t1, s->t2, s->t3);
 
     return 0;
 }
@@ -143,6 +142,8 @@ static inline int ls_get_code_runterm(GetBitContext *gb, JLSState *state, int RI
         ret = ret >> 1;
     }
 
+    if(FFABS(ret) > 0xFFFF)
+        return -0x10000;
     /* update state */
     state->A[Q] += FFABS(ret) - RItype;
     ret *= state->twonear;
@@ -198,9 +199,17 @@ static inline void ls_decode_line(JLSState *state, MJpegDecodeContext *s, void *
             r = ff_log2_run[state->run_index[comp]];
             if(r)
                 r = get_bits_long(&s->gb, r);
+            if(x + r * stride > w) {
+                r = (w - x) / stride;
+            }
             for(i = 0; i < r; i++) {
                 W(dst, x, Ra);
                 x += stride;
+            }
+
+            if (x >= w) {
+                av_log(NULL, AV_LOG_ERROR, "run overflow\n");
+                return;
             }
 
             /* decode run termination value */
@@ -283,11 +292,17 @@ int ff_jpegls_decode_picture(MJpegDecodeContext *s, int near, int point_transfor
     else
         shift = point_transform + (16 - s->bits);
 
-//    av_log(s->avctx, AV_LOG_DEBUG, "JPEG-LS params: %ix%i NEAR=%i MV=%i T(%i,%i,%i) RESET=%i, LIMIT=%i, qbpp=%i, RANGE=%i\n",s->width,s->height,state->near,state->maxval,state->T1,state->T2,state->T3,state->reset,state->limit,state->qbpp, state->range);
-//    av_log(s->avctx, AV_LOG_DEBUG, "JPEG params: ILV=%i Pt=%i BPP=%i, scan = %i\n", ilv, point_transform, s->bits, s->cur_scan);
+    if (s->avctx->debug & FF_DEBUG_PICT_INFO) {
+        av_log(s->avctx, AV_LOG_DEBUG, "JPEG-LS params: %ix%i NEAR=%i MV=%i T(%i,%i,%i) RESET=%i, LIMIT=%i, qbpp=%i, RANGE=%i\n",
+                s->width, s->height, state->near, state->maxval,
+                state->T1, state->T2, state->T3,
+                state->reset, state->limit, state->qbpp, state->range);
+        av_log(s->avctx, AV_LOG_DEBUG, "JPEG params: ILV=%i Pt=%i BPP=%i, scan = %i\n",
+                ilv, point_transform, s->bits, s->cur_scan);
+    }
     if(ilv == 0) { /* separate planes */
-        off = s->cur_scan - 1;
         stride = (s->nb_components > 1) ? 3 : 1;
+        off = av_clip(s->cur_scan - 1, 0, stride - 1);
         width = s->width * stride;
         cur += off;
         for(i = 0; i < s->height; i++) {
@@ -309,11 +324,12 @@ int ff_jpegls_decode_picture(MJpegDecodeContext *s, int near, int point_transfor
     } else if(ilv == 1) { /* line interleaving */
         int j;
         int Rc[3] = {0, 0, 0};
+        stride = (s->nb_components > 1) ? 3 : 1;
         memset(cur, 0, s->picture.linesize[0]);
-        width = s->width * 3;
+        width = s->width * stride;
         for(i = 0; i < s->height; i++) {
-            for(j = 0; j < 3; j++) {
-                ls_decode_line(state, s, last + j, cur + j, Rc[j], width, 3, j, 8);
+            for(j = 0; j < stride; j++) {
+                ls_decode_line(state, s, last + j, cur + j, Rc[j], width, stride, j, 8);
                 Rc[j] = last[j];
 
                 if (s->restart_interval && !--s->restart_count) {
@@ -364,34 +380,28 @@ int ff_jpegls_decode_picture(MJpegDecodeContext *s, int near, int point_transfor
 
 
 AVCodec ff_jpegls_decoder = {
-#ifndef MSC_STRUCTS
-    "jpegls",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_JPEGLS,
-    sizeof(MJpegDecodeContext),
-    ff_mjpeg_decode_init,
-    NULL,
-    ff_mjpeg_decode_end,
-    ff_mjpeg_decode_frame,
-    CODEC_CAP_DR1,
-    .long_name = NULL_IF_CONFIG_SMALL("JPEG-LS"),
-#else
-    /* name = */ "jpegls",
-    /* type = */ AVMEDIA_TYPE_VIDEO,
-    /* id = */ CODEC_ID_JPEGLS,
-    /* priv_data_size = */ sizeof(MJpegDecodeContext),
-    /* init = */ ff_mjpeg_decode_init,
-    /* encode = */ NULL,
-    /* close = */ ff_mjpeg_decode_end,
-    /* decode = */ ff_mjpeg_decode_frame,
-    /* capabilities = */ CODEC_CAP_DR1,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ 0,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("JPEG-LS"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ 0,
-    /* channel_layouts = */ 0,
-#endif
-};
+        "jpegls", /* name */
+        NULL_IF_CONFIG_SMALL("JPEG-LS"), /* long_name */
+        AVMEDIA_TYPE_VIDEO, /* type */
+        AV_CODEC_ID_JPEGLS, /* id */
+        CODEC_CAP_DR1, /* capabilities */
+        0, /* supported_framerates */
+        0, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        0, /* priv_class */
+        0, /* profiles */
+        sizeof(MJpegDecodeContext), /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        ff_mjpeg_decode_init, /* init */
+        0, /* encode_sub */
+        0, /* encode2 */
+        ff_mjpeg_decode_frame, /* decode */
+        ff_mjpeg_decode_end, /* close */
+    };

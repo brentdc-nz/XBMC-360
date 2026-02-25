@@ -21,9 +21,11 @@
  */
 
 #include <inttypes.h>
+
+#include "libavutil/common.h"
+#include "libavutil/float_dsp.h"
 #include "avcodec.h"
 #include "acelp_vectors.h"
-#include "celp_math.h"
 
 const uint8_t ff_fc_2pulses_9bits_track1[16] =
 {
@@ -92,16 +94,6 @@ const uint8_t ff_fc_4pulses_8bits_track_4[32] =
     73, 74,
     78, 79,
 };
-
-#if 0
-static uint8_t gray_decode[32] =
-{
-    0,  1,  3,  2,  7,  6,  4,  5,
-   15, 14, 12, 13,  8,  9, 11, 10,
-   31, 30, 28, 29, 24, 25, 27, 26,
-   16, 17, 19, 18, 23, 22, 20, 21
-};
-#endif
 
 const float ff_pow_0_7[10] = {
     0.700000, 0.490000, 0.343000, 0.240100, 0.168070,
@@ -211,7 +203,7 @@ void ff_adaptive_gain_control(float *out, const float *in, float speech_energ,
                               int size, float alpha, float *gain_mem)
 {
     int i;
-    float postfilter_energ = ff_dot_productf(in, in, size);
+    float postfilter_energ = avpriv_scalarproduct_float_c(in, in, size);
     float gain_scale_factor = 1.0;
     float mem = *gain_mem;
 
@@ -232,7 +224,7 @@ void ff_scale_vector_to_given_sum_of_squares(float *out, const float *in,
                                              float sum_of_squares, const int n)
 {
     int i;
-    float scalefactor = ff_dot_productf(in, in, n);
+    float scalefactor = avpriv_scalarproduct_float_c(in, in, n);
     if (scalefactor)
         scalefactor = sqrt(sum_of_squares / scalefactor);
     for (i = 0; i < n; i++)
@@ -247,11 +239,12 @@ void ff_set_fixed_vector(float *out, const AMRFixed *in, float scale, int size)
         int x   = in->x[i], repeats = !((in->no_repeat_mask >> i) & 1);
         float y = in->y[i] * scale;
 
-        do {
-            out[x] += y;
-            y *= in->pitch_fac;
-            x += in->pitch_lag;
-        } while (x < size && repeats);
+        if (in->pitch_lag > 0)
+            do {
+                out[x] += y;
+                y *= in->pitch_fac;
+                x += in->pitch_lag;
+            } while (x < size && repeats);
     }
 }
 
@@ -262,9 +255,18 @@ void ff_clear_fixed_vector(float *out, const AMRFixed *in, int size)
     for (i=0; i < in->n; i++) {
         int x  = in->x[i], repeats = !((in->no_repeat_mask >> i) & 1);
 
-        do {
-            out[x] = 0.0;
-            x += in->pitch_lag;
-        } while (x < size && repeats);
+        if (in->pitch_lag > 0)
+            do {
+                out[x] = 0.0;
+                x += in->pitch_lag;
+            } while (x < size && repeats);
     }
+}
+
+void ff_acelp_vectors_init(ACELPVContext *c)
+{
+    c->weighted_vector_sumf   = ff_weighted_vector_sumf;
+
+    if(HAVE_MIPSFPU)
+        ff_acelp_vectors_init_mips(c);
 }

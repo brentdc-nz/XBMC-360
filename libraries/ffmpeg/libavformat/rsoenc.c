@@ -49,7 +49,7 @@ static int rso_write_header(AVFormatContext *s)
         return AVERROR_INVALIDDATA;
     }
 
-    if (enc->codec_id == CODEC_ID_ADPCM_IMA_WAV) {
+    if (enc->codec_id == AV_CODEC_ID_ADPCM_IMA_WAV) {
         av_log(s, AV_LOG_ERROR, "ADPCM in RSO not implemented\n");
         return AVERROR_PATCHWELCOME;
     }
@@ -95,20 +95,24 @@ static int rso_write_trailer(AVFormatContext *s)
     avio_wb16(pb, coded_file_size);
     avio_seek(pb, file_size, SEEK_SET);
 
-    avio_flush(pb);
-
     return 0;
 }
 
+static const AVCodecTag *const _ff_rsoenc_tags_32[] = { ff_codec_rso_tags, 0 };
 AVOutputFormat ff_rso_muxer = {
-    .name           =   "rso",
-    .long_name      =   NULL_IF_CONFIG_SMALL("Lego Mindstorms RSO format"),
-    .extensions     =   "rso",
-    .priv_data_size =   0,
-    .audio_codec    =   CODEC_ID_PCM_U8,
-    .video_codec    =   CODEC_ID_NONE,
-    .write_header   =   rso_write_header,
-    .write_packet   =   rso_write_packet,
-    .write_trailer  =   rso_write_trailer,
-    .codec_tag      =   (const AVCodecTag* const []){ff_codec_rso_tags, 0},
+    "rso", /* name */
+    NULL_IF_CONFIG_SMALL("Lego Mindstorms RSO"), /* long_name */
+    0, /* mime_type */
+    "rso", /* extensions */
+    AV_CODEC_ID_PCM_U8, /* audio_codec */
+    AV_CODEC_ID_NONE, /* video_codec */
+    0, /* subtitle_codec */
+    0, /* flags */
+    _ff_rsoenc_tags_32, /* codec_tag */
+    0, /* priv_class */
+    0, /* next */
+    0, /* priv_data_size */
+    rso_write_header, /* write_header */
+    rso_write_packet, /* write_packet */
+    rso_write_trailer, /* write_trailer */
 };

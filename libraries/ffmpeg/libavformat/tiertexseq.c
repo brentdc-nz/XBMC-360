@@ -24,7 +24,9 @@
  * Tiertex Limited SEQ file demuxer
  */
 
+#include "libavutil/channel_layout.h"
 #include "avformat.h"
+#include "internal.h"
 
 #define SEQ_FRAME_SIZE         6144
 #define SEQ_FRAME_W            256
@@ -180,7 +182,7 @@ static int seq_parse_frame_data(SeqDemuxContext *seq, AVIOContext *pb)
     return 0;
 }
 
-static int seq_read_header(AVFormatContext *s, AVFormatParameters *ap)
+static int seq_read_header(AVFormatContext *s)
 {
     int i, rc;
     SeqDemuxContext *seq = s->priv_data;
@@ -206,33 +208,35 @@ static int seq_read_header(AVFormatContext *s, AVFormatParameters *ap)
     seq->audio_buffer_full = 0;
 
     /* initialize the video decoder stream */
-    st = av_new_stream(s, 0);
+    st = avformat_new_stream(s, NULL);
     if (!st)
         return AVERROR(ENOMEM);
 
-    av_set_pts_info(st, 32, 1, SEQ_FRAME_RATE);
+    avpriv_set_pts_info(st, 32, 1, SEQ_FRAME_RATE);
     seq->video_stream_index = st->index;
     st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
-    st->codec->codec_id = CODEC_ID_TIERTEXSEQVIDEO;
+    st->codec->codec_id = AV_CODEC_ID_TIERTEXSEQVIDEO;
     st->codec->codec_tag = 0;  /* no fourcc */
     st->codec->width = SEQ_FRAME_W;
     st->codec->height = SEQ_FRAME_H;
 
     /* initialize the audio decoder stream */
-    st = av_new_stream(s, 0);
+    st = avformat_new_stream(s, NULL);
     if (!st)
         return AVERROR(ENOMEM);
 
-    av_set_pts_info(st, 32, 1, SEQ_SAMPLE_RATE);
+    st->start_time = 0;
+    avpriv_set_pts_info(st, 32, 1, SEQ_SAMPLE_RATE);
     seq->audio_stream_index = st->index;
     st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
-    st->codec->codec_id = CODEC_ID_PCM_S16BE;
+    st->codec->codec_id = AV_CODEC_ID_PCM_S16BE;
     st->codec->codec_tag = 0;  /* no tag */
     st->codec->channels = 1;
+    st->codec->channel_layout = AV_CH_LAYOUT_MONO;
     st->codec->sample_rate = SEQ_SAMPLE_RATE;
     st->codec->bits_per_coded_sample = 16;
     st->codec->bit_rate = st->codec->sample_rate * st->codec->bits_per_coded_sample * st->codec->channels;
-    st->codec->block_align = st->codec->channels * st->codec->bits_per_coded_sample;
+    st->codec->block_align = st->codec->channels * st->codec->bits_per_coded_sample / 8;
 
     return 0;
 }
@@ -303,11 +307,17 @@ static int seq_read_close(AVFormatContext *s)
 }
 
 AVInputFormat ff_tiertexseq_demuxer = {
-    "tiertexseq",
-    NULL_IF_CONFIG_SMALL("Tiertex Limited SEQ format"),
-    sizeof(SeqDemuxContext),
-    seq_probe,
-    seq_read_header,
-    seq_read_packet,
-    seq_read_close,
+    "tiertexseq", /* name */
+    NULL_IF_CONFIG_SMALL("Tiertex Limited SEQ"), /* long_name */
+    0, /* flags */
+    0, /* extensions */
+    0, /* codec_tag */
+    0, /* priv_class */
+    0, /* next */
+    0, /* raw_codec_id */
+    sizeof(SeqDemuxContext), /* priv_data_size */
+    seq_probe, /* read_probe */
+    seq_read_header, /* read_header */
+    seq_read_packet, /* read_packet */
+    seq_read_close, /* read_close */
 };

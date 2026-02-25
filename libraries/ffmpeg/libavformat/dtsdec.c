@@ -34,6 +34,7 @@ static int dts_probe(AVProbeData *p)
     uint32_t state = -1;
     int markers[3] = {0};
     int sum, max;
+    int64_t diff = 0;
 
     buf = p->buf;
 
@@ -54,47 +55,32 @@ static int dts_probe(AVProbeData *p)
         if (state == DCA_MARKER_14B_LE)
             if ((bytestream_get_be16(&bufp) & 0xF0FF) == 0xF007)
                 markers[2]++;
+
+        if (buf - p->buf >= 4)
+            diff += FFABS(AV_RL16(buf) - AV_RL16(buf-4));
     }
     sum = markers[0] + markers[1] + markers[2];
     max = markers[1] > markers[0];
     max = markers[2] > markers[max] ? 2 : max;
     if (markers[max] > 3 && p->buf_size / markers[max] < 32*1024 &&
-        markers[max] * 4 > sum * 3)
+        markers[max] * 4 > sum * 3 &&
+        diff / p->buf_size > 200)
         return AVPROBE_SCORE_MAX/2+1;
 
     return 0;
 }
 
 AVInputFormat ff_dts_demuxer = {
-   #ifndef MSC_STRUCTS
-    "dts",
-    NULL_IF_CONFIG_SMALL("raw DTS"),
-    0,
-    dts_probe,
-    ff_raw_audio_read_header,
-    ff_raw_read_partial_packet,
-    .flags= AVFMT_GENERIC_INDEX,
-    .extensions = "dts",
-    .value = CODEC_ID_DTS,
+    "dts", /* name */
+    NULL_IF_CONFIG_SMALL("raw DTS"), /* long_name */
+    AVFMT_GENERIC_INDEX, /* flags */
+    "dts", /* extensions */
+    0, /* codec_tag */
+    0, /* priv_class */
+    0, /* next */
+    AV_CODEC_ID_DTS, /* raw_codec_id */
+    0, /* priv_data_size */
+    dts_probe, /* read_probe */
+    ff_raw_audio_read_header, /* read_header */
+    ff_raw_read_partial_packet, /* read_packet */
 };
-#else
-	"dts",
-	NULL_IF_CONFIG_SMALL("raw DTS"),
-	0,
-	dts_probe,
-	ff_raw_audio_read_header,
-	ff_raw_read_partial_packet,
-	/*read_close = */ 0,
-	/*read_seek = */ 0,
-	/*read_timestamp = */ 0,
-	/*flags = */ AVFMT_GENERIC_INDEX,
-	/*extensions = */ "dts",
-	/*value = */ CODEC_ID_DTS,
-	/*read_play = */ 0,
-	/*read_pause = */ 0,
-	/*codec_tag = */ 0,
-	/*read_seek2 = */ 0,
-	/*metadata_conv = */ 0,
-	/*next = */ 0
-};
-#endif

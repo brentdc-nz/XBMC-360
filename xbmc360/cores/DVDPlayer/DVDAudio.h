@@ -5,7 +5,7 @@
 #include "..\AudioRenderers\IAudioRenderer.h"
 #include"..\AudioRenderers\IAudioCallback.h"
 
-enum CodecID;
+enum AVCodecID;
 typedef struct stDVDAudioFrame DVDAudioFrame;
 
 class CDVDAudio
@@ -18,7 +18,7 @@ public:
 	void UnRegisterAudioCallback();
 	void DoAudioWork();
 
-	bool Create(const DVDAudioFrame &audioframe, CodecID codec);
+	bool Create(const DVDAudioFrame &audioframe, AVCodecID codec);
 	bool IsValidFormat(const DVDAudioFrame &audioframe);
 	double GetDelay(); // Returns the time it takes to play a packet if we add one at this time
 	double GetCacheTime(); // Returns total amount of data cached in audio output at this time

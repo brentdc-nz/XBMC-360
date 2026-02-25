@@ -27,7 +27,10 @@
  * @author Marco Gerards <marco@gnu.org>
  */
 
+#include <string.h>
+
 #include "libavutil/intreadwrite.h"
+#include "libavutil/mem.h"
 #include "parser.h"
 
 #define DIRAC_PARSE_INFO_PREFIX 0x42424344
@@ -158,7 +161,9 @@ static int dirac_combine_frame(AVCodecParserContext *s, AVCodecContext *avctx,
          * we can be pretty sure that we have a valid parse unit */
         if (!unpack_parse_unit(&pu1, pc, pc->index - 13)                     ||
             !unpack_parse_unit(&pu, pc, pc->index - 13 - pu1.prev_pu_offset) ||
-            pu.next_pu_offset != pu1.prev_pu_offset) {
+            pu.next_pu_offset != pu1.prev_pu_offset                          ||
+            pc->index < pc->dirac_unit_size + 13LL + pu1.prev_pu_offset
+        ) {
             pc->index -= 9;
             *buf_size = next-9;
             pc->header_bytes_needed = 9;
@@ -194,7 +199,7 @@ static int dirac_combine_frame(AVCodecParserContext *s, AVCodecContext *avctx,
                 avctx->has_b_frames = 1;
         }
         if (avctx->has_b_frames && s->pts == s->dts)
-             s->pict_type = FF_B_TYPE;
+             s->pict_type = AV_PICTURE_TYPE_B;
 
         /* Finally have a complete Dirac data unit */
         *buf      = pc->dirac_unit;
@@ -248,9 +253,9 @@ static void dirac_parse_close(AVCodecParserContext *s)
 }
 
 AVCodecParser ff_dirac_parser = {
-    { CODEC_ID_DIRAC },
-    sizeof(DiracParseContext),
-    NULL,
-    dirac_parse,
-    dirac_parse_close,
-};
+        { AV_CODEC_ID_DIRAC }, /* codec_ids */
+        sizeof(DiracParseContext), /* priv_data_size */
+        0, /* parser_init */
+        dirac_parse, /* parser_parse */
+        dirac_parse_close, /* parser_close */
+    };

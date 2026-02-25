@@ -33,13 +33,15 @@ static int mpeg4video_probe(AVProbeData *probe_packet)
 
     for(i=0; i<probe_packet->buf_size; i++){
         temp_buffer = (temp_buffer<<8) + probe_packet->buf[i];
-        if ((temp_buffer & 0xffffff00) != 0x100)
+        if (temp_buffer & 0xfffffe00)
+            continue;
+        if (temp_buffer < 2)
             continue;
 
         if (temp_buffer == VOP_START_CODE)                         VOP++;
         else if (temp_buffer == VISUAL_OBJECT_START_CODE)          VISO++;
-        else if (temp_buffer < 0x120)                              VO++;
-        else if (temp_buffer < 0x130)                              VOL++;
+        else if (temp_buffer >= 0x100 && temp_buffer < 0x120)      VO++;
+        else if (temp_buffer >= 0x120 && temp_buffer < 0x130)      VOL++;
         else if (   !(0x1AF < temp_buffer && temp_buffer < 0x1B7)
                  && !(0x1B9 < temp_buffer && temp_buffer < 0x1C4)) res++;
     }
@@ -49,36 +51,4 @@ static int mpeg4video_probe(AVProbeData *probe_packet)
     return 0;
 }
 
-AVInputFormat ff_m4v_demuxer = {
-#ifndef MSC_STRUCTS
-    "m4v",
-    NULL_IF_CONFIG_SMALL("raw MPEG-4 video format"),
-    0,
-    mpeg4video_probe, /** probing for MPEG-4 data */
-    video_read_header,
-    ff_raw_read_partial_packet,
-    .flags= AVFMT_GENERIC_INDEX,
-    .extensions = "m4v",
-    .value = CODEC_ID_MPEG4,
-};
-#else
-	"m4v",
-	NULL_IF_CONFIG_SMALL("raw MPEG-4 video format"),
-	0,
-	mpeg4video_probe, /** probing for MPEG-4 data */
-	ff_raw_video_read_header,
-	ff_raw_read_partial_packet,
-	/*read_close = */ 0,
-	/*read_seek = */ 0,
-	/*read_timestamp = */ 0,
-	/*flags = */ AVFMT_GENERIC_INDEX,
-	/*extensions = */ "m4v",
-	/*value = */ CODEC_ID_MPEG4,
-	/*read_play = */ 0,
-	/*read_pause = */ 0,
-	/*codec_tag = */ 0,
-	/*read_seek2 = */ 0,
-	/*metadata_conv = */ 0,
-	/*next = */ 0
-};
-#endif
+FF_DEF_RAWVIDEO_DEMUXER(m4v, "raw MPEG-4 video", mpeg4video_probe, "m4v", AV_CODEC_ID_MPEG4)

@@ -33,7 +33,8 @@
 #include <string.h>
 
 #include "avcodec.h"
-#include "dsputil.h"
+#include "internal.h"
+#include "libavutil/internal.h"
 
 
 typedef struct CyuvDecodeContext {
@@ -50,15 +51,15 @@ static av_cold int cyuv_decode_init(AVCodecContext *avctx)
     s->width = avctx->width;
     /* width needs to be divisible by 4 for this codec to work */
     if (s->width & 0x3)
-        return -1;
+        return AVERROR_INVALIDDATA;
     s->height = avctx->height;
-    avctx->pix_fmt = PIX_FMT_YUV411P;
+    avcodec_get_frame_defaults(&s->frame);
 
     return 0;
 }
 
 static int cyuv_decode_frame(AVCodecContext *avctx,
-                             void *data, int *data_size,
+                             void *data, int *got_frame,
                              AVPacket *avpkt)
 {
     const uint8_t *buf = avpkt->data;
@@ -81,8 +82,10 @@ static int cyuv_decode_frame(AVCodecContext *avctx,
     int stream_ptr;
     unsigned char cur_byte;
     int pixel_groups;
+    int rawsize = s->height * FFALIGN(s->width,2) * 2;
+    int ret;
 
-    if (avctx->codec_id == CODEC_ID_AURA) {
+    if (avctx->codec_id == AV_CODEC_ID_AURA) {
         y_table = u_table;
         u_table = v_table;
     }
@@ -90,10 +93,14 @@ static int cyuv_decode_frame(AVCodecContext *avctx,
      * followed by (height) lines each with 3 bytes to represent groups
      * of 4 pixels. Thus, the total size of the buffer ought to be:
      *    (3 * 16) + height * (width * 3 / 4) */
-    if (buf_size != 48 + s->height * (s->width * 3 / 4)) {
+    if (buf_size == 48 + s->height * (s->width * 3 / 4)) {
+        avctx->pix_fmt = AV_PIX_FMT_YUV411P;
+    } else if(buf_size == rawsize ) {
+        avctx->pix_fmt = AV_PIX_FMT_UYVY422;
+    } else {
         av_log(avctx, AV_LOG_ERROR, "got a buffer with %d bytes when %d were expected\n",
                buf_size, 48 + s->height * (s->width * 3 / 4));
-        return -1;
+        return AVERROR_INVALIDDATA;
     }
 
     /* pixel data starts 48 bytes in, after 3x16-byte tables */
@@ -104,14 +111,23 @@ static int cyuv_decode_frame(AVCodecContext *avctx,
 
     s->frame.buffer_hints = FF_BUFFER_HINTS_VALID;
     s->frame.reference = 0;
-    if (avctx->get_buffer(avctx, &s->frame) < 0) {
+    if ((ret = ff_get_buffer(avctx, &s->frame)) < 0) {
         av_log(avctx, AV_LOG_ERROR, "get_buffer() failed\n");
-        return -1;
+        return ret;
     }
 
     y_plane = s->frame.data[0];
     u_plane = s->frame.data[1];
     v_plane = s->frame.data[2];
+
+    if (buf_size == rawsize) {
+        int linesize = FFALIGN(s->width,2) * 2;
+        y_plane += s->frame.linesize[0] * s->height;
+        for (stream_ptr = 0; stream_ptr < rawsize; stream_ptr += linesize) {
+            y_plane -= s->frame.linesize[0];
+            memcpy(y_plane, buf+stream_ptr, linesize);
+        }
+    } else {
 
     /* iterate through each line in the height */
     for (y_ptr = 0, u_ptr = 0, v_ptr = 0;
@@ -160,8 +176,9 @@ static int cyuv_decode_frame(AVCodecContext *avctx,
 
         }
     }
+    }
 
-    *data_size=sizeof(AVFrame);
+    *got_frame = 1;
     *(AVFrame*)data= s->frame;
 
     return buf_size;
@@ -179,72 +196,58 @@ static av_cold int cyuv_decode_end(AVCodecContext *avctx)
 
 #if CONFIG_AURA_DECODER
 AVCodec ff_aura_decoder = {
-#ifndef MSC_STRUCTS
-    "aura",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_AURA,
-    sizeof(CyuvDecodeContext),
-    cyuv_decode_init,
-    NULL,
-    cyuv_decode_end,
-    cyuv_decode_frame,
-    CODEC_CAP_DR1,
-    NULL,
-    .long_name = NULL_IF_CONFIG_SMALL("Auravision AURA"),
-#else
-    /* name = */ "aura",
-    /* type = */ AVMEDIA_TYPE_VIDEO,
-    /* id = */ CODEC_ID_AURA,
-    /* priv_data_size = */ sizeof(CyuvDecodeContext),
-    /* init = */ cyuv_decode_init,
-    /* encode = */ NULL,
-    /* close = */ cyuv_decode_end,
-    /* decode = */ cyuv_decode_frame,
-    /* capabilities = */ CODEC_CAP_DR1,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ 0,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("Auravision AURA"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ 0,
-    /* channel_layouts = */ 0,
-#endif
-};
+        "aura", /* name */
+        NULL_IF_CONFIG_SMALL("Auravision AURA"), /* long_name */
+        AVMEDIA_TYPE_VIDEO, /* type */
+        AV_CODEC_ID_AURA, /* id */
+        CODEC_CAP_DR1, /* capabilities */
+        0, /* supported_framerates */
+        0, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        0, /* priv_class */
+        0, /* profiles */
+        sizeof(CyuvDecodeContext), /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        cyuv_decode_init, /* init */
+        0, /* encode_sub */
+        0, /* encode2 */
+        cyuv_decode_frame, /* decode */
+        cyuv_decode_end, /* close */
+    };
 #endif
 
 #if CONFIG_CYUV_DECODER
 AVCodec ff_cyuv_decoder = {
-#ifndef MSC_STRUCTS
-    "cyuv",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_CYUV,
-    sizeof(CyuvDecodeContext),
-    cyuv_decode_init,
-    NULL,
-    cyuv_decode_end,
-    cyuv_decode_frame,
-    CODEC_CAP_DR1,
-    NULL,
-    .long_name = NULL_IF_CONFIG_SMALL("Creative YUV (CYUV)"),
-#else
-    /* name = */ "cyuv",
-    /* type = */ AVMEDIA_TYPE_VIDEO,
-    /* id = */ CODEC_ID_CYUV,
-    /* priv_data_size = */ sizeof(CyuvDecodeContext),
-    /* init = */ cyuv_decode_init,
-    /* encode = */ NULL,
-    /* close = */ cyuv_decode_end,
-    /* decode = */ cyuv_decode_frame,
-    /* capabilities = */ CODEC_CAP_DR1,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ 0,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("Creative YUV (CYUV)"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ 0,
-    /* channel_layouts = */ 0,
-#endif
-};
+        "cyuv", /* name */
+        NULL_IF_CONFIG_SMALL("Creative YUV (CYUV)"), /* long_name */
+        AVMEDIA_TYPE_VIDEO, /* type */
+        AV_CODEC_ID_CYUV, /* id */
+        CODEC_CAP_DR1, /* capabilities */
+        0, /* supported_framerates */
+        0, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        0, /* priv_class */
+        0, /* profiles */
+        sizeof(CyuvDecodeContext), /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        cyuv_decode_init, /* init */
+        0, /* encode_sub */
+        0, /* encode2 */
+        cyuv_decode_frame, /* decode */
+        cyuv_decode_end, /* close */
+    };
 #endif

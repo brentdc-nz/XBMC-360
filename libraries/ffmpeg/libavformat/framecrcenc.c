@@ -20,28 +20,49 @@
  */
 
 #include "libavutil/adler32.h"
+#include "libavutil/avstring.h"
 #include "avformat.h"
+#include "internal.h"
 
 static int framecrc_write_packet(struct AVFormatContext *s, AVPacket *pkt)
 {
     uint32_t crc = av_adler32_update(0, pkt->data, pkt->size);
     char buf[256];
 
-    snprintf(buf, sizeof(buf), "%d, %"PRId64", %d, 0x%08x\n", pkt->stream_index, pkt->dts, pkt->size, crc);
+    snprintf(buf, sizeof(buf), "%d, %10"PRId64", %10"PRId64", %8d, %8d, 0x%08x",
+             pkt->stream_index, pkt->dts, pkt->pts, pkt->duration, pkt->size, crc);
+    if (pkt->flags != AV_PKT_FLAG_KEY)
+        av_strlcatf(buf, sizeof(buf), ", F=0x%0X", pkt->flags);
+    if (pkt->side_data_elems) {
+        int i;
+        av_strlcatf(buf, sizeof(buf), ", S=%d", pkt->side_data_elems);
+
+        for (i=0; i<pkt->side_data_elems; i++) {
+            uint32_t side_data_crc = av_adler32_update(0,
+                                                    pkt->side_data[i].data,
+                                                    pkt->side_data[i].size);
+            av_strlcatf(buf, sizeof(buf), ", %8d, 0x%08x", pkt->side_data[i].size, side_data_crc);
+        }
+    }
+    av_strlcatf(buf, sizeof(buf), "\n");
     avio_write(s->pb, buf, strlen(buf));
     avio_flush(s->pb);
     return 0;
 }
 
 AVOutputFormat ff_framecrc_muxer = {
-    "framecrc",
-    NULL_IF_CONFIG_SMALL("framecrc testing format"),
-    NULL,
-    "",
-    0,
-    CODEC_ID_PCM_S16LE,
-    CODEC_ID_RAWVIDEO,
-    NULL,
-    framecrc_write_packet,
-    NULL,
+    "framecrc", /* name */
+    NULL_IF_CONFIG_SMALL("framecrc testing"), /* long_name */
+    0, /* mime_type */
+    0, /* extensions */
+    AV_CODEC_ID_PCM_S16LE, /* audio_codec */
+    AV_CODEC_ID_RAWVIDEO, /* video_codec */
+    0, /* subtitle_codec */
+    AVFMT_VARIABLE_FPS | AVFMT_TS_NONSTRICT, /* flags */
+    0, /* codec_tag */
+    0, /* priv_class */
+    0, /* next */
+    0, /* priv_data_size */
+    ff_framehash_write_header, /* write_header */
+    framecrc_write_packet, /* write_packet */
 };

@@ -27,227 +27,200 @@
  *
  * Supports: PAL8 (RGB 8bpp, paletted)
  *         : BGR24 (RGB 24bpp) (can also output it as RGB32)
- *         : RGB32 (RGB 32bpp, 4th plane is probably alpha and it's ignored)
+ *         : RGB32 (RGB 32bpp, 4th plane is alpha)
  *
  */
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
+#include "libavutil/internal.h"
 #include "libavutil/intreadwrite.h"
 #include "avcodec.h"
+#include "internal.h"
 
 
-static const enum PixelFormat pixfmt_rgb24[] = {PIX_FMT_BGR24, PIX_FMT_RGB32, PIX_FMT_NONE};
+static const enum AVPixelFormat pixfmt_rgb24[] = {
+    AV_PIX_FMT_BGR24, AV_PIX_FMT_RGB32, AV_PIX_FMT_NONE };
 
-/*
- * Decoder context
- */
 typedef struct EightBpsContext {
+    AVCodecContext *avctx;
+    AVFrame pic;
 
-        AVCodecContext *avctx;
-        AVFrame pic;
+    unsigned char planes;
+    unsigned char planemap[4];
 
-        unsigned char planes;
-        unsigned char planemap[4];
+    uint32_t pal[256];
 } EightBpsContext;
 
-
-/*
- *
- * Decode a frame
- *
- */
-static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, AVPacket *avpkt)
+static int decode_frame(AVCodecContext *avctx, void *data,
+                        int *got_frame, AVPacket *avpkt)
 {
-        const uint8_t *buf = avpkt->data;
-        int buf_size = avpkt->size;
-        EightBpsContext * const c = avctx->priv_data;
-        const unsigned char *encoded = buf;
-        unsigned char *pixptr, *pixptr_end;
-        unsigned int height = avctx->height; // Real image height
-        unsigned int dlen, p, row;
-        const unsigned char *lp, *dp;
-        unsigned char count;
-        unsigned int px_inc;
-        unsigned int planes = c->planes;
-        unsigned char *planemap = c->planemap;
+    const uint8_t *buf = avpkt->data;
+    int buf_size       = avpkt->size;
+    EightBpsContext * const c = avctx->priv_data;
+    const unsigned char *encoded = buf;
+    unsigned char *pixptr, *pixptr_end;
+    unsigned int height = avctx->height; // Real image height
+    unsigned int dlen, p, row;
+    const unsigned char *lp, *dp;
+    unsigned char count;
+    unsigned int planes     = c->planes;
+    unsigned char *planemap = c->planemap;
+    int ret;
 
-        if(c->pic.data[0])
-                avctx->release_buffer(avctx, &c->pic);
+    if (c->pic.data[0])
+        avctx->release_buffer(avctx, &c->pic);
 
-        c->pic.reference = 0;
-        c->pic.buffer_hints = FF_BUFFER_HINTS_VALID;
-        if(avctx->get_buffer(avctx, &c->pic) < 0){
-                av_log(avctx, AV_LOG_ERROR, "get_buffer() failed\n");
+    c->pic.reference    = 0;
+    c->pic.buffer_hints = FF_BUFFER_HINTS_VALID;
+    if ((ret = ff_get_buffer(avctx, &c->pic)) < 0) {
+        av_log(avctx, AV_LOG_ERROR, "get_buffer() failed\n");
+        return ret;
+    }
+
+    /* Set data pointer after line lengths */
+    dp = encoded + planes * (height << 1);
+
+    for (p = 0; p < planes; p++) {
+        /* Lines length pointer for this plane */
+        lp = encoded + p * (height << 1);
+
+        /* Decode a plane */
+        for (row = 0; row < height; row++) {
+            pixptr = c->pic.data[0] + row * c->pic.linesize[0] + planemap[p];
+            pixptr_end = pixptr + c->pic.linesize[0];
+            if(lp - encoded + row*2 + 1 >= buf_size)
                 return -1;
-        }
-
-        /* Set data pointer after line lengths */
-        dp = encoded + planes * (height << 1);
-
-        /* Ignore alpha plane, don't know what to do with it */
-        if (planes == 4)
-                planes--;
-
-        px_inc = planes + (avctx->pix_fmt == PIX_FMT_RGB32);
-
-        for (p = 0; p < planes; p++) {
-                /* Lines length pointer for this plane */
-                lp = encoded + p * (height << 1);
-
-                /* Decode a plane */
-                for(row = 0; row < height; row++) {
-                        pixptr = c->pic.data[0] + row * c->pic.linesize[0] + planemap[p];
-                        pixptr_end = pixptr + c->pic.linesize[0];
-                        dlen = av_be2ne16(*(const unsigned short *)(lp+row*2));
-                        /* Decode a row of this plane */
-                        while(dlen > 0) {
-                                if(dp + 1 >= buf+buf_size) return -1;
-                                if ((count = *dp++) <= 127) {
-                                        count++;
-                                        dlen -= count + 1;
-                                        if (pixptr + count * px_inc > pixptr_end)
-                                            break;
-                                        if(dp + count > buf+buf_size) return -1;
-                                        while(count--) {
-                                                *pixptr = *dp++;
-                                                pixptr += px_inc;
-                                        }
-                                } else {
-                                        count = 257 - count;
-                                        if (pixptr + count * px_inc > pixptr_end)
-                                            break;
-                                        while(count--) {
-                                                *pixptr = *dp;
-                                                pixptr += px_inc;
-                                        }
-                                        dp++;
-                                        dlen -= 2;
-                                }
-                        }
+            dlen = av_be2ne16(*(const unsigned short *)(lp + row * 2));
+            /* Decode a row of this plane */
+            while (dlen > 0) {
+                if (dp + 1 >= buf + buf_size)
+                    return AVERROR_INVALIDDATA;
+                if ((count = *dp++) <= 127) {
+                    count++;
+                    dlen -= count + 1;
+                    if (pixptr + count * planes > pixptr_end)
+                        break;
+                    if (dp + count > buf + buf_size)
+                        return AVERROR_INVALIDDATA;
+                    while (count--) {
+                        *pixptr = *dp++;
+                        pixptr += planes;
+                    }
+                } else {
+                    count = 257 - count;
+                    if (pixptr + count * planes > pixptr_end)
+                        break;
+                    while (count--) {
+                        *pixptr = *dp;
+                        pixptr += planes;
+                    }
+                    dp++;
+                    dlen -= 2;
                 }
+            }
+        }
+    }
+
+    if (avctx->bits_per_coded_sample <= 8) {
+        const uint8_t *pal = av_packet_get_side_data(avpkt,
+                                                     AV_PKT_DATA_PALETTE,
+                                                     NULL);
+        if (pal) {
+            c->pic.palette_has_changed = 1;
+            memcpy(c->pal, pal, AVPALETTE_SIZE);
         }
 
-        if (avctx->palctrl) {
-                memcpy (c->pic.data[1], avctx->palctrl->palette, AVPALETTE_SIZE);
-                if (avctx->palctrl->palette_changed) {
-                        c->pic.palette_has_changed = 1;
-                        avctx->palctrl->palette_changed = 0;
-                } else
-                        c->pic.palette_has_changed = 0;
-        }
+        memcpy (c->pic.data[1], c->pal, AVPALETTE_SIZE);
+    }
 
-        *data_size = sizeof(AVFrame);
-        *(AVFrame*)data = c->pic;
+    *got_frame = 1;
+    *(AVFrame*)data = c->pic;
 
-        /* always report that the buffer was completely consumed */
-        return buf_size;
+    /* always report that the buffer was completely consumed */
+    return buf_size;
 }
 
-
-/*
- *
- * Init 8BPS decoder
- *
- */
 static av_cold int decode_init(AVCodecContext *avctx)
 {
-        EightBpsContext * const c = avctx->priv_data;
+    EightBpsContext * const c = avctx->priv_data;
 
-        c->avctx = avctx;
+    c->avctx       = avctx;
+    c->pic.data[0] = NULL;
 
-        c->pic.data[0] = NULL;
-
-        switch (avctx->bits_per_coded_sample) {
-                case 8:
-                        avctx->pix_fmt = PIX_FMT_PAL8;
-                        c->planes = 1;
-                        c->planemap[0] = 0; // 1st plane is palette indexes
-                        if (avctx->palctrl == NULL) {
-                                av_log(avctx, AV_LOG_ERROR, "Error: PAL8 format but no palette from demuxer.\n");
-                                return -1;
-                        }
-                        break;
-                case 24:
-                        avctx->pix_fmt = avctx->get_format(avctx, pixfmt_rgb24);
-                        c->planes = 3;
-                        c->planemap[0] = 2; // 1st plane is red
-                        c->planemap[1] = 1; // 2nd plane is green
-                        c->planemap[2] = 0; // 3rd plane is blue
-                        break;
-                case 32:
-                        avctx->pix_fmt = PIX_FMT_RGB32;
-                        c->planes = 4;
+    avcodec_get_frame_defaults(&c->pic);
+    switch (avctx->bits_per_coded_sample) {
+    case 8:
+        avctx->pix_fmt = AV_PIX_FMT_PAL8;
+        c->planes      = 1;
+        c->planemap[0] = 0; // 1st plane is palette indexes
+        break;
+    case 24:
+        avctx->pix_fmt = avctx->get_format(avctx, pixfmt_rgb24);
+        c->planes      = 3;
+        c->planemap[0] = 2; // 1st plane is red
+        c->planemap[1] = 1; // 2nd plane is green
+        c->planemap[2] = 0; // 3rd plane is blue
+        break;
+    case 32:
+        avctx->pix_fmt = AV_PIX_FMT_RGB32;
+        c->planes      = 4;
 #if HAVE_BIGENDIAN
-                        c->planemap[0] = 1; // 1st plane is red
-                        c->planemap[1] = 2; // 2nd plane is green
-                        c->planemap[2] = 3; // 3rd plane is blue
-                        c->planemap[3] = 0; // 4th plane is alpha???
+        c->planemap[0] = 1; // 1st plane is red
+        c->planemap[1] = 2; // 2nd plane is green
+        c->planemap[2] = 3; // 3rd plane is blue
+        c->planemap[3] = 0; // 4th plane is alpha
 #else
-                        c->planemap[0] = 2; // 1st plane is red
-                        c->planemap[1] = 1; // 2nd plane is green
-                        c->planemap[2] = 0; // 3rd plane is blue
-                        c->planemap[3] = 3; // 4th plane is alpha???
+        c->planemap[0] = 2; // 1st plane is red
+        c->planemap[1] = 1; // 2nd plane is green
+        c->planemap[2] = 0; // 3rd plane is blue
+        c->planemap[3] = 3; // 4th plane is alpha
 #endif
-                        break;
-                default:
-                        av_log(avctx, AV_LOG_ERROR, "Error: Unsupported color depth: %u.\n", avctx->bits_per_coded_sample);
-                        return -1;
-        }
+        break;
+    default:
+        av_log(avctx, AV_LOG_ERROR, "Error: Unsupported color depth: %u.\n",
+               avctx->bits_per_coded_sample);
+        return AVERROR_INVALIDDATA;
+    }
 
-  return 0;
+    return 0;
 }
 
-
-
-
-/*
- *
- * Uninit 8BPS decoder
- *
- */
 static av_cold int decode_end(AVCodecContext *avctx)
 {
-        EightBpsContext * const c = avctx->priv_data;
+    EightBpsContext * const c = avctx->priv_data;
 
-        if (c->pic.data[0])
-                avctx->release_buffer(avctx, &c->pic);
+    if (c->pic.data[0])
+        avctx->release_buffer(avctx, &c->pic);
 
-        return 0;
+    return 0;
 }
 
-
-
 AVCodec ff_eightbps_decoder = {
-#ifndef MSC_STRUCTS
-        "8bps",
-        AVMEDIA_TYPE_VIDEO,
-        CODEC_ID_8BPS,
-        sizeof(EightBpsContext),
-        decode_init,
-        NULL,
-        decode_end,
-        decode_frame,
-        CODEC_CAP_DR1,
-        .long_name = NULL_IF_CONFIG_SMALL("QuickTime 8BPS video"),
-#else
-    /* name = */ "8bps",
-    /* type = */ AVMEDIA_TYPE_VIDEO,
-    /* id = */ CODEC_ID_8BPS,
-    /* priv_data_size = */ sizeof(EightBpsContext),
-    /* init = */ decode_init,
-    /* encode = */ NULL,
-    /* close = */ decode_end,
-    /* decode = */ decode_frame,
-    /* capabilities = */ CODEC_CAP_DR1,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ 0,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("QuickTime 8BPS video"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ 0,
-    /* channel_layouts = */ 0,
-#endif
-};
+        "8bps", /* name */
+        NULL_IF_CONFIG_SMALL("QuickTime 8BPS video"), /* long_name */
+        AVMEDIA_TYPE_VIDEO, /* type */
+        AV_CODEC_ID_8BPS, /* id */
+        CODEC_CAP_DR1, /* capabilities */
+        0, /* supported_framerates */
+        0, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        0, /* priv_class */
+        0, /* profiles */
+        sizeof(EightBpsContext), /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        decode_init, /* init */
+        0, /* encode_sub */
+        0, /* encode2 */
+        decode_frame, /* decode */
+        decode_end, /* close */
+    };

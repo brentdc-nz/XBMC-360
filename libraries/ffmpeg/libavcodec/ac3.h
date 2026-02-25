@@ -28,7 +28,8 @@
 #define AVCODEC_AC3_H
 
 #define AC3_MAX_CODED_FRAME_SIZE 3840 /* in bytes */
-#define AC3_MAX_CHANNELS 6 /* including LFE channel */
+#define AC3_MAX_CHANNELS 7            /**< maximum number of channels, including coupling channel */
+#define CPL_CH 0                      /**< coupling channel index */
 
 #define AC3_MAX_COEFS   256
 #define AC3_BLOCK_SIZE  256
@@ -38,6 +39,8 @@
 #define AC3_CRITICAL_BANDS 50
 #define AC3_MAX_CPL_BANDS  18
 
+#include "libavutil/opt.h"
+#include "avcodec.h"
 #include "ac3tab.h"
 
 /* exponent encoding strategy */
@@ -90,8 +93,8 @@ typedef struct AC3BitAllocParameters {
  * @struct AC3HeaderInfo
  * Coded AC-3 header values up to the lfeon element, plus derived values.
  */
-typedef struct {
-    /** @defgroup coded Coded elements
+typedef struct AC3HeaderInfo {
+    /** @name Coded elements
      * @{
      */
     uint16_t sync_word;
@@ -109,7 +112,7 @@ typedef struct {
     int num_blocks;                         ///< number of audio blocks
     /** @} */
 
-    /** @defgroup derived Derived values
+    /** @name Derived values
      * @{
      */
     uint8_t sr_shift;
@@ -117,7 +120,7 @@ typedef struct {
     uint32_t bit_rate;
     uint8_t channels;
     uint16_t frame_size;
-    int64_t channel_layout;
+    uint64_t channel_layout;
     /** @} */
 } AC3HeaderInfo;
 

@@ -18,7 +18,7 @@ public:
 	void Assign(const CDVDStreamInfo &right, bool withextradata);
 	void Assign(const CDemuxStream &right, bool withextradata);
 
-	CodecID codec;
+	AVCodecID codec;
 	StreamType type;
 
 	// VIDEO

@@ -20,36 +20,35 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "libavcodec/dsputil.h"
-#include "dsputil_ppc.h"
+/**
+ * @file
+ * Xbox 360 VMX DSP functions for FFmpeg 1.2
+ *
+ * Adapted from FFmpeg 0.6 xbox360/dsputil_ppc.c
+ *
+ * Changes for FFmpeg 1.2:
+ *   - Renamed to ff_dsputil_init_ppc (ff_ prefix)
+ *   - DCTELEM replaced with int16_t
+ *   - prefetch moved to VideoDSPContext (see videodsp_xbox360.c)
+ *   - float ops moved to FmtConvertContext / AVFloatDSPContext
+ *   - VC-1 DSP moved to VC1DSPContext (see vc1dsp_xbox360.c)
+ *   - H.264 DSP split into H264DSPContext, H264QpelContext, H264ChromaContext
+ */
 
+#include "config.h"
+#include "libavcodec/dsputil.h"
 #include <xtl.h>
 
-/* ***** WARNING ***** WARNING ***** WARNING ***** */
-/*
-clear_blocks_dcbz32_ppc will not work properly on PowerPC processors with a
-cache line size not equal to 32 bytes.
-Fortunately all processor used by Apple up to at least the 7450 (aka second
-generation G4) use 32 bytes cache line.
-This is due to the use of the 'dcbz' instruction. It simply clear to zero a
-single cache line, so you need to know the cache line size to use it !
-It's absurd, but it's fast...
-
-update 24/06/2003 : Apple released yesterday the G5, with a PPC970. cache line
-size: 128 bytes. Oups.
-The semantic of dcbz was changed, it always clear 32 bytes. so the function
-below will work, but will be slow. So I fixed check_dcbz_effect to use dcbzl,
-which is defined to clear a cache line (as dcbz before). So we still can
-distinguish, and use dcbz (32 bytes) or dcbzl (one cache line) as required.
-
-see <http://developer.apple.com/technotes/tn/tn2087.html>
-and <http://developer.apple.com/technotes/tn/tn2086.html>
-*/
-static void clear_blocks_dcbz32_ppc(DCTELEM *blocks)
+/* ***** WARNING *****
+ * clear_blocks_dcbz32_ppc will not work properly on PowerPC processors
+ * with a cache line size not equal to 32 bytes.
+ * Xbox 360 Xenon CPU uses 128-byte cache lines, so dcbz128 path should be used.
+ */
+static void clear_blocks_dcbz32_ppc(int16_t *blocks)
 {
     register int misal = ((unsigned long)blocks & 0x00000010);
     register int i = 0;
-#if 1
+
     if (misal) {
         ((unsigned long*)blocks)[0] = 0L;
         ((unsigned long*)blocks)[1] = 0L;
@@ -57,9 +56,8 @@ static void clear_blocks_dcbz32_ppc(DCTELEM *blocks)
         ((unsigned long*)blocks)[3] = 0L;
         i += 16;
     }
-    for ( ; i < sizeof(DCTELEM)*6*64-31 ; i += 32) {
-        //__asm__ volatile("dcbz %0,%1" : : "b" (blocks), "r" (i) : "memory");
-		__dcbz( i,blocks );
+    for ( ; i < sizeof(int16_t)*6*64-31 ; i += 32) {
+        __dcbz(i, blocks);
     }
     if (misal) {
         ((unsigned long*)blocks)[188] = 0L;
@@ -68,43 +66,26 @@ static void clear_blocks_dcbz32_ppc(DCTELEM *blocks)
         ((unsigned long*)blocks)[191] = 0L;
         i += 16;
     }
-#else
-    memset(blocks, 0, sizeof(DCTELEM)*6*64);
-#endif
-POWERPC_PERF_STOP_COUNT(powerpc_clear_blocks_dcbz32, 1);
 }
 
-/* same as above, when dcbzl clear a whole 128B cache line
-   i.e. the PPC970 aka G5 */
-static void clear_blocks_dcbz128_ppc(DCTELEM *blocks)
+/* Same as above, when dcbzl clears a whole 128B cache line
+ * i.e. the Xbox 360 Xenon CPU */
+static void clear_blocks_dcbz128_ppc(int16_t *blocks)
 {
     register int misal = ((unsigned long)blocks & 0x0000007f);
     register int i = 0;
-#if 1
+
     if (misal) {
-        // we could probably also optimize this case,
-        // but there's not much point as the machines
-        // aren't available yet (2003-06-26)
-        //memset(blocks, 0, sizeof(DCTELEM)*6*64);
-		XMemSet(blocks, 0, sizeof(DCTELEM)*6*64);
+        XMemSet(blocks, 0, sizeof(int16_t)*6*64);
     }
-    else
-        for ( ; i < sizeof(DCTELEM)*6*64 ; i += 128) {
-            //__asm__ volatile("dcbzl %0,%1" : : "b" (blocks), "r" (i) : "memory");
-			__dcbz128(i,blocks);
+    else {
+        for ( ; i < sizeof(int16_t)*6*64 ; i += 128) {
+            __dcbz128(i, blocks);
         }
-#else
-    XMemSet(blocks, 0, sizeof(DCTELEM)*6*64);
-#endif
-POWERPC_PERF_STOP_COUNT(powerpc_clear_blocks_dcbz128, 1);
+    }
 }
 
-
-/* check dcbz report how many bytes are set to 0 by dcbz */
-/* update 24/06/2003 : replace dcbz by dcbzl to get
-   the intended effect (Apple "fixed" dcbz)
-   unfortunately this cannot be used unless the assembler
-   knows about dcbzl ... */
+/* Check dcbz report how many bytes are set to 0 by dcbz */
 static long check_dcbzl_effect(void)
 {
     register char *fakedata = av_malloc(1024);
@@ -118,13 +99,9 @@ static long check_dcbzl_effect(void)
     }
 
     fakedata_middle = (fakedata + 512);
-	
     XMemSet(fakedata, 0xFF, 1024);
 
-    /* below the constraint "b" seems to mean "Address base register"
-       in gcc-3.3 / RS/6000 speaks. seems to avoid using r0, so.... */
-    //__asm__ volatile("dcbzl %0, %1" : : "b" (fakedata_middle), "r" (zero));
-	__dcbz128(i,fakedata_middle);
+    __dcbz128(i, fakedata_middle);
 
     for (i = 0; i < 1024 ; i ++) {
         if (fakedata[i] == (char)0)
@@ -132,92 +109,31 @@ static long check_dcbzl_effect(void)
     }
 
     av_free(fakedata);
-
     return count;
 }
 
-static void prefetch_ppc(void *mem, int stride, int h)
+static void clear_block_vmx(int16_t *block)
 {
-    register const uint8_t *p = mem;
-    do {
-        //__asm__ volatile ("dcbt 0,%0" : : "r" (p));
-		__dcbt(0,p);
-        p+= stride;
-    } while(--h);
+    __stvx(__vzero(), block,   0);
+    __stvx(__vzero(), block,  16);
+    __stvx(__vzero(), block,  32);
+    __stvx(__vzero(), block,  48);
+    __stvx(__vzero(), block,  64);
+    __stvx(__vzero(), block,  80);
+    __stvx(__vzero(), block,  96);
+    __stvx(__vzero(), block, 112);
 }
 
-static void clear_block_vmx(DCTELEM *block) {
-/*
-    LOAD_ZERO;
-    vec_st(zero_s16v,   0, block);
-    vec_st(zero_s16v,  16, block);
-    vec_st(zero_s16v,  32, block);
-    vec_st(zero_s16v,  48, block);
-    vec_st(zero_s16v,  64, block);
-    vec_st(zero_s16v,  80, block);
-    vec_st(zero_s16v,  96, block);
-    vec_st(zero_s16v, 112, block);
-*/
-	__stvx(__vzero(),	block,	0);
-	__stvx(__vzero(),	block,	16);
-	__stvx(__vzero(),	block,	32);
-	__stvx(__vzero(),	block,	48);
-	__stvx(__vzero(),	block,	64);
-	__stvx(__vzero(),	block,	80);
-	__stvx(__vzero(),	block,	96);
-	__stvx(__vzero(),	block,	112);
-}
-
-#if 0
-static int pix_norm1_altivec(uint8_t *pix, int line_size)
+av_cold void ff_dsputil_init_ppc(DSPContext *c, AVCodecContext *avctx)
 {
-    int i;
-    int s;
-    __vector zero = __vzero();
-/*
-    vector unsigned char *tv;
-    vector unsigned char pixv;
-    vector unsigned int sv;
-    vector signed int sum;	
-*/
+    const int high_bit_depth = avctx->bits_per_raw_sample > 8;
 
-	__vector *tv;
-    __vector pixv;
-    __vector sv;
-    __vector sum;
-
-    sv = __vzero();
-
-    s = 0;
-    for (i = 0; i < 16; i++) {
-        /* Read in the potentially unaligned pixels */
-        //tv = (vector unsigned char *) pix;
-		tv = (__vector*) pix;
-        //pixv = vec_perm(tv[0], tv[1], vec_lvsl(0, pix));
-		pixv = __vperm(tv[0], tv[1], __lvsl(pix,0));
-
-        /* Square the values, and add them to our sum */
-        sv = vec_msum(pixv, pixv, sv);
-
-        pix += line_size;
+    if (high_bit_depth) {
+        /* No VMX optimization for high bit depth yet */
+        return;
     }
-    /* Sum up the four partial sums, and put the result into s */
-    sum = vec_sums((vector signed int) sv, (vector signed int) zero);
-    sum = vec_splat(sum, 3);
-    
-	vec_ste(sum, 0, &s);
 
-    return s;
-}
-
-#endif
-
-void float_init_vmx(DSPContext* c, AVCodecContext *avctx);
-void vc1dsp_init_vmx(DSPContext* dsp, AVCodecContext *avctx);
-void dsputil_init_ppc(DSPContext* c, AVCodecContext *avctx)
-{
-    // Common optimizations whether AltiVec is available or not
-    c->prefetch = prefetch_ppc;
+    /* Cache-line zeroing for block clearing */
     switch (check_dcbzl_effect()) {
         case 32:
             c->clear_blocks = clear_blocks_dcbz32_ppc;
@@ -228,8 +144,6 @@ void dsputil_init_ppc(DSPContext* c, AVCodecContext *avctx)
         default:
             break;
     }
-	
-	c->clear_block = clear_block_vmx;
-	//vc1dsp_init_vmx(c,avctx);
-	//float_init_vmx(c,avctx);
+
+    c->clear_block = clear_block_vmx;
 }

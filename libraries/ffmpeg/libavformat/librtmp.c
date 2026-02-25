@@ -18,17 +18,27 @@
  * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
-#if CONFIG_LIBRTMP
+
 /**
  * @file
  * RTMP protocol based on http://rtmpdump.mplayerhq.hu/ librtmp
  */
 
+#include "libavutil/avstring.h"
+#include "libavutil/mathematics.h"
+#include "libavutil/opt.h"
 #include "avformat.h"
 #include "url.h"
 
 #include <librtmp/rtmp.h>
 #include <librtmp/log.h>
+
+typedef struct LibRTMPContext {
+    const AVClass *class;
+    RTMP rtmp;
+    char *app;
+    char *playpath;
+} LibRTMPContext;
 
 static void rtmp_log(int level, const char *fmt, va_list args)
 {
@@ -48,10 +58,10 @@ static void rtmp_log(int level, const char *fmt, va_list args)
 
 static int rtmp_close(URLContext *s)
 {
-    RTMP *r = s->priv_data;
+    LibRTMPContext *ctx = s->priv_data;
+    RTMP *r = &ctx->rtmp;
 
     RTMP_Close(r);
-    av_free(r);
     return 0;
 }
 
@@ -69,74 +79,95 @@ static int rtmp_close(URLContext *s)
  */
 static int rtmp_open(URLContext *s, const char *uri, int flags)
 {
-    RTMP *r;
-    int rc;
-
-    r = av_mallocz(sizeof(RTMP));
-    if (!r)
-        return AVERROR(ENOMEM);
+    LibRTMPContext *ctx = s->priv_data;
+    RTMP *r = &ctx->rtmp;
+    int rc = 0, level;
+    char *filename = s->filename;
 
     switch (av_log_get_level()) {
     default:
-    case AV_LOG_FATAL:   rc = RTMP_LOGCRIT;    break;
-    case AV_LOG_ERROR:   rc = RTMP_LOGERROR;   break;
-    case AV_LOG_WARNING: rc = RTMP_LOGWARNING; break;
-    case AV_LOG_INFO:    rc = RTMP_LOGINFO;    break;
-    case AV_LOG_VERBOSE: rc = RTMP_LOGDEBUG;   break;
-    case AV_LOG_DEBUG:   rc = RTMP_LOGDEBUG2;  break;
+    case AV_LOG_FATAL:   level = RTMP_LOGCRIT;    break;
+    case AV_LOG_ERROR:   level = RTMP_LOGERROR;   break;
+    case AV_LOG_WARNING: level = RTMP_LOGWARNING; break;
+    case AV_LOG_INFO:    level = RTMP_LOGINFO;    break;
+    case AV_LOG_VERBOSE: level = RTMP_LOGDEBUG;   break;
+    case AV_LOG_DEBUG:   level = RTMP_LOGDEBUG2;  break;
     }
-    RTMP_LogSetLevel(rc);
+    RTMP_LogSetLevel(level);
     RTMP_LogSetCallback(rtmp_log);
 
+    if (ctx->app || ctx->playpath) {
+        int len = strlen(s->filename) + 1;
+        if (ctx->app)      len += strlen(ctx->app)      + sizeof(" app=");
+        if (ctx->playpath) len += strlen(ctx->playpath) + sizeof(" playpath=");
+
+        if (!(filename = av_malloc(len)))
+            return AVERROR(ENOMEM);
+
+        av_strlcpy(filename, s->filename, len);
+        if (ctx->app) {
+            av_strlcat(filename, " app=", len);
+            av_strlcat(filename, ctx->app, len);
+        }
+        if (ctx->playpath) {
+            av_strlcat(filename, " playpath=", len);
+            av_strlcat(filename, ctx->playpath, len);
+        }
+    }
+
     RTMP_Init(r);
-    if (!RTMP_SetupURL(r, s->filename)) {
-        rc = -1;
+    if (!RTMP_SetupURL(r, filename)) {
+        rc = AVERROR_UNKNOWN;
         goto fail;
     }
 
-    if (flags & AVIO_WRONLY)
+    if (flags & AVIO_FLAG_WRITE)
         RTMP_EnableWrite(r);
 
     if (!RTMP_Connect(r, NULL) || !RTMP_ConnectStream(r, 0)) {
-        rc = -1;
+        rc = AVERROR_UNKNOWN;
         goto fail;
     }
 
-    s->priv_data   = r;
     s->is_streamed = 1;
-    return 0;
+    rc = 0;
 fail:
-    av_free(r);
+    if (filename != s->filename)
+        av_freep(&filename);
     return rc;
 }
 
 static int rtmp_write(URLContext *s, const uint8_t *buf, int size)
 {
-    RTMP *r = s->priv_data;
+    LibRTMPContext *ctx = s->priv_data;
+    RTMP *r = &ctx->rtmp;
 
     return RTMP_Write(r, buf, size);
 }
 
 static int rtmp_read(URLContext *s, uint8_t *buf, int size)
 {
-    RTMP *r = s->priv_data;
+    LibRTMPContext *ctx = s->priv_data;
+    RTMP *r = &ctx->rtmp;
 
     return RTMP_Read(r, buf, size);
 }
 
 static int rtmp_read_pause(URLContext *s, int pause)
 {
-    RTMP *r = s->priv_data;
+    LibRTMPContext *ctx = s->priv_data;
+    RTMP *r = &ctx->rtmp;
 
     if (!RTMP_Pause(r, pause))
-        return -1;
+        return AVERROR_UNKNOWN;
     return 0;
 }
 
 static int64_t rtmp_read_seek(URLContext *s, int stream_index,
                               int64_t timestamp, int flags)
 {
-    RTMP *r = s->priv_data;
+    LibRTMPContext *ctx = s->priv_data;
+    RTMP *r = &ctx->rtmp;
 
     if (flags & AVSEEK_FLAG_BYTE)
         return AVERROR(ENOSYS);
@@ -147,69 +178,126 @@ static int64_t rtmp_read_seek(URLContext *s, int stream_index,
             flags & AVSEEK_FLAG_BACKWARD ? AV_ROUND_DOWN : AV_ROUND_UP);
 
     if (!RTMP_SendSeek(r, timestamp))
-        return -1;
+        return AVERROR_UNKNOWN;
     return timestamp;
 }
 
 static int rtmp_get_file_handle(URLContext *s)
 {
-    RTMP *r = s->priv_data;
+    LibRTMPContext *ctx = s->priv_data;
+    RTMP *r = &ctx->rtmp;
 
     return RTMP_Socket(r);
 }
 
-URLProtocol ff_rtmp_protocol = {
-    .name                = "rtmp",
-    .url_open            = rtmp_open,
-    .url_read            = rtmp_read,
-    .url_write           = rtmp_write,
-    .url_close           = rtmp_close,
-    .url_read_pause      = rtmp_read_pause,
-    .url_read_seek       = rtmp_read_seek,
-    .url_get_file_handle = rtmp_get_file_handle
+#define OFFSET(x) offsetof(LibRTMPContext, x)
+#define DEC AV_OPT_FLAG_DECODING_PARAM
+#define ENC AV_OPT_FLAG_ENCODING_PARAM
+static const AVOption options[] = {
+    {"rtmp_app",      "Name of application to connect to on the RTMP server", OFFSET(app),      AV_OPT_TYPE_STRING, { 0, 0, NULL }, 0, 0, DEC|ENC},
+    {"rtmp_playpath", "Stream identifier to play or to publish",              OFFSET(playpath), AV_OPT_TYPE_STRING, { 0, 0, NULL }, 0, 0, DEC|ENC},
+    { NULL },
 };
 
-URLProtocol ff_rtmpt_protocol = {
-    .name                = "rtmpt",
-    .url_open            = rtmp_open,
-    .url_read            = rtmp_read,
-    .url_write           = rtmp_write,
-    .url_close           = rtmp_close,
-    .url_read_pause      = rtmp_read_pause,
-    .url_read_seek       = rtmp_read_seek,
-    .url_get_file_handle = rtmp_get_file_handle
+#define RTMP_CLASS(flavor)\
+static const AVClass lib ## flavor ## _class = {\
+    /* class_name */ "lib" #flavor " protocol",\
+    /* item_name */ av_default_item_name,\
+    /* option */ options,\
+    /* version */ LIBAVUTIL_VERSION_INT,\
 };
 
-URLProtocol ff_rtmpe_protocol = {
-    .name                = "rtmpe",
-    .url_open            = rtmp_open,
-    .url_read            = rtmp_read,
-    .url_write           = rtmp_write,
-    .url_close           = rtmp_close,
-    .url_read_pause      = rtmp_read_pause,
-    .url_read_seek       = rtmp_read_seek,
-    .url_get_file_handle = rtmp_get_file_handle
+RTMP_CLASS(rtmp)
+URLProtocol ff_librtmp_protocol = {
+    "rtmp", /* name */
+    rtmp_open, /* url_open */
+    rtmp_read, /* url_read */
+    rtmp_write, /* url_write */
+    0, /* url_seek */
+    rtmp_close, /* url_close */
+    0, /* next */
+    rtmp_read_pause, /* url_read_pause */
+    rtmp_read_seek, /* url_read_seek */
+    rtmp_get_file_handle, /* url_get_file_handle */
+    0, /* url_get_multi_file_handle */
+    0, /* url_shutdown */
+    sizeof(LibRTMPContext), /* priv_data_size */
+    &librtmp_class, /* priv_data_class */
+    URL_PROTOCOL_FLAG_NETWORK, /* flags */
 };
 
-URLProtocol ff_rtmpte_protocol = {
-    .name                = "rtmpte",
-    .url_open            = rtmp_open,
-    .url_read            = rtmp_read,
-    .url_write           = rtmp_write,
-    .url_close           = rtmp_close,
-    .url_read_pause      = rtmp_read_pause,
-    .url_read_seek       = rtmp_read_seek,
-    .url_get_file_handle = rtmp_get_file_handle
+RTMP_CLASS(rtmpt)
+URLProtocol ff_librtmpt_protocol = {
+    "rtmpt", /* name */
+    rtmp_open, /* url_open */
+    rtmp_read, /* url_read */
+    rtmp_write, /* url_write */
+    0, /* url_seek */
+    rtmp_close, /* url_close */
+    0, /* next */
+    rtmp_read_pause, /* url_read_pause */
+    rtmp_read_seek, /* url_read_seek */
+    rtmp_get_file_handle, /* url_get_file_handle */
+    0, /* url_get_multi_file_handle */
+    0, /* url_shutdown */
+    sizeof(LibRTMPContext), /* priv_data_size */
+    &librtmpt_class, /* priv_data_class */
+    URL_PROTOCOL_FLAG_NETWORK, /* flags */
 };
 
-URLProtocol ff_rtmps_protocol = {
-    .name                = "rtmps",
-    .url_open            = rtmp_open,
-    .url_read            = rtmp_read,
-    .url_write           = rtmp_write,
-    .url_close           = rtmp_close,
-    .url_read_pause      = rtmp_read_pause,
-    .url_read_seek       = rtmp_read_seek,
-    .url_get_file_handle = rtmp_get_file_handle
+RTMP_CLASS(rtmpe)
+URLProtocol ff_librtmpe_protocol = {
+    "rtmpe", /* name */
+    rtmp_open, /* url_open */
+    rtmp_read, /* url_read */
+    rtmp_write, /* url_write */
+    0, /* url_seek */
+    rtmp_close, /* url_close */
+    0, /* next */
+    rtmp_read_pause, /* url_read_pause */
+    rtmp_read_seek, /* url_read_seek */
+    rtmp_get_file_handle, /* url_get_file_handle */
+    0, /* url_get_multi_file_handle */
+    0, /* url_shutdown */
+    sizeof(LibRTMPContext), /* priv_data_size */
+    &librtmpe_class, /* priv_data_class */
+    URL_PROTOCOL_FLAG_NETWORK, /* flags */
 };
-#endif
+
+RTMP_CLASS(rtmpte)
+URLProtocol ff_librtmpte_protocol = {
+    "rtmpte", /* name */
+    rtmp_open, /* url_open */
+    rtmp_read, /* url_read */
+    rtmp_write, /* url_write */
+    0, /* url_seek */
+    rtmp_close, /* url_close */
+    0, /* next */
+    rtmp_read_pause, /* url_read_pause */
+    rtmp_read_seek, /* url_read_seek */
+    rtmp_get_file_handle, /* url_get_file_handle */
+    0, /* url_get_multi_file_handle */
+    0, /* url_shutdown */
+    sizeof(LibRTMPContext), /* priv_data_size */
+    &librtmpte_class, /* priv_data_class */
+    URL_PROTOCOL_FLAG_NETWORK, /* flags */
+};
+
+RTMP_CLASS(rtmps)
+URLProtocol ff_librtmps_protocol = {
+    "rtmps", /* name */
+    rtmp_open, /* url_open */
+    rtmp_read, /* url_read */
+    rtmp_write, /* url_write */
+    0, /* url_seek */
+    rtmp_close, /* url_close */
+    0, /* next */
+    rtmp_read_pause, /* url_read_pause */
+    rtmp_read_seek, /* url_read_seek */
+    rtmp_get_file_handle, /* url_get_file_handle */
+    0, /* url_get_multi_file_handle */
+    0, /* url_shutdown */
+    sizeof(LibRTMPContext), /* priv_data_size */
+    &librtmps_class, /* priv_data_class */
+    URL_PROTOCOL_FLAG_NETWORK, /* flags */
+};

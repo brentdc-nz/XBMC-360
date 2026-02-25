@@ -23,17 +23,17 @@
 
 #include "url.h"
 
-typedef struct {
+typedef struct MMSStream {
     int id;
 }MMSStream;
 
-typedef struct {
+typedef struct MMSContext {
     URLContext *mms_hd;                  ///< TCP connection handle
     MMSStream *streams;
 
     /** Buffer for outgoing packets. */
     /*@{*/
-    uint8_t *write_out_ptr;              ///< Pointer for writting the buffer.
+    uint8_t *write_out_ptr;              ///< Pointer for writing the buffer.
     uint8_t out_buffer[512];            ///< Buffer for outgoing packet.
     /*@}*/
 
@@ -60,4 +60,5 @@ typedef struct {
 int ff_mms_asf_header_parser(MMSContext * mms);
 int ff_mms_read_data(MMSContext *mms, uint8_t *buf, const int size);
 int ff_mms_read_header(MMSContext * mms, uint8_t * buf, const int size);
-#endif
+
+#endif /* AVFORMAT_MMS_H */

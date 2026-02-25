@@ -75,8 +75,11 @@ int ff_avc_parse_nal_units(AVIOContext *pb, const uint8_t *buf_in, int size)
 
     size = 0;
     nal_start = ff_avc_find_startcode(p, end);
-    while (nal_start < end) {
-        while(!*(nal_start++));
+    for (;;) {
+        while (nal_start < end && !*(nal_start++));
+        if (nal_start == end)
+            break;
+
         nal_end = ff_avc_find_startcode(nal_start, end);
         avio_wb32(pb, nal_end - nal_start);
         avio_write(pb, nal_start, nal_end - nal_start);
@@ -117,22 +120,26 @@ int ff_isom_write_avcc(AVIOContext *pb, const uint8_t *data, int len)
             end = buf + len;
 
             /* look for sps and pps */
-            while (buf < end) {
-                unsigned int size;
+            while (end - buf > 4) {
+                uint32_t size;
                 uint8_t nal_type;
-                size = AV_RB32(buf);
-                nal_type = buf[4] & 0x1f;
+                size = FFMIN(AV_RB32(buf), end - buf - 4);
+                buf += 4;
+                nal_type = buf[0] & 0x1f;
+
                 if (nal_type == 7) { /* SPS */
-                    sps = buf + 4;
+                    sps = buf;
                     sps_size = size;
                 } else if (nal_type == 8) { /* PPS */
-                    pps = buf + 4;
+                    pps = buf;
                     pps_size = size;
                 }
-                buf += size + 4;
+
+                buf += size;
             }
-            assert(sps);
-            assert(pps);
+
+            if (!sps || !pps || sps_size < 4 || sps_size > UINT16_MAX || pps_size > UINT16_MAX)
+                return AVERROR_INVALIDDATA;
 
             avio_w8(pb, 1); /* version */
             avio_w8(pb, sps[1]); /* profile */
@@ -151,5 +158,36 @@ int ff_isom_write_avcc(AVIOContext *pb, const uint8_t *data, int len)
             avio_write(pb, data, len);
         }
     }
+    return 0;
+}
+
+int ff_avc_write_annexb_extradata(const uint8_t *in, uint8_t **buf, int *size)
+{
+    uint16_t sps_size, pps_size;
+    uint8_t *out;
+    int out_size;
+
+    *buf = NULL;
+    if (*size >= 4 && (AV_RB32(in) == 0x00000001 || AV_RB24(in) == 0x000001))
+        return 0;
+    if (*size < 11 || in[0] != 1)
+        return AVERROR_INVALIDDATA;
+
+    sps_size = AV_RB16(&in[6]);
+    if (11 + sps_size > *size)
+        return AVERROR_INVALIDDATA;
+    pps_size = AV_RB16(&in[9 + sps_size]);
+    if (11 + sps_size + pps_size > *size)
+        return AVERROR_INVALIDDATA;
+    out_size = 8 + sps_size + pps_size;
+    out = av_mallocz(out_size);
+    if (!out)
+        return AVERROR(ENOMEM);
+    AV_WB32(&out[0], 0x00000001);
+    memcpy(out + 4, &in[8], sps_size);
+    AV_WB32(&out[4 + sps_size], 0x00000001);
+    memcpy(out + 8 + sps_size, &in[11 + sps_size], pps_size);
+    *buf = out;
+    *size = out_size;
     return 0;
 }

@@ -21,6 +21,7 @@
 #include "avformat.h"
 #include "avio_internal.h"
 #include "rm.h"
+#include "libavutil/dict.h"
 
 typedef struct {
     int nb_packets;
@@ -71,7 +72,7 @@ static int rv10_write_header(AVFormatContext *ctx,
     const char *desc, *mimetype;
     int nb_packets, packet_total_size, packet_max_size, size, packet_avg_size, i;
     int bit_rate, v, duration, flags, data_pos;
-    AVMetadataTag *tag;
+    AVDictionaryEntry *tag;
 
     start_ptr = s->buf_ptr;
 
@@ -127,13 +128,13 @@ static int rv10_write_header(AVFormatContext *ctx,
     ffio_wfourcc(s,"CONT");
     size =  4 * 2 + 10;
     for(i=0; i<FF_ARRAY_ELEMS(ff_rm_metadata); i++) {
-        tag = av_metadata_get(ctx->metadata, ff_rm_metadata[i], NULL, 0);
+        tag = av_dict_get(ctx->metadata, ff_rm_metadata[i], NULL, 0);
         if(tag) size += strlen(tag->value);
     }
     avio_wb32(s,size);
     avio_wb16(s,0);
     for(i=0; i<FF_ARRAY_ELEMS(ff_rm_metadata); i++) {
-        tag = av_metadata_get(ctx->metadata, ff_rm_metadata[i], NULL, 0);
+        tag = av_dict_get(ctx->metadata, ff_rm_metadata[i], NULL, 0);
         put_str(s, tag ? tag->value : "");
     }
 
@@ -216,8 +217,8 @@ static int rv10_write_header(AVFormatContext *ctx,
                 coded_frame_size--;
             avio_wb32(s, coded_frame_size); /* frame length */
             avio_wb32(s, 0x51540); /* unknown */
-            avio_wb32(s, 0x249f0); /* unknown */
-            avio_wb32(s, 0x249f0); /* unknown */
+            avio_wb32(s, stream->enc->bit_rate / 8 * 60); /* bytes per minute */
+            avio_wb32(s, stream->enc->bit_rate / 8 * 60); /* bytes per minute */
             avio_wb16(s, 0x01);
             /* frame length : seems to be very important */
             avio_wb16(s, coded_frame_size);
@@ -241,7 +242,7 @@ static int rv10_write_header(AVFormatContext *ctx,
             /* video codec info */
             avio_wb32(s,34); /* size */
             ffio_wfourcc(s, "VIDO");
-            if(stream->enc->codec_id == CODEC_ID_RV10)
+            if(stream->enc->codec_id == AV_CODEC_ID_RV10)
                 ffio_wfourcc(s,"RV10");
             else
                 ffio_wfourcc(s,"RV20");
@@ -255,7 +256,7 @@ static int rv10_write_header(AVFormatContext *ctx,
             /* Seems to be the codec version: only use basic H263. The next
                versions seems to add a diffential DC coding as in
                MPEG... nothing new under the sun */
-            if(stream->enc->codec_id == CODEC_ID_RV10)
+            if(stream->enc->codec_id == AV_CODEC_ID_RV10)
                 avio_wb32(s,0x10000000);
             else
                 avio_wb32(s,0x20103001);
@@ -308,6 +309,11 @@ static int rm_write_header(AVFormatContext *s)
     int n;
     AVCodecContext *codec;
 
+    if (s->nb_streams > 2) {
+        av_log(s, AV_LOG_ERROR, "At most 2 streams are currently supported for muxing in RM\n");
+        return AVERROR_PATCHWELCOME;
+    }
+
     for(n=0;n<s->nb_streams;n++) {
         s->streams[n]->id = n;
         codec = s->streams[n]->codec;
@@ -354,11 +360,11 @@ static int rm_write_audio(AVFormatContext *s, const uint8_t *buf, int size, int 
     int i;
 
     /* XXX: suppress this malloc */
-    buf1= (uint8_t*) av_malloc( size * sizeof(uint8_t) );
+    buf1 = av_malloc(size * sizeof(uint8_t));
 
     write_packet_header(s, stream, size, !!(flags & AV_PKT_FLAG_KEY));
 
-    if (stream->enc->codec_id == CODEC_ID_AC3) {
+    if (stream->enc->codec_id == AV_CODEC_ID_AC3) {
         /* for AC-3, the words seem to be reversed */
         for(i=0;i<size;i+=2) {
             buf1[i] = buf[i+1];
@@ -454,22 +460,26 @@ static int rm_write_trailer(AVFormatContext *s)
         avio_wb32(pb, 0);
         avio_wb32(pb, 0);
     }
-    avio_flush(pb);
+
     return 0;
 }
 
-#if 0
+
+static const AVCodecTag *const _ff_rmenc_tags_30[] = { ff_rm_codec_tags, 0 };
 AVOutputFormat ff_rm_muxer = {
-    "rm",
-    NULL_IF_CONFIG_SMALL("RealMedia format"),
-    "application/vnd.rn-realmedia",
-    "rm,ra",
-    sizeof(RMMuxContext),
-    CODEC_ID_AC3,
-    CODEC_ID_RV10,
-    rm_write_header,
-    rm_write_packet,
-    rm_write_trailer,
-    .codec_tag= (const AVCodecTag* const []){ff_rm_codec_tags, 0},
+    "rm", /* name */
+    NULL_IF_CONFIG_SMALL("RealMedia"), /* long_name */
+    "application/vnd.rn-realmedia", /* mime_type */
+    "rm,ra", /* extensions */
+    AV_CODEC_ID_AC3, /* audio_codec */
+    AV_CODEC_ID_RV10, /* video_codec */
+    0, /* subtitle_codec */
+    0, /* flags */
+    _ff_rmenc_tags_30, /* codec_tag */
+    0, /* priv_class */
+    0, /* next */
+    sizeof(RMMuxContext), /* priv_data_size */
+    rm_write_header, /* write_header */
+    rm_write_packet, /* write_packet */
+    rm_write_trailer, /* write_trailer */
 };
-#endif

@@ -28,9 +28,11 @@
  * http://wiki.multimedia.cx/index.php?title=Electronic_Arts_CMV
  */
 
+#include "libavutil/common.h"
 #include "libavutil/intreadwrite.h"
 #include "libavutil/imgutils.h"
 #include "avcodec.h"
+#include "internal.h"
 
 typedef struct CmvContext {
     AVCodecContext *avctx;
@@ -43,8 +45,12 @@ typedef struct CmvContext {
 
 static av_cold int cmv_decode_init(AVCodecContext *avctx){
     CmvContext *s = avctx->priv_data;
+    avcodec_get_frame_defaults(&s->frame);
+    avcodec_get_frame_defaults(&s->last_frame);
+    avcodec_get_frame_defaults(&s->last2_frame);
+
     s->avctx = avctx;
-    avctx->pix_fmt = PIX_FMT_PAL8;
+    avctx->pix_fmt = AV_PIX_FMT_PAL8;
     return 0;
 }
 
@@ -52,7 +58,7 @@ static void cmv_decode_intra(CmvContext * s, const uint8_t *buf, const uint8_t *
     unsigned char *dst = s->frame.data[0];
     int i;
 
-    for (i=0; i < s->avctx->height && buf+s->avctx->width<=buf_end; i++) {
+    for (i=0; i < s->avctx->height && buf_end - buf >= s->avctx->width; i++) {
         memcpy(dst, buf, s->avctx->width);
         dst += s->frame.linesize[0];
         buf += s->avctx->width;
@@ -84,7 +90,7 @@ static void cmv_decode_inter(CmvContext * s, const uint8_t *buf, const uint8_t *
 
     i = 0;
     for(y=0; y<s->avctx->height/4; y++)
-    for(x=0; x<s->avctx->width/4 && buf+i<buf_end; x++) {
+    for(x=0; x<s->avctx->width/4 && buf_end - buf > i; x++) {
         if (buf[i]==0xFF) {
             unsigned char *dst = s->frame.data[0] + (y*4)*s->frame.linesize[0] + x*4;
             if (raw+16<buf_end && *raw==0xFF) { /* intra */
@@ -106,9 +112,10 @@ static void cmv_decode_inter(CmvContext * s, const uint8_t *buf, const uint8_t *
         }else{  /* inter using last frame as reference */
             int xoffset = (buf[i] & 0xF) - 7;
             int yoffset = ((buf[i] >> 4)) - 7;
-            cmv_motcomp(s->frame.data[0], s->frame.linesize[0],
-                      s->last_frame.data[0], s->last_frame.linesize[0],
-                      x*4, y*4, xoffset, yoffset, s->avctx->width, s->avctx->height);
+            if (s->last_frame.data[0])
+                cmv_motcomp(s->frame.data[0], s->frame.linesize[0],
+                          s->last_frame.data[0], s->last_frame.linesize[0],
+                          x*4, y*4, xoffset, yoffset, s->avctx->width, s->avctx->height);
         }
         i++;
     }
@@ -118,15 +125,20 @@ static void cmv_process_header(CmvContext *s, const uint8_t *buf, const uint8_t 
 {
     int pal_start, pal_count, i;
 
-    if(buf+16>=buf_end) {
+    if(buf_end - buf < 16) {
         av_log(s->avctx, AV_LOG_WARNING, "truncated header\n");
         return;
     }
 
     s->width  = AV_RL16(&buf[4]);
     s->height = AV_RL16(&buf[6]);
-    if (s->avctx->width!=s->width || s->avctx->height!=s->height)
+    if (s->avctx->width!=s->width || s->avctx->height!=s->height) {
         avcodec_set_dimensions(s->avctx, s->width, s->height);
+        if (s->frame.data[0])
+            s->avctx->release_buffer(s->avctx, &s->frame);
+        if (s->last_frame.data[0])
+            s->avctx->release_buffer(s->avctx, &s->last_frame);
+    }
 
     s->avctx->time_base.num = 1;
     s->avctx->time_base.den = AV_RL16(&buf[10]);
@@ -135,8 +147,8 @@ static void cmv_process_header(CmvContext *s, const uint8_t *buf, const uint8_t 
     pal_count = AV_RL16(&buf[14]);
 
     buf += 16;
-    for (i=pal_start; i<pal_start+pal_count && i<AVPALETTE_COUNT && buf+2<buf_end; i++) {
-        s->palette[i] = AV_RB24(buf);
+    for (i=pal_start; i<pal_start+pal_count && i<AVPALETTE_COUNT && buf_end - buf >= 3; i++) {
+        s->palette[i] = 0xFFU << 24 | AV_RB24(buf);
         buf += 3;
     }
 }
@@ -145,7 +157,7 @@ static void cmv_process_header(CmvContext *s, const uint8_t *buf, const uint8_t 
 #define MVIh_TAG MKTAG('M', 'V', 'I', 'h')
 
 static int cmv_decode_frame(AVCodecContext *avctx,
-                            void *data, int *data_size,
+                            void *data, int *got_frame,
                             AVPacket *avpkt)
 {
     const uint8_t *buf = avpkt->data;
@@ -153,9 +165,15 @@ static int cmv_decode_frame(AVCodecContext *avctx,
     CmvContext *s = avctx->priv_data;
     const uint8_t *buf_end = buf + buf_size;
 
+    if (buf_end - buf < EA_PREAMBLE_SIZE)
+        return AVERROR_INVALIDDATA;
+
     if (AV_RL32(buf)==MVIh_TAG||AV_RB32(buf)==MVIh_TAG) {
+        unsigned size = AV_RL32(buf + 4);
         cmv_process_header(s, buf+EA_PREAMBLE_SIZE, buf_end);
-        return buf_size;
+        if (size > buf_end - buf - EA_PREAMBLE_SIZE)
+            return -1;
+        buf += size;
     }
 
     if (av_image_check_size(s->width, s->height, 0, s->avctx))
@@ -167,9 +185,11 @@ static int cmv_decode_frame(AVCodecContext *avctx,
     FFSWAP(AVFrame, s->last_frame, s->last2_frame);
     FFSWAP(AVFrame, s->frame, s->last_frame);
 
-    s->frame.reference = 1;
-    s->frame.buffer_hints = FF_BUFFER_HINTS_VALID;
-    if (avctx->get_buffer(avctx, &s->frame)<0) {
+    s->frame.reference = 3;
+    s->frame.buffer_hints = FF_BUFFER_HINTS_VALID |
+                            FF_BUFFER_HINTS_READABLE |
+                            FF_BUFFER_HINTS_PRESERVE;
+    if (ff_get_buffer(avctx, &s->frame)<0) {
         av_log(avctx, AV_LOG_ERROR, "get_buffer() failed\n");
         return -1;
     }
@@ -180,14 +200,14 @@ static int cmv_decode_frame(AVCodecContext *avctx,
     if ((buf[0]&1)) {  // subtype
         cmv_decode_inter(s, buf+2, buf_end);
         s->frame.key_frame = 0;
-        s->frame.pict_type = FF_P_TYPE;
+        s->frame.pict_type = AV_PICTURE_TYPE_P;
     }else{
         s->frame.key_frame = 1;
-        s->frame.pict_type = FF_I_TYPE;
+        s->frame.pict_type = AV_PICTURE_TYPE_I;
         cmv_decode_intra(s, buf+2, buf_end);
     }
 
-    *data_size = sizeof(AVFrame);
+    *got_frame = 1;
     *(AVFrame*)data = s->frame;
 
     return buf_size;
@@ -206,34 +226,28 @@ static av_cold int cmv_decode_end(AVCodecContext *avctx){
 }
 
 AVCodec ff_eacmv_decoder = {
-#ifndef MSC_STRUCTS
-    "eacmv",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_CMV,
-    sizeof(CmvContext),
-    cmv_decode_init,
-    NULL,
-    cmv_decode_end,
-    cmv_decode_frame,
-    CODEC_CAP_DR1,
-    .long_name = NULL_IF_CONFIG_SMALL("Electronic Arts CMV video"),
-#else
-    /* name = */ "eacmv",
-    /* type = */ AVMEDIA_TYPE_VIDEO,
-    /* id = */ CODEC_ID_CMV,
-    /* priv_data_size = */ sizeof(CmvContext),
-    /* init = */ cmv_decode_init,
-    /* encode = */ NULL,
-    /* close = */ cmv_decode_end,
-    /* decode = */ cmv_decode_frame,
-    /* capabilities = */ CODEC_CAP_DR1,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ 0,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("Electronic Arts CMV video"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ 0,
-    /* channel_layouts = */ 0,
-#endif
-};
+        "eacmv", /* name */
+        NULL_IF_CONFIG_SMALL("Electronic Arts CMV video"), /* long_name */
+        AVMEDIA_TYPE_VIDEO, /* type */
+        AV_CODEC_ID_CMV, /* id */
+        CODEC_CAP_DR1, /* capabilities */
+        0, /* supported_framerates */
+        0, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        0, /* priv_class */
+        0, /* profiles */
+        sizeof(CmvContext), /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        cmv_decode_init, /* init */
+        0, /* encode_sub */
+        0, /* encode2 */
+        cmv_decode_frame, /* decode */
+        cmv_decode_end, /* close */
+    };

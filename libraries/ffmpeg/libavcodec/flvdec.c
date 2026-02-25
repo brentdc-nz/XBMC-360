@@ -40,12 +40,12 @@ int ff_flv_decode_picture_header(MpegEncContext *s)
     /* picture header */
     if (get_bits_long(&s->gb, 17) != 1) {
         av_log(s->avctx, AV_LOG_ERROR, "Bad picture start code\n");
-        return -1;
+        return AVERROR_INVALIDDATA;
     }
     format = get_bits(&s->gb, 5);
     if (format != 0 && format != 1) {
         av_log(s->avctx, AV_LOG_ERROR, "Bad picture format\n");
-        return -1;
+        return AVERROR_INVALIDDATA;
     }
     s->h263_flv = format+1;
     s->picture_number = get_bits(&s->gb, 8); /* picture timestamp */
@@ -84,14 +84,14 @@ int ff_flv_decode_picture_header(MpegEncContext *s)
         break;
     }
     if(av_image_check_size(width, height, 0, s->avctx))
-        return -1;
+        return AVERROR(EINVAL);
     s->width = width;
     s->height = height;
 
-    s->pict_type = FF_I_TYPE + get_bits(&s->gb, 2);
-    s->dropable= s->pict_type > FF_P_TYPE;
-    if (s->dropable)
-        s->pict_type = FF_P_TYPE;
+    s->pict_type = AV_PICTURE_TYPE_I + get_bits(&s->gb, 2);
+    s->droppable = s->pict_type > AV_PICTURE_TYPE_P;
+    if (s->droppable)
+        s->pict_type = AV_PICTURE_TYPE_P;
 
     skip_bits1(&s->gb); /* deblocking flag */
     s->chroma_qscale= s->qscale = get_bits(&s->gb, 5);
@@ -109,7 +109,8 @@ int ff_flv_decode_picture_header(MpegEncContext *s)
 
     if(s->avctx->debug & FF_DEBUG_PICT_INFO){
         av_log(s->avctx, AV_LOG_DEBUG, "%c esc_type:%d, qp:%d num:%d\n",
-               s->dropable ? 'D' : av_get_pict_type_char(s->pict_type), s->h263_flv-1, s->qscale, s->picture_number);
+               s->droppable ? 'D' : av_get_picture_type_char(s->pict_type),
+               s->h263_flv - 1, s->qscale, s->picture_number);
     }
 
     s->y_dc_scale_table=
@@ -119,36 +120,28 @@ int ff_flv_decode_picture_header(MpegEncContext *s)
 }
 
 AVCodec ff_flv_decoder = {
-#ifndef MSC_STRUCTS
-    "flv",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_FLV1,
-    sizeof(MpegEncContext),
-    ff_h263_decode_init,
-    NULL,
-    ff_h263_decode_end,
-    ff_h263_decode_frame,
-    CODEC_CAP_DRAW_HORIZ_BAND | CODEC_CAP_DR1,
-    .max_lowres= 3,
-    .long_name= NULL_IF_CONFIG_SMALL("Flash Video (FLV) / Sorenson Spark / Sorenson H.263"),
-    .pix_fmts= ff_pixfmt_list_420,
-#else
-    /* name = */ "flv",
-    /* type = */ AVMEDIA_TYPE_VIDEO,
-    /* id = */ CODEC_ID_FLV1,
-    /* priv_data_size = */ sizeof(MpegEncContext),
-    /* init = */ ff_h263_decode_init,
-    /* encode = */ NULL,
-    /* close = */ ff_h263_decode_end,
-    /* decode = */ ff_h263_decode_frame,
-    /* capabilities = */ CODEC_CAP_DRAW_HORIZ_BAND | CODEC_CAP_DR1,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ ff_pixfmt_list_420,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("Flash Video (FLV) / Sorenson Spark / Sorenson H.263"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ 0,
-    /* channel_layouts = */ 0,
-#endif
-};
+        "flv", /* name */
+        NULL_IF_CONFIG_SMALL("FLV / Sorenson Spark / Sorenson H.263 (Flash Video)"), /* long_name */
+        AVMEDIA_TYPE_VIDEO, /* type */
+        AV_CODEC_ID_FLV1, /* id */
+        CODEC_CAP_DRAW_HORIZ_BAND | CODEC_CAP_DR1, /* capabilities */
+        0, /* supported_framerates */
+        ff_pixfmt_list_420, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        3, /* max_lowres */
+        0, /* priv_class */
+        0, /* profiles */
+        sizeof(MpegEncContext), /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        ff_h263_decode_init, /* init */
+        0, /* encode_sub */
+        0, /* encode2 */
+        ff_h263_decode_frame, /* decode */
+        ff_h263_decode_end, /* close */
+    };

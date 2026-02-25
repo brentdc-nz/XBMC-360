@@ -21,25 +21,30 @@
  */
 
 #include "avcodec.h"
+#include "internal.h"
 #include "libavutil/bswap.h"
+#include "libavutil/common.h"
 
 static av_cold int decode_init(AVCodecContext *avctx)
 {
-    avctx->pix_fmt             = PIX_FMT_RGB48;
+    avctx->pix_fmt             = AV_PIX_FMT_RGB48;
     avctx->bits_per_raw_sample = 10;
 
     avctx->coded_frame         = avcodec_alloc_frame();
+    if (!avctx->coded_frame)
+        return AVERROR(ENOMEM);
 
     return 0;
 }
 
-static int decode_frame(AVCodecContext *avctx, void *data, int *data_size,
+static int decode_frame(AVCodecContext *avctx, void *data, int *got_frame,
                         AVPacket *avpkt)
 {
-    int h, w;
+    int h, w, ret;
     AVFrame *pic = avctx->coded_frame;
     const uint32_t *src = (const uint32_t *)avpkt->data;
-    int aligned_width = FFALIGN(avctx->width, 64);
+    int aligned_width = FFALIGN(avctx->width,
+                                avctx->codec_id == AV_CODEC_ID_R10K ? 1 : 64);
     uint8_t *dst_line;
 
     if (pic->data[0])
@@ -47,23 +52,28 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size,
 
     if (avpkt->size < 4 * aligned_width * avctx->height) {
         av_log(avctx, AV_LOG_ERROR, "packet too small\n");
-        return -1;
+        return AVERROR_INVALIDDATA;
     }
 
     pic->reference = 0;
-    if (avctx->get_buffer(avctx, pic) < 0)
-        return -1;
+    if ((ret = ff_get_buffer(avctx, pic)) < 0)
+        return ret;
 
-    pic->pict_type = FF_I_TYPE;
+    pic->pict_type = AV_PICTURE_TYPE_I;
     pic->key_frame = 1;
     dst_line = pic->data[0];
 
     for (h = 0; h < avctx->height; h++) {
         uint16_t *dst = (uint16_t *)dst_line;
         for (w = 0; w < avctx->width; w++) {
-            uint32_t pixel = av_be2ne32(*src++);
+            uint32_t pixel;
             uint16_t r, g, b;
-            if (avctx->codec_id==CODEC_ID_R210) {
+            if (avctx->codec_id==AV_CODEC_ID_AVRP) {
+                pixel = av_le2ne32(*src++);
+            } else {
+                pixel = av_be2ne32(*src++);
+            }
+            if (avctx->codec_id==AV_CODEC_ID_R210) {
                 b =  pixel <<  6;
                 g = (pixel >>  4) & 0xffc0;
                 r = (pixel >> 14) & 0xffc0;
@@ -80,7 +90,7 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size,
         dst_line += pic->linesize[0];
     }
 
-    *data_size = sizeof(AVFrame);
+    *got_frame      = 1;
     *(AVFrame*)data = *avctx->coded_frame;
 
     return avpkt->size;
@@ -98,35 +108,85 @@ static av_cold int decode_close(AVCodecContext *avctx)
 
 #if CONFIG_R210_DECODER
 AVCodec ff_r210_decoder = {
-#ifndef MSC_STRUCTS
-    "r210",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_R210,
-    0,
-    decode_init,
-    NULL,
-    decode_close,
-    decode_frame,
-    CODEC_CAP_DR1,
-    .long_name = NULL_IF_CONFIG_SMALL("Uncompressed RGB 10-bit"),
-#else
-    /* name = */ "r210",
-    /* type = */ AVMEDIA_TYPE_VIDEO,
-    /* id = */ CODEC_ID_R210,
-    /* priv_data_size = */ 0,
-    /* init = */ decode_init,
-    /* encode = */ NULL,
-    /* close = */ decode_close,
-    /* decode = */ decode_frame,
-    /* capabilities = */ CODEC_CAP_DR1,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ 0,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("Uncompressed RGB 10-bit"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ 0,
-    /* channel_layouts = */ 0,
+        "r210", /* name */
+        NULL_IF_CONFIG_SMALL("Uncompressed RGB 10-bit"), /* long_name */
+        AVMEDIA_TYPE_VIDEO, /* type */
+        AV_CODEC_ID_R210, /* id */
+        CODEC_CAP_DR1, /* capabilities */
+        0, /* supported_framerates */
+        0, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        0, /* priv_class */
+        0, /* profiles */
+        0, /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        decode_init, /* init */
+        0, /* encode_sub */
+        0, /* encode2 */
+        decode_frame, /* decode */
+        decode_close, /* close */
+    };
 #endif
-};
+#if CONFIG_R10K_DECODER
+AVCodec ff_r10k_decoder = {
+        "r10k", /* name */
+        NULL_IF_CONFIG_SMALL("AJA Kona 10-bit RGB Codec"), /* long_name */
+        AVMEDIA_TYPE_VIDEO, /* type */
+        AV_CODEC_ID_R10K, /* id */
+        CODEC_CAP_DR1, /* capabilities */
+        0, /* supported_framerates */
+        0, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        0, /* priv_class */
+        0, /* profiles */
+        0, /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        decode_init, /* init */
+        0, /* encode_sub */
+        0, /* encode2 */
+        decode_frame, /* decode */
+        decode_close, /* close */
+    };
+#endif
+#if CONFIG_AVRP_DECODER
+AVCodec ff_avrp_decoder = {
+        "avrp", /* name */
+        NULL_IF_CONFIG_SMALL("Avid 1:1 10-bit RGB Packer"), /* long_name */
+        AVMEDIA_TYPE_VIDEO, /* type */
+        AV_CODEC_ID_AVRP, /* id */
+        CODEC_CAP_DR1, /* capabilities */
+        0, /* supported_framerates */
+        0, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        0, /* priv_class */
+        0, /* profiles */
+        0, /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        decode_init, /* init */
+        0, /* encode_sub */
+        0, /* encode2 */
+        decode_frame, /* decode */
+        decode_close, /* close */
+    };
 #endif

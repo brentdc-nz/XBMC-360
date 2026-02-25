@@ -5,7 +5,7 @@
 #include "..\DVDCodecs.h"
 #include "..\..\DVDStreamInfo.h"
 
-enum CodecID;
+enum AVCodecID;
 struct AVStream;
 
 typedef std::vector<CDVDCodecOption> CDVDCodecOptions;

@@ -44,31 +44,34 @@ typedef enum {
 
 static int
 avs_decode_frame(AVCodecContext * avctx,
-                 void *data, int *data_size, AVPacket *avpkt)
+                 void *data, int *got_frame, AVPacket *avpkt)
 {
     const uint8_t *buf = avpkt->data;
+    const uint8_t *buf_end = avpkt->data + avpkt->size;
     int buf_size = avpkt->size;
     AvsContext *const avs = avctx->priv_data;
     AVFrame *picture = data;
-    AVFrame *const p = (AVFrame *) & avs->picture;
+    AVFrame *const p =  &avs->picture;
     const uint8_t *table, *vect;
     uint8_t *out;
-    int i, j, x, y, stride, vect_w = 3, vect_h = 3;
+    int i, j, x, y, stride, ret, vect_w = 3, vect_h = 3;
     AvsVideoSubType sub_type;
     AvsBlockType type;
-    GetBitContext change_map;
+    GetBitContext change_map = {0}; //init to silence warning
 
-    if (avctx->reget_buffer(avctx, p)) {
+    if ((ret = avctx->reget_buffer(avctx, p)) < 0) {
         av_log(avctx, AV_LOG_ERROR, "reget_buffer() failed\n");
-        return -1;
+        return ret;
     }
-    p->reference = 1;
-    p->pict_type = FF_P_TYPE;
+    p->reference = 3;
+    p->pict_type = AV_PICTURE_TYPE_P;
     p->key_frame = 0;
 
     out = avs->picture.data[0];
     stride = avs->picture.linesize[0];
 
+    if (buf_end - buf < 4)
+        return AVERROR_INVALIDDATA;
     sub_type = buf[0];
     type = buf[1];
     buf += 4;
@@ -79,9 +82,13 @@ avs_decode_frame(AVCodecContext * avctx,
 
         first = AV_RL16(buf);
         last = first + AV_RL16(buf + 2);
+        if (first >= 256 || last > 256 || buf_end - buf < 4 + 4 + 3 * (last - first))
+            return AVERROR_INVALIDDATA;
         buf += 4;
-        for (i=first; i<last; i++, buf+=3)
+        for (i=first; i<last; i++, buf+=3) {
             pal[i] = (buf[0] << 18) | (buf[1] << 10) | (buf[2] << 2);
+            pal[i] |= 0xFFU << 24 | (pal[i] >> 6) & 0x30303;
+        }
 
         sub_type = buf[0];
         type = buf[1];
@@ -89,11 +96,11 @@ avs_decode_frame(AVCodecContext * avctx,
     }
 
     if (type != AVS_VIDEO)
-        return -1;
+        return AVERROR_INVALIDDATA;
 
     switch (sub_type) {
     case AVS_I_FRAME:
-        p->pict_type = FF_I_TYPE;
+        p->pict_type = AV_PICTURE_TYPE_I;
         p->key_frame = 1;
     case AVS_P_FRAME_3X3:
         vect_w = 3;
@@ -111,19 +118,25 @@ avs_decode_frame(AVCodecContext * avctx,
         break;
 
     default:
-      return -1;
+      return AVERROR_INVALIDDATA;
     }
 
+    if (buf_end - buf < 256 * vect_w * vect_h)
+        return AVERROR_INVALIDDATA;
     table = buf + (256 * vect_w * vect_h);
     if (sub_type != AVS_I_FRAME) {
         int map_size = ((318 / vect_w + 7) / 8) * (198 / vect_h);
-        init_get_bits(&change_map, table, map_size);
+        if (buf_end - table < map_size)
+            return AVERROR_INVALIDDATA;
+        init_get_bits(&change_map, table, map_size * 8);
         table += map_size;
     }
 
     for (y=0; y<198; y+=vect_h) {
         for (x=0; x<318; x+=vect_w) {
             if (sub_type == AVS_I_FRAME || get_bits1(&change_map)) {
+                if (buf_end - table < 1)
+                    return AVERROR_INVALIDDATA;
                 vect = &buf[*table++ * (vect_w * vect_h)];
                 for (j=0; j<vect_w; j++) {
                     out[(y + 0) * stride + x + j] = vect[(0 * vect_w) + j];
@@ -138,47 +151,53 @@ avs_decode_frame(AVCodecContext * avctx,
             align_get_bits(&change_map);
     }
 
-    *picture = *(AVFrame *) & avs->picture;
-    *data_size = sizeof(AVPicture);
+    *picture   = avs->picture;
+    *got_frame = 1;
 
     return buf_size;
 }
 
 static av_cold int avs_decode_init(AVCodecContext * avctx)
 {
-    avctx->pix_fmt = PIX_FMT_PAL8;
+    AvsContext *const avs = avctx->priv_data;
+    avctx->pix_fmt = AV_PIX_FMT_PAL8;
+    avcodec_get_frame_defaults(&avs->picture);
+    avcodec_set_dimensions(avctx, 318, 198);
     return 0;
 }
 
+static av_cold int avs_decode_end(AVCodecContext *avctx)
+{
+    AvsContext *s = avctx->priv_data;
+    if (s->picture.data[0])
+        avctx->release_buffer(avctx, &s->picture);
+    return 0;
+}
+
+
 AVCodec ff_avs_decoder = {
-#ifndef MSC_STRUCTS
-    "avs",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_AVS,
-    sizeof(AvsContext),
-    avs_decode_init,
-    NULL,
-    NULL,
-    avs_decode_frame,
-    CODEC_CAP_DR1,
-    .long_name = NULL_IF_CONFIG_SMALL("AVS (Audio Video Standard) video"),
-#else
-    /* name = */ "avs",
-    /* type = */ AVMEDIA_TYPE_VIDEO,
-    /* id = */ CODEC_ID_AVS,
-    /* priv_data_size = */ sizeof(AvsContext),
-    /* init = */ avs_decode_init,
-    /* encode = */ NULL,
-    /* close = */ NULL,
-    /* decode = */ avs_decode_frame,
-    /* capabilities = */ CODEC_CAP_DR1,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ 0,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("AVS (Audio Video Standard) video"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ 0,
-    /* channel_layouts = */ 0,
-#endif
-};
+        "avs", /* name */
+        NULL_IF_CONFIG_SMALL("AVS (Audio Video Standard) video"), /* long_name */
+        AVMEDIA_TYPE_VIDEO, /* type */
+        AV_CODEC_ID_AVS, /* id */
+        CODEC_CAP_DR1, /* capabilities */
+        0, /* supported_framerates */
+        0, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        0, /* priv_class */
+        0, /* profiles */
+        sizeof(AvsContext), /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        avs_decode_init, /* init */
+        0, /* encode_sub */
+        0, /* encode2 */
+        avs_decode_frame, /* decode */
+        avs_decode_end, /* close */
+    };

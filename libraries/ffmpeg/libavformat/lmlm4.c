@@ -24,6 +24,7 @@
 
 #include "libavutil/intreadwrite.h"
 #include "avformat.h"
+#include "internal.h"
 
 #define LMLM4_I_FRAME   0x00
 #define LMLM4_P_FRAME   0x01
@@ -34,7 +35,7 @@
 #define LMLM4_MAX_PACKET_SIZE   1024 * 1024
 
 static int lmlm4_probe(AVProbeData * pd) {
-    unsigned char *buf = pd->buf;
+    const unsigned char *buf = pd->buf;
     unsigned int frame_type, packet_size;
 
     frame_type  = AV_RB16(buf+2);
@@ -57,20 +58,20 @@ static int lmlm4_probe(AVProbeData * pd) {
     return 0;
 }
 
-static int lmlm4_read_header(AVFormatContext *s, AVFormatParameters *ap) {
+static int lmlm4_read_header(AVFormatContext *s) {
     AVStream *st;
 
-    if (!(st = av_new_stream(s, 0)))
+    if (!(st = avformat_new_stream(s, NULL)))
         return AVERROR(ENOMEM);
     st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
-    st->codec->codec_id   = CODEC_ID_MPEG4;
+    st->codec->codec_id   = AV_CODEC_ID_MPEG4;
     st->need_parsing      = AVSTREAM_PARSE_HEADERS;
-    av_set_pts_info(st, 64, 1001, 30000);
+    avpriv_set_pts_info(st, 64, 1001, 30000);
 
-    if (!(st = av_new_stream(s, 1)))
+    if (!(st = avformat_new_stream(s, NULL)))
         return AVERROR(ENOMEM);
     st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
-    st->codec->codec_id   = CODEC_ID_MP2;
+    st->codec->codec_id   = AV_CODEC_ID_MP2;
     st->need_parsing      = AVSTREAM_PARSE_HEADERS;
 
     /* the parameters will be extracted from the compressed bitstream */
@@ -118,10 +119,16 @@ static int lmlm4_read_packet(AVFormatContext *s, AVPacket *pkt) {
 }
 
 AVInputFormat ff_lmlm4_demuxer = {
-    "lmlm4",
-    NULL_IF_CONFIG_SMALL("lmlm4 raw format"),
-    0,
-    lmlm4_probe,
-    lmlm4_read_header,
-    lmlm4_read_packet,
+    "lmlm4", /* name */
+    NULL_IF_CONFIG_SMALL("raw lmlm4"), /* long_name */
+    0, /* flags */
+    0, /* extensions */
+    0, /* codec_tag */
+    0, /* priv_class */
+    0, /* next */
+    0, /* raw_codec_id */
+    0, /* priv_data_size */
+    lmlm4_probe, /* read_probe */
+    lmlm4_read_header, /* read_header */
+    lmlm4_read_packet, /* read_packet */
 };

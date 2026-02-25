@@ -28,6 +28,7 @@
 
 #include "libavutil/intreadwrite.h"
 #include "avformat.h"
+#include "internal.h"
 
 #define VC1_EXTRADATA_SIZE 4
 
@@ -41,8 +42,7 @@ static int vc1t_probe(AVProbeData *p)
     return AVPROBE_SCORE_MAX/2;
 }
 
-static int vc1t_read_header(AVFormatContext *s,
-                           AVFormatParameters *ap)
+static int vc1t_read_header(AVFormatContext *s)
 {
     AVIOContext *pb = s->pb;
     AVStream *st;
@@ -54,12 +54,12 @@ static int vc1t_read_header(AVFormatContext *s,
         return -1;
 
     /* init video codec */
-    st = av_new_stream(s, 0);
+    st = avformat_new_stream(s, NULL);
     if (!st)
         return -1;
 
     st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
-    st->codec->codec_id = CODEC_ID_WMV3;
+    st->codec->codec_id = AV_CODEC_ID_WMV3;
 
     st->codec->extradata = av_malloc(VC1_EXTRADATA_SIZE);
     st->codec->extradata_size = VC1_EXTRADATA_SIZE;
@@ -71,13 +71,13 @@ static int vc1t_read_header(AVFormatContext *s,
     avio_skip(pb, 8);
     fps = avio_rl32(pb);
     if(fps == 0xFFFFFFFF)
-        av_set_pts_info(st, 32, 1, 1000);
+        avpriv_set_pts_info(st, 32, 1, 1000);
     else{
         if (!fps) {
             av_log(s, AV_LOG_ERROR, "Zero FPS specified, defaulting to 1 FPS\n");
             fps = 1;
         }
-        av_set_pts_info(st, 24, 1, fps);
+        avpriv_set_pts_info(st, 24, 1, fps);
         st->duration = frames;
     }
 
@@ -110,33 +110,16 @@ static int vc1t_read_packet(AVFormatContext *s,
 }
 
 AVInputFormat ff_vc1t_demuxer = {
-#ifndef MSC_STRUCTS
-    "vc1test",
-    NULL_IF_CONFIG_SMALL("VC-1 test bitstream format"),
-    0,
-    vc1t_probe,
-    vc1t_read_header,
-    vc1t_read_packet,
-    .flags = AVFMT_GENERIC_INDEX,
+    "vc1test", /* name */
+    NULL_IF_CONFIG_SMALL("VC-1 test bitstream"), /* long_name */
+    AVFMT_GENERIC_INDEX, /* flags */
+    0, /* extensions */
+    0, /* codec_tag */
+    0, /* priv_class */
+    0, /* next */
+    0, /* raw_codec_id */
+    0, /* priv_data_size */
+    vc1t_probe, /* read_probe */
+    vc1t_read_header, /* read_header */
+    vc1t_read_packet, /* read_packet */
 };
-#else
-	"vc1test",
-	NULL_IF_CONFIG_SMALL("VC-1 test bitstream format"),
-	0,
-	vc1t_probe,
-	vc1t_read_header,
-	vc1t_read_packet,
-	/*read_close = */ 0,
-	/*read_seek = */ 0,
-	/*read_timestamp = */ 0,
-	/*flags = */ AVFMT_GENERIC_INDEX,
-	/*extensions = */ 0,
-	/*value = */ 0,
-	/*read_play = */ 0,
-	/*read_pause = */ 0,
-	/*codec_tag = */ 0,
-	/*read_seek2 = */ 0,
-	/*metadata_conv = */ 0,
-	/*next = */ 0
-};
-#endif

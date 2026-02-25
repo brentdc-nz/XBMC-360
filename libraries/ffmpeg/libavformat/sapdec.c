@@ -30,7 +30,6 @@
 #if HAVE_POLL_H
 #include <poll.h>
 #endif
-#include <sys/time.h>
 
 struct SAPState {
     URLContext *ann_fd;
@@ -52,7 +51,7 @@ static int sap_read_close(AVFormatContext *s)
 {
     struct SAPState *sap = s->priv_data;
     if (sap->sdp_ctx)
-        av_close_input_stream(sap->sdp_ctx);
+        avformat_close_input(&sap->sdp_ctx);
     if (sap->ann_fd)
         ffurl_close(sap->ann_fd);
     av_freep(&sap->sdp);
@@ -60,8 +59,7 @@ static int sap_read_close(AVFormatContext *s)
     return 0;
 }
 
-static int sap_read_header(AVFormatContext *s,
-                           AVFormatParameters *ap)
+static int sap_read_header(AVFormatContext *s)
 {
     struct SAPState *sap = s->priv_data;
     char host[1024], path[1024], url[1024];
@@ -85,7 +83,8 @@ static int sap_read_header(AVFormatContext *s,
 
     ff_url_join(url, sizeof(url), "udp", NULL, host, port, "?localport=%d",
                 port);
-    ret = ffurl_open(&sap->ann_fd, url, AVIO_RDONLY);
+    ret = ffurl_open(&sap->ann_fd, url, AVIO_FLAG_READ,
+                     &s->interrupt_callback, NULL);
     if (ret)
         goto fail;
 
@@ -156,19 +155,20 @@ static int sap_read_header(AVFormatContext *s,
         goto fail;
     }
     sap->sdp_ctx->max_delay = s->max_delay;
-    ap->prealloced_context = 1;
-    ret = av_open_input_stream(&sap->sdp_ctx, &sap->sdp_pb, "temp.sdp",
-                               infmt, ap);
+    sap->sdp_ctx->pb        = &sap->sdp_pb;
+    sap->sdp_ctx->interrupt_callback = s->interrupt_callback;
+    ret = avformat_open_input(&sap->sdp_ctx, "temp.sdp", infmt, NULL);
     if (ret < 0)
         goto fail;
     if (sap->sdp_ctx->ctx_flags & AVFMTCTX_NOHEADER)
         s->ctx_flags |= AVFMTCTX_NOHEADER;
     for (i = 0; i < sap->sdp_ctx->nb_streams; i++) {
-        AVStream *st = av_new_stream(s, i);
+        AVStream *st = avformat_new_stream(s, NULL);
         if (!st) {
             ret = AVERROR(ENOMEM);
             goto fail;
         }
+        st->id = i;
         avcodec_copy_context(st->codec, sap->sdp_ctx->streams[i]->codec);
         st->time_base = sap->sdp_ctx->streams[i]->time_base;
     }
@@ -212,11 +212,12 @@ static int sap_fetch_packet(AVFormatContext *s, AVPacket *pkt)
     if (s->ctx_flags & AVFMTCTX_NOHEADER) {
         while (sap->sdp_ctx->nb_streams > s->nb_streams) {
             int i = s->nb_streams;
-            AVStream *st = av_new_stream(s, i);
+            AVStream *st = avformat_new_stream(s, NULL);
             if (!st) {
                 av_free_packet(pkt);
                 return AVERROR(ENOMEM);
             }
+            st->id = i;
             avcodec_copy_context(st->codec, sap->sdp_ctx->streams[i]->codec);
             st->time_base = sap->sdp_ctx->streams[i]->time_base;
         }
@@ -225,13 +226,17 @@ static int sap_fetch_packet(AVFormatContext *s, AVPacket *pkt)
 }
 
 AVInputFormat ff_sap_demuxer = {
-    "sap",
-    NULL_IF_CONFIG_SMALL("SAP input format"),
-    sizeof(struct SAPState),
-    sap_probe,
-    sap_read_header,
-    sap_fetch_packet,
-    sap_read_close,
-    .flags = AVFMT_NOFILE,
+    "sap", /* name */
+    NULL_IF_CONFIG_SMALL("SAP input"), /* long_name */
+    AVFMT_NOFILE, /* flags */
+    0, /* extensions */
+    0, /* codec_tag */
+    0, /* priv_class */
+    0, /* next */
+    0, /* raw_codec_id */
+    sizeof(struct SAPState), /* priv_data_size */
+    sap_probe, /* read_probe */
+    sap_read_header, /* read_header */
+    sap_fetch_packet, /* read_packet */
+    sap_read_close, /* read_close */
 };
-

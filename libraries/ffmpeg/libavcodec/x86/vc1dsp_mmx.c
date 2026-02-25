@@ -24,9 +24,15 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "libavutil/x86_cpu.h"
-#include "libavcodec/dsputil.h"
+#include "libavutil/cpu.h"
+#include "libavutil/mem.h"
+#include "libavutil/x86/asm.h"
+#include "libavutil/x86/cpu.h"
 #include "dsputil_mmx.h"
+#include "libavcodec/vc1dsp.h"
+#include "vc1dsp.h"
+
+#if HAVE_INLINE_ASM
 
 #define OP_PUT(S,D)
 #define OP_AVG(S,D) "pavgb " #S ", " #D " \n\t"
@@ -72,8 +78,6 @@
     "psraw     %4, %%mm"#R1"           \n\t"    \
     "movq      %%mm"#R1", "#OFF"(%1)   \n\t"    \
     "add       %2, %0                  \n\t"
-
-DECLARE_ALIGNED(16, const uint64_t, ff_pw_9) = 0x0009000900090009ULL;
 
 /** Sacrifying mm6 allows to pipeline loads from src */
 static void vc1_put_ver_16b_shift2_mmx(int16_t *dst,
@@ -215,13 +219,6 @@ VC1_SHIFT2(OP_PUT, put_)
 VC1_SHIFT2(OP_AVG, avg_)
 
 /**
- * Filter coefficients made global to allow access by all 1 or 3 quarter shift
- * interpolation functions.
- */
-DECLARE_ASM_CONST(16, uint64_t, ff_pw_53) = 0x0035003500350035ULL;
-DECLARE_ASM_CONST(16, uint64_t, ff_pw_18) = 0x0012001200120012ULL;
-
-/**
  * Core of the 1/4 and 3/4 shift bicubic interpolation.
  *
  * @param UNPACK  Macro unpacking arguments from 8 to 16bits (can be empty).
@@ -283,7 +280,7 @@ vc1_put_ver_16b_ ## NAME ## _mmx(int16_t *dst, const uint8_t *src,      \
         LOAD_ROUNDER_MMX("%5")                                          \
         "movq      "MANGLE(ff_pw_53)", %%mm5\n\t"                       \
         "movq      "MANGLE(ff_pw_18)", %%mm6\n\t"                       \
-        ASMALIGN(3)                                                     \
+        ".p2align 3                \n\t"                                \
         "1:                        \n\t"                                \
         MSPEL_FILTER13_CORE(DO_UNPACK, "movd  1", A1, A2, A3, A4)       \
         NORMALIZE_MMX("%6")                                             \
@@ -339,7 +336,7 @@ OPNAME ## vc1_hor_16b_ ## NAME ## _mmx(uint8_t *dst, x86_reg stride,    \
         LOAD_ROUNDER_MMX("%4")                                          \
         "movq      "MANGLE(ff_pw_18)", %%mm6   \n\t"                    \
         "movq      "MANGLE(ff_pw_53)", %%mm5   \n\t"                    \
-        ASMALIGN(3)                                                     \
+        ".p2align 3                \n\t"                                \
         "1:                        \n\t"                                \
         MSPEL_FILTER13_CORE(DONT_UNPACK, "movq 2", A1, A2, A3, A4)      \
         NORMALIZE_MMX("$7")                                             \
@@ -377,7 +374,7 @@ OPNAME ## vc1_## NAME ## _mmx(uint8_t *dst, const uint8_t *src,         \
         LOAD_ROUNDER_MMX("%6")                                          \
         "movq      "MANGLE(ff_pw_53)", %%mm5       \n\t"                \
         "movq      "MANGLE(ff_pw_18)", %%mm6       \n\t"                \
-        ASMALIGN(3)                                                     \
+        ".p2align 3                \n\t"                                \
         "1:                        \n\t"                                \
         MSPEL_FILTER13_CORE(DO_UNPACK, "movd   1", A1, A2, A3, A4)      \
         NORMALIZE_MMX("$6")                                             \
@@ -411,7 +408,7 @@ typedef void (*vc1_mspel_mc_filter_hor_16bits)(uint8_t *dst, x86_reg dst_stride,
 typedef void (*vc1_mspel_mc_filter_8bits)(uint8_t *dst, const uint8_t *src, x86_reg stride, int rnd, x86_reg offset);
 
 /**
- * Interpolates fractional pel values by applying proper vertical then
+ * Interpolate fractional pel values by applying proper vertical then
  * horizontal filter.
  *
  * @param  dst     Destination buffer for interpolated pels.
@@ -468,7 +465,10 @@ VC1_MSPEL_MC(avg_)
 static void put_vc1_mspel_mc ## a ## b ## _mmx(uint8_t *dst, const uint8_t *src, int stride, int rnd) { \
      put_vc1_mspel_mc(dst, src, stride, a, b, rnd);                     \
 }\
-static void avg_vc1_mspel_mc ## a ## b ## _mmx2(uint8_t *dst, const uint8_t *src, int stride, int rnd) { \
+static void avg_vc1_mspel_mc ## a ## b ## _mmxext(uint8_t *dst,         \
+                                                  const uint8_t *src,   \
+                                                  int stride, int rnd)  \
+{                                                                       \
      avg_vc1_mspel_mc(dst, src, stride, a, b, rnd);                     \
 }
 
@@ -491,7 +491,8 @@ DECLARE_FUNCTION(3, 1)
 DECLARE_FUNCTION(3, 2)
 DECLARE_FUNCTION(3, 3)
 
-static void vc1_inv_trans_4x4_dc_mmx2(uint8_t *dest, int linesize, DCTELEM *block)
+static void vc1_inv_trans_4x4_dc_mmxext(uint8_t *dest, int linesize,
+                                        int16_t *block)
 {
     int dc = block[0];
     dc = (17 * dc +  4) >> 3;
@@ -529,7 +530,8 @@ static void vc1_inv_trans_4x4_dc_mmx2(uint8_t *dest, int linesize, DCTELEM *bloc
     );
 }
 
-static void vc1_inv_trans_4x8_dc_mmx2(uint8_t *dest, int linesize, DCTELEM *block)
+static void vc1_inv_trans_4x8_dc_mmxext(uint8_t *dest, int linesize,
+                                        int16_t *block)
 {
     int dc = block[0];
     dc = (17 * dc +  4) >> 3;
@@ -590,7 +592,8 @@ static void vc1_inv_trans_4x8_dc_mmx2(uint8_t *dest, int linesize, DCTELEM *bloc
     );
 }
 
-static void vc1_inv_trans_8x4_dc_mmx2(uint8_t *dest, int linesize, DCTELEM *block)
+static void vc1_inv_trans_8x4_dc_mmxext(uint8_t *dest, int linesize,
+                                        int16_t *block)
 {
     int dc = block[0];
     dc = ( 3 * dc +  1) >> 1;
@@ -628,7 +631,8 @@ static void vc1_inv_trans_8x4_dc_mmx2(uint8_t *dest, int linesize, DCTELEM *bloc
     );
 }
 
-static void vc1_inv_trans_8x8_dc_mmx2(uint8_t *dest, int linesize, DCTELEM *block)
+static void vc1_inv_trans_8x8_dc_mmxext(uint8_t *dest, int linesize,
+                                        int16_t *block)
 {
     int dc = block[0];
     dc = (3 * dc +  1) >> 1;
@@ -689,53 +693,53 @@ static void vc1_inv_trans_8x8_dc_mmx2(uint8_t *dest, int linesize, DCTELEM *bloc
     );
 }
 
-void ff_vc1dsp_init_mmx(DSPContext* dsp, AVCodecContext *avctx) {
-    mm_flags = mm_support();
+av_cold void ff_vc1dsp_init_mmx(VC1DSPContext *dsp)
+{
+        dsp->put_vc1_mspel_pixels_tab[ 0] = ff_put_vc1_mspel_mc00_mmx;
+        dsp->put_vc1_mspel_pixels_tab[ 4] = put_vc1_mspel_mc01_mmx;
+        dsp->put_vc1_mspel_pixels_tab[ 8] = put_vc1_mspel_mc02_mmx;
+        dsp->put_vc1_mspel_pixels_tab[12] = put_vc1_mspel_mc03_mmx;
 
-    dsp->put_vc1_mspel_pixels_tab[ 0] = ff_put_vc1_mspel_mc00_mmx;
-    dsp->put_vc1_mspel_pixels_tab[ 4] = put_vc1_mspel_mc01_mmx;
-    dsp->put_vc1_mspel_pixels_tab[ 8] = put_vc1_mspel_mc02_mmx;
-    dsp->put_vc1_mspel_pixels_tab[12] = put_vc1_mspel_mc03_mmx;
+        dsp->put_vc1_mspel_pixels_tab[ 1] = put_vc1_mspel_mc10_mmx;
+        dsp->put_vc1_mspel_pixels_tab[ 5] = put_vc1_mspel_mc11_mmx;
+        dsp->put_vc1_mspel_pixels_tab[ 9] = put_vc1_mspel_mc12_mmx;
+        dsp->put_vc1_mspel_pixels_tab[13] = put_vc1_mspel_mc13_mmx;
 
-    dsp->put_vc1_mspel_pixels_tab[ 1] = put_vc1_mspel_mc10_mmx;
-    dsp->put_vc1_mspel_pixels_tab[ 5] = put_vc1_mspel_mc11_mmx;
-    dsp->put_vc1_mspel_pixels_tab[ 9] = put_vc1_mspel_mc12_mmx;
-    dsp->put_vc1_mspel_pixels_tab[13] = put_vc1_mspel_mc13_mmx;
+        dsp->put_vc1_mspel_pixels_tab[ 2] = put_vc1_mspel_mc20_mmx;
+        dsp->put_vc1_mspel_pixels_tab[ 6] = put_vc1_mspel_mc21_mmx;
+        dsp->put_vc1_mspel_pixels_tab[10] = put_vc1_mspel_mc22_mmx;
+        dsp->put_vc1_mspel_pixels_tab[14] = put_vc1_mspel_mc23_mmx;
 
-    dsp->put_vc1_mspel_pixels_tab[ 2] = put_vc1_mspel_mc20_mmx;
-    dsp->put_vc1_mspel_pixels_tab[ 6] = put_vc1_mspel_mc21_mmx;
-    dsp->put_vc1_mspel_pixels_tab[10] = put_vc1_mspel_mc22_mmx;
-    dsp->put_vc1_mspel_pixels_tab[14] = put_vc1_mspel_mc23_mmx;
-
-    dsp->put_vc1_mspel_pixels_tab[ 3] = put_vc1_mspel_mc30_mmx;
-    dsp->put_vc1_mspel_pixels_tab[ 7] = put_vc1_mspel_mc31_mmx;
-    dsp->put_vc1_mspel_pixels_tab[11] = put_vc1_mspel_mc32_mmx;
-    dsp->put_vc1_mspel_pixels_tab[15] = put_vc1_mspel_mc33_mmx;
-
-    if (mm_flags & FF_MM_MMX2){
-        dsp->avg_vc1_mspel_pixels_tab[ 0] = ff_avg_vc1_mspel_mc00_mmx2;
-        dsp->avg_vc1_mspel_pixels_tab[ 4] = avg_vc1_mspel_mc01_mmx2;
-        dsp->avg_vc1_mspel_pixels_tab[ 8] = avg_vc1_mspel_mc02_mmx2;
-        dsp->avg_vc1_mspel_pixels_tab[12] = avg_vc1_mspel_mc03_mmx2;
-
-        dsp->avg_vc1_mspel_pixels_tab[ 1] = avg_vc1_mspel_mc10_mmx2;
-        dsp->avg_vc1_mspel_pixels_tab[ 5] = avg_vc1_mspel_mc11_mmx2;
-        dsp->avg_vc1_mspel_pixels_tab[ 9] = avg_vc1_mspel_mc12_mmx2;
-        dsp->avg_vc1_mspel_pixels_tab[13] = avg_vc1_mspel_mc13_mmx2;
-
-        dsp->avg_vc1_mspel_pixels_tab[ 2] = avg_vc1_mspel_mc20_mmx2;
-        dsp->avg_vc1_mspel_pixels_tab[ 6] = avg_vc1_mspel_mc21_mmx2;
-        dsp->avg_vc1_mspel_pixels_tab[10] = avg_vc1_mspel_mc22_mmx2;
-        dsp->avg_vc1_mspel_pixels_tab[14] = avg_vc1_mspel_mc23_mmx2;
-
-        dsp->avg_vc1_mspel_pixels_tab[ 3] = avg_vc1_mspel_mc30_mmx2;
-        dsp->avg_vc1_mspel_pixels_tab[ 7] = avg_vc1_mspel_mc31_mmx2;
-        dsp->avg_vc1_mspel_pixels_tab[11] = avg_vc1_mspel_mc32_mmx2;
-        dsp->avg_vc1_mspel_pixels_tab[15] = avg_vc1_mspel_mc33_mmx2;
-
-        dsp->vc1_inv_trans_8x8_dc = vc1_inv_trans_8x8_dc_mmx2;
-        dsp->vc1_inv_trans_4x8_dc = vc1_inv_trans_4x8_dc_mmx2;
-        dsp->vc1_inv_trans_8x4_dc = vc1_inv_trans_8x4_dc_mmx2;
-        dsp->vc1_inv_trans_4x4_dc = vc1_inv_trans_4x4_dc_mmx2;
-    }
+        dsp->put_vc1_mspel_pixels_tab[ 3] = put_vc1_mspel_mc30_mmx;
+        dsp->put_vc1_mspel_pixels_tab[ 7] = put_vc1_mspel_mc31_mmx;
+        dsp->put_vc1_mspel_pixels_tab[11] = put_vc1_mspel_mc32_mmx;
+        dsp->put_vc1_mspel_pixels_tab[15] = put_vc1_mspel_mc33_mmx;
 }
+
+av_cold void ff_vc1dsp_init_mmxext(VC1DSPContext *dsp)
+{
+        dsp->avg_vc1_mspel_pixels_tab[ 4] = avg_vc1_mspel_mc01_mmxext;
+        dsp->avg_vc1_mspel_pixels_tab[ 8] = avg_vc1_mspel_mc02_mmxext;
+        dsp->avg_vc1_mspel_pixels_tab[12] = avg_vc1_mspel_mc03_mmxext;
+
+        dsp->avg_vc1_mspel_pixels_tab[ 1] = avg_vc1_mspel_mc10_mmxext;
+        dsp->avg_vc1_mspel_pixels_tab[ 5] = avg_vc1_mspel_mc11_mmxext;
+        dsp->avg_vc1_mspel_pixels_tab[ 9] = avg_vc1_mspel_mc12_mmxext;
+        dsp->avg_vc1_mspel_pixels_tab[13] = avg_vc1_mspel_mc13_mmxext;
+
+        dsp->avg_vc1_mspel_pixels_tab[ 2] = avg_vc1_mspel_mc20_mmxext;
+        dsp->avg_vc1_mspel_pixels_tab[ 6] = avg_vc1_mspel_mc21_mmxext;
+        dsp->avg_vc1_mspel_pixels_tab[10] = avg_vc1_mspel_mc22_mmxext;
+        dsp->avg_vc1_mspel_pixels_tab[14] = avg_vc1_mspel_mc23_mmxext;
+
+        dsp->avg_vc1_mspel_pixels_tab[ 3] = avg_vc1_mspel_mc30_mmxext;
+        dsp->avg_vc1_mspel_pixels_tab[ 7] = avg_vc1_mspel_mc31_mmxext;
+        dsp->avg_vc1_mspel_pixels_tab[11] = avg_vc1_mspel_mc32_mmxext;
+        dsp->avg_vc1_mspel_pixels_tab[15] = avg_vc1_mspel_mc33_mmxext;
+
+        dsp->vc1_inv_trans_8x8_dc = vc1_inv_trans_8x8_dc_mmxext;
+        dsp->vc1_inv_trans_4x8_dc = vc1_inv_trans_4x8_dc_mmxext;
+        dsp->vc1_inv_trans_8x4_dc = vc1_inv_trans_8x4_dc_mmxext;
+        dsp->vc1_inv_trans_4x4_dc = vc1_inv_trans_4x4_dc_mmxext;
+}
+#endif /* HAVE_INLINE_ASM */

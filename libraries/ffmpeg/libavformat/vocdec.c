@@ -38,7 +38,7 @@ static int voc_probe(AVProbeData *p)
     return AVPROBE_SCORE_MAX;
 }
 
-static int voc_read_header(AVFormatContext *s, AVFormatParameters *ap)
+static int voc_read_header(AVFormatContext *s)
 {
     VocDecContext *voc = s->priv_data;
     AVIOContext *pb = s->pb;
@@ -52,7 +52,7 @@ static int voc_read_header(AVFormatContext *s, AVFormatParameters *ap)
         return AVERROR(ENOSYS);
     }
     avio_skip(pb, header_size);
-    st = av_new_stream(s, 0);
+    st = avformat_new_stream(s, NULL);
     if (!st)
         return AVERROR(ENOMEM);
     st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
@@ -62,7 +62,7 @@ static int voc_read_header(AVFormatContext *s, AVFormatParameters *ap)
 }
 
 int
-voc_get_packet(AVFormatContext *s, AVPacket *pkt, AVStream *st, int max_size)
+ff_voc_get_packet(AVFormatContext *s, AVPacket *pkt, AVStream *st, int max_size)
 {
     VocDecContext *voc = s->priv_data;
     AVCodecContext *dec = st->codec;
@@ -86,9 +86,13 @@ voc_get_packet(AVFormatContext *s, AVPacket *pkt, AVStream *st, int max_size)
 
         switch (type) {
         case VOC_TYPE_VOICE_DATA:
-            dec->sample_rate = 1000000 / (256 - avio_r8(pb));
-            if (sample_rate)
-                dec->sample_rate = sample_rate;
+            if (!dec->sample_rate) {
+                dec->sample_rate = 1000000 / (256 - avio_r8(pb));
+                if (sample_rate)
+                    dec->sample_rate = sample_rate;
+                avpriv_set_pts_info(st, 64, 1, dec->sample_rate);
+            } else
+                avio_skip(pb, 1);
             dec->channels = channels;
             tmp_codec = avio_r8(pb);
             dec->bits_per_coded_sample = av_get_bits_per_sample(dec->codec_id);
@@ -110,7 +114,11 @@ voc_get_packet(AVFormatContext *s, AVPacket *pkt, AVStream *st, int max_size)
             break;
 
         case VOC_TYPE_NEW_VOICE_DATA:
-            dec->sample_rate = avio_rl32(pb);
+            if (!dec->sample_rate) {
+                dec->sample_rate = avio_rl32(pb);
+                avpriv_set_pts_info(st, 64, 1, dec->sample_rate);
+            } else
+                avio_skip(pb, 4);
             dec->bits_per_coded_sample = avio_r8(pb);
             dec->channels = avio_r8(pb);
             tmp_codec = avio_rl16(pb);
@@ -129,12 +137,12 @@ voc_get_packet(AVFormatContext *s, AVPacket *pkt, AVStream *st, int max_size)
 
     if (tmp_codec >= 0) {
         tmp_codec = ff_codec_get_id(ff_voc_codec_tags, tmp_codec);
-        if (dec->codec_id == CODEC_ID_NONE)
+        if (dec->codec_id == AV_CODEC_ID_NONE)
             dec->codec_id = tmp_codec;
         else if (dec->codec_id != tmp_codec)
             av_log(s, AV_LOG_WARNING, "Ignoring mid-stream change in audio codec\n");
-        if (dec->codec_id == CODEC_ID_NONE) {
-            if (s->audio_codec_id == CODEC_ID_NONE) {
+        if (dec->codec_id == AV_CODEC_ID_NONE) {
+            if (s->audio_codec_id == AV_CODEC_ID_NONE) {
                 av_log(s, AV_LOG_ERROR, "unknown codec tag\n");
                 return AVERROR(EINVAL);
             }
@@ -142,7 +150,7 @@ voc_get_packet(AVFormatContext *s, AVPacket *pkt, AVStream *st, int max_size)
         }
     }
 
-    dec->bit_rate = dec->sample_rate * dec->bits_per_coded_sample;
+    dec->bit_rate = dec->sample_rate * dec->channels * dec->bits_per_coded_sample;
 
     if (max_size <= 0)
         max_size = 2048;
@@ -153,39 +161,21 @@ voc_get_packet(AVFormatContext *s, AVPacket *pkt, AVStream *st, int max_size)
 
 static int voc_read_packet(AVFormatContext *s, AVPacket *pkt)
 {
-    return voc_get_packet(s, pkt, s->streams[0], 0);
+    return ff_voc_get_packet(s, pkt, s->streams[0], 0);
 }
 
-AVCodecTag *voc_demuxer_codec_tags[] = {ff_voc_codec_tags, 0};
-
-AVInputFormat voc_demuxer = {
-#ifndef MSC_STRUCTS
-    "voc",
-    NULL_IF_CONFIG_SMALL("Creative Voice file format"),
-    sizeof(VocDecContext),
-    voc_probe,
-    voc_read_header,
-    voc_read_packet,
-    .codec_tag=(const AVCodecTag* const []){ff_voc_codec_tags, 0},
+static const AVCodecTag *const _ff_vocdec_tags_35[] = { ff_voc_codec_tags, 0 };
+AVInputFormat ff_voc_demuxer = {
+    "voc", /* name */
+    NULL_IF_CONFIG_SMALL("Creative Voice"), /* long_name */
+    0, /* flags */
+    0, /* extensions */
+    _ff_vocdec_tags_35, /* codec_tag */
+    0, /* priv_class */
+    0, /* next */
+    0, /* raw_codec_id */
+    sizeof(VocDecContext), /* priv_data_size */
+    voc_probe, /* read_probe */
+    voc_read_header, /* read_header */
+    voc_read_packet, /* read_packet */
 };
-#else
-	"voc",
-	NULL_IF_CONFIG_SMALL("Creative Voice file format"),
-	sizeof(VocDecContext),
-	voc_probe,
-	voc_read_header,
-	voc_read_packet,
-	/*read_close = */ 0,
-	/*read_seek = */ 0,
-	/*read_timestamp = */ 0,
-	/*flags = */ 0,
-	/*extensions = */ 0,
-	/*value = */ 0,
-	/*read_play = */ 0,
-	/*read_pause = */ 0,
-	/*codec_tag = */ voc_demuxer_codec_tags,
-	/*read_seek2 = */ 0,
-	/*metadata_conv = */ 0,
-	/*next = */ 0
-};
-#endif

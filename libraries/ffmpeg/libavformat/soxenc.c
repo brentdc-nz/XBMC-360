@@ -23,15 +23,18 @@
  */
 
 /**
- * SoX native format muxer
  * @file
+ * SoX native format muxer
  * @author Daniel Verkamp
- * @sa http://wiki.multimedia.cx/index.php?title=SoX_native_intermediate_format
+ * @see http://wiki.multimedia.cx/index.php?title=SoX_native_intermediate_format
  */
 
 #include "libavutil/intreadwrite.h"
+#include "libavutil/intfloat.h"
+#include "libavutil/dict.h"
 #include "avformat.h"
 #include "avio_internal.h"
+#include "rawenc.h"
 #include "sox.h"
 
 typedef struct {
@@ -43,28 +46,28 @@ static int sox_write_header(AVFormatContext *s)
     SoXContext *sox = s->priv_data;
     AVIOContext *pb = s->pb;
     AVCodecContext *enc = s->streams[0]->codec;
-    AVMetadataTag *comment;
+    AVDictionaryEntry *comment;
     size_t comment_len = 0, comment_size;
 
-    comment = av_metadata_get(s->metadata, "comment", NULL, 0);
+    comment = av_dict_get(s->metadata, "comment", NULL, 0);
     if (comment)
         comment_len = strlen(comment->value);
-    comment_size = (comment_len + 7) & ~7;
+    comment_size = FFALIGN(comment_len, 8);
 
     sox->header_size = SOX_FIXED_HDR + comment_size;
 
-    if (enc->codec_id == CODEC_ID_PCM_S32LE) {
+    if (enc->codec_id == AV_CODEC_ID_PCM_S32LE) {
         ffio_wfourcc(pb, ".SoX");
         avio_wl32(pb, sox->header_size);
         avio_wl64(pb, 0); /* number of samples */
-        avio_wl64(pb, av_dbl2int(enc->sample_rate));
+        avio_wl64(pb, av_double2int(enc->sample_rate));
         avio_wl32(pb, enc->channels);
         avio_wl32(pb, comment_size);
-    } else if (enc->codec_id == CODEC_ID_PCM_S32BE) {
+    } else if (enc->codec_id == AV_CODEC_ID_PCM_S32BE) {
         ffio_wfourcc(pb, "XoS.");
         avio_wb32(pb, sox->header_size);
         avio_wb64(pb, 0); /* number of samples */
-        avio_wb64(pb, av_dbl2int(enc->sample_rate));
+        avio_wb64(pb, av_double2int(enc->sample_rate));
         avio_wb32(pb, enc->channels);
         avio_wb32(pb, comment_size);
     } else {
@@ -75,18 +78,10 @@ static int sox_write_header(AVFormatContext *s)
     if (comment_len)
         avio_write(pb, comment->value, comment_len);
 
-    for ( ; comment_size > comment_len; comment_len++)
-        avio_w8(pb, 0);
+    ffio_fill(pb, 0, comment_size - comment_len);
 
     avio_flush(pb);
 
-    return 0;
-}
-
-static int sox_write_packet(AVFormatContext *s, AVPacket *pkt)
-{
-    AVIOContext *pb = s->pb;
-    avio_write(pb, pkt->data, pkt->size);
     return 0;
 }
 
@@ -101,7 +96,7 @@ static int sox_write_trailer(AVFormatContext *s)
         int64_t file_size = avio_tell(pb);
         int64_t num_samples = (file_size - sox->header_size - 4LL) >> 2LL;
         avio_seek(pb, 8, SEEK_SET);
-        if (enc->codec_id == CODEC_ID_PCM_S32LE) {
+        if (enc->codec_id == AV_CODEC_ID_PCM_S32LE) {
             avio_wl64(pb, num_samples);
         } else
             avio_wb64(pb, num_samples);
@@ -114,14 +109,19 @@ static int sox_write_trailer(AVFormatContext *s)
 }
 
 AVOutputFormat ff_sox_muxer = {
-    "sox",
-    NULL_IF_CONFIG_SMALL("SoX native format"),
-    NULL,
-    "sox",
-    sizeof(SoXContext),
-    CODEC_ID_PCM_S32LE,
-    CODEC_ID_NONE,
-    sox_write_header,
-    sox_write_packet,
-    sox_write_trailer,
+    "sox", /* name */
+    NULL_IF_CONFIG_SMALL("SoX native"), /* long_name */
+    0, /* mime_type */
+    "sox", /* extensions */
+    AV_CODEC_ID_PCM_S32LE, /* audio_codec */
+    AV_CODEC_ID_NONE, /* video_codec */
+    0, /* subtitle_codec */
+    0, /* flags */
+    0, /* codec_tag */
+    0, /* priv_class */
+    0, /* next */
+    sizeof(SoXContext), /* priv_data_size */
+    sox_write_header, /* write_header */
+    ff_raw_write_packet, /* write_packet */
+    sox_write_trailer, /* write_trailer */
 };

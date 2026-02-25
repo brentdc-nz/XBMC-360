@@ -29,6 +29,7 @@
 #define AVCODEC_JPEGLS_H
 
 #include "avcodec.h"
+#include "libavutil/common.h"
 
 typedef struct JpeglsContext{
     AVCodecContext *avctx;
@@ -40,7 +41,7 @@ typedef struct JLSState{
     int A[367], B[367], C[365], N[367];
     int limit, reset, bpp, qbpp, maxval, range;
     int near, twonear;
-    int run_index[3];
+    int run_index[4];
 }JLSState;
 
 extern const uint8_t ff_log2_run[32];
@@ -86,6 +87,8 @@ static inline void ff_jpegls_downscale_state(JLSState *state, int Q){
 }
 
 static inline int ff_jpegls_update_state_regular(JLSState *state, int Q, int err){
+    if(FFABS(err) > 0xFFFF)
+        return -0x10000;
     state->A[Q] += FFABS(err);
     err *= state->twonear;
     state->B[Q] += err;

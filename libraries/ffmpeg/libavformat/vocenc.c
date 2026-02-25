@@ -30,12 +30,18 @@ typedef struct voc_enc_context {
 static int voc_write_header(AVFormatContext *s)
 {
     AVIOContext *pb = s->pb;
+    AVCodecContext *enc = s->streams[0]->codec;
     const int header_size = 26;
     const int version = 0x0114;
 
     if (s->nb_streams != 1
         || s->streams[0]->codec->codec_type != AVMEDIA_TYPE_AUDIO)
         return AVERROR_PATCHWELCOME;
+
+    if (!enc->codec_tag && enc->codec_id != AV_CODEC_ID_PCM_U8) {
+        av_log(s, AV_LOG_ERROR, "unsupported codec\n");
+        return AVERROR(EINVAL);
+    }
 
     avio_write(pb, ff_voc_magic, sizeof(ff_voc_magic) - 1);
     avio_wl16(pb, header_size);
@@ -52,7 +58,7 @@ static int voc_write_packet(AVFormatContext *s, AVPacket *pkt)
     AVIOContext *pb = s->pb;
 
     if (!voc->param_written) {
-        if (enc->codec_tag > 0xFF) {
+        if (enc->codec_tag > 3) {
             avio_w8(pb, VOC_TYPE_NEW_VOICE_DATA);
             avio_wl24(pb, pkt->size + 12);
             avio_wl32(pb, enc->sample_rate);
@@ -64,13 +70,13 @@ static int voc_write_packet(AVFormatContext *s, AVPacket *pkt)
             if (s->streams[0]->codec->channels > 1) {
                 avio_w8(pb, VOC_TYPE_EXTENDED);
                 avio_wl24(pb, 4);
-                avio_wl16(pb, 65536-256000000/(enc->sample_rate*enc->channels));
+                avio_wl16(pb, 65536-(256000000 + enc->sample_rate*enc->channels/2)/(enc->sample_rate*enc->channels));
                 avio_w8(pb, enc->codec_tag);
                 avio_w8(pb, enc->channels - 1);
             }
             avio_w8(pb, VOC_TYPE_VOICE_DATA);
             avio_wl24(pb, pkt->size + 2);
-            avio_w8(pb, 256 - 1000000 / enc->sample_rate);
+            avio_w8(pb, 256 - (1000000 + enc->sample_rate/2) / enc->sample_rate);
             avio_w8(pb, enc->codec_tag);
         }
         voc->param_written = 1;
@@ -89,39 +95,21 @@ static int voc_write_trailer(AVFormatContext *s)
     return 0;
 }
 
-AVCodecTag *voc_muxer_codec_tags[] = {ff_voc_codec_tags, 0};
-
-AVOutputFormat voc_muxer = {
-#ifndef MSC_STRUCTS
-    "voc",
-    NULL_IF_CONFIG_SMALL("Creative Voice file format"),
-    "audio/x-voc",
-    "voc",
-    sizeof(VocEncContext),
-    CODEC_ID_PCM_U8,
-    CODEC_ID_NONE,
-    voc_write_header,
-    voc_write_packet,
-    voc_write_trailer,
-    .codec_tag=(const AVCodecTag* const []){ff_voc_codec_tags, 0},
+static const AVCodecTag *const _ff_vocenc_tags_36[] = { ff_voc_codec_tags, 0 };
+AVOutputFormat ff_voc_muxer = {
+    "voc", /* name */
+    NULL_IF_CONFIG_SMALL("Creative Voice"), /* long_name */
+    "audio/x-voc", /* mime_type */
+    "voc", /* extensions */
+    AV_CODEC_ID_PCM_S16LE, /* audio_codec */
+    AV_CODEC_ID_NONE, /* video_codec */
+    0, /* subtitle_codec */
+    0, /* flags */
+    _ff_vocenc_tags_36, /* codec_tag */
+    0, /* priv_class */
+    0, /* next */
+    sizeof(VocEncContext), /* priv_data_size */
+    voc_write_header, /* write_header */
+    voc_write_packet, /* write_packet */
+    voc_write_trailer, /* write_trailer */
 };
-#else
-	"voc",
-	NULL_IF_CONFIG_SMALL("Creative Voice file format"),
-	"audio/x-voc",
-	"voc",
-	sizeof(VocEncContext),
-	CODEC_ID_PCM_U8,
-	CODEC_ID_NONE,
-	voc_write_header,
-	voc_write_packet,
-	voc_write_trailer,
-	/*flags = */ 0,
-	/*set_parameters = */ 0,
-	/*interleave_packet = */ 0,
-	/*codec_tag = */ voc_muxer_codec_tags,
-	/*ubtitle_codec = */ 0,
-	/*metadata_conv = */ 0,
-	/*next = */ 0
-};
-#endif

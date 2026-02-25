@@ -37,17 +37,18 @@ static int txd_probe(AVProbeData * pd) {
     return 0;
 }
 
-static int txd_read_header(AVFormatContext *s, AVFormatParameters *ap) {
+static int txd_read_header(AVFormatContext *s) {
     AVStream *st;
 
-    st = av_new_stream(s, 0);
+    st = avformat_new_stream(s, NULL);
     if (!st)
         return AVERROR(ENOMEM);
     st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
-    st->codec->codec_id = CODEC_ID_TXD;
+    st->codec->codec_id = AV_CODEC_ID_TXD;
     st->codec->time_base.den = 5;
     st->codec->time_base.num = 1;
     /* the parameters will be extracted from the compressed bitstream */
+
     return 0;
 }
 
@@ -69,17 +70,17 @@ next_chunk:
     }
 
     switch (id) {
-        case TXD_INFO:
-            if (chunk_size > 100)
-                break;
-        case TXD_EXTRA:
-            avio_skip(s->pb, chunk_size);
-        case TXD_FILE:
-        case TXD_TEXTURE:
-            goto next_chunk;
-        default:
-            av_log(s, AV_LOG_ERROR, "unknown chunk id %i\n", id);
-            return AVERROR_INVALIDDATA;
+    case TXD_INFO:
+        if (chunk_size > 100)
+            break;
+    case TXD_EXTRA:
+        avio_skip(s->pb, chunk_size);
+    case TXD_FILE:
+    case TXD_TEXTURE:
+        goto next_chunk;
+    default:
+        av_log(s, AV_LOG_ERROR, "unknown chunk id %i\n", id);
+        return AVERROR_INVALIDDATA;
     }
 
     ret = av_get_packet(s->pb, pkt, chunk_size);
@@ -90,12 +91,17 @@ next_chunk:
     return 0;
 }
 
-AVInputFormat ff_txd_demuxer =
-{
-    "txd",
-    NULL_IF_CONFIG_SMALL("Renderware TeXture Dictionary"),
-    0,
-    txd_probe,
-    txd_read_header,
-    txd_read_packet,
+AVInputFormat ff_txd_demuxer = {
+    "txd", /* name */
+    NULL_IF_CONFIG_SMALL("Renderware TeXture Dictionary"), /* long_name */
+    0, /* flags */
+    0, /* extensions */
+    0, /* codec_tag */
+    0, /* priv_class */
+    0, /* next */
+    0, /* raw_codec_id */
+    0, /* priv_data_size */
+    txd_probe, /* read_probe */
+    txd_read_header, /* read_header */
+    txd_read_packet, /* read_packet */
 };

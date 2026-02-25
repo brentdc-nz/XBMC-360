@@ -27,8 +27,11 @@
  *   http://www.pcisys.net/~melanson/codecs/
  */
 
+#include "libavutil/channel_layout.h"
 #include "libavutil/intreadwrite.h"
+#include "libavutil/dict.h"
 #include "avformat.h"
+#include "internal.h"
 
 #define FORM_TAG MKTAG('F', 'O', 'R', 'M')
 #define MOVE_TAG MKTAG('M', 'O', 'V', 'E')
@@ -81,8 +84,7 @@ static int wc3_probe(AVProbeData *p)
     return AVPROBE_SCORE_MAX;
 }
 
-static int wc3_read_header(AVFormatContext *s,
-                           AVFormatParameters *ap)
+static int wc3_read_header(AVFormatContext *s)
 {
     Wc3DemuxContext *wc3 = s->priv_data;
     AVIOContext *pb = s->pb;
@@ -130,8 +132,8 @@ static int wc3_read_header(AVFormatContext *s,
             if ((ret = avio_read(pb, buffer, size)) != size)
                 return AVERROR(EIO);
             buffer[size] = 0;
-            av_metadata_set2(&s->metadata, "title", buffer,
-                                   AV_METADATA_DONT_STRDUP_VAL);
+            av_dict_set(&s->metadata, "title", buffer,
+                                   AV_DICT_DONT_STRDUP_VAL);
             break;
 
         case SIZE_TAG:
@@ -151,7 +153,6 @@ static int wc3_read_header(AVFormatContext *s,
                 (uint8_t)fourcc_tag, (uint8_t)(fourcc_tag >> 8), (uint8_t)(fourcc_tag >> 16), (uint8_t)(fourcc_tag >> 24),
                 (uint8_t)fourcc_tag, (uint8_t)(fourcc_tag >> 8), (uint8_t)(fourcc_tag >> 16), (uint8_t)(fourcc_tag >> 24));
             return AVERROR_INVALIDDATA;
-            break;
         }
 
         fourcc_tag = avio_rl32(pb);
@@ -163,26 +164,27 @@ static int wc3_read_header(AVFormatContext *s,
     } while (fourcc_tag != BRCH_TAG);
 
     /* initialize the decoder streams */
-    st = av_new_stream(s, 0);
+    st = avformat_new_stream(s, NULL);
     if (!st)
         return AVERROR(ENOMEM);
-    av_set_pts_info(st, 33, 1, WC3_FRAME_FPS);
+    avpriv_set_pts_info(st, 33, 1, WC3_FRAME_FPS);
     wc3->video_stream_index = st->index;
     st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
-    st->codec->codec_id = CODEC_ID_XAN_WC3;
+    st->codec->codec_id = AV_CODEC_ID_XAN_WC3;
     st->codec->codec_tag = 0;  /* no fourcc */
     st->codec->width = wc3->width;
     st->codec->height = wc3->height;
 
-    st = av_new_stream(s, 0);
+    st = avformat_new_stream(s, NULL);
     if (!st)
         return AVERROR(ENOMEM);
-    av_set_pts_info(st, 33, 1, WC3_FRAME_FPS);
+    avpriv_set_pts_info(st, 33, 1, WC3_FRAME_FPS);
     wc3->audio_stream_index = st->index;
     st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
-    st->codec->codec_id = CODEC_ID_PCM_S16LE;
+    st->codec->codec_id = AV_CODEC_ID_PCM_S16LE;
     st->codec->codec_tag = 1;
     st->codec->channels = WC3_AUDIO_CHANNELS;
+    st->codec->channel_layout = AV_CH_LAYOUT_MONO;
     st->codec->bits_per_coded_sample = WC3_AUDIO_BITS;
     st->codec->sample_rate = WC3_SAMPLE_RATE;
     st->codec->bit_rate = st->codec->channels * st->codec->sample_rate *
@@ -292,11 +294,17 @@ static int wc3_read_close(AVFormatContext *s)
 }
 
 AVInputFormat ff_wc3_demuxer = {
-    "wc3movie",
-    NULL_IF_CONFIG_SMALL("Wing Commander III movie format"),
-    sizeof(Wc3DemuxContext),
-    wc3_probe,
-    wc3_read_header,
-    wc3_read_packet,
-    wc3_read_close,
+    "wc3movie", /* name */
+    NULL_IF_CONFIG_SMALL("Wing Commander III movie"), /* long_name */
+    0, /* flags */
+    0, /* extensions */
+    0, /* codec_tag */
+    0, /* priv_class */
+    0, /* next */
+    0, /* raw_codec_id */
+    sizeof(Wc3DemuxContext), /* priv_data_size */
+    wc3_probe, /* read_probe */
+    wc3_read_header, /* read_header */
+    wc3_read_packet, /* read_packet */
+    wc3_read_close, /* read_close */
 };

@@ -23,32 +23,41 @@
 #include "parser.h"
 #include "mpegvideo.h"
 
+struct MpvParseContext {
+    ParseContext pc;
+    AVRational frame_rate;
+    int progressive_sequence;
+    int width, height;
+};
+
+
 static void mpegvideo_extract_headers(AVCodecParserContext *s,
                                       AVCodecContext *avctx,
                                       const uint8_t *buf, int buf_size)
 {
-    ParseContext1 *pc = s->priv_data;
+    struct MpvParseContext *pc = s->priv_data;
     const uint8_t *buf_end = buf + buf_size;
     uint32_t start_code;
     int frame_rate_index, ext_type, bytes_left;
     int frame_rate_ext_n, frame_rate_ext_d;
-    int picture_structure, top_field_first, repeat_first_field, progressive_frame;
+    int top_field_first, repeat_first_field, progressive_frame;
     int horiz_size_ext, vert_size_ext, bit_rate_ext;
     int did_set_size=0;
-#ifdef _MSC_VER
-	AVRational *ff_frame_rate_tab = get_ff_frame_rate_tab();
-#endif
+    int bit_rate = 0;
+    int vbv_delay = 0;
 //FIXME replace the crap with get_bits()
     s->repeat_pict = 0;
 
     while (buf < buf_end) {
         start_code= -1;
-        buf= ff_find_start_code(buf, buf_end, &start_code);
+        buf= avpriv_mpv_find_start_code(buf, buf_end, &start_code);
         bytes_left = buf_end - buf;
         switch(start_code) {
         case PICTURE_START_CODE:
             if (bytes_left >= 2) {
                 s->pict_type = (buf[1] >> 3) & 7;
+                if (bytes_left >= 4)
+                vbv_delay = ((buf[1] & 0x07) << 13) | (buf[2] << 5) | (buf[3]  >> 3);
             }
             break;
         case SEQ_START_CODE:
@@ -60,11 +69,10 @@ static void mpegvideo_extract_headers(AVCodecParserContext *s,
                     did_set_size=1;
                 }
                 frame_rate_index = buf[3] & 0xf;
-                pc->frame_rate.den = avctx->time_base.den = ff_frame_rate_tab[frame_rate_index].num;
-                pc->frame_rate.num = avctx->time_base.num = ff_frame_rate_tab[frame_rate_index].den;
-                avctx->bit_rate = ((buf[4]<<10) | (buf[5]<<2) | (buf[6]>>6))*400;
-                avctx->codec_id = CODEC_ID_MPEG1VIDEO;
-                avctx->sub_id = 1;
+                pc->frame_rate.den = avctx->time_base.den = ff_mpeg12_frame_rate_tab[frame_rate_index].num;
+                pc->frame_rate.num = avctx->time_base.num = ff_mpeg12_frame_rate_tab[frame_rate_index].den;
+                bit_rate = (buf[4]<<10) | (buf[5]<<2) | (buf[6]>>6);
+                avctx->codec_id = AV_CODEC_ID_MPEG1VIDEO;
             }
             break;
         case EXT_START_CODE:
@@ -83,18 +91,16 @@ static void mpegvideo_extract_headers(AVCodecParserContext *s,
 
                         pc->width  |=(horiz_size_ext << 12);
                         pc->height |=( vert_size_ext << 12);
-                        avctx->bit_rate += (bit_rate_ext << 18) * 400;
+                        bit_rate = (bit_rate&0x3FFFF) | (bit_rate_ext << 18);
                         if(did_set_size)
                             avcodec_set_dimensions(avctx, pc->width, pc->height);
                         avctx->time_base.den = pc->frame_rate.den * (frame_rate_ext_n + 1) * 2;
                         avctx->time_base.num = pc->frame_rate.num * (frame_rate_ext_d + 1);
-                        avctx->codec_id = CODEC_ID_MPEG2VIDEO;
-                        avctx->sub_id = 2; /* forces MPEG2 */
+                        avctx->codec_id = AV_CODEC_ID_MPEG2VIDEO;
                     }
                     break;
                 case 0x8: /* picture coding extension */
                     if (bytes_left >= 5) {
-                        picture_structure = buf[2]&3;
                         top_field_first = buf[3] & (1 << 7);
                         repeat_first_field = buf[3] & (1 << 1);
                         progressive_frame = buf[4] & (1 << 7);
@@ -128,6 +134,12 @@ static void mpegvideo_extract_headers(AVCodecParserContext *s,
         }
     }
  the_end: ;
+    if (avctx->codec_id == AV_CODEC_ID_MPEG2VIDEO && bit_rate) {
+        avctx->rc_max_rate = 400*bit_rate;
+    } else if (avctx->codec_id == AV_CODEC_ID_MPEG1VIDEO && bit_rate &&
+               (bit_rate != 0x3FFFF || vbv_delay != 0xFFFF)) {
+        avctx->bit_rate = 400*bit_rate;
+    }
 }
 
 static int mpegvideo_parse(AVCodecParserContext *s,
@@ -135,7 +147,7 @@ static int mpegvideo_parse(AVCodecParserContext *s,
                            const uint8_t **poutbuf, int *poutbuf_size,
                            const uint8_t *buf, int buf_size)
 {
-    ParseContext1 *pc1 = s->priv_data;
+    struct MpvParseContext *pc1 = s->priv_data;
     ParseContext *pc= &pc1->pc;
     int next;
 
@@ -155,10 +167,8 @@ static int mpegvideo_parse(AVCodecParserContext *s,
        to have the full timing information. The time take by this
        function should be negligible for uncorrupted streams */
     mpegvideo_extract_headers(s, avctx, buf, buf_size);
-#if 0
-    printf("pict_type=%d frame_rate=%0.3f repeat_pict=%d\n",
-           s->pict_type, (double)avctx->time_base.den / avctx->time_base.num, s->repeat_pict);
-#endif
+    av_dlog(NULL, "pict_type=%d frame_rate=%0.3f repeat_pict=%d\n",
+            s->pict_type, (double)avctx->time_base.den / avctx->time_base.num, s->repeat_pict);
 
     *poutbuf = buf;
     *poutbuf_size = buf_size;
@@ -170,20 +180,29 @@ static int mpegvideo_split(AVCodecContext *avctx,
 {
     int i;
     uint32_t state= -1;
+    int found=0;
 
     for(i=0; i<buf_size; i++){
         state= (state<<8) | buf[i];
-        if(state != 0x1B3 && state != 0x1B5 && state < 0x200 && state >= 0x100)
+        if(state == 0x1B3){
+            found=1;
+        }else if(found && state != 0x1B5 && state < 0x200 && state >= 0x100)
             return i-3;
     }
     return 0;
 }
 
+static int mpegvideo_parse_init(AVCodecParserContext *s)
+{
+    s->pict_type = AV_PICTURE_TYPE_NONE; // first frame might be partial
+    return 0;
+}
+
 AVCodecParser ff_mpegvideo_parser = {
-    { CODEC_ID_MPEG1VIDEO, CODEC_ID_MPEG2VIDEO },
-    sizeof(ParseContext1),
-    NULL,
-    mpegvideo_parse,
-    ff_parse1_close,
-    mpegvideo_split,
-};
+        { AV_CODEC_ID_MPEG1VIDEO, AV_CODEC_ID_MPEG2VIDEO }, /* codec_ids */
+        sizeof(struct MpvParseContext), /* priv_data_size */
+        mpegvideo_parse_init, /* parser_init */
+        mpegvideo_parse, /* parser_parse */
+        ff_parse_close, /* parser_close */
+        mpegvideo_split, /* split */
+    };

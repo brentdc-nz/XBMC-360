@@ -19,6 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #include "avformat.h"
+#include "internal.h"
 
 typedef struct RCVContext {
     int frames;
@@ -29,7 +30,7 @@ static int vc1test_write_header(AVFormatContext *s)
     AVCodecContext *avc = s->streams[0]->codec;
     AVIOContext *pb = s->pb;
 
-    if (avc->codec_id != CODEC_ID_WMV3) {
+    if (avc->codec_id != AV_CODEC_ID_WMV3) {
         av_log(s, AV_LOG_ERROR, "Only WMV3 is accepted!\n");
         return -1;
     }
@@ -43,11 +44,11 @@ static int vc1test_write_header(AVFormatContext *s)
     avio_wl24(pb, 0); // hrd_buffer
     avio_w8(pb, 0x80); // level|cbr|res1
     avio_wl32(pb, 0); // hrd_rate
-    if (s->streams[0]->r_frame_rate.den && s->streams[0]->r_frame_rate.num == 1)
-        avio_wl32(pb, s->streams[0]->r_frame_rate.den);
+    if (s->streams[0]->avg_frame_rate.den && s->streams[0]->avg_frame_rate.num == 1)
+        avio_wl32(pb, s->streams[0]->avg_frame_rate.den);
     else
         avio_wl32(pb, 0xFFFFFFFF); //variable framerate
-    av_set_pts_info(s->streams[0], 32, 1, 1000);
+    avpriv_set_pts_info(s->streams[0], 32, 1, 1000);
 
     return 0;
 }
@@ -82,14 +83,19 @@ static int vc1test_write_trailer(AVFormatContext *s)
 }
 
 AVOutputFormat ff_vc1t_muxer = {
-    "rcv",
-    NULL_IF_CONFIG_SMALL("VC-1 test bitstream"),
-    "",
-    "rcv",
-    sizeof(RCVContext),
-    CODEC_ID_NONE,
-    CODEC_ID_WMV3,
-    vc1test_write_header,
-    vc1test_write_packet,
-    vc1test_write_trailer,
+    "rcv", /* name */
+    NULL_IF_CONFIG_SMALL("VC-1 test bitstream"), /* long_name */
+    0, /* mime_type */
+    "rcv", /* extensions */
+    AV_CODEC_ID_NONE, /* audio_codec */
+    AV_CODEC_ID_WMV3, /* video_codec */
+    0, /* subtitle_codec */
+    0, /* flags */
+    0, /* codec_tag */
+    0, /* priv_class */
+    0, /* next */
+    sizeof(RCVContext), /* priv_data_size */
+    vc1test_write_header, /* write_header */
+    vc1test_write_packet, /* write_packet */
+    vc1test_write_trailer, /* write_trailer */
 };

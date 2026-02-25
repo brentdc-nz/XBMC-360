@@ -1,5 +1,5 @@
 /*
- * various utilities for ffmpeg system
+ * various OS-feature replacement utilities
  * copyright (c) 2000, 2001, 2002 Fabrice Bellard
  *
  * This file is part of FFmpeg.
@@ -29,12 +29,34 @@
 
 #include "config.h"
 
+#include <sys/stat.h>
+
 #if defined(__MINGW32__) && !defined(__MINGW32CE__)
 #  include <fcntl.h>
+#  ifdef lseek
+#   undef lseek
+#  endif
 #  define lseek(f,p,w) _lseeki64((f), (p), (w))
+#  ifdef stat
+#   undef stat
+#  endif
 #  define stat _stati64
+#  ifdef fstat
+#   undef fstat
+#  endif
 #  define fstat(f,s) _fstati64((f), (s))
 #endif /* defined(__MINGW32__) && !defined(__MINGW32CE__) */
+
+#ifdef _WIN32
+#if HAVE_DIRECT_H
+#include <direct.h>
+#elif HAVE_IO_H
+#include <io.h>
+#endif
+#define mkdir(a, b) _mkdir(a)
+#else
+#include <sys/stat.h>
+#endif
 
 static inline int is_dos_path(const char *path)
 {
@@ -44,6 +66,30 @@ static inline int is_dos_path(const char *path)
 #endif
     return 0;
 }
+
+#if defined(__OS2__) || defined(__Plan9__)
+#define SHUT_RD 0
+#define SHUT_WR 1
+#define SHUT_RDWR 2
+#endif
+
+#if defined(_WIN32)
+#define SHUT_RD SD_RECEIVE
+#define SHUT_WR SD_SEND
+#define SHUT_RDWR SD_BOTH
+
+#ifndef S_IRUSR
+#define S_IRUSR S_IREAD
+#endif
+#ifndef S_IWUSR
+#define S_IWUSR S_IWRITE
+#endif
+#endif
+
+#if defined(_WIN32) && !defined(__MINGW32CE__)
+int ff_win32_open(const char *filename, int oflag, int pmode);
+#define open ff_win32_open
+#endif
 
 #if CONFIG_NETWORK
 #if !HAVE_SOCKLEN_T
@@ -58,6 +104,10 @@ typedef int socklen_t;
 #if !HAVE_POLL_H
 typedef unsigned long nfds_t;
 
+#if HAVE_WINSOCK2_H
+#include <winsock2.h>
+#endif
+#if !HAVE_STRUCT_POLLFD
 struct pollfd {
     int fd;
     short events;  /* events to look for */
@@ -77,31 +127,12 @@ struct pollfd {
 #define POLLERR    0x0004  /* errors pending */
 #define POLLHUP    0x0080  /* disconnected */
 #define POLLNVAL   0x1000  /* invalid file descriptor */
+#endif
 
 
-int poll(struct pollfd *fds, nfds_t numfds, int timeout);
+int ff_poll(struct pollfd *fds, nfds_t numfds, int timeout);
+#define poll ff_poll
 #endif /* HAVE_POLL_H */
 #endif /* CONFIG_NETWORK */
-
-#ifdef _MSC_VER
-#define strcasecmp _stricmp
-#define strtoll _strtoi64
-#define atoll _atoi64
-#define strncasecmp _strnicmp
-#define atoll _atoi64
-
-#define WIN32_LEAN_AND_MEAN
-
-#ifdef _XBOX
-#include <xtl.h>
-#else
-#include <windows.h>
-#endif
-#  define usleep(t)    Sleep((t) / 1000)
-#  define lseek(f,p,w) _lseeki64((f), (p), (w))
-#endif
-
-
-
 
 #endif /* AVFORMAT_OS_SUPPORT_H */

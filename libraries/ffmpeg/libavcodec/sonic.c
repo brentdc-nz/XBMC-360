@@ -21,6 +21,7 @@
 #include "avcodec.h"
 #include "get_bits.h"
 #include "golomb.h"
+#include "internal.h"
 
 /**
  * @file
@@ -44,6 +45,7 @@
 #define RIGHT_SIDE 2
 
 typedef struct SonicContext {
+    AVFrame frame;
     int lossless, decorrelation;
 
     int num_taps, downsampling;
@@ -512,7 +514,7 @@ static av_cold int sonic_encode_init(AVCodecContext *avctx)
     if (avctx->channels == 2)
         s->decorrelation = MID_SIDE;
 
-    if (avctx->codec->id == CODEC_ID_SONIC_LS)
+    if (avctx->codec->id == AV_CODEC_ID_SONIC_LS)
     {
         s->lossless = 1;
         s->num_taps = 32;
@@ -545,10 +547,10 @@ static av_cold int sonic_encode_init(AVCodecContext *avctx)
     s->block_align = (int)(2048.0*s->samplerate/44100)/s->downsampling;
     s->frame_size = s->channels*s->block_align*s->downsampling;
 
-    s->tail = av_mallocz(4* s->num_taps*s->channels);
+    s->tail_size = s->num_taps*s->channels;
+    s->tail = av_mallocz(4 * s->tail_size);
     if (!s->tail)
         return -1;
-    s->tail_size = s->num_taps*s->channels;
 
     s->predictor_k = av_mallocz(4 * s->num_taps);
     if (!s->predictor_k)
@@ -621,15 +623,19 @@ static av_cold int sonic_encode_close(AVCodecContext *avctx)
     return 0;
 }
 
-static int sonic_encode_frame(AVCodecContext *avctx,
-                            uint8_t *buf, int buf_size, void *data)
+static int sonic_encode_frame(AVCodecContext *avctx, AVPacket *avpkt,
+                              const AVFrame *frame, int *got_packet_ptr)
 {
     SonicContext *s = avctx->priv_data;
     PutBitContext pb;
     int i, j, ch, quant = 0, x = 0;
-    short *samples = data;
+    int ret;
+    const short *samples = (const int16_t*)frame->data[0];
 
-    init_put_bits(&pb, buf, buf_size*8);
+    if ((ret = ff_alloc_packet2(avctx, avpkt, s->frame_size * 5 + 1000)) < 0)
+        return ret;
+
+    init_put_bits(&pb, avpkt->data, avpkt->size);
 
     // short -> internal
     for (i = 0; i < s->frame_size; i++)
@@ -718,8 +724,8 @@ static int sonic_encode_frame(AVCodecContext *avctx,
 
         if (quant < 1)
             quant = 1;
-        if (quant > 65535)
-            quant = 65535;
+        if (quant > 65534)
+            quant = 65534;
 
         set_ue_golomb(&pb, quant);
 
@@ -740,7 +746,9 @@ static int sonic_encode_frame(AVCodecContext *avctx,
 //    av_log(avctx, AV_LOG_DEBUG, "used bytes: %d\n", (put_bits_count(&pb)+7)/8);
 
     flush_put_bits(&pb);
-    return (put_bits_count(&pb)+7)/8;
+    avpkt->size = (put_bits_count(&pb)+7)/8;
+    *got_packet_ptr = 1;
+    return 0;
 }
 #endif /* CONFIG_SONIC_ENCODER || CONFIG_SONIC_LS_ENCODER */
 
@@ -756,6 +764,9 @@ static av_cold int sonic_decode_init(AVCodecContext *avctx)
 
     s->channels = avctx->channels;
     s->samplerate = avctx->sample_rate;
+
+    avcodec_get_frame_defaults(&s->frame);
+    avctx->coded_frame = &s->frame;
 
     if (!avctx->extradata)
     {
@@ -792,11 +803,16 @@ static av_cold int sonic_decode_init(AVCodecContext *avctx)
     s->decorrelation = get_bits(&gb, 2);
 
     s->downsampling = get_bits(&gb, 2);
+    if (!s->downsampling) {
+        av_log(avctx, AV_LOG_ERROR, "invalid downsampling value\n");
+        return AVERROR_INVALIDDATA;
+    }
+
     s->num_taps = (get_bits(&gb, 5)+1)<<5;
     if (get_bits1(&gb)) // XXX FIXME
         av_log(avctx, AV_LOG_INFO, "Custom quant table\n");
 
-    s->block_align = (int)(2048.0*(s->samplerate/44100))/s->downsampling;
+    s->block_align = (int)(2048.0*s->samplerate/44100)/s->downsampling;
     s->frame_size = s->channels*s->block_align*s->downsampling;
 //    avctx->frame_size = s->block_align;
 
@@ -848,17 +864,24 @@ static av_cold int sonic_decode_close(AVCodecContext *avctx)
 }
 
 static int sonic_decode_frame(AVCodecContext *avctx,
-                            void *data, int *data_size,
+                            void *data, int *got_frame_ptr,
                             AVPacket *avpkt)
 {
     const uint8_t *buf = avpkt->data;
     int buf_size = avpkt->size;
     SonicContext *s = avctx->priv_data;
     GetBitContext gb;
-    int i, quant, ch, j;
-    short *samples = data;
+    int i, quant, ch, j, ret;
+    int16_t *samples;
 
     if (buf_size == 0) return 0;
+
+    s->frame.nb_samples = s->frame_size;
+    if ((ret = ff_get_buffer(avctx, &s->frame)) < 0) {
+        av_log(avctx, AV_LOG_ERROR, "get_buffer() failed\n");
+        return ret;
+    }
+    samples = (int16_t *)s->frame.data[0];
 
 //    av_log(NULL, AV_LOG_INFO, "buf_size: %d\n", buf_size);
 
@@ -930,108 +953,94 @@ static int sonic_decode_frame(AVCodecContext *avctx,
 
     align_get_bits(&gb);
 
-    *data_size = s->frame_size * 2;
+    *got_frame_ptr = 1;
+    *(AVFrame*)data = s->frame;
 
     return (get_bits_count(&gb)+7)/8;
 }
 
 AVCodec ff_sonic_decoder = {
-#ifndef MSC_STRUCTS
-    "sonic",
-    AVMEDIA_TYPE_AUDIO,
-    CODEC_ID_SONIC,
-    sizeof(SonicContext),
-    sonic_decode_init,
-    NULL,
-    sonic_decode_close,
-    sonic_decode_frame,
-    .long_name = NULL_IF_CONFIG_SMALL("Sonic"),
-#else
-    /* name = */ "sonic",
-    /* type = */ AVMEDIA_TYPE_AUDIO,
-    /* id = */ CODEC_ID_SONIC,
-    /* priv_data_size = */ sizeof(SonicContext),
-    /* init = */ sonic_decode_init,
-    /* encode = */ NULL,
-    /* close = */ sonic_decode_close,
-    /* decode = */ sonic_decode_frame,
-    /* capabilities = */ 0,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ 0,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("Sonic"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ 0,
-    /* channel_layouts = */ 0,
-#endif
-};
+        "sonic", /* name */
+        NULL_IF_CONFIG_SMALL("Sonic"), /* long_name */
+        AVMEDIA_TYPE_AUDIO, /* type */
+        AV_CODEC_ID_SONIC, /* id */
+        CODEC_CAP_DR1 | CODEC_CAP_EXPERIMENTAL, /* capabilities */
+        0, /* supported_framerates */
+        0, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        0, /* priv_class */
+        0, /* profiles */
+        sizeof(SonicContext), /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        sonic_decode_init, /* init */
+        0, /* encode_sub */
+        0, /* encode2 */
+        sonic_decode_frame, /* decode */
+        sonic_decode_close, /* close */
+    };
 #endif /* CONFIG_SONIC_DECODER */
 
 #if CONFIG_SONIC_ENCODER
 AVCodec ff_sonic_encoder = {
-#ifndef MSC_STRUCTS
-    "sonic",
-    AVMEDIA_TYPE_AUDIO,
-    CODEC_ID_SONIC,
-    sizeof(SonicContext),
-    sonic_encode_init,
-    sonic_encode_frame,
-    sonic_encode_close,
-    NULL,
-    .long_name = NULL_IF_CONFIG_SMALL("Sonic"),
-#else
-    /* name = */ "sonic",
-    /* type = */ AVMEDIA_TYPE_AUDIO,
-    /* id = */ CODEC_ID_SONIC,
-    /* priv_data_size = */ sizeof(SonicContext),
-    /* init = */ sonic_encode_init,
-    /* encode = */ sonic_encode_frame,
-    /* close = */ sonic_encode_close,
-    /* decode = */ NULL,
-    /* capabilities = */ 0,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ 0,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("Sonic"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ 0,
-    /* channel_layouts = */ 0,
-#endif
-};
+        "sonic", /* name */
+        NULL_IF_CONFIG_SMALL("Sonic"), /* long_name */
+        AVMEDIA_TYPE_AUDIO, /* type */
+        AV_CODEC_ID_SONIC, /* id */
+        CODEC_CAP_EXPERIMENTAL, /* capabilities */
+        0, /* supported_framerates */
+        0, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        0, /* priv_class */
+        0, /* profiles */
+        sizeof(SonicContext), /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        sonic_encode_init, /* init */
+        0, /* encode_sub */
+        sonic_encode_frame, /* encode2 */
+        0, /* decode */
+        sonic_encode_close, /* close */
+    };
 #endif
 
 #if CONFIG_SONIC_LS_ENCODER
 AVCodec ff_sonic_ls_encoder = {
-#ifndef MSC_STRUCTS
-    "sonicls",
-    AVMEDIA_TYPE_AUDIO,
-    CODEC_ID_SONIC_LS,
-    sizeof(SonicContext),
-    sonic_encode_init,
-    sonic_encode_frame,
-    sonic_encode_close,
-    NULL,
-    .long_name = NULL_IF_CONFIG_SMALL("Sonic lossless"),
-#else
-    /* name = */ "sonicls",
-    /* type = */ AVMEDIA_TYPE_AUDIO,
-    /* id = */ CODEC_ID_SONIC_LS,
-    /* priv_data_size = */ sizeof(SonicContext),
-    /* init = */ sonic_encode_init,
-    /* encode = */ sonic_encode_frame,
-    /* close = */ sonic_encode_close,
-    /* decode = */ NULL,
-    /* capabilities = */ 0,
-    /* next = */ 0,
-    /* flush = */ 0,
-    /* supported_framerates = */ 0,
-    /* pix_fmts = */ 0,
-    /* long_name = */ NULL_IF_CONFIG_SMALL("Sonic lossless"),
-    /* supported_samplerates = */ 0,
-    /* sample_fmts = */ 0,
-    /* channel_layouts = */ 0,
-#endif
-};
+        "sonicls", /* name */
+        NULL_IF_CONFIG_SMALL("Sonic lossless"), /* long_name */
+        AVMEDIA_TYPE_AUDIO, /* type */
+        AV_CODEC_ID_SONIC_LS, /* id */
+        CODEC_CAP_EXPERIMENTAL, /* capabilities */
+        0, /* supported_framerates */
+        0, /* pix_fmts */
+        0, /* supported_samplerates */
+        0, /* sample_fmts */
+        0, /* channel_layouts */
+        0, /* max_lowres */
+        0, /* priv_class */
+        0, /* profiles */
+        sizeof(SonicContext), /* priv_data_size */
+        0, /* next */
+        0, /* init_thread_copy */
+        0, /* update_thread_context */
+        0, /* defaults */
+        0, /* init_static_data */
+        sonic_encode_init, /* init */
+        0, /* encode_sub */
+        sonic_encode_frame, /* encode2 */
+        0, /* decode */
+        sonic_encode_close, /* close */
+    };
 #endif
