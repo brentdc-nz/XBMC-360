@@ -47,7 +47,7 @@ HRESULT __stdcall DVDPerformanceCounterVideoQueue(PLARGE_INTEGER numerator, PLAR
 	return S_OK;
 }
 
-inline __int64 get_thread_cpu_usage(ProcessPerformance* p)
+inline int64_t get_thread_cpu_usage(ProcessPerformance* p)
 {
 	if(p->hThread)
 	{

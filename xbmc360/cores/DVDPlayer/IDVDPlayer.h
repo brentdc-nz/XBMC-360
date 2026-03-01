@@ -5,6 +5,7 @@ class IDVDPlayer
 {
 public:
 
+	virtual ~IDVDPlayer() { }
 };
 
 #endif //H_IDVDPLAYER

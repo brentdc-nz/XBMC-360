@@ -3,7 +3,8 @@
 
 #include "DVDAudioCodec.h"
 
-extern "C" {
+extern "C"
+{
 #include "libswresample/swresample.h"
 }
 
@@ -23,31 +24,26 @@ public:
 	virtual int GetBitsPerSample();
 	virtual const char* GetName() { return "FFmpeg"; }
 	virtual int GetBufferSize() { return m_iBuffered; }
+	virtual int GetBitRate();
 
 protected:
 	AVCodecContext* m_pCodecContext;
-	AVFrame*        m_pFrame;            // FFmpeg 1.2: decode output goes into AVFrame
+	SwrContext*     m_pConvert;
 	enum AVSampleFormat m_iSampleFormat; // FFmpeg 1.2: renamed from SampleFormat
 
-	BYTE *m_pBuffer1;
+	AVFrame* m_pFrame1;
 	int   m_iBufferSize1;
 
 	BYTE *m_pBuffer2;
 	int   m_iBufferSize2;
 
-	int   m_iOutputSize;                 // Decoded audio data size from AVFrame
-
 	bool m_bOpenedCodec;
 	int m_iBuffered;
-
-	SwrContext*     m_pConvert;
-	enum AVSampleFormat m_iLastSampleFormat;
-	int             m_iLastChannels;
-	int             m_iLastSampleRate;
 
 #if 0//ndef _HARDLINKED
 	DllAvCodec m_dllAvCodec;
 	DllAvUtil m_dllAvUtil;
+	DllSwResample m_dllSwResample;
 #endif
 };
 

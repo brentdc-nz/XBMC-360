@@ -1,7 +1,6 @@
 #ifndef H_CDVDDEMUXFFMPEG
 #define H_CDVDDEMUXFFMPEG
 
-//FFMPEG
 extern "C" 
 {
 #include "libavformat\AvFormat.h"
@@ -15,9 +14,6 @@ extern "C"
 
 #define MAX_STREAMS 20
 
-#define FFMPEG_FILE_BUFFER_SIZE   32768 // Default reading size for ffmpeg
-#define FFMPEG_DVDNAV_BUFFER_SIZE 2048  // For dvd's
-
 class CDVDDemuxFFmpeg;
 
 class CDemuxStreamVideoFFmpeg
@@ -27,7 +23,7 @@ class CDemuxStreamVideoFFmpeg
 	AVStream*        m_stream;
 public:
 	CDemuxStreamVideoFFmpeg(CDVDDemuxFFmpeg *parent, AVStream* stream)
-    : m_parent(parent)
+	: m_parent(parent)
 	, m_stream(stream)
 	{}
 	virtual void GetStreamInfo(std::string& strInfo);
@@ -66,6 +62,9 @@ public:
 	virtual void GetStreamName(std::string& strInfo);
 };
 
+#define FFMPEG_FILE_BUFFER_SIZE   32768 // default reading size for ffmpeg
+#define FFMPEG_DVDNAV_BUFFER_SIZE 2048  // for dvd's
+
 class CDVDDemuxFFmpeg : public CDVDDemux
 {
 public:
@@ -75,28 +74,24 @@ public:
 	bool Open(CDVDInputStream* pInput);
 	void Dispose();
 	void Reset();
-	void Abort();
 	void Flush();
-	void AddStream(int iId);
-	void Lock()   { EnterCriticalSection(&m_critSection); }
-	void Unlock() { LeaveCriticalSection(&m_critSection); }
-	int GetStreamLength();
+	void Abort();
 	void SetSpeed(int iSpeed);
 	virtual std::string GetFileName();
+
 	DemuxPacket* Read();
+
 	bool SeekTime(int time, bool backwords = false, double* startpts = NULL);
+	bool SeekByte(int64_t pos);
+	int GetStreamLength();
 	CDemuxStream* GetStream(int iStreamId);
 	int GetNrOfStreams();
+
+	bool SeekChapter(int chapter, double* startpts = NULL);
 	int GetChapterCount();
 	int GetChapter();
 	void GetChapterName(std::string& strChapterName);
-	double ConvertTimestamp(int64_t pts, int den, int num);
-	void UpdateCurrentPTS();
-
-	CRITICAL_SECTION m_critSection;
-	CDemuxStream* m_streams[MAX_STREAMS]; // Maximum number of streams that ffmpeg can handle
-
-	AVIOContext* m_ioContext;
+	virtual void GetStreamCodecName(int iStreamId, CStdString &strName);
 
 	bool Aborted();
 
@@ -107,13 +102,25 @@ protected:
 	friend class CDemuxStreamVideoFFmpeg;
 	friend class CDemuxStreamSubtitleFFmpeg;
 
+	int ReadFrame(AVPacket *packet);
+	void AddStream(int iId);
+	void Lock()   { EnterCriticalSection(&m_critSection); }
+	void Unlock() { LeaveCriticalSection(&m_critSection); }
+
+	double ConvertTimestamp(int64_t pts, int den, int num);
+	void UpdateCurrentPTS();
+
+	CRITICAL_SECTION m_critSection;
+	CDemuxStream* m_streams[MAX_STREAMS]; // maximum number of streams that ffmpeg can handle
+
+	AVIOContext* m_ioContext;
+
 	double   m_iCurrentPts; // Used for stream length estimation
 	bool     m_bMatroska;
 	bool     m_bAVI;
 	int      m_speed;
 	unsigned m_program;
 	DWORD    m_timeout;
-	unsigned char m_buffer[FFMPEG_FILE_BUFFER_SIZE + AVPROBE_PADDING_SIZE];
 
 	CDVDInputStream* m_pInput;
 };

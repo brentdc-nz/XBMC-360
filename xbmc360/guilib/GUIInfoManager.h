@@ -192,6 +192,7 @@ namespace INFO
 #define WINDOW_IS_MEDIA             9998
 #define WINDOW_IS_ACTIVE            9999
 
+#define CONTROL_IS_VISIBLE          29998
 #define CONTROL_GROUP_HAS_FOCUS     29999
 
 // The multiple information vector

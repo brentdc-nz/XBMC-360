@@ -1,8 +1,10 @@
 #ifndef H_CDVDMSG
 #define H_CDVDMSG
 
+// Include as less is possible to prevent dependencies
 #include "DVDDemuxers/DVDDemux.h"
 #include <assert.h>
+#include <string>
 
 class CDVDMsg
 {
@@ -10,7 +12,7 @@ public:
 	enum Message
 	{
 		NONE = 1000,
- 
+
 		// Messages used in the whole system
 		GENERAL_RESYNC,
 		GENERAL_FLUSH,                  // Flush all buffers
@@ -22,27 +24,32 @@ public:
 		GENERAL_EOF,                    // eof of stream
 
 		// Player core related messages (cdvdplayer.cpp)
-		PLAYER_SET_AUDIOSTREAM,         
-		PLAYER_SET_SUBTITLESTREAM,      
-		PLAYER_SET_SUBTITLESTREAM_VISIBLE,
-		PLAYER_SET_STATE,               // Restore the dvdplayer to a certain state
-		PLAYER_SET_RECORD,              // Set record state
+		PLAYER_SET_AUDIOSTREAM,         //
+		PLAYER_SET_SUBTITLESTREAM,      //
+		PLAYER_SET_SUBTITLESTREAM_VISIBLE, //
+		PLAYER_SET_STATE,               // restore the dvdplayer to a certain state
+		PLAYER_SET_RECORD,              // set record state
 		PLAYER_SEEK,                    // 
 		PLAYER_SEEK_CHAPTER,            //
-		PLAYER_SETSPEED,                // Set the playback speed
+		PLAYER_SETSPEED,                // set the playback speed
 
-		PLAYER_CHANNEL_NEXT,            // Switches to next playback channel
-		PLAYER_CHANNEL_PREV,            // Switches to previous playback channel
-		PLAYER_CHANNEL_SELECT,          // Switches to given playback channel
-		PLAYER_STARTED,                 // Sent whenever a sub player has finished it's first frame after open
+		PLAYER_CHANNEL_NEXT,            // switches to next playback channel
+		PLAYER_CHANNEL_PREV,            // switches to previous playback channel
+		PLAYER_CHANNEL_SELECT,          // switches to given playback channel
+		PLAYER_STARTED,                 // sent whenever a sub player has finished it's first frame after open
+
+		PLAYER_DISPLAYTIME,             // display time struct from av players
 
 		// Demuxer related messages
-		DEMUXER_PACKET,                 // Data packet
-		DEMUXER_RESET,                  // Reset the demuxer
+		DEMUXER_PACKET,                 // data packet
+		DEMUXER_RESET,                  // reset the demuxer
     
 		// Video related messages
-		VIDEO_NOSKIP,                   // Next pictures is not to be skipped by the video renderer
-		VIDEO_SET_ASPECT,               // Set aspectratio of video
+		VIDEO_NOSKIP,                   // next pictures is not to be skipped by the video renderer
+		VIDEO_SET_ASPECT,               // set aspectratio of video
+
+		// Audio related messages
+		AUDIO_SILENCE,
 
 		// Subtitle related messages
 		SUBTITLE_CLUTCHANGE
@@ -52,6 +59,7 @@ public:
 	{
 		m_references = 1;
 		m_message = msg;
+
 #ifdef DVDDEBUG_MESSAGE_TRACKER
 		g_dvdMessageTracker.Register(this);
 #endif
@@ -61,6 +69,7 @@ public:
 	{
 		m_references = references;
 		m_message = msg;
+
 #ifdef DVDDEBUG_MESSAGE_TRACKER
 		g_dvdMessageTracker.Register(this);
 #endif
@@ -68,7 +77,8 @@ public:
   
 	virtual ~CDVDMsg()
 	{
-		assert(m_references == 0); 
+		assert(m_references == 0);
+
 #ifdef DVDDEBUG_MESSAGE_TRACKER
 		g_dvdMessageTracker.UnRegister(this);
 #endif
@@ -120,13 +130,14 @@ private:
 class CDVDMsgPlayerSeek : public CDVDMsg
 {
 public:
-	CDVDMsgPlayerSeek(int time, bool backward, bool flush = true, bool accurate = true, bool restore = true)
+	CDVDMsgPlayerSeek(int time, bool backward, bool flush = true, bool accurate = true, bool restore = true, bool trickplay = false)
 		: CDVDMsg(PLAYER_SEEK)
 		, m_time(time)
 		, m_backward(backward)
 		, m_flush(flush)
 		, m_accurate(accurate)
 		, m_restore(restore)
+		, m_trickplay(trickplay)
 	{}
 
 	int  GetTime()              { return m_time; }
@@ -134,6 +145,7 @@ public:
 	bool GetFlush()             { return m_flush; }
 	bool GetAccurate()          { return m_accurate; }
 	bool GetRestore()           { return m_restore; }
+	bool GetTrickPlay()         { return m_trickplay; }
 
 private:
 	int  m_time;
@@ -141,6 +153,46 @@ private:
 	bool m_flush;
 	bool m_accurate;
 	bool m_restore; // Whether to restore any EDL cut time
+	bool m_trickplay;
+};
+
+class CDVDMsgPlayerSetAudioStream : public CDVDMsg
+{
+public:
+	CDVDMsgPlayerSetAudioStream(int streamId) : CDVDMsg(PLAYER_SET_AUDIOSTREAM) { m_streamId = streamId; }
+	int GetStreamId()                     { return m_streamId; }
+private:
+	int m_streamId;
+};
+
+class CDVDMsgPlayerSetSubtitleStream : public CDVDMsg
+{
+public:
+	CDVDMsgPlayerSetSubtitleStream(int streamId) : CDVDMsg(PLAYER_SET_SUBTITLESTREAM) { m_streamId = streamId; }
+	int GetStreamId()                     { return m_streamId; }
+private:
+	int m_streamId;
+};
+
+class CDVDMsgPlayerSetState : public CDVDMsg
+{
+public:
+	CDVDMsgPlayerSetState(std::string& state) : CDVDMsg(PLAYER_SET_STATE) { m_state = state; }
+	std::string GetState()                { return m_state; }
+private:
+	std::string m_state;
+};
+
+class CDVDMsgPlayerSeekChapter : public CDVDMsg
+{
+public:
+	CDVDMsgPlayerSeekChapter(int iChapter)
+		: CDVDMsg(PLAYER_SEEK_CHAPTER)
+		, m_iChapter(iChapter)
+	{}
+	int GetChapter() const { return m_iChapter; }
+private:
+	int m_iChapter;
 };
 
 

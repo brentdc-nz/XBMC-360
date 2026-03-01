@@ -16,8 +16,6 @@ class CDVDAudioCodec;
 class IAudioCallback;
 class CDVDAudioCodec;
 
-enum AVCodecID;
-
 #define DECODE_FLAG_DROP    1
 #define DECODE_FLAG_RESYNC  2
 #define DECODE_FLAG_ERROR   4
@@ -37,31 +35,16 @@ typedef struct stDVDAudioFrame
 	bool passthrough;
 } DVDAudioFrame;
 
-class CPTSOutputQueue
-{
-private:
-	typedef struct {double pts; double timestamp; double duration;} TPTSItem;
-	TPTSItem m_current;
-	std::queue<TPTSItem> m_queue;
-	CCriticalSection m_sync;
-
-public:
-	CPTSOutputQueue();
-	void Add(double pts, double delay, double duration);
-	void Flush();
-	double Current();
-};
-
 class CPTSInputQueue
 {
 private:
-	typedef std::list<std::pair<__int64, double> >::iterator IT;
-	std::list<std::pair<__int64, double> > m_list;
+	typedef std::list<std::pair<int64_t, double> >::iterator IT;
+	std::list<std::pair<int64_t, double> > m_list;
 	CCriticalSection m_sync;
 
 public:
-	void   Add(__int64 bytes, double pts);
-	double Get(__int64 bytes, bool consume);
+	void   Add(int64_t bytes, double pts);
+	double Get(int64_t bytes, bool consume);
 	void   Flush();
 };
 
@@ -78,14 +61,23 @@ public:
 	bool OpenStream(CDVDStreamInfo &hints);
 	void OpenStream(CDVDStreamInfo &hints, CDVDAudioCodec* codec);
 	void CloseStream(bool bWaitForBuffers);
+
 	void SetSpeed(int speed);
 	void Flush();
 
-	bool AcceptsData()                                    { return !m_messageQueue.IsFull(); }
+	// Waits until all available data has been rendered
+	void WaitForBuffers();
+	bool AcceptsData() const                              { return !m_messageQueue.IsFull(); }
+	bool HasData() const                                  { return m_messageQueue.GetDataSize() > 0; }
+	int  GetLevel() const                                 { return m_messageQueue.GetLevel(); }
+	bool IsInited() const                                 { return m_messageQueue.IsInited(); }
 	void SendMessage(CDVDMsg* pMsg, int priority = 0)     { m_messageQueue.Put(pMsg, priority); }
-	bool IsStalled()                                      { return m_stalled;  }
-	
+
 	void SetVolume(long nVolume)                          { m_dvdAudio.SetVolume(nVolume); }
+//	void SetDynamicRangeCompression(long drc)             { m_dvdAudio.SetDynamicRangeCompression(drc); }
+
+	CDVDMessageQueue m_messageQueue;
+	CDVDMessageQueue& m_messageParent;
 
 	std::string GetPlayerInfo();
 	int GetAudioBitrate();
@@ -93,12 +85,12 @@ public:
 	// Holds stream information for current playing stream
 	CDVDStreamInfo m_streaminfo;
 
-	CDVDMessageQueue m_messageQueue;
-	CDVDMessageQueue& m_messageParent;
 	CPTSOutputQueue m_ptsOutput;
 	CPTSInputQueue  m_ptsInput;
 
-	double GetCurrentPts()                                { return m_ptsOutput.Current(); }
+	bool IsStalled()                                  { return m_stalled;  }
+
+	double GetCurrentPts()                                { return m_dvdAudio.GetPlayingPts(); }
 
 protected:
 	virtual void OnStartup();
@@ -126,6 +118,7 @@ protected:
 			size = p->iSize;
 			dts = p->dts;
 		}
+
 		void Release()
 		{
 			if(msg) msg->Release();
@@ -146,7 +139,7 @@ protected:
 	bool    m_stalled;
 	bool    m_started;
 	double  m_duration; // Last packets duration
-
+	bool    m_silence;
 	bool OutputPacket(DVDAudioFrame &audioframe);
 	double m_error; // Last average error
 	int64_t m_errortime; // Timestamp of last time we measured

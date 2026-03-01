@@ -24,6 +24,10 @@ public:
 
 	float m_AudioDelay;
 	int m_AudioStream;
+	int m_SubtitleStream;
+	float m_SubtitleDelay;
+	bool m_SubtitleOn;
+	bool m_SubtitleCached;
 	bool m_PostProcess;
 	EINTERLACEMETHOD m_InterlaceMethod;
 };

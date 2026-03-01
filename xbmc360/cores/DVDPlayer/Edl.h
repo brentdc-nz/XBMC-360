@@ -31,6 +31,7 @@ public:
 	bool InCut(int64_t iSeek, Cut *pCut = NULL);
 	bool HasCut();
 	bool HasSceneMarker();
+	bool GetNextSceneMarker(bool bPlus, const int64_t iClock, int64_t *iSceneMarker);
 	int64_t RemoveCutTime(int64_t iSeek);
 	int64_t RestoreCutTime(int64_t iClock);
 	CStdString GetInfo();

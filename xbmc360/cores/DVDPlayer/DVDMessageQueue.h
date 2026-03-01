@@ -1,7 +1,6 @@
 #ifndef H_CDVDMESSAGEQUEUE
 #define H_CDVDMESSAGEQUEUE
 
-#include <string>
 #include "DVDMessage.h"
 #include "utils\SingleLock.h"
 #include <string>
@@ -79,23 +78,30 @@ public:
 	void  Abort();
 	void  End();
 
+	MsgQueueReturnCode Put(CDVDMsg* pMsg, int priority = 0);
+ 
 	/**
 	* msg,       message type from DVDMessage.h
 	* timeout,   timeout in msec
 	*/
 	MsgQueueReturnCode Get(CDVDMsg** pMsg, unsigned int iTimeoutInMilliSeconds, int priority = 0);
-	MsgQueueReturnCode Put(CDVDMsg* pMsg, int priority = 0);
-	unsigned GetPacketCount(CDVDMsg::Message type);
-	void WaitUntilEmpty();
-	void SetMaxDataSize(int iMaxDataSize) { m_iMaxDataSize = iMaxDataSize; }
-	void SetMaxTimeSize(double sec)       { m_TimeSize  = 1.0 / /*std::*/max(1.0, sec); }
-	int GetMaxDataSize() const            { return m_iMaxDataSize; }
-	bool IsInited() const                 { return m_bInitialized; }
+
 	int GetDataSize() const               { return m_iDataSize; }
+	int GetTimeSize() const;
+	unsigned GetPacketCount(CDVDMsg::Message type);
 	bool ReceivedAbortRequest()           { return m_bAbortRequest; }
+	void WaitUntilEmpty();
+  
 	// Non messagequeue related functions
 	bool IsFull() const                   { return GetLevel() == 100; }
 	int  GetLevel() const;
+
+	void SetMaxDataSize(int iMaxDataSize) { m_iMaxDataSize = iMaxDataSize; }
+	void SetMaxTimeSize(double sec)       { m_TimeSize  = 1.0 / (std::max)(1.0, sec); }
+	int GetMaxDataSize() const            { return m_iMaxDataSize; }
+	double GetMaxTimeSize() const         { return m_TimeSize; }
+	bool IsInited() const                 { return m_bInitialized; }
+	bool IsDataBased() const;
 
 private:
 	HANDLE m_hEvent;

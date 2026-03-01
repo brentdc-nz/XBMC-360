@@ -221,6 +221,52 @@ CStdString CEdl::GetInfo()
 	return strInfo.IsEmpty() ? "-" : strInfo;
 }
 
+bool CEdl::GetNextSceneMarker(bool bPlus, const int64_t iClock, int64_t *iSceneMarker)
+{
+	if (!HasSceneMarker())
+		return false;
+
+	int64_t iSeek = RestoreCutTime(iClock);
+
+	int64_t iDiff = 10 * 60 * 60 * 1000; // 10 hours to ms.
+	bool bFound = false;
+
+	if (bPlus) // Find closest scene forwards
+	{
+		for (int i = 0; i < (int)m_vecSceneMarkers.size(); i++)
+		{
+			if ((m_vecSceneMarkers[i] > iSeek) && ((m_vecSceneMarkers[i] - iSeek) < iDiff))
+			{
+				iDiff = m_vecSceneMarkers[i] - iSeek;
+				*iSceneMarker = m_vecSceneMarkers[i];
+				bFound = true;
+			}
+		}
+	}
+	else // Find closest scene backwards
+	{
+		for (int i = 0; i < (int)m_vecSceneMarkers.size(); i++)
+		{
+			if ((m_vecSceneMarkers[i] < iSeek) && ((iSeek - m_vecSceneMarkers[i]) < iDiff))
+			{
+				iDiff = iSeek - m_vecSceneMarkers[i];
+				*iSceneMarker = m_vecSceneMarkers[i];
+				bFound = true;
+			}
+		}
+	}
+
+	/*
+	 * If the scene marker is in a cut then return the end of the cut. Can't guarantee that this is
+	 * picked up when scene markers are added.
+	 */
+	Cut cut;
+	if (bFound && InCut(*iSceneMarker, &cut) && cut.action == CUT)
+		*iSceneMarker = cut.end;
+
+	return bFound;
+}
+
 CStdString CEdl::MillisecondsToTimeString(const int64_t iMilliseconds)
 {
 	CStdString strTimeString = CStringUtils::SecondsToTimeString((long)(iMilliseconds / 1000), TIME_FORMAT_HH_MM_SS); // milliseconds to seconds

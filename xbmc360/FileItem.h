@@ -60,6 +60,7 @@ public:
 	bool IsRemovable() const;
 	bool IsFileFolder() const;
 	bool IsInternetStream() const { return false; } ; // TODO
+	bool IsStack() const { return false; } ; // TODO - Stack file support not ported
 	bool IsRemote() const;
 
 	virtual void SetLabel(const CStdString &strLabel);

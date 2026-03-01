@@ -31,7 +31,7 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream)
 	}
 */
 #ifdef HAS_FILESYSTEM
-		if(pInputStream->IsStreamType(DVDSTREAM_TYPE_HTSP))
+	if(pInputStream->IsStreamType(DVDSTREAM_TYPE_HTSP))
 	{
 		auto_ptr<CDVDDemuxHTSP> demuxer(new CDVDDemuxHTSP());
 		if(demuxer->Open(pInputStream))

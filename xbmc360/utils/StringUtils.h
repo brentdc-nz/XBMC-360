@@ -23,6 +23,7 @@ public:
 	static CStdString MakeLowercase(CStdString strTmp);
 	static size_t FindWords(const char *str, const char *wordLowerCase);
 	static void WordToDigits(CStdString &word);
+	static CStdString SizeToString(__int64 size);
 
 	static const CStdString EmptyString;
 };

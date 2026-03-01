@@ -12,6 +12,7 @@ public:
 	virtual ~IAudioRenderer() {};
 	virtual FLOAT GetDelay() = 0;
 	virtual FLOAT GetCacheTime() = 0;
+	virtual FLOAT GetCacheTotal() { return 0.0; }
 
 	virtual DWORD AddPackets(unsigned char* data, DWORD len) = 0;
 	virtual bool IsResampling() { return false;};

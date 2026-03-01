@@ -124,10 +124,12 @@ CXAudio2::CXAudio2(int iChannels, unsigned int uiSamplesPerSec, unsigned int uiB
 
 	m_bInitialized = true;
 
-	m_timePerPacket = 1.0f / (float)(iChannels*(uiBitsPerSample/8) * uiSamplesPerSec);
-	m_packetsSent = 0;
+	m_uiChannels = iChannels;
+	DWORD bytesPerSec = iChannels * (uiBitsPerSample / 8) * uiSamplesPerSec;
+	m_SecondsPerByte = (bytesPerSec > 0) ? (1.0 / (double)bytesPerSec) : 0.0;
+	m_totalBytesSubmitted = 0;
+	m_samplesAtReset = 0;
 	m_bPaused = false;
-	m_lastUpdate = CTimeUtils::GetTimeMS();
 
 	m_VisBuffer = (PBYTE)malloc(m_VisMaxBytes = iChannels * m_uiSamplesPerSec * (m_uiBitsPerSample / 8) / 20);
 	m_VisBytes = 0;
@@ -184,10 +186,9 @@ HRESULT CXAudio2::Deinitialize()
 
 void CXAudio2::Flush()
 {
-	m_lastUpdate = CTimeUtils::GetTimeMS();
-	m_packetsSent = 0;
-
-	Pause();
+	// Discard all queued audio — delegate to Stop() which
+	// flushes source buffers and resets delay tracking.
+	Stop();
 }
 
 //***********************************************************************************************
@@ -199,8 +200,10 @@ HRESULT CXAudio2::Pause()
 
 	m_bPaused = true;
 
-	// We flush on pause
-	m_pSourceVoice->FlushSourceBuffers();
+	// Just stop the voice — do NOT flush source buffers.
+	// Queued audio data stays in the pipeline and will resume
+	// from where it left off, matching original DirectSound
+	// behavior and preserving the correct GetDelay() value.
 	m_pSourceVoice->Stop();
 
 	return S_OK;
@@ -216,6 +219,10 @@ HRESULT CXAudio2::Resume()
 	m_bPaused = false;
 	m_pSourceVoice->Start();
 
+	// No counter reset needed — Pause() did not flush buffers,
+	// so m_totalBytesSubmitted and m_samplesAtReset are still
+	// valid and SamplesPlayed continues from where it froze.
+
 	return S_OK;
 }
 
@@ -229,8 +236,12 @@ HRESULT CXAudio2::Stop()
 	m_pSourceVoice->Stop();
 	m_pSourceVoice->FlushSourceBuffers();
 
-	m_lastUpdate = CTimeUtils::GetTimeMS();
-	m_packetsSent = 0;
+	m_totalBytesSubmitted = 0;
+	{
+		XAUDIO2_VOICE_STATE state;
+		m_pSourceVoice->GetState(&state);
+		m_samplesAtReset = state.SamplesPlayed;
+	}
 	m_VisBytes = 0;
 
 	return S_OK;
@@ -265,8 +276,6 @@ HRESULT CXAudio2::SetCurrentVolume(long nVolume)
 
 DWORD CXAudio2::GetSpace()
 {
-	Update();
-
 	if(!m_bInitialized || !m_pSourceVoice)
 		return 0;
 
@@ -311,32 +320,62 @@ DWORD CXAudio2::AddPackets(unsigned char* data, DWORD len)
 
 	LeaveCriticalSection(&m_CriticalSection);
 
-	int add = (len / GetChunkLen()) * GetChunkLen();
-	m_packetsSent += add;
+	// Track total bytes submitted for accurate delay calculation.
+	// Round down to chunk boundary like the original code.
+	DWORD added = (len / GetChunkLen()) * GetChunkLen();
+	m_totalBytesSubmitted += added;
 
-	return add;
+	return added;
 }
 
 //***********************************************************************************************
 
 float CXAudio2::GetDelay()
 {
-	Update();
+	if (!m_bInitialized || !m_pSourceVoice)
+		return 0.0f;
 
-	return m_timePerPacket * (float)m_packetsSent;
+	// Query the hardware for the exact number of samples played.
+	// This is drift-free unlike the previous wall-clock estimation.
+	XAUDIO2_VOICE_STATE state;
+	m_pSourceVoice->GetState(&state);
+
+	DWORD bytesPerSample = (m_uiBitsPerSample >> 3) * m_uiChannels;
+
+	// Guard against unsigned underflow: SamplesPlayed may be less than
+	// m_samplesAtReset if the counter was reset by a Stop/Start cycle.
+	UINT64 samplesSinceReset = 0;
+	if (state.SamplesPlayed >= m_samplesAtReset)
+		samplesSinceReset = state.SamplesPlayed - m_samplesAtReset;
+
+	UINT64 bytesPlayed = samplesSinceReset * bytesPerSample;
+
+	// Delay = bytes still in the pipeline waiting to be played
+	INT64 bytesBuffered = (INT64)m_totalBytesSubmitted - (INT64)bytesPlayed;
+	if (bytesBuffered < 0)
+		bytesBuffered = 0;
+
+	return (float)(m_SecondsPerByte * (double)bytesBuffered);
 }
 
 //***********************************************************************************************
 
 float CXAudio2::GetCacheTime()
 {
+	// Return the same value as GetDelay — this represents the total
+	// amount of audio data currently buffered and waiting to play.
+	return GetDelay();
+}
+
+//***********************************************************************************************
+
+float CXAudio2::GetCacheTotal()
+{
 	if(!m_bInitialized || !m_pXAudio2)
 		return 0.0;
 
-	XAUDIO2_PERFORMANCE_DATA perfData;
-	m_pXAudio2->GetPerformanceData(&perfData);
-
-	return perfData.CurrentLatencyInSamples / (float)m_uiSamplesPerSec;
+	// Maximum bufferable audio = MAX_BUFFERS * CHUNKLEN bytes
+	return (float)(m_SecondsPerByte * (double)(MAX_BUFFERS * CHUNKLEN));
 }
 
 //***********************************************************************************************
@@ -377,8 +416,15 @@ DWORD CXAudio2::GetVisData(BYTE* pDest, DWORD maxLen)
 
 void CXAudio2::WaitCompletion()
 {
-	while(m_packetsSent > 0)
-		Update();
+	if (!m_pSourceVoice)
+		return;
+
+	XAUDIO2_VOICE_STATE state;
+	do {
+		m_pSourceVoice->GetState(&state);
+		if (state.BuffersQueued > 0)
+			WaitForSingleObject(m_hBufferEndEvent, 100);
+	} while (state.BuffersQueued > 0);
 }
 
 //***********************************************************************************************
@@ -399,27 +445,5 @@ void CXAudio2::SetBufferPlayedCallback(BufferPlayedCallback callback, void* pCal
 
 //***********************************************************************************************
 
-void CXAudio2::Update()
-{
-	long currentTime = CTimeUtils::GetTimeMS();
-	long deltaTime = (currentTime - m_lastUpdate);
-
-	if(m_bPaused)
-	{
-		m_lastUpdate += deltaTime;
-		return;
-	}
-
-	double d = (double)deltaTime / 1000.0f;
-
-	if (currentTime != m_lastUpdate)
-	{
-		double i = (d / (double)m_timePerPacket);
-		m_packetsSent -= (long)i;
-
-		if(m_packetsSent < 0)
-			m_packetsSent = 0;
-		
-		m_lastUpdate = currentTime;
-	}
-}
+// Update() is no longer needed — delay is now derived from
+// XAudio2's hardware SamplesPlayed counter in GetDelay().

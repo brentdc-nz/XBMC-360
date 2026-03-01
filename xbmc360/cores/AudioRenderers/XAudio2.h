@@ -18,6 +18,7 @@ public:
 	virtual DWORD GetChunkLen();
 	virtual float GetDelay();
 	virtual float GetCacheTime();
+	virtual float GetCacheTotal();
 
 	virtual ~CXAudio2();
 
@@ -67,12 +68,11 @@ private:
 
 	unsigned int m_uiSamplesPerSec;
 	unsigned int m_uiBitsPerSample;
+	unsigned int m_uiChannels;
 	long m_nCurrentVolume;
-	float m_timePerPacket;
-	int m_packetsSent;
-	long m_lastUpdate;
-
-	void Update();
+	double m_SecondsPerByte;
+	UINT64 m_totalBytesSubmitted;
+	UINT64 m_samplesAtReset;  // SamplesPlayed snapshot taken at last flush/stop
 
 	PBYTE m_VisBuffer;
 	DWORD m_VisBytes;

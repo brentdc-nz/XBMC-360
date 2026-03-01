@@ -21,10 +21,14 @@ public:
 	virtual const char* GetName() { return m_name.c_str(); }; // m_name is never changed after open
 
 protected:
+	friend int my_get_buffer(struct AVCodecContext *, AVFrame *);
+	friend void my_release_buffer(struct AVCodecContext *, AVFrame *);
+
 	void GetVideoAspect(AVCodecContext* CodecContext, unsigned int& iWidth, unsigned int& iHeight);
 
 	AVFrame* m_pFrame;
 	AVCodecContext* m_pCodecContext;
+
 	AVPicture* m_pConvertFrame;
 
 	int m_iPictureWidth;

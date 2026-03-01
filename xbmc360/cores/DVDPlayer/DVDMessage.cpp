@@ -1,5 +1,6 @@
 #include "DVDMessage.h"
-#include "DVDDemuxers\DVDDemuxUtils.h"
+#include "DVDDemuxers/DVDDemuxUtils.h"
+#include "DVDStreamInfo.h"
 
 /**
  * CDVDMsgGeneralSynchronize --- GENERAL_SYNCRONIZR

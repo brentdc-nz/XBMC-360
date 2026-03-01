@@ -2,6 +2,7 @@
 #define H_CDVDSTREAMINFO
 
 #include "DVDDemuxers\DVDDemux.h"
+class CDemuxStream;
 
 class CDVDStreamInfo
 {
@@ -9,6 +10,7 @@ public:
 	CDVDStreamInfo();
 	CDVDStreamInfo(const CDVDStreamInfo &right, bool withextradata = true);
 	CDVDStreamInfo(const CDemuxStream &right, bool withextradata = true);
+
 	~CDVDStreamInfo();
 
 	void Clear(); // Clears current information
@@ -30,6 +32,7 @@ public:
 	bool vfr; // Variable framerate
 	bool stills; // There may be odd still frames in video
 	bool ptsinvalid;  // pts cannot be trusted (avi's).
+	int bitsperpixel;
 
 	// AUDIO
 	int channels;
@@ -37,9 +40,6 @@ public:
 	int bitrate;
 	int blockalign;
 	int bitspersample;
-
-	// SUBTITLE
-	int identifier;
 
 	// CODEC EXTRADATA
 	void*        extradata; // Extra data for codec to use

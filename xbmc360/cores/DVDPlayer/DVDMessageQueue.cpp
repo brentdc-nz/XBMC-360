@@ -1,8 +1,11 @@
+#include "utils\Log.h"
 #include "DVDMessageQueue.h"
 #include "DVDClock.h"
-#include "utils\Log.h"
+#include "utils\MathUtils.h"
 
-CDVDMessageQueue::CDVDMessageQueue(const std::string &owner)
+using namespace std;
+
+CDVDMessageQueue::CDVDMessageQueue(const string &owner)
 {
 	m_owner = owner;
 	m_iDataSize     = 0;
@@ -14,6 +17,7 @@ CDVDMessageQueue::CDVDMessageQueue(const std::string &owner)
 	m_TimeBack      = DVD_NOPTS_VALUE;
 	m_TimeFront     = DVD_NOPTS_VALUE;
 	m_TimeSize      = 1.0 / 4.0; /* 4 seconds */
+	m_iMaxDataSize  = 0;
 	m_hEvent = CreateEvent(NULL, true, false, NULL);
 }
 
@@ -74,6 +78,56 @@ void CDVDMessageQueue::End()
 	m_bInitialized  = false;
 	m_iDataSize     = 0;
 	m_bAbortRequest = false;
+}
+
+MsgQueueReturnCode CDVDMessageQueue::Put(CDVDMsg* pMsg, int priority)
+{
+	CSingleLock lock(m_section);
+
+	if(!m_bInitialized)
+	{
+		CLog::Log(LOGWARNING, "CDVDMessageQueue(%s)::Put MSGQ_NOT_INITIALIZED", m_owner.c_str());
+		pMsg->Release();
+		return MSGQ_NOT_INITIALIZED;
+	}
+
+	if(!pMsg)
+	{
+		CLog::Log(LOGFATAL, "CDVDMessageQueue(%s)::Put MSGQ_INVALID_MSG", m_owner.c_str());
+		return MSGQ_INVALID_MSG;
+	}
+
+	SList::iterator it = m_list.begin();
+	while(it != m_list.end())
+	{
+		if(priority <= it->priority)
+			break;
+		it++;
+	}
+
+	m_list.insert(it, DVDMessageListItem(pMsg, priority));
+
+	if(pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
+	{
+		DemuxPacket* packet = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacket();
+		if(packet)
+		{
+			m_iDataSize += packet->iSize;
+
+			if(packet->dts != DVD_NOPTS_VALUE)
+				m_TimeFront = packet->dts;
+			else if(packet->pts != DVD_NOPTS_VALUE)
+				m_TimeFront = packet->pts;
+			if(m_TimeBack == DVD_NOPTS_VALUE)
+				m_TimeBack = m_TimeFront;
+		}
+	}
+
+	pMsg->Release();
+
+	SetEvent(m_hEvent); // Inform waiter for new packet
+
+	return MSGQ_OK;
 }
 
 MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutInMilliSeconds, int priority)
@@ -148,55 +202,6 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
 	return(MsgQueueReturnCode)ret;
 }
 
-MsgQueueReturnCode CDVDMessageQueue::Put(CDVDMsg* pMsg, int priority)	
-{
-	CSingleLock lock(m_section);
-
-	if(!m_bInitialized)
-	{
-		CLog::Log(LOGWARNING, "CDVDMessageQueue(%s)::Put MSGQ_NOT_INITIALIZED", m_owner.c_str());
-		pMsg->Release();
-		return MSGQ_NOT_INITIALIZED;
-	}
-
-	if(!pMsg)
-	{
-		CLog::Log(LOGFATAL, "CDVDMessageQueue(%s)::Put MSGQ_INVALID_MSG", m_owner.c_str());
-		return MSGQ_INVALID_MSG;
-	}
-
-	SList::iterator it = m_list.begin();
-	while(it != m_list.end())
-	{
-		if(priority <= it->priority)
-			break;
-		it++;
-	}
-
-	m_list.insert(it, DVDMessageListItem(pMsg, priority));
-
-	if(pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
-	{
-		DemuxPacket* packet = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacket();
-		if(packet)
-		{
-			m_iDataSize += packet->iSize;
-
-			if(packet->dts != DVD_NOPTS_VALUE)
-				m_TimeFront = packet->dts;
-			else if(packet->pts != DVD_NOPTS_VALUE)
-				m_TimeFront = packet->pts;
-			if(m_TimeBack == DVD_NOPTS_VALUE)
-				m_TimeBack = m_TimeFront;
-		}
-	}
-
-	pMsg->Release();
-
-	SetEvent(m_hEvent); // Inform waiter for new packet
-
-	return MSGQ_OK;
-}
 
 unsigned CDVDMessageQueue::GetPacketCount(CDVDMsg::Message type)
 {    
@@ -232,12 +237,23 @@ int CDVDMessageQueue::GetLevel() const
 	if(m_iDataSize == 0)
 		return 0;
 
-	if(m_TimeBack  == DVD_NOPTS_VALUE
-	|| m_TimeFront == DVD_NOPTS_VALUE
-	|| m_TimeFront <= m_TimeBack)
+	if(IsDataBased())
 		return min(100, 100 * m_iDataSize / m_iMaxDataSize);
 
-	double dTmp = 100.0 * m_TimeSize * (m_TimeFront - m_TimeBack) / DVD_TIME_BASE;
-	int iTmpRound = (int)(dTmp + 0.5);
-	return min(100, iTmpRound /*MathUtils::round_int(100.0 * m_TimeSize * (m_TimeFront - m_TimeBack) / DVD_TIME_BASE )*/);
+	return min(100, MathUtils::round_int(100.0 * m_TimeSize * (m_TimeFront - m_TimeBack) / DVD_TIME_BASE ));
+}
+
+int CDVDMessageQueue::GetTimeSize() const
+{
+	if(IsDataBased())
+		return 0;
+	else
+		return (int)((m_TimeFront - m_TimeBack) / DVD_TIME_BASE);
+}
+
+bool CDVDMessageQueue::IsDataBased() const
+{
+	return (m_TimeBack == DVD_NOPTS_VALUE  ||
+			m_TimeFront == DVD_NOPTS_VALUE ||
+			m_TimeFront <= m_TimeBack);
 }

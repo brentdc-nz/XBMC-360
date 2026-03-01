@@ -1,6 +1,6 @@
+#include "utils\Log.H"
 #include "DVDDemuxUtils.h"
 #include "..\DVDClock.h"
-#include "utils\Log.H"
 
 extern "C"
 {

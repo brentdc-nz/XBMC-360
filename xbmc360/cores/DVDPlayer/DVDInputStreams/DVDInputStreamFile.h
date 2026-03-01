@@ -11,13 +11,13 @@ public:
 	virtual ~CDVDInputStreamFile();
 	virtual bool Open(const char* strFile, const std::string &content);
 	virtual void Close();
-	virtual int64_t GetLength();
-	virtual BitstreamStats GetBitstreamStats() const;
+	virtual int Read(BYTE* buf, int buf_size);
 	virtual __int64 Seek(__int64 offset, int whence);
 	virtual bool Pause(double dTime) { return false; };
-	virtual int Read(BYTE* buf, int buf_size);
-	virtual int GetBlockSize();
 	virtual bool IsEOF();
+	virtual int64_t GetLength();
+	virtual BitstreamStats GetBitstreamStats() const;
+	virtual int GetBlockSize();
 
 protected:
 	XFILE::CFile* m_pFile;

@@ -43,6 +43,7 @@ public:
 	void StartServices();
 	void StopServices();
 
+	CFileItem& CurrentFileItem() { return *m_itemCurrentFile; }
 	virtual bool OnMessage(CGUIMessage& message);
 	bool NeedRenderFullScreen();
 	void RenderFullScreen();

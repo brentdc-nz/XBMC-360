@@ -10,5 +10,4 @@ public:
 	static DemuxPacket* AllocateDemuxPacket(int iDataSize = 0);
 };
 
-
 #endif //H_CDVDDEMUXUTILS

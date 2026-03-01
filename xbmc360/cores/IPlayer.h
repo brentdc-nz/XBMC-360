@@ -2,20 +2,26 @@
 #define  IPLAYER_H
 
 #include "cores\AudioRenderers\IAudioCallback.h"
-#include "FileItem.h"
 #include "utils\StdString.h"
 #include "guilib\key.h"
+
+class TiXmlElement; 
+class CStreamDetails;
+
+class CFileItem;
 
 class IPlayerCallback
 {
 public:
+	virtual ~IPlayerCallback() {}
 	virtual void OnPlayBackEnded() = 0;
 	virtual void OnPlayBackStarted() = 0;
-	virtual void OnPlayBackStopped() = 0;
 	virtual void OnPlayBackPaused() {};
 	virtual void OnPlayBackResumed() {};
+	virtual void OnPlayBackStopped() = 0;
 	virtual void OnQueueNextItem() = 0;
 	virtual void OnPlayBackSeek(int iTime, int seekOffset) {};
+	virtual void OnPlayBackSeekChapter(int iChapter) {};
 	virtual void OnPlayBackSpeedChanged(int iSpeed) {};
 };
 
@@ -31,6 +37,7 @@ public:
 	}
 
 	double  starttime;  // Start time in seconds
+	double  startpercent; // Start time in percent
 	bool    identify;   // Identify mode, used for checking format and length of a file
 	CStdString state;   // Potential playerstate to restore to
 	bool    fullscreen; // Player is allowed to switch to fullscreen
@@ -61,6 +68,7 @@ public:
 	virtual bool HasVideo() const = 0;
 	virtual bool HasAudio() const = 0;
 	virtual bool CanSeek() {return true;}
+	virtual bool CanPause() {return true;}
 	virtual void SetVolume(long nVolume){}
 	virtual void DoAudioWork(){}
 	virtual bool OnAction(const CAction &action){ return false; };
@@ -71,6 +79,9 @@ public:
 	virtual int GetBitsPerSample(){ return 0; }
 	virtual int GetSampleRate(){ return 0; }
 	virtual CStdString GetAudioCodecName(){ return ""; }
+	virtual void  SetAVDelay(float fValue = 0.0f) { return; }
+	virtual float GetAVDelay()                     { return 0.0f; }
+	virtual void ToFFRW(int iSpeed = 0){}
 
 	// Returns true if not playback (paused or stopped beeing filled)
 	virtual bool IsCaching() const {return false;};

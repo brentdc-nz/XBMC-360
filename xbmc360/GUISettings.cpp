@@ -191,6 +191,16 @@ void CGUISettings::Initialize()
 	AddCategory(4, "videooutput", 21373);
 	AddInt(1, "videooutput.aspect", 21374, VIDEO_NORMAL, VIDEO_NORMAL, 1, VIDEO_WIDESCREEN, SPIN_CONTROL_TEXT);
 
+	AddCategory(4, "audiooutput", 772);
+	AddBool(1, "audiooutput.downmixmultichannel", 548, true);
+
+	AddCategory(4, "dvdplayercache", 483);
+	AddInt(1, "dvdplayercache.video", 14096, 1024, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
+	AddInt(2, "dvdplayercache.videotime", 14097, 8, 0, 1, 30, SPIN_CONTROL_INT_PLUS, MASK_SECS);
+	AddSeparator(3, "dvdplayercache.sep1");
+	AddInt(4, "dvdplayercache.audio", 14098, 384, 0, 128, 4096, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
+	AddInt(5, "dvdplayercache.audiotime", 14099, 8, 0, 1, 30, SPIN_CONTROL_INT_PLUS, MASK_SECS);
+
 	// Appearance settings
 	AddGroup(7, 480);
 	AddCategory(7,"lookandfeel", 166);

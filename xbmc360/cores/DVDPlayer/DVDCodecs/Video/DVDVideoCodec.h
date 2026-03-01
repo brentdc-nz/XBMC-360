@@ -27,7 +27,6 @@ struct DVDVideoPicture
 	unsigned int iFrameType         : 4; // See defines above // 1->I, 2->P, 3->B, 0->Undef
 	unsigned int color_matrix       : 4;
 	unsigned int color_range        : 1; // 1 indicate if we have a full range of color
-	int iGroupId;
 
 	int8_t* qscale_table; // Quantization parameters, primarily used by filters
 	int qscale_stride;
@@ -69,7 +68,7 @@ struct DVDVideoUserData
 
 class CDVDStreamInfo;
 class CDVDCodecOption;
-typedef std::vector<CDVDCodecOption> CDVDCodecOptions;
+class CDVDCodecOptions;
 
 // VC_ messages, messages can be combined
 #define VC_ERROR    0x00000001  // An error occured, no other messages will be returned
@@ -101,17 +100,29 @@ public:
 	virtual int Decode(BYTE* pData, int iSize, double dts, double pts) = 0;
 
 	/*
-	*
-	* should return codecs name
-	*/
-	virtual const char* GetName() = 0;
-
-	/*
 	* Reset the decoder.
 	* Should be the same as calling Dispose and Open after each other
 	*/
 	virtual void Reset() = 0;
 
+	/*
+	* returns true if successfull
+	* the data is valid until the next Decode call
+	*/
+	virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture) = 0;
+
+	/*
+	* returns true if successfull
+	* the data is valid until the next Decode call
+	* userdata can be anything, for now we use it for closed captioning
+	*/
+	virtual bool GetUserData(DVDVideoUserData* pDvdVideoUserData)
+	{
+		pDvdVideoUserData->data = NULL;
+		pDvdVideoUserData->size = 0;
+		return false;
+	}
+   
 	/*
 	* will be called by video player indicating if a frame will eventually be dropped
 	* codec can then skip actually decoding the data, just consume the data set picture headers
@@ -119,10 +130,32 @@ public:
 	virtual void SetDropState(bool bDrop) = 0;
 
 	/*
-	* returns true if successfull
-	* the data is valid until the next Decode call
+	*
+	* should return codecs name
 	*/
-	virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture) = 0;
+	virtual const char* GetName() = 0;
+
+	/*
+	* will be called by video player indicating the playback speed. see DVD_PLAYSPEED_NORMAL,
+	* DVD_PLAYSPEED_PAUSE and friends.
+	*/
+	virtual void SetSpeed(int iSpeed) {};
+
+	/*
+	* returns the number of demuxer bytes in any internal buffers
+	*/
+	virtual int GetDataSize(void)
+	{
+		return 0;
+	}
+
+	/*
+	* returns the time in seconds for demuxer bytes in any internal buffers
+	*/
+	virtual double GetTimeSize(void)
+	{
+		return 0;
+	}
 };
 
 #endif //H_DVDVIDEOCODEC

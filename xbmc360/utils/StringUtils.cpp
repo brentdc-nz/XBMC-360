@@ -287,3 +287,25 @@ void CStringUtils::WordToDigits(CStdString &word)
 		}
 	}
 }
+
+CStdString CStringUtils::SizeToString(__int64 size)
+{
+	CStdString strLabel;
+	const char prefixes[] = {' ','k', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'};
+	unsigned int i = 0;
+	double s = (double)size;
+	while (i < sizeof(prefixes)/sizeof(prefixes[0]) && s >= 1000.0)
+	{
+		s /= 1024.0;
+		i++;
+	}
+
+	if (!i)
+		strLabel.Format("%.0lf %cB ", s, prefixes[i]);
+	else if (s >= 100.0)
+		strLabel.Format("%.1lf %cB", s, prefixes[i]);
+	else
+		strLabel.Format("%.2lf %cB", s, prefixes[i]);
+
+	return strLabel;
+}

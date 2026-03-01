@@ -334,6 +334,12 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 		if (controlID)
 			return AddMultiInfo(GUIInfo(bNegate ? -CONTROL_HAS_FOCUS : CONTROL_HAS_FOCUS, controlID, 0));
 	}
+	else if (strTest.Left(18).Equals("control.isvisible("))
+	{
+		int controlID = atoi(strTest.Mid(18, strTest.GetLength() - 19).c_str());
+		if (controlID)
+			return AddMultiInfo(GUIInfo(bNegate ? -CONTROL_IS_VISIBLE : CONTROL_IS_VISIBLE, controlID, 0));
+	}
 	else if (strTest.Left(13).Equals("controlgroup("))
 	{
 		int groupID = atoi(strTest.Mid(13).c_str());
@@ -1354,6 +1360,17 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow)
 				CGUIWindow *window = GetWindowWithCondition(contextWindow, 0);
 				if (window)
 					bReturn = (window->GetFocusedControlID() == (int)info.GetData1());
+			}
+			break;
+			case CONTROL_IS_VISIBLE:
+			{
+				CGUIWindow *window = GetWindowWithCondition(contextWindow, 0);
+				if (window)
+				{
+					const CGUIControl *control = window->GetControl(info.GetData1());
+					if (control)
+						bReturn = control->IsVisible();
+				}
 			}
 			break;
 			case CONTROL_GROUP_HAS_FOCUS:

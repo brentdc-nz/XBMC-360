@@ -1,11 +1,14 @@
 #ifndef H_CDVDFACTORYCODEC
 #define H_CDVDFACTORYCODEC
 
-#include "DVDCodecs.h"
-#include "..\DVDStreamInfo.h"
-#include "Audio\DVDAudioCodec.h"
-
 class CDVDVideoCodec;
+class CDVDAudioCodec;
+class CDVDOverlayCodec;
+
+class CDemuxStreamVideo;
+class CDVDStreamInfo;
+class CDVDCodecOption;
+class CDVDCodecOptions;
 
 class CDVDFactoryCodec
 {

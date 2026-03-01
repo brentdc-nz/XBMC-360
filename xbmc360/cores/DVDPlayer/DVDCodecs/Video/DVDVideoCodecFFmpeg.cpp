@@ -1,12 +1,11 @@
+#include "utils\Log.h"
 #include "DVDVideoCodecFFmpeg.h"
 #include "..\..\DVDDemuxers\DVDDemux.h"
 #include "..\..\DVDStreamInfo.h"
 #include "..\..\DVDClock.h"
 #include "..\..\DVDCodecs/DVDCodecs.h"
-#include "utils\Log.h"
 #include "AdvancedSettings.h"
 
-// FFMPEG
 extern "C" 
 {
 #include "libswscale\swscale.h"
@@ -14,26 +13,6 @@ extern "C"
 }
 
 #define RINT(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
-
-union pts_union
-{
-	double  pts_d;
-	int64_t pts_i;
-};
-
-static int64_t pts_dtoi(double pts)
-{
-	pts_union u;
-	u.pts_d = pts;
-	return u.pts_i;
-}
-
-static double pts_itod(int64_t pts)
-{
-	pts_union u;
-	u.pts_i = pts;
-	return u.pts_d;
-}
 
 CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
 {
@@ -58,61 +37,60 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 {
 	AVCodec* pCodec;
 
-#if 0//ndef _HARDLINKED
-	if(!m_dllAvUtil.Load() || !m_dllAvCodec.Load()) return false;
-#endif
+//	if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load()) return false;
 
 	avcodec_register_all();
 
-	/* FFmpeg 1.2: use avcodec_alloc_context3 instead of avcodec_alloc_context */
-	m_pCodecContext = avcodec_alloc_context3(NULL);
-
 	pCodec = avcodec_find_decoder(hints.codec);
+	
 	if(pCodec == NULL)
 	{
 		CLog::Log(LOGDEBUG,"CDVDVideoCodecFFmpeg::Open() Unable to find codec %d", hints.codec);
-		return false;
+		    return false;
 	}
 
 	CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::Open() Using codec: %s",pCodec->long_name ? pCodec->long_name : pCodec->name);
+
+	m_pCodecContext = avcodec_alloc_context3(pCodec);
+
 	m_pCodecContext->opaque = (void*)this;
 	m_pCodecContext->debug_mv = 0;
 	m_pCodecContext->debug = 0;
 	m_pCodecContext->workaround_bugs = FF_BUG_AUTODETECT;
 	m_pCodecContext->codec_tag = hints.codec_tag;
 
-	if(pCodec->capabilities & CODEC_CAP_DR1)
+	if (pCodec->capabilities & CODEC_CAP_DR1)
 		m_pCodecContext->flags |= CODEC_FLAG_EMU_EDGE;
+
+	//Allow non spec compliant speedup tricks
+	//if (g_guiSettings.GetBool("videoplayer.fast")) // TODO: Port settings from xbmc4xbox
+	//	m_pCodecContext->flags2 |= CODEC_FLAG2_FAST;
 
 	// If we don't do this, then some codecs seem to fail.
 	m_pCodecContext->coded_height = hints.height;
 	m_pCodecContext->coded_width = hints.width;
+	m_pCodecContext->bits_per_coded_sample = hints.bitsperpixel;
 
-	if(hints.extradata && hints.extrasize > 0)
+	if( hints.extradata && hints.extrasize > 0 )
 	{
 		m_pCodecContext->extradata_size = hints.extrasize;
 		m_pCodecContext->extradata = (uint8_t*)av_mallocz(hints.extrasize + FF_INPUT_BUFFER_PADDING_SIZE);
 		memcpy(m_pCodecContext->extradata, hints.extradata, hints.extrasize);
 	}
 
-	/* FFmpeg 1.2: dsp_mask / FF_MM_FORCE removed entirely.
-	 * The Xbox 360 PPC DSP functions are registered via ff_dsputil_init_ppc()
-	 * and other init functions called automatically during codec init. */
+	AVDiscard discardVals[] = {AVDISCARD_DEFAULT, AVDISCARD_NONREF, AVDISCARD_BIDIR, AVDISCARD_NONKEY, AVDISCARD_ALL};
+	//AVDiscard avDiscard = discardVals[g_guiSettings.GetInt("videoplayer.skiploopfilter")]; // TODO: Port settings from xbmc4xbox
+	AVDiscard avDiscard = AVDISCARD_DEFAULT;
 
-	// Advanced setting override for skip loop filter
-	if(g_advancedSettings.m_iSkipLoopFilter != 0)
-		m_pCodecContext->skip_loop_filter = (AVDiscard)g_advancedSettings.m_iSkipLoopFilter;
-	else
-		m_pCodecContext->skip_loop_filter = AVDISCARD_NONREF;
+	if (avDiscard != AVDISCARD_DEFAULT)
+		m_pCodecContext->skip_loop_filter = avDiscard;
 
 	// Set any special options
-	/* FFmpeg 1.2: use av_opt_set instead of av_set_string */
-	for(CDVDCodecOptions::iterator it = options.begin(); it != options.end(); it++)
+	for(std::vector<CDVDCodecOption>::iterator it = options.m_keys.begin(); it != options.m_keys.end(); it++)
 	{
 		av_opt_set(m_pCodecContext, it->m_name.c_str(), it->m_value.c_str(), 0);
 	}
 
-	/* FFmpeg 1.2: use avcodec_open2 instead of avcodec_open */
 	if(avcodec_open2(m_pCodecContext, pCodec, NULL) < 0)
 	{
 		CLog::Log(LOGDEBUG,"CDVDVideoCodecFFmpeg::Open() Unable to open codec");
@@ -121,6 +99,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
 	/* FFmpeg 1.2: avcodec_alloc_frame is deprecated, use av_frame_alloc if available.
 	 * For FFmpeg 1.2 (libavcodec 54.x), avcodec_alloc_frame still exists. */
+
 	m_pFrame = avcodec_alloc_frame();
 	if(!m_pFrame)
 		return false;
@@ -135,21 +114,24 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
 void CDVDVideoCodecFFmpeg::Dispose()
 {
-	if(m_pFrame) av_free(m_pFrame);
-		m_pFrame = NULL;
+	if (m_pFrame)
+		av_free(m_pFrame);
+
+	m_pFrame = NULL;
 
 	if(m_pConvertFrame)
 	{
 		avpicture_free(m_pConvertFrame);
 		av_free(m_pConvertFrame);
 	}
-
+  
 	m_pConvertFrame = NULL;
 
-	if(m_pCodecContext)
+	if (m_pCodecContext)
 	{
-		if(m_pCodecContext->codec) avcodec_close(m_pCodecContext);
-		if(m_pCodecContext->extradata)
+		if (m_pCodecContext->codec) avcodec_close(m_pCodecContext);
+		
+		if (m_pCodecContext->extradata)
 		{
 			av_free(m_pCodecContext->extradata);
 			m_pCodecContext->extradata = NULL;
@@ -159,10 +141,47 @@ void CDVDVideoCodecFFmpeg::Dispose()
 		m_pCodecContext = NULL;
 	}
 
-#if 0//ndef _HARDLINED
+#if 0//ndef _HARDLINKED
 	m_dllAvCodec.Unload();
 	m_dllAvUtil.Unload();
 #endif
+}
+
+void CDVDVideoCodecFFmpeg::SetDropState(bool bDrop)
+{
+	if( m_pCodecContext )
+	{
+		if( bDrop )
+		{
+			m_pCodecContext->skip_frame = AVDISCARD_NONREF;
+			m_pCodecContext->skip_idct = AVDISCARD_NONREF;
+		}
+		else
+		{
+			m_pCodecContext->skip_frame = AVDISCARD_DEFAULT;
+			m_pCodecContext->skip_idct = AVDISCARD_DEFAULT;
+		}
+	}
+}
+
+union pts_union
+{
+	double  pts_d;
+	int64_t pts_i;
+};
+
+static int64_t pts_dtoi(double pts)
+{
+	pts_union u;
+	u.pts_d = pts;
+	return u.pts_i;
+}
+
+static double pts_itod(int64_t pts)
+{
+	pts_union u;
+	u.pts_i = pts;
+	return u.pts_d;
 }
 
 int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double dts, double pts)
@@ -175,14 +194,13 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double dts, double pts)
 	m_dts = dts;
 	m_pCodecContext->reordered_opaque = pts_dtoi(pts);
 
-	/* FFmpeg 1.2: use avcodec_decode_video2 with AVPacket instead of
-	 * the old 5-argument avcodec_decode_video */
 	AVPacket avpkt;
 	av_init_packet(&avpkt);
 	avpkt.data = pData;
 	avpkt.size = iSize;
-	avpkt.dts  = AV_NOPTS_VALUE;
-	avpkt.pts  = AV_NOPTS_VALUE;
+	/* We lie, but this flag is only used by pngdec.c.
+	* Setting it correctly would allow CorePNG decoding. */
+	avpkt.flags = AV_PKT_FLAG_KEY;
 
 	len = avcodec_decode_video2(m_pCodecContext, m_pFrame, &iGotPicture, &avpkt);
 
@@ -192,15 +210,9 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double dts, double pts)
 		return VC_ERROR;
 	}
 
-	/* FFmpeg 1.2: hurry_up field removed. Use skip_frame for frame dropping instead.
-	 * The SetDropState() method already handles this via skip_frame/skip_idct. */
-	if(len != iSize)
-		CLog::Log(LOGWARNING, "%s - avcodec_decode_video2 didn't consume the full packet. size: %d, consumed: %d", __FUNCTION__, iSize, len);
-
 	if(!iGotPicture)
 		return VC_BUFFER;
 
-	/* FFmpeg 1.2: AV_PIX_FMT_* replaces PIX_FMT_* (old names still work as aliases) */
 	if(m_pCodecContext->pix_fmt != AV_PIX_FMT_YUV420P
 	&& m_pCodecContext->pix_fmt != AV_PIX_FMT_YUVJ420P)
 	{
@@ -218,9 +230,9 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double dts, double pts)
 
 			// Due to a bug in swscale we need to allocate one extra line of data
 			if(avpicture_alloc( m_pConvertFrame
-			   , AV_PIX_FMT_YUV420P
-			   , m_pCodecContext->width
-			   , m_pCodecContext->height+1) < 0)
+								, AV_PIX_FMT_YUV420P
+								, m_pCodecContext->width
+								, m_pCodecContext->height+1) < 0)
 			{
 				av_free(m_pConvertFrame);
 				m_pConvertFrame = NULL;
@@ -232,13 +244,12 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double dts, double pts)
 		struct SwsContext *context = sws_getContext(m_pCodecContext->width, m_pCodecContext->height,
                                          m_pCodecContext->pix_fmt, m_pCodecContext->width, m_pCodecContext->height,
                                          AV_PIX_FMT_YUV420P, SWS_FAST_BILINEAR, NULL, NULL, NULL);
-		if(context == NULL)
-		{
-			CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::Decode - unable to obtain sws context for w:%i, h:%i, pixfmt: %i", 
-				      m_pCodecContext->width, m_pCodecContext->height, m_pCodecContext->pix_fmt);
 
-			return VC_ERROR;
-		}
+    	if(context == NULL)
+    	{
+      		CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::Decode - unable to obtain sws context for w:%i, h:%i, pixfmt: %i", m_pCodecContext->width, m_pCodecContext->height, m_pCodecContext->pix_fmt);
+      		return VC_ERROR;
+    	}
 
 		sws_scale(context
                           , m_pFrame->data
@@ -285,14 +296,14 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(DVDVideoPicture* pDvdVideoPicture)
 {
 	GetVideoAspect(m_pCodecContext, pDvdVideoPicture->iDisplayWidth, pDvdVideoPicture->iDisplayHeight);
 
-	if(m_pCodecContext->coded_width && m_pCodecContext->coded_width < m_pCodecContext->width
-	   && m_pCodecContext->coded_width  > m_pCodecContext->width  - 10)
+	if(m_pCodecContext->coded_width  && m_pCodecContext->coded_width  < m_pCodecContext->width
+                                   && m_pCodecContext->coded_width  > m_pCodecContext->width  - 10)
 		pDvdVideoPicture->iWidth = m_pCodecContext->coded_width;
 	else
 		pDvdVideoPicture->iWidth = m_pCodecContext->width;
 
 	if(m_pCodecContext->coded_height && m_pCodecContext->coded_height < m_pCodecContext->height
-	   && m_pCodecContext->coded_height > m_pCodecContext->height - 10)
+                                   && m_pCodecContext->coded_height > m_pCodecContext->height - 10)
 		pDvdVideoPicture->iHeight = m_pCodecContext->coded_height;
 	else
 		pDvdVideoPicture->iHeight = m_pCodecContext->height;
@@ -307,7 +318,7 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(DVDVideoPicture* pDvdVideoPicture)
 	pDvdVideoPicture->iFlags |= m_pFrame->interlaced_frame ? DVP_FLAG_INTERLACED : 0;
 	pDvdVideoPicture->iFlags |= m_pFrame->top_field_first ? DVP_FLAG_TOP_FIELD_FIRST: 0;
 
-	if(m_pCodecContext->pix_fmt == AV_PIX_FMT_YUVJ420P)
+	if(m_pCodecContext->pix_fmt == PIX_FMT_YUVJ420P)
 		pDvdVideoPicture->color_range = 1;
 
 	pDvdVideoPicture->qscale_table = m_pFrame->qscale_table;
@@ -349,16 +360,16 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 
 	if(m_pConvertFrame)
 	{
-		for(int i = 0; i < 4; i++)
+		for (int i = 0; i < 4; i++)
 			pDvdVideoPicture->data[i]      = m_pConvertFrame->data[i];
-		for(int i = 0; i < 4; i++)
+		for (int i = 0; i < 4; i++)
 			pDvdVideoPicture->iLineSize[i] = m_pConvertFrame->linesize[i];
 	}
 	else
 	{
-		for(int i = 0; i < 4; i++)
+		for (int i = 0; i < 4; i++)
 			pDvdVideoPicture->data[i]      = m_pFrame->data[i];
-		for(int i = 0; i < 4; i++)
+		for (int i = 0; i < 4; i++)
 			pDvdVideoPicture->iLineSize[i] = m_pFrame->linesize[i];
 	}
 
@@ -366,24 +377,6 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 	pDvdVideoPicture->format = DVDVideoPicture::FMT_YUV420P;
 
 	return true;
-}
-
-void CDVDVideoCodecFFmpeg::SetDropState(bool bDrop)
-{
-	if(m_pCodecContext)
-	{
-		/* FFmpeg 1.2: hurry_up removed. skip_frame/skip_idct are the proper way. */
-		if(bDrop)
-		{
-			m_pCodecContext->skip_frame = AVDISCARD_NONREF;
-			m_pCodecContext->skip_idct = AVDISCARD_NONREF;
-		}
-		else
-		{
-			m_pCodecContext->skip_frame = AVDISCARD_DEFAULT;
-			m_pCodecContext->skip_idct = AVDISCARD_DEFAULT;
-		}
-	}
 }
 
 /*
