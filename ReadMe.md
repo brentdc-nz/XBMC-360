@@ -12,7 +12,7 @@ This is early stages and still very much a work in progress.
 Usable but many features still need reimplementation or improvements.
 
 ### Compiled alpha build (last updated 22-02-26):
-https://drive.google.com/file/d/1nw2sBmhvjsiZA0MjFGmxMhZIfU6mc8Jn/view
+https://drive.google.com/file/d/1-m48tFUANqDGU5jSUjK93QxbK_kae58w
 
 ### Libraries
 - FFmpeg (DVDPlayer)
