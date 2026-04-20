@@ -32,6 +32,7 @@ public:
 	void Close();
 
 	static bool Exists(const CStdString& strFileName);
+	static bool Cache(const CStdString& strFileName, const CStdString& strDest);
 	static int  Stat(const CStdString& strFileName, struct __stat64* buffer);
 
 private:

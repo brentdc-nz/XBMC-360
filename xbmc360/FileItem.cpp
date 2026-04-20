@@ -22,6 +22,8 @@
 #include "utils\Log.h"
 #include "utils\Util.h"
 #include "utils\URIUtils.h"
+#include "utils\Crc32.h"
+#include "filesystem\File.h"
 #include "Settings.h"
 #include "music\tags\MusicInfoTag.h"
 
@@ -988,4 +990,120 @@ void CFileItemList::FillSortFields(FILEITEMFILLFUNC func)
 {
 	CSingleLock lock(m_lock);
 	std::for_each(m_items.begin(), m_items.end(), func);
+}
+
+CStdString CFileItem::GetCachedThumb(const CStdString &path, const CStdString &path2, bool split)
+{
+	Crc32 crc;
+	crc.ComputeFromLowerCase(path);
+
+	CStdString thumb;
+	if (split)
+	{
+		CStdString hex;
+		hex.Format("%08x", (__int32)crc);
+		thumb.Format("%c\\%08x.tbn", hex[0], (unsigned __int32)crc);
+	}
+	else
+		thumb.Format("%08x.tbn", (unsigned __int32)crc);
+
+	return URIUtils::AddFileToFolder(path2, thumb);
+}
+
+CStdString CFileItem::GetCachedVideoThumb() const
+{
+	return GetCachedThumb(m_strPath, g_settings.GetVideoThumbFolder(), true);
+}
+
+CStdString CFileItem::GetCachedProgramThumb() const
+{
+	return GetCachedThumb(m_strPath, g_settings.GetProgramThumbFolder(), true);
+}
+
+CStdString CFileItem::GetCachedMusicThumb() const
+{
+	return GetCachedThumb(m_strPath, g_settings.GetMusicThumbFolder(), true);
+}
+
+CStdString CFileItem::GetCachedPictureThumb() const
+{
+	// Pictures share the music thumb folder in xbmc4xbox; port does the same until
+	// a dedicated picture thumb folder is added to CSettings.
+	return GetCachedThumb(m_strPath, g_settings.GetMusicThumbFolder(), true);
+}
+
+CStdString CFileItem::GetCachedEpisodeThumb() const
+{
+	// Stub - requires VideoInfoTag which is not ported yet.
+	return "";
+}
+
+CStdString CFileItem::GetCachedFanart() const
+{
+	// Stub - full implementation needs VideoDb / MusicInfoTag artist paths.
+	// For plain file items this matches xbmc4xbox's final fallback.
+	return GetCachedThumb(m_strPath, g_settings.GetVideoThumbFolder(), true);
+}
+
+// -----------------------------------------------------------------------------
+// Thumb helper stubs. Signatures mirror xbmc4xbox 1:1 so ThumbLoader and other
+// callsites can be kept identical. Bodies do the minimum useful work today;
+// flesh out when the rest of the thumb/fanart subsystem is ported.
+// -----------------------------------------------------------------------------
+
+void CFileItem::SetCachedVideoThumb()
+{
+	if (IsParentFolder()) return;
+	if (HasThumbnail()) return;
+	CStdString cachedThumb(GetCachedVideoThumb());
+	if (XFILE::CFile::Exists(cachedThumb))
+		SetThumbnailImage(cachedThumb);
+}
+
+void CFileItem::SetCachedMusicThumb()
+{
+	if (IsParentFolder()) return;
+	if (HasThumbnail()) return;
+	CStdString cachedThumb(GetCachedMusicThumb());
+	if (XFILE::CFile::Exists(cachedThumb))
+		SetThumbnailImage(cachedThumb);
+}
+
+void CFileItem::SetCachedPictureThumb()
+{
+	if (IsParentFolder()) return;
+	CStdString cachedThumb(GetCachedPictureThumb());
+	if (XFILE::CFile::Exists(cachedThumb))
+		SetThumbnailImage(cachedThumb);
+}
+
+void CFileItem::SetCachedProgramThumb()
+{
+	if (IsParentFolder()) return;
+	CStdString thumb(GetCachedProgramThumb());
+	if (XFILE::CFile::Exists(thumb))
+		SetThumbnailImage(thumb);
+}
+
+void CFileItem::SetUserVideoThumb()
+{
+	// TODO: 1:1 with xbmc4xbox this checks stacks, .tbn siblings, folder.jpg,
+	// season thumbs, etc. Keep as a no-op fallback for now so the ThumbLoader
+	// call chain matches source layout.
+}
+
+void CFileItem::SetUserMusicThumb(bool /*alwaysCheckRemote*/)
+{
+	// TODO: port local cover art detection (folder.jpg, embedded tag art, etc.)
+}
+
+void CFileItem::SetUserProgramThumb()
+{
+	// TODO: port .tbn sibling + shortcut thumb detection
+}
+
+bool CFileItem::CacheLocalFanart() const
+{
+	// TODO: port local fanart detection (<filename>-fanart.jpg, fanart.jpg)
+	return false;
 }

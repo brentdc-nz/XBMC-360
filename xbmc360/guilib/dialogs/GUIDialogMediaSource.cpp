@@ -239,6 +239,12 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
 		share1.strPath = "smb://";
 		share1.strName = g_localizeStrings.Get(20171);
 		extraShares.push_back(share1);
+
+#ifdef HAS_UPNP
+		share1.strPath = "upnp://";
+		share1.strName = "UPnP Devices";
+		extraShares.push_back(share1);
+#endif
 	}
 	else if (m_type == "video")
 	{
@@ -247,6 +253,12 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
 		share1.strPath = "smb://";
 		share1.strName = g_localizeStrings.Get(20171);
 		extraShares.push_back(share1);
+
+#ifdef HAS_UPNP
+		share1.strPath = "upnp://";
+		share1.strName = "UPnP Devices";
+		extraShares.push_back(share1);
+#endif
 	}
 	else if (m_type == "pictures")
 	{
@@ -256,6 +268,12 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
 		share1.strPath = "smb://";
 		share1.strName = g_localizeStrings.Get(20171);
 		extraShares.push_back(share1);
+
+#ifdef HAS_UPNP
+		share1.strPath = "upnp://";
+		share1.strName = "UPnP Devices";
+		extraShares.push_back(share1);
+#endif
 	}
 	else if (m_type == "programs")
 	{

@@ -62,6 +62,26 @@ public:
 	bool IsInternetStream() const { return false; } ; // TODO
 	bool IsStack() const { return false; } ; // TODO - Stack file support not ported
 	bool IsRemote() const;
+	bool IsVideoDb() const { return false; } ; // TODO - VideoDb not ported
+	bool IsPlugin() const { return false; } ; // TODO - Plugins not ported
+
+	// --- Thumb/fanart helpers (signatures mirrored 1:1 from xbmc4xbox) -------
+	CStdString GetCachedVideoThumb() const;
+	CStdString GetCachedProgramThumb() const;
+	CStdString GetCachedMusicThumb() const;
+	CStdString GetCachedPictureThumb() const;
+	CStdString GetCachedEpisodeThumb() const;
+	CStdString GetCachedFanart() const;
+	static CStdString GetCachedThumb(const CStdString &path, const CStdString &path2, bool split = false);
+
+	void SetCachedVideoThumb();
+	void SetCachedMusicThumb();
+	void SetCachedPictureThumb();
+	void SetCachedProgramThumb();
+	void SetUserVideoThumb();
+	void SetUserMusicThumb(bool alwaysCheckRemote = false);
+	void SetUserProgramThumb();
+	bool CacheLocalFanart() const;
 
 	virtual void SetLabel(const CStdString &strLabel);
 	void FillInDefaultIcon();

@@ -4,7 +4,8 @@
 
 #include "FileHD.h"
 #include "FileSMB.h"
-
+#include "CurlFile.h"
+#include "UPnPFile.h"
 using namespace XFILE;
 
 CFileFactory::CFileFactory()
@@ -31,8 +32,8 @@ CFileBase* CFileFactory::CreateLoader(const CURL& url)
 	if(g_application.getNetwork().IsAvailable())
 	{
 		if(strProtocol == "smb") return new CFileSMB();
-
-		// TODO: Add more types, ftp, etc
+		if(strProtocol == "http" || strProtocol == "https") return new CCurlFile();
+		if(strProtocol == "upnp") return new CUPnPFile();
 	}
 
 	CLog::Log(LOGWARNING, "%s - Unsupported protocol(%s) in %s", __FUNCTION__, strProtocol.c_str(), ""/*url.Get().c_str()*/ ); // TODO

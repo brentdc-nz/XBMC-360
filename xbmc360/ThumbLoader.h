@@ -1,50 +1,73 @@
-#ifndef H_CTHUMBLOADER
-#define H_CTHUMBLOADER
+﻿/*
+ *      Copyright (C) 2005-2013 Team XBMC
+ *      http://xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
+ *
+ */
+
+#ifndef THUMBLOADER_H
+#define THUMBLOADER_H
 
 #include "BackgroundInfoLoader.h"
 
-class CVideoThumbLoader : public CBackgroundInfoLoader
+class CThumbLoader : public CBackgroundInfoLoader
 {
 public:
-	CVideoThumbLoader();
-	virtual ~CVideoThumbLoader();
+CThumbLoader(int nThreads = 1);
+virtual ~CThumbLoader();
 
-	virtual bool LoadItem(CFileItem* pItem);
-
-private:
+bool LoadRemoteThumb(CFileItem *pItem);
 };
 
-class CProgramThumbLoader : public CBackgroundInfoLoader
+class CVideoThumbLoader : public CThumbLoader
 {
 public:
-	CProgramThumbLoader();
-	virtual ~CProgramThumbLoader();
+CVideoThumbLoader();
+virtual ~CVideoThumbLoader();
+virtual bool LoadItem(CFileItem* pItem);
 
-	virtual bool LoadItem(CFileItem* pItem);
+static void SetWatchedOverlay(CFileItem *item);
 
-private:
+protected:
+virtual void OnLoaderStart();
+virtual void OnLoaderFinish();
 };
 
-class CMusicThumbLoader : public CBackgroundInfoLoader
+class CProgramThumbLoader : public CThumbLoader
 {
 public:
-	CMusicThumbLoader();
-	virtual ~CMusicThumbLoader();
-
-	virtual bool LoadItem(CFileItem* pItem);
-
-private:
+CProgramThumbLoader();
+virtual ~CProgramThumbLoader();
+virtual bool LoadItem(CFileItem* pItem);
 };
 
-class CPicturesThumbLoader : public CBackgroundInfoLoader
+class CMusicThumbLoader : public CThumbLoader
 {
 public:
-	CPicturesThumbLoader();
-	virtual ~CPicturesThumbLoader();
-
-	virtual bool LoadItem(CFileItem* pItem);
-
-private:
+CMusicThumbLoader();
+virtual ~CMusicThumbLoader();
+virtual bool LoadItem(CFileItem* pItem);
 };
 
-#endif //H_CTHUMBLOADER
+class CPictureThumbLoader : public CThumbLoader
+{
+public:
+CPictureThumbLoader();
+virtual ~CPictureThumbLoader();
+virtual bool LoadItem(CFileItem* pItem);
+};
+
+#endif // THUMBLOADER_H

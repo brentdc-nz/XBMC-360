@@ -12,7 +12,7 @@
 //#include "GUIPassword.h" // TODO
 #include "guilib\GUIWindowManager.h"
 //#include "dialogs\GUIDialogOK.h" // TODO
-//#include "dialogs\GUIDialogYesNo.h" // TODO
+#include "guilib\dialogs\GUIDialogYesNo.h"
 //#include "GUIDialogKeyboard.h" // TODO
 //#include "GUIUserMessages.h" // TODO
 #include "FileSystem\Directory.h"
@@ -844,7 +844,7 @@ void CGUIDialogFileBrowser::OnAddNetworkLocation()
 		// Verify the path by doing a GetDirectory.
 		CFileItemList items;
 		
-//		if (CDirectory::GetDirectory(path, items, "", false, true) || CGUIDialogYesNo::ShowAndGetInput(1001,1002,1003,1004)) // TODO
+		if (CDirectory::GetDirectory(path, items, "", false, true) || CGUIDialogYesNo::ShowAndGetInput(1001,1002,1003,1004))
 		{
 			// Add the network location to the shares list
 			CMediaSource share;
@@ -886,7 +886,7 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
 	choices.Add(1, m_addSourceType.IsEmpty() ? 20133 : 21364);
 	choices.Add(2, m_addSourceType.IsEmpty() ? 20134 : 21365);
 
-	int btnid =0;// CGUIDialogContextMenu::ShowAndGetChoice(choices); // TODO
+	int btnid = CGUIDialogContextMenu::ShowAndGetChoice(choices);
 	if (btnid == 1)
 	{
 		if (m_addNetworkShareEnabled)
@@ -894,7 +894,7 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
 			CStdString strOldPath=m_selectedPath,newPath=m_selectedPath;
 			VECSOURCES shares=m_shares;
 			
-//			if (CGUIDialogNetworkSetup::ShowAndGetNetworkAddress(newPath)) // TODO
+			if (CGUIDialogNetworkSetup::ShowAndGetNetworkAddress(newPath))
 			{
 				g_mediaManager.SetLocationPath(strOldPath,newPath);
 				

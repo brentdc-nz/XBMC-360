@@ -1,0 +1,32 @@
+
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libcurl", "libcurl.vcxproj", "{C3A8F6A2-7D5E-4B9F-8E1C-2A3D4F5B6C7E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		CodeAnalysis|Xbox 360 = CodeAnalysis|Xbox 360
+		Debug|Xbox 360 = Debug|Xbox 360
+		Profile_FastCap|Xbox 360 = Profile_FastCap|Xbox 360
+		Profile|Xbox 360 = Profile|Xbox 360
+		Release_LTCG|Xbox 360 = Release_LTCG|Xbox 360
+		Release|Xbox 360 = Release|Xbox 360
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C3A8F6A2-7D5E-4B9F-8E1C-2A3D4F5B6C7E}.CodeAnalysis|Xbox 360.ActiveCfg = CodeAnalysis|Xbox 360
+		{C3A8F6A2-7D5E-4B9F-8E1C-2A3D4F5B6C7E}.CodeAnalysis|Xbox 360.Build.0 = CodeAnalysis|Xbox 360
+		{C3A8F6A2-7D5E-4B9F-8E1C-2A3D4F5B6C7E}.Debug|Xbox 360.ActiveCfg = Debug|Xbox 360
+		{C3A8F6A2-7D5E-4B9F-8E1C-2A3D4F5B6C7E}.Debug|Xbox 360.Build.0 = Debug|Xbox 360
+		{C3A8F6A2-7D5E-4B9F-8E1C-2A3D4F5B6C7E}.Profile_FastCap|Xbox 360.ActiveCfg = Profile_FastCap|Xbox 360
+		{C3A8F6A2-7D5E-4B9F-8E1C-2A3D4F5B6C7E}.Profile_FastCap|Xbox 360.Build.0 = Profile_FastCap|Xbox 360
+		{C3A8F6A2-7D5E-4B9F-8E1C-2A3D4F5B6C7E}.Profile|Xbox 360.ActiveCfg = Profile|Xbox 360
+		{C3A8F6A2-7D5E-4B9F-8E1C-2A3D4F5B6C7E}.Profile|Xbox 360.Build.0 = Profile|Xbox 360
+		{C3A8F6A2-7D5E-4B9F-8E1C-2A3D4F5B6C7E}.Release_LTCG|Xbox 360.ActiveCfg = Release_LTCG|Xbox 360
+		{C3A8F6A2-7D5E-4B9F-8E1C-2A3D4F5B6C7E}.Release_LTCG|Xbox 360.Build.0 = Release_LTCG|Xbox 360
+		{C3A8F6A2-7D5E-4B9F-8E1C-2A3D4F5B6C7E}.Release|Xbox 360.ActiveCfg = Release|Xbox 360
+		{C3A8F6A2-7D5E-4B9F-8E1C-2A3D4F5B6C7E}.Release|Xbox 360.Build.0 = Release|Xbox 360
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

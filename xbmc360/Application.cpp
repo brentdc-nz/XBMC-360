@@ -266,6 +266,9 @@ void CApplication::StopServices()
 {
 	m_network.NetworkMessage(CNetwork::SERVICES_DOWN, 0);
 
+#ifdef HAS_UPNP
+	StopUPnP();
+#endif
 	StopIdleThread();
 }
 
@@ -1575,6 +1578,18 @@ void CApplication::StopFtpServer()
 		CLog::Log(LOGINFO, "FTP Server: Stopped");
 	}
 }
+
+#ifdef HAS_UPNP
+void CApplication::StartUPnP()
+{
+	CUPnP::GetInstance()->StartClient();
+}
+
+void CApplication::StopUPnP()
+{
+	CUPnP::ReleaseInstance(false);
+}
+#endif
 
 bool CApplication::IsCurrentThread() const
 {

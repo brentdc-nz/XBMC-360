@@ -5,6 +5,7 @@
 #include "Application.h"
 #include "URL.h"
 #include "filesystem\MultiPathDirectory.h"
+#include "filesystem\UPnPDirectory.h"
 #include "URIUtils.h"
 #include "Settings.h"
 #include "guilib\LocalizeStrings.h"
@@ -208,6 +209,12 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
 
 	CURL url(strFileNameAndPath);
 	CStdString strHostname = url.GetHostName();
+
+#ifdef HAS_UPNP
+	// UPnP
+	if (url.GetProtocol() == "upnp")
+		strFilename = XFILE::CUPnPDirectory::GetFriendlyName(strFileNameAndPath.c_str());
+#endif
 
 	// Windows SMB Network (SMB)
 	if (url.GetProtocol() == "smb" && strFilename.IsEmpty())

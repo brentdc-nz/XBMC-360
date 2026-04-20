@@ -3134,10 +3134,10 @@ bool CDVDPlayer::OnAction(const CAction &action)
 		}
 
 
+#if 0 // TODO - all cases disabled, switch removed to avoid C4060
 		switch (action.GetID())
 		{
 /* this code is disabled to allow switching playlist items (dvdimage "stacks") */
-#if 0
 		case ACTION_PREV_ITEM:  // SKIP-:
 			{
 				THREAD_ACTION(action);
@@ -3156,8 +3156,6 @@ bool CDVDPlayer::OnAction(const CAction &action)
 				return true;
 			}
 			break;
-#endif
-#if 0
 		case ACTION_SHOW_VIDEOMENU:   // start button
 			{
 				THREAD_ACTION(action);
@@ -3172,8 +3170,8 @@ bool CDVDPlayer::OnAction(const CAction &action)
 				return true;
 			}
 			break;
-#endif
 		}
+#endif
 
 		if (pMenus->IsInMenu())
 		{

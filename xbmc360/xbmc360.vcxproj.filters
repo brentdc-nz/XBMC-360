@@ -108,6 +108,12 @@
     <Filter Include="Source Files\filesystem\XBFS_Wrap">
       <UniqueIdentifier>{e8abe415-c964-4b69-b75f-4cbbe62b51a6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\network">
+      <UniqueIdentifier>{d3a72f1e-5b8c-4a9d-b6e1-7c4f2d8a3e5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\network">
+      <UniqueIdentifier>{f4b83a2d-6c9e-4d1f-a7e2-8d5f3e9b4c6a}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Header Files\guilib\viewstates">
       <UniqueIdentifier>{1d56bef1-deff-4dee-84a9-b0043feb9efb}</UniqueIdentifier>
     </Filter>
@@ -212,6 +218,12 @@
     </Filter>
     <Filter Include="Source Files\music\tags">
       <UniqueIdentifier>{bbf90e2a-15d1-4879-a3bf-77ef012ede76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\pictures">
+      <UniqueIdentifier>{5a4b6c7d-8e9f-4a1b-9c2d-3e4f5a6b7c8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\pictures">
+      <UniqueIdentifier>{6b5c7d8e-9f0a-4b2c-0d3e-4f5a6b7c8d9e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -452,6 +464,12 @@
     <ClInclude Include="ThumbLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ThumbnailCache.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pictures\Picture.h">
+      <Filter>Header Files\pictures</Filter>
+    </ClInclude>
     <ClInclude Include="guilib\windows\GUIWindowMusicSongs.h">
       <Filter>Header Files\guilib\windows</Filter>
     </ClInclude>
@@ -471,6 +489,9 @@
       <Filter>Header Files\filesystem</Filter>
     </ClInclude>
     <ClInclude Include="utils\CRC_32.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\Crc32.h">
       <Filter>Header Files\utils</Filter>
     </ClInclude>
     <ClInclude Include="filesystem\DrivesManager.h">
@@ -646,6 +667,12 @@
     </ClInclude>
     <ClInclude Include="filesystem\SMBDirectory.h">
       <Filter>Header Files\filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="filesystem\UPnPDirectory.h">
+      <Filter>Header Files\filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="network\UPnP.h">
+      <Filter>Header Files\network</Filter>
     </ClInclude>
     <ClInclude Include="cores\DVDPlayer\DVDInputStreams\DVDInputStream.h">
       <Filter>Header Files\cores\DVDPlayer\DVDInputStreams</Filter>
@@ -956,6 +983,9 @@
     <ClInclude Include="utils\InfoLoader.h">
       <Filter>Header Files\utils</Filter>
     </ClInclude>
+    <ClInclude Include="utils\SystemInfo.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
     <ClInclude Include="utils\Weather.h">
       <Filter>Header Files\utils</Filter>
     </ClInclude>
@@ -1261,6 +1291,12 @@
     <ClCompile Include="ThumbLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ThumbnailCache.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pictures\Picture.cpp">
+      <Filter>Source Files\pictures</Filter>
+    </ClCompile>
     <ClCompile Include="guilib\windows\GUIWindowMusicSongs.cpp">
       <Filter>Source Files\guilib\windows</Filter>
     </ClCompile>
@@ -1280,6 +1316,9 @@
       <Filter>Source Files\filesystem</Filter>
     </ClCompile>
     <ClCompile Include="utils\CRC_32.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\Crc32.cpp">
       <Filter>Source Files\utils</Filter>
     </ClCompile>
     <ClCompile Include="filesystem\DrivesManager.cpp">
@@ -1506,6 +1545,12 @@
     </ClCompile>
     <ClCompile Include="filesystem\SMBDirectory.cpp">
       <Filter>Source Files\filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="filesystem\UPnPDirectory.cpp">
+      <Filter>Source Files\filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="network\UPnP.cpp">
+      <Filter>Source Files\network</Filter>
     </ClCompile>
     <ClCompile Include="cores\DVDPlayer\DVDInputStreams\DVDInputStream.cpp">
       <Filter>Source Files\cores\DVDPlayer\DVDInputStreams</Filter>
@@ -1769,6 +1814,9 @@
       <Filter>Source Files\utils</Filter>
     </ClCompile>
     <ClCompile Include="utils\InfoLoader.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\SystemInfo.cpp">
       <Filter>Source Files\utils</Filter>
     </ClCompile>
     <ClCompile Include="utils\Weather.cpp">

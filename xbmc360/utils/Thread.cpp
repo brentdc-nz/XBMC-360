@@ -226,7 +226,16 @@ float CThread::GetRelativeUsage()
 		iUsage += (((unsigned __int64)KernelTime.dwHighDateTime) << 32) + ((unsigned __int64)KernelTime.dwLowDateTime);
 
 		m_fLastUsage = (float)( iUsage - m_iLastUsage ) / (float)( iTime - m_iLastTime );
-    
+
+		// Xbox 360: user-mode code has no HLT equivalent, so the idle thread's
+		// NOP loop burns real CPU time whenever the scheduler grants it an
+		// anti-starvation quantum under full load. This clamps the tiny residual
+		// so "fully loaded" reports as 100% instead of ~99%.
+		if(m_fLastUsage < 0.015f)
+			m_fLastUsage = 0.0f;
+		else if(m_fLastUsage > 1.0f)
+			m_fLastUsage = 1.0f;
+
 		m_iLastUsage = iUsage;
 		m_iLastTime = iTime;
 

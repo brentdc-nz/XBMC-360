@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Xbox 360">
+      <Configuration>Debug</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="CodeAnalysis|Xbox 360">
+      <Configuration>CodeAnalysis</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Profile|Xbox 360">
+      <Configuration>Profile</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Profile_FastCap|Xbox 360">
+      <Configuration>Profile_FastCap</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Xbox 360">
+      <Configuration>Release</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_LTCG|Xbox 360">
+      <Configuration>Release_LTCG</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_New|Xbox 360">
+      <Configuration>Release_New</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{C3A8F6A2-7D5E-4B9F-8E1C-2A3D4F5B6C7E}</ProjectGuid>
+    <RootNamespace>libcurl</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release_New'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release_LTCG'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='CodeAnalysis'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Profile'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Profile_FastCap'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup>
+    <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(ProjectDir)lib;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>BUILDING_LIBCURL;CURL_STATICLIB;HTTP_ONLY;_XBOX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4996;4244;4267;4018;4101;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)libcurl.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Release' or '$(Configuration)'=='Release_New' or '$(Configuration)'=='Release_LTCG'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(ProjectDir)lib;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>BUILDING_LIBCURL;CURL_STATICLIB;HTTP_ONLY;_XBOX;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization>MaxSpeed</Optimization>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4996;4244;4267;4018;4101;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)libcurl.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='CodeAnalysis'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(ProjectDir)lib;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>BUILDING_LIBCURL;CURL_STATICLIB;HTTP_ONLY;_XBOX;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization>MaxSpeed</Optimization>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4996;4244;4267;4018;4101;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)libcurl.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Profile' or '$(Configuration)'=='Profile_FastCap'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(ProjectDir)lib;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>BUILDING_LIBCURL;CURL_STATICLIB;HTTP_ONLY;_XBOX;NDEBUG;PROFILE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization>MaxSpeed</Optimization>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4996;4244;4267;4018;4101;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)libcurl.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <!-- Core -->
+    <ClCompile Include="lib\base64.c" />
+    <ClCompile Include="lib\bundles.c" />
+    <ClCompile Include="lib\conncache.c" />
+    <ClCompile Include="lib\connect.c" />
+    <ClCompile Include="lib\content_encoding.c" />
+    <ClCompile Include="lib\cookie.c" />
+    <ClCompile Include="lib\curl_addrinfo.c" />
+    <ClCompile Include="lib\curl_fnmatch.c" />
+    <ClCompile Include="lib\curl_gethostname.c" />
+    <ClCompile Include="lib\curl_memrchr.c" />
+    <ClCompile Include="lib\curl_multibyte.c" />
+    <ClCompile Include="lib\curl_sasl.c" />
+    <ClCompile Include="lib\curl_threads.c" />
+    <ClCompile Include="lib\dotdot.c" />
+    <ClCompile Include="lib\easy.c" />
+    <ClCompile Include="lib\escape.c" />
+    <ClCompile Include="lib\fileinfo.c" />
+    <ClCompile Include="lib\formdata.c" />
+    <ClCompile Include="lib\getenv.c" />
+    <ClCompile Include="lib\getinfo.c" />
+    <ClCompile Include="lib\hash.c" />
+    <ClCompile Include="lib\hmac.c" />
+    <ClCompile Include="lib\hostasyn.c" />
+    <ClCompile Include="lib\hostcheck.c" />
+    <ClCompile Include="lib\hostip.c" />
+    <ClCompile Include="lib\hostip4.c" />
+    <ClCompile Include="lib\hostip6.c" />
+    <ClCompile Include="lib\hostsyn.c" />
+    <ClCompile Include="lib\if2ip.c" />
+    <ClCompile Include="lib\inet_ntop.c" />
+    <ClCompile Include="lib\inet_pton.c" />
+    <ClCompile Include="lib\llist.c" />
+    <ClCompile Include="lib\md5.c" />
+    <ClCompile Include="lib\mprintf.c" />
+    <ClCompile Include="lib\multi.c" />
+    <ClCompile Include="lib\netrc.c" />
+    <ClCompile Include="lib\non-ascii.c" />
+    <ClCompile Include="lib\nonblock.c" />
+    <ClCompile Include="lib\parsedate.c" />
+    <ClCompile Include="lib\pipeline.c" />
+    <ClCompile Include="lib\progress.c" />
+    <ClCompile Include="lib\rawstr.c" />
+    <ClCompile Include="lib\select.c" />
+    <ClCompile Include="lib\sendf.c" />
+    <ClCompile Include="lib\share.c" />
+    <ClCompile Include="lib\slist.c" />
+    <ClCompile Include="lib\speedcheck.c" />
+    <ClCompile Include="lib\splay.c" />
+    <ClCompile Include="lib\strdup.c" />
+    <ClCompile Include="lib\strequal.c" />
+    <ClCompile Include="lib\strerror.c" />
+    <ClCompile Include="lib\strtok.c" />
+    <ClCompile Include="lib\strtoofft.c" />
+    <ClCompile Include="lib\timeval.c" />
+    <ClCompile Include="lib\transfer.c" />
+    <ClCompile Include="lib\url.c" />
+    <ClCompile Include="lib\version.c" />
+    <ClCompile Include="lib\warnless.c" />
+    <ClCompile Include="lib\wildcard.c" />
+    <!-- HTTP -->
+    <ClCompile Include="lib\http.c" />
+    <ClCompile Include="lib\http_chunks.c" />
+    <ClCompile Include="lib\http_digest.c" />
+    <ClCompile Include="lib\http_negotiate.c" />
+    <ClCompile Include="lib\http_proxy.c" />
+    <!-- DNS -->
+    <ClCompile Include="lib\asyn-thread.c" />
+    <!-- SSL stubs + SOCKS -->
+    <ClCompile Include="lib\vtls\vtls.c" />
+    <ClCompile Include="lib\socks.c" />
+    <!-- Xbox 360 stubs -->
+    <ClCompile Include="lib\xbox360_stubs.c" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+</Project>

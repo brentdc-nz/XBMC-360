@@ -41,6 +41,27 @@ void CSettings::Initialize()
 
 	m_logFolder = "D:\\"; // Log file location //TODO: Set in App:Create
 	m_iSystemTimeTotalUp = 0;
+
+	// Create thumbnail cache directories
+	CreateDirectory("D:\\UserData", NULL);
+	CreateDirectory("D:\\UserData\\Thumbnails", NULL);
+	CreateDirectory("D:\\UserData\\Thumbnails\\Video", NULL);
+	CreateDirectory("D:\\UserData\\Thumbnails\\Music", NULL);
+	CreateDirectory("D:\\UserData\\Thumbnails\\Programs", NULL);
+	for (unsigned int hex = 0; hex < 16; hex++)
+	{
+		CStdString strHex;
+		strHex.Format("%x", hex);
+		CStdString strVideoSub;
+		strVideoSub.Format("D:\\UserData\\Thumbnails\\Video\\%s", strHex.c_str());
+		CreateDirectory(strVideoSub.c_str(), NULL);
+		CStdString strMusicSub;
+		strMusicSub.Format("D:\\UserData\\Thumbnails\\Music\\%s", strHex.c_str());
+		CreateDirectory(strMusicSub.c_str(), NULL);
+		CStdString strProgSub;
+		strProgSub.Format("D:\\UserData\\Thumbnails\\Programs\\%s", strHex.c_str());
+		CreateDirectory(strProgSub.c_str(), NULL);
+	}
 }
 
 bool CSettings::Load()

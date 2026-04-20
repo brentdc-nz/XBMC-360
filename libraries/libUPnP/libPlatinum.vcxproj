@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="CodeAnalysis|Xbox 360">
+      <Configuration>CodeAnalysis</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Xbox 360">
+      <Configuration>Debug</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Profile|Xbox 360">
+      <Configuration>Profile</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Profile_FastCap|Xbox 360">
+      <Configuration>Profile_FastCap</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_New|Xbox 360">
+      <Configuration>Release_New</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Xbox 360">
+      <Configuration>Release</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_LTCG|Xbox 360">
+      <Configuration>Release_LTCG</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{B2D7A5F3-E1A4-4D7B-9C3F-6A8E2D4F1B5C}</ProjectGuid>
+    <RootNamespace>libPlatinum</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <!-- All configs: Static Library -->
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='CodeAnalysis|Xbox 360'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Xbox 360'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile_FastCap|Xbox 360'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="PropertySheets" />
+  <!-- Output directories -->
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">
+    <OutDir>$(ProjectDir)Debug\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <TargetName>libPlatinum</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">
+    <OutDir>$(ProjectDir)Release\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <TargetName>libPlatinum</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">
+    <OutDir>$(ProjectDir)Release_New\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <TargetName>libPlatinum</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='CodeAnalysis|Xbox 360'">
+    <OutDir>$(ProjectDir)CodeAnalysis\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <TargetName>libPlatinum</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Xbox 360'">
+    <OutDir>$(ProjectDir)Profile\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <TargetName>libPlatinum</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile_FastCap|Xbox 360'">
+    <OutDir>$(ProjectDir)Profile_FastCap\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <TargetName>libPlatinum</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">
+    <OutDir>$(ProjectDir)Release_LTCG\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <TargetName>libPlatinum</TargetName>
+  </PropertyGroup>
+  <!-- Debug config -->
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;_XBOX;_LIB;NPT_CONFIG_ENABLE_LOGGING;HAS_UPNP</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.\Neptune\Source\Core;.\Platinum\Source\Core;.\Platinum\Source\Platinum;.\Platinum\Source\Devices\MediaServer;.\Neptune\Source\System\Xbox;.\Neptune\Source\System\Win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ExceptionHandling>false</ExceptionHandling>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalOptions>/EHa %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(TargetName).lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <!-- Release config -->
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <PreprocessorDefinitions>NDEBUG;_XBOX;_LIB;NPT_CONFIG_ENABLE_LOGGING;HAS_UPNP</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.\Neptune\Source\Core;.\Platinum\Source\Core;.\Platinum\Source\Platinum;.\Platinum\Source\Devices\MediaServer;.\Neptune\Source\System\Xbox;.\Neptune\Source\System\Win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ExceptionHandling>false</ExceptionHandling>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalOptions>/EHa %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(TargetName).lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <!-- Release_New config (same as Release) -->
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <Optimization>Full</Optimization>
+      <PreprocessorDefinitions>NDEBUG;_XBOX;_LIB;NPT_CONFIG_ENABLE_LOGGING;HAS_UPNP</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.\Neptune\Source\Core;.\Platinum\Source\Core;.\Platinum\Source\Platinum;.\Platinum\Source\Devices\MediaServer;.\Neptune\Source\System\Xbox;.\Neptune\Source\System\Win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ExceptionHandling>false</ExceptionHandling>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalOptions>/EHa %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(TargetName).lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <!-- CodeAnalysis config -->
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='CodeAnalysis|Xbox 360'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;_XBOX;_LIB;NPT_CONFIG_ENABLE_LOGGING;HAS_UPNP</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.\Neptune\Source\Core;.\Platinum\Source\Core;.\Platinum\Source\Platinum;.\Platinum\Source\Devices\MediaServer;.\Neptune\Source\System\Xbox;.\Neptune\Source\System\Win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ExceptionHandling>false</ExceptionHandling>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PREfast>AnalyzeOnly</PREfast>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalOptions>/EHa %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(TargetName).lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <!-- Profile config -->
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Xbox 360'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Full</Optimization>
+      <PreprocessorDefinitions>NDEBUG;_XBOX;PROFILE;_LIB;NPT_CONFIG_ENABLE_LOGGING;HAS_UPNP</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.\Neptune\Source\Core;.\Platinum\Source\Core;.\Platinum\Source\Platinum;.\Platinum\Source\Devices\MediaServer;.\Neptune\Source\System\Xbox;.\Neptune\Source\System\Win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ExceptionHandling>false</ExceptionHandling>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <CallAttributedProfiling>Callcap</CallAttributedProfiling>
+      <AdditionalOptions>/EHa %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(TargetName).lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <!-- Profile_FastCap config -->
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile_FastCap|Xbox 360'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Full</Optimization>
+      <PreprocessorDefinitions>NDEBUG;_XBOX;PROFILE;FASTCAP;_LIB;NPT_CONFIG_ENABLE_LOGGING;HAS_UPNP</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.\Neptune\Source\Core;.\Platinum\Source\Core;.\Platinum\Source\Platinum;.\Platinum\Source\Devices\MediaServer;.\Neptune\Source\System\Xbox;.\Neptune\Source\System\Win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ExceptionHandling>false</ExceptionHandling>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <CallAttributedProfiling>Fastcap</CallAttributedProfiling>
+      <AdditionalOptions>/EHa %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(TargetName).lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <!-- Release_LTCG config -->
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Full</Optimization>
+      <PreprocessorDefinitions>NDEBUG;_XBOX;LTCG;_LIB;NPT_CONFIG_ENABLE_LOGGING;HAS_UPNP</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.\Neptune\Source\Core;.\Platinum\Source\Core;.\Platinum\Source\Platinum;.\Platinum\Source\Devices\MediaServer;.\Neptune\Source\System\Xbox;.\Neptune\Source\System\Win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ExceptionHandling>false</ExceptionHandling>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalOptions>/EHa %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(TargetName).lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <!-- Platinum Core Sources -->
+  <ItemGroup>
+    <ClCompile Include="Platinum\Source\Core\PltAction.cpp" />
+    <ClCompile Include="Platinum\Source\Core\PltArgument.cpp" />
+    <ClCompile Include="Platinum\Source\Core\PltConstants.cpp" />
+    <ClCompile Include="Platinum\Source\Core\PltCtrlPoint.cpp" />
+    <ClCompile Include="Platinum\Source\Core\PltCtrlPointTask.cpp" />
+    <ClCompile Include="Platinum\Source\Core\PltDatagramStream.cpp" />
+    <ClCompile Include="Platinum\Source\Core\PltDeviceData.cpp" />
+    <ClCompile Include="Platinum\Source\Core\PltDeviceHost.cpp" />
+    <ClCompile Include="Platinum\Source\Core\PltDownloader.cpp" />
+    <ClCompile Include="Platinum\Source\Core\PltEvent.cpp" />
+    <ClCompile Include="Platinum\Source\Core\PltHttp.cpp" />
+    <ClCompile Include="Platinum\Source\Core\PltHttpClientTask.cpp" />
+    <ClCompile Include="Platinum\Source\Core\PltHttpServer.cpp" />
+    <ClCompile Include="Platinum\Source\Core\PltHttpServerTask.cpp" />
+    <ClCompile Include="Platinum\Source\Core\PltIconsData.cpp" />
+    <ClCompile Include="Platinum\Source\Core\PltLeaks.cpp" />
+    <ClCompile Include="Platinum\Source\Core\PltMetadataHandler.cpp" />
+    <ClCompile Include="Platinum\Source\Core\PltService.cpp" />
+    <ClCompile Include="Platinum\Source\Core\PltSsdp.cpp" />
+    <ClCompile Include="Platinum\Source\Core\PltStateVariable.cpp" />
+    <ClCompile Include="Platinum\Source\Core\PltStreamPump.cpp" />
+    <ClCompile Include="Platinum\Source\Core\PltTaskManager.cpp" />
+    <ClCompile Include="Platinum\Source\Core\PltThreadTask.cpp" />
+    <ClCompile Include="Platinum\Source\Core\PltUPnP.cpp" />
+  </ItemGroup>
+  <!-- Platinum MediaServer Sources -->
+  <ItemGroup>
+    <ClCompile Include="Platinum\Source\Devices\MediaServer\ConnectionManagerSCPD.cpp" />
+    <ClCompile Include="Platinum\Source\Devices\MediaServer\ContentDirectorywSearchSCPD.cpp" />
+    <ClCompile Include="Platinum\Source\Devices\MediaServer\PltDidl.cpp" />
+    <ClCompile Include="Platinum\Source\Devices\MediaServer\PltFileMediaServer.cpp" />
+    <ClCompile Include="Platinum\Source\Devices\MediaServer\PltMediaBrowser.cpp" />
+    <ClCompile Include="Platinum\Source\Devices\MediaServer\PltMediaCache.cpp" />
+    <ClCompile Include="Platinum\Source\Devices\MediaServer\PltMediaItem.cpp" />
+    <ClCompile Include="Platinum\Source\Devices\MediaServer\PltMediaServer.cpp" />
+    <ClCompile Include="Platinum\Source\Devices\MediaServer\PltSyncMediaBrowser.cpp" />
+  </ItemGroup>
+  <!-- Platinum MediaRenderer Sources -->
+  <ItemGroup>
+    <ClCompile Include="Platinum\Source\Devices\MediaRenderer\AVTransportSCPD.cpp" />
+    <ClCompile Include="Platinum\Source\Devices\MediaRenderer\PltMediaController.cpp" />
+    <ClCompile Include="Platinum\Source\Devices\MediaRenderer\PltMediaRenderer.cpp" />
+    <ClCompile Include="Platinum\Source\Devices\MediaRenderer\RdrConnectionManagerSCPD.cpp" />
+    <ClCompile Include="Platinum\Source\Devices\MediaRenderer\RenderingControlSCPD.cpp" />
+  </ItemGroup>
+  <!-- Platinum MediaConnect Sources -->
+  <ItemGroup>
+    <ClCompile Include="Platinum\Source\Devices\MediaConnect\PltMediaConnect.cpp" />
+    <ClCompile Include="Platinum\Source\Devices\MediaConnect\X_MS_MediaReceiverRegistrarSCPD.cpp" />
+  </ItemGroup>
+  <!-- Neptune Core Sources -->
+  <ItemGroup>
+    <ClCompile Include="Neptune\Source\Core\Neptune.cpp" />
+    <ClCompile Include="Neptune\Source\Core\NptBase64.cpp" />
+    <ClCompile Include="Neptune\Source\Core\NptBufferedStreams.cpp" />
+    <ClCompile Include="Neptune\Source\Core\NptCommon.cpp" />
+    <ClCompile Include="Neptune\Source\Core\NptConsole.cpp" />
+    <ClCompile Include="Neptune\Source\Core\NptDataBuffer.cpp" />
+    <ClCompile Include="Neptune\Source\Core\NptDebug.cpp" />
+    <ClCompile Include="Neptune\Source\Core\NptFile.cpp" />
+    <ClCompile Include="Neptune\Source\Core\NptHttp.cpp" />
+    <ClCompile Include="Neptune\Source\Core\NptList.cpp" />
+    <ClCompile Include="Neptune\Source\Core\NptLogging.cpp" />
+    <ClCompile Include="Neptune\Source\Core\NptMessaging.cpp" />
+    <ClCompile Include="Neptune\Source\Core\NptNetwork.cpp" />
+    <ClCompile Include="Neptune\Source\Core\NptQueue.cpp" />
+    <ClCompile Include="Neptune\Source\Core\NptResults.cpp" />
+    <ClCompile Include="Neptune\Source\Core\NptRingBuffer.cpp" />
+    <ClCompile Include="Neptune\Source\Core\NptSimpleMessageQueue.cpp" />
+    <ClCompile Include="Neptune\Source\Core\NptSockets.cpp" />
+    <ClCompile Include="Neptune\Source\Core\NptStreams.cpp" />
+    <ClCompile Include="Neptune\Source\Core\NptStrings.cpp" />
+    <ClCompile Include="Neptune\Source\Core\NptSystem.cpp" />
+    <ClCompile Include="Neptune\Source\Core\NptThreads.cpp" />
+    <ClCompile Include="Neptune\Source\Core\NptTime.cpp" />
+    <ClCompile Include="Neptune\Source\Core\NptUri.cpp" />
+    <ClCompile Include="Neptune\Source\Core\NptUtils.cpp" />
+    <ClCompile Include="Neptune\Source\Core\NptXml.cpp" />
+  </ItemGroup>
+  <!-- Neptune System Layer Sources (Xbox/Win32/BSD/Posix/StdC) -->
+  <ItemGroup>
+    <ClCompile Include="Neptune\Source\System\Bsd\NptBsdSockets.cpp" />
+    <ClCompile Include="Neptune\Source\System\Posix\NptPosixFile.cpp" />
+    <ClCompile Include="Neptune\Source\System\Xbox\NptXboxNetwork.cpp" />
+    <ClCompile Include="Neptune\Source\System\StdC\NptStdcConsole.cpp" />
+    <ClCompile Include="Neptune\Source\System\StdC\NptStdcEnvironment.cpp" />
+    <ClCompile Include="Neptune\Source\System\StdC\NptStdcFile.cpp" />
+    <ClCompile Include="Neptune\Source\System\Win32\NptWin32Debug.cpp">
+      <ObjectFileName>$(IntDir)NptWin32Debug.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Neptune\Source\System\Win32\NptWin32File.cpp" />
+    <ClCompile Include="Neptune\Source\System\Win32\NptWin32Queue.cpp" />
+    <ClCompile Include="Neptune\Source\System\Win32\NptWin32System.cpp" />
+    <ClCompile Include="Neptune\Source\System\Win32\NptWin32Threads.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>

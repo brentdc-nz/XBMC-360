@@ -296,8 +296,8 @@ int poll(struct pollfd *fds, nfds_t numfds, int timeout)
          * the requested events mask. */
         FD_SET(fds[i].fd, &exception_set);
 
-        if (fds[i].fd >= n)
-            n = fds[i].fd + 1;
+        if ((int)fds[i].fd >= n)
+            n = (int)fds[i].fd + 1;
     }
 
     if (n == 0)

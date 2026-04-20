@@ -6,13 +6,13 @@ This is early stages and still very much a work in progress.
 
 ### Current Status:
 - GUILib - The main controls are working but still have some missing.
-- VideoPlayer/DVDPlayer - Works well but needs improvements/features.
+- VideoPlayer/DVDPlayer
 - PAPlayer - Works well for flac, MP3 missing timing info (coming soon and more codecs)
 
 Usable but many features still need reimplementation or improvements.
 
-### Compiled alpha build (last updated 22-02-26):
-https://drive.google.com/file/d/1-m48tFUANqDGU5jSUjK93QxbK_kae58w
+### Compiled alpha build (last updated 20-04-26):
+https://drive.google.com/file/d/1ps0H-7KaAPJpgjdZZTDTv_I821LsXoOG
 
 ### Libraries
 - FFmpeg (DVDPlayer)
@@ -21,10 +21,13 @@ https://drive.google.com/file/d/1-m48tFUANqDGU5jSUjK93QxbK_kae58w
 - MilkDrop2 (Music Visualizations)
 - libFlac (PAPlayer)
 - libMad (PAPlayer)
+- libCurl 
+- libUPnP - DLNA (Neptune & Platinum)
 
 ### Services
 - FTP Server
 - NTP Client
+- UPnP
 
 ### Notes:
 Special thanks to XBMC4XBOX and Kodi.

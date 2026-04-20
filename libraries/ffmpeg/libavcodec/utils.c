@@ -525,7 +525,8 @@ void avpriv_color_frame(AVFrame *frame, const int c[4])
     const AVPixFmtDescriptor *desc = av_pix_fmt_desc_get(frame->format);
     int p, y, x;
 
-    av_assert0(desc->flags & PIX_FMT_PLANAR);
+    if (!desc || !(desc->flags & PIX_FMT_PLANAR))
+        return;
 
     for (p = 0; p<desc->nb_components; p++) {
         uint8_t *dst = frame->data[p];

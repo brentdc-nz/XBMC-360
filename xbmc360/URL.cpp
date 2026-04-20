@@ -32,13 +32,24 @@ CURL::CURL(const CStdString& strURL)
 
 	if(!strURL.size()) return ;
 	if(strURL.Equals("?", true)) return;
-	if(strURL[1] == ':' || strURL[4] == ':')
-	{
-		// Form is drive:directoryandfile
 
-		// Set filename and update extension
-		SetFileName(strURL);
-		return;
+	// First check if this URL has a protocol ("://"). If not, then it may be
+	// a drive-style path (e.g. "C:\" or "Hdd1:\"). The drive check must happen
+	// AFTER the "://" check, otherwise 4-letter protocols like "upnp://",
+	// "http://", "rtsp://" would incorrectly match strURL[4] == ':' and be
+	// treated as drive paths — causing the full URL to be stored as a filename
+	// and triggering infinite recursion in URIUtils::GetExtension.
+	int iProtoPos = strURL.Find("://");
+	if(iProtoPos < 0)
+	{
+		if(strURL[1] == ':' || strURL[4] == ':')
+		{
+			// Form is drive:directoryandfile
+
+			// Set filename and update extension
+			SetFileName(strURL);
+			return;
+		}
 	}
 
 	// Form is format 1 or 2
@@ -46,7 +57,7 @@ CURL::CURL(const CStdString& strURL)
 	// Format 2: protocol://file
 
 	// Decode protocol
-	int iPos = strURL.Find("://");
+	int iPos = iProtoPos;
 	if(iPos < 0)
 	{
 		// Check for misconstructed protocols

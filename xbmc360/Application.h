@@ -18,6 +18,9 @@
 #include "guilib\dialogs\GUIDialogMuteBug.h"
 #include "utils\Idle.h"
 #include "cores\PlayerCoreFactory.h"
+#ifdef HAS_UPNP
+#include "network\UPnP.h"
+#endif
 
 class CApplication: public CXBApplicationEX, public IPlayerCallback, public IMsgTargetCallback
 {
@@ -77,6 +80,10 @@ public:
 	void StopTimeServer();
 	void StartFtpServer();
 	void StopFtpServer();
+#ifdef HAS_UPNP
+	void StartUPnP();
+	void StopUPnP();
+#endif
 
 	bool IsCurrentThread() const;
 

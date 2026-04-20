@@ -83,6 +83,9 @@
 #endif
 
 #ifdef _XBOX
+/* socket.h redefines close() with a socket-typed first param;
+   suppress the conflict with Xbox 360 SDK io.h's int close(int) */
+#pragma warning(disable: 4028)
 #include "socket.h"
 #endif
 

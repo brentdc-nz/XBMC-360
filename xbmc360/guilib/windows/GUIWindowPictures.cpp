@@ -83,3 +83,14 @@ bool CGUIWindowPictures::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 	
 	return CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
+bool CGUIWindowPictures::Update(const CStdString &strDirectory)
+{
+	if (m_thumbLoader.IsLoading())
+		m_thumbLoader.StopThread();
+
+	if (!CGUIMediaWindow::Update(strDirectory))
+		return false;
+
+	m_thumbLoader.Load(*m_vecItems);
+	return true;
+}

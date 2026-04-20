@@ -112,6 +112,17 @@ static int tcp_open(URLContext *h, const char *uri, int flags)
     if (fd < 0)
         goto fail;
 
+#if defined(_XBOX)
+    {
+        /* Xbox 360 XNet "patch" socket options - required on retail consoles
+           to allow TCP/UDP to unregistered peers.  Same pair used by
+           FreestyleDash and Neptune/Platinum in this project. */
+        int xnet_opt = 1;
+        setsockopt(fd, SOL_SOCKET, 0x5802, (const char*)&xnet_opt, sizeof(xnet_opt));
+        setsockopt(fd, SOL_SOCKET, 0x5801, (const char*)&xnet_opt, sizeof(xnet_opt));
+    }
+#endif
+
     if (s->listen) {
         int fd1;
         int reuse = 1;

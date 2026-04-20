@@ -118,3 +118,24 @@ bool CHDDirectory::Exists(const char* strPath)
 		
 	return false;
 }
+
+bool CHDDirectory::Create(const char* strPath)
+{
+	// Mirror xbmc4xbox CHDDirectory::Create. Ports the same behaviour used
+	// by the thumb cache path - needed so ThumbLoader / CPicture can create
+	// "D:\Thumbnails\Video\<h>" before writing a cached .tbn.
+	if (!strPath || !*strPath)
+		return false;
+
+	CStdString strPath1 = strPath;
+//	g_charsetConverter.utf8ToStringCharset(strPath1); // TODO
+	strPath1.Replace("/", "\\");
+	URIUtils::AddSlashAtEnd(strPath1);
+
+	if (::CreateDirectory(strPath1.c_str(), NULL))
+		return true;
+	else if (GetLastError() == ERROR_ALREADY_EXISTS)
+		return true;
+
+	return false;
+}

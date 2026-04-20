@@ -48,6 +48,20 @@ public:
   virtual CStdString GetContent()                            { return "application/octet-stream"; }*/
 };
 
+class CRedirectException
+{
+public:
+	CFileBase *m_pNewFileImp;
+	CURL      *m_pNewUrl;
+
+	CRedirectException() : m_pNewFileImp(NULL), m_pNewUrl(NULL) { }
+
+	CRedirectException(CFileBase *pNewFileImp, CURL *pNewUrl = NULL) 
+		: m_pNewFileImp(pNewFileImp)
+		, m_pNewUrl(pNewUrl)
+	{ }
+};
+
 }
 
 #endif //H_CFILEBASE

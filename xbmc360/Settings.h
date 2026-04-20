@@ -65,6 +65,11 @@ public:
 	CStdString GetAudioExtensions() { return m_strAudioExtensions; };
 	CStdString GetPictureExtensions() { return m_strPictureExtensions; };
 
+	CStdString GetUserDataFolder() const { return "D:\\UserData"; };
+	CStdString GetVideoThumbFolder() const { return "D:\\UserData\\Thumbnails\\Video"; };
+	CStdString GetMusicThumbFolder() const { return "D:\\UserData\\Thumbnails\\Music"; };
+	CStdString GetProgramThumbFolder() const { return "D:\\UserData\\Thumbnails\\Programs"; };
+
 	CStdString m_logFolder;
 	int m_iSystemTimeTotalUp; // Uptime in minutes!
 

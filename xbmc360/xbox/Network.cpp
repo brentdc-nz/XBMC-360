@@ -252,6 +252,9 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
 
 			g_application.StartTimeServer();
 			g_application.StartFtpServer();
+#ifdef HAS_UPNP
+			g_application.StartUPnP();
+#endif
 			g_weatherManager.Refresh();
 			// TODO: Add the other services smb, etc
 		}

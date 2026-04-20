@@ -2,6 +2,7 @@
 #define GUILIB_GUIWINDOWPICTURES_H
 
 #include "guilib/GUIMediaWindow.h"
+#include "ThumbLoader.h"
 
 class CGUIWindowPictures : public CGUIMediaWindow//, public IBackgroundLoaderObserver // TODO
 {
@@ -12,6 +13,9 @@ public:
 protected:
 	virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
 	virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+	virtual bool Update(const CStdString &strDirectory);
+
+	CPictureThumbLoader m_thumbLoader;
 };
 
 #endif //GUILIB_GUIWINDOWPICTURES_H

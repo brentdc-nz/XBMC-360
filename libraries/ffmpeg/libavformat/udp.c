@@ -333,6 +333,15 @@ static int udp_socket_create(UDPContext *s, struct sockaddr_storage *addr,
     if (udp_fd < 0)
         goto fail;
 
+#if defined(_XBOX)
+    {
+        /* Xbox 360 XNet "patch" socket options (see tcp.c) */
+        int xnet_opt = 1;
+        setsockopt(udp_fd, SOL_SOCKET, 0x5802, (const char*)&xnet_opt, sizeof(xnet_opt));
+        setsockopt(udp_fd, SOL_SOCKET, 0x5801, (const char*)&xnet_opt, sizeof(xnet_opt));
+    }
+#endif
+
     memcpy(addr, res->ai_addr, res->ai_addrlen);
     *addr_len = res->ai_addrlen;
 

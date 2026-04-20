@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Platinum">
+      <UniqueIdentifier>{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platinum\Core">
+      <UniqueIdentifier>{A1B2C3D4-E5F6-7890-ABCD-EF1234567891}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platinum\Devices">
+      <UniqueIdentifier>{A1B2C3D4-E5F6-7890-ABCD-EF1234567892}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platinum\Devices\MediaServer">
+      <UniqueIdentifier>{A1B2C3D4-E5F6-7890-ABCD-EF1234567893}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platinum\Devices\MediaRenderer">
+      <UniqueIdentifier>{A1B2C3D4-E5F6-7890-ABCD-EF1234567894}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platinum\Devices\MediaConnect">
+      <UniqueIdentifier>{A1B2C3D4-E5F6-7890-ABCD-EF1234567895}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Neptune">
+      <UniqueIdentifier>{A1B2C3D4-E5F6-7890-ABCD-EF1234567896}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Neptune\Core">
+      <UniqueIdentifier>{A1B2C3D4-E5F6-7890-ABCD-EF1234567897}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Neptune\System">
+      <UniqueIdentifier>{A1B2C3D4-E5F6-7890-ABCD-EF1234567898}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Platinum Core -->
+    <ClCompile Include="Platinum\Source\Core\PltAction.cpp">
+      <Filter>Platinum\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Platinum\Source\Core\PltArgument.cpp">
+      <Filter>Platinum\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Platinum\Source\Core\PltConstants.cpp">
+      <Filter>Platinum\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Platinum\Source\Core\PltCtrlPoint.cpp">
+      <Filter>Platinum\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Platinum\Source\Core\PltCtrlPointTask.cpp">
+      <Filter>Platinum\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Platinum\Source\Core\PltDatagramStream.cpp">
+      <Filter>Platinum\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Platinum\Source\Core\PltDeviceData.cpp">
+      <Filter>Platinum\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Platinum\Source\Core\PltDeviceHost.cpp">
+      <Filter>Platinum\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Platinum\Source\Core\PltDownloader.cpp">
+      <Filter>Platinum\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Platinum\Source\Core\PltEvent.cpp">
+      <Filter>Platinum\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Platinum\Source\Core\PltHttp.cpp">
+      <Filter>Platinum\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Platinum\Source\Core\PltHttpClientTask.cpp">
+      <Filter>Platinum\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Platinum\Source\Core\PltHttpServer.cpp">
+      <Filter>Platinum\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Platinum\Source\Core\PltHttpServerTask.cpp">
+      <Filter>Platinum\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Platinum\Source\Core\PltIconsData.cpp">
+      <Filter>Platinum\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Platinum\Source\Core\PltLeaks.cpp">
+      <Filter>Platinum\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Platinum\Source\Core\PltMetadataHandler.cpp">
+      <Filter>Platinum\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Platinum\Source\Core\PltService.cpp">
+      <Filter>Platinum\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Platinum\Source\Core\PltSsdp.cpp">
+      <Filter>Platinum\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Platinum\Source\Core\PltStateVariable.cpp">
+      <Filter>Platinum\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Platinum\Source\Core\PltStreamPump.cpp">
+      <Filter>Platinum\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Platinum\Source\Core\PltTaskManager.cpp">
+      <Filter>Platinum\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Platinum\Source\Core\PltThreadTask.cpp">
+      <Filter>Platinum\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Platinum\Source\Core\PltUPnP.cpp">
+      <Filter>Platinum\Core</Filter>
+    </ClCompile>
+    <!-- Platinum MediaServer -->
+    <ClCompile Include="Platinum\Source\Devices\MediaServer\ConnectionManagerSCPD.cpp">
+      <Filter>Platinum\Devices\MediaServer</Filter>
+    </ClCompile>
+    <ClCompile Include="Platinum\Source\Devices\MediaServer\ContentDirectorywSearchSCPD.cpp">
+      <Filter>Platinum\Devices\MediaServer</Filter>
+    </ClCompile>
+    <ClCompile Include="Platinum\Source\Devices\MediaServer\PltDidl.cpp">
+      <Filter>Platinum\Devices\MediaServer</Filter>
+    </ClCompile>
+    <ClCompile Include="Platinum\Source\Devices\MediaServer\PltFileMediaServer.cpp">
+      <Filter>Platinum\Devices\MediaServer</Filter>
+    </ClCompile>
+    <ClCompile Include="Platinum\Source\Devices\MediaServer\PltMediaBrowser.cpp">
+      <Filter>Platinum\Devices\MediaServer</Filter>
+    </ClCompile>
+    <ClCompile Include="Platinum\Source\Devices\MediaServer\PltMediaCache.cpp">
+      <Filter>Platinum\Devices\MediaServer</Filter>
+    </ClCompile>
+    <ClCompile Include="Platinum\Source\Devices\MediaServer\PltMediaItem.cpp">
+      <Filter>Platinum\Devices\MediaServer</Filter>
+    </ClCompile>
+    <ClCompile Include="Platinum\Source\Devices\MediaServer\PltMediaServer.cpp">
+      <Filter>Platinum\Devices\MediaServer</Filter>
+    </ClCompile>
+    <ClCompile Include="Platinum\Source\Devices\MediaServer\PltSyncMediaBrowser.cpp">
+      <Filter>Platinum\Devices\MediaServer</Filter>
+    </ClCompile>
+    <!-- Platinum MediaRenderer -->
+    <ClCompile Include="Platinum\Source\Devices\MediaRenderer\AVTransportSCPD.cpp">
+      <Filter>Platinum\Devices\MediaRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Platinum\Source\Devices\MediaRenderer\PltMediaController.cpp">
+      <Filter>Platinum\Devices\MediaRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Platinum\Source\Devices\MediaRenderer\PltMediaRenderer.cpp">
+      <Filter>Platinum\Devices\MediaRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Platinum\Source\Devices\MediaRenderer\RdrConnectionManagerSCPD.cpp">
+      <Filter>Platinum\Devices\MediaRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Platinum\Source\Devices\MediaRenderer\RenderingControlSCPD.cpp">
+      <Filter>Platinum\Devices\MediaRenderer</Filter>
+    </ClCompile>
+    <!-- Platinum MediaConnect -->
+    <ClCompile Include="Platinum\Source\Devices\MediaConnect\PltMediaConnect.cpp">
+      <Filter>Platinum\Devices\MediaConnect</Filter>
+    </ClCompile>
+    <ClCompile Include="Platinum\Source\Devices\MediaConnect\X_MS_MediaReceiverRegistrarSCPD.cpp">
+      <Filter>Platinum\Devices\MediaConnect</Filter>
+    </ClCompile>
+    <!-- Neptune Core -->
+    <ClCompile Include="Neptune\Source\Core\Neptune.cpp">
+      <Filter>Neptune\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Neptune\Source\Core\NptBase64.cpp">
+      <Filter>Neptune\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Neptune\Source\Core\NptBufferedStreams.cpp">
+      <Filter>Neptune\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Neptune\Source\Core\NptCommon.cpp">
+      <Filter>Neptune\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Neptune\Source\Core\NptConsole.cpp">
+      <Filter>Neptune\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Neptune\Source\Core\NptDataBuffer.cpp">
+      <Filter>Neptune\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Neptune\Source\Core\NptDebug.cpp">
+      <Filter>Neptune\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Neptune\Source\Core\NptFile.cpp">
+      <Filter>Neptune\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Neptune\Source\Core\NptHttp.cpp">
+      <Filter>Neptune\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Neptune\Source\Core\NptList.cpp">
+      <Filter>Neptune\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Neptune\Source\Core\NptLogging.cpp">
+      <Filter>Neptune\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Neptune\Source\Core\NptMessaging.cpp">
+      <Filter>Neptune\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Neptune\Source\Core\NptNetwork.cpp">
+      <Filter>Neptune\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Neptune\Source\Core\NptQueue.cpp">
+      <Filter>Neptune\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Neptune\Source\Core\NptResults.cpp">
+      <Filter>Neptune\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Neptune\Source\Core\NptRingBuffer.cpp">
+      <Filter>Neptune\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Neptune\Source\Core\NptSimpleMessageQueue.cpp">
+      <Filter>Neptune\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Neptune\Source\Core\NptSockets.cpp">
+      <Filter>Neptune\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Neptune\Source\Core\NptStreams.cpp">
+      <Filter>Neptune\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Neptune\Source\Core\NptStrings.cpp">
+      <Filter>Neptune\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Neptune\Source\Core\NptSystem.cpp">
+      <Filter>Neptune\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Neptune\Source\Core\NptThreads.cpp">
+      <Filter>Neptune\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Neptune\Source\Core\NptTime.cpp">
+      <Filter>Neptune\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Neptune\Source\Core\NptUri.cpp">
+      <Filter>Neptune\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Neptune\Source\Core\NptUtils.cpp">
+      <Filter>Neptune\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Neptune\Source\Core\NptXml.cpp">
+      <Filter>Neptune\Core</Filter>
+    </ClCompile>
+    <!-- Neptune System -->
+    <ClCompile Include="Neptune\Source\System\Bsd\NptBsdSockets.cpp">
+      <Filter>Neptune\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Neptune\Source\System\Posix\NptPosixFile.cpp">
+      <Filter>Neptune\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Neptune\Source\System\Xbox\NptXboxNetwork.cpp">
+      <Filter>Neptune\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Neptune\Source\System\StdC\NptStdcConsole.cpp">
+      <Filter>Neptune\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Neptune\Source\System\StdC\NptStdcEnvironment.cpp">
+      <Filter>Neptune\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Neptune\Source\System\StdC\NptStdcFile.cpp">
+      <Filter>Neptune\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Neptune\Source\System\Win32\NptWin32Debug.cpp">
+      <Filter>Neptune\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Neptune\Source\System\Win32\NptWin32File.cpp">
+      <Filter>Neptune\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Neptune\Source\System\Win32\NptWin32Queue.cpp">
+      <Filter>Neptune\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Neptune\Source\System\Win32\NptWin32System.cpp">
+      <Filter>Neptune\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Neptune\Source\System\Win32\NptWin32Threads.cpp">
+      <Filter>Neptune\System</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

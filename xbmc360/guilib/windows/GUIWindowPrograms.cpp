@@ -25,13 +25,12 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 {
 	switch ( message.GetMessage() )
 	{
-		case GUI_MSG_WINDOW_DEINIT: // TODO
+		case GUI_MSG_WINDOW_DEINIT:
 		{
-/*			if (m_thumbLoader.IsLoading())
+			if (m_thumbLoader.IsLoading())
 				m_thumbLoader.StopThread();
-			
-			m_database.Close();
-*/		}
+//			m_database.Close(); // TODO
+		}
 		break;
 
 		case GUI_MSG_WINDOW_INIT: // TODO
@@ -425,5 +424,17 @@ bool CGUIWindowPrograms::OnPlayMedia(int iItem) // TODO - Get more info from the
 
 	CXEXUtils::RunXex(szPath);
 
+	return true;
+}
+
+bool CGUIWindowPrograms::Update(const CStdString &strDirectory)
+{
+	if (m_thumbLoader.IsLoading())
+		m_thumbLoader.StopThread();
+
+	if (!CGUIMediaWindow::Update(strDirectory))
+		return false;
+
+	m_thumbLoader.Load(*m_vecItems);
 	return true;
 }
