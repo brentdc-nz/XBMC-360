@@ -177,12 +177,6 @@
     <Filter Include="Source Files\guilib\info">
       <UniqueIdentifier>{48de35a2-40c0-4dc4-b81b-31be9fc03932}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\libraries\httpclient">
-      <UniqueIdentifier>{a707bd3d-87c8-40b9-b85a-3bd56f2442b9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\libraries\httpclient">
-      <UniqueIdentifier>{b897446a-0bd6-46d2-bbb3-1d349d8530db}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\guilib\tinyjson">
       <UniqueIdentifier>{f3969e67-6dd7-4c2d-931c-02a5fe1f85d7}</UniqueIdentifier>
     </Filter>
@@ -510,6 +504,12 @@
       <Filter>Header Files\filesystem</Filter>
     </ClInclude>
     <ClInclude Include="filesystem\FileSMB.h">
+      <Filter>Header Files\filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="filesystem\CurlFile.h">
+      <Filter>Header Files\filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="filesystem\CurlSessionPool.h">
       <Filter>Header Files\filesystem</Filter>
     </ClInclude>
     <ClInclude Include="cores\DVDPlayer\IDVDPlayer.h">
@@ -989,9 +989,6 @@
     <ClInclude Include="utils\Weather.h">
       <Filter>Header Files\utils</Filter>
     </ClInclude>
-    <ClInclude Include="libraries\httpclient\httpclient.h">
-      <Filter>Header Files\libraries\httpclient</Filter>
-    </ClInclude>
     <ClInclude Include="guilib\tinyjson\tinyjson.h">
       <Filter>Header Files\guilib\tinyjson</Filter>
     </ClInclude>
@@ -1337,6 +1334,12 @@
       <Filter>Source Files\filesystem</Filter>
     </ClCompile>
     <ClCompile Include="filesystem\FileSMB.cpp">
+      <Filter>Source Files\filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="filesystem\CurlFile.cpp">
+      <Filter>Source Files\filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="filesystem\CurlSessionPool.cpp">
       <Filter>Source Files\filesystem</Filter>
     </ClCompile>
     <ClCompile Include="xbox\socket_emu\getaddrinfo.c">
@@ -1821,9 +1824,6 @@
     </ClCompile>
     <ClCompile Include="utils\Weather.cpp">
       <Filter>Source Files\utils</Filter>
-    </ClCompile>
-    <ClCompile Include="libraries\httpclient\httpclient.cpp">
-      <Filter>Source Files\libraries\httpclient</Filter>
     </ClCompile>
     <ClCompile Include="guilib\tinyjson\tinyjson.cpp">
       <Filter>Source Files\guilib\tinyjson</Filter>

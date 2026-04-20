@@ -13,6 +13,7 @@
 #include "guilib\LocalizeStrings.h"
 #include "Settings.h"
 #include "filesystem\File.h"
+#include "filesystem\CurlSessionPool.h"
 #include "ApplicationMessenger.h"
 #include "ButtonTranslator.h"
 #include "guilib\AudioContext.h"
@@ -422,6 +423,9 @@ void CApplication::ProcessSlow()
 {
 	// Check our network state every 15 seconds or when net status changes
 	m_network.CheckNetwork(30);
+
+	// Check for any idle curl connections
+	g_curlSessionPool.CheckIdle();
 
 	// Check for any needed sntp update
 	if(m_pNTPClient && m_pNTPClient->UpdateNeeded())

@@ -85,6 +85,10 @@ public:
         void         Disconnect();
     };
 
+    // Convenience methods for simple HTTP GET
+    bool Get(const CStdString& strURL, CStdString& strHTML);
+    bool ReadData(CStdString& strHTML);
+
 protected:
     void SetCommonOptions(CReadState* state);
 

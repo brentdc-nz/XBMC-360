@@ -31,6 +31,7 @@
 #undef CURL
 
 #include "CurlFile.h"
+#include "CurlSessionPool.h"
 #include "..\utils\Log.h"
 #include "..\utils\SystemInfo.h"
 #include "..\URL.h"
@@ -40,18 +41,6 @@ using namespace XFILE;
 
 #define XMIN(a,b) ((a)<(b)?(a):(b))
 #define FITS_INT(a) (((a) <= INT_MAX) && ((a) >= INT_MIN))
-
-// Global curl init tracking
-static bool g_curlInitialized = false;
-
-static void EnsureCurlGlobalInit()
-{
-    if (!g_curlInitialized)
-    {
-        curl_global_init(CURL_GLOBAL_ALL);
-        g_curlInitialized = true;
-    }
-}
 
 //------------------------------------------------------------------------------
 // C callbacks for curl
@@ -71,15 +60,14 @@ extern "C" size_t xbmc_header_cb(void *ptr, size_t size, size_t nmemb, void *str
 }
 
 #if defined(_XBOX)
-// Xbox 360 retail XNet requires two undocumented "patch" socket options
-// (0x5801, 0x5802) to allow TCP/UDP traffic to unregistered peers.
-// libcurl creates its own sockets via socket(), so we hook CURLOPT_SOCKOPTFUNCTION
-// to apply the patch before libcurl calls connect().
+// Xbox 360 XNet requires socket option 0x5801 to allow TCP traffic to
+// non-Xbox peers. 0x5802 must NOT be set on TCP sockets — it corrupts
+// the TCP handshake (XNet reports "bad ACK seq in SYN_SENT" and fails
+// with WSAEHOSTUNREACH 10065).
 extern "C" int xbmc_curl_sockopt_cb(void* /*clientp*/, curl_socket_t curlfd, curlsocktype /*purpose*/)
 {
-    int option = 1;
-    setsockopt((SOCKET)curlfd, SOL_SOCKET, 0x5802, (const char*)&option, sizeof(option));
-    setsockopt((SOCKET)curlfd, SOL_SOCKET, 0x5801, (const char*)&option, sizeof(option));
+    BOOL option = TRUE;
+    int r = setsockopt((SOCKET)curlfd, SOL_SOCKET, 0x5801, (const char*)&option, sizeof(option));
     return CURL_SOCKOPT_OK;
 }
 #endif
@@ -121,14 +109,6 @@ CCurlFile::CReadState::CReadState()
 CCurlFile::CReadState::~CReadState()
 {
     Disconnect();
-
-    if (m_multiHandle && m_easyHandle)
-        curl_multi_remove_handle((CURLM*)m_multiHandle, m_easyHandle);
-
-    if (m_easyHandle)
-        curl_easy_cleanup(m_easyHandle);
-    if (m_multiHandle)
-        curl_multi_cleanup((CURLM*)m_multiHandle);
 }
 
 size_t CCurlFile::CReadState::HeaderCallback(void *ptr, size_t size, size_t nmemb)
@@ -467,8 +447,6 @@ bool CCurlFile::CReadState::FillBuffer(unsigned int want)
 
 CCurlFile::CCurlFile()
 {
-    EnsureCurlGlobalInit();
-
     m_opened = false;
     m_seekable = true;
     m_multisession = true;
@@ -480,6 +458,7 @@ CCurlFile::CCurlFile()
 CCurlFile::~CCurlFile()
 {
     Close();
+    g_curlSessionPool.easy_release(&m_state->m_easyHandle, &m_state->m_multiHandle);
     delete m_state;
 }
 
@@ -538,13 +517,13 @@ bool CCurlFile::Open(const CURL& url, bool bBinary)
     // Build the URL string
     m_url = url.Get();
 
+    ::CURL url2(url);
+
     CLog::Log(LOGDEBUG, "CCurlFile::Open(%p) %s", (void*)this, m_url.c_str());
 
     if (m_state->m_easyHandle == NULL)
-    {
-        m_state->m_easyHandle = curl_easy_init();
-        m_state->m_multiHandle = curl_multi_init();
-    }
+        g_curlSessionPool.easy_aquire(url2.GetProtocol(), url2.GetHostName(),
+                                      &m_state->m_easyHandle, &m_state->m_multiHandle);
 
     if (!m_state->m_easyHandle)
     {
@@ -559,17 +538,44 @@ bool CCurlFile::Open(const CURL& url, bool bBinary)
     m_httpresponse = m_state->Connect(m_bufferSize);
     if (m_httpresponse < 0 || m_httpresponse >= 400)
     {
-        CLog::Log(LOGERROR, "CCurlFile::Open - Connect returned %d for %s", m_httpresponse, m_url.c_str());
-        m_opened = false;
-        return false;
+        // If https failed, fallback to http
+        if (url2.GetProtocol().Equals("https"))
+        {
+            CLog::Log(LOGWARNING, "CCurlFile::Open - HTTPS failed for %s, falling back to HTTP", m_url.c_str());
+
+            m_state->Disconnect();
+            g_curlSessionPool.easy_release(&m_state->m_easyHandle, &m_state->m_multiHandle);
+
+            m_url.Replace("https://", "http://");
+            url2 = ::CURL(m_url);
+
+            g_curlSessionPool.easy_aquire(url2.GetProtocol(), url2.GetHostName(),
+                                          &m_state->m_easyHandle, &m_state->m_multiHandle);
+
+            SetCommonOptions(m_state);
+            m_state->m_sendRange = m_seekable;
+
+            m_httpresponse = m_state->Connect(m_bufferSize);
+        }
+
+        if (m_httpresponse < 0 || m_httpresponse >= 400)
+        {
+            CLog::Log(LOGERROR, "CCurlFile::Open - Connect returned %d for %s", m_httpresponse, m_url.c_str());
+            m_opened = false;
+            return false;
+        }
     }
 
-    // Check for broken libupnp servers — disable multi-session to avoid seek corruption
-    m_multisession = true;
-    if (m_state->m_httpheader.GetValue("Server").Find("Portable SDK for UPnP devices") >= 0)
+    // Only enable multi-session for HTTP(S)
+    m_multisession = false;
+    if (url2.GetProtocol().Equals("http") || url2.GetProtocol().Equals("https"))
     {
-        CLog::Log(LOGWARNING, "CCurlFile::Open - Disabling multi session due to broken libupnp server");
-        m_multisession = false;
+        m_multisession = true;
+        if (m_state->m_httpheader.GetValue("Server").Find("Portable SDK for UPnP devices") >= 0)
+        {
+            CLog::Log(LOGWARNING, "CCurlFile::Open - Disabling multi session due to broken libupnp server");
+            m_multisession = false;
+        }
     }
 
     // If chunked transfer encoding, we don't know the real size
@@ -642,10 +648,14 @@ __int64 CCurlFile::Seek(__int64 iFilePosition, int iWhence)
     CReadState* oldstate = NULL;
     if (m_multisession)
     {
+        ::CURL url(m_url);
         oldstate = m_state;
         m_state = new CReadState();
-        m_state->m_easyHandle = curl_easy_init();
-        m_state->m_multiHandle = curl_multi_init();
+
+        g_curlSessionPool.easy_aquire(url.GetProtocol(), url.GetHostName(),
+                                      &m_state->m_easyHandle, &m_state->m_multiHandle);
+
+        // setup common curl options
         SetCommonOptions(m_state);
     }
     else
@@ -664,13 +674,19 @@ __int64 CCurlFile::Seek(__int64 iFilePosition, int iWhence)
         m_seekable = false;
         if (oldstate)
         {
+            g_curlSessionPool.easy_release(&m_state->m_easyHandle, &m_state->m_multiHandle);
             delete m_state;
             m_state = oldstate;
         }
         return -1;
     }
 
-    delete oldstate;
+    if (oldstate)
+    {
+        g_curlSessionPool.easy_release(&oldstate->m_easyHandle, &oldstate->m_multiHandle);
+        delete oldstate;
+    }
+
     return m_state->m_filePos;
 }
 
@@ -692,8 +708,39 @@ void CCurlFile::Close()
         return;
 
     m_state->Disconnect();
+    g_curlSessionPool.easy_release(&m_state->m_easyHandle, &m_state->m_multiHandle);
+
     m_url.Empty();
     m_opened = false;
+}
+
+bool CCurlFile::Get(const CStdString& strURL, CStdString& strHTML)
+{
+    if (Open(strURL))
+    {
+        if (ReadData(strHTML))
+        {
+            Close();
+            return true;
+        }
+    }
+    Close();
+    return false;
+}
+
+bool CCurlFile::ReadData(CStdString& strHTML)
+{
+    int size_read = 0;
+    strHTML = "";
+    char buffer[16384];
+    while ((size_read = Read(buffer, sizeof(buffer) - 1)) > 0)
+    {
+        buffer[size_read] = 0;
+        strHTML.append(buffer, size_read);
+    }
+    if (m_state->m_cancelled)
+        return false;
+    return true;
 }
 
 int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)

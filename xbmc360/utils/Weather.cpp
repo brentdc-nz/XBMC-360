@@ -4,7 +4,7 @@
 #include "guilib\GUIWindowManager.h"
 #include "guilib\dialogs\GUIDialogSelect.h"
 #include "guilib\dialogs\GUIDialogProgress.h"
-#include "libraries\httpclient\httpclient.h"
+#include "filesystem\CurlFile.h"
 #include "GUISettings.h"
 #include "Temperature.h"
 #include "utils\POUtils.h"
@@ -25,6 +25,7 @@
 
 using namespace std;
 using namespace tinyjson;
+using namespace XFILE;
 
 CWeather g_weatherManager;
 
@@ -71,12 +72,13 @@ bool CWeather::GetSearchResults(const CStdString &strSearch, CStdString &strResu
 	}
 
 	// Call API for our search
-	string strJsonResponse;
+	CStdString strJsonResponse;
 	CStdString strUrl;
+	CCurlFile httpUtil;
 
-	strUrl.Format("https://api.weatherapi.com/v1/search.json?key=%s&q=%s", WEATHER_API_KEY, CHTTPClient::UrlEncode(strSearch));
+	strUrl.Format("https://api.weatherapi.com/v1/search.json?key=%s&q=%s", WEATHER_API_KEY, strSearch.c_str());
 
-	if (!CHTTPClient::DownloadFile(strUrl, strJsonResponse))
+	if (!httpUtil.Get(strUrl, strJsonResponse))
 	{
 		if (pDlgProgress)
 			pDlgProgress->Close();
@@ -192,9 +194,10 @@ bool CWeather::DoWork()
 		GetLocationCoordinates(g_guiSettings.GetString(strLocSetting)),
 		NUM_DAYS);
 
-	string strJsonResponse;
+	CStdString strJsonResponse;
+	CCurlFile httpUtil;
 
-	if (CHTTPClient::DownloadFile(strUrl, strJsonResponse))
+	if (httpUtil.Get(strUrl, strJsonResponse))
 	{
 		CLog::Log(LOGINFO, "WEATHER: Weather download successful");
 

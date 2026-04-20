@@ -377,6 +377,7 @@
     <ClInclude Include="filesystem\FileHD.h" />
     <ClInclude Include="filesystem\FileSMB.h" />
     <ClInclude Include="filesystem\CurlFile.h" />
+    <ClInclude Include="filesystem\CurlSessionPool.h" />
     <ClInclude Include="filesystem\UPnPFile.h" />
     <ClInclude Include="filesystem\HDDirectory.h" />
     <ClInclude Include="filesystem\IDirectory.h" />
@@ -498,7 +499,6 @@
     <ClInclude Include="interfaces\Builtins.h" />
     <ClInclude Include="IProgressCallback.h" />
     <ClInclude Include="LangInfo.h" />
-    <ClInclude Include="libraries\httpclient\httpclient.h" />
     <ClInclude Include="libraries\libsmb2\aes.h" />
     <ClInclude Include="libraries\libsmb2\aes128ccm.h" />
     <ClInclude Include="libraries\libsmb2\compat.h" />
@@ -651,6 +651,7 @@
     <ClCompile Include="filesystem\FileHD.cpp" />
     <ClCompile Include="filesystem\FileSMB.cpp" />
     <ClCompile Include="filesystem\CurlFile.cpp" />
+    <ClCompile Include="filesystem\CurlSessionPool.cpp" />
     <ClCompile Include="filesystem\UPnPFile.cpp" />
     <ClCompile Include="filesystem\HDDirectory.cpp" />
     <ClCompile Include="filesystem\IDirectory.cpp" />
@@ -768,7 +769,6 @@
     <ClCompile Include="interfaces\Builtins.cpp" />
     <ClCompile Include="Key.cpp" />
     <ClCompile Include="LangInfo.cpp" />
-    <ClCompile Include="libraries\httpclient\httpclient.cpp" />
     <ClCompile Include="libraries\libsmb2\aes.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
