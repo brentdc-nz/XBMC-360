@@ -452,7 +452,6 @@ void CGUIWindow::ChangeButtonToEdit(int id, bool singleLabel /* = false*/)
 				edit->SetLabel("");
 			InsertControl(edit, name);
 			RemoveControl(name);
-			name->FreeResources();
 			delete name;
 		}
 	}
