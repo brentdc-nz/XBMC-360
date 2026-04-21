@@ -36,7 +36,7 @@ set FAILED=0
 
 :: --- Libraries ---
 
-echo [1/8] Building ffmpeg...
+echo [1/9] Building ffmpeg...
 "%MSBUILD%" "libraries\ffmpeg\vcproj\ffmpeg_12_msvc.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
 if errorlevel 1 (
     echo FAILED: ffmpeg
@@ -44,7 +44,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [2/8] Building freetype...
+echo [2/9] Building freetype...
 "%MSBUILD%" "libraries\freetype\freetype.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
 if errorlevel 1 (
     echo FAILED: freetype
@@ -52,7 +52,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [3/8] Building libcurl...
+echo [3/9] Building libcurl...
 "%MSBUILD%" "libraries\libcurl\libcurl.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
 if errorlevel 1 (
     echo FAILED: libcurl
@@ -60,7 +60,15 @@ if errorlevel 1 (
 )
 
 echo.
-echo [4/8] Building libPlatinum (UPnP)...
+echo [4/9] Building libsmb2...
+"%MSBUILD%" "libraries\libsmb2\libsmb2.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
+if errorlevel 1 (
+    echo FAILED: libsmb2
+    set FAILED=1
+)
+
+echo.
+echo [5/9] Building libPlatinum (UPnP)...
 "%MSBUILD%" "libraries\libUPnP\libPlatinum.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
 if errorlevel 1 (
     echo FAILED: libPlatinum
@@ -70,7 +78,7 @@ if errorlevel 1 (
 :: --- Sources ---
 
 echo.
-echo [5/8] Building libmad...
+echo [6/9] Building libmad...
 "%MSBUILD%" "sources\PAPlayer\libmad\libmad.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
 if errorlevel 1 (
     echo FAILED: libmad
@@ -78,7 +86,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [6/8] Building libFlac...
+echo [7/9] Building libFlac...
 "%MSBUILD%" "sources\PAPlayer\libFlac\libFlac.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
 if errorlevel 1 (
     echo FAILED: libFlac
@@ -86,7 +94,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [7/8] Building 360MilkDrop2...
+echo [8/9] Building 360MilkDrop2...
 "%MSBUILD%" "sources\360MilkDrop2\360MilkDrop2.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
 if errorlevel 1 (
     echo FAILED: 360MilkDrop2
@@ -96,7 +104,7 @@ if errorlevel 1 (
 :: --- Main Project ---
 
 echo.
-echo [8/8] Building xbmc360...
+echo [9/9] Building xbmc360...
 "%MSBUILD%" "xbmc360.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
 if errorlevel 1 (
     echo FAILED: xbmc360

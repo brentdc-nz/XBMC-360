@@ -122,7 +122,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PreprocessorDefinitions>_DEBUG;_XBOX;__STDC_CONSTANT_MACROS;HAS_UPNP;CURL_STATICLIB;_ITERATOR_DEBUG_LEVEL=0;_HAS_ITERATOR_DEBUGGING=0</PreprocessorDefinitions>
       <CallAttributedProfiling>Callcap</CallAttributedProfiling>
-      <AdditionalIncludeDirectories>..\xbmc360\;..\libraries\freetype\freetype\include;..\libraries\ffmpeg\;..\libraries\ffmpeg\vcproj\external\include;..\sources\360MilkDrop2;..\sources\PAPlayer\libFlac\include;..\sources\PAPlayer\libmad\include;..\libraries\libUPnP\Neptune\Source\Core;..\libraries\libUPnP\Platinum\Source\Core;..\libraries\libUPnP\Platinum\Source\Platinum;..\libraries\libUPnP\Platinum\Source\Devices\MediaServer;..\libraries\libUPnP\Platinum\Source\Devices\MediaRenderer;..\libraries\libUPnP\Platinum\Source\Devices\MediaConnect;..\libraries\libUPnP\Neptune\Source\System\Xbox;..\libraries\libUPnP\Neptune\Source\System\Win32;..\libraries\libcurl\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\xbmc360\;..\libraries\freetype\freetype\include;..\libraries\ffmpeg\;..\libraries\ffmpeg\vcproj\external\include;..\sources\360MilkDrop2;..\sources\PAPlayer\libFlac\include;..\sources\PAPlayer\libmad\include;..\libraries\libUPnP\Neptune\Source\Core;..\libraries\libUPnP\Platinum\Source\Core;..\libraries\libUPnP\Platinum\Source\Platinum;..\libraries\libUPnP\Platinum\Source\Devices\MediaServer;..\libraries\libUPnP\Platinum\Source\Devices\MediaRenderer;..\libraries\libUPnP\Platinum\Source\Devices\MediaConnect;..\libraries\libUPnP\Neptune\Source\System\Xbox;..\libraries\libUPnP\Neptune\Source\System\Win32;..\libraries\libcurl\include;..\libraries\libsmb2;..\libraries\libsmb2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/EHa %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -131,8 +131,8 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
-      <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirenderd.lib;xmediad2.lib;Xonline.lib;xnetd.lib;libavformat.lib;libswresample.lib;libavutil.lib;libswscale.lib;libavcodec.lib;zlib.lib;pthreads.lib;freetype.lib;360MilkDrop2.lib;libFlac.lib;libmad.lib;libPlatinum.lib;libcurl.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\libraries\ffmpeg\vcproj\libavcodec\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\libswscale\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\libavutil\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\libavformat\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\libswresample\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\pthreads\Debug;..\libraries\ffmpeg\vcproj\external\zlib\Xbox 360\Debug;..\libraries\freetype\freetype\Debug;..\sources\360MilkDrop2\Debug;..\sources\PAPlayer\libFlac\Debug;..\sources\PAPlayer\libmad\Debug;..\libraries\libUPnP\Debug;..\libraries\libcurl\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirenderd.lib;xmediad2.lib;Xonline.lib;xnetd.lib;libavformat.lib;libswresample.lib;libavutil.lib;libswscale.lib;libavcodec.lib;zlib.lib;pthreads.lib;freetype.lib;360MilkDrop2.lib;libFlac.lib;libmad.lib;libPlatinum.lib;libcurl.lib;libsmb2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\libraries\ffmpeg\vcproj\libavcodec\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\libswscale\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\libavutil\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\libavformat\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\libswresample\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\pthreads\Debug;..\libraries\ffmpeg\vcproj\external\zlib\Xbox 360\Debug;..\libraries\freetype\freetype\Debug;..\sources\360MilkDrop2\Debug;..\sources\PAPlayer\libFlac\Debug;..\sources\PAPlayer\libmad\Debug;..\libraries\libUPnP\Debug;..\libraries\libcurl\Debug;..\libraries\libsmb2\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <StackCommitSize>2097152</StackCommitSize>
       <StackReserveSize>2097152</StackReserveSize>
     </Link>
@@ -155,7 +155,7 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PreprocessorDefinitions>_XBOX;__STDC_CONSTANT_MACROS;HAS_UPNP;CURL_STATICLIB</PreprocessorDefinitions>
       <CallAttributedProfiling>Callcap</CallAttributedProfiling>
-      <AdditionalIncludeDirectories>..\xbmc360\;..\libraries\freetype\freetype\include;..\libraries\ffmpeg\;..\libraries\ffmpeg\vcproj\external\include;..\sources\360MilkDrop2;..\sources\PAPlayer\libFlac\include;..\sources\PAPlayer\libmad\include;..\libraries\libUPnP\Neptune\Source\Core;..\libraries\libUPnP\Platinum\Source\Core;..\libraries\libUPnP\Platinum\Source\Platinum;..\libraries\libUPnP\Platinum\Source\Devices\MediaServer;..\libraries\libUPnP\Platinum\Source\Devices\MediaRenderer;..\libraries\libUPnP\Platinum\Source\Devices\MediaConnect;..\libraries\libUPnP\Neptune\Source\System\Xbox;..\libraries\libUPnP\Neptune\Source\System\Win32;..\libraries\libcurl\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\xbmc360\;..\libraries\freetype\freetype\include;..\libraries\ffmpeg\;..\libraries\ffmpeg\vcproj\external\include;..\sources\360MilkDrop2;..\sources\PAPlayer\libFlac\include;..\sources\PAPlayer\libmad\include;..\libraries\libUPnP\Neptune\Source\Core;..\libraries\libUPnP\Platinum\Source\Core;..\libraries\libUPnP\Platinum\Source\Platinum;..\libraries\libUPnP\Platinum\Source\Devices\MediaServer;..\libraries\libUPnP\Platinum\Source\Devices\MediaRenderer;..\libraries\libUPnP\Platinum\Source\Devices\MediaConnect;..\libraries\libUPnP\Neptune\Source\System\Xbox;..\libraries\libUPnP\Neptune\Source\System\Win32;..\libraries\libcurl\include;..\libraries\libsmb2;..\libraries\libsmb2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/EHa %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -167,8 +167,8 @@
     <Link>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
-      <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirender.lib;xmediad2.lib;xonline.lib;xnetd.lib;libavformat.lib;libavutil.lib;libswscale.lib;libavcodec.lib;zlib.lib;pthreads.lib;freetype.lib;360MilkDrop2.lib;libFlac.lib;libmad.lib;libPlatinum.lib;libcurl.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\libraries\ffmpeg\vcproj\libavcodec\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libswscale\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libavutil\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libavformat\Xbox 360\Release;..\libraries\ffmpeg\vcproj\pthreads\Release;..\libraries\ffmpeg\vcproj\external\zlib\Xbox 360\Release;..\libraries\freetype\freetype\Release;..\sources\360MilkDrop2\Release;..\sources\PAPlayer\libFlac\Release;..\sources\PAPlayer\libMad\Release;..\libraries\libUPnP\Release_New;..\libraries\libcurl\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirender.lib;xmediad2.lib;xonline.lib;xnetd.lib;libavformat.lib;libavutil.lib;libswscale.lib;libavcodec.lib;zlib.lib;pthreads.lib;freetype.lib;360MilkDrop2.lib;libFlac.lib;libmad.lib;libPlatinum.lib;libcurl.lib;libsmb2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\libraries\ffmpeg\vcproj\libavcodec\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libswscale\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libavutil\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libavformat\Xbox 360\Release;..\libraries\ffmpeg\vcproj\pthreads\Release;..\libraries\ffmpeg\vcproj\external\zlib\Xbox 360\Release;..\libraries\freetype\freetype\Release;..\sources\360MilkDrop2\Release;..\sources\PAPlayer\libFlac\Release;..\sources\PAPlayer\libMad\Release;..\libraries\libUPnP\Release_New;..\libraries\libcurl\Release;..\libraries\libsmb2\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Deploy>
       <DeploymentType>CopyToHardDrive</DeploymentType>
@@ -259,7 +259,7 @@
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PreprocessorDefinitions>NDEBUG;_XBOX;__STDC_CONSTANT_MACROS;HAS_UPNP;CURL_STATICLIB</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\xbmc360\;..\libraries\freetype\freetype\include;..\libraries\ffmpeg\;..\libraries\ffmpeg\vcproj\external\include;..\sources\360MilkDrop2;..\sources\PAPlayer\libFlac\include;..\sources\PAPlayer\libmad\include;..\libraries\libUPnP\Neptune\Source\Core;..\libraries\libUPnP\Platinum\Source\Core;..\libraries\libUPnP\Platinum\Source\Platinum;..\libraries\libUPnP\Platinum\Source\Devices\MediaServer;..\libraries\libUPnP\Platinum\Source\Devices\MediaRenderer;..\libraries\libUPnP\Platinum\Source\Devices\MediaConnect;..\libraries\libUPnP\Neptune\Source\System\Xbox;..\libraries\libUPnP\Neptune\Source\System\Win32;..\libraries\libcurl\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\xbmc360\;..\libraries\freetype\freetype\include;..\libraries\ffmpeg\;..\libraries\ffmpeg\vcproj\external\include;..\sources\360MilkDrop2;..\sources\PAPlayer\libFlac\include;..\sources\PAPlayer\libmad\include;..\libraries\libUPnP\Neptune\Source\Core;..\libraries\libUPnP\Platinum\Source\Core;..\libraries\libUPnP\Platinum\Source\Platinum;..\libraries\libUPnP\Platinum\Source\Devices\MediaServer;..\libraries\libUPnP\Platinum\Source\Devices\MediaRenderer;..\libraries\libUPnP\Platinum\Source\Devices\MediaConnect;..\libraries\libUPnP\Neptune\Source\System\Xbox;..\libraries\libUPnP\Neptune\Source\System\Win32;..\libraries\libcurl\include;..\libraries\libsmb2;..\libraries\libsmb2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <PreschedulingOptimization>true</PreschedulingOptimization>
@@ -278,8 +278,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
       <SetChecksum>true</SetChecksum>
-      <AdditionalDependencies>d3d9.lib;d3dx9.lib;xgraphics.lib;xapilib.lib;xaudio2.lib;x3daudio.lib;xmcore.lib;xboxkrnl.lib;xbdm.lib;xact3.lib;xuirun.lib;xuirender.lib;xmedia2.lib;xonline.lib;xnet.lib;libavformat.lib;libswresample.lib;libavutil.lib;libswscale.lib;libavcodec.lib;pthreads.lib;zlib.lib;freetype.lib;360MilkDrop2.lib;libflac.lib;libmad.lib;libPlatinum.lib;libcurl.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\libraries\ffmpeg\vcproj\libavcodec\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libswscale\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libavutil\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libavformat\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libswresample\Xbox 360\Release;..\libraries\ffmpeg\vcproj\pthreads\Release;..\libraries\ffmpeg\vcproj\external\zlib\Xbox 360\Release;..\libraries\freetype\freetype\Release;..\sources\360MilkDrop2\Release;..\sources\PAPlayer\libFlac\Release;..\sources\PAPlayer\libMad\Release;..\libraries\libUPnP\Release;..\libraries\libcurl\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d9.lib;d3dx9.lib;xgraphics.lib;xapilib.lib;xaudio2.lib;x3daudio.lib;xmcore.lib;xboxkrnl.lib;xbdm.lib;xact3.lib;xuirun.lib;xuirender.lib;xmedia2.lib;xonline.lib;xnet.lib;libavformat.lib;libswresample.lib;libavutil.lib;libswscale.lib;libavcodec.lib;pthreads.lib;zlib.lib;freetype.lib;360MilkDrop2.lib;libflac.lib;libmad.lib;libPlatinum.lib;libcurl.lib;libsmb2.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\libraries\ffmpeg\vcproj\libavcodec\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libswscale\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libavutil\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libavformat\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libswresample\Xbox 360\Release;..\libraries\ffmpeg\vcproj\pthreads\Release;..\libraries\ffmpeg\vcproj\external\zlib\Xbox 360\Release;..\libraries\freetype\freetype\Release;..\sources\360MilkDrop2\Release;..\sources\PAPlayer\libFlac\Release;..\sources\PAPlayer\libMad\Release;..\libraries\libUPnP\Release;..\libraries\libcurl\Release;..\libraries\libsmb2\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Deploy>
       <DeploymentType>CopyToHardDrive</DeploymentType>
@@ -499,28 +499,6 @@
     <ClInclude Include="interfaces\Builtins.h" />
     <ClInclude Include="IProgressCallback.h" />
     <ClInclude Include="LangInfo.h" />
-    <ClInclude Include="libraries\libsmb2\aes.h" />
-    <ClInclude Include="libraries\libsmb2\aes128ccm.h" />
-    <ClInclude Include="libraries\libsmb2\compat.h" />
-    <ClInclude Include="libraries\libsmb2\hmac-md5.h" />
-    <ClInclude Include="libraries\libsmb2\libsmb2-dcerpc-srvsvc.h" />
-    <ClInclude Include="libraries\libsmb2\libsmb2-private.h" />
-    <ClInclude Include="libraries\libsmb2\libsmb2-raw.h" />
-    <ClInclude Include="libraries\libsmb2\libsmb2.h" />
-    <ClInclude Include="libraries\libsmb2\libsmb2md4.h" />
-    <ClInclude Include="libraries\libsmb2\libsmb2md5.h" />
-    <ClInclude Include="libraries\libsmb2\ntlmssp.h" />
-    <ClInclude Include="libraries\libsmb2\portable-endian.h" />
-    <ClInclude Include="libraries\libsmb2\sha-private.h" />
-    <ClInclude Include="libraries\libsmb2\sha.h" />
-    <ClInclude Include="libraries\libsmb2\slist.h" />
-    <ClInclude Include="libraries\libsmb2\smb2-errors.h" />
-    <ClInclude Include="libraries\libsmb2\smb2-signing.h" />
-    <ClInclude Include="libraries\libsmb2\smb2.h" />
-    <ClInclude Include="libraries\libsmb2\smb3-seal.h" />
-    <ClInclude Include="libraries\libsmb2\socket.h" />
-    <ClInclude Include="libraries\libsmb2\XBLibSmb2.h" />
-    <ClInclude Include="libraries\libsmb2\xbox_defines.h" />
     <ClInclude Include="MediaManager.h" />
     <ClInclude Include="MediaSource.h" />
     <ClInclude Include="music\tags\MusicInfoTag.h" />
@@ -769,213 +747,6 @@
     <ClCompile Include="interfaces\Builtins.cpp" />
     <ClCompile Include="Key.cpp" />
     <ClCompile Include="LangInfo.cpp" />
-    <ClCompile Include="libraries\libsmb2\aes.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\aes128ccm.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\alloc.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\compat.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\errors.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\hmac-md5.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\hmac.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\init.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\libsmb2.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\libsmb2md4.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\libsmb2md5.c" />
-    <ClCompile Include="libraries\libsmb2\ntlmssp.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\pdu.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\sha224-256.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\sha384-512.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\smb2-cmd-close.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\smb2-cmd-create.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\smb2-cmd-echo.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\smb2-cmd-error.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\smb2-cmd-flush.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\smb2-cmd-ioctl.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\smb2-cmd-logoff.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\smb2-cmd-negotiate.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\smb2-cmd-query-directory.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\smb2-cmd-query-info.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\smb2-cmd-read.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\smb2-cmd-session-setup.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\smb2-cmd-set-info.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\smb2-cmd-tree-connect.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\smb2-cmd-tree-disconnect.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\smb2-cmd-write.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\smb2-data-file-info.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\smb2-data-filesystem-info.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\smb2-data-reparse-point.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\smb2-data-security-descriptor.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\smb2-signing.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\smb3-seal.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\socket.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\sync.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\timestamps.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\unicode.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\usha.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="libraries\libsmb2\XBLibSmb2.cpp" />
     <ClCompile Include="MediaManager.cpp" />
     <ClCompile Include="MediaSource.cpp" />
     <ClCompile Include="music\tags\MusicInfoTag.cpp" />

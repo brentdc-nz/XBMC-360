@@ -2,7 +2,7 @@
 #include "utils\SingleLock.h"
 #include "utils\Log.h"
 #include "utils\Util.h"
-#include "libraries\libsmb2\XBLibSmb2.h"
+#include "XBLibSmb2.h"
 #include "FileItem.h"
 
 using namespace XFILE;

@@ -103,7 +103,7 @@
 #include <winsockx.h>
 #include <io.h>
 
-#include "..\..\xbox\socket_emu\xb_emu_socket.h"
+#include "xbox\socket_emu\xb_emu_socket.h"
 
 #include "xbox_defines.h"
 

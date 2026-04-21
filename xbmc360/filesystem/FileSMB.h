@@ -4,8 +4,8 @@
 #include "FileBase.h"
 #include "..\utils\CriticalSection.h"
 
-#include "..\libraries\libsmb2\libsmb2.h"
-#include "..\libraries\libsmb2\smb2.h"
+#include "libsmb2.h"
+#include "smb2.h"
 
 namespace XFILE
 {

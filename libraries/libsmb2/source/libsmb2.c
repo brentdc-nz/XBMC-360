@@ -73,7 +73,7 @@
 
 #ifdef _XBOX
 #include "xbox_defines.h"
-#include "..\..\utils\asprintf.h"
+#include "utils\asprintf.h"
 #endif
 #include "sha.h"
 #include "sha-private.h"
