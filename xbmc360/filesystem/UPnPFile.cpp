@@ -71,3 +71,20 @@ int CUPnPFile::Stat(const CURL& url, struct __stat64* buffer)
 
     return -1;
 }
+
+bool CUPnPFile::Exists(const CURL& url)
+{
+    CFileItem item;
+    if (CUPnPDirectory::GetResource(url, item))
+    {
+        CFileBase *pNewImp = CFileFactory::CreateLoader(item.m_strPath);
+        CURL *pNewUrl = new CURL(item.m_strPath);
+
+        if (pNewImp)
+            throw new CRedirectException(pNewImp, pNewUrl);
+
+        delete pNewUrl;
+    }
+
+    return false;
+}

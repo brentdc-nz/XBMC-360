@@ -983,6 +983,12 @@
     <ClInclude Include="music\tags\MusicInfoTag.h">
       <Filter>Header Files\music\tags</Filter>
     </ClInclude>
+    <ClInclude Include="filesystem\UPnPFile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\HttpHeader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -1683,6 +1689,12 @@
     </ClCompile>
     <ClCompile Include="music\tags\MusicInfoTag.cpp">
       <Filter>Source Files\music\tags</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\HttpHeader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="filesystem\UPnPFile.cpp">
+      <Filter>Source Files\filesystem</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

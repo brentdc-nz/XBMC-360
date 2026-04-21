@@ -93,6 +93,9 @@ public:
 	// Returns the content type of this item if known. will lookup for http streams
 	const CStdString& GetMimeType(bool lookup = true) const;
 
+	// Sets the mime-type if known beforehand
+	void SetMimeType(const CStdString& mimetype) { m_mimetype = mimetype; }
+
 	inline bool HasMusicInfoTag() const
 	{
 		return m_musicInfoTag != NULL;
@@ -224,6 +227,9 @@ public:
 	int GetObjectCount() const;
 
 	bool AlwaysCache() const;
+
+	void SetContent(const CStdString& content) { m_content = content; }
+	const CStdString& GetContent() const { return m_content; }
 
 private:
 	void FillSortFields(FILEITEMFILLFUNC func);

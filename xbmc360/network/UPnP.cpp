@@ -27,6 +27,7 @@
 #include "utils\Log.h"
 #include "guilib\GUIWindowManager.h"
 #include "guilib\GUIUserMessages.h"
+#include "music\tags\MusicInfoTag.h"
 
 #include "NptStrings.h"
 #include "Platinum.h"
@@ -228,4 +229,43 @@ CUPnP::StopClient()
 
     delete m_MediaBrowser;
     m_MediaBrowser = NULL;
+}
+
+/*----------------------------------------------------------------------
+|   JoinString
++---------------------------------------------------------------------*/
+static const NPT_String JoinString(const NPT_List<NPT_String>& array, const NPT_String& delimiter)
+{
+    NPT_String result;
+
+    for (NPT_List<NPT_String>::Iterator it = array.GetFirstItem(); it; it++)
+        result += delimiter + (*it);
+
+    if (result.IsEmpty())
+        return "";
+    else
+        return result.SubString(delimiter.GetLength());
+}
+
+/*----------------------------------------------------------------------
+|   CUPnP::PopulateTagFromObject
++---------------------------------------------------------------------*/
+int CUPnP::PopulateTagFromObject(MUSIC_INFO::CMusicInfoTag& tag,
+                                 PLT_MediaObject&           object,
+                                 PLT_MediaItemResource*     resource /* = NULL */)
+{
+    tag.SetTitle((const char*)object.m_Title);
+    tag.SetArtist((const char*)object.m_Creator);
+    for (PLT_PersonRoles::Iterator it = object.m_People.artists.GetFirstItem(); it; it++) {
+        if      (it->role == "")            tag.SetArtist((const char*)it->name);
+        else if (it->role == "Performer")   tag.SetArtist((const char*)it->name);
+        else if (it->role == "AlbumArtist") tag.SetAlbumArtist((const char*)it->name);
+    }
+    tag.SetTrackNumber(object.m_MiscInfo.original_track_number);
+    tag.SetGenre((const char*)JoinString(object.m_Affiliation.genre, " / "));
+    tag.SetAlbum((const char*)object.m_Affiliation.album);
+    if (resource)
+        tag.SetDuration(resource->m_Duration);
+    tag.SetLoaded();
+    return NPT_SUCCESS;
 }

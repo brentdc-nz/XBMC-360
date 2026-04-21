@@ -29,6 +29,12 @@ class PLT_UPnP;
 class PLT_SyncMediaBrowser;
 class CDeviceHostReferenceHolder;
 class CCtrlPointReferenceHolder;
+class PLT_MediaObject;
+class PLT_MediaItemResource;
+
+namespace MUSIC_INFO {
+class CMusicInfoTag;
+}
 
 class CUPnP
 {
@@ -40,6 +46,11 @@ public:
     void StartClient();
     void StopClient();
     bool IsClientStarted() { return (m_MediaBrowser != NULL); }
+
+    // metadata helpers
+    static int PopulateTagFromObject(MUSIC_INFO::CMusicInfoTag& tag,
+                                     PLT_MediaObject&           object,
+                                     PLT_MediaItemResource*     resource = NULL);
 
     // class methods
     static CUPnP* GetInstance();
