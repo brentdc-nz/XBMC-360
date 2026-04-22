@@ -27,7 +27,7 @@ bool CDVDInputStreamSMB::Open(const char* strFile, const std::string& content)
 	m_pFile = new CFile();
 	if(!m_pFile) return false;
 
-	unsigned int flags = READ_TRUNCATED/* | READ_BITRATE | READ_CHUNKED*/;
+	unsigned int flags = READ_TRUNCATED | READ_BITRATE | READ_CHUNKED;
   
 //	if(CFileItem(strFile, false).IsInternetStream())
  //   flags |= READ_CACHED;
@@ -65,7 +65,7 @@ int CDVDInputStreamSMB::Read(BYTE* buf, int buf_size)
 {
 	if(!m_pFile) return -1;
 
-	unsigned int ret = m_pFile->Read(buf, buf_size, NULL);
+	unsigned int ret = m_pFile->Read(buf, buf_size);
 
 	// We currently don't support non completing reads
 	if(ret <= 0) m_eof = true;

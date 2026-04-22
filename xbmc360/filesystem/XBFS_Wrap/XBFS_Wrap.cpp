@@ -50,7 +50,7 @@ int XBFS_read(int fd, void* buffer, unsigned int uiSize)
     XFILE::CFile* pFile = g_emuFileWrapper.GetFileXbmcByDescriptor(fd);
     if (pFile != NULL)
     {
-		unsigned int iRslt = pFile->Read(buffer, uiSize, 0);
+		unsigned int iRslt = pFile->Read(buffer, uiSize);
        return iRslt;
     }
     else if (!IS_STD_DESCRIPTOR(fd))

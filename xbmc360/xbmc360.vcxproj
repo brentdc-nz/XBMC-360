@@ -554,6 +554,7 @@
     <ClInclude Include="utils\Win32Exception.h" />
     <ClInclude Include="utils\XEXUtils.h" />
     <ClInclude Include="VideoSettings.h" />
+    <ClInclude Include="video\VideoInfoTag.h" />
     <ClInclude Include="ViewState.h" />
     <ClInclude Include="visualizations\fft.h" />
     <ClInclude Include="visualizations\Visualisation.h" />
@@ -803,6 +804,7 @@
     <ClCompile Include="utils\Win32Exception.cpp" />
     <ClCompile Include="utils\XEXUtils.cpp" />
     <ClCompile Include="VideoSettings.cpp" />
+    <ClCompile Include="video\VideoInfoTag.cpp" />
     <ClCompile Include="visualizations\fft.cpp" />
     <ClCompile Include="visualizations\Visualisation.cpp" />
     <ClCompile Include="visualizations\VisualisationFactory.cpp" />

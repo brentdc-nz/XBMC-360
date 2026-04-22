@@ -26,22 +26,26 @@
 #include "filesystem\File.h"
 #include "Settings.h"
 #include "music\tags\MusicInfoTag.h"
+#include "video\VideoInfoTag.h"
 
 CFileItem::CFileItem(void)
 {
 	m_musicInfoTag = NULL;
+	m_videoInfoTag = NULL;
 	Reset();
 }
 
 CFileItem::CFileItem(const CFileItem& item): CGUIListItem()
 {
 	m_musicInfoTag = NULL;
+	m_videoInfoTag = NULL;
 	*this = item;
 }
 
 CFileItem::CFileItem(const CGUIListItem& item)
 {
 	m_musicInfoTag = NULL;
+	m_videoInfoTag = NULL;
 	Reset();
 	// Not particularly pretty, but it gets around the issue of Reset() defaulting
 	// parameters in the CGUIListItem base class
@@ -52,6 +56,7 @@ CFileItem::CFileItem(const CStdString& strLabel)
     : CGUIListItem()
 {
 	m_musicInfoTag = NULL;
+	m_videoInfoTag = NULL;
 	Reset();
 	SetLabel(strLabel);
 }
@@ -59,6 +64,7 @@ CFileItem::CFileItem(const CStdString& strLabel)
 CFileItem::CFileItem(const CStdString& strPath, bool bIsFolder)
 {
 	m_musicInfoTag = NULL;
+	m_videoInfoTag = NULL;
 	Reset();
 	m_strPath = strPath;
 	m_bIsFolder = bIsFolder;
@@ -67,6 +73,7 @@ CFileItem::CFileItem(const CStdString& strPath, bool bIsFolder)
 CFileItem::CFileItem(const CMediaSource& share)
 {
 	m_musicInfoTag = NULL;
+	m_videoInfoTag = NULL;
 	Reset();
 
 	m_bIsFolder = true;
@@ -88,6 +95,8 @@ CFileItem::~CFileItem(void)
 {
 	delete m_musicInfoTag;
 	m_musicInfoTag = NULL;
+	delete m_videoInfoTag;
+	m_videoInfoTag = NULL;
 }
 
 const CFileItem& CFileItem::operator=(const CFileItem& item)
@@ -122,6 +131,16 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
 		m_musicInfoTag = NULL;
 	}
 
+	if (item.HasVideoInfoTag())
+	{
+		*GetVideoInfoTag() = *item.GetVideoInfoTag();
+	}
+	else
+	{
+		delete m_videoInfoTag;
+		m_videoInfoTag = NULL;
+	}
+
 	return *this;
 }
 
@@ -154,8 +173,8 @@ void CFileItem::Reset() // TODO
 	m_mimetype = "";
 	delete m_musicInfoTag;
 	m_musicInfoTag = NULL;
-//	delete m_videoInfoTag;
-//	m_videoInfoTag = NULL;
+	delete m_videoInfoTag;
+	m_videoInfoTag = NULL;
 //	delete m_pictureInfoTag;
 //	m_pictureInfoTag = NULL;
 //	m_extrainfo.Empty();
@@ -460,6 +479,14 @@ MUSIC_INFO::CMusicInfoTag* CFileItem::GetMusicInfoTag()
 		m_musicInfoTag = new MUSIC_INFO::CMusicInfoTag;
 
 	return m_musicInfoTag;
+}
+
+CVideoInfoTag* CFileItem::GetVideoInfoTag()
+{
+	if (!m_videoInfoTag)
+		m_videoInfoTag = new CVideoInfoTag;
+
+	return m_videoInfoTag;
 }
 
 /////////////////////////////////////////////////////////////////////////////////

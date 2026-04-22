@@ -39,6 +39,10 @@ CAdvancedSettings::CAdvancedSettings()
 
 	m_songInfoDuration = 10; // 10 seconds default
 	m_bNavVKeyboard = false;
+
+	m_curlconnecttimeout = 10;
+	m_curllowspeedtime = 20;
+	m_curlretries = 2;
 }
 
 bool CAdvancedSettings::Load()

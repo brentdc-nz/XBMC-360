@@ -434,6 +434,12 @@ void CApplication::ProcessSlow()
 	// Check if we need to activate the screensaver (if enabled)
 	if(g_guiSettings.GetString("screensaver.mode") != "None")
 		CheckScreenSaver();
+
+#ifdef HAS_UPNP
+	// Update upnp renderer state
+	if (CUPnP::IsInstantiated())
+		CUPnP::GetInstance()->UpdateState();
+#endif
 }
 
 // Handle the gamepad button presses.  We check for button down,
@@ -1027,6 +1033,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
 		case GUI_MSG_PLAYBACK_STOPPED:
 		case GUI_MSG_PLAYBACK_ENDED:
+		case GUI_MSG_PLAYLISTPLAYER_STOPPED:
 		{
 			if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
 			{
@@ -1587,13 +1594,34 @@ void CApplication::StopFtpServer()
 void CApplication::StartUPnP()
 {
 	CUPnP::GetInstance()->StartClient();
+	StartUPnPRenderer();
 }
 
 void CApplication::StopUPnP()
 {
 	CUPnP::ReleaseInstance(false);
 }
+
+void CApplication::StartUPnPRenderer()
+{
+	CLog::Log(LOGNOTICE, "starting upnp renderer");
+	CUPnP::GetInstance()->StartRenderer();
+}
+
+void CApplication::StopUPnPRenderer()
+{
+	if (CUPnP::IsInstantiated())
+	{
+		CLog::Log(LOGNOTICE, "stopping upnp renderer");
+		CUPnP::GetInstance()->StopRenderer();
+	}
+}
 #endif
+
+const CStdString& CApplication::CurrentFile()
+{
+	return m_itemCurrentFile->GetPath();
+}
 
 bool CApplication::IsCurrentThread() const
 {

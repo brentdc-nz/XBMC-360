@@ -84,12 +84,6 @@
     <Filter Include="Source Files\services\FTPServer">
       <UniqueIdentifier>{ef3f0c0b-69c3-43ca-a8b7-6503111f63b4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\libraries">
-      <UniqueIdentifier>{5bf95a57-e11f-439c-aa97-2ccc3dd86250}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\libraries">
-      <UniqueIdentifier>{3391fc66-9c9b-4f45-ab31-68d76ffd7d29}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\xbox\socket_emu">
       <UniqueIdentifier>{b53d49bf-70a0-44cb-939a-5e83c4f58948}</UniqueIdentifier>
     </Filter>
@@ -212,6 +206,12 @@
     </Filter>
     <Filter Include="Source Files\pictures">
       <UniqueIdentifier>{6b5c7d8e-9f0a-4b2c-0d3e-4f5a6b7c8d9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\video">
+      <UniqueIdentifier>{a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\video">
+      <UniqueIdentifier>{b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -700,6 +700,9 @@
     </ClInclude>
     <ClInclude Include="VideoSettings.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="video\VideoInfoTag.h">
+      <Filter>Header Files\video</Filter>
     </ClInclude>
     <ClInclude Include="AdvancedSettings.h">
       <Filter>Header Files</Filter>
@@ -1443,6 +1446,9 @@
     </ClCompile>
     <ClCompile Include="VideoSettings.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="video\VideoInfoTag.cpp">
+      <Filter>Source Files\video</Filter>
     </ClCompile>
     <ClCompile Include="AdvancedSettings.cpp">
       <Filter>Source Files</Filter>

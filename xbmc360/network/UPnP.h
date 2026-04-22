@@ -29,12 +29,17 @@ class PLT_UPnP;
 class PLT_SyncMediaBrowser;
 class CDeviceHostReferenceHolder;
 class CCtrlPointReferenceHolder;
+class CRendererReferenceHolder;
 class PLT_MediaObject;
 class PLT_MediaItemResource;
+class CUPnPRenderer;
 
-namespace MUSIC_INFO {
-class CMusicInfoTag;
+namespace MUSIC_INFO
+{
+	class CMusicInfoTag;
 }
+
+class CVideoInfoTag;
 
 class CUPnP
 {
@@ -47,8 +52,16 @@ public:
     void StopClient();
     bool IsClientStarted() { return (m_MediaBrowser != NULL); }
 
+    // renderer
+    void StartRenderer();
+    void StopRenderer();
+    void UpdateState();
+
     // metadata helpers
     static int PopulateTagFromObject(MUSIC_INFO::CMusicInfoTag& tag,
+                                     PLT_MediaObject&           object,
+                                     PLT_MediaItemResource*     resource = NULL);
+    static int PopulateTagFromObject(CVideoInfoTag&             tag,
                                      PLT_MediaObject&           object,
                                      PLT_MediaItemResource*     resource = NULL);
 
@@ -61,9 +74,12 @@ public:
     PLT_SyncMediaBrowser*       m_MediaBrowser;
 
 private:
+    CUPnPRenderer* CreateRenderer(int port = 0);
+
     CStdString                  m_IP;
     PLT_UPnP*                   m_UPnP;
     CCtrlPointReferenceHolder*  m_CtrlPointHolder;
+    CRendererReferenceHolder*   m_RendererHolder;
 
     static CUPnP* upnp;
 };

@@ -28,9 +28,15 @@
 #include "SortFileItem.h"
 #include "URL.h"
 #include "music\tags\MusicInfoTag.h"
-
 #include <map>
 #include <vector>
+
+class CVideoInfoTag;
+
+namespace MUSIC_INFO
+{
+	class CMusicInfoTag;
+}
 
 class CFileItem : public CGUIListItem
 {
@@ -108,11 +114,24 @@ public:
 		return m_musicInfoTag;
 	}
 
+	inline bool HasVideoInfoTag() const
+	{
+		return m_videoInfoTag != NULL;
+	}
+
+	CVideoInfoTag* GetVideoInfoTag();
+
+	inline const CVideoInfoTag* GetVideoInfoTag() const
+	{
+		return m_videoInfoTag;
+	}
+
 public:
 	bool m_bIsShareOrDrive; // Is this a root share/drive
 	int m_iDriveType; // If \e m_bIsShareOrDrive is \e true, use to get the share type. Types see: CMediaSource::m_iDriveType
 	CDateTime m_dateTime; // File creation date & time
 	__int64 m_dwSize; // File size (0 for folders)
+	CStdString m_strTitle;
 
 	int m_iprogramCount;
 	int m_idepth;
@@ -126,6 +145,7 @@ public:
 
 	CStdString m_mimetype;
 	MUSIC_INFO::CMusicInfoTag* m_musicInfoTag;
+	CVideoInfoTag* m_videoInfoTag;
 };
 
 /////////////////////////////////////////////////////////////////////////////////

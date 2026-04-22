@@ -972,7 +972,7 @@ bool TiXmlDocument::LoadFile( const char* _filename, TiXmlEncoding encoding )
 	char*  buf = (char*)malloc(length+1);
 	long   pos = 0;
 	long   len;
-	while( (len = file.Read(buf+pos, length-pos, NULL)) > 0 ) {
+	while( (len = file.Read(buf+pos, length-pos)) > 0 ) {
 		pos += len;
 		assert(pos <= length);
 		if(pos == length) {

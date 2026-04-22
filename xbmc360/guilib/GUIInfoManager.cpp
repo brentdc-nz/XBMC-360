@@ -15,6 +15,7 @@
 #include "utils\Weather.h"
 #include "LangInfo.h"
 #include "music\tags\MusicInfoTag.h"
+#include "video\VideoInfoTag.h"
 #include "utils\MathUtils.h"
 #include "utils\TimeUtils.h"
 #include "utils\Util.h"
@@ -1832,9 +1833,8 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
 
 	if (item == VIDEOPLAYER_TITLE)
 	{
-		// TODO
-//		if (m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->m_strTitle.IsEmpty())
-//			return m_currentFile->GetVideoInfoTag()->m_strTitle;
+		if (m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->m_strTitle.IsEmpty())
+			return m_currentFile->GetVideoInfoTag()->m_strTitle;
 
 		// Don't have the title, so use label, or drop down to title from path
 		if (!m_currentFile->GetLabel().IsEmpty())
@@ -1842,7 +1842,131 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
 		
 		return CUtil::GetTitleFromPath(m_currentFile->GetPath());
 	}
-
+	else if (item == VIDEOPLAYER_PLAYLISTLEN)
+	{
+//		if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO) // TODO
+//			return GetPlaylistLabel(PLAYLIST_LENGTH);
+	}
+	else if (item == VIDEOPLAYER_PLAYLISTPOS)
+	{
+//		if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO) // TODO
+//			return GetPlaylistLabel(PLAYLIST_POSITION);
+	}
+	else if (m_currentFile->HasVideoInfoTag())
+	{
+		switch (item)
+		{
+		case VIDEOPLAYER_ORIGINALTITLE:
+			return m_currentFile->GetVideoInfoTag()->m_strOriginalTitle;
+			break;
+		case VIDEOPLAYER_GENRE:
+			return m_currentFile->GetVideoInfoTag()->m_strGenre;
+			break;
+		case VIDEOPLAYER_DIRECTOR:
+			return m_currentFile->GetVideoInfoTag()->m_strDirector;
+			break;
+		case VIDEOPLAYER_RATING:
+			{
+				CStdString strRating;
+				if (m_currentFile->GetVideoInfoTag()->m_fRating > 0.f)
+					strRating.Format("%.1f", m_currentFile->GetVideoInfoTag()->m_fRating);
+				return strRating;
+			}
+			break;
+		case VIDEOPLAYER_RATING_AND_VOTES:
+			{
+				CStdString strRatingAndVotes;
+				if (m_currentFile->GetVideoInfoTag()->m_fRating > 0.f)
+				{
+					if (m_currentFile->GetVideoInfoTag()->m_strVotes.IsEmpty())
+						strRatingAndVotes.Format("%.1f", m_currentFile->GetVideoInfoTag()->m_fRating);
+					else
+						strRatingAndVotes.Format("%.1f (%s %s)", m_currentFile->GetVideoInfoTag()->m_fRating, m_currentFile->GetVideoInfoTag()->m_strVotes, g_localizeStrings.Get(20350));
+				}
+				return strRatingAndVotes;
+			}
+			break;
+		case VIDEOPLAYER_YEAR:
+			{
+				CStdString strYear;
+				if (m_currentFile->GetVideoInfoTag()->m_iYear > 0)
+					strYear.Format("%i", m_currentFile->GetVideoInfoTag()->m_iYear);
+				return strYear;
+			}
+			break;
+		case VIDEOPLAYER_PREMIERED:
+			{
+				if (!m_currentFile->GetVideoInfoTag()->m_strFirstAired.IsEmpty())
+					return m_currentFile->GetVideoInfoTag()->m_strFirstAired;
+				if (!m_currentFile->GetVideoInfoTag()->m_strPremiered.IsEmpty())
+					return m_currentFile->GetVideoInfoTag()->m_strPremiered;
+			}
+			break;
+		case VIDEOPLAYER_PLOT:
+			return m_currentFile->GetVideoInfoTag()->m_strPlot;
+		case VIDEOPLAYER_TRAILER:
+			return m_currentFile->GetVideoInfoTag()->m_strTrailer;
+		case VIDEOPLAYER_PLOT_OUTLINE:
+			return m_currentFile->GetVideoInfoTag()->m_strPlotOutline;
+		case VIDEOPLAYER_EPISODE:
+			{
+				CStdString strEpisode;
+				if (m_currentFile->GetVideoInfoTag()->m_iSpecialSortEpisode > 0)
+					strEpisode.Format("S%i", m_currentFile->GetVideoInfoTag()->m_iSpecialSortEpisode);
+				else if(m_currentFile->GetVideoInfoTag()->m_iEpisode > 0) 
+					strEpisode.Format("%i", m_currentFile->GetVideoInfoTag()->m_iEpisode);
+				return strEpisode;
+			}
+			break;
+		case VIDEOPLAYER_SEASON:
+			{
+				CStdString strSeason;
+				if (m_currentFile->GetVideoInfoTag()->m_iSpecialSortSeason > 0)
+					strSeason.Format("%i", m_currentFile->GetVideoInfoTag()->m_iSpecialSortSeason);
+				else if(m_currentFile->GetVideoInfoTag()->m_iSeason > 0)
+					strSeason.Format("%i", m_currentFile->GetVideoInfoTag()->m_iSeason);
+				return strSeason;
+			}
+			break;
+		case VIDEOPLAYER_TVSHOW:
+			return m_currentFile->GetVideoInfoTag()->m_strShowTitle;
+		case VIDEOPLAYER_STUDIO:
+			return m_currentFile->GetVideoInfoTag()->m_strStudio;
+		case VIDEOPLAYER_COUNTRY:
+			return m_currentFile->GetVideoInfoTag()->m_strCountry;
+		case VIDEOPLAYER_MPAA:
+			return m_currentFile->GetVideoInfoTag()->m_strMPAARating;
+		case VIDEOPLAYER_TOP250:
+			{
+				CStdString strTop250;
+				if (m_currentFile->GetVideoInfoTag()->m_iTop250 > 0)
+					strTop250.Format("%i", m_currentFile->GetVideoInfoTag()->m_iTop250);
+				return strTop250;
+			}
+			break;
+		case VIDEOPLAYER_CAST:
+			return m_currentFile->GetVideoInfoTag()->GetCast();
+		case VIDEOPLAYER_CAST_AND_ROLE:
+			return m_currentFile->GetVideoInfoTag()->GetCast(true);
+		case VIDEOPLAYER_ARTIST:
+			return m_currentFile->GetVideoInfoTag()->m_strArtist;
+		case VIDEOPLAYER_ALBUM:
+			return m_currentFile->GetVideoInfoTag()->m_strAlbum;
+		case VIDEOPLAYER_WRITER:
+			return m_currentFile->GetVideoInfoTag()->m_strWritingCredits;
+		case VIDEOPLAYER_TAGLINE:
+			return m_currentFile->GetVideoInfoTag()->m_strTagLine;
+		case VIDEOPLAYER_LASTPLAYED:
+			return m_currentFile->GetVideoInfoTag()->m_lastPlayed;
+		case VIDEOPLAYER_PLAYCOUNT:
+			{
+				CStdString strPlayCount;
+				if (m_currentFile->GetVideoInfoTag()->m_playCount > 0)
+					strPlayCount.Format("%i", m_currentFile->GetVideoInfoTag()->m_playCount);
+				return strPlayCount;
+			}
+		}
+	}
 	return "";
 }
 

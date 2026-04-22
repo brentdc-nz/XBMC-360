@@ -6,6 +6,8 @@
 #include "utils\SingleLock.h"
 #include <queue>
 
+class CFileItem;
+
 // Defines here
 #define TMSG_DIALOG_DOMODAL       100
 #define TMSG_EXECUTE_BUILT_IN     103
@@ -13,8 +15,14 @@
 #define TMSG_POWERDOWN            301
 #define TMSG_REBOOT               306
 #define TMSG_NETWORKMESSAGE       500
-#define TMSG_EXECUTE_BUILT_IN     103
 #define TMSG_SWITCHTOFULLSCREEN   308
+
+#define TMSG_MEDIA_PLAY           200
+#define TMSG_MEDIA_STOP           201
+#define TMSG_MEDIA_PAUSE          202
+#define TMSG_PLAYLISTPLAYER_PLAY  210
+#define TMSG_PLAYLISTPLAYER_NEXT  211
+#define TMSG_PLAYLISTPLAYER_PREV  212
 
 typedef struct
 {
@@ -44,6 +52,13 @@ public:
 	void SwitchToFullscreen();
 
 	void NetworkMessage(DWORD dwMessage, DWORD dwParam = 0);
+
+	void MediaPlay(std::string filename);
+	void MediaPlay(const CFileItem &item);
+	void MediaStop();
+	void MediaPause();
+	void PlayListPlayerNext();
+	void PlayListPlayerPrevious();
 
 	void ExecBuiltIn(const CStdString &command);
 

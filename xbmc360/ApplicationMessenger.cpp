@@ -1,5 +1,7 @@
 #include "ApplicationMessenger.h"
 #include "Application.h"
+#include "FileItem.h"
+#include "PlayListPlayer.h"
 #include "xbox\XBKernalExports.h"
 #include "interfaces\Builtins.h"
 #include "guilib\GUIWindowManager.h"
@@ -140,6 +142,70 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 			g_application.getNetwork().NetworkMessage((CNetwork::EMESSAGE)pMsg->dwParam1, pMsg->dwParam2);
 		}
 		break;
+
+		case TMSG_MEDIA_PLAY:
+		{
+			// first check if we were called from the PlayFile() function
+			if (pMsg->lpVoid && pMsg->dwParam2 == 0)
+			{
+				CFileItem *item = (CFileItem *)pMsg->lpVoid;
+				g_application.PlayFile(*item, pMsg->dwParam1 != 0);
+				delete item;
+				return;
+			}
+			// restore to previous window if needed
+			if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
+				g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
+				g_windowManager.PreviousWindow();
+
+			g_application.ResetScreenSaver();
+
+			// play file
+			CFileItem item;
+			if (pMsg->lpVoid)
+			{
+				item = *(CFileItem *)pMsg->lpVoid;
+				delete (CFileItem *)pMsg->lpVoid;
+			}
+			else
+			{
+				item.SetPath(pMsg->strParam);
+				item.m_bIsFolder = false;
+			}
+
+			g_application.PlayFile(item);
+		}
+		break;
+
+		case TMSG_MEDIA_STOP:
+		{
+			// restore to previous window if needed
+			if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
+				g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
+				g_windowManager.PreviousWindow();
+
+			g_application.ResetScreenSaver();
+
+			// stop playing file
+			if (g_application.IsPlaying()) g_application.StopPlaying();
+		}
+		break;
+
+		case TMSG_MEDIA_PAUSE:
+			if (g_application.m_pPlayer)
+			{
+				g_application.ResetScreenSaver();
+				g_application.m_pPlayer->Pause();
+			}
+		break;
+
+		case TMSG_PLAYLISTPLAYER_NEXT:
+			g_playlistPlayer.PlayNext();
+		break;
+
+		case TMSG_PLAYLISTPLAYER_PREV:
+			g_playlistPlayer.PlayPrevious();
+		break;
 	}
 }
 
@@ -200,4 +266,45 @@ void CApplicationMessenger::ExecBuiltIn(const CStdString &command)
 	ThreadMessage tMsg = {TMSG_EXECUTE_BUILT_IN};
 	tMsg.strParam = command;
 	SendMessage(tMsg);
+}
+
+void CApplicationMessenger::MediaPlay(string filename)
+{
+	ThreadMessage tMsg = {TMSG_MEDIA_PLAY};
+	tMsg.strParam = filename;
+	SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::MediaPlay(const CFileItem &item)
+{
+	ThreadMessage tMsg = {TMSG_MEDIA_PLAY};
+	CFileItem *pItem = new CFileItem(item);
+	tMsg.lpVoid = (void *)pItem;
+	tMsg.dwParam1 = 0;
+	tMsg.dwParam2 = 1;
+	SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::MediaStop()
+{
+	ThreadMessage tMsg = {TMSG_MEDIA_STOP};
+	SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::MediaPause()
+{
+	ThreadMessage tMsg = {TMSG_MEDIA_PAUSE};
+	SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::PlayListPlayerNext()
+{
+	ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_NEXT};
+	SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::PlayListPlayerPrevious()
+{
+	ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PREV};
+	SendMessage(tMsg, true);
 }

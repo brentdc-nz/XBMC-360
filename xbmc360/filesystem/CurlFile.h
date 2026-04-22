@@ -41,6 +41,7 @@ public:
     // CFileBase interface
     virtual bool Open(const CURL& url, bool bBinary = true);
     virtual unsigned int Read(void* lpBuf, int64_t uiBufSize);
+    virtual bool ReadString(char *szLine, int iLineLength)     { return m_state->ReadString(szLine, iLineLength); }
     virtual __int64 Seek(__int64 iFilePosition, int iWhence = SEEK_SET);
     virtual int64_t GetPosition();
     virtual int64_t GetLength();
@@ -78,6 +79,7 @@ public:
 
         bool         Seek(int64_t pos);
         unsigned int Read(void* lpBuf, int64_t uiBufSize);
+        bool         ReadString(char *szLine, int iLineLength);
         bool         FillBuffer(unsigned int want);
 
         void         SetResume();

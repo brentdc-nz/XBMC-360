@@ -26,6 +26,7 @@
 #include "URL.h"
 #include "network\UPnP.h"
 #include "utils\Log.h"
+#include "video\VideoInfoTag.h"
 
 #include "Platinum.h"
 #include "PltSyncMediaBrowser.h"
@@ -39,14 +40,17 @@ namespace XFILE
 /*----------------------------------------------------------------------
 |   CProtocolFinder
 +---------------------------------------------------------------------*/
-class CProtocolFinder {
+class CProtocolFinder
+{
 public:
-    CProtocolFinder(const char* protocol) : m_Protocol(protocol) {}
-    bool operator()(const PLT_MediaItemResource& resource) const {
-        return (resource.m_ProtocolInfo.ToString().Compare(m_Protocol, true) == 0);
-    }
+	CProtocolFinder(const char* protocol) : m_Protocol(protocol) {}
+
+	bool operator()(const PLT_MediaItemResource& resource) const
+	{
+		return (resource.m_ProtocolInfo.ToString().Compare(m_Protocol, true) == 0);
+	}
 private:
-    NPT_String m_Protocol;
+	NPT_String m_Protocol;
 };
 
 /*----------------------------------------------------------------------
@@ -54,35 +58,37 @@ private:
 +---------------------------------------------------------------------*/
 static CStdString GetContentMapping(NPT_String& objectClass)
 {
-    struct SClassMapping
-    {
-        const char* ObjectClass;
-        const char* Content;
-    };
-    static const SClassMapping mapping[] = {
-          { "object.item.videoItem.videoBroadcast", "episodes"      }
-        , { "object.item.videoItem.musicVideoClip", "musicvideos"  }
-        , { "object.item.videoItem"               , "movies"       }
-        , { "object.item.audioItem.musicTrack"    , "songs"        }
-        , { "object.item.audioItem"               , "songs"        }
-        , { "object.item.imageItem.photo"         , "photos"       }
-        , { "object.item.imageItem"               , "photos"       }
-        , { "object.container.album.videoAlbum"   , "tvshows"      }
-        , { "object.container.album.musicAlbum"   , "albums"       }
-        , { "object.container.album.photoAlbum"   , "photos"       }
-        , { "object.container.album"              , "albums"       }
-        , { "object.container.person"             , "artists"      }
-        , { NULL                                  , NULL           }
-    };
-    for (const SClassMapping* map = mapping; map->ObjectClass; map++)
-    {
-        if (objectClass.StartsWith(map->ObjectClass, true))
-        {
-          return map->Content;
-          break;
-        }
-    }
-    return "unknown";
+	struct SClassMapping
+	{
+		const char* ObjectClass;
+		const char* Content;
+	};
+
+	static const SClassMapping mapping[] = {
+		  { "object.item.videoItem.videoBroadcast", "episodes"      }
+		, { "object.item.videoItem.musicVideoClip", "musicvideos"  }
+		, { "object.item.videoItem"               , "movies"       }
+		, { "object.item.audioItem.musicTrack"    , "songs"        }
+		, { "object.item.audioItem"               , "songs"        }
+		, { "object.item.imageItem.photo"         , "photos"       }
+		, { "object.item.imageItem"               , "photos"       }
+		, { "object.container.album.videoAlbum"   , "tvshows"      }
+		, { "object.container.album.musicAlbum"   , "albums"       }
+		, { "object.container.album.photoAlbum"   , "photos"       }
+		, { "object.container.album"              , "albums"       }
+		, { "object.container.person"             , "artists"      }
+		, { NULL                                  , NULL           }
+	};
+
+	for (const SClassMapping* map = mapping; map->ObjectClass; map++)
+	{
+		if (objectClass.StartsWith(map->ObjectClass, true))
+		{
+		  return map->Content;
+		  break;
+		}
+	}
+	return "unknown";
 }
 
 // Pre-swap an item's remote thumb URL to its on-disk cached .tbn if one already
@@ -94,7 +100,9 @@ static CStdString GetContentMapping(NPT_String& objectClass)
 static void PreSwapToCachedVideoThumb(CFileItem* pItem)
 {
 	if (!pItem || !pItem->HasThumbnail()) return;
+
 	CStdString cached(pItem->GetCachedVideoThumb());
+
 	if (!cached.IsEmpty() && XFILE::CFile::Exists(cached))
 		pItem->SetThumbnailImage(cached);
 }
@@ -104,34 +112,36 @@ static void PreSwapToCachedVideoThumb(CFileItem* pItem)
 +---------------------------------------------------------------------*/
 static bool FindDeviceWait(CUPnP* upnp, const char* uuid, PLT_DeviceDataReference& device)
 {
-    bool client_started = upnp->IsClientStarted();
-    upnp->StartClient();
+	bool client_started = upnp->IsClientStarted();
+	upnp->StartClient();
 
-    // look for device in our list
-    // (and wait for it to respond for 5 secs if we're just starting upnp client)
-    NPT_TimeStamp watchdog;
-    NPT_System::GetCurrentTimeStamp(watchdog);
-    watchdog += 5.f;
+	// look for device in our list
+	// (and wait for it to respond for 5 secs if we're just starting upnp client)
+	NPT_TimeStamp watchdog;
+	NPT_System::GetCurrentTimeStamp(watchdog);
+	watchdog += 5.f;
 
-    for (;;) {
-        if (NPT_SUCCEEDED(upnp->m_MediaBrowser->FindServer(uuid, device)) && !device.IsNull())
-            break;
+	for (;;)
+	{
+		if (NPT_SUCCEEDED(upnp->m_MediaBrowser->FindServer(uuid, device)) && !device.IsNull())
+			break;
 
-        // fail right away if device not found and upnp client was already running
-        if (client_started)
-            return false;
+		// fail right away if device not found and upnp client was already running
+		if (client_started)
+			return false;
 
-        // otherwise check if we've waited long enough without success
-        NPT_TimeStamp now;
-        NPT_System::GetCurrentTimeStamp(now);
-        if (now > watchdog)
-            return false;
+		// otherwise check if we've waited long enough without success
+		NPT_TimeStamp now;
+		NPT_System::GetCurrentTimeStamp(now);
 
-        // sleep a bit and try again
-        NPT_System::Sleep(NPT_TimeInterval(1, 0));
-    }
+		if (now > watchdog)
+			return false;
 
-    return !device.IsNull();
+		// sleep a bit and try again
+		NPT_System::Sleep(NPT_TimeInterval(1, 0));
+	}
+
+	return !device.IsNull();
 }
 
 /*----------------------------------------------------------------------
@@ -140,28 +150,33 @@ static bool FindDeviceWait(CUPnP* upnp, const char* uuid, PLT_DeviceDataReferenc
 const char*
 CUPnPDirectory::GetFriendlyName(const char* url)
 {
-    NPT_String path = url;
-    if (!path.EndsWith("/")) path += "/";
+	NPT_String path = url;
+	if (!path.EndsWith("/")) path += "/";
 
-    if (path.Left(7).Compare("upnp://", true) != 0) {
-        return NULL;
-    } else if (path.Compare("upnp://", true) == 0) {
-        return "UPnP Media Servers (Auto-Discover)";
-    }
+	if (path.Left(7).Compare("upnp://", true) != 0)
+	{
+		return NULL;
+	}
+	else if (path.Compare("upnp://", true) == 0)
+	{
+		return "UPnP Media Servers (Auto-Discover)";
+	}
 
-    // look for nextslash
-    int next_slash = path.Find('/', 7);
-    if (next_slash == -1)
-        return NULL;
+	// look for nextslash
+	int next_slash = path.Find('/', 7);
 
-    NPT_String uuid = path.SubString(7, next_slash-7);
+	if (next_slash == -1)
+		return NULL;
 
-    // look for device
-    PLT_DeviceDataReference device;
-    if(!FindDeviceWait(CUPnP::GetInstance(), uuid, device))
-        return NULL;
+	NPT_String uuid = path.SubString(7, next_slash-7);
 
-    return (const char*)device->GetFriendlyName();
+	// look for device
+	PLT_DeviceDataReference device;
+
+	if(!FindDeviceWait(CUPnP::GetInstance(), uuid, device))
+		return NULL;
+
+	return (const char*)device->GetFriendlyName();
 }
 
 /*----------------------------------------------------------------------
@@ -169,320 +184,375 @@ CUPnPDirectory::GetFriendlyName(const char* url)
 +---------------------------------------------------------------------*/
 bool CUPnPDirectory::GetResource(const CURL& path, CFileItem &item)
 {
-    if(path.GetProtocol() != "upnp")
-        return false;
+	if(path.GetProtocol() != "upnp")
+		return false;
 
-    CUPnP* upnp = CUPnP::GetInstance();
-    if(!upnp)
-        return false;
+	CUPnP* upnp = CUPnP::GetInstance();
+	if(!upnp)
+		return false;
 
-    CStdString uuid   = path.GetHostName();
-    CStdString object = path.GetFileName();
-    object.TrimRight("/");
-    CURL::Decode(object);
+	CStdString uuid   = path.GetHostName();
+	CStdString object = path.GetFileName();
+	object.TrimRight("/");
+	CURL::Decode(object);
 
-    PLT_DeviceDataReference device;
-    if(!FindDeviceWait(upnp, uuid.c_str(), device)) {
-        CLog::Log(LOGERROR, "CUPnPDirectory::GetResource - unable to find uuid %s", uuid.c_str());
-        return false;
-    }
+	PLT_DeviceDataReference device;
+	if(!FindDeviceWait(upnp, uuid.c_str(), device))
+	{
+		CLog::Log(LOGERROR, "CUPnPDirectory::GetResource - unable to find uuid %s", uuid.c_str());
+		return false;
+	}
 
-    PLT_MediaObjectListReference list;
-    if (NPT_FAILED(upnp->m_MediaBrowser->BrowseSync(device, object.c_str(), list, true))) {
-        CLog::Log(LOGERROR, "CUPnPDirectory::GetResource - unable to find object %s", object.c_str());
-        return false;
-    }
+	PLT_MediaObjectListReference list;
+	if (NPT_FAILED(upnp->m_MediaBrowser->BrowseSync(device, object.c_str(), list, true)))
+	{
+		CLog::Log(LOGERROR, "CUPnPDirectory::GetResource - unable to find object %s", object.c_str());
+		return false;
+	}
 
-    if (list.IsNull() || !list->GetItemCount()) {
-        CLog::Log(LOGERROR, "CUPnPDirectory::GetResource - no items returned for object %s", object.c_str());
-        return false;
-    }
+	if (list.IsNull() || !list->GetItemCount())
+	{
+		CLog::Log(LOGERROR, "CUPnPDirectory::GetResource - no items returned for object %s", object.c_str());
+		return false;
+	}
 
-    PLT_MediaObjectList::Iterator entry = list->GetFirstItem();
-    if (entry == 0)
-        return false;
+	PLT_MediaObjectList::Iterator entry = list->GetFirstItem();
 
-    PLT_MediaItemResource resource;
+	if (entry == 0)
+		return false;
 
-    // look for a resource with "xbmc-get" protocol
-    // if we can't find one, keep the first resource
-    if(NPT_FAILED(NPT_ContainerFind((*entry)->m_Resources,
-                      CProtocolFinder("xbmc-get"), resource))) {
-        if((*entry)->m_Resources.GetItemCount())
-            resource = (*entry)->m_Resources[0];
-        else {
-            CLog::Log(LOGERROR, "CUPnPDirectory::GetResource - no resources returned for object %s", object.c_str());
-            return false;
-        }
-    }
+	PLT_MediaItemResource resource;
 
-    // store original path so we remember it
-    item.SetProperty("original_listitem_url",  item.m_strPath);
+	// look for a resource with "xbmc-get" protocol
+	// if we can't find one, keep the first resource
+	if(NPT_FAILED(NPT_ContainerFind((*entry)->m_Resources,
+					  CProtocolFinder("xbmc-get"), resource)))
+	{
+		if((*entry)->m_Resources.GetItemCount())
+			resource = (*entry)->m_Resources[0];
+		else
+		{
+			CLog::Log(LOGERROR, "CUPnPDirectory::GetResource - no resources returned for object %s", object.c_str());
+			return false;
+		}
+	}
 
-    // if it's an item, path is the first url to the item
-    // we hope the server made the first one reachable for us
-    // (it could be a format we dont know how to play however)
-    item.m_strPath = (const char*) resource.m_Uri;
+	// store original path so we remember it
+	item.SetProperty("original_listitem_url",  item.m_strPath);
 
-    // look for content type in protocol info
-    if (resource.m_ProtocolInfo.IsValid()) {
-        CLog::Log(LOGDEBUG, "CUPnPDirectory::GetResource - resource protocol info '%s'",
-            (const char*)(resource.m_ProtocolInfo.ToString()));
+	// if it's an item, path is the first url to the item
+	// we hope the server made the first one reachable for us
+	// (it could be a format we dont know how to play however)
+	item.m_strPath = (const char*) resource.m_Uri;
 
-        if (resource.m_ProtocolInfo.GetContentType().Compare("application/octet-stream") != 0) {
-            item.SetMimeType((const char*)resource.m_ProtocolInfo.GetContentType());
-        }
-    } else {
-        CLog::Log(LOGERROR, "CUPnPDirectory::GetResource - invalid protocol info '%s'",
-            (const char*)(resource.m_ProtocolInfo.ToString()));
-    }
+	// look for content type in protocol info
+	if (resource.m_ProtocolInfo.IsValid())
+	{
+		CLog::Log(LOGDEBUG, "CUPnPDirectory::GetResource - resource protocol info '%s'",
+			(const char*)(resource.m_ProtocolInfo.ToString()));
 
-    // look for subtitles
-    unsigned subs = 0;
-    for(unsigned r = 0; r < (*entry)->m_Resources.GetItemCount(); r++)
-    {
-        PLT_MediaItemResource& res  = (*entry)->m_Resources[r];
-        PLT_ProtocolInfo&      info = res.m_ProtocolInfo;
-        static const char* allowed[] = { "text/srt"
-                                       , "text/ssa"
-                                       , "text/sub"
-                                       , "text/idx" };
-        for(unsigned type = 0; type < sizeof(allowed)/sizeof(allowed[0]); type++)
-        {
-            if(info.Match(PLT_ProtocolInfo("*", "*", allowed[type], "*")))
-            {
-                CStdString prop;
-                prop.Format("upnp:subtitle:%d", ++subs);
-                item.SetProperty(prop, (const char*)res.m_Uri);
-                break;
-            }
-        }
-    }
+		if (resource.m_ProtocolInfo.GetContentType().Compare("application/octet-stream") != 0)
+		{
+			item.SetMimeType((const char*)resource.m_ProtocolInfo.GetContentType());
+		}
+	}
+	else
+	{
+		CLog::Log(LOGERROR, "CUPnPDirectory::GetResource - invalid protocol info '%s'",
+			(const char*)(resource.m_ProtocolInfo.ToString()));
+	}
 
-    return true;
+	// look for subtitles
+	unsigned subs = 0;
+	for(unsigned r = 0; r < (*entry)->m_Resources.GetItemCount(); r++)
+	{
+		PLT_MediaItemResource& res  = (*entry)->m_Resources[r];
+		PLT_ProtocolInfo&      info = res.m_ProtocolInfo;
+		static const char* allowed[] = { "text/srt"
+									   , "text/ssa"
+									   , "text/sub"
+									   , "text/idx" };
+
+		for(unsigned type = 0; type < sizeof(allowed)/sizeof(allowed[0]); type++)
+		{
+			if(info.Match(PLT_ProtocolInfo("*", "*", allowed[type], "*")))
+			{
+				CStdString prop;
+				prop.Format("upnp:subtitle:%d", ++subs);
+				item.SetProperty(prop, (const char*)res.m_Uri);
+				break;
+			}
+		}
+	}
+
+	return true;
 }
 
 /*----------------------------------------------------------------------
 |   CUPnPDirectory::GetDirectory
 +---------------------------------------------------------------------*/
-bool
-CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
-    CUPnP* upnp = CUPnP::GetInstance();
+	CUPnP* upnp = CUPnP::GetInstance();
 
-    /* upnp should never be cached, it has internal cache */
-    items.SetCacheToDisc(CFileItemList::CACHE_NEVER);
+	/* upnp should never be cached, it has internal cache */
+	items.SetCacheToDisc(CFileItemList::CACHE_NEVER);
 
-    // We accept upnp://devuuid/[item_id/]
-    NPT_String path = strPath.c_str();
-    if (!path.StartsWith("upnp://", true)) {
-        return false;
-    }
+	// We accept upnp://devuuid/[item_id/]
+	NPT_String path = strPath.c_str();
+	if (!path.StartsWith("upnp://", true))
+	{
+		return false;
+	}
 
-    if (path.Compare("upnp://", true) == 0) {
-        upnp->StartClient();
+	if (path.Compare("upnp://", true) == 0)
+	{
+		upnp->StartClient();
 
-        // root -> get list of devices
-        const NPT_Lock<PLT_DeviceDataReferenceList>& devices = upnp->m_MediaBrowser->GetMediaServers();
-        NPT_List<PLT_DeviceDataReference>::Iterator device = devices.GetFirstItem();
-        while (device) {
-            NPT_String name = (*device)->GetFriendlyName();
-            NPT_String uuid = (*device)->GetUUID();
+		// root -> get list of devices
+		const NPT_Lock<PLT_DeviceDataReferenceList>& devices = upnp->m_MediaBrowser->GetMediaServers();
+		NPT_List<PLT_DeviceDataReference>::Iterator device = devices.GetFirstItem();
 
-            CFileItemPtr pItem(new CFileItem((const char*)name));
-            pItem->m_strPath = CStdString((const char*) "upnp://" + uuid + "/");
-            pItem->m_bIsFolder = true;
-            pItem->SetThumbnailImage((const char*)(*device)->GetIconUrl("image/jpeg"));
+		while (device)
+		{
+			NPT_String name = (*device)->GetFriendlyName();
+			NPT_String uuid = (*device)->GetUUID();
 
-            items.Add(pItem);
+			CFileItemPtr pItem(new CFileItem((const char*)name));
+			pItem->m_strPath = CStdString((const char*) "upnp://" + uuid + "/");
+			pItem->m_bIsFolder = true;
+			pItem->SetThumbnailImage((const char*)(*device)->GetIconUrl("image/jpeg"));
 
-            ++device;
-        }
-    } else {
-        if (!path.EndsWith("/")) path += "/";
+			items.Add(pItem);
 
-        // look for nextslash
-        int next_slash = path.Find('/', 7);
+			++device;
+		}
+	}
+	else
+	{
+		if (!path.EndsWith("/")) path += "/";
 
-        NPT_String uuid = (next_slash==-1)?path.SubString(7):path.SubString(7, next_slash-7);
-        NPT_String object_id = (next_slash==-1)?"":path.SubString(next_slash+1);
-        object_id.TrimRight("/");
-        if (object_id.GetLength()) {
-            CStdString tmp = (char*) object_id;
-            CURL::Decode(tmp);
-            object_id = tmp;
-        }
+		// look for nextslash
+		int next_slash = path.Find('/', 7);
 
-        // try to find the device with wait on startup
-        PLT_DeviceDataReference device;
-        if (!FindDeviceWait(upnp, uuid, device))
-            goto failure;
+		NPT_String uuid = (next_slash==-1)?path.SubString(7):path.SubString(7, next_slash-7);
+		NPT_String object_id = (next_slash==-1)?"":path.SubString(next_slash+1);
+		object_id.TrimRight("/");
 
-        // issue a browse request with object_id
-        // if object_id is empty use "0" for root
-        object_id = object_id.IsEmpty()?"0":object_id;
+		if (object_id.GetLength())
+		{
+			CStdString tmp = (char*) object_id;
+			CURL::Decode(tmp);
+			object_id = tmp;
+		}
 
-        // remember a count of object classes
-        std::map<NPT_String, int> classes;
+		// try to find the device with wait on startup
+		PLT_DeviceDataReference device;
+		if (!FindDeviceWait(upnp, uuid, device))
+			goto failure;
 
-        // just a guess as to what types of files we want
-        bool video = true;
-        bool audio = true;
-        bool image = true;
-        m_strFileMask.TrimLeft("/");
-        if (!m_strFileMask.IsEmpty()) {
-            video = m_strFileMask.Find(".wmv") >= 0;
-            audio = m_strFileMask.Find(".wma") >= 0;
-            image = m_strFileMask.Find(".jpg") >= 0;
-        }
+		// issue a browse request with object_id
+		// if object_id is empty use "0" for root
+		object_id = object_id.IsEmpty()?"0":object_id;
 
-        // special case for Windows Media Connect and WMP11 when looking for root
-        // We can target which root subfolder we want based on directory mask
-        if (object_id == "0" && ((device->GetFriendlyName().Find("Windows Media Connect", 0, true) >= 0) ||
-                                 (device->m_ModelName == "Windows Media Player Sharing"))) {
+		// remember a count of object classes
+		std::map<NPT_String, int> classes;
 
-            // look for a specific type to differentiate which folder we want
-            if (audio && !video && !image) {
-                // music
-                object_id = "1";
-            } else if (!audio && video && !image) {
-                // video
-                object_id = "2";
-            } else if (!audio && !video && image) {
-                // pictures
-                object_id = "3";
-            }
-        }
+		// just a guess as to what types of files we want
+		bool video = true;
+		bool audio = true;
+		bool image = true;
+		m_strFileMask.TrimLeft("/");
 
-        // if error, return now, the device could have gone away
-        PLT_MediaObjectListReference list;
-        NPT_Result res = upnp->m_MediaBrowser->BrowseSync(device, object_id, list);
-        if (NPT_FAILED(res)) goto failure;
+		if (!m_strFileMask.IsEmpty())
+		{
+			video = m_strFileMask.Find(".wmv") >= 0;
+			audio = m_strFileMask.Find(".wma") >= 0;
+			image = m_strFileMask.Find(".jpg") >= 0;
+		}
 
-        // empty list is ok
-        if (list.IsNull()) goto cleanup;
+		// special case for Windows Media Connect and WMP11 when looking for root
+		// We can target which root subfolder we want based on directory mask
+		if (object_id == "0" && ((device->GetFriendlyName().Find("Windows Media Connect", 0, true) >= 0) ||
+								 (device->m_ModelName == "Windows Media Player Sharing")))
+		{
 
-        PLT_MediaObjectList::Iterator entry = list->GetFirstItem();
-        while (entry) {
-            // disregard items with wrong class/type
-            if( (!video && (*entry)->m_ObjectClass.type.CompareN("object.item.videoitem", 21,true) == 0)
-             || (!audio && (*entry)->m_ObjectClass.type.CompareN("object.item.audioitem", 21,true) == 0)
-             || (!image && (*entry)->m_ObjectClass.type.CompareN("object.item.imageitem", 21,true) == 0) )
-            {
-                ++entry;
-                continue;
-            }
+			// look for a specific type to differentiate which folder we want
+			if (audio && !video && !image)
+			{
+				// music
+				object_id = "1";
+			}
+			else if(!audio && video && !image)
+			{
+				// video
+				object_id = "2";
+			}
+			else if (!audio && !video && image)
+			{
+				// pictures
+				object_id = "3";
+			}
+		}
 
-            // never show empty containers in media views
-            if((*entry)->IsContainer()) {
-                if( (audio || video || image)
-                 && ((PLT_MediaContainer*)(*entry))->m_ChildrenCount == 0) {
-                    ++entry;
-                    continue;
-                }
-            }
+		// if error, return now, the device could have gone away
+		PLT_MediaObjectListReference list;
+		NPT_Result res = upnp->m_MediaBrowser->BrowseSync(device, object_id, list);
+		if (NPT_FAILED(res)) goto failure;
 
-            NPT_String ObjectClass = (*entry)->m_ObjectClass.type.ToLowercase();
+		// empty list is ok
+		if (list.IsNull()) goto cleanup;
 
-            // keep count of classes
-            classes[(*entry)->m_ObjectClass.type]++;
+		PLT_MediaObjectList::Iterator entry = list->GetFirstItem();
 
-            CFileItemPtr pItem(new CFileItem((const char*)(*entry)->m_Title));
-            pItem->SetLabelPreformated(true);
-            pItem->m_bIsFolder = (*entry)->IsContainer();
+		while (entry)
+		{
+			// disregard items with wrong class/type
+			if( (!video && (*entry)->m_ObjectClass.type.CompareN("object.item.videoitem", 21,true) == 0)
+			 || (!audio && (*entry)->m_ObjectClass.type.CompareN("object.item.audioitem", 21,true) == 0)
+			 || (!image && (*entry)->m_ObjectClass.type.CompareN("object.item.imageitem", 21,true) == 0) )
+			{
+				++entry;
+				continue;
+			}
 
-            CStdString id = (char*) (*entry)->m_ObjectID;
-            CURL::Encode(id);
-            pItem->m_strPath = CStdString((const char*) "upnp://" + uuid + "/" + id.c_str());
+			// never show empty containers in media views
+			if((*entry)->IsContainer())
+			{
+				if( (audio || video || image)
+				 && ((PLT_MediaContainer*)(*entry))->m_ChildrenCount == 0)
+				{
+					++entry;
+					continue;
+				}
+			}
 
-            // if it's a container, format a string as upnp://uuid/object_id/
-            if (pItem->m_bIsFolder) {
-                pItem->m_strPath += "/";
+			NPT_String ObjectClass = (*entry)->m_ObjectClass.type.ToLowercase();
 
-                // look for metadata on containers
-                if( ObjectClass.StartsWith("object.container.album.musicalbum") ) {
-                    pItem->SetLabelPreformated(false);
-                    CUPnP::PopulateTagFromObject(*pItem->GetMusicInfoTag(), *(*entry), NULL);
-                }
+			// keep count of classes
+			classes[(*entry)->m_ObjectClass.type]++;
 
-            } else {
+			CFileItemPtr pItem(new CFileItem((const char*)(*entry)->m_Title));
+			pItem->SetLabelPreformated(true);
+			pItem->m_bIsFolder = (*entry)->IsContainer();
 
-                // set a general content type
-                if (ObjectClass.StartsWith("object.item.videoitem"))
-                    pItem->SetMimeType("video/octet-stream");
-                else if(ObjectClass.StartsWith("object.item.audioitem"))
-                    pItem->SetMimeType("audio/octet-stream");
-                else if(ObjectClass.StartsWith("object.item.imageitem"))
-                    pItem->SetMimeType("image/octet-stream");
+			CStdString id = (char*) (*entry)->m_ObjectID;
+			CURL::Encode(id);
+			pItem->m_strPath = CStdString((const char*) "upnp://" + uuid + "/" + id.c_str());
 
-                if ((*entry)->m_Resources.GetItemCount()) {
-                    PLT_MediaItemResource& resource = (*entry)->m_Resources[0];
+			// if it's a container, format a string as upnp://uuid/object_id/
+			if (pItem->m_bIsFolder)
+			{
+				pItem->m_strPath += "/";
 
-                    // set metadata
-                    if (resource.m_Size != (NPT_LargeSize)-1) {
-                        pItem->m_dwSize  = resource.m_Size;
-                    }
+				// look for metadata on containers
+				if( ObjectClass.StartsWith("object.container.album.videoalbum") )
+				{
+					pItem->SetLabelPreformated(false);
+					CUPnP::PopulateTagFromObject(*pItem->GetVideoInfoTag(), *(*entry), NULL);
 
-                    // look for metadata on items
-                    if( ObjectClass.StartsWith("object.item.audioitem") ) {
-                        pItem->SetLabelPreformated(false);
-                        CUPnP::PopulateTagFromObject(*pItem->GetMusicInfoTag(), *(*entry), &resource);
-                    }
-                }
-            }
+				}
+				else if( ObjectClass.StartsWith("object.container.album.musicalbum") )
+				{
+					pItem->SetLabelPreformated(false);
+					CUPnP::PopulateTagFromObject(*pItem->GetMusicInfoTag(), *(*entry), NULL);
+				}
 
-            // look for date
-            if((*entry)->m_Description.date.GetLength()) {
-                SYSTEMTIME time = {};
-                sscanf((*entry)->m_Description.date, "%hu-%hu-%huT%hu:%hu:%hu",
-                       &time.wYear, &time.wMonth, &time.wDay, &time.wHour, &time.wMinute, &time.wSecond);
-                pItem->m_dateTime = time;
-            }
+			}
+			else
+			{
 
-            // if there is a thumbnail available set it here
-            if((*entry)->m_ExtraInfo.album_art_uri.GetLength())
-                pItem->SetThumbnailImage((const char*) (*entry)->m_ExtraInfo.album_art_uri);
-            else if((*entry)->m_Description.icon_uri.GetLength())
-                pItem->SetThumbnailImage((const char*) (*entry)->m_Description.icon_uri);
+				// set a general content type
+				if (ObjectClass.StartsWith("object.item.videoitem"))
+					pItem->SetMimeType("video/octet-stream");
+				else if(ObjectClass.StartsWith("object.item.audioitem"))
+					pItem->SetMimeType("audio/octet-stream");
+				else if(ObjectClass.StartsWith("object.item.imageitem"))
+					pItem->SetMimeType("image/octet-stream");
 
-            // look for fanart
-            PLT_ProtocolInfo fanart_mask("xbmc.org", "*", "fanart", "*");
-            for(unsigned i = 0; i < (*entry)->m_Resources.GetItemCount(); ++i) {
-                PLT_MediaItemResource& res = (*entry)->m_Resources[i];
-                if(res.m_ProtocolInfo.Match(fanart_mask)) {
-                    pItem->SetProperty("fanart_image", (const char*)res.m_Uri);
-                    break;
-                }
-            }
+				if ((*entry)->m_Resources.GetItemCount())
+				{
+					PLT_MediaItemResource& resource = (*entry)->m_Resources[0];
 
-            // If we already have a cached .tbn on disk, swap the remote URL for
-            // the local path up-front so the first GUI paint shows the thumb
-            // without waiting for the background thumb loader.
-            PreSwapToCachedVideoThumb(pItem.get());
+					// set metadata
+					if (resource.m_Size != (NPT_LargeSize)-1)
+					{
+						pItem->m_dwSize  = resource.m_Size;
+					}
 
-            items.Add(pItem);
+					// look for metadata on items
+					if( ObjectClass.StartsWith("object.item.videoitem") )
+					{
+						pItem->SetLabelPreformated(false);
+						CUPnP::PopulateTagFromObject(*pItem->GetVideoInfoTag(), *(*entry), &resource);
 
-            ++entry;
-        }
+					}
+					else if( ObjectClass.StartsWith("object.item.audioitem") )
+					{
+						pItem->SetLabelPreformated(false);
+						CUPnP::PopulateTagFromObject(*pItem->GetMusicInfoTag(), *(*entry), &resource);
+					}
+				}
+			}
 
-        // Set content based on most common object class
-        NPT_String max_string = "";
-        int        max_count  = 0;
-        for(std::map<NPT_String, int>::iterator it = classes.begin(); it != classes.end(); it++)
-        {
-          if(it->second > max_count)
-          {
-            max_string = it->first;
-            max_count  = it->second;
-          }
-        }
-        items.SetContent(GetContentMapping(max_string));
-    }
+			// look for date
+			if((*entry)->m_Description.date.GetLength())
+			{
+				SYSTEMTIME time = {};
+				sscanf((*entry)->m_Description.date, "%hu-%hu-%huT%hu:%hu:%hu",
+					   &time.wYear, &time.wMonth, &time.wDay, &time.wHour, &time.wMinute, &time.wSecond);
+				pItem->m_dateTime = time;
+			}
+
+			// if there is a thumbnail available set it here
+			if((*entry)->m_ExtraInfo.album_art_uri.GetLength())
+				pItem->SetThumbnailImage((const char*) (*entry)->m_ExtraInfo.album_art_uri);
+			else if((*entry)->m_Description.icon_uri.GetLength())
+				pItem->SetThumbnailImage((const char*) (*entry)->m_Description.icon_uri);
+
+			// look for fanart
+			PLT_ProtocolInfo fanart_mask("xbmc.org", "*", "fanart", "*");
+			for(unsigned i = 0; i < (*entry)->m_Resources.GetItemCount(); ++i)
+			{
+				PLT_MediaItemResource& res = (*entry)->m_Resources[i];
+
+				if(res.m_ProtocolInfo.Match(fanart_mask))
+				{
+					pItem->SetProperty("fanart_image", (const char*)res.m_Uri);
+					break;
+				}
+			}
+
+			// If we already have a cached .tbn on disk, swap the remote URL for
+			// the local path up-front so the first GUI paint shows the thumb
+			// without waiting for the background thumb loader.
+			PreSwapToCachedVideoThumb(pItem.get());
+
+			items.Add(pItem);
+
+			++entry;
+		}
+
+		// Set content based on most common object class
+		NPT_String max_string = "";
+		int        max_count  = 0;
+
+		for(std::map<NPT_String, int>::iterator it = classes.begin(); it != classes.end(); it++)
+		{
+			if(it->second > max_count)
+			{
+				max_string = it->first;
+				max_count  = it->second;
+			}
+		}
+
+		items.SetContent(GetContentMapping(max_string));
+	}
 
 cleanup:
-    return true;
+	return true;
 
 failure:
-    return false;
+	return false;
 }
 }

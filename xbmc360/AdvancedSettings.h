@@ -38,6 +38,10 @@ public:
 
 	int m_songInfoDuration; // Duration in seconds to show song info in visualisation
 	bool m_bNavVKeyboard; // If true we navigate the virtual keyboard using cursor keys
+
+	int m_curlconnecttimeout;
+	int m_curllowspeedtime;
+	int m_curlretries;
 };
 
 extern CAdvancedSettings g_advancedSettings;

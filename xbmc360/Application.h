@@ -47,6 +47,7 @@ public:
 	void StopServices();
 
 	CFileItem& CurrentFileItem() { return *m_itemCurrentFile; }
+	const CStdString& CurrentFile();
 	virtual bool OnMessage(CGUIMessage& message);
 	bool NeedRenderFullScreen();
 	void RenderFullScreen();
@@ -83,6 +84,8 @@ public:
 #ifdef HAS_UPNP
 	void StartUPnP();
 	void StopUPnP();
+	void StartUPnPRenderer();
+	void StopUPnPRenderer();
 #endif
 
 	bool IsCurrentThread() const;
