@@ -36,6 +36,7 @@ public:
 	static void AddSlashAtEnd(CStdString& strFolder);
 	static bool IsURL(const CStdString& strFile);
 	static bool IsRemote(const CStdString& strFile);
+	static bool IsUPnP(const CStdString& strFile);
 	static bool IsMultiPath(const CStdString& strPath);
 	static bool IsHD(const CStdString& strFileName);
 	static const CStdString GetFileName(const CStdString& strFileNameAndPath);

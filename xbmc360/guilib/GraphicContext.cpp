@@ -226,6 +226,12 @@ const RECT& CGraphicContext::GetViewWindow() const
 
 void CGraphicContext::SetViewWindow(float left, float top, float right, float bottom)
 {
+    if (m_bFullScreenVideo)
+    {
+        SetFullScreenViewWindow(m_Resolution);
+        return;
+    }
+
     m_videoRect.left = (long)(ScaleFinalXCoord(left, top) + 0.5f);
     m_videoRect.top = (long)(ScaleFinalYCoord(left, top) + 0.5f);
     m_videoRect.right = (long)(ScaleFinalXCoord(right, bottom) + 0.5f);
@@ -369,11 +375,19 @@ void CGraphicContext::RestoreViewPort()
 	UpdateCameraPosition(m_cameras.top());
 }
 
+void CGraphicContext::SetFullScreenViewWindow(RESOLUTION &res)
+{
+	m_videoRect.left = g_settings.m_ResInfo[res].Overscan.left;
+	m_videoRect.top = g_settings.m_ResInfo[res].Overscan.top;
+	m_videoRect.right = g_settings.m_ResInfo[res].Overscan.right;
+	m_videoRect.bottom = g_settings.m_ResInfo[res].Overscan.bottom;
+}
+
 void CGraphicContext::SetFullScreenVideo(bool bOnOff)
 {
 	Lock();
 	m_bFullScreenVideo = bOnOff;
-//	SetFullScreenViewWindow(m_Resolution);
+	SetFullScreenViewWindow(m_Resolution);
 	Unlock();
 }
 

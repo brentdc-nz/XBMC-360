@@ -42,6 +42,11 @@ static const ActionMapping actions[] =
         {"analogseekback"    , ACTION_ANALOG_SEEK_BACK},
         {"osd"               , ACTION_SHOW_OSD},
         {"smallstepback"     , ACTION_SMALL_STEP_BACK},
+        {"aspectratio"       , ACTION_ASPECT_RATIO},
+        {"zoomin"            , ACTION_ZOOM_IN},
+        {"zoomout"           , ACTION_ZOOM_OUT},
+        {"increasepar"       , ACTION_INCREASE_PAR},
+        {"decreasepar"       , ACTION_DECREASE_PAR},
 };
 
 static const ActionMapping windows[] =

@@ -3,6 +3,7 @@
 #include "..\..\Application.h"
 #include "..\..\guilib\GraphicContext.h"
 #include "..\..\utils\Log.h"
+#include "..\..\Settings.h"
 
 namespace RGBRendererShaders
 {
@@ -92,6 +93,9 @@ CRGBRenderer::CRGBRenderer(LPDIRECT3DDEVICE9 pDevice)
 	m_iActiveHeight = 0;
 	m_iActivePosX = 0;
 	m_iActivePosY = 0;
+
+	m_fSourceFrameRatio = 1.0f;
+	memset(&rd, 0, sizeof(rd));
 
 	m_bInitialized = false;
 	m_bConfigured = false;
@@ -217,43 +221,29 @@ bool CRGBRenderer::PreInit()
 
 void CRGBRenderer::ManageDisplay()
 {
-	int iPosX;
-	int iPosY;
-	int iWidth;
-	int iHeight;
+	const RECT& rv = g_graphicsContext.GetViewWindow();
+	float fScreenWidth = (float)rv.right - rv.left;
+	float fScreenHeight = (float)rv.bottom - rv.top;
+	float fOffsetX1 = (float)rv.left;
+	float fOffsetY1 = (float)rv.top;
 
-	if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
-	{
-		iPosX = 0;
-		iPosY = 0;
-		iWidth = m_iScreenWidth;
-		iHeight = m_iScreenHeight;
-	}
-	else
-	{
-		const RECT& rv = g_graphicsContext.GetViewWindow();
+	CalcNormalDisplayRect(fOffsetX1, fOffsetY1, fScreenWidth, fScreenHeight, GetAspectRatio() * g_settings.m_fPixelRatio, g_settings.m_fZoomAmount);
 
-		iPosX = rv.left;
-		iPosY = rv.top;
-		iWidth = rv.right - rv.left;
-		iHeight = rv.bottom - rv.top;
-	}
-
-	if(m_iActiveWidth == iWidth && m_iActiveHeight == iHeight
-		&& m_iActivePosX == iPosX && m_iActivePosY == iPosY)
+	if(m_iActiveWidth == (rd.right - rd.left) && m_iActiveHeight == (rd.bottom - rd.top)
+		&& m_iActivePosX == rd.left && m_iActivePosY == rd.top)
 		return;
 
-	m_iActiveWidth = iWidth;
-	m_iActiveHeight = iHeight;
-	m_iActivePosX = iPosX;
-	m_iActivePosY = iPosY;
+	m_iActiveWidth = rd.right - rd.left;
+	m_iActiveHeight = rd.bottom - rd.top;
+	m_iActivePosX = rd.left;
+	m_iActivePosY = rd.top;
 
 	COLORVERTEX Vertices[] =
 	{
-		{(FLOAT)iPosX, (FLOAT)iPosY,  0.0f, 0, 0 ,},
-		{(FLOAT)iPosX+iWidth, (FLOAT)iPosY, 0.0f,  1, 0 ,},
-		{(FLOAT)iPosX, (FLOAT)iHeight+(FLOAT)iPosY, 0.0f,  0, 1 ,},
-		{(FLOAT)iPosX+(FLOAT)iWidth, (FLOAT)iPosY+(FLOAT)iHeight, 0.0f,  1, 1 ,},
+		{(FLOAT)rd.left, (FLOAT)rd.top,  0.0f, 0, 0 ,},
+		{(FLOAT)rd.right, (FLOAT)rd.top, 0.0f,  1, 0 ,},
+		{(FLOAT)rd.left, (FLOAT)rd.bottom, 0.0f,  0, 1 ,},
+		{(FLOAT)rd.right, (FLOAT)rd.bottom, 0.0f,  1, 1 ,},
 	};
 
 	COLORVERTEX* pVertices;
@@ -262,10 +252,69 @@ void CRGBRenderer::ManageDisplay()
 	m_pVB->Unlock();
 }
 
-bool CRGBRenderer::Configure(int iWidth, int iHeight)
+//***************************************************************************************
+// CalculateFrameAspectRatio()
+//
+// Considers the source frame size and output frame size (as suggested by mplayer)
+// to determine if the pixels in the source are not square.  It calculates the aspect
+// ratio of the output frame.  We consider the cases of VCD, SVCD and DVD separately,
+// as these are intended to be viewed on a non-square pixel TV set, so the pixels are
+// defined to be the same ratio as the intended display pixels.
+// These formats are determined by frame size.
+//***************************************************************************************
+void CRGBRenderer::CalculateFrameAspectRatio(int desired_width, int desired_height)
+{
+	m_fSourceFrameRatio = (float)desired_width / desired_height;
+
+	// Check whether the size of the video file should be changed
+	// This indicates either a scaling has taken place or it has
+	// found an aspect ratio parameter from the file, and is changing
+	// the frame size based on that.
+	if (m_iSourceWidth == desired_width && m_iSourceHeight == desired_height)
+		return;
+
+	// Scaling in one or both directions. We must alter our Source Pixel Ratio
+	float fImageFrameRatio = (float)m_iSourceWidth / m_iSourceHeight;
+
+	// For sources intended for non-square pixel output (PAL/NTSC TVs)
+	// including VCD, SVCD, and DVD
+	float fPALPixelRatio = 128.0f / 117.0f;
+	float fNTSCPixelRatio = 4320.0f / 4739.0f;
+
+	// Calculate the correction needed for anamorphic sources
+	float fNon4by3Correction = m_fSourceFrameRatio / (4.0f / 3.0f);
+
+	// Check for VCD, SVCD or DVD frame sizes
+	if (m_iSourceWidth == 352)
+	{ // VCD?
+		if (m_iSourceHeight == 240) // NTSC
+			m_fSourceFrameRatio = fImageFrameRatio * fNTSCPixelRatio;
+		if (m_iSourceHeight == 288) // PAL
+			m_fSourceFrameRatio = fImageFrameRatio * fPALPixelRatio;
+	}
+	if (m_iSourceWidth == 480)
+	{ // SVCD?
+		if (m_iSourceHeight == 480) // NTSC
+			m_fSourceFrameRatio = fImageFrameRatio * 3.0f / 2.0f * fNTSCPixelRatio * fNon4by3Correction;
+		if (m_iSourceHeight == 576) // PAL
+			m_fSourceFrameRatio = fImageFrameRatio * 3.0f / 2.0f * fPALPixelRatio * fNon4by3Correction;
+	}
+	if (m_iSourceWidth == 720)
+	{ // DVD?
+		if (m_iSourceHeight == 480) // NTSC
+			m_fSourceFrameRatio = fImageFrameRatio * fNTSCPixelRatio * fNon4by3Correction;
+		if (m_iSourceHeight == 576) // PAL
+			m_fSourceFrameRatio = fImageFrameRatio * fPALPixelRatio * fNon4by3Correction;
+	}
+}
+
+bool CRGBRenderer::Configure(int iWidth, int iHeight, int d_width, int d_height)
 {
 	m_iSourceWidth = iWidth;
 	m_iSourceHeight = iHeight;
+
+	// Calculate the input frame aspect ratio
+	CalculateFrameAspectRatio(d_width, d_height);
 
 	if(!m_pFrameY)
 	{
@@ -304,6 +353,9 @@ bool CRGBRenderer::Configure(int iWidth, int iHeight)
 	}
 
 	m_bConfigured = true;
+
+	SetViewMode(g_settings.m_currentVideoSettings.m_ViewMode);
+	ManageDisplay();
 
 	return true;
 }
@@ -522,4 +574,158 @@ void CRGBRenderer::UnInit()
 	}
 
 	m_bConfigured = false;
+}
+
+void CRGBRenderer::CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, float fScreenWidth, float fScreenHeight, float fInputFrameRatio, float fZoomAmount)
+{
+	// scale up image as much as possible
+	// and keep the aspect ratio (introduces with black bars)
+	// calculate the correct output frame ratio (using the users pixel ratio setting
+	// and the output pixel ratio setting)
+
+	RESOLUTION iRes = g_graphicsContext.GetVideoResolution();
+	float fOutputFrameRatio = fInputFrameRatio / g_settings.m_ResInfo[iRes].fPixelRatio;
+
+	// allow a certain error to maximize screen size
+	float fCorrection = fScreenWidth / fScreenHeight / fOutputFrameRatio - 1.0f;
+	float fAllowedError = 0.03f; // 3% default (same as xbmc4xbox videoplayer.errorinaspect)
+	if (fCorrection > fAllowedError)
+		fCorrection = fAllowedError;
+	if (fCorrection < -fAllowedError)
+		fCorrection = -fAllowedError;
+
+	fOutputFrameRatio *= 1.0f + fCorrection;
+
+	// maximize the movie width
+	float fNewWidth = fScreenWidth;
+	float fNewHeight = fNewWidth / fOutputFrameRatio;
+
+	if (fNewHeight > fScreenHeight)
+	{
+		fNewHeight = fScreenHeight;
+		fNewWidth = fNewHeight * fOutputFrameRatio;
+	}
+
+	// Scale the movie up by set zoom amount
+	fNewWidth *= fZoomAmount;
+	fNewHeight *= fZoomAmount;
+
+	// Centre the movie
+	float fPosY = (fScreenHeight - fNewHeight) / 2;
+	float fPosX = (fScreenWidth - fNewWidth) / 2;
+
+	rd.left = (int)(fPosX + fOffsetX1);
+	rd.right = (int)(rd.left + fNewWidth + 0.5f);
+	rd.top = (int)(fPosY + fOffsetY1);
+	rd.bottom = (int)(rd.top + fNewHeight + 0.5f);
+}
+
+void CRGBRenderer::SetViewMode(int iViewMode)
+{
+	if (iViewMode < VIEW_MODE_NORMAL || iViewMode > VIEW_MODE_CUSTOM)
+		iViewMode = VIEW_MODE_NORMAL;
+
+	g_settings.m_currentVideoSettings.m_ViewMode = iViewMode;
+
+	if (g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_NORMAL)
+	{
+		g_settings.m_fPixelRatio = 1.0;
+		g_settings.m_fZoomAmount = 1.0;
+		return;
+	}
+
+	if (g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_CUSTOM)
+	{
+		g_settings.m_fZoomAmount = g_settings.m_currentVideoSettings.m_CustomZoomAmount;
+		g_settings.m_fPixelRatio = g_settings.m_currentVideoSettings.m_CustomPixelRatio;
+		return;
+	}
+
+	// get our calibrated full screen resolution
+	RESOLUTION iRes = g_graphicsContext.GetVideoResolution();
+	float fOffsetX1 = (float)g_settings.m_ResInfo[iRes].Overscan.left;
+	float fOffsetY1 = (float)g_settings.m_ResInfo[iRes].Overscan.top;
+	float fScreenWidth = (float)(g_settings.m_ResInfo[iRes].Overscan.right - g_settings.m_ResInfo[iRes].Overscan.left);
+	float fScreenHeight = (float)(g_settings.m_ResInfo[iRes].Overscan.bottom - g_settings.m_ResInfo[iRes].Overscan.top);
+
+	// and the source frame ratio
+	float fSourceFrameRatio = GetAspectRatio();
+
+	if (g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_ZOOM)
+	{ // zoom image so no black bars
+		g_settings.m_fPixelRatio = 1.0;
+		// calculate the desired output ratio
+		float fOutputFrameRatio = fSourceFrameRatio * g_settings.m_fPixelRatio / g_settings.m_ResInfo[iRes].fPixelRatio;
+		// now calculate the correct zoom amount.  First zoom to full height.
+		float fNewHeight = fScreenHeight;
+		float fNewWidth = fNewHeight * fOutputFrameRatio;
+		g_settings.m_fZoomAmount = fNewWidth / fScreenWidth;
+		if (fNewWidth < fScreenWidth)
+		{ // zoom to full width
+			fNewWidth = fScreenWidth;
+			fNewHeight = fNewWidth / fOutputFrameRatio;
+			g_settings.m_fZoomAmount = fNewHeight / fScreenHeight;
+		}
+	}
+	else if (g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_STRETCH_4x3)
+	{ // stretch image to 4:3 ratio
+		g_settings.m_fZoomAmount = 1.0;
+		if (iRes == PAL_4x3 || iRes == PAL60_4x3 || iRes == NTSC_4x3 || iRes == HDTV_480p_4x3)
+		{ // stretch to the limits of the 4:3 screen.
+			g_settings.m_fPixelRatio = (fScreenWidth / fScreenHeight) * g_settings.m_ResInfo[iRes].fPixelRatio / fSourceFrameRatio;
+		}
+		else
+		{
+			// now we need to set g_settings.m_fPixelRatio so that
+			// fOutputFrameRatio = 4:3.
+			g_settings.m_fPixelRatio = (4.0f / 3.0f) / fSourceFrameRatio;
+		}
+	}
+	else if (g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_STRETCH_14x9)
+	{ // stretch image to 14:9 ratio
+		// now we need to set g_settings.m_fPixelRatio so that
+		// fOutputFrameRatio = 14:9.
+		g_settings.m_fPixelRatio = (14.0f / 9.0f) / fSourceFrameRatio;
+		// calculate the desired output ratio
+		float fOutputFrameRatio = fSourceFrameRatio * g_settings.m_fPixelRatio / g_settings.m_ResInfo[iRes].fPixelRatio;
+		// now calculate the correct zoom amount.  First zoom to full height.
+		float fNewHeight = fScreenHeight;
+		float fNewWidth = fNewHeight * fOutputFrameRatio;
+		g_settings.m_fZoomAmount = fNewWidth / fScreenWidth;
+		if (fNewWidth < fScreenWidth)
+		{ // zoom to full width
+			fNewWidth = fScreenWidth;
+			fNewHeight = fNewWidth / fOutputFrameRatio;
+			g_settings.m_fZoomAmount = fNewHeight / fScreenHeight;
+		}
+	}
+	else if (g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_STRETCH_16x9)
+	{ // stretch image to 16:9 ratio
+		g_settings.m_fZoomAmount = 1.0;
+		if (iRes == PAL_4x3 || iRes == PAL60_4x3 || iRes == NTSC_4x3 || iRes == HDTV_480p_4x3)
+		{ // now we need to set g_settings.m_fPixelRatio so that
+			// fOutputFrameRatio = 16:9.
+			g_settings.m_fPixelRatio = (16.0f / 9.0f) / fSourceFrameRatio;
+		}
+		else
+		{ // stretch to the limits of the 16:9 screen.
+			g_settings.m_fPixelRatio = (fScreenWidth / fScreenHeight) * g_settings.m_ResInfo[iRes].fPixelRatio / fSourceFrameRatio;
+		}
+	}
+	else // if (g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_ORIGINAL)
+	{ // zoom image so that the height is the original size
+		g_settings.m_fPixelRatio = 1.0;
+		// calculate the desired output ratio
+		float fOutputFrameRatio = fSourceFrameRatio * g_settings.m_fPixelRatio / g_settings.m_ResInfo[iRes].fPixelRatio;
+		// now calculate the correct zoom amount.  First zoom to full width.
+		float fNewWidth = fScreenWidth;
+		float fNewHeight = fNewWidth / fOutputFrameRatio;
+		if (fNewHeight > fScreenHeight)
+		{ // zoom to full height
+			fNewHeight = fScreenHeight;
+			fNewWidth = fNewHeight * fOutputFrameRatio;
+		}
+		// now work out the zoom amount so that no zoom is done
+		g_settings.m_fZoomAmount = (float)m_iSourceHeight / fNewHeight;
+	}
 }

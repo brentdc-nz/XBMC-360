@@ -16,6 +16,14 @@
 #define VOLUME_DRC_MINIMUM 0    // 0dB
 #define VOLUME_DRC_MAXIMUM 3000 // 30dB
 
+#define VIEW_MODE_NORMAL        0
+#define VIEW_MODE_ZOOM          1
+#define VIEW_MODE_STRETCH_4x3   2
+#define VIEW_MODE_STRETCH_14x9  3
+#define VIEW_MODE_STRETCH_16x9  4
+#define VIEW_MODE_ORIGINAL      5
+#define VIEW_MODE_CUSTOM        6
+
 class CSkinString
 {
 public:
@@ -74,6 +82,9 @@ public:
 	int m_iSystemTimeTotalUp; // Uptime in minutes!
 
 	CVideoSettings m_currentVideoSettings;
+
+	float m_fZoomAmount;      // Current zoom amount
+	float m_fPixelRatio;      // Current pixel ratio
 
 	RESOLUTION_INFO m_ResInfo[10];
 

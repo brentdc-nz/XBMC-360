@@ -20,6 +20,7 @@
  */
 
 #include "utils\StdString.h"
+#include "utils\StreamDetails.h"
 
 #include <vector>
 
@@ -35,6 +36,7 @@ public:
   CVideoInfoTag() { Reset(); };
   void Reset();
   bool IsEmpty() const;
+  bool HasStreamDetails() const;
   const CStdString GetCast(bool bIncludeRole = false) const;
 
   CStdString m_strDirector;
@@ -82,6 +84,7 @@ public:
   float m_fRating;
   float m_fEpBookmark;
   int m_iBookmarkId;
+  CStreamDetails m_streamDetails;
 };
 
 typedef std::vector<CVideoInfoTag> VECMOVIES;

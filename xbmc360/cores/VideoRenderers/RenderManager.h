@@ -25,12 +25,14 @@ public:
 	void Update(bool bPauseDrawing);
 	void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
 	bool PreInit();
-	bool Configure(int width, int height, unsigned flags);
+	bool Configure(int width, int height, int d_width, int d_height, unsigned flags);
 	bool IsConfigured();
 	bool GetImage(YV12Image *image);
 	void ReleaseImage();
 	void PrepareDisplay();
 	void FlipPage(DWORD timestamp = 0L, int source = -1, EFIELDSYNC sync = FS_NONE);
+
+	void SetViewMode(int iViewMode);
 
 	void UnInit();
 	float GetMaximumFPS() { return 60.0; };

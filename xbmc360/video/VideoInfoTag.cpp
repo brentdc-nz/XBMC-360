@@ -69,6 +69,11 @@ void CVideoInfoTag::Reset()
   m_fEpBookmark = 0;
 }
 
+bool CVideoInfoTag::HasStreamDetails() const
+{
+  return m_streamDetails.HasItems();
+}
+
 bool CVideoInfoTag::IsEmpty() const
 {
   return (m_strTitle.IsEmpty() &&

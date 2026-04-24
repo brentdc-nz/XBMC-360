@@ -66,7 +66,7 @@ bool CRenderManager::PreInit()
 	return m_pRenderer->PreInit();
 }
 
-bool CRenderManager::Configure(int width, int height, unsigned flags)
+bool CRenderManager::Configure(int width, int height, int d_width, int d_height, unsigned flags)
 {
 	DWORD locks = ExitCriticalSection(g_graphicsContext);
 	CExclusiveLock lock(m_sharedSection);      
@@ -78,7 +78,7 @@ bool CRenderManager::Configure(int width, int height, unsigned flags)
 		return false;
 	}
 
-	bool result = m_pRenderer->Configure(width, height/*, d_width, d_height, fps, flags*/);
+	bool result = m_pRenderer->Configure(width, height, d_width, d_height);
 	if(result)
 	{
 		if(flags & CONF_FLAGS_FULLSCREEN)
@@ -168,3 +168,9 @@ void CRenderManager::UnInit()
 	}
 }
 
+void CRenderManager::SetViewMode(int iViewMode)
+{
+	CSharedLock lock(m_sharedSection);
+	if (m_pRenderer)
+		m_pRenderer->SetViewMode(iViewMode);
+}

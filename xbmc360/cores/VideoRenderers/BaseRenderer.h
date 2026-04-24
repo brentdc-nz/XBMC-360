@@ -24,7 +24,7 @@ public:
 	virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255) = 0;
 	virtual bool PreInit() = 0;
 	virtual void ManageDisplay() = 0;
-	virtual bool Configure(int iWidth, int iHeight) = 0;
+	virtual bool Configure(int iWidth, int iHeight, int d_width, int d_height) = 0;
 	virtual bool IsConfigured() = 0;
 	virtual bool GetImage(YV12Image* image) = 0;
 	virtual void ReleaseImage() = 0;
@@ -32,6 +32,8 @@ public:
 	virtual void FlipPage() = 0;
 	virtual void PrepareDisplay() = 0;
 	virtual void UnInit() = 0;
+	virtual void SetViewMode(int iViewMode) = 0;
+	virtual float GetAspectRatio() { return m_fSourceFrameRatio; }
 
 protected:
 	int m_iPosX;
@@ -54,6 +56,9 @@ protected:
 
 	int m_iActivePosX;
 	int m_iActivePosY;
+
+	float m_fSourceFrameRatio; // Source frame aspect ratio
+	RECT rd;                   // Destination rect for rendering
 };
 
 #endif //CBASERENDERER_H

@@ -32,8 +32,9 @@
 #include "AdvancedSettings.h"
 #include "utils\StringUtils.h"
 #include "FileItem.h"
-//#include "utils/StreamDetails.h" //TODO - Not yet ported
-//#include "utils/StreamUtils.h" //TODO - Not yet ported
+#include "utils/StreamDetails.h"
+#include "utils/StreamUtils.h"
+#include "DVDFileInfo.h"
 //#include "dialogs/GUIDialogBusy.h" //TODO
 //#include "playlists/PlayListM3U.h" //TODO - Not yet ported
 #include "utils/URIUtils.h"
@@ -3720,8 +3721,6 @@ int CDVDPlayer::GetPictureHeight()
 	return 0;
 }
 
-//TODO - CStreamDetails/CDVDFileInfo not yet ported
-/*
 bool CDVDPlayer::GetStreamDetails(CStreamDetails &details)
 {
 	if (m_pDemuxer)
@@ -3737,4 +3736,3 @@ bool CDVDPlayer::GetStreamDetails(CStreamDetails &details)
 	else
 		return false;
 }
-*/

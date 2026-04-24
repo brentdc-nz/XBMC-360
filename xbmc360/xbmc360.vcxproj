@@ -548,6 +548,8 @@
     <ClInclude Include="utils\Thread.h" />
     <ClInclude Include="utils\TimeUtils.h" />
     <ClInclude Include="utils\URIUtils.h" />
+    <ClInclude Include="utils\StreamDetails.h" />
+    <ClInclude Include="utils\StreamUtils.h" />
     <ClInclude Include="utils\Util.h" />
     <ClInclude Include="utils\Variant.h" />
     <ClInclude Include="utils\Weather.h" />
@@ -555,6 +557,7 @@
     <ClInclude Include="utils\XEXUtils.h" />
     <ClInclude Include="VideoSettings.h" />
     <ClInclude Include="video\VideoInfoTag.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDFileInfo.h" />
     <ClInclude Include="ViewState.h" />
     <ClInclude Include="visualizations\fft.h" />
     <ClInclude Include="visualizations\Visualisation.h" />
@@ -798,6 +801,8 @@
     <ClCompile Include="utils\Thread.cpp" />
     <ClCompile Include="utils\TimeUtils.cpp" />
     <ClCompile Include="utils\URIUtils.cpp" />
+    <ClCompile Include="utils\StreamDetails.cpp" />
+    <ClCompile Include="utils\StreamUtils.cpp" />
     <ClCompile Include="utils\Util.cpp" />
     <ClCompile Include="utils\Variant.cpp" />
     <ClCompile Include="utils\Weather.cpp" />
@@ -805,6 +810,7 @@
     <ClCompile Include="utils\XEXUtils.cpp" />
     <ClCompile Include="VideoSettings.cpp" />
     <ClCompile Include="video\VideoInfoTag.cpp" />
+    <ClCompile Include="cores\DVDPlayer\DVDFileInfo.cpp" />
     <ClCompile Include="visualizations\fft.cpp" />
     <ClCompile Include="visualizations\Visualisation.cpp" />
     <ClCompile Include="visualizations\VisualisationFactory.cpp" />

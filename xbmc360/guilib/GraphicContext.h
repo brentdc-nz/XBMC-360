@@ -83,6 +83,7 @@ public:
 	void RestoreViewPort();
 	void SetFullScreenVideo(bool bOnOff);
 	bool IsFullScreenVideo() const;
+	void SetFullScreenViewWindow(RESOLUTION &res);
 	void ResetScreenParameters(RESOLUTION res);
 	float GetPixelRatio(RESOLUTION iRes) const;
 

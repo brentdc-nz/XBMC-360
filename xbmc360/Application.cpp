@@ -10,6 +10,8 @@
 #include "guilib\GUIFontManager.h"
 #include "guilib\GUIInfoManager.h"
 #include "cores\DVDPlayer\DVDPlayer.h"
+#include "utils\StreamDetails.h"
+#include "video\VideoInfoTag.h"
 #include "guilib\LocalizeStrings.h"
 #include "Settings.h"
 #include "filesystem\File.h"
@@ -1347,6 +1349,19 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 				&& g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
 			{
 				SwitchToFullScreen();
+			}
+
+			// Populate stream details (codec, resolution, etc.) from the player
+			CVideoInfoTag *details = m_itemCurrentFile->GetVideoInfoTag();
+			if (!details->HasStreamDetails() ||
+			     details->m_streamDetails.GetVideoDuration() <= 0)
+			{
+				if (m_pPlayer->GetStreamDetails(details->m_streamDetails) && details->HasStreamDetails())
+				{
+					CLog::Log(LOGDEBUG, "%s - got stream details from player", __FUNCTION__);
+					
+					// TODO: Video DB
+				}
 			}
 		}
 

@@ -35,6 +35,9 @@ void CSettings::Initialize()
 	m_iPreMuteVolumeLevel = 0;
 	m_bMute = false;
 
+	m_fZoomAmount = 1.0f;
+	m_fPixelRatio = 1.0f;
+
 	m_strVideoExtensions = ".m4v|.3gp|.nsv|.ts|.ty|.strm|.pls|.rm|.rmvb|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.nrg|.img|.iso|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mp4|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli|.flv|.rar|.001|.wpl|.zip|.vdr|.dvr-ms";
 	m_strAudioExtensions = ".nsv|.m4a|.flac|.aac|.strm|.pls|.rm|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u|.mod|.amf|.669|.dmf|.dsm|.far|.gdm|.imf|.it|.m15|.med|.okt|.s3m|.stm|.sfx|.ult|.uni|.xm|.sid|.ac3|.dts|.cue|.aif|.aiff|.wpl|.ape|.mac|.mpc|.mp+|.mpp|.shn|.zip|.rar|.wv|.nsf|.spc|.gym|.adplug|.adx|.dsp|.adp|.ymf|.ast|.afc|.hps|.xsp|.xwav|.waa|.wvs|.wam|.gcm|.idsp|.mpdsp|.mss|.spt|.rsd";
 	m_strPictureExtensions = ".png|.jpg|.jpeg|.bmp|.gif|.ico|.tif|.tiff|.tga|.pcx|.cbz|.zip|.cbr|.rar|.m3u";
@@ -164,7 +167,9 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 	pElement = pRootElement->FirstChildElement("defaultvideosettings");
 	if (pElement)
 	{
-		// TODO
+		GetInteger(pElement, "viewmode", m_currentVideoSettings.m_ViewMode, VIEW_MODE_NORMAL, VIEW_MODE_NORMAL, VIEW_MODE_CUSTOM);
+		XMLUtils::GetFloat(pElement, "zoomamount", m_currentVideoSettings.m_CustomZoomAmount);
+		XMLUtils::GetFloat(pElement, "pixelratio", m_currentVideoSettings.m_CustomPixelRatio);
 	}
 
 	// Audio settings
@@ -221,6 +226,14 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	if (!pNode) return false;
 	XMLUtils::SetInt(pNode, "volumelevel", m_nVolumeLevel);
 	XMLUtils::SetInt(pNode, "dynamicrangecompression", m_dynamicRangeCompressionLevel);
+
+	// Default video settings
+	TiXmlElement videoSettingsNode("defaultvideosettings");
+	pNode = pRoot->InsertEndChild(videoSettingsNode);
+	if (!pNode) return false;
+	XMLUtils::SetInt(pNode, "viewmode", g_settings.m_currentVideoSettings.m_ViewMode);
+	XMLUtils::SetFloat(pNode, "zoomamount", g_settings.m_currentVideoSettings.m_CustomZoomAmount);
+	XMLUtils::SetFloat(pNode, "pixelratio", g_settings.m_currentVideoSettings.m_CustomPixelRatio);
 
 	g_guiSettings.SaveXML(pRoot);
 

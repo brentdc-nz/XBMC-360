@@ -22,6 +22,9 @@ public:
 	CVideoSettings();
 	~CVideoSettings() {};
 
+	int m_ViewMode;
+	float m_CustomZoomAmount;
+	float m_CustomPixelRatio;
 	float m_AudioDelay;
 	int m_AudioStream;
 	int m_SubtitleStream;

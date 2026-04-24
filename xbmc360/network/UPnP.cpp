@@ -333,7 +333,7 @@ CUPnPRenderer::UpdateState()
 
 		buffer = g_infoManager.GetCurrentPlayTime(TIME_FORMAT_HH_MM_SS);
 		avt->SetStateVariable("RelativeTimePosition", buffer.c_str());
-		buffer = CStringUtils::SecondsToTimeString((long)g_infoManager.GetTotalPlayTime(), TIME_FORMAT_HH_MM_SS);
+//		buffer = CStringUtils::SecondsToTimeString((long)g_infoManager.GetTotalPlayTime(), TIME_FORMAT_HH_MM_SS); // Not correct, should be GetCurrentPlayTime
 		avt->SetStateVariable("AbsoluteTimePosition", buffer.c_str());
 
 		buffer = g_infoManager.GetDuration(TIME_FORMAT_HH_MM_SS);

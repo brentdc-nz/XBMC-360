@@ -14,7 +14,7 @@ public:
 	virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
 	virtual bool PreInit();
 	virtual void ManageDisplay();
-	virtual bool Configure(int iWidth, int iHeight);
+	virtual bool Configure(int iWidth, int iHeight, int d_width, int d_height);
 	virtual bool IsConfigured() { return m_bConfigured; } 
 	virtual bool GetImage(YV12Image *image);
 	virtual void ReleaseImage();
@@ -22,6 +22,10 @@ public:
 	virtual void PrepareDisplay();
 	virtual void FlipPage();
 	virtual void UnInit();
+	virtual void SetViewMode(int iViewMode);
+
+	void CalculateFrameAspectRatio(int desired_width, int desired_height);
+	void CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, float fScreenWidth, float fScreenHeight, float fInputFrameRatio, float fZoomAmount);
 
 private:
 	struct COLORVERTEX

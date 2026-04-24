@@ -2,6 +2,9 @@
 
 CVideoSettings::CVideoSettings()
 {
+	m_ViewMode = 0;
+	m_CustomZoomAmount = 1.0f;
+	m_CustomPixelRatio = 1.0f;
 	m_AudioDelay = 0.0f;
 	m_AudioStream = -1;
 	m_SubtitleStream = -1;

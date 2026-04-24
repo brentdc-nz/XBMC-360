@@ -25,6 +25,9 @@ private:
 	void PreloadDialog(unsigned int windowID);
 	void UnloadDialog(unsigned int windowID);
 
+	bool m_bShowViewModeInfo;
+	unsigned int m_dwShowViewModeTimeout;
+
 	bool m_bShowCurrentTime;
 	bool m_bLastRender;
 };

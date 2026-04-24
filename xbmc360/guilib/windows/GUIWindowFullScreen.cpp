@@ -10,6 +10,7 @@
 #include "guilib\GUILabelControl.h"
 #include "Settings.h"
 #include "AdvancedSettings.h"
+#include "guilib\LocalizeStrings.h"
 
 #define BLUE_BAR		100
 #define LABEL_ROW1		10
@@ -25,6 +26,8 @@ CGUIWindowFullScreen::CGUIWindowFullScreen(void)
 {
 		m_loadOnDemand = false;
 		m_bShowCurrentTime = false;
+		m_bShowViewModeInfo = false;
+		m_dwShowViewModeTimeout = 0;
 }
 
 CGUIWindowFullScreen::~CGUIWindowFullScreen(void)
@@ -127,6 +130,59 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 			return true;
 		}
 		break;
+
+		case ACTION_ASPECT_RATIO:
+		{
+			// toggle the aspect ratio mode (only if the info is onscreen)
+			if (m_bShowViewModeInfo)
+			{
+				g_renderManager.SetViewMode(++g_settings.m_currentVideoSettings.m_ViewMode);
+			}
+			m_bShowViewModeInfo = true;
+			m_dwShowViewModeTimeout = GetTickCount();
+		}
+		return true;
+
+		case ACTION_ZOOM_IN:
+		{
+			g_settings.m_currentVideoSettings.m_CustomZoomAmount += 0.01f;
+			if (g_settings.m_currentVideoSettings.m_CustomZoomAmount > 2.0f)
+				g_settings.m_currentVideoSettings.m_CustomZoomAmount = 2.0f;
+			g_settings.m_currentVideoSettings.m_ViewMode = VIEW_MODE_CUSTOM;
+			g_renderManager.SetViewMode(VIEW_MODE_CUSTOM);
+		}
+		return true;
+
+		case ACTION_ZOOM_OUT:
+		{
+			g_settings.m_currentVideoSettings.m_CustomZoomAmount -= 0.01f;
+			if (g_settings.m_currentVideoSettings.m_CustomZoomAmount < 0.5f)
+				g_settings.m_currentVideoSettings.m_CustomZoomAmount = 0.5f;
+			g_settings.m_currentVideoSettings.m_ViewMode = VIEW_MODE_CUSTOM;
+			g_renderManager.SetViewMode(VIEW_MODE_CUSTOM);
+		}
+		return true;
+
+		case ACTION_INCREASE_PAR:
+		{
+			g_settings.m_currentVideoSettings.m_CustomPixelRatio += 0.01f;
+			if (g_settings.m_currentVideoSettings.m_CustomPixelRatio > 2.0f)
+				g_settings.m_currentVideoSettings.m_CustomPixelRatio = 2.0f;
+			g_settings.m_currentVideoSettings.m_ViewMode = VIEW_MODE_CUSTOM;
+			g_renderManager.SetViewMode(VIEW_MODE_CUSTOM);
+		}
+		return true;
+
+		case ACTION_DECREASE_PAR:
+		{
+			g_settings.m_currentVideoSettings.m_CustomPixelRatio -= 0.01f;
+			if (g_settings.m_currentVideoSettings.m_CustomPixelRatio < 0.5f)
+				g_settings.m_currentVideoSettings.m_CustomPixelRatio = 0.5f;
+			g_settings.m_currentVideoSettings.m_ViewMode = VIEW_MODE_CUSTOM;
+			g_renderManager.SetViewMode(VIEW_MODE_CUSTOM);
+		}
+		return true;
+
 		default:
 			break;
 	}
@@ -152,6 +208,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 			m_bLastRender = false;
 			g_infoManager.SetShowCodec(false);
 			m_bShowCurrentTime = false;
+			m_bShowViewModeInfo = false;
 			g_infoManager.SetDisplayAfterSeek(0); // Make sure display after seek is off
 
 			// switch resolution
@@ -235,6 +292,7 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
 
 	if(g_infoManager.GetBool(PLAYER_SHOWCODEC)) return true;
 	if(m_bShowCurrentTime) return true;
+	if(m_bShowViewModeInfo) return true;
 	if (IsAnimating(ANIM_TYPE_HIDDEN)) return true; // for the above info conditions
 	if (g_infoManager.GetDisplayAfterSeek()) return true;
 	if (g_infoManager.GetBool(PLAYER_SEEKBAR, GetID())) return true;
@@ -297,7 +355,45 @@ void CGUIWindowFullScreen::RenderFullScreen()
 		}
 	}
 
-	if (g_infoManager.GetBool(PLAYER_SHOWCODEC)/* || m_bShowViewModeInfo*/) // TODO
+	//----------------------
+	// ViewMode Information
+	//----------------------
+	if (m_bShowViewModeInfo && GetTickCount() - m_dwShowViewModeTimeout > 2500)
+	{
+		m_bShowViewModeInfo = false;
+	}
+	if (m_bShowViewModeInfo)
+	{
+		{
+			// get the "View Mode" string
+			CStdString strTitle = g_localizeStrings.Get(629);
+			CStdString strMode = g_localizeStrings.Get(630 + g_settings.m_currentVideoSettings.m_ViewMode);
+			CStdString strInfo;
+			strInfo.Format("%s : %s", strTitle.c_str(), strMode.c_str());
+			CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1);
+			msg.SetLabel(strInfo);
+			OnMessage(msg);
+		}
+		// show sizing information
+		{
+			CStdString strSizing;
+			strSizing.Format("Zoom x%2.2f Pixel Ratio: %2.2f:1", g_settings.m_fZoomAmount, g_settings.m_fPixelRatio);
+			CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW2);
+			msg.SetLabel(strSizing);
+			OnMessage(msg);
+		}
+		// show resolution information
+		{
+			RESOLUTION iResolution = g_graphicsContext.GetVideoResolution();
+			CStdString strStatus;
+			strStatus.Format("%ix%i %s", g_settings.m_ResInfo[iResolution].iWidth, g_settings.m_ResInfo[iResolution].iHeight, g_settings.m_ResInfo[iResolution].strMode);
+			CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3);
+			msg.SetLabel(strStatus);
+			OnMessage(msg);
+		}
+	}
+
+	if (g_infoManager.GetBool(PLAYER_SHOWCODEC) || m_bShowViewModeInfo)
 	{
 		SET_CONTROL_VISIBLE(LABEL_ROW1);
 		SET_CONTROL_VISIBLE(LABEL_ROW2);

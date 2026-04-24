@@ -76,6 +76,11 @@ bool URIUtils::IsURL(const CStdString& strFile)
 	return strFile.Find("://") >= 0;
 }
 
+bool URIUtils::IsUPnP(const CStdString& strFile)
+{
+	return strFile.Left(5).Equals("upnp:");
+}
+
 bool URIUtils::IsRemote(const CStdString& strFile) //TODO: finish other type checks
 {
 /*	if(IsMemCard(strFile) || IsCDDA(strFile) || IsISO9660(strFile) || IsPlugin(strFile) || IsMusicDb(strFile) || IsVideoDb(strFile))

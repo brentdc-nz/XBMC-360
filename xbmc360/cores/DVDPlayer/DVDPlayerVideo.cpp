@@ -725,7 +725,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
 
 		CLog::Log(LOGDEBUG,"%s - change configuration. %dx%d. framerate: %4.2f",__FUNCTION__,pPicture->iWidth, pPicture->iHeight,m_fFrameRate);
 
-		if(!g_renderManager.Configure(pPicture->iWidth, pPicture->iHeight/*, pPicture->iDisplayWidth, pPicture->iDisplayHeight, m_fFrameRate*/, flags))
+		if(!g_renderManager.Configure(pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight, flags))
 		{
 			CLog::Log(LOGERROR, "%s - failed to configure renderer", __FUNCTION__);
 			return EOS_ABORT;

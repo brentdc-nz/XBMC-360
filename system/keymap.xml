@@ -24,7 +24,7 @@
     <gamepad>
        <A>Pause</A>
        <B>Stop</B>
-<!--   <Y>AspectRatio</Y> -->
+       <Y>AspectRatio</Y>
        <rightshoulder>CodecInfo</rightshoulder>    <!-- was black -->
        <leftshoulder>Info</leftshoulder>           <!-- was white -->
        <back>SmallStepBack</back>

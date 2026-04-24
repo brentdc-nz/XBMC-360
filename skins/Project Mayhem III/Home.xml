@@ -152,53 +152,107 @@
 				<height>100</height>
 				<texture>gradient.png</texture>
 			</control>
-			<control type="image">
-				<description>Video cover</description>
-				<posx>260</posx>
+			<control type="videowindow">
+				<description>Video Window</description>
+				<posx>220</posx>
 				<posy>0</posy>
-				<width>72</width>
+				<width>110</width>
+				<height>100</height>
+				<visible>Skin.HasSetting(HomeViewToggle)</visible>
+			</control>
+			<control type="image">
+				<description>Cover Image Window</description>
+				<posx>240</posx>
+				<posy>0</posy>
+				<width>90</width>
 				<height>100</height>
 				<info>VideoPlayer.cover</info>
 				<aspectratio>keep</aspectratio>
+				<visible>!Skin.HasSetting(HomeViewToggle)</visible>
 			</control>
-			<control type="label">
-				<description>Director label</description>
-				<width>255</width>
-				<posx>250</posx>
-				<posy>2</posy>
-				<info>VideoPlayer.Director</info>
-				<align>right</align>
-				<font>special12</font>
-				<scroll>true</scroll>
-			</control>
-			<control type="label">
-				<description>Title label</description>
-				<width>255</width>
-				<posx>250</posx>
-				<posy>27</posy>
-				<info>VideoPlayer.Title</info>
-				<align>right</align>
-				<font>special13</font>
-				<scroll>true</scroll>
-			</control>
-			<control type="label">
-				<description>Genre label</description>
-				<width>255</width>
-				<posx>250</posx>
-				<posy>57</posy>
-				<info>VideoPlayer.Genre</info>
-				<align>right</align>
-				<font>font10</font>
-				<scroll>true</scroll>
-			</control>
-			<control type="label">
-				<description>Time label</description>
-				<width>255</width>
-				<posx>250</posx>
-				<posy>77</posy>
-				<label>$INFO[VideoPlayer.Time]$INFO[VideoPlayer.Duration, / ]</label>
-				<align>right</align>
-				<font>font10</font>
+			<control type="group">
+				<animation effect="slide" time="0" end="-20,0" condition="Skin.HasSetting(HomeViewToggle)">Conditional</animation>
+				<control type="label">
+					<description>Director label</description>
+					<width>255</width>
+					<posx>230</posx>
+					<posy>2</posy>
+					<info>VideoPlayer.Director</info>
+					<align>right</align>
+					<font>special12</font>
+					<scroll>true</scroll>
+					<visible>!videoplayer.content(episodes) + !videoplayer.content(musicvideos)</visible>
+				</control>
+				<control type="label">
+					<description>TV Show Title label</description>
+					<width>255</width>
+					<posx>230</posx>
+					<posy>2</posy>
+					<info>VideoPlayer.tvshowtitle</info>
+					<align>right</align>
+					<font>special12</font>
+					<visible>videoplayer.content(episodes)</visible>
+				</control>
+				<control type="label">
+					<description>Music Video Artist label</description>
+					<width>255</width>
+					<posx>230</posx>
+					<posy>2</posy>
+					<info>VideoPlayer.Artist</info>
+					<align>right</align>
+					<font>special12</font>
+					<visible>videoplayer.content(musicvideos)</visible>
+				</control>
+				<control type="label">
+					<description>Title label</description>
+					<width>255</width>
+					<posx>230</posx>
+					<posy>27</posy>
+					<info>VideoPlayer.Title</info>
+					<align>right</align>
+					<font>special13</font>
+					<scroll>true</scroll>
+				</control>
+				<control type="label">
+					<description>Genre label</description>
+					<width>255</width>
+					<posx>230</posx>
+					<posy>57</posy>
+					<info>VideoPlayer.Genre</info>
+					<align>right</align>
+					<font>font10</font>
+					<scroll>true</scroll>
+					<visible>!videoplayer.content(episodes) + !videoplayer.content(musicvideos)</visible>
+				</control>
+				<control type="label">
+					<description>Music Video Album label</description>
+					<width>255</width>
+					<posx>230</posx>
+					<posy>57</posy>
+					<info>VideoPlayer.Album</info>
+					<align>right</align>
+					<font>font10</font>
+					<visible>videoplayer.content(musicvideos)</visible>
+				</control>
+				<control type="label">
+					<description>Season and Episode label</description>
+					<width>255</width>
+					<posx>230</posx>
+					<posy>57</posy>
+					<label>$LOCALIZE[20373] $INFO[VideoPlayer.Season] - $LOCALIZE[20359] $INFO[VideoPlayer.episode]</label>
+					<align>right</align>
+					<font>font10</font>
+					<visible>videoplayer.content(episodes)</visible>
+				</control>
+				<control type="label">
+					<description>Time label</description>
+					<width>255</width>
+					<posx>230</posx>
+					<posy>77</posy>
+					<label>$INFO[VideoPlayer.Time]$INFO[VideoPlayer.Duration, / ]</label>
+					<align>right</align>
+					<font>font10</font>
+				</control>
 			</control>
 		</control>
 		<!-- media infos (music) -->
@@ -216,16 +270,16 @@
 			</control>
 			<control type="image">
 				<description>Cover image</description>
-				<posx>260</posx>
+				<posx>240</posx>
 				<posy>0</posy>
-				<width>72</width>
+				<width>90</width>
 				<height>100</height>
 				<info>MusicPlayer.Cover</info>
 			</control>
 			<control type="label">
 				<description>Artist label</description>
 				<width>255</width>
-				<posx>250</posx>
+				<posx>230</posx>
 				<posy>2</posy>
 				<info>MusicPlayer.Artist</info>
 				<align>right</align>
@@ -235,7 +289,7 @@
 			<control type="label">
 				<description>Title label</description>
 				<width>255</width>
-				<posx>250</posx>
+				<posx>230</posx>
 				<posy>27</posy>
 				<info>MusicPlayer.Title</info>
 				<align>right</align>
@@ -245,9 +299,9 @@
 			<control type="label">
 				<description>Album label</description>
 				<width>255</width>
-				<posx>250</posx>
+				<posx>230</posx>
 				<posy>57</posy>
-				<label>$INFO[MusicPlayer.Album]</label>
+				<label>$INFO[MusicPlayer.Album]$INFO[musicplayer.discnumber, - $LOCALIZE[427]:]</label>
 				<align>right</align>
 				<font>font10</font>
 				<scroll>true</scroll>
@@ -255,7 +309,7 @@
 			<control type="label">
 				<description>Time label</description>
 				<width>255</width>
-				<posx>250</posx>
+				<posx>230</posx>
 				<posy>77</posy>
 				<label>$INFO[MusicPlayer.Time]$INFO[MusicPlayer.Duration, / ]</label>
 				<align>right</align>

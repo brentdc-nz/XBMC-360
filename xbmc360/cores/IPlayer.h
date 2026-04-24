@@ -81,6 +81,7 @@ public:
 	virtual CStdString GetAudioCodecName(){ return ""; }
 	virtual void  SetAVDelay(float fValue = 0.0f) { return; }
 	virtual float GetAVDelay()                     { return 0.0f; }
+	virtual bool GetStreamDetails(CStreamDetails &details){ return false; }
 	virtual void ToFFRW(int iSpeed = 0){}
 
 	// Returns true if not playback (paused or stopped beeing filled)

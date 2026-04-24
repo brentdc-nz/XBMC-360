@@ -82,12 +82,16 @@
 #define ACTION_STOP                   13
 
 #define ACTION_SHOW_GUI               18 // Toggle between GUI and movie or GUI and visualisation.
+#define ACTION_ASPECT_RATIO           19 // Toggle quick-access zoom modes. Can be used in videoFullScreen.xml window id=2005
 #define ACTION_STEP_FORWARD           20 // Seek +1% in the movie. Can be used in videoFullScreen.xml window id=2005
 #define ACTION_STEP_BACK              21 // Seek -1% in the movie. Can be used in videoFullScreen.xml window id=2005
 #define ACTION_BIG_STEP_FORWARD       22 // Seek +10% in the movie. Can be used in videoFullScreen.xml window id=2005
 #define ACTION_BIG_STEP_BACK          23 // Seek -10% in the movie. Can be used in videoFullScreen.xml window id=2005
 #define ACTION_SHOW_OSD               24 // Show/hide OSD. Can be used in videoFullScreen.xml window id=2005
 #define ACTION_SHOW_CODEC             27 // Show information about file. Can be used in videoFullScreen.xml window id=2005
+
+#define ACTION_ZOOM_OUT               30 // Zoom out video. Can be used in videoFullScreen.xml window id=2005
+#define ACTION_ZOOM_IN                31 // Zoom in video. Can be used in videoFullScreen.xml window id=2005
 
 #define ACTION_SMALL_STEP_BACK        76 // Jumps a few seconds back during playback of movie. Can be used in videoFullScreen.xml window id=2005
 
@@ -111,6 +115,9 @@
 
 #define ACTION_NEXT_CONTROL           181
 #define ACTION_PREV_CONTROL           182
+
+#define ACTION_INCREASE_PAR           219 // Increase pixel aspect ratio. Used in videoFullScreen
+#define ACTION_DECREASE_PAR           220 // Decrease pixel aspect ratio. Used in videoFullScreen
 
 #define ACTION_BACKSPACE          110
 #define ACTION_SCROLL_UP          111

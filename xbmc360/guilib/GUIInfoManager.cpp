@@ -307,7 +307,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 		else if (strTest.Equals("videoplayer.ratingandvotes")) ret = VIDEOPLAYER_RATING_AND_VOTES;
 		else if (strTest.Equals("videoplayer.tvshowtitle")) ret = VIDEOPLAYER_TVSHOW;
 		else if (strTest.Equals("videoplayer.premiered")) ret = VIDEOPLAYER_PREMIERED;
-//		else if (strTest.Left(19).Equals("videoplayer.content")) return AddMultiInfo(GUIInfo(bNegate ? -VIDEOPLAYER_CONTENT : VIDEOPLAYER_CONTENT, ConditionalStringParameter(strTest.Mid(20,strTest.size()-21)), 0)); // TODO
+		else if (strTest.Left(19).Equals("videoplayer.content")) return AddMultiInfo(GUIInfo(bNegate ? -VIDEOPLAYER_CONTENT : VIDEOPLAYER_CONTENT, ConditionalStringParameter(strTest.Mid(20,strTest.size()-21)), 0));
 		else if (strTest.Equals("videoplayer.studio")) ret = VIDEOPLAYER_STUDIO;
 		else if (strTest.Equals("videoplayer.mpaa")) return VIDEOPLAYER_MPAA;
 		else if (strTest.Equals("videoplayer.top250")) return VIDEOPLAYER_TOP250;
@@ -1418,6 +1418,20 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow)
 				bReturn = g_windowManager.IsWindowActive(info.GetData1());
 			else
 				bReturn = g_windowManager.IsWindowActive(m_stringParameters[info.GetData2()]);
+			break;
+			case VIDEOPLAYER_CONTENT:
+			{
+				CStdString strContent="movies";
+				if (!m_currentFile->HasVideoInfoTag() || m_currentFile->GetVideoInfoTag()->IsEmpty())
+					strContent = "files";
+				if (m_currentFile->HasVideoInfoTag() && m_currentFile->GetVideoInfoTag()->m_iSeason > -1) // episode
+					strContent = "episodes";
+				if (m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->m_strArtist.IsEmpty())
+					strContent = "musicvideos";
+				if (m_currentFile->HasVideoInfoTag() && m_currentFile->GetVideoInfoTag()->m_strStatus == "livetv")
+					strContent = "livetv";
+				bReturn = m_stringParameters[info.GetData1()].Equals(strContent);
+			}
 			break;
 		}
 	}
