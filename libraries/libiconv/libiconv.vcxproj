@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Xbox 360">
+      <Configuration>Debug</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="CodeAnalysis|Xbox 360">
+      <Configuration>CodeAnalysis</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Profile|Xbox 360">
+      <Configuration>Profile</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Profile_FastCap|Xbox 360">
+      <Configuration>Profile_FastCap</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Xbox 360">
+      <Configuration>Release</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_LTCG|Xbox 360">
+      <Configuration>Release_LTCG</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_New|Xbox 360">
+      <Configuration>Release_New</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}</ProjectGuid>
+    <RootNamespace>libiconv</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release_New'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release_LTCG'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='CodeAnalysis'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Profile'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Profile_FastCap'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup>
+    <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <!-- ============================================================ -->
+  <!-- Debug configuration                                          -->
+  <!-- ============================================================ -->
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)source;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;_XBOX;_LIB;HAVE_CONFIG_H;ENABLE_RELOCATABLE=0;IN_LIBRARY;NO_XMALLOC;set_relocation_prefix=libiconv_set_relocation_prefix;LIBDIR="";INSTALLPREFIX="";INSTALLDIR="";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4996;4244;4267;4018;4101;4146;4308;4090;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)libiconv.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <!-- ============================================================ -->
+  <!-- Release / Release_New / Release_LTCG configurations          -->
+  <!-- ============================================================ -->
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Release' or '$(Configuration)'=='Release_New' or '$(Configuration)'=='Release_LTCG'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)source;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_XBOX;_LIB;NDEBUG;HAVE_CONFIG_H;ENABLE_RELOCATABLE=0;IN_LIBRARY;NO_XMALLOC;set_relocation_prefix=libiconv_set_relocation_prefix;LIBDIR="";INSTALLPREFIX="";INSTALLDIR="";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization>MaxSpeed</Optimization>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4996;4244;4267;4018;4101;4146;4308;4090;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)libiconv.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <!-- ============================================================ -->
+  <!-- CodeAnalysis configuration                                   -->
+  <!-- ============================================================ -->
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='CodeAnalysis'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)source;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_XBOX;_LIB;NDEBUG;HAVE_CONFIG_H;ENABLE_RELOCATABLE=0;IN_LIBRARY;NO_XMALLOC;set_relocation_prefix=libiconv_set_relocation_prefix;LIBDIR="";INSTALLPREFIX="";INSTALLDIR="";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization>MaxSpeed</Optimization>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4996;4244;4267;4018;4101;4146;4308;4090;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)libiconv.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <!-- ============================================================ -->
+  <!-- Profile / Profile_FastCap configurations                     -->
+  <!-- ============================================================ -->
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Profile' or '$(Configuration)'=='Profile_FastCap'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)source;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_XBOX;_LIB;NDEBUG;PROFILE;HAVE_CONFIG_H;ENABLE_RELOCATABLE=0;IN_LIBRARY;NO_XMALLOC;set_relocation_prefix=libiconv_set_relocation_prefix;LIBDIR="";INSTALLPREFIX="";INSTALLDIR="";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization>MaxSpeed</Optimization>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4996;4244;4267;4018;4101;4146;4308;4090;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)libiconv.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <!-- ============================================================ -->
+  <!-- Header files                                                 -->
+  <!-- ============================================================ -->
+  <ItemGroup>
+    <!-- Public headers -->
+    <ClInclude Include="include\iconv.h" />
+    <!-- Config -->
+    <ClInclude Include="config.h" />
+    <!-- Internal library headers -->
+    <ClInclude Include="source\localcharset.h" />
+    <ClInclude Include="source\relocatable.h" />
+    <ClInclude Include="source\converters.h" />
+    <ClInclude Include="source\loops.h" />
+    <ClInclude Include="source\loop_unicode.h" />
+    <ClInclude Include="source\loop_wchar.h" />
+    <ClInclude Include="source\aliases.h" />
+    <ClInclude Include="source\aliases2.h" />
+    <ClInclude Include="source\flags.h" />
+    <ClInclude Include="source\translit.h" />
+    <ClInclude Include="source\cjk_variants.h" />
+    <ClInclude Include="source\flushwc.h" />
+    <ClInclude Include="source\iconv_open1.h" />
+    <ClInclude Include="source\iconv_open2.h" />
+    <!-- Core encoding headers -->
+    <ClInclude Include="source\ascii.h" />
+    <ClInclude Include="source\utf8.h" />
+    <ClInclude Include="source\utf7.h" />
+    <ClInclude Include="source\ucs2.h" />
+    <ClInclude Include="source\ucs2be.h" />
+    <ClInclude Include="source\ucs2le.h" />
+    <ClInclude Include="source\ucs2internal.h" />
+    <ClInclude Include="source\ucs2swapped.h" />
+    <ClInclude Include="source\ucs4.h" />
+    <ClInclude Include="source\ucs4be.h" />
+    <ClInclude Include="source\ucs4le.h" />
+    <ClInclude Include="source\ucs4internal.h" />
+    <ClInclude Include="source\ucs4swapped.h" />
+    <ClInclude Include="source\utf16.h" />
+    <ClInclude Include="source\utf16be.h" />
+    <ClInclude Include="source\utf16le.h" />
+    <ClInclude Include="source\utf32.h" />
+    <ClInclude Include="source\utf32be.h" />
+    <ClInclude Include="source\utf32le.h" />
+    <!-- ISO-8859 encoding headers -->
+    <ClInclude Include="source\iso8859_1.h" />
+    <ClInclude Include="source\iso8859_2.h" />
+    <ClInclude Include="source\iso8859_3.h" />
+    <ClInclude Include="source\iso8859_4.h" />
+    <ClInclude Include="source\iso8859_5.h" />
+    <ClInclude Include="source\iso8859_6.h" />
+    <ClInclude Include="source\iso8859_7.h" />
+    <ClInclude Include="source\iso8859_8.h" />
+    <ClInclude Include="source\iso8859_9.h" />
+    <ClInclude Include="source\iso8859_10.h" />
+    <ClInclude Include="source\iso8859_11.h" />
+    <ClInclude Include="source\iso8859_13.h" />
+    <ClInclude Include="source\iso8859_14.h" />
+    <ClInclude Include="source\iso8859_15.h" />
+    <ClInclude Include="source\iso8859_16.h" />
+    <!-- Windows codepage headers -->
+    <ClInclude Include="source\cp1250.h" />
+    <ClInclude Include="source\cp1251.h" />
+    <ClInclude Include="source\cp1252.h" />
+    <ClInclude Include="source\cp1253.h" />
+    <ClInclude Include="source\cp1254.h" />
+    <ClInclude Include="source\cp1255.h" />
+    <ClInclude Include="source\cp1256.h" />
+    <ClInclude Include="source\cp1257.h" />
+    <ClInclude Include="source\cp1258.h" />
+    <ClInclude Include="source\cp874.h" />
+    <ClInclude Include="source\cp932.h" />
+    <ClInclude Include="source\cp936.h" />
+    <ClInclude Include="source\cp949.h" />
+    <ClInclude Include="source\cp950.h" />
+    <!-- CJK encoding headers -->
+    <ClInclude Include="source\big5.h" />
+    <ClInclude Include="source\gbk.h" />
+    <ClInclude Include="source\gb2312.h" />
+    <ClInclude Include="source\gb18030.h" />
+    <ClInclude Include="source\euc_jp.h" />
+    <ClInclude Include="source\euc_kr.h" />
+    <ClInclude Include="source\euc_cn.h" />
+    <ClInclude Include="source\euc_tw.h" />
+    <ClInclude Include="source\sjis.h" />
+    <ClInclude Include="source\jisx0201.h" />
+    <ClInclude Include="source\jisx0208.h" />
+    <ClInclude Include="source\jisx0212.h" />
+    <ClInclude Include="source\ksc5601.h" />
+    <ClInclude Include="source\cns11643.h" />
+    <!-- Other encoding headers -->
+    <ClInclude Include="source\koi8_r.h" />
+    <ClInclude Include="source\koi8_u.h" />
+    <ClInclude Include="source\mac_roman.h" />
+    <ClInclude Include="source\mac_cyrillic.h" />
+    <ClInclude Include="source\hp_roman8.h" />
+    <ClInclude Include="source\viscii.h" />
+    <ClInclude Include="source\tcvn.h" />
+    <ClInclude Include="source\georgian_academy.h" />
+    <ClInclude Include="source\georgian_ps.h" />
+    <ClInclude Include="source\armscii_8.h" />
+    <ClInclude Include="source\tis620.h" />
+    <ClInclude Include="source\mulelao.h" />
+  </ItemGroup>
+  <!-- ============================================================ -->
+  <!-- Source files                                                  -->
+  <!-- ============================================================ -->
+  <ItemGroup>
+    <ClCompile Include="source\iconv.c" />
+    <ClCompile Include="source\localcharset.c" />
+    <ClCompile Include="source\relocatable.c" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

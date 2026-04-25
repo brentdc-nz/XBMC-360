@@ -2,6 +2,7 @@
 #include "utils\Stdafx.h"
 #include "utils\URIUtils.h"
 #include "utils\Util.h"
+#include "utils\CharsetConverter.h"
 #include "URL.h"
 
 using namespace XFILE;
@@ -19,7 +20,7 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
 	WIN32_FIND_DATA wfd;
 
 	CStdString strPath = strPath1;
-//	g_charsetConverter.utf8ToStringCharset(strPath); // TODO
+	g_charsetConverter.utf8ToStringCharset(strPath);
 
 	CStdString strRoot = strPath;
 	CURL url(strPath);
@@ -62,10 +63,10 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
 					if (strDir != "." && strDir != "..")
 					{
 						CStdString strLabel = wfd.cFileName;
-//						g_charsetConverter.unknownToUTF8(strLabel); // TODO
-						CFileItemPtr pItem(new CFileItem(strLabel));
-						CStdString itemPath = strRoot + wfd.cFileName;
-//						g_charsetConverter.unknownToUTF8(itemPath); // TODO
+					g_charsetConverter.unknownToUTF8(strLabel);
+					CFileItemPtr pItem(new CFileItem(strLabel));
+					CStdString itemPath = strRoot + wfd.cFileName;
+					g_charsetConverter.unknownToUTF8(itemPath);
 						pItem->m_bIsFolder = true;
 						URIUtils::AddSlashAtEnd(itemPath);
 						pItem->SetPath(itemPath);
@@ -78,10 +79,10 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
 				else
 				{
 					CStdString strLabel=wfd.cFileName;
-//					g_charsetConverter.unknownToUTF8(strLabel);; // TODO
+					g_charsetConverter.unknownToUTF8(strLabel);
 					CFileItemPtr pItem(new CFileItem(strLabel));
 					CStdString itemPath = strRoot + wfd.cFileName;
-//					g_charsetConverter.unknownToUTF8(itemPath); // TODO
+					g_charsetConverter.unknownToUTF8(itemPath);
 					pItem->SetPath(itemPath);
 					pItem->m_bIsFolder = false;
 					pItem->m_dwSize = CUtil::ToInt64(wfd.nFileSizeHigh, wfd.nFileSizeLow);
@@ -105,7 +106,7 @@ bool CHDDirectory::Exists(const char* strPath)
 		return false;
 
 	CStdString strReplaced = strPath;
-//	g_charsetConverter.utf8ToStringCharset(strReplaced); //TODO
+	g_charsetConverter.utf8ToStringCharset(strReplaced);
 	
 	strReplaced.Replace("/","\\");
 
@@ -128,7 +129,7 @@ bool CHDDirectory::Create(const char* strPath)
 		return false;
 
 	CStdString strPath1 = strPath;
-//	g_charsetConverter.utf8ToStringCharset(strPath1); // TODO
+	g_charsetConverter.utf8ToStringCharset(strPath1);
 	strPath1.Replace("/", "\\");
 	URIUtils::AddSlashAtEnd(strPath1);
 

@@ -1,16 +1,87 @@
 #ifndef CCHARSET_CONVERTER
 #define CCHARSET_CONVERTER
 
-#include "utils/StdString.h"
+/*
+ *      Copyright (C) 2005-2013 Team XBMC
+ *      http://xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
+ *
+ */
 
-class CCharsetConverter // TODO - Empty class
+#include "utils\CriticalSection.h"
+#include "utils\StdString.h"
+
+#include <vector>
+
+class CCharsetConverter
 {
 public:
-	void wToUTF8(const CStdStringW& strSource, CStdStringA &strDest);
-	void utf8ToW(const CStdStringA& utf8String, CStdStringW &wString, bool bVisualBiDiFlip = true, bool forceLTRReadingOrder = false, bool* bWasFlipped = NULL);
+	CCharsetConverter();
+
+	void reset();
+
+	void clear();
+
+	void utf8ToW(const CStdStringA& utf8String, CStdStringW &utf16String, bool bVisualBiDiFlip=true, bool forceLTRReadingOrder=false, bool* bWasFlipped=NULL);
+
+	void utf16LEtoW(const CStdStringW& utf16String, CStdStringW &wString);
+
+	void subtitleCharsetToW(const CStdStringA& strSource, CStdStringW& strDest);
+
+	void utf8ToStringCharset(const CStdStringA& strSource, CStdStringA& strDest);
+
+	void utf8ToStringCharset(CStdStringA& strSourceDest);
+
+	void utf8To(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdStringA& strDest);
+	void utf8To(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdStr<int16_t>& strDest);
+	void utf8To(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdStr<int32_t>& strDest);
+
 	void stringCharsetToUtf8(const CStdStringA& strSourceCharset, const CStdStringA& strSource, CStdStringA& strDest);
+
+	bool isValidUtf8(const CStdString& str);
+
+	bool isValidUtf8(const char *buf, unsigned int len);
+
+	void ucs2CharsetToStringCharset(const CStdStringW& strSource, CStdStringA& strDest, bool swap = false);
+
+	void wToUTF8(const CStdStringW& strSource, CStdStringA &strDest);
+	void utf16BEtoUTF8(const CStdStringW& strSource, CStdStringA &strDest);
+	void utf16LEtoUTF8(const CStdStringW& strSource, CStdStringA &strDest);
+	void ucs2ToUTF8(const CStdStringW& strSource, CStdStringA& strDest);
+
+	void utf32ToStringCharset(const unsigned long* strSource, CStdStringA& strDest);
+
+	std::vector<CStdString> getCharsetLabels();
+	CStdString& getCharsetLabelByName(const CStdString& charsetName);
+	CStdString& getCharsetNameByLabel(const CStdString& charsetLabel);
+	bool isBidiCharset(const CStdString& charset);
+
+	void unknownToUTF8(CStdStringA &sourceDest);
+	void unknownToUTF8(const CStdStringA &source, CStdStringA &dest);
+
+	void toW(const CStdStringA& source, CStdStringW& dest, const CStdStringA& enc);
+	void fromW(const CStdStringW& source, CStdStringA& dest, const CStdStringA& enc);
+
+	CStdString utf8Left(const CStdStringA &source, int num_chars);
+private:
+	CStdString EMPTY;
 };
 
 extern CCharsetConverter g_charsetConverter;
 
-#endif //CCHARSET_CONVERTER
+size_t iconv_const (void* cd, const char** inbuf, size_t *inbytesleft, char* * outbuf, size_t *outbytesleft);
+
+#endif

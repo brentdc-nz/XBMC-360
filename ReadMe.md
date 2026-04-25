@@ -24,6 +24,7 @@ https://drive.google.com/file/d/1MUD0dy-XxdDGwzfQD1qQHvzCSOV8bk4w/view
 - libCurl 
 - libUPnP - DLNA (Neptune & Platinum)
 - sqlite3
+- libiconv (Charset Converter)
 
 ### Services
 - FTP Server

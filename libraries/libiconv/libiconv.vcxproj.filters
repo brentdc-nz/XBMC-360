@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Public">
+      <UniqueIdentifier>{D2A3C3D1-E5F6-4890-ABCD-EF1234567891}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Internal">
+      <UniqueIdentifier>{D2A3C3D2-E5F6-4890-ABCD-EF1234567892}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Encodings">
+      <UniqueIdentifier>{D2A3C3D3-E5F6-4890-ABCD-EF1234567893}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\iconv.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\localcharset.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\relocatable.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Public -->
+    <ClInclude Include="include\iconv.h">
+      <Filter>Header Files\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="config.h">
+      <Filter>Header Files\Public</Filter>
+    </ClInclude>
+    <!-- Internal -->
+    <ClInclude Include="source\localcharset.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\relocatable.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\converters.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\loops.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\loop_unicode.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\loop_wchar.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\aliases.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\aliases2.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\flags.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\translit.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\cjk_variants.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\flushwc.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\iconv_open1.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\iconv_open2.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <!-- Encodings -->
+    <ClInclude Include="source\ascii.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\utf8.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\utf7.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ucs2.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ucs2be.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ucs2le.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ucs2internal.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ucs2swapped.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ucs4.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ucs4be.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ucs4le.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ucs4internal.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ucs4swapped.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\utf16.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\utf16be.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\utf16le.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\utf32.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\utf32be.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\utf32le.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\iso8859_1.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\iso8859_2.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\iso8859_3.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\iso8859_4.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\iso8859_5.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\iso8859_6.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\iso8859_7.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\iso8859_8.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\iso8859_9.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\iso8859_10.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\iso8859_11.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\iso8859_13.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\iso8859_14.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\iso8859_15.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\iso8859_16.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\cp1250.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\cp1251.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\cp1252.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\cp1253.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\cp1254.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\cp1255.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\cp1256.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\cp1257.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\cp1258.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\cp874.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\cp932.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\cp936.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\cp949.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\cp950.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\big5.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gbk.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gb2312.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gb18030.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\euc_jp.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\euc_kr.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\euc_cn.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\euc_tw.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\sjis.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\jisx0201.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\jisx0208.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\jisx0212.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ksc5601.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\cns11643.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\koi8_r.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\koi8_u.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\mac_roman.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\mac_cyrillic.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\hp_roman8.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\viscii.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\tcvn.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\georgian_academy.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\georgian_ps.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\armscii_8.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\tis620.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\mulelao.h">
+      <Filter>Header Files\Encodings</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

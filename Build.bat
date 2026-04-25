@@ -107,17 +107,25 @@ if errorlevel 1 (
 )
 
 echo.
-echo [6/10] Building sqlite3...
+echo [6/11] Building sqlite3...
 "%MSBUILD%" "libraries\sqlite3\sqlite3.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
 if errorlevel 1 (
     echo FAILED: sqlite3
     set FAILED=1
 )
 
+echo.
+echo [7/11] Building libiconv...
+"%MSBUILD%" "libraries\libiconv\libiconv.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
+if errorlevel 1 (
+    echo FAILED: libiconv
+    set FAILED=1
+)
+
 :: --- Sources ---
 
 echo.
-echo [7/10] Building libmad...
+echo [8/11] Building libmad...
 "%MSBUILD%" "sources\PAPlayer\libmad\libmad.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
 if errorlevel 1 (
     echo FAILED: libmad
@@ -125,7 +133,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [8/10] Building libFlac...
+echo [9/11] Building libFlac...
 "%MSBUILD%" "sources\PAPlayer\libFlac\libFlac.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
 if errorlevel 1 (
     echo FAILED: libFlac
@@ -133,7 +141,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [9/10] Building 360MilkDrop2...
+echo [10/11] Building 360MilkDrop2...
 "%MSBUILD%" "sources\360MilkDrop2\360MilkDrop2.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
 if errorlevel 1 (
     echo FAILED: 360MilkDrop2
@@ -143,7 +151,7 @@ if errorlevel 1 (
 :: --- Main Project ---
 
 echo.
-echo [10/10] Building xbmc360...
+echo [11/11] Building xbmc360...
 "%MSBUILD%" "xbmc360.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
 if errorlevel 1 (
     echo FAILED: xbmc360
