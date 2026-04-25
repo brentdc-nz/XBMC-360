@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Xbox 360">
+      <Configuration>Debug</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="CodeAnalysis|Xbox 360">
+      <Configuration>CodeAnalysis</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Profile|Xbox 360">
+      <Configuration>Profile</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Profile_FastCap|Xbox 360">
+      <Configuration>Profile_FastCap</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Xbox 360">
+      <Configuration>Release</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_LTCG|Xbox 360">
+      <Configuration>Release_LTCG</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_New|Xbox 360">
+      <Configuration>Release_New</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{B4D2F4E6-8A1C-4D3E-9F5B-7C6A8E2D1F0A}</ProjectGuid>
+    <RootNamespace>sqlite3</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release_New'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release_LTCG'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='CodeAnalysis'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Profile'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Profile_FastCap'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup>
+    <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <!-- ============================================================ -->
+  <!-- Debug configuration                                          -->
+  <!-- ============================================================ -->
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(ProjectDir)source;$(ProjectDir)include;$(ProjectDir)include\wrapper;$(ProjectDir)source\ext\fts3;$(ProjectDir)source\ext\rtree;$(ProjectDir)source\ext\session;$(ProjectDir)source\ext\rbu;$(ProjectDir)source\ext\misc;$(ProjectDir)..\..\xbmc360;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;_XBOX;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ForcedIncludeFiles>config-xbox360.h</ForcedIncludeFiles>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4996;4244;4267;4018;4101;4706;4127;4232;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)sqlite3.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <!-- ============================================================ -->
+  <!-- Release / Release_New / Release_LTCG configurations          -->
+  <!-- ============================================================ -->
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Release' or '$(Configuration)'=='Release_New' or '$(Configuration)'=='Release_LTCG'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(ProjectDir)source;$(ProjectDir)include;$(ProjectDir)include\wrapper;$(ProjectDir)source\ext\fts3;$(ProjectDir)source\ext\rtree;$(ProjectDir)source\ext\session;$(ProjectDir)source\ext\rbu;$(ProjectDir)source\ext\misc;$(ProjectDir)..\..\xbmc360;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_XBOX;_LIB;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ForcedIncludeFiles>config-xbox360.h</ForcedIncludeFiles>
+      <Optimization>MaxSpeed</Optimization>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4996;4244;4267;4018;4101;4706;4127;4232;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)sqlite3.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <!-- ============================================================ -->
+  <!-- CodeAnalysis configuration                                   -->
+  <!-- ============================================================ -->
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='CodeAnalysis'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(ProjectDir)source;$(ProjectDir)include;$(ProjectDir)include\wrapper;$(ProjectDir)source\ext\fts3;$(ProjectDir)source\ext\rtree;$(ProjectDir)source\ext\session;$(ProjectDir)source\ext\rbu;$(ProjectDir)source\ext\misc;$(ProjectDir)..\..\xbmc360;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_XBOX;_LIB;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ForcedIncludeFiles>config-xbox360.h</ForcedIncludeFiles>
+      <Optimization>MaxSpeed</Optimization>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4996;4244;4267;4018;4101;4706;4127;4232;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)sqlite3.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <!-- ============================================================ -->
+  <!-- Profile / Profile_FastCap configurations                     -->
+  <!-- ============================================================ -->
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Profile' or '$(Configuration)'=='Profile_FastCap'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(ProjectDir)source;$(ProjectDir)include;$(ProjectDir)include\wrapper;$(ProjectDir)source\ext\fts3;$(ProjectDir)source\ext\rtree;$(ProjectDir)source\ext\session;$(ProjectDir)source\ext\rbu;$(ProjectDir)source\ext\misc;$(ProjectDir)..\..\xbmc360;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_XBOX;_LIB;NDEBUG;PROFILE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ForcedIncludeFiles>config-xbox360.h</ForcedIncludeFiles>
+      <Optimization>MaxSpeed</Optimization>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4996;4244;4267;4018;4101;4706;4127;4232;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)sqlite3.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <!-- ============================================================ -->
+  <!-- Header files                                                 -->
+  <!-- ============================================================ -->
+  <ItemGroup>
+    <!-- Public headers -->
+    <ClInclude Include="include\sqlite3.h" />
+    <ClInclude Include="include\sqlite3ext.h" />
+    <ClInclude Include="include\sqlite3session.h" />
+    <!-- Xbox 360 config -->
+    <ClInclude Include="source\config-xbox360.h" />
+    <ClInclude Include="source\xbox360_os.h" />
+    <!-- Internal headers -->
+    <ClInclude Include="source\btree.h" />
+    <ClInclude Include="source\btreeInt.h" />
+    <ClInclude Include="source\hash.h" />
+    <ClInclude Include="source\hwtime.h" />
+    <ClInclude Include="source\keywordhash.h" />
+    <ClInclude Include="source\msvc.h" />
+    <ClInclude Include="source\mutex.h" />
+    <ClInclude Include="source\opcodes.h" />
+    <ClInclude Include="source\os.h" />
+    <ClInclude Include="source\os_common.h" />
+    <ClInclude Include="source\os_setup.h" />
+    <ClInclude Include="source\os_win.h" />
+    <ClInclude Include="source\pager.h" />
+    <ClInclude Include="source\parse.h" />
+    <ClInclude Include="source\pcache.h" />
+    <ClInclude Include="source\pragma.h" />
+    <ClInclude Include="source\sqliteInt.h" />
+    <ClInclude Include="source\sqliteLimit.h" />
+    <ClInclude Include="source\vdbe.h" />
+    <ClInclude Include="source\vdbeInt.h" />
+    <ClInclude Include="source\vxworks.h" />
+    <ClInclude Include="source\wal.h" />
+    <ClInclude Include="source\whereInt.h" />
+    <!-- Extension headers -->
+    <ClInclude Include="source\ext\fts3\fts3.h" />
+    <ClInclude Include="source\ext\fts3\fts3Int.h" />
+    <ClInclude Include="source\ext\fts3\fts3_hash.h" />
+    <ClInclude Include="source\ext\fts3\fts3_tokenizer.h" />
+    <ClInclude Include="source\ext\rtree\rtree.h" />
+    <ClInclude Include="source\ext\rtree\sqlite3rtree.h" />
+    <ClInclude Include="source\ext\rbu\sqlite3rbu.h" />
+    <ClInclude Include="source\ext\session\sqlite3session.h" />
+    <!-- C++ wrapper headers -->
+    <ClInclude Include="include\wrapper\qry_dat.h" />
+    <ClInclude Include="include\wrapper\dataset.h" />
+    <ClInclude Include="include\wrapper\sqlitedataset.h" />
+  </ItemGroup>
+  <!-- ============================================================ -->
+  <!-- Source files                                                  -->
+  <!-- ============================================================ -->
+  <ItemGroup>
+    <!-- Core source -->
+    <ClCompile Include="source\alter.c" />
+    <ClCompile Include="source\analyze.c" />
+    <ClCompile Include="source\attach.c" />
+    <ClCompile Include="source\auth.c" />
+    <ClCompile Include="source\backup.c" />
+    <ClCompile Include="source\bitvec.c" />
+    <ClCompile Include="source\btmutex.c" />
+    <ClCompile Include="source\btree.c" />
+    <ClCompile Include="source\build.c" />
+    <ClCompile Include="source\callback.c" />
+    <ClCompile Include="source\carray.c" />
+    <ClCompile Include="source\complete.c" />
+    <ClCompile Include="source\date.c" />
+    <ClCompile Include="source\dbpage.c" />
+    <ClCompile Include="source\dbstat.c" />
+    <ClCompile Include="source\delete.c" />
+    <ClCompile Include="source\expr.c" />
+    <ClCompile Include="source\fault.c" />
+    <ClCompile Include="source\fkey.c" />
+    <ClCompile Include="source\func.c" />
+    <ClCompile Include="source\global.c" />
+    <ClCompile Include="source\hash.c" />
+    <ClCompile Include="source\insert.c" />
+    <ClCompile Include="source\json.c" />
+    <ClCompile Include="source\legacy.c" />
+    <ClCompile Include="source\loadext.c" />
+    <ClCompile Include="source\main.c" />
+    <ClCompile Include="source\malloc.c" />
+    <ClCompile Include="source\mem0.c" />
+    <ClCompile Include="source\mem1.c" />
+    <ClCompile Include="source\mem2.c" />
+    <ClCompile Include="source\mem3.c" />
+    <ClCompile Include="source\mem5.c" />
+    <ClCompile Include="source\memdb.c" />
+    <ClCompile Include="source\memjournal.c" />
+    <ClCompile Include="source\mutex.c" />
+    <ClCompile Include="source\mutex_noop.c" />
+    <ClCompile Include="source\mutex_w32.c" />
+    <ClCompile Include="source\notify.c" />
+    <ClCompile Include="source\os.c" />
+    <ClCompile Include="source\os_win.c" />
+    <ClCompile Include="source\pager.c" />
+    <ClCompile Include="source\parse.c" />
+    <ClCompile Include="source\pcache.c" />
+    <ClCompile Include="source\pcache1.c" />
+    <ClCompile Include="source\pragma.c" />
+    <ClCompile Include="source\prepare.c" />
+    <ClCompile Include="source\printf.c" />
+    <ClCompile Include="source\random.c" />
+    <ClCompile Include="source\resolve.c" />
+    <ClCompile Include="source\rowset.c" />
+    <ClCompile Include="source\select.c" />
+    <ClCompile Include="source\status.c" />
+    <ClCompile Include="source\table.c" />
+    <ClCompile Include="source\threads.c" />
+    <ClCompile Include="source\tokenize.c" />
+    <ClCompile Include="source\treeview.c" />
+    <ClCompile Include="source\trigger.c" />
+    <ClCompile Include="source\update.c" />
+    <ClCompile Include="source\upsert.c" />
+    <ClCompile Include="source\utf.c" />
+    <ClCompile Include="source\util.c" />
+    <ClCompile Include="source\vacuum.c" />
+    <ClCompile Include="source\vdbe.c" />
+    <ClCompile Include="source\vdbeapi.c" />
+    <ClCompile Include="source\vdbeaux.c" />
+    <ClCompile Include="source\vdbeblob.c" />
+    <ClCompile Include="source\vdbemem.c" />
+    <ClCompile Include="source\vdbesort.c" />
+    <ClCompile Include="source\vdbetrace.c" />
+    <ClCompile Include="source\vdbevtab.c" />
+    <ClCompile Include="source\vtab.c" />
+    <ClCompile Include="source\wal.c" />
+    <ClCompile Include="source\walker.c" />
+    <ClCompile Include="source\where.c" />
+    <ClCompile Include="source\wherecode.c" />
+    <ClCompile Include="source\whereexpr.c" />
+    <ClCompile Include="source\window.c" />
+    <!-- Generated source -->
+    <ClCompile Include="source\opcodes.c" />
+    <!-- Extension source: FTS3 -->
+    <ClCompile Include="source\ext\fts3\fts3.c" />
+    <ClCompile Include="source\ext\fts3\fts3_aux.c" />
+    <ClCompile Include="source\ext\fts3\fts3_expr.c" />
+    <ClCompile Include="source\ext\fts3\fts3_hash.c" />
+    <ClCompile Include="source\ext\fts3\fts3_icu.c" />
+    <ClCompile Include="source\ext\fts3\fts3_porter.c" />
+    <ClCompile Include="source\ext\fts3\fts3_snippet.c" />
+    <ClCompile Include="source\ext\fts3\fts3_tokenizer.c" />
+    <ClCompile Include="source\ext\fts3\fts3_tokenizer1.c" />
+    <ClCompile Include="source\ext\fts3\fts3_tokenize_vtab.c" />
+    <ClCompile Include="source\ext\fts3\fts3_unicode.c" />
+    <ClCompile Include="source\ext\fts3\fts3_unicode2.c" />
+    <ClCompile Include="source\ext\fts3\fts3_write.c" />
+    <!-- Extension source: R-Tree -->
+    <ClCompile Include="source\ext\rtree\rtree.c" />
+    <!-- geopoly.c is #included from rtree.c, not compiled separately -->
+    <!-- Extension source: Session -->
+    <ClCompile Include="source\ext\session\sqlite3session.c" />
+    <!-- Extension source: RBU -->
+    <ClCompile Include="source\ext\rbu\sqlite3rbu.c" />
+    <!-- Extension source: Misc -->
+    <ClCompile Include="source\ext\misc\stmt.c" />
+    <!-- C++ wrapper source -->
+    <ClCompile Include="source\wrapper\qry_dat.cpp">
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\dataset.cpp">
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\sqlitedataset.cpp">
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+</Project>

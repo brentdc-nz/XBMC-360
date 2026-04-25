@@ -12,6 +12,10 @@
 #define VIDEO_LETTERBOX             1
 #define VIDEO_WIDESCREEN            2
 
+#define RESUME_NO  0
+#define RESUME_YES 1
+#define RESUME_ASK 2
+
 #define SETTINGS_TYPE_BOOL          1
 #define SETTINGS_TYPE_FLOAT         2
 #define SETTINGS_TYPE_INT           3

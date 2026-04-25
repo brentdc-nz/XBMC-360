@@ -1,0 +1,478 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>c;cpp;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Core">
+      <UniqueIdentifier>{A1B2C3D4-1111-4000-A001-000000000001}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Generated">
+      <UniqueIdentifier>{A1B2C3D4-1111-4000-A001-000000000002}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Extensions">
+      <UniqueIdentifier>{A1B2C3D4-1111-4000-A001-000000000003}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Extensions\FTS3">
+      <UniqueIdentifier>{A1B2C3D4-1111-4000-A001-000000000004}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Extensions\RTree">
+      <UniqueIdentifier>{A1B2C3D4-1111-4000-A001-000000000005}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Extensions\Session">
+      <UniqueIdentifier>{A1B2C3D4-1111-4000-A001-000000000006}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Extensions\RBU">
+      <UniqueIdentifier>{A1B2C3D4-1111-4000-A001-000000000007}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Extensions\Misc">
+      <UniqueIdentifier>{A1B2C3D4-1111-4000-A001-000000000008}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4B04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Public">
+      <UniqueIdentifier>{A1B2C3D4-2222-4000-A001-000000000001}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Internal">
+      <UniqueIdentifier>{A1B2C3D4-2222-4000-A001-000000000002}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Xbox 360">
+      <UniqueIdentifier>{A1B2C3D4-2222-4000-A001-000000000003}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Extensions">
+      <UniqueIdentifier>{A1B2C3D4-2222-4000-A001-000000000004}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Extensions\FTS3">
+      <UniqueIdentifier>{A1B2C3D4-2222-4000-A001-000000000005}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Extensions\RTree">
+      <UniqueIdentifier>{A1B2C3D4-2222-4000-A001-000000000006}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Extensions\RBU">
+      <UniqueIdentifier>{A1B2C3D4-2222-4000-A001-000000000007}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Extensions\Session">
+      <UniqueIdentifier>{A1B2C3D4-2222-4000-A001-000000000008}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <!-- ============================================================ -->
+  <!-- Header Files                                                 -->
+  <!-- ============================================================ -->
+  <ItemGroup>
+    <!-- Public -->
+    <ClInclude Include="include\sqlite3.h">
+      <Filter>Header Files\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sqlite3ext.h">
+      <Filter>Header Files\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sqlite3session.h">
+      <Filter>Header Files\Public</Filter>
+    </ClInclude>
+    <!-- Xbox 360 -->
+    <ClInclude Include="source\config-xbox360.h">
+      <Filter>Header Files\Xbox 360</Filter>
+    </ClInclude>
+    <ClInclude Include="source\xbox360_os.h">
+      <Filter>Header Files\Xbox 360</Filter>
+    </ClInclude>
+    <!-- Internal -->
+    <ClInclude Include="source\btree.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\btreeInt.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\hash.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\hwtime.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\keywordhash.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\msvc.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\mutex.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\opcodes.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\os.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\os_common.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\os_setup.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\os_win.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\pager.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\parse.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\pcache.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\pragma.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\sqliteInt.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\sqliteLimit.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\vdbe.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\vdbeInt.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\vxworks.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\wal.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\whereInt.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <!-- Extension headers -->
+    <ClInclude Include="source\ext\fts3\fts3.h">
+      <Filter>Header Files\Extensions\FTS3</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ext\fts3\fts3Int.h">
+      <Filter>Header Files\Extensions\FTS3</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ext\fts3\fts3_hash.h">
+      <Filter>Header Files\Extensions\FTS3</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ext\fts3\fts3_tokenizer.h">
+      <Filter>Header Files\Extensions\FTS3</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ext\rtree\rtree.h">
+      <Filter>Header Files\Extensions\RTree</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ext\rtree\sqlite3rtree.h">
+      <Filter>Header Files\Extensions\RTree</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ext\rbu\sqlite3rbu.h">
+      <Filter>Header Files\Extensions\RBU</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ext\session\sqlite3session.h">
+      <Filter>Header Files\Extensions\Session</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <!-- ============================================================ -->
+  <!-- Source Files                                                  -->
+  <!-- ============================================================ -->
+  <ItemGroup>
+    <!-- Core -->
+    <ClCompile Include="source\alter.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\analyze.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\attach.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\auth.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\backup.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\bitvec.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\btmutex.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\btree.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\build.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\callback.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\carray.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\complete.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\date.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\dbpage.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\dbstat.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\delete.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\expr.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\fault.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\fkey.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\func.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\global.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\hash.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\insert.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\json.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\legacy.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\loadext.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\main.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\malloc.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\mem0.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\mem1.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\mem2.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\mem3.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\mem5.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\memdb.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\memjournal.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\mutex.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\mutex_noop.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\mutex_w32.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\notify.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\os.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\os_win.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\pager.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\pcache.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\pcache1.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\pragma.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\prepare.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\printf.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\random.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\resolve.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\rowset.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\select.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\status.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\table.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\threads.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\tokenize.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\treeview.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\trigger.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\update.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\upsert.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\utf.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\util.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\vacuum.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\vdbe.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\vdbeapi.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\vdbeaux.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\vdbeblob.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\vdbemem.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\vdbesort.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\vdbetrace.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\vdbevtab.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\vtab.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wal.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\walker.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\where.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wherecode.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\whereexpr.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\window.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <!-- Generated -->
+    <ClCompile Include="source\parse.c">
+      <Filter>Source Files\Generated</Filter>
+    </ClCompile>
+    <ClCompile Include="source\opcodes.c">
+      <Filter>Source Files\Generated</Filter>
+    </ClCompile>
+    <!-- Extensions: FTS3 -->
+    <ClCompile Include="source\ext\fts3\fts3.c">
+      <Filter>Source Files\Extensions\FTS3</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ext\fts3\fts3_aux.c">
+      <Filter>Source Files\Extensions\FTS3</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ext\fts3\fts3_expr.c">
+      <Filter>Source Files\Extensions\FTS3</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ext\fts3\fts3_hash.c">
+      <Filter>Source Files\Extensions\FTS3</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ext\fts3\fts3_icu.c">
+      <Filter>Source Files\Extensions\FTS3</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ext\fts3\fts3_porter.c">
+      <Filter>Source Files\Extensions\FTS3</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ext\fts3\fts3_snippet.c">
+      <Filter>Source Files\Extensions\FTS3</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ext\fts3\fts3_tokenizer.c">
+      <Filter>Source Files\Extensions\FTS3</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ext\fts3\fts3_tokenizer1.c">
+      <Filter>Source Files\Extensions\FTS3</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ext\fts3\fts3_tokenize_vtab.c">
+      <Filter>Source Files\Extensions\FTS3</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ext\fts3\fts3_unicode.c">
+      <Filter>Source Files\Extensions\FTS3</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ext\fts3\fts3_unicode2.c">
+      <Filter>Source Files\Extensions\FTS3</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ext\fts3\fts3_write.c">
+      <Filter>Source Files\Extensions\FTS3</Filter>
+    </ClCompile>
+    <!-- Extensions: RTree -->
+    <ClCompile Include="source\ext\rtree\rtree.c">
+      <Filter>Source Files\Extensions\RTree</Filter>
+    </ClCompile>
+    <!-- Extensions: Session -->
+    <ClCompile Include="source\ext\session\sqlite3session.c">
+      <Filter>Source Files\Extensions\Session</Filter>
+    </ClCompile>
+    <!-- Extensions: RBU -->
+    <ClCompile Include="source\ext\rbu\sqlite3rbu.c">
+      <Filter>Source Files\Extensions\RBU</Filter>
+    </ClCompile>
+    <!-- Extensions: Misc -->
+    <ClCompile Include="source\ext\misc\stmt.c">
+      <Filter>Source Files\Extensions\Misc</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

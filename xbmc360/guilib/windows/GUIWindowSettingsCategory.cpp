@@ -6,6 +6,13 @@
 #include "SettingsControls.h" // TODO: Move to GUILIB?
 #include "utils\Weather.h"
 #include "guilib\GUIUserMessages.h"
+#include "xbox\XBVideoConfig.h"
+#include "xbox\XBTimeZone.h"
+#include "LangInfo.h"
+#include "filesystem\Directory.h"
+#include "utils\Util.h"
+
+using namespace XFILE;
 
 #define CONTROL_SETTINGS_LABEL              2
 #define CATEGORY_GROUP_ID                   3
@@ -303,6 +310,53 @@ void CGUIWindowSettingsCategory::CreateSettings()
 		CSetting *pSetting = settings[i];
 		AddSetting(pSetting, group->GetWidth(), iControlID);
 		CStdString strSetting = pSetting->GetSetting();
+
+		if (strSetting.Equals("videooutput.aspect"))
+		{
+			CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+			CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+			pControl->AddLabel(g_localizeStrings.Get(21375), VIDEO_NORMAL);
+			pControl->AddLabel(g_localizeStrings.Get(21376), VIDEO_LETTERBOX);
+			pControl->AddLabel(g_localizeStrings.Get(21377), VIDEO_WIDESCREEN);
+			pControl->SetValue(pSettingInt->GetData());
+		}
+		else if (strSetting.Equals("videoplayer.resumeautomatically"))
+		{
+			CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+			CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+			pControl->AddLabel(g_localizeStrings.Get(106), RESUME_NO);
+			pControl->AddLabel(g_localizeStrings.Get(107), RESUME_YES);
+			pControl->AddLabel(g_localizeStrings.Get(12020), RESUME_ASK);
+			pControl->SetValue(pSettingInt->GetData());
+		}
+		else if (strSetting.Equals("locale.timezone"))
+		{
+			CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+			CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+			for (int j = 0; j < g_timezone.GetNumberOfTimeZones(); j++)
+				pControl->AddLabel(g_timezone.GetTimeZoneString(j), j);
+			pControl->SetValue(pSettingInt->GetData());
+		}
+		else if (strSetting.Equals("videoscreen.resolution"))
+		{
+			FillInResolutions(pSetting);
+		}
+		else if (strSetting.Equals("lookandfeel.skin"))
+		{
+			FillInSkins(pSetting);
+		}
+		else if (strSetting.Equals("locale.language"))
+		{
+			FillInLanguages(pSetting);
+		}
+		else if (strSetting.Equals("locale.country"))
+		{
+			FillInRegions(pSetting);
+		}
+		else if (strSetting.Equals("screensaver.mode"))
+		{
+			FillInScreenSavers(pSetting);
+		}
     }
 
 	// Update our settings (turns controls on/off as appropriate)
@@ -486,7 +540,185 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
 
 	// Ok, now check the various special things we need to do
 
-	/* WIP HERE */
+	if (strSetting.Equals("lookandfeel.skin"))
+	{
+		CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+		CStdString strSkin = pControl->GetCurrentLabel();
+		if (strSkin != g_guiSettings.GetString("lookandfeel.skin"))
+			g_guiSettings.SetString("lookandfeel.skin", strSkin);
+	}
+	else if (strSetting.Equals("locale.language"))
+	{
+		CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+		CStdString strLanguage = pControl->GetCurrentLabel();
+		if (strLanguage != g_guiSettings.GetString("locale.language"))
+			g_guiSettings.SetString("locale.language", strLanguage);
+	}
+	else if (strSetting.Equals("locale.country"))
+	{
+		CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+		CStdString strRegion = pControl->GetCurrentLabel();
+		if (strRegion != g_guiSettings.GetString("locale.country"))
+		{
+			g_guiSettings.SetString("locale.country", strRegion);
+			g_langInfo.SetCurrentRegion(strRegion);
+		}
+	}
+	else if (strSetting.Equals("screensaver.mode"))
+	{
+		CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+		CStdString strMode = pControl->GetCurrentLabel();
+		g_guiSettings.SetString("screensaver.mode", strMode);
+	}
+	else if (strSetting.Equals("locale.timezone"))
+	{
+		// Timezone change is applied on next boot via LoadXML
+	}
 
 	UpdateSettings();
+}
+
+void CGUIWindowSettingsCategory::FillInResolutions(CSetting *pSetting)
+{
+	CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+	CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+	pControl->Clear();
+
+	for (int i = HDTV_1080p; i < AUTORES; i++)
+	{
+		RESOLUTION res = (RESOLUTION)i;
+		if (g_videoConfig.IsValidResolution(res))
+			pControl->AddLabel(g_settings.m_ResInfo[res].strMode, res);
+	}
+	pControl->AddLabel(g_localizeStrings.Get(14061), AUTORES); // "Auto"
+	pControl->SetValue(pSettingInt->GetData());
+}
+
+void CGUIWindowSettingsCategory::FillInSkins(CSetting *pSetting)
+{
+	CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+	pControl->SetType(SPIN_CONTROL_TYPE_TEXT);
+	pControl->Clear();
+
+	//find skins...
+	CFileItemList items;
+	CDirectory::GetDirectory("D:\\skins\\", items);
+
+	int iCurrentSkin = 0;
+	int iSkin = 0;
+	std::vector<CStdString> vecSkins;
+
+	for (int i = 0; i < items.Size(); ++i)
+	{
+		CFileItemPtr pItem = items[i];
+		if (pItem->m_bIsFolder)
+		{
+			if (strcmpi(pItem->GetLabel().c_str(), ".svn") == 0) continue;
+			if (strcmpi(pItem->GetLabel().c_str(), "fonts") == 0) continue;
+			if (strcmpi(pItem->GetLabel().c_str(), "media") == 0) continue;
+			vecSkins.push_back(pItem->GetLabel());
+		}
+	}
+
+	sort(vecSkins.begin(), vecSkins.end(), sortstringbyname());
+
+	for (unsigned int i = 0; i < vecSkins.size(); ++i)
+	{
+		CStdString strSkin = vecSkins[i];
+		if (strcmpi(strSkin.c_str(), g_guiSettings.GetString("lookandfeel.skin").c_str()) == 0)
+			iCurrentSkin = iSkin;
+		pControl->AddLabel(strSkin, iSkin++);
+	}
+	pControl->SetValue(iCurrentSkin);
+}
+
+void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)
+{
+	CSettingString *pSettingString = (CSettingString*)pSetting;
+	CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+	pControl->Clear();
+
+	//find languages...
+	CFileItemList items;
+	CDirectory::GetDirectory("D:\\language\\", items);
+
+	int iCurrentLang = 0;
+	int iLanguage = 0;
+	std::vector<CStdString> vecLanguage;
+
+	for (int i = 0; i < items.Size(); ++i)
+	{
+		CFileItemPtr pItem = items[i];
+		if (pItem->m_bIsFolder)
+		{
+			if (strcmpi(pItem->GetLabel().c_str(), ".svn") == 0) continue;
+			if (strcmpi(pItem->GetLabel().c_str(), "fonts") == 0) continue;
+			if (strcmpi(pItem->GetLabel().c_str(), "media") == 0) continue;
+			vecLanguage.push_back(pItem->GetLabel());
+		}
+	}
+
+	sort(vecLanguage.begin(), vecLanguage.end(), sortstringbyname());
+
+	for (unsigned int i = 0; i < vecLanguage.size(); ++i)
+	{
+		CStdString strLanguage = vecLanguage[i];
+		if (strcmpi(strLanguage.c_str(), pSettingString->GetData().c_str()) == 0)
+			iCurrentLang = iLanguage;
+		pControl->AddLabel(strLanguage, iLanguage++);
+	}
+	pControl->SetValue(iCurrentLang);
+}
+
+void CGUIWindowSettingsCategory::FillInRegions(CSetting *pSetting)
+{
+	CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+	pControl->SetType(SPIN_CONTROL_TYPE_TEXT);
+	pControl->Clear();
+
+	int iCurrentRegion = 0;
+	CStdStringArray regions;
+	g_langInfo.GetRegionNames(regions);
+
+	CStdString strCurrentRegion = g_langInfo.GetCurrentRegion();
+
+	sort(regions.begin(), regions.end(), sortstringbyname());
+
+	for (int i = 0; i < (int)regions.size(); ++i)
+	{
+		const CStdString& strRegion = regions[i];
+		if (strRegion == strCurrentRegion)
+			iCurrentRegion = i;
+		pControl->AddLabel(strRegion, i);
+	}
+	pControl->SetValue(iCurrentRegion);
+}
+
+void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
+{	// Screensaver mode
+	CSettingString *pSettingString = (CSettingString*)pSetting;
+	CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+	pControl->Clear();
+
+	pControl->AddLabel(g_localizeStrings.Get(351), 0); // Off
+	pControl->AddLabel(g_localizeStrings.Get(352), 1); // Dim
+	pControl->AddLabel(g_localizeStrings.Get(353), 2); // Black
+	pControl->AddLabel("Plasma", 3);
+
+	CStdString strDefaultScr = pSettingString->GetData();
+	int iCurrentScr = -1;
+
+	if (strDefaultScr == "Dim")
+		iCurrentScr = 1;
+	else if (strDefaultScr == "Black")
+		iCurrentScr = 2;
+	else if (strDefaultScr == "Plasma")
+		iCurrentScr = 3;
+	else
+	{
+		iCurrentScr = 0;
+		pSettingString->SetData("None");
+	}
+
+	pControl->SetValue(iCurrentScr);
 }

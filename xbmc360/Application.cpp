@@ -12,6 +12,7 @@
 #include "cores\DVDPlayer\DVDPlayer.h"
 #include "utils\StreamDetails.h"
 #include "video\VideoInfoTag.h"
+#include "video\VideoDatabase.h"
 #include "guilib\LocalizeStrings.h"
 #include "Settings.h"
 #include "filesystem\File.h"
@@ -71,6 +72,8 @@ CApplication::CApplication()
 	m_splash = NULL;
 	m_itemCurrentFile = CFileItemPtr(new CFileItem);
 	m_nextPlaylistItem = -1;
+	m_progressTrackingItem = CFileItemPtr(new CFileItem);
+	m_progressTrackingPlayCountUpdate = false;
 }
 
 CApplication::~CApplication()
@@ -426,6 +429,9 @@ void CApplication::ProcessSlow()
 	// Check our network state every 15 seconds or when net status changes
 	m_network.CheckNetwork(30);
 
+	// Store our file state for use on close()
+	UpdateFileState();
+	
 	// Check for any idle curl connections
 	g_curlSessionPool.CheckIdle();
 
@@ -1208,6 +1214,89 @@ bool CApplication::SwitchToFullScreen()
 	return false;
 }
 
+void CApplication::SaveFileState()
+{
+	CStdString progressTrackingFile = m_progressTrackingItem->GetPath();
+
+	if (progressTrackingFile != "")
+	{
+		if (m_progressTrackingItem->IsVideo())
+		{
+			CLog::Log(LOGDEBUG, "%s - Saving file state for video item %s", __FUNCTION__, progressTrackingFile.c_str());
+
+			CVideoDatabase videodatabase;
+			if (videodatabase.Open())
+			{
+				// No resume & watched status for livetv
+				if (!m_progressTrackingItem->IsLiveTV())
+				{
+					if (m_progressTrackingVideoResumeBookmark.timeInSeconds < 0.0f)
+					{
+						videodatabase.ClearBookMarksOfFile(progressTrackingFile, CBookmark::RESUME);
+					}
+					else if (m_progressTrackingVideoResumeBookmark.timeInSeconds > 0.0f)
+					{
+						videodatabase.AddBookMarkToFile(progressTrackingFile, m_progressTrackingVideoResumeBookmark, CBookmark::RESUME);
+					}
+				}
+
+				videodatabase.Close();
+			}
+		}
+	}
+}
+
+void CApplication::UpdateFileState()
+{
+	// Did the file change?
+	if (m_progressTrackingItem->GetPath() != "" && m_progressTrackingItem->GetPath() != CurrentFile())
+	{
+		SaveFileState();
+
+		// Reset tracking item
+		m_progressTrackingItem->Reset();
+	}
+	else
+	{
+		if (IsPlayingVideo() || IsPlayingAudio())
+		{
+			if (m_progressTrackingItem->GetPath() == "")
+			{
+				// Init some stuff
+				*m_progressTrackingItem = CurrentFileItem();
+				m_progressTrackingPlayCountUpdate = false;
+			}
+
+			if (m_progressTrackingItem->IsVideo())
+			{
+				// Update bookmark for save
+				m_progressTrackingVideoResumeBookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
+				m_progressTrackingVideoResumeBookmark.playerState = m_pPlayer->GetPlayerState();
+				m_progressTrackingVideoResumeBookmark.thumbNailImage.Empty();
+
+				if (g_advancedSettings.m_videoIgnorePercentAtEnd > 0 &&
+				    GetTotalTime() - GetTime() < 0.01f * g_advancedSettings.m_videoIgnorePercentAtEnd * GetTotalTime())
+				{
+					// Delete the bookmark
+					m_progressTrackingVideoResumeBookmark.timeInSeconds = -1.0f;
+				}
+				else
+				if (GetTime() > g_advancedSettings.m_videoIgnoreSecondsAtStart)
+				{
+					// Update the bookmark
+					m_progressTrackingVideoResumeBookmark.timeInSeconds = GetTime();
+					m_progressTrackingVideoResumeBookmark.totalTimeInSeconds = GetTotalTime();
+				}
+				else
+				{
+					// Do nothing
+					m_progressTrackingVideoResumeBookmark.timeInSeconds = 0.0f;
+				}
+			}
+		}
+	}
+}
+
 void CApplication::StopPlaying()
 {
 	int iWin = g_windowManager.GetActiveWindow();
@@ -1230,6 +1319,8 @@ void CApplication::OnPlayBackEnded()
 		return;
 
 	CLog::Log(LOGDEBUG, "%s - Playback has finished", __FUNCTION__);
+
+	SaveFileState();
 
 	CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0);
 	g_windowManager.SendThreadMessage(msg);
@@ -1261,6 +1352,8 @@ void CApplication::OnPlayBackStopped()
 
 	CLog::Log(LOGDEBUG, "%s - Playback was stopped", __FUNCTION__);
 
+	SaveFileState();
+
 	CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0 );
 	g_windowManager.SendThreadMessage(msg);
 }
@@ -1277,6 +1370,28 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 	// Tell system we are starting a file
 	m_bPlaybackStarting = true;
 	CPlayerOptions options;
+
+	options.starttime = item.m_lStartOffset / 75.0;
+
+	if (item.IsVideo())
+	{
+		// open the d/b and retrieve the bookmarks for the current movie
+		CVideoDatabase dbs;
+		dbs.Open();
+
+		if( item.m_lStartOffset == STARTOFFSET_RESUME )
+		{
+			options.starttime = 0.0f;
+			CBookmark bookmark;
+			if(dbs.GetResumeBookMark(item.GetPath(), bookmark))
+			{
+				options.starttime = bookmark.timeInSeconds;
+				options.state = bookmark.playerState;
+			}
+		}
+
+		dbs.Close();
+	}
 
 	PLAYERCOREID eNewCore = EPC_NONE;
 

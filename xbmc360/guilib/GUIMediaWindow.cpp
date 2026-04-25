@@ -1226,8 +1226,8 @@ bool CGUIMediaWindow::OnPlayMedia(int iItem)
 	else
 */		bResult = g_application.PlayFile(*pItem);
 
-/*	if (pItem->m_lStartOffset == STARTOFFSET_RESUME)// TODO
-		pItem->m_lStartOffset = 0;*/
+	if (pItem->m_lStartOffset == STARTOFFSET_RESUME)
+		pItem->m_lStartOffset = 0;
 
 	return bResult;
 }

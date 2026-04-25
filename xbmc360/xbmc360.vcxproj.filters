@@ -704,6 +704,15 @@
     <ClInclude Include="video\VideoInfoTag.h">
       <Filter>Header Files\video</Filter>
     </ClInclude>
+    <ClInclude Include="video\Bookmark.h">
+      <Filter>Header Files\video</Filter>
+    </ClInclude>
+    <ClInclude Include="video\VideoDatabase.h">
+      <Filter>Header Files\video</Filter>
+    </ClInclude>
+    <ClInclude Include="Database.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="cores\DVDPlayer\DVDFileInfo.h">
       <Filter>Header Files\cores\DVDPlayer</Filter>
     </ClInclude>
@@ -1458,6 +1467,15 @@
     </ClCompile>
     <ClCompile Include="video\VideoInfoTag.cpp">
       <Filter>Source Files\video</Filter>
+    </ClCompile>
+    <ClCompile Include="video\Bookmark.cpp">
+      <Filter>Source Files\video</Filter>
+    </ClCompile>
+    <ClCompile Include="video\VideoDatabase.cpp">
+      <Filter>Source Files\video</Filter>
+    </ClCompile>
+    <ClCompile Include="Database.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="cores\DVDPlayer\DVDFileInfo.cpp">
       <Filter>Source Files\cores\DVDPlayer</Filter>

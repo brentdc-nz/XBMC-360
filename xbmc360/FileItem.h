@@ -21,6 +21,8 @@
  *
  */
 
+#define STARTOFFSET_RESUME (-1)
+
 #include "MediaSource.h"
 #include "guilib\GUIListItem.h"
 #include "utils\SingleLock.h"
@@ -69,6 +71,7 @@ public:
 	bool IsStack() const { return false; } ; // TODO - Stack file support not ported
 	bool IsRemote() const;
 	bool IsVideoDb() const { return false; } ; // TODO - VideoDb not ported
+	bool IsLiveTV() const { return false; } ; // TODO - LiveTV not ported
 	bool IsPlugin() const { return false; } ; // TODO - Plugins not ported
 
 	// --- Thumb/fanart helpers (signatures mirrored 1:1 from xbmc4xbox) -------

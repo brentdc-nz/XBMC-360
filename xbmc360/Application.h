@@ -5,6 +5,7 @@
 #include "cores\IPlayer.h"
 #include "guilib\GUIUserMessages.h"
 #include "FileItem.h"
+#include "video\Bookmark.h"
 #include "guilib\IMsgTargetCallback.h"
 #include "utils\Stopwatch.h"
 #include "utils\Splash.h"
@@ -75,6 +76,9 @@ public:
 	bool IsPlayingAudio() const;
 	bool IsPlayingVideo() const;
 
+	void SaveFileState();
+	void UpdateFileState();
+
 	void StartIdleThread();
 	void StopIdleThread();
 	void StartTimeServer();
@@ -133,6 +137,10 @@ protected:
 
 	CFileItemPtr m_itemCurrentFile;
 	int m_nextPlaylistItem;
+
+	CFileItemPtr m_progressTrackingItem;
+	bool m_progressTrackingPlayCountUpdate;
+	CBookmark m_progressTrackingVideoResumeBookmark;
 
 	// Timer information
 	CStopWatch m_frameTime;

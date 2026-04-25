@@ -191,6 +191,9 @@ void CGUISettings::Initialize()
 	AddCategory(4, "videooutput", 21373);
 	AddInt(1, "videooutput.aspect", 21374, VIDEO_NORMAL, VIDEO_NORMAL, 1, VIDEO_WIDESCREEN, SPIN_CONTROL_TEXT);
 
+	AddCategory(4, "videoplayer", 14086);
+	AddInt(1, "videoplayer.resumeautomatically", 12017, RESUME_ASK, RESUME_NO, 1, RESUME_ASK, SPIN_CONTROL_TEXT);
+
 	AddCategory(4, "audiooutput", 772);
 	AddBool(1, "audiooutput.downmixmultichannel", 548, true);
 

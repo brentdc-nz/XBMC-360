@@ -11,8 +11,8 @@ This is early stages and still very much a work in progress.
 
 Usable but many features still need reimplementation or improvements.
 
-### Compiled alpha build (last updated 21-04-26):
-https://drive.usercontent.google.com/download?id=1k1FHnZ3-T31ucij6JBo2NsjWXAASr4_s&export=download
+### Compiled alpha build (last updated 25-04-26):
+https://drive.google.com/file/d/1MUD0dy-XxdDGwzfQD1qQHvzCSOV8bk4w/view
 
 ### Libraries
 - FFmpeg (DVDPlayer)
@@ -23,6 +23,7 @@ https://drive.usercontent.google.com/download?id=1k1FHnZ3-T31ucij6JBo2NsjWXAASr4
 - libMad (PAPlayer)
 - libCurl 
 - libUPnP - DLNA (Neptune & Platinum)
+- sqlite3
 
 ### Services
 - FTP Server

@@ -1,11 +1,42 @@
 @echo off
 setlocal
 
-:: XBMC-360 Full Release Build Script
-:: Builds all libraries and the main project in Release|Xbox 360
+:: XBMC-360 Build Script
+:: Usage: Build.bat [Debug|Release]
+:: If no argument given, prompts for selection.
 
-set CONFIG=Release
 set PLATFORM=Xbox 360
+
+:: Handle command-line argument or prompt
+if /i "%~1"=="Debug" (
+    set CONFIG=Debug
+    goto :config_set
+)
+if /i "%~1"=="Release" (
+    set CONFIG=Release
+    goto :config_set
+)
+if not "%~1"=="" (
+    echo ERROR: Invalid configuration "%~1". Use Debug or Release.
+    exit /b 1
+)
+
+echo Select build configuration:
+echo   [1] Debug
+echo   [2] Release
+echo.
+set /p CHOICE="Enter choice (1 or 2): "
+
+if "%CHOICE%"=="1" (
+    set CONFIG=Debug
+) else if "%CHOICE%"=="2" (
+    set CONFIG=Release
+) else (
+    echo ERROR: Invalid choice. Enter 1 or 2.
+    exit /b 1
+)
+
+:config_set
 
 :: Try to find MSBuild
 set MSBUILD=
@@ -25,7 +56,7 @@ if "%MSBUILD%"=="" (
 )
 
 echo ============================================
-echo  XBMC-360 Release Build
+echo  XBMC-360 %CONFIG% Build
 echo  MSBuild: %MSBUILD%
 echo  Config:  %CONFIG%^|%PLATFORM%
 echo ============================================
@@ -75,10 +106,18 @@ if errorlevel 1 (
     set FAILED=1
 )
 
+echo.
+echo [6/10] Building sqlite3...
+"%MSBUILD%" "libraries\sqlite3\sqlite3.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
+if errorlevel 1 (
+    echo FAILED: sqlite3
+    set FAILED=1
+)
+
 :: --- Sources ---
 
 echo.
-echo [6/9] Building libmad...
+echo [7/10] Building libmad...
 "%MSBUILD%" "sources\PAPlayer\libmad\libmad.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
 if errorlevel 1 (
     echo FAILED: libmad
@@ -86,7 +125,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [7/9] Building libFlac...
+echo [8/10] Building libFlac...
 "%MSBUILD%" "sources\PAPlayer\libFlac\libFlac.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
 if errorlevel 1 (
     echo FAILED: libFlac
@@ -94,7 +133,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [8/9] Building 360MilkDrop2...
+echo [9/10] Building 360MilkDrop2...
 "%MSBUILD%" "sources\360MilkDrop2\360MilkDrop2.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
 if errorlevel 1 (
     echo FAILED: 360MilkDrop2
@@ -104,7 +143,7 @@ if errorlevel 1 (
 :: --- Main Project ---
 
 echo.
-echo [9/9] Building xbmc360...
+echo [10/10] Building xbmc360...
 "%MSBUILD%" "xbmc360.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
 if errorlevel 1 (
     echo FAILED: xbmc360

@@ -38,6 +38,12 @@ protected:
 	virtual void OnClick(CBaseSettingControl *pSettingControl);
 	virtual void OnSettingChanged(CBaseSettingControl *pSettingControl);
 
+	void FillInResolutions(CSetting *pSetting);
+	void FillInSkins(CSetting *pSetting);
+	void FillInLanguages(CSetting *pSetting);
+	void FillInRegions(CSetting *pSetting);
+	void FillInScreenSavers(CSetting *pSetting);
+
 	CGUISpinControlEx *m_pOriginalSpin;
 	CGUIRadioButtonControl *m_pOriginalRadioButton;
 	CGUIButtonControl *m_pOriginalCategoryButton;
