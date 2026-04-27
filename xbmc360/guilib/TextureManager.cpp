@@ -241,18 +241,24 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
   
 	LPDIRECT3DTEXTURE9 pTexture;
 	
-	CStdString strPath = g_SkinInfo.GetSkinPath("media\\" + strTextureName);
+	CStdString strPath;
 
-	if (strTextureName.c_str()[1] == ':')
-		strPath=strTextureName;
+	if (CURL::IsFullPath(strTextureName))
+		strPath = strTextureName;
+	else
+		strPath = g_SkinInfo.GetSkinPath("media\\" + strTextureName);
 
 	// Normal picture
 	D3DXIMAGE_INFO info;
 	memset(&info, 0, sizeof(D3DXIMAGE_INFO)); // Stop compiler warning
 
-	if(D3DXCreateTextureFromFileEx(g_graphicsContext.Get3DDevice(), strPath.c_str(),
+	g_graphicsContext.TLock();
+	HRESULT hr = D3DXCreateTextureFromFileEx(g_graphicsContext.Get3DDevice(), strPath.c_str(),
 	   D3DX_DEFAULT_NONPOW2, D3DX_DEFAULT_NONPOW2, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED,
-       D3DX_FILTER_NONE, D3DX_FILTER_NONE, 0, &info, NULL, &pTexture) != D3D_OK)
+       D3DX_FILTER_NONE, D3DX_FILTER_NONE, 0, &info, NULL, &pTexture);
+	g_graphicsContext.TUnlock();
+
+	if(hr != D3D_OK)
 	{
 		CLog::Log(LOGWARNING, "Texture manager unable to find file: %s \n", strPath.c_str());
 		return NULL;

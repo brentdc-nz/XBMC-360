@@ -39,7 +39,9 @@ void CSplash::Process()
 	
 	CGUIImage* image = new CGUIImage(0, 0, w*0.5f, h*0.5f, w, h, m_ImageName);
 	image->SetAspectRatio(CAspectRatio::AR_KEEP);
+	g_graphicsContext.TLock();
 	image->AllocResources();
+	g_graphicsContext.TUnlock();
 
 	// Store the old gamma ramp
 	g_graphicsContext.TLock();
@@ -59,12 +61,12 @@ void CSplash::Process()
 	g_graphicsContext.TUnlock();
 
 	// Render splash image
+	g_graphicsContext.TLock();
 	image->Render();
 	image->FreeResources();
 	delete image;
-	
+
 	// Show it on screen
-	g_graphicsContext.TLock();
 	g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
 	g_graphicsContext.TUnlock();
 

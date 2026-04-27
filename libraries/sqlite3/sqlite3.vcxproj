@@ -88,7 +88,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <AdditionalIncludeDirectories>$(ProjectDir)source;$(ProjectDir)include;$(ProjectDir)include\wrapper;$(ProjectDir)source\ext\fts3;$(ProjectDir)source\ext\rtree;$(ProjectDir)source\ext\session;$(ProjectDir)source\ext\rbu;$(ProjectDir)source\ext\misc;$(ProjectDir)..\..\xbmc360;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;_XBOX;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_XBOX;_LIB;_ITERATOR_DEBUG_LEVEL=0;_HAS_ITERATOR_DEBUGGING=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ForcedIncludeFiles>config-xbox360.h</ForcedIncludeFiles>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <Optimization>Disabled</Optimization>

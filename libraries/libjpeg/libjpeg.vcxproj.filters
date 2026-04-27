@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>c;cpp;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Core">
+      <UniqueIdentifier>{E1A2B3C4-1111-4000-B001-000000000001}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Arithmetic">
+      <UniqueIdentifier>{E1A2B3C4-1111-4000-B001-000000000002}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Wrapper">
+      <UniqueIdentifier>{E1A2B3C4-1111-4000-B001-000000000003}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Wrapper\8-bit">
+      <UniqueIdentifier>{E1A2B3C4-1111-4000-B001-000000000004}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Wrapper\12-bit">
+      <UniqueIdentifier>{E1A2B3C4-1111-4000-B001-000000000005}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Wrapper\16-bit">
+      <UniqueIdentifier>{E1A2B3C4-1111-4000-B001-000000000006}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4B04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Public">
+      <UniqueIdentifier>{E1A2B3C4-2222-4000-B001-000000000001}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Internal">
+      <UniqueIdentifier>{E1A2B3C4-2222-4000-B001-000000000002}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Xbox 360">
+      <UniqueIdentifier>{E1A2B3C4-2222-4000-B001-000000000003}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <!-- ============================================================ -->
+  <!-- Header Files                                                 -->
+  <!-- ============================================================ -->
+  <ItemGroup>
+    <!-- Xbox 360 -->
+    <ClInclude Include="include\jconfig.h">
+      <Filter>Header Files\Xbox 360</Filter>
+    </ClInclude>
+    <ClInclude Include="source\jconfigint.h">
+      <Filter>Header Files\Xbox 360</Filter>
+    </ClInclude>
+    <!-- Public -->
+    <ClInclude Include="include\jpeglib.h">
+      <Filter>Header Files\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="include\jmorecfg.h">
+      <Filter>Header Files\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="include\jerror.h">
+      <Filter>Header Files\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="include\jpegapicomp.h">
+      <Filter>Header Files\Public</Filter>
+    </ClInclude>
+    <!-- Internal -->
+    <ClInclude Include="source\jinclude.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\jpegint.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\jchuff.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\jcmaster.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\jdcoefct.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\jdhuff.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\jdmainct.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\jdmaster.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\jdmerge.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\jdsample.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\jlossls.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\jmemsys.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\jpeg_nbits.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\jsamplecomp.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\jsimd.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\jsimddct.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\jdct.h">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\jstdhuff.c">
+      <Filter>Header Files\Internal</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <!-- ============================================================ -->
+  <!-- Source Files                                                  -->
+  <!-- ============================================================ -->
+  <ItemGroup>
+    <!-- Core -->
+    <ClCompile Include="source\jcapimin.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\jchuff.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\jcicc.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\jcinit.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\jclhuff.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\jcmarker.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\jcmaster.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\jcomapi.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\jcparam.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\jcphuff.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\jctrans.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\jdapimin.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\jdatadst.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\jdatasrc.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\jdhuff.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\jdicc.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\jdinput.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\jdlhuff.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\jdmarker.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\jdmaster.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\jdphuff.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\jdtrans.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\jerror.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\jfdctflt.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\jmemmgr.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\jmemnobs.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\jpeg_nbits.c">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <!-- Arithmetic -->
+    <ClCompile Include="source\jaricom.c">
+      <Filter>Source Files\Arithmetic</Filter>
+    </ClCompile>
+    <ClCompile Include="source\jcarith.c">
+      <Filter>Source Files\Arithmetic</Filter>
+    </ClCompile>
+    <ClCompile Include="source\jdarith.c">
+      <Filter>Source Files\Arithmetic</Filter>
+    </ClCompile>
+    <!-- 8-bit wrappers -->
+    <ClCompile Include="source\wrapper\jcapistd-8.c">
+      <Filter>Source Files\Wrapper\8-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jccoefct-8.c">
+      <Filter>Source Files\Wrapper\8-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jccolor-8.c">
+      <Filter>Source Files\Wrapper\8-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jcdctmgr-8.c">
+      <Filter>Source Files\Wrapper\8-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jcdiffct-8.c">
+      <Filter>Source Files\Wrapper\8-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jclossls-8.c">
+      <Filter>Source Files\Wrapper\8-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jcmainct-8.c">
+      <Filter>Source Files\Wrapper\8-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jcprepct-8.c">
+      <Filter>Source Files\Wrapper\8-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jcsample-8.c">
+      <Filter>Source Files\Wrapper\8-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jdapistd-8.c">
+      <Filter>Source Files\Wrapper\8-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jdcoefct-8.c">
+      <Filter>Source Files\Wrapper\8-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jdcolor-8.c">
+      <Filter>Source Files\Wrapper\8-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jddctmgr-8.c">
+      <Filter>Source Files\Wrapper\8-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jddiffct-8.c">
+      <Filter>Source Files\Wrapper\8-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jdlossls-8.c">
+      <Filter>Source Files\Wrapper\8-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jdmainct-8.c">
+      <Filter>Source Files\Wrapper\8-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jdmerge-8.c">
+      <Filter>Source Files\Wrapper\8-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jdpostct-8.c">
+      <Filter>Source Files\Wrapper\8-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jdsample-8.c">
+      <Filter>Source Files\Wrapper\8-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jfdctfst-8.c">
+      <Filter>Source Files\Wrapper\8-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jfdctint-8.c">
+      <Filter>Source Files\Wrapper\8-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jidctflt-8.c">
+      <Filter>Source Files\Wrapper\8-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jidctfst-8.c">
+      <Filter>Source Files\Wrapper\8-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jidctint-8.c">
+      <Filter>Source Files\Wrapper\8-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jidctred-8.c">
+      <Filter>Source Files\Wrapper\8-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jquant1-8.c">
+      <Filter>Source Files\Wrapper\8-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jquant2-8.c">
+      <Filter>Source Files\Wrapper\8-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jutils-8.c">
+      <Filter>Source Files\Wrapper\8-bit</Filter>
+    </ClCompile>
+    <!-- 12-bit wrappers -->
+    <ClCompile Include="source\wrapper\jcapistd-12.c">
+      <Filter>Source Files\Wrapper\12-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jccoefct-12.c">
+      <Filter>Source Files\Wrapper\12-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jccolor-12.c">
+      <Filter>Source Files\Wrapper\12-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jcdctmgr-12.c">
+      <Filter>Source Files\Wrapper\12-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jcdiffct-12.c">
+      <Filter>Source Files\Wrapper\12-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jclossls-12.c">
+      <Filter>Source Files\Wrapper\12-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jcmainct-12.c">
+      <Filter>Source Files\Wrapper\12-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jcprepct-12.c">
+      <Filter>Source Files\Wrapper\12-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jcsample-12.c">
+      <Filter>Source Files\Wrapper\12-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jdapistd-12.c">
+      <Filter>Source Files\Wrapper\12-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jdcoefct-12.c">
+      <Filter>Source Files\Wrapper\12-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jdcolor-12.c">
+      <Filter>Source Files\Wrapper\12-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jddctmgr-12.c">
+      <Filter>Source Files\Wrapper\12-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jddiffct-12.c">
+      <Filter>Source Files\Wrapper\12-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jdlossls-12.c">
+      <Filter>Source Files\Wrapper\12-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jdmainct-12.c">
+      <Filter>Source Files\Wrapper\12-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jdmerge-12.c">
+      <Filter>Source Files\Wrapper\12-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jdpostct-12.c">
+      <Filter>Source Files\Wrapper\12-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jdsample-12.c">
+      <Filter>Source Files\Wrapper\12-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jfdctfst-12.c">
+      <Filter>Source Files\Wrapper\12-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jfdctint-12.c">
+      <Filter>Source Files\Wrapper\12-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jidctflt-12.c">
+      <Filter>Source Files\Wrapper\12-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jidctfst-12.c">
+      <Filter>Source Files\Wrapper\12-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jidctint-12.c">
+      <Filter>Source Files\Wrapper\12-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jidctred-12.c">
+      <Filter>Source Files\Wrapper\12-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jquant1-12.c">
+      <Filter>Source Files\Wrapper\12-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jquant2-12.c">
+      <Filter>Source Files\Wrapper\12-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jutils-12.c">
+      <Filter>Source Files\Wrapper\12-bit</Filter>
+    </ClCompile>
+    <!-- 16-bit wrappers -->
+    <ClCompile Include="source\wrapper\jcapistd-16.c">
+      <Filter>Source Files\Wrapper\16-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jccolor-16.c">
+      <Filter>Source Files\Wrapper\16-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jcdiffct-16.c">
+      <Filter>Source Files\Wrapper\16-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jclossls-16.c">
+      <Filter>Source Files\Wrapper\16-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jcmainct-16.c">
+      <Filter>Source Files\Wrapper\16-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jcprepct-16.c">
+      <Filter>Source Files\Wrapper\16-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jcsample-16.c">
+      <Filter>Source Files\Wrapper\16-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jdapistd-16.c">
+      <Filter>Source Files\Wrapper\16-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jdcolor-16.c">
+      <Filter>Source Files\Wrapper\16-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jddiffct-16.c">
+      <Filter>Source Files\Wrapper\16-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jdlossls-16.c">
+      <Filter>Source Files\Wrapper\16-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jdmainct-16.c">
+      <Filter>Source Files\Wrapper\16-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jdpostct-16.c">
+      <Filter>Source Files\Wrapper\16-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jdsample-16.c">
+      <Filter>Source Files\Wrapper\16-bit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\wrapper\jutils-16.c">
+      <Filter>Source Files\Wrapper\16-bit</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

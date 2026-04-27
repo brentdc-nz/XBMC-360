@@ -204,6 +204,9 @@ void CGUISettings::Initialize()
 	AddInt(4, "dvdplayercache.audio", 14098, 384, 0, 128, 4096, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
 	AddInt(5, "dvdplayercache.audiotime", 14099, 8, 0, 1, 30, SPIN_CONTROL_INT_PLUS, MASK_SECS);
 
+	// Pictures settings
+	AddBool(1, "pictures.useexifrotation", 20184, true);
+
 	// Appearance settings
 	AddGroup(7, 480);
 	AddCategory(7,"lookandfeel", 166);

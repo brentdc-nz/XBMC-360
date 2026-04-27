@@ -129,7 +129,6 @@ bool CDirectory::Exists(const CStdString& strPath)
 		CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
 	}
 	
-	CLog::Log(LOGERROR, "%s - Error checking for %s", __FUNCTION__, strPath.c_str());
 	return false;
 }
 

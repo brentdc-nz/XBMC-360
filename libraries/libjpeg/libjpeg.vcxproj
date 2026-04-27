@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Xbox 360">
+      <Configuration>Debug</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="CodeAnalysis|Xbox 360">
+      <Configuration>CodeAnalysis</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Profile|Xbox 360">
+      <Configuration>Profile</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Profile_FastCap|Xbox 360">
+      <Configuration>Profile_FastCap</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Xbox 360">
+      <Configuration>Release</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_LTCG|Xbox 360">
+      <Configuration>Release_LTCG</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_New|Xbox 360">
+      <Configuration>Release_New</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{D7F2E3A1-5B4C-4D8E-9F1A-3C6B8E2D4F5A}</ProjectGuid>
+    <RootNamespace>libjpeg</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release_New'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release_LTCG'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='CodeAnalysis'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Profile'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Profile_FastCap'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup>
+    <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <!-- ============================================================ -->
+  <!-- Debug configuration                                          -->
+  <!-- ============================================================ -->
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;_XBOX;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4996;4244;4267;4018;4101;4706;4127;4232;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)libjpeg.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <!-- ============================================================ -->
+  <!-- Release / Release_New / Release_LTCG configurations          -->
+  <!-- ============================================================ -->
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Release' or '$(Configuration)'=='Release_New' or '$(Configuration)'=='Release_LTCG'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_XBOX;_LIB;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization>MaxSpeed</Optimization>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4996;4244;4267;4018;4101;4706;4127;4232;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)libjpeg.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <!-- ============================================================ -->
+  <!-- CodeAnalysis configuration                                   -->
+  <!-- ============================================================ -->
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='CodeAnalysis'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_XBOX;_LIB;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization>MaxSpeed</Optimization>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4996;4244;4267;4018;4101;4706;4127;4232;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)libjpeg.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <!-- ============================================================ -->
+  <!-- Profile / Profile_FastCap configurations                     -->
+  <!-- ============================================================ -->
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Profile' or '$(Configuration)'=='Profile_FastCap'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_XBOX;_LIB;NDEBUG;PROFILE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization>MaxSpeed</Optimization>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4996;4244;4267;4018;4101;4706;4127;4232;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)libjpeg.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <!-- ============================================================ -->
+  <!-- Header files                                                 -->
+  <!-- ============================================================ -->
+  <ItemGroup>
+    <!-- Xbox 360 config (local) -->
+    <ClInclude Include="include\jconfig.h" />
+    <ClInclude Include="source\jconfigint.h" />
+    <!-- Public headers -->
+    <ClInclude Include="include\jpeglib.h" />
+    <ClInclude Include="include\jmorecfg.h" />
+    <ClInclude Include="include\jerror.h" />
+    <ClInclude Include="include\jpegapicomp.h" />
+    <!-- Internal headers -->
+    <ClInclude Include="source\jinclude.h" />
+    <ClInclude Include="source\jpegint.h" />
+    <ClInclude Include="source\jchuff.h" />
+    <ClInclude Include="source\jcmaster.h" />
+    <ClInclude Include="source\jdcoefct.h" />
+    <ClInclude Include="source\jdhuff.h" />
+    <ClInclude Include="source\jdmainct.h" />
+    <ClInclude Include="source\jdmaster.h" />
+    <ClInclude Include="source\jdmerge.h" />
+    <ClInclude Include="source\jdsample.h" />
+    <ClInclude Include="source\jlossls.h" />
+    <ClInclude Include="source\jmemsys.h" />
+    <ClInclude Include="source\jpeg_nbits.h" />
+    <ClInclude Include="source\jsamplecomp.h" />
+    <ClInclude Include="source\jsimd.h" />
+    <ClInclude Include="source\jsimddct.h" />
+    <ClInclude Include="source\jdct.h" />
+    <ClInclude Include="source\jstdhuff.c" />
+  </ItemGroup>
+  <!-- ============================================================ -->
+  <!-- Source files                                                  -->
+  <!-- ============================================================ -->
+  <ItemGroup>
+    <!-- Core standalone sources -->
+    <ClCompile Include="source\jcapimin.c" />
+    <ClCompile Include="source\jchuff.c" />
+    <ClCompile Include="source\jcicc.c" />
+    <ClCompile Include="source\jcinit.c" />
+    <ClCompile Include="source\jclhuff.c" />
+    <ClCompile Include="source\jcmarker.c" />
+    <ClCompile Include="source\jcmaster.c" />
+    <ClCompile Include="source\jcomapi.c" />
+    <ClCompile Include="source\jcparam.c" />
+    <ClCompile Include="source\jcphuff.c" />
+    <ClCompile Include="source\jctrans.c" />
+    <ClCompile Include="source\jdapimin.c" />
+    <ClCompile Include="source\jdatadst.c" />
+    <ClCompile Include="source\jdatasrc.c" />
+    <ClCompile Include="source\jdhuff.c" />
+    <ClCompile Include="source\jdicc.c" />
+    <ClCompile Include="source\jdinput.c" />
+    <ClCompile Include="source\jdlhuff.c" />
+    <ClCompile Include="source\jdmarker.c" />
+    <ClCompile Include="source\jdmaster.c" />
+    <ClCompile Include="source\jdphuff.c" />
+    <ClCompile Include="source\jdtrans.c" />
+    <ClCompile Include="source\jerror.c" />
+    <ClCompile Include="source\jfdctflt.c" />
+    <ClCompile Include="source\jmemmgr.c" />
+    <ClCompile Include="source\jmemnobs.c" />
+    <ClCompile Include="source\jpeg_nbits.c" />
+    <!-- Arithmetic coding -->
+    <ClCompile Include="source\jaricom.c" />
+    <ClCompile Include="source\jcarith.c" />
+    <ClCompile Include="source\jdarith.c" />
+    <!-- 8-bit precision wrappers (compress) -->
+    <ClCompile Include="source\wrapper\jcapistd-8.c" />
+    <ClCompile Include="source\wrapper\jccoefct-8.c" />
+    <ClCompile Include="source\wrapper\jccolor-8.c" />
+    <ClCompile Include="source\wrapper\jcdctmgr-8.c" />
+    <ClCompile Include="source\wrapper\jcdiffct-8.c" />
+    <ClCompile Include="source\wrapper\jclossls-8.c" />
+    <ClCompile Include="source\wrapper\jcmainct-8.c" />
+    <ClCompile Include="source\wrapper\jcprepct-8.c" />
+    <ClCompile Include="source\wrapper\jcsample-8.c" />
+    <!-- 8-bit precision wrappers (decompress) -->
+    <ClCompile Include="source\wrapper\jdapistd-8.c" />
+    <ClCompile Include="source\wrapper\jdcoefct-8.c" />
+    <ClCompile Include="source\wrapper\jdcolor-8.c" />
+    <ClCompile Include="source\wrapper\jddctmgr-8.c" />
+    <ClCompile Include="source\wrapper\jddiffct-8.c" />
+    <ClCompile Include="source\wrapper\jdlossls-8.c" />
+    <ClCompile Include="source\wrapper\jdmainct-8.c" />
+    <ClCompile Include="source\wrapper\jdmerge-8.c" />
+    <ClCompile Include="source\wrapper\jdpostct-8.c" />
+    <ClCompile Include="source\wrapper\jdsample-8.c" />
+    <!-- 8-bit precision wrappers (DCT/IDCT) -->
+    <ClCompile Include="source\wrapper\jfdctfst-8.c" />
+    <ClCompile Include="source\wrapper\jfdctint-8.c" />
+    <ClCompile Include="source\wrapper\jidctflt-8.c" />
+    <ClCompile Include="source\wrapper\jidctfst-8.c" />
+    <ClCompile Include="source\wrapper\jidctint-8.c" />
+    <ClCompile Include="source\wrapper\jidctred-8.c" />
+    <!-- 8-bit precision wrappers (quantization) -->
+    <ClCompile Include="source\wrapper\jquant1-8.c" />
+    <ClCompile Include="source\wrapper\jquant2-8.c" />
+    <!-- 8-bit precision wrappers (utilities) -->
+    <ClCompile Include="source\wrapper\jutils-8.c" />
+    <!-- 12-bit precision wrappers (compress) -->
+    <ClCompile Include="source\wrapper\jcapistd-12.c" />
+    <ClCompile Include="source\wrapper\jccoefct-12.c" />
+    <ClCompile Include="source\wrapper\jccolor-12.c" />
+    <ClCompile Include="source\wrapper\jcdctmgr-12.c" />
+    <ClCompile Include="source\wrapper\jcdiffct-12.c" />
+    <ClCompile Include="source\wrapper\jclossls-12.c" />
+    <ClCompile Include="source\wrapper\jcmainct-12.c" />
+    <ClCompile Include="source\wrapper\jcprepct-12.c" />
+    <ClCompile Include="source\wrapper\jcsample-12.c" />
+    <!-- 12-bit precision wrappers (decompress) -->
+    <ClCompile Include="source\wrapper\jdapistd-12.c" />
+    <ClCompile Include="source\wrapper\jdcoefct-12.c" />
+    <ClCompile Include="source\wrapper\jdcolor-12.c" />
+    <ClCompile Include="source\wrapper\jddctmgr-12.c" />
+    <ClCompile Include="source\wrapper\jddiffct-12.c" />
+    <ClCompile Include="source\wrapper\jdlossls-12.c" />
+    <ClCompile Include="source\wrapper\jdmainct-12.c" />
+    <ClCompile Include="source\wrapper\jdmerge-12.c" />
+    <ClCompile Include="source\wrapper\jdpostct-12.c" />
+    <ClCompile Include="source\wrapper\jdsample-12.c" />
+    <!-- 12-bit precision wrappers (DCT/IDCT) -->
+    <ClCompile Include="source\wrapper\jfdctfst-12.c" />
+    <ClCompile Include="source\wrapper\jfdctint-12.c" />
+    <ClCompile Include="source\wrapper\jidctflt-12.c" />
+    <ClCompile Include="source\wrapper\jidctfst-12.c" />
+    <ClCompile Include="source\wrapper\jidctint-12.c" />
+    <ClCompile Include="source\wrapper\jidctred-12.c" />
+    <!-- 12-bit precision wrappers (quantization/utilities) -->
+    <ClCompile Include="source\wrapper\jquant1-12.c" />
+    <ClCompile Include="source\wrapper\jquant2-12.c" />
+    <ClCompile Include="source\wrapper\jutils-12.c" />
+    <!-- 16-bit precision wrappers -->
+    <ClCompile Include="source\wrapper\jcapistd-16.c" />
+    <ClCompile Include="source\wrapper\jccolor-16.c" />
+    <ClCompile Include="source\wrapper\jcdiffct-16.c" />
+    <ClCompile Include="source\wrapper\jclossls-16.c" />
+    <ClCompile Include="source\wrapper\jcmainct-16.c" />
+    <ClCompile Include="source\wrapper\jcprepct-16.c" />
+    <ClCompile Include="source\wrapper\jcsample-16.c" />
+    <ClCompile Include="source\wrapper\jdapistd-16.c" />
+    <ClCompile Include="source\wrapper\jdcolor-16.c" />
+    <ClCompile Include="source\wrapper\jddiffct-16.c" />
+    <ClCompile Include="source\wrapper\jdlossls-16.c" />
+    <ClCompile Include="source\wrapper\jdmainct-16.c" />
+    <ClCompile Include="source\wrapper\jdpostct-16.c" />
+    <ClCompile Include="source\wrapper\jdsample-16.c" />
+    <ClCompile Include="source\wrapper\jutils-16.c" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+</Project>

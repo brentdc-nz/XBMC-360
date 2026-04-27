@@ -46,6 +46,10 @@ CAdvancedSettings::CAdvancedSettings()
 	m_curlconnecttimeout = 10;
 	m_curllowspeedtime = 20;
 	m_curlretries = 2;
+
+	m_thumbSize = 192;
+	m_fanartHeight = 480;
+	m_useddsfanart = false;
 }
 
 bool CAdvancedSettings::Load()

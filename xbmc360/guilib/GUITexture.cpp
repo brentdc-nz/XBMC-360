@@ -2,7 +2,7 @@
 #include "GUITexture.h"
 #include "GraphicContext.h"
 #include "TextureManager.h"
-//#include "GUILargeTextureManager.h" //TODO
+#include "GUILargeTextureManager.h"
 #include "utils\MathUtils.h"
 
 using namespace std;
@@ -292,7 +292,7 @@ void CGUITextureBase::AllocResources()
 		{
 			// Use our large image background loader
 			CTexture texture;
-			if (/*g_largeTextureManager.GetImage(m_info.filename, texture, m_largeOrientation, !IsAllocated())*/0) // TODO
+			if (g_largeTextureManager.GetImage(m_info.filename, texture, m_largeOrientation, !IsAllocated()))
 			{
 				m_isAllocated = LARGE;
 
@@ -437,15 +437,11 @@ void CGUITextureBase::CalculateSize()
 
 void CGUITextureBase::FreeResources(bool immediately /* = false */)
 {
-/*
 	if (m_isAllocated == LARGE || m_isAllocated == LARGE_FAILED)
-		g_largeTextureManager.ReleaseImage(m_info.filename, immediately || (m_isAllocated == LARGE_FAILED)); // TODO
-	else if (m_isAllocated == NORMAL && m_texture.size())
-		g_TextureManager.ReleaseTexture(m_info.filename); // TODO
+		g_largeTextureManager.ReleaseImage(m_info.filename, immediately || (m_isAllocated == LARGE_FAILED));
 
-	if (m_diffuse.size())
-		g_TextureManager.ReleaseTexture(m_info.diffuse); // TODO
-*/
+	// NOTE: 360 port - CGUITextureManager does not have ReleaseTexture().
+	// Textures are ref-counted internally via CTextureMap::Release() / Load().
 	m_diffuse.Reset();
 
 	m_texture.Reset();

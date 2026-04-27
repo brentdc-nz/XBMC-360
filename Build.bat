@@ -67,7 +67,7 @@ set FAILED=0
 
 :: --- Libraries ---
 
-echo [1/9] Building ffmpeg...
+echo [1/12] Building ffmpeg...
 "%MSBUILD%" "libraries\ffmpeg\vcproj\ffmpeg_12_msvc.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
 if errorlevel 1 (
     echo FAILED: ffmpeg
@@ -75,7 +75,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [2/9] Building freetype...
+echo [2/12] Building freetype...
 "%MSBUILD%" "libraries\freetype\freetype.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
 if errorlevel 1 (
     echo FAILED: freetype
@@ -83,7 +83,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [3/9] Building libcurl...
+echo [3/12] Building libcurl...
 "%MSBUILD%" "libraries\libcurl\libcurl.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
 if errorlevel 1 (
     echo FAILED: libcurl
@@ -91,7 +91,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [4/9] Building libsmb2...
+echo [4/12] Building libsmb2...
 "%MSBUILD%" "libraries\libsmb2\libsmb2.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
 if errorlevel 1 (
     echo FAILED: libsmb2
@@ -99,7 +99,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [5/9] Building libPlatinum (UPnP)...
+echo [5/12] Building libPlatinum (UPnP)...
 "%MSBUILD%" "libraries\libUPnP\libPlatinum.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
 if errorlevel 1 (
     echo FAILED: libPlatinum
@@ -107,7 +107,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [6/11] Building sqlite3...
+echo [6/12] Building sqlite3...
 "%MSBUILD%" "libraries\sqlite3\sqlite3.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
 if errorlevel 1 (
     echo FAILED: sqlite3
@@ -115,7 +115,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [7/11] Building libiconv...
+echo [7/12] Building libiconv...
 "%MSBUILD%" "libraries\libiconv\libiconv.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
 if errorlevel 1 (
     echo FAILED: libiconv
@@ -125,7 +125,15 @@ if errorlevel 1 (
 :: --- Sources ---
 
 echo.
-echo [8/11] Building libmad...
+echo [8/12] Building libjpeg...
+"%MSBUILD%" "libraries\libjpeg\libjpeg.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
+if errorlevel 1 (
+    echo FAILED: libjpeg
+    set FAILED=1
+)
+
+echo.
+echo [9/12] Building libmad...
 "%MSBUILD%" "sources\PAPlayer\libmad\libmad.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
 if errorlevel 1 (
     echo FAILED: libmad
@@ -133,7 +141,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [9/11] Building libFlac...
+echo [10/12] Building libFlac...
 "%MSBUILD%" "sources\PAPlayer\libFlac\libFlac.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
 if errorlevel 1 (
     echo FAILED: libFlac
@@ -141,7 +149,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [10/11] Building 360MilkDrop2...
+echo [11/12] Building 360MilkDrop2...
 "%MSBUILD%" "sources\360MilkDrop2\360MilkDrop2.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
 if errorlevel 1 (
     echo FAILED: 360MilkDrop2
@@ -151,7 +159,7 @@ if errorlevel 1 (
 :: --- Main Project ---
 
 echo.
-echo [11/11] Building xbmc360...
+echo [12/12] Building xbmc360...
 "%MSBUILD%" "xbmc360.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
 if errorlevel 1 (
     echo FAILED: xbmc360

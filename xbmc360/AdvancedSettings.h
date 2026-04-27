@@ -45,6 +45,10 @@ public:
 	int m_curlconnecttimeout;
 	int m_curllowspeedtime;
 	int m_curlretries;
+
+	int m_thumbSize;
+	int m_fanartHeight;
+	bool m_useddsfanart;
 };
 
 extern CAdvancedSettings g_advancedSettings;

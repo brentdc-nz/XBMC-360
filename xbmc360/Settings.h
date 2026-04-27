@@ -87,6 +87,8 @@ public:
 	CStdString GetVideoThumbFolder() const { return "D:\\UserData\\Thumbnails\\Video"; };
 	CStdString GetMusicThumbFolder() const { return "D:\\UserData\\Thumbnails\\Music"; };
 	CStdString GetProgramThumbFolder() const { return "D:\\UserData\\Thumbnails\\Programs"; };
+	CStdString GetVideoFanartFolder() const { return "D:\\UserData\\Thumbnails\\Video\\Fanart"; };
+	CStdString GetMusicFanartFolder() const { return "D:\\UserData\\Thumbnails\\Music\\Fanart"; };
 
 	CStdString m_logFolder;
 	int m_iSystemTimeTotalUp; // Uptime in minutes!

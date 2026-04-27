@@ -330,10 +330,6 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, float height, float aspect
                                     NULL,
                                     NULL );
 
-    // Create vertex shader
-    m_pD3DDevice->CreateVertexShader( ( DWORD* )pVertexShaderCode->GetBufferPointer(),
-                                      &m_pVertexShader );
-
 	// Compile pixel shader
 	ID3DXBuffer* pPixelShaderCode;
 
@@ -348,10 +344,6 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, float height, float aspect
                             NULL,
                             NULL );
 
-	// Create pixel shader
-	m_pD3DDevice->CreatePixelShader( ( DWORD* )pPixelShaderCode->GetBufferPointer(),
-                                     &m_pPixelShader );
-
     // Define the vertex elements and
     // Create a vertex declaration from the element descriptions
     static const D3DVERTEXELEMENT9 VertexElements[3] =
@@ -361,7 +353,18 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, float height, float aspect
         D3DDECL_END()
     };
 
+    // Create GPU objects (requires D3D thread ownership)
+    g_graphicsContext.TLock();
+
+    m_pD3DDevice->CreateVertexShader( ( DWORD* )pVertexShaderCode->GetBufferPointer(),
+                                      &m_pVertexShader );
+
+	m_pD3DDevice->CreatePixelShader( ( DWORD* )pPixelShaderCode->GetBufferPointer(),
+                                     &m_pPixelShader );
+
     m_pD3DDevice->CreateVertexDeclaration( VertexElements, &m_pVertexDecl );
+
+    g_graphicsContext.TUnlock();
 
 	if(pVertexShaderCode)
 		pVertexShaderCode->Release();
@@ -697,8 +700,11 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character *ch)
 				return false;
 			}
 
+			g_graphicsContext.TLock();
+
 			if (D3D_OK != D3DXCreateTexture(m_pD3DDevice, m_textureWidth, newHeight, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED, &newTexture))
 			{
+				g_graphicsContext.TUnlock();
 				CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: Error creating new cache texture for size %f", m_height);
 				FT_Done_Glyph(glyph);
 				CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: Failed to allocate new texture of height %u", newHeight);
@@ -723,17 +729,15 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character *ch)
 				LPDIRECT3DSURFACE9 pTarget, pSource;
 				newTexture->GetSurfaceLevel(0, &pTarget);
 				m_texture->GetSurfaceLevel(0, &pSource);
-				
-				g_graphicsContext.TLock();
 
 				D3DXLoadSurfaceFromSurface( pTarget, NULL, NULL, pSource, NULL, NULL, D3DX_FILTER_NONE,	0);
 	
 				SAFE_RELEASE(pTarget);
 				SAFE_RELEASE(pSource);
 				SAFE_RELEASE(m_texture);
-
-				g_graphicsContext.TUnlock();
 			}
+
+			g_graphicsContext.TUnlock();
 			m_texture = newTexture;
 		}
 	}

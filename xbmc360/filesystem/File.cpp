@@ -241,7 +241,6 @@ bool CFile::Exists(const CStdString& strFileName)
 	// Check HDD
 	if(CFileHD::Exists(strFileName)) return true;
 
-	CLog::Log(LOGERROR, "%s - Error checking for %s", __FUNCTION__, strFileName.c_str());
 	return false;
 }
 
