@@ -147,7 +147,7 @@ LPDIRECT3DTEXTURE9 CPicture::Load(const CStdString& file, int width, int height)
 			pDevice->CreateTexture(
 				((m_info.width + 3) / 4) * 4,
 				((m_info.height + 3) / 4) * 4,
-				1, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED, &pTexture, NULL);
+				1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED, &pTexture, NULL);
 			if (pTexture)
 			{
 				D3DLOCKED_RECT lr;
@@ -229,7 +229,7 @@ LPDIRECT3DTEXTURE9 CPicture::Load(const CStdString& file, int width, int height)
 		HRESULT hr = D3DXCreateTextureFromFileInMemoryEx(
 			pDevice, buffer, totalRead,
 			width, height, 1, 0,
-			D3DFMT_A8R8G8B8, D3DPOOL_MANAGED,
+			D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED,
 			D3DX_FILTER_LINEAR, D3DX_FILTER_LINEAR,
 			0, &imgInfo, NULL, &pTexture);
 		if (SUCCEEDED(hr) && pTexture)

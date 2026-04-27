@@ -245,10 +245,11 @@ bool CJpegIO::Decode(const unsigned char *pixels, unsigned int pitch, unsigned i
 				unsigned char *dst2 = dst;
 				for (unsigned int x = 0; x < m_width; x++, src2 += 3)
 				{
-					*dst2++ = src2[2];
-					*dst2++ = src2[1];
-					*dst2++ = src2[0];
-					*dst2++ = 0xff;
+					// Xbox 360 is big-endian: A8R8G8B8 bytes are [A][R][G][B]
+					*dst2++ = 0xff;     // A
+					*dst2++ = src2[0];  // R
+					*dst2++ = src2[1];  // G
+					*dst2++ = src2[2];  // B
 				}
 				dst += pitch;
 			}
@@ -330,7 +331,8 @@ bool CJpegIO::CreateThumbnailFromSurface(unsigned char* buffer, unsigned int wid
 	}
 	else if(format == XB_FMT_A8R8G8B8)
 	{
-		// create a copy for bgra -> rgb.
+		// create a copy for bgra -> rgb. 
+		// Xbox 360 is big-endian: A8R8G8B8 bytes are [A][R][G][B]
 		rgbbuf = new unsigned char [(width * height * 3)];
 		unsigned char* dst = rgbbuf;
 		for (unsigned int y = 0; y < height; y++)
@@ -339,9 +341,9 @@ bool CJpegIO::CreateThumbnailFromSurface(unsigned char* buffer, unsigned int wid
 			src2 = src;
 			for (unsigned int x = 0; x < width; x++, src2 += 4)
 			{
-				*dst2++ = src2[2];
-				*dst2++ = src2[1];
-				*dst2++ = src2[0];
+				*dst2++ = src2[1];  // R
+				*dst2++ = src2[2];  // G
+				*dst2++ = src2[3];  // B
 			}
 			dst += width * 3;
 			src += pitch;
