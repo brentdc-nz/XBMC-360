@@ -93,6 +93,8 @@
 #define ACTION_ZOOM_OUT               30 // Zoom out video. Can be used in videoFullScreen.xml window id=2005
 #define ACTION_ZOOM_IN                31 // Zoom in video. Can be used in videoFullScreen.xml window id=2005
 
+#define ACTION_ANALOG_MOVE            49 // Analog thumbstick move
+
 #define ACTION_SMALL_STEP_BACK        76 // Jumps a few seconds back during playback of movie. Can be used in videoFullScreen.xml window id=2005
 
 #define ACTION_VOLUME_UP              88

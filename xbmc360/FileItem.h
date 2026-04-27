@@ -64,6 +64,9 @@ public:
 	bool IsPicture() const;
 	bool IsXEX() const;
 	bool IsParentFolder() const;
+	bool SortsOnTop() const { return m_specialSort == SORT_ON_TOP; }
+	bool SortsOnBottom() const { return m_specialSort == SORT_ON_BOTTOM; }
+	void SetSpecialSort(SPECIAL_SORT sort) { m_specialSort = sort; }
 	bool IsVirtualDirectoryRoot() const;
 	bool IsRemovable() const;
 	bool IsFileFolder() const;
@@ -71,8 +74,10 @@ public:
 	bool IsStack() const { return false; } ; // TODO - Stack file support not ported
 	bool IsRemote() const;
 	bool IsVideoDb() const { return false; } ; // TODO - VideoDb not ported
+	bool IsMusicDb() const { return false; } ; // TODO - MusicDb not ported
 	bool IsLiveTV() const { return false; } ; // TODO - LiveTV not ported
 	bool IsPlugin() const { return false; } ; // TODO - Plugins not ported
+	bool IsSamePath(const CFileItem *item) const;
 
 	// --- Thumb/fanart helpers (signatures mirrored 1:1 from xbmc4xbox) -------
 	CStdString GetCachedVideoThumb() const;
@@ -145,6 +150,7 @@ public:
 	CStdString m_strPath; // Complete path to item
 	bool m_bIsParentFolder;
 	bool m_bLabelPreformated;
+	SPECIAL_SORT m_specialSort;
 
 	CStdString m_mimetype;
 	MUSIC_INFO::CMusicInfoTag* m_musicInfoTag;
@@ -211,6 +217,7 @@ public:
 	bool IsEmpty() const;
 	bool Copy (const CFileItemList& item);
 	void Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder);
+	void Sort(FILEITEMLISTCOMPARISONFUNC func);
 	void Append(const CFileItemList& itemlist);
 	void Assign(const CFileItemList& itemlist, bool append = false);
 

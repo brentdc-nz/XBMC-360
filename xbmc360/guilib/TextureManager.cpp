@@ -65,7 +65,7 @@ void CTexture::Add(LPDIRECT3DTEXTURE9 texture, int delay)
   {
     m_texWidth = desc.Width;
     m_texHeight = desc.Height;
-#if 1//def HAS_XBOX_D3D
+#ifdef HAS_XBOX_D3D
 	if(desc.Format == D3DFMT_LIN_A8R8G8B8)
     m_texCoordsArePixels = true;
 #endif

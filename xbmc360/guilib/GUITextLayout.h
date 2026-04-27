@@ -45,6 +45,10 @@ public:
 	float GetTextWidth() const { return m_textWidth; };
 	float GetTextWidth(const CStdStringW &text) const;
 	unsigned int GetTextLength() const;
+	void GetFirstText(vecText &text) const;
+	void Reset();
+
+	static void DrawText(CGUIFont *font, float x, float y, color_t color, color_t shadowColor, const CStdString &text, uint32_t align);
 
 protected:
 	void ParseText(const CStdStringW &text, vecText &parsedText);

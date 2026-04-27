@@ -4,39 +4,39 @@
 #include "GUIButtonControl.h"
 #include "GUIRadioButtonControl.h"
 #include "GUISpinControl.h"
-//#include "GUIRSSControl.h"
+#include "GUIRSSControl.h"
 #include "GUIImage.h"
 #include "GUIBorderedImage.h"
 #include "GUILabelControl.h"
 #include "GUIEditControl.h"
-//#include "GUIFadeLabelControl.h"
-//#include "GUICheckMarkControl.h"
+#include "GUIFadeLabelControl.h"
+#include "GUICheckMarkControl.h"
 #include "GUIToggleButtonControl.h"
-//#include "GUITextBox.h"
+#include "GUITextBox.h"
 #include "GUIVideoControl.h"
 #include "GUIProgressControl.h"
 #include "GUISliderControl.h"
-//#include "GUISelectButtonControl.h"
-//#include "GUIMoverControl.h"
-//#include "GUIResizeControl.h"
-//#include "GUIButtonScroller.h"
+#include "GUISelectButtonControl.h"
+#include "GUIMoverControl.h"
+#include "GUIResizeControl.h"
+#include "GUIButtonScroller.h"
 #include "GUISpinControlEx.h"
 #include "GUIVisualisationControl.h"
-//#include "GUISettingsSliderControl.h"
+#include "GUISettingsSliderControl.h"
 #include "GUIMultiImage.h"
 #include "GUIControlGroup.h"
 #include "GUIControlGroupList.h"
 #include "GUIScrollBarControl.h"
 #include "GUIListContainer.h"
-//#include "GUIFixedListContainer.h"
-//#include "GUIWrappingListContainer.h"
+#include "GUIFixedListContainer.h"
+#include "GUIWrappingListContainer.h"
 #include "GUIPanelContainer.h"
-//#include "GUIMultiSelectText.h"
+#include "GUIMultiSelectText.h"
 #include "GUIListLabel.h"
-//#include "GUIListGroup.h"
+#include "GUIListGroup.h"
 #include "GUIInfoManager.h"
-//#include "utils\CharsetConverter.h"
-//#include "input\ButtonTranslator.h"
+#include "utils\CharsetConverter.h"
+#include "ButtonTranslator.h"
 #include "XMLUtils.h"
 #include "GUIFontManager.h"
 #include "GUIColorManager.h"
@@ -529,13 +529,13 @@ bool CGUIControlFactory::GetInfoLabelFromElement(const TiXmlElement *element, CG
 
 	if (CStringUtils::IsNaturalNumber(label))
 		label = g_localizeStrings.Get(atoi(label));
-//	else // We assume the skin xml's aren't encoded as UTF-8
-//		g_charsetConverter.unknownToUTF8(label); // TODO
+	else // We assume the skin xml's aren't encoded as UTF-8
+		g_charsetConverter.unknownToUTF8(label);
 
 	if (CStringUtils::IsNaturalNumber(fallback))
 		fallback = g_localizeStrings.Get(atoi(fallback));
-//	else
-//		g_charsetConverter.unknownToUTF8(fallback); // TODO
+	else
+		g_charsetConverter.unknownToUTF8(fallback);
 
 	infoLabel.SetLabel(label, fallback, parentID);
 	return true;
@@ -596,8 +596,8 @@ CStdString CGUIControlFactory::FilterLabel(const CStdString &label)
 
 	if (CStringUtils::IsNaturalNumber(viewLabel))
 		viewLabel = g_localizeStrings.Get(atoi(label));
-//	else
-//		g_charsetConverter.unknownToUTF8(viewLabel); // TODO
+	else
+		g_charsetConverter.unknownToUTF8(viewLabel);
 
 	return viewLabel;
 }
@@ -612,8 +612,8 @@ bool CGUIControlFactory::GetString(const TiXmlNode* pRootNode, const char *strTa
 
 	if (CStringUtils::IsNaturalNumber(text))
 		text = g_localizeStrings.Get(atoi(text.c_str()));
-//	else
-//		g_charsetConverter.unknownToUTF8(text); // TODO
+	else
+		g_charsetConverter.unknownToUTF8(text);
 
 	return true;
 }
@@ -1086,7 +1086,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
 	{
 		if (insideContainer)
 		{
-//			control = new CGUIListGroup(parentID, id, posX, posY, width, height); //TODO
+			control = new CGUIListGroup(parentID, id, posX, posY, width, height);
 		}
 		else
 		{
@@ -1143,15 +1143,15 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
 	}
 	else if (type == CGUIControl::GUICONTROL_FADELABEL)
 	{
-/*		control = new CGUIFadeLabelControl(
+		control = new CGUIFadeLabelControl(
 					parentID, id, posX, posY, width, height,
 					labelInfo, scrollOut, timeToPauseAtEnd, resetOnLabelChange);
 
-		((CGUIFadeLabelControl *)control)->SetInfo(infoLabels);*/
+		((CGUIFadeLabelControl *)control)->SetInfo(infoLabels);
 	}
 	else if (type == CGUIControl::GUICONTROL_RSS)
 	{
-/*		control = new CGUIRSSControl(
+		control = new CGUIRSSControl(
 					parentID, id, posX, posY, width, height,
 					labelInfo, textColor3, headlineColor, strRSSTags);
 
@@ -1162,7 +1162,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
 			((CGUIRSSControl *)control)->SetIntervals(iter->second.interval);
 		}
 		else
-			CLog::Log(LOGERROR,"invalid rss url set referenced in skin");*/
+			CLog::Log(LOGERROR,"invalid rss url set referenced in skin");
 	}
 	else if (type == CGUIControl::GUICONTROL_BUTTON)
 	{
@@ -1194,12 +1194,12 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
 	}
 	else if (type == CGUIControl::GUICONTROL_CHECKMARK)
 	{
-/*		control = new CGUICheckMarkControl(
+		control = new CGUICheckMarkControl(
 			parentID, id, posX, posY, width, height,
 			textureCheckMark, textureCheckMarkNF,
 			checkWidth, checkHeight, labelInfo);
 
-		((CGUICheckMarkControl *)control)->SetLabel(strLabel);*/
+		((CGUICheckMarkControl *)control)->SetLabel(strLabel);
 	}
 	else if (type == CGUIControl::GUICONTROL_RADIO)
 	{
@@ -1218,14 +1218,14 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
 	}
 	else if (type == CGUIControl::GUICONTROL_MULTISELECT)
 	{
-/*		CGUIInfoLabel label;
+		CGUIInfoLabel label;
 		
 		if (infoLabels.size())
 			label = infoLabels[0];
 		
 		control = new CGUIMultiSelectTextControl(
 					parentID, id, posX, posY, width, height,
-					textureFocus, textureNoFocus, labelInfo, label);*/
+					textureFocus, textureNoFocus, labelInfo, label);
 	}
 	else if (type == CGUIControl::GUICONTROL_SPIN)
 	{
@@ -1263,14 +1263,14 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
 	}
 	else if (type == CGUIControl::GUICONTROL_SETTINGS_SLIDER)
 	{
-/*		labelInfo.align |= XBFONT_CENTER_Y; // Always center text vertically
+		labelInfo.align |= XBFONT_CENTER_Y; // Always center text vertically
 
 		control = new CGUISettingsSliderControl(
 				parentID, id, posX, posY, width, height, sliderWidth, sliderHeight, textureFocus, textureNoFocus,
 				textureBar, textureNib, textureNibFocus, labelInfo, SPIN_CONTROL_TYPE_TEXT);
 
 		((CGUISettingsSliderControl *)control)->SetText(strLabel);
-		((CGUISettingsSliderControl *)control)->SetInfo(singleInfo);*/
+		((CGUISettingsSliderControl *)control)->SetInfo(singleInfo);
 	}
 	else if (type == CGUIControl::GUICONTROL_SCROLLBAR)
 	{
@@ -1326,23 +1326,23 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
 	}
 	else if (type == CGUIControl::GUICONTAINER_WRAPLIST)
 	{
-/*		control = new CGUIWrappingListContainer(parentID, id, posX, posY, width, height, orientation, scrollTime, preloadItems, focusPosition);
+		control = new CGUIWrappingListContainer(parentID, id, posX, posY, width, height, orientation, scrollTime, preloadItems, focusPosition);
 		
 		((CGUIWrappingListContainer *)control)->LoadLayout(pControlNode);
 		((CGUIWrappingListContainer *)control)->LoadContent(pControlNode);
 		((CGUIWrappingListContainer *)control)->SetType(viewType, viewLabel);
 		((CGUIWrappingListContainer *)control)->SetPageControl(pageControl);
-		((CGUIWrappingListContainer *)control)->SetRenderOffset(offset);*/
+		((CGUIWrappingListContainer *)control)->SetRenderOffset(offset);
 	}
 	else if (type == CGUIControl::GUICONTAINER_FIXEDLIST)
 	{
-/*		control = new CGUIFixedListContainer(parentID, id, posX, posY, width, height, orientation, scrollTime, preloadItems, focusPosition, iMovementRange);
+		control = new CGUIFixedListContainer(parentID, id, posX, posY, width, height, orientation, scrollTime, preloadItems, focusPosition, iMovementRange);
 	
 		((CGUIFixedListContainer *)control)->LoadLayout(pControlNode);
 		((CGUIFixedListContainer *)control)->LoadContent(pControlNode);
 		((CGUIFixedListContainer *)control)->SetType(viewType, viewLabel);
 		((CGUIFixedListContainer *)control)->SetPageControl(pageControl);
-		((CGUIFixedListContainer *)control)->SetRenderOffset(offset);*/
+		((CGUIFixedListContainer *)control)->SetRenderOffset(offset);
 	}
 	else if (type == CGUIControl::GUICONTAINER_PANEL)
 	{
@@ -1356,7 +1356,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
 	}
 	else if (type == CGUIControl::GUICONTROL_TEXTBOX)
 	{
-/*		control = new CGUITextBox(
+		control = new CGUITextBox(
 			parentID, id, posX, posY, width, height,
 			labelInfo, scrollTime);
 
@@ -1365,38 +1365,38 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
 		if (infoLabels.size())
 			((CGUITextBox *)control)->SetInfo(infoLabels[0]);
 
-		((CGUITextBox *)control)->SetAutoScrolling(pControlNode);*/
+		((CGUITextBox *)control)->SetAutoScrolling(pControlNode);
 	}
 	else if (type == CGUIControl::GUICONTROL_SELECTBUTTON)
 	{
-/*		control = new CGUISelectButtonControl(
+		control = new CGUISelectButtonControl(
 			parentID, id, posX, posY,
 			width, height, textureFocus, textureNoFocus,
 			labelInfo,
 			textureBackground, textureLeft, textureLeftFocus, textureRight, textureRightFocus);
 
-		((CGUISelectButtonControl *)control)->SetLabel(strLabel);*/
+		((CGUISelectButtonControl *)control)->SetLabel(strLabel);
 	}
 	else if (type == CGUIControl::GUICONTROL_MOVER)
 	{
-/*		control = new CGUIMoverControl(
+		control = new CGUIMoverControl(
 			parentID, id, posX, posY, width, height,
-			textureFocus, textureNoFocus);*/
+			textureFocus, textureNoFocus);
 	}
 	else if (type == CGUIControl::GUICONTROL_RESIZE)
 	{
-/*		control = new CGUIResizeControl(
+		control = new CGUIResizeControl(
 			parentID, id, posX, posY, width, height,
-			textureFocus, textureNoFocus);*/
+			textureFocus, textureNoFocus);
 	}
 	else if (type == CGUIControl::GUICONTROL_BUTTONBAR)
 	{
-/*		control = new CGUIButtonScroller(
+		control = new CGUIButtonScroller(
 			parentID, id, posX, posY, width, height, buttonGap, iNumSlots, iDefaultSlot,
 			iMovementRange, bHorizontal, iAlpha, bWrapAround, bSmoothScrolling,
 			textureFocus, textureNoFocus, labelInfo);
 
-		((CGUIButtonScroller *)control)->LoadButtons(pControlNode);*/
+		((CGUIButtonScroller *)control)->LoadButtons(pControlNode);
 	}
 	else if (type == CGUIControl::GUICONTROL_SPINEX)
 	{

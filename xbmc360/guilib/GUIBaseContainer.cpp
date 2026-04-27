@@ -2,12 +2,14 @@
 #include "GUIBaseContainer.h"
 #include "GuiControlFactory.h"
 #include "GUIWindowManager.h"
-//#include "utils\CharsetConverter.h" //TODO
+#include "utils\CharsetConverter.h"
 #include "GUIInfoManager.h"
 #include "utils\TimeUtils.h"
 #include "XMLUtils.h"
 #include "SkinInfo.h"
 #include "GUIStaticItem.h"
+#include "..\SortFileItem.h"
+#include "..\FileItem.h"
 
 using namespace std;
 
@@ -191,12 +193,12 @@ void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, b
 
 bool CGUIBaseContainer::OnAction(const CAction &action) // TODO
 {
-/*	if (action.GetID() >= KEY_ASCII)
+	if (action.GetID() >= KEY_ASCII)
 	{
 		OnJumpLetter((char)(action.GetID() & 0xff));
 		return true;
 	}
-*/	
+
 	// Stop the timer on any other action
 	m_matchTimer.Stop();
 
@@ -211,7 +213,7 @@ bool CGUIBaseContainer::OnAction(const CAction &action) // TODO
 		{
 			if (!HasFocus()) return false;
 
-/*			if (action.GetHoldTime() > HOLD_TIME_START &&
+			if (action.GetHoldTime() > HOLD_TIME_START &&
 				((m_orientation == VERTICAL && (action.GetID() == ACTION_MOVE_UP || action.GetID() == ACTION_MOVE_DOWN)) ||
 				(m_orientation == HORIZONTAL && (action.GetID() == ACTION_MOVE_LEFT || action.GetID() == ACTION_MOVE_RIGHT))))
 			{
@@ -243,7 +245,7 @@ bool CGUIBaseContainer::OnAction(const CAction &action) // TODO
 				return true;
 			}
 			else
-*/			{
+			{
 				// If HOLD_TIME_START is reached we need
 				// a sane initial value for calculating m_scrollItemsPerPage
 				m_lastHoldTime = CTimeUtils::GetFrameTime();
@@ -472,13 +474,13 @@ void CGUIBaseContainer::OnJumpLetter(char letter, bool skip /*=false*/)
 	unsigned int i      = (offset + ((skip) ? 1 : 0)) % m_items.size();
 	do
 	{
-/*		CGUIListItemPtr item = m_items[i];
+		CGUIListItemPtr item = m_items[i];
 		if (0 == strnicmp(SSortFileItem::RemoveArticles(item->GetLabel()).c_str(), m_match.c_str(), m_match.size()))
 		{
 			SelectItem(i);
 			return;
 		}
-		i = (i+1) % m_items.size();*/
+		i = (i+1) % m_items.size();
 	} while (i != offset);
 	
 	// No match found - Repeat with a single letter
@@ -889,10 +891,10 @@ void CGUIBaseContainer::ScrollToOffset(int offset)
 	m_offset = offset;
 }
 
-void CGUIBaseContainer::SetContainerMoving(int direction)//TODO
+void CGUIBaseContainer::SetContainerMoving(int direction)
 {
-//	if (direction)
-//		g_infoManager.SetContainerMoving(GetID(), direction > 0, m_scrollSpeed != 0);//TODO
+	if (direction)
+		g_infoManager.SetContainerMoving(GetID(), direction > 0, m_scrollSpeed != 0);
 }
 
 void CGUIBaseContainer::UpdateScrollOffset()
@@ -1033,9 +1035,9 @@ void CGUIBaseContainer::DumpTextureUse()
 }
 #endif
 
-bool CGUIBaseContainer::GetCondition(int condition, int data) const//TODO
+bool CGUIBaseContainer::GetCondition(int condition, int data) const
 {
-	/*switch (condition)
+	switch (condition)
 	{
 		case CONTAINER_ROW:
 			return (m_orientation == VERTICAL) ? (m_cursor == data) : true;
@@ -1056,8 +1058,7 @@ bool CGUIBaseContainer::GetCondition(int condition, int data) const//TODO
 			return (m_scrollTimer.GetElapsedMilliseconds() > m_scrollTime || m_pageChangeTimer.IsRunning());
 		default:
 			return false;
-	}*/
-	return false;
+	}
 }
 
 void CGUIBaseContainer::GetCurrentLayouts()
@@ -1102,11 +1103,10 @@ bool CGUIBaseContainer::HasPreviousPage() const
 	return false;
 }
 
-CStdString CGUIBaseContainer::GetLabel(int info) const//TODO
+CStdString CGUIBaseContainer::GetLabel(int info) const
 {
-	CStdString label;//TODO
-/*	
-	switch (info)//TODO
+	CStdString label;
+	switch (info)
 	{
 		case CONTAINER_NUM_PAGES:
 			label.Format("%u", (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage);
@@ -1121,7 +1121,7 @@ CStdString CGUIBaseContainer::GetLabel(int info) const//TODO
 		{
 			unsigned int numItems = GetNumItems();
 
-			if (numItems && m_items[0]->IsFileItem() && (boost::static_pointer_cast<CFileItem>(m_items[0]))->IsParentFolder())
+			if (numItems && m_items[0]->IsFileItem() && (std::static_pointer_cast<CFileItem>(m_items[0]))->IsParentFolder())
 				label.Format("%u", numItems-1);
 			else
 				label.Format("%u", numItems);
@@ -1129,7 +1129,7 @@ CStdString CGUIBaseContainer::GetLabel(int info) const//TODO
 		break;
 	default:
 		break;
-	}*/
+	}
 	return label;
 }
 

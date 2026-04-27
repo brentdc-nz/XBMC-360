@@ -6,6 +6,7 @@
 #include "FileItem.h"
 #include "URL.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 
 #ifndef PRId64
 #ifdef _MSC_VER
@@ -33,15 +34,14 @@ bool SSortFileItem::Ascending(const CFileItemPtr &left, const CFileItemPtr &righ
   // sanity
   RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
 
-  // ignore items that should sort on top or bottom
-/*  if (left->SortsOnTop() != right->SortsOnTop())
+  if (left->SortsOnTop() != right->SortsOnTop())
     return left->SortsOnTop();
   if (left->SortsOnBottom() != right->SortsOnBottom())
     return !left->SortsOnBottom();
   if (left->SortsOnTop() || left->SortsOnBottom())
-    return false; // both have either sort on top or sort on bottom -> leave as-is
+    return false;
   if (left->m_bIsFolder == right->m_bIsFolder)
-    return StringUtils::AlphaNumericCompare(left->GetSortLabel().c_str(),right->GetSortLabel().c_str()) < 0;*/
+    return CStringUtils::AlphaNumericCompare(left->GetSortLabel().c_str(),right->GetSortLabel().c_str()) < 0;
   return left->m_bIsFolder;
 }
 
@@ -50,15 +50,14 @@ bool SSortFileItem::Descending(const CFileItemPtr &left, const CFileItemPtr &rig
   // sanity
   RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
 
-  // ignore items that should sort on top or bottom
-/*  if (left->SortsOnTop() != right->SortsOnTop())
+  if (left->SortsOnTop() != right->SortsOnTop())
     return left->SortsOnTop();
   if (left->SortsOnBottom() != right->SortsOnBottom())
     return !left->SortsOnBottom();
   if (left->SortsOnTop() || left->SortsOnBottom())
-    return false; // both have either sort on top or sort on bottom -> leave as-is
+    return false;
   if (left->m_bIsFolder == right->m_bIsFolder)
-    return StringUtils::AlphaNumericCompare(left->GetSortLabel().c_str(),right->GetSortLabel().c_str()) > 0;*/
+    return CStringUtils::AlphaNumericCompare(left->GetSortLabel().c_str(),right->GetSortLabel().c_str()) > 0;
   return left->m_bIsFolder;
 }
 
@@ -67,15 +66,13 @@ bool SSortFileItem::IgnoreFoldersAscending(const CFileItemPtr &left, const CFile
   // sanity
   RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
 
-  // ignore items that should sort on top or bottom
-/*  if (left->SortsOnTop() != right->SortsOnTop())
+  if (left->SortsOnTop() != right->SortsOnTop())
     return left->SortsOnTop();
   if (left->SortsOnBottom() != right->SortsOnBottom())
     return !left->SortsOnBottom();
   if (left->SortsOnTop() || left->SortsOnBottom())
-    return false; // both have either sort on top or sort on bottom -> leave as-is
-  return StringUtils::AlphaNumericCompare(left->GetSortLabel().c_str(),right->GetSortLabel().c_str()) < 0;*/
-  return false;
+    return false;
+  return CStringUtils::AlphaNumericCompare(left->GetSortLabel().c_str(),right->GetSortLabel().c_str()) < 0;
 }
 
 bool SSortFileItem::IgnoreFoldersDescending(const CFileItemPtr &left, const CFileItemPtr &right)
@@ -83,15 +80,13 @@ bool SSortFileItem::IgnoreFoldersDescending(const CFileItemPtr &left, const CFil
   // sanity
   RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
 
-  // ignore items that should sort on top or bottom
-/*  if (left->SortsOnTop() != right->SortsOnTop())
+  if (left->SortsOnTop() != right->SortsOnTop())
     return left->SortsOnTop();
   if (left->SortsOnBottom() != right->SortsOnBottom())
     return !left->SortsOnBottom();
   if (left->SortsOnTop() || left->SortsOnBottom())
-    return false; // both have either sort on top or sort on bottom -> leave as-is
-  return StringUtils::AlphaNumericCompare(left->GetSortLabel().c_str(),right->GetSortLabel().c_str()) > 0;*/
-  return false;
+    return false;
+  return CStringUtils::AlphaNumericCompare(left->GetSortLabel().c_str(),right->GetSortLabel().c_str()) > 0;
 }
 
 void SSortFileItem::ByLabel(CFileItemPtr &item)

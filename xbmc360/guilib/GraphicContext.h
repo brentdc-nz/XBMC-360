@@ -90,10 +90,9 @@ public:
 	void Lock();
 	void Unlock();
 
-// TEST START
-	__forceinline void TLock();
-	__forceinline void TUnlock();
-// TEST END
+// Thread ownership lock (re-entrant safe)
+	void TLock();
+	void TUnlock();
 
 	// Output scaling
 	void SetRenderingResolution(RESOLUTION res, bool needsScaling);  // Sets scaling up for rendering
@@ -170,6 +169,8 @@ protected:
 	LPDIRECT3DDEVICE9		m_pd3dDevice;
 	D3DPRESENT_PARAMETERS*	m_pd3dParams;
 	std::stack<D3DVIEWPORT9*> m_viewStack;
+	DWORD m_threadOwnershipCount;
+	DWORD m_threadOwnershipThreadId;
 	int m_iScreenHeight;
 	int m_iScreenWidth;
 	CStdString m_strMediaDir;

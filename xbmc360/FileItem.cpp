@@ -27,6 +27,7 @@
 #include "Settings.h"
 #include "music\tags\MusicInfoTag.h"
 #include "video\VideoInfoTag.h"
+#include <algorithm>
 
 CFileItem::CFileItem(void)
 {
@@ -112,6 +113,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
 	m_strPath = item.GetPath();
 	m_bIsParentFolder = item.m_bIsParentFolder;
 	m_bIsShareOrDrive = item.m_bIsShareOrDrive;
+	m_specialSort = item.m_specialSort;
 	m_dateTime = item.m_dateTime;
 	m_dwSize = item.m_dwSize;
 
@@ -178,7 +180,7 @@ void CFileItem::Reset() // TODO
 //	delete m_pictureInfoTag;
 //	m_pictureInfoTag = NULL;
 //	m_extrainfo.Empty();
-//	m_specialSort = SORT_NORMALLY;
+	m_specialSort = SORT_NORMALLY;
 	SetInvalid();
 }
 
@@ -404,7 +406,7 @@ void CFileItem::SetLabel(const CStdString &strLabel)
 	{
 		m_bIsParentFolder=true;
 		m_bIsFolder=true;
-//		m_specialSort = SORT_ON_TOP; // TODO
+		m_specialSort = SORT_ON_TOP;
 		SetLabelPreformated(true);
 	}
 	CGUIListItem::SetLabel(strLabel);
@@ -487,6 +489,20 @@ CVideoInfoTag* CFileItem::GetVideoInfoTag()
 		m_videoInfoTag = new CVideoInfoTag;
 
 	return m_videoInfoTag;
+}
+
+bool CFileItem::IsSamePath(const CFileItem *item) const
+{
+	if (!item)
+		return false;
+
+	if (item->GetPath() == m_strPath && item->m_lStartOffset == m_lStartOffset)
+		return true;
+
+	if (HasProperty("original_listitem_url"))
+		return (GetProperty("original_listitem_url") == item->GetPath());
+
+	return false;
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -727,7 +743,13 @@ bool CFileItemList::Copy(const CFileItemList& items)
 	return true;
 }
 
-void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder) // TODO
+void CFileItemList::Sort(FILEITEMLISTCOMPARISONFUNC func)
+{
+  CSingleLock lock(m_lock);
+  std::stable_sort(m_items.begin(), m_items.end(), func);
+}
+
+void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
 {
   // Already sorted?
   if (sortMethod==m_sortMethod && m_sortOrder==sortOrder)
@@ -840,13 +862,13 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder) // TODO
   default:
     break;
   }
-/*  if (sortMethod == SORT_METHOD_FILE        ||
+  if (sortMethod == SORT_METHOD_FILE        ||
       sortMethod == SORT_METHOD_VIDEO_SORT_TITLE ||
       sortMethod == SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE ||
       sortMethod == SORT_METHOD_LABEL_IGNORE_FOLDERS)
-    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::IgnoreFoldersAscending : SSortFileItem::IgnoreFoldersDescending); //TODO
+    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::IgnoreFoldersAscending : SSortFileItem::IgnoreFoldersDescending);
   else if (sortMethod != SORT_METHOD_NONE && sortMethod != SORT_METHOD_UNSORTED)
-    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::Ascending : SSortFileItem::Descending);*/
+    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::Ascending : SSortFileItem::Descending);
 
   m_sortMethod=sortMethod;
   m_sortOrder=sortOrder;

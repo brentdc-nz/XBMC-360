@@ -595,16 +595,16 @@ CGUIViewStateWindowMusicSongs::CGUIViewStateWindowMusicSongs(const CFileItemList
 		AddSortMethod(SORT_METHOD_FILE, 561, LABEL_MASKS(strTrackLeft, strTrackRight, "%L", "")); // Userdefined, Userdefined | FolderName, empty
 		AddSortMethod(SORT_METHOD_LISTENERS, 20455, LABEL_MASKS(strTrackLeft, "%W", "%L", "%W"));
 
-		SetSortMethod(SORT_METHOD_LABEL); // TODO - g_settings.m_viewStateMusicFiles.m_sortMethod
-		SetViewAsControl(DEFAULT_VIEW_LIST); // TODO - g_settings.m_viewStateMusicFiles.m_viewMode
-		SetSortOrder(SORT_ORDER_ASC); // TODO - g_settings.m_viewStateMusicFiles.m_sortOrder
+		SetSortMethod(g_settings.m_viewStateMusicFiles.m_sortMethod);
+		SetViewAsControl(g_settings.m_viewStateMusicFiles.m_viewMode);
+		SetSortOrder(g_settings.m_viewStateMusicFiles.m_sortOrder);
 	}
 	LoadViewState(items.GetPath(), WINDOW_MUSIC_FILES);
 }
 
 void CGUIViewStateWindowMusicSongs::SaveViewState()
 {
-	//SaveViewToDb(m_items.GetPath(), WINDOW_MUSIC_FILES, &g_settings.m_viewStateMusicFiles); // TODO - ViewDatabase not yet implemented
+	SaveViewToDb(m_items.GetPath(), WINDOW_MUSIC_FILES, &g_settings.m_viewStateMusicFiles);
 }
 
 VECSOURCES& CGUIViewStateWindowMusicSongs::GetSources()

@@ -29,6 +29,7 @@
 #include "guilib\GUIColorManager.h"
 #include "ApplicationRenderer.h"
 #include "PlayListPlayer.h"
+#include "guilib\GUITextureD3D.h"
 
 // Window includes
 #include "guilib\windows\GUIWindowHome.h"
@@ -129,6 +130,9 @@ bool CApplication::Create()
 	}
 
 	g_graphicsContext.SetD3DDevice(m_pd3dDevice);
+
+	// Allocate shared GPU resources (shaders, vertex declarations) once
+	CGUITextureD3D::AllocateShared(m_pd3dDevice);
 
 	// Set GUI res and force the clear of the screen
 	g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE, true);
@@ -1140,6 +1144,7 @@ void CApplication::DoRender()
 		return;
 
 	g_graphicsContext.Lock();
+	g_graphicsContext.TLock();
 
 	m_pd3dDevice->BeginScene();
 
@@ -1162,10 +1167,9 @@ void CApplication::DoRender()
 
 	m_pd3dDevice->EndScene();
 
-	g_graphicsContext.TLock();
 	m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
-	g_graphicsContext.TUnlock();
 
+	g_graphicsContext.TUnlock();
 	g_graphicsContext.Unlock();
 
 	// Reset our info cache - We do this at the end of Render so that it is
@@ -2016,9 +2020,12 @@ void CApplication::Cleanup()
 		g_windowManager.Remove(WINDOW_DIALOG_SEEK_BAR);
 		g_windowManager.Remove(WINDOW_DIALOG_VOLUME_BAR);
 
-		// Reset our d3d params before we destroy //FIXME - Thead ownership BS
-//		g_graphicsContext.SetD3DDevice(NULL);
-//		g_graphicsContext.SetD3DParameters(NULL);
+		// Free shared GPU resources before releasing the device
+		CGUITextureD3D::FreeShared();
+
+		// Reset our d3d params
+		g_graphicsContext.SetD3DDevice(NULL);
+		g_graphicsContext.SetD3DParameters(NULL);
 
 		g_infoManager.Clear();
 		g_localizeStrings.Clear();

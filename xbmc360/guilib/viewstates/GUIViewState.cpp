@@ -10,7 +10,7 @@
 #include "URL.h"
 //#include "GUIPassword.h" // TODO - Not yet implemented
 #include "guilib\GUIBaseContainer.h" // For VIEW_TYPE_*
-//#include "ViewDatabase.h" // TODO - Not yet implemented
+#include "ViewDatabase.h"
 //#include "AutoSwitch.h" // TODO - Not yet implemented
 #include "guilib\GUIWindowManager.h"
 #include "ViewState.h"
@@ -370,10 +370,10 @@ void CGUIViewState::SetSortOrder(SORT_ORDER sortOrder)
 		m_sortOrder = sortOrder;
 }
 
-void CGUIViewState::LoadViewState(const CStdString &path, int windowID) // TODO
+void CGUIViewState::LoadViewState(const CStdString &path, int windowID)
 {
 	// Get our view state from the db
-/*	CViewDatabase db;
+	CViewDatabase db;
 	if (db.Open())
 	{
 		CViewState state;
@@ -384,12 +384,12 @@ void CGUIViewState::LoadViewState(const CStdString &path, int windowID) // TODO
 			SetSortOrder(state.m_sortOrder);
 		}
 		db.Close();
-	}*/
+	}
 }
 
-void CGUIViewState::SaveViewToDb(const CStdString &path, int windowID, CViewState *viewState) // TODO
+void CGUIViewState::SaveViewToDb(const CStdString &path, int windowID, CViewState *viewState)
 {
-/*	CViewDatabase db;
+	CViewDatabase db;
 	if (db.Open())
 	{
 		CViewState state(m_currentViewAsControl, GetSortMethod(), m_sortOrder);
@@ -401,7 +401,7 @@ void CGUIViewState::SaveViewToDb(const CStdString &path, int windowID, CViewStat
 		
 		if (viewState)
 			g_settings.Save();
-	}*/
+	}
 }
 
 CGUIViewStateFromItems::CGUIViewStateFromItems(const CFileItemList &items) : CGUIViewState(items)

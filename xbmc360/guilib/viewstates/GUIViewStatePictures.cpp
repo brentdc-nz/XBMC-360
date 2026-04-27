@@ -23,16 +23,16 @@ CGUIViewStateWindowPictures::CGUIViewStateWindowPictures(const CFileItemList& it
 		AddSortMethod(SORT_METHOD_DATE, 552, LABEL_MASKS("%L", "%J", "%L", "%J"));  // Filename, Date | Foldername, Date
 		AddSortMethod(SORT_METHOD_FILE, 561, LABEL_MASKS("%L", "%I", "%L", ""));  // Filename, Size | FolderName, empty
 
-		SetSortMethod(/*g_settings.m_viewStatePictures.m_sortMethod*/SORT_METHOD_LABEL); // TODO
-		SetViewAsControl(/*g_settings.m_viewStatePictures.m_viewMode*/DEFAULT_VIEW_LIST); // TODO
-		SetSortOrder(/*g_settings.m_viewStatePictures.m_sortOrder*/SORT_ORDER_DESC); // TODO
+		SetSortMethod(g_settings.m_viewStatePictures.m_sortMethod);
+		SetViewAsControl(g_settings.m_viewStatePictures.m_viewMode);
+		SetSortOrder(g_settings.m_viewStatePictures.m_sortOrder);
 	}
 	LoadViewState(items.GetPath(), WINDOW_PICTURES);
 }
 
 void CGUIViewStateWindowPictures::SaveViewState()
 {
-//	SaveViewToDb(m_items.GetPath(), WINDOW_PICTURES, &g_settings.m_viewStatePictures); // TODO
+	SaveViewToDb(m_items.GetPath(), WINDOW_PICTURES, &g_settings.m_viewStatePictures);
 }
 
 CStdString CGUIViewStateWindowPictures::GetLockType()

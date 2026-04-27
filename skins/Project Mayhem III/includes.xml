@@ -1,6 +1,7 @@
 <includes>
 	<include file="defaults.xml"/>
 	<include file="CommonViewTypes.xml"/>
+	<include file="3D_CoverView.xml"/>
 
 	<include name="homebuttonanimation">
 		<animation effect="fade" time="500" delay="400">VisibleChange</animation>
@@ -75,6 +76,39 @@
 		<animation effect="slide" end="0,-600" acceleration="2" time="700" condition="!Skin.HasSetting(animated)">WindowClose</animation>
 	</include>
 	
+	<include name="ScrollOffsetLabel">
+		<control type="group">
+			<visible>Container.Scrolling</visible>
+			<animation effect="fade" time="100">Visible</animation>
+			<animation effect="fade" time="300">Hidden</animation>
+			<animation effect="slide" end="0,80" time="0" condition="[Window.IsVisible(MusicFiles) | Window.IsVisible(Musiclibrary)] + Control.IsVisible(57)">Conditional</animation>
+			<animation effect="slide" end="-60,-90" time="0" condition="[Window.IsVisible(VideoLibrary) | Window.IsVisible(Musiclibrary)] + Control.IsVisible(51)">Conditional</animation>
+			<animation effect="slide" end="0,-70" time="0" condition="[Window.IsVisible(Musiclibrary)] + Control.IsVisible(58)">Conditional</animation>
+			<posx>400</posx>
+			<posy>270</posy>
+			<width>330</width>
+			<height>232</height>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>70</width>
+				<height>70</height>
+				<texture border="10">osd_menu_bg.png</texture>
+			</control>
+			<control type="label">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>70</width>
+				<height>70</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>$INFO[ListItem.SortLetter]</label>
+				<textcolor>white</textcolor>
+				<font>special13</font>
+			</control>
+		</control>
+	</include>
+
 	<include name="contentpanel">
 		<control type="image" id="0">
 			<description>contentpanel slice</description>

@@ -24,6 +24,7 @@ public:
 	static size_t FindWords(const char *str, const char *wordLowerCase);
 	static void WordToDigits(CStdString &word);
 	static CStdString SizeToString(__int64 size);
+	static int64_t AlphaNumericCompare(const char *left, const char *right);
 
 	static const CStdString EmptyString;
 };

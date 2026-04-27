@@ -10,6 +10,10 @@ class CGUITextureD3D : public CGUITextureBase
 public:
 	CGUITextureD3D(float posX, float posY, float width, float height, const CTextureInfo& texture);
 
+	// Shared GPU resources (compiled once, used by all instances)
+	static void AllocateShared(LPDIRECT3DDEVICE9 pDevice);
+	static void FreeShared();
+
 protected:
 	void Begin();
 	void Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, color_t color, int orientation);
@@ -23,16 +27,17 @@ private:
 	{
 		float   Position[3];
 		float   TexCoord[2];
+		float   TexCoord2[2];
 	};
 
 	LPDIRECT3DDEVICE9 m_pd3dDevice;
 
-	IDirect3DVertexBuffer9*			m_pVB;           // Buffer to hold vertices
-	IDirect3DVertexDeclaration9*	m_pVertexDecl;   // Vertex format decl
-	IDirect3DVertexShader9*			m_pVertexShader; // Vertex Shader
-	IDirect3DPixelShader9*			m_pPixelShader;  // Pixel Shader
-
-	CRITICAL_SECTION m_CriticalSection;
+	// Shared static resources
+	static IDirect3DVertexDeclaration9*	s_pVertexDecl;
+	static IDirect3DVertexShader9*		s_pVertexShader;
+	static IDirect3DPixelShader9*		s_pPixelShader;
+	static IDirect3DPixelShader9*		s_pPixelShaderDiffuse;
+	static bool							s_bSharedAllocated;
 };
 
 #endif //GUILIB_GUITEXTURED3D_H

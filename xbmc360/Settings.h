@@ -5,6 +5,7 @@
 #include "guilib\tinyxml\tinyxml.h"
 #include "MediaSource.h"
 #include "VideoSettings.h"
+#include "ViewState.h"
 #include "guilib\GraphicContext.h"
 
 #define DEFAULT_SKIN "Project Mayhem III"
@@ -73,6 +74,15 @@ public:
 	CStdString GetAudioExtensions() { return m_strAudioExtensions; };
 	CStdString GetPictureExtensions() { return m_strPictureExtensions; };
 
+	struct RssSet
+	{
+		bool rtl;
+		std::vector<int> interval;
+		std::vector<std::string> url;
+	};
+
+	std::map<int,RssSet> m_mapRssUrls;
+
 	CStdString GetUserDataFolder() const { return "D:\\UserData"; };
 	CStdString GetVideoThumbFolder() const { return "D:\\UserData\\Thumbnails\\Video"; };
 	CStdString GetMusicThumbFolder() const { return "D:\\UserData\\Thumbnails\\Music"; };
@@ -101,6 +111,25 @@ public:
 	VECSOURCES m_musicSources;
 	VECSOURCES m_videoSources;
 
+	CViewState m_viewStateMusicNavArtists;
+	CViewState m_viewStateMusicNavAlbums;
+	CViewState m_viewStateMusicNavSongs;
+	CViewState m_viewStateMusicShoutcast;
+	CViewState m_viewStateMusicLastFM;
+	CViewState m_viewStateVideoNavActors;
+	CViewState m_viewStateVideoNavYears;
+	CViewState m_viewStateVideoNavGenres;
+	CViewState m_viewStateVideoNavTitles;
+	CViewState m_viewStateVideoNavEpisodes;
+	CViewState m_viewStateVideoNavSeasons;
+	CViewState m_viewStateVideoNavTvShows;
+	CViewState m_viewStateVideoNavMusicVideos;
+
+	CViewState m_viewStatePrograms;
+	CViewState m_viewStatePictures;
+	CViewState m_viewStateMusicFiles;
+	CViewState m_viewStateVideoFiles;
+
 protected:
 	std::map<int, CSkinString> m_skinStrings;
 	std::map<int, CSkinBool> m_skinBools;
@@ -111,6 +140,8 @@ protected:
 	bool SaveSources();
 
 	void GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName, int& iValue, const int iDefault, const int iMin, const int iMax);
+	void GetViewState(const TiXmlElement* pRootElement, const CStdString& strTagName, CViewState &viewState, SORT_METHOD defaultSort = SORT_METHOD_LABEL, int defaultView = DEFAULT_VIEW_LIST);
+	void SetViewState(TiXmlNode* pRootNode, const CStdString& strTagName, const CViewState &viewState) const;
 
 	CStdString m_strVideoExtensions;
 	CStdString m_strAudioExtensions;

@@ -275,6 +275,28 @@ unsigned int CGUITextLayout::GetTextLength() const
 	return length;
 }
 
+void CGUITextLayout::GetFirstText(vecText &text) const
+{
+	text.clear();
+	if (m_lines.size())
+		text = m_lines[0].m_text;
+}
+
+void CGUITextLayout::Reset()
+{
+	m_lines.clear();
+	m_lastText.Empty();
+	m_textWidth = m_textHeight = 0;
+}
+
+void CGUITextLayout::DrawText(CGUIFont *font, float x, float y, color_t color, color_t shadowColor, const CStdString &text, uint32_t align)
+{
+	if (!font) return;
+	vecText utf32;
+	AppendToUTF32(text, 0, utf32);
+	font->DrawText(x, y, color, shadowColor, utf32, align, 0);
+}
+
 void CGUITextLayout::LineBreakText(const vecText &text, vector<CGUIString> &lines)
 {
 	int nMaxLines = (m_maxHeight > 0 && m_font && m_font->GetLineHeight() > 0)?(int)ceilf(m_maxHeight / m_font->GetLineHeight()):-1;

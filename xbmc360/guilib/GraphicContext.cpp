@@ -21,6 +21,8 @@ CGraphicContext::CGraphicContext(void)
     m_Resolution = INVALID;
     m_guiScaleX = m_guiScaleY = 1.0f;
     m_windowResolution = INVALID;
+    m_threadOwnershipCount = 0;
+    m_threadOwnershipThreadId = 0;
 }
 
 CGraphicContext::~CGraphicContext(void)
@@ -38,13 +40,29 @@ void CGraphicContext::TLock()
     EnterCriticalSection(*this);
 
     if(m_pd3dDevice)
-        m_pd3dDevice->AcquireThreadOwnership();
+    {
+        if(m_threadOwnershipCount == 0 || m_threadOwnershipThreadId != GetCurrentThreadId())
+        {
+            m_pd3dDevice->AcquireThreadOwnership();
+            m_threadOwnershipThreadId = GetCurrentThreadId();
+        }
+        m_threadOwnershipCount++;
+    }
 }
 
 void CGraphicContext::TUnlock()
 {
-	if(m_pd3dDevice)
-		m_pd3dDevice->ReleaseThreadOwnership();
+    if(m_pd3dDevice)
+    {
+        if(m_threadOwnershipCount > 0)
+            m_threadOwnershipCount--;
+
+        if(m_threadOwnershipCount == 0)
+        {
+            m_threadOwnershipThreadId = 0;
+            m_pd3dDevice->ReleaseThreadOwnership();
+        }
+    }
 
     LeaveCriticalSection(*this);
 }

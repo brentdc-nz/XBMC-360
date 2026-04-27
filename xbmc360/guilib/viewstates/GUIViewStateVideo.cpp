@@ -58,16 +58,16 @@ CGUIViewStateWindowVideoFiles::CGUIViewStateWindowVideoFiles(const CFileItemList
 		AddSortMethod(SORT_METHOD_DATE, 552, LABEL_MASKS("%L", "%J", "%L", "%J")); // FileName, Date | Foldername, Date
 		AddSortMethod(SORT_METHOD_FILE, 561, LABEL_MASKS("%L", "%I", "%L", "")); // Filename, Size | FolderName, empty
 
-		SetSortMethod(SORT_METHOD_LABEL); // TODO - g_settings.m_viewStateVideoFiles.m_sortMethod
-		SetViewAsControl(DEFAULT_VIEW_LIST); // TODO - g_settings.m_viewStateVideoFiles.m_viewMode
-		SetSortOrder(SORT_ORDER_ASC); // TODO - g_settings.m_viewStateVideoFiles.m_sortOrder
+		SetSortMethod(g_settings.m_viewStateVideoFiles.m_sortMethod);
+		SetViewAsControl(g_settings.m_viewStateVideoFiles.m_viewMode);
+		SetSortOrder(g_settings.m_viewStateVideoFiles.m_sortOrder);
 	}
 	LoadViewState(items.GetPath(), WINDOW_VIDEO_FILES);
 }
 
 void CGUIViewStateWindowVideoFiles::SaveViewState()
 {
-	//SaveViewToDb(m_items.GetPath(), WINDOW_VIDEO_FILES, &g_settings.m_viewStateVideoFiles); // TODO - ViewDatabase not yet implemented
+	SaveViewToDb(m_items.GetPath(), WINDOW_VIDEO_FILES, &g_settings.m_viewStateVideoFiles);
 }
 
 VECSOURCES& CGUIViewStateWindowVideoFiles::GetSources()

@@ -9,6 +9,13 @@
 #include "guilib\info\InfoBool.h"
 
 #include <list>
+#include <map>
+
+namespace MUSIC_INFO
+{
+	class CMusicInfoTag;
+}
+class CVideoInfoTag;
 
 namespace INFO
 {
@@ -156,6 +163,13 @@ namespace INFO
 #define VIDEOPLAYER_PLAYCOUNT         293
 #define VIDEOPLAYER_LASTPLAYED        294
 
+#define CONTAINER_SCROLL_PREVIOUS   345
+#define CONTAINER_MOVE_PREVIOUS     346
+#define CONTAINER_STATIC            347
+#define CONTAINER_MOVE_NEXT         348
+#define CONTAINER_SCROLL_NEXT       349
+
+#define CONTAINER_CONTENT           362
 #define CONTAINER_HAS_FOCUS         367
 #define CONTAINER_ROW               368
 #define CONTAINER_COLUMN            369
@@ -163,6 +177,8 @@ namespace INFO
 #define CONTAINER_VIEWMODE          371
 #define CONTAINER_HAS_NEXT          372
 #define CONTAINER_HAS_PREVIOUS      373
+#define CONTAINER_SCROLLING         355
+#define CONTAINER_NUM_ITEMS         359
 #define CONTAINER_SUBITEM           374
 #define CONTAINER_TVSHOWTHUMB       375
 #define CONTAINER_NUM_PAGES         376
@@ -269,6 +285,8 @@ namespace INFO
 #define LISTITEM_PROPERTY_START     (LISTITEM_START + 200)
 #define LISTITEM_PROPERTY_END       (LISTITEM_PROPERTY_START + 1000)
 #define LISTITEM_END                (LISTITEM_PROPERTY_END)
+
+#define MUSICPLAYER_PROPERTY_OFFSET 900 // last 100 id's reserved for musicplayer props.
 
 #define CONDITIONAL_LABEL_START       LISTITEM_END + 1 // 36001
 #define CONDITIONAL_LABEL_END         37000
@@ -387,6 +405,17 @@ public:
 	CStdString GetVideoLabel(int item);
 	CStdString GetMusicTagLabel(int info, const CFileItem *item);
 
+	void SetCurrentSongTag(const MUSIC_INFO::CMusicInfoTag &tag);
+	void SetCurrentVideoTag(const CVideoInfoTag &tag);
+	void SetCurrentAlbumThumb(const CStdString thumbFileName);
+	const MUSIC_INFO::CMusicInfoTag *GetCurrentSongTag() const;
+	const CVideoInfoTag* GetCurrentMovieTag() const;
+
+	void SetContainerMoving(int id, bool next, bool scrolling)
+	{
+		m_containerMoves[id] = (next ? 1 : -1) * (scrolling ? 2 : 1);
+	}
+
 protected:
 	// Routines for window retrieval
 	bool CheckWindowCondition(CGUIWindow *window, int condition) const;
@@ -407,6 +436,7 @@ protected:
 	// The offset into the string parameters array is returned.
 	int ConditionalStringParameter(const CStdString &strParameter, bool caseSensitive = false);
 	int AddMultiInfo(const GUIInfo &info);
+	int AddListItemProp(const CStdString &str, int offset=0);
 
 	// Conditional string parameters are stored here
 	CStdStringArray m_stringParameters;
@@ -445,6 +475,8 @@ protected:
 	std::vector<GUIInfo> m_multiInfo;
 	std::vector<std::string> m_listitemProperties;
 
+	CStdString m_currentMovieThumb;
+
 	// Current playing stuff
 	CFileItem* m_currentFile;
 	unsigned int m_lastMusicBitrateTime;
@@ -453,6 +485,7 @@ protected:
 	std::vector<INFO::InfoBool*> m_bools;
 	std::vector<INFO::CSkinVariableString> m_skinVariableStrings;
 	unsigned int m_updateTime;
+	std::map<int, int> m_containerMoves;
 
 	CCriticalSection m_critInfo;
 };
