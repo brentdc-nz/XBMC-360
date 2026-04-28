@@ -1148,6 +1148,9 @@ void CApplication::DoRender()
 
 	m_pd3dDevice->BeginScene();
 
+	// Set shared GUI render states once per frame
+	g_graphicsContext.ApplyStateBlock();
+
 	g_windowManager.UpdateModelessVisibility();
 
 	//SWATHWIDTH of 4 improves fillrates (performance investigator)

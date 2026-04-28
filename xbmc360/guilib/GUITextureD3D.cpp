@@ -167,13 +167,6 @@ void CGUITextureD3D::Begin()
 	// Set texture
 	p3DDevice->SetTexture( 0, m_texture.m_textures[m_currentFrame] );
 
-	// Sampler states for stage 0
-	p3DDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_ANISOTROPIC);
-	p3DDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_ANISOTROPIC);
-	p3DDevice->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
-	p3DDevice->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
-	p3DDevice->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
-
 	if (m_diffuse.size())
 	{
 		p3DDevice->SetTexture( 1, m_diffuse.m_textures[0] );
@@ -181,16 +174,8 @@ void CGUITextureD3D::Begin()
 		p3DDevice->SetSamplerState(1, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
 	}
 
-	// Render states
-	p3DDevice->SetRenderState( D3DRS_ALPHATESTENABLE, TRUE );
-	p3DDevice->SetRenderState( D3DRS_ALPHAREF, 0 );
-	p3DDevice->SetRenderState( D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL );
-	p3DDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
-	p3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
-	p3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
-	p3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
-	p3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
-	p3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
+	// Render states and stage 0 sampler states are set once per frame
+	// in CGraphicContext::ApplyStateBlock()
 
 	// Set shared vertex declaration and shaders
 	p3DDevice->SetVertexDeclaration(s_pVertexDecl);

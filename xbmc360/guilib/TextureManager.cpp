@@ -19,6 +19,7 @@
 */
 
 #include "TextureManager.h"
+#include "AnimatedGif.h"
 #include "GraphicContext.h"
 #include "utils\Log.h"
 #include "utils\SingleLock.h"
@@ -247,6 +248,66 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
 		strPath = strTextureName;
 	else
 		strPath = g_SkinInfo.GetSkinPath("media\\" + strTextureName);
+
+	if (strPath.Right(4).ToLower() == ".gif")
+	{
+		CAnimatedGifSet AnimatedGifSet;
+		int iImages = AnimatedGifSet.LoadGIF(strPath.c_str());
+
+		if (iImages == 0)
+		{
+			CLog::Log(LOGERROR, "Texture manager unable to load file: %s", strPath.c_str());
+			return 0;
+		}
+
+		int iWidth = AnimatedGifSet.FrameWidth;
+		int iHeight = AnimatedGifSet.FrameHeight;
+
+		int iPaletteSize = (1 << AnimatedGifSet.m_vecimg[0]->BPP);
+		CTextureMap* pMap = new CTextureMap(strTextureName, iWidth, iHeight, AnimatedGifSet.nLoops, false);
+
+		for (int iImage = 0; iImage < iImages; iImage++)
+		{
+			if (D3DXCreateTexture(g_graphicsContext.Get3DDevice(), iWidth, iHeight, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED, &pTexture) == D3D_OK)
+			{
+				CAnimatedGif* pImage = AnimatedGifSet.m_vecimg[iImage];
+				D3DLOCKED_RECT lr;
+				RECT rc = { 0, 0, pImage->Width, pImage->Height };
+
+				if ( D3D_OK == pTexture->LockRect( 0, &lr, &rc, 0 ))
+				{
+					COLOR *palette = AnimatedGifSet.m_vecimg[0]->Palette;
+					// set the alpha values to fully opaque
+					for (int i = 0; i < iPaletteSize; i++)
+						palette[i].x = 0xff;
+					// and set the transparent colour
+					if (AnimatedGifSet.m_vecimg[0]->Transparency && AnimatedGifSet.m_vecimg[0]->Transparent >= 0)
+						palette[AnimatedGifSet.m_vecimg[0]->Transparent].x = 0;
+
+					for (int y = 0; y < pImage->Height; y++)
+					{
+						BYTE *dest = (BYTE *)lr.pBits + y * lr.Pitch;
+						BYTE *source = (BYTE *)pImage->Raster + y * pImage->BytesPerRow;
+						for (int x = 0; x < pImage->Width; x++)
+						{
+							COLOR col = palette[*source++];
+							// Xbox 360 is big-endian: A8R8G8B8 bytes are [A][R][G][B]
+							*dest++ = col.x;
+							*dest++ = col.r;
+							*dest++ = col.g;
+							*dest++ = col.b;
+						}
+					}
+					pTexture->UnlockRect( 0 );
+
+					pMap->Add(pTexture, pImage->Delay);
+				}
+			}
+		} // of for (int iImage=0; iImage < iImages; iImage++)
+
+		m_vecTextures.push_back(pMap);
+		return 1;
+	} // of if (strPath.Right(4).ToLower()==".gif")
 
 	// Normal picture
 	D3DXIMAGE_INFO info;

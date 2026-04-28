@@ -494,7 +494,7 @@
 					<onright>10</onright>
 					<onup>7</onup>
 					<ondown>2</ondown>
-					<texturefocus>home-focus.png</texturefocus>
+					<texturefocus>home-focus.gif</texturefocus>
 					<texturenofocus>-</texturenofocus>
 					<textoffsetx>20</textoffsetx>
 				</control>
@@ -512,7 +512,7 @@
 					<onright>6</onright>
 					<onup>7</onup>
 					<ondown>2</ondown>
-					<texturefocus>home-focus.png</texturefocus>
+					<texturefocus>home-focus.gif</texturefocus>
 					<texturenofocus>-</texturenofocus>
 					<textoffsetx>20</textoffsetx>
 				</control>
@@ -530,7 +530,7 @@
 					<onright>96</onright>
 					<onup>7</onup>
 					<ondown>2</ondown>
-					<texturefocus>home-focus.png</texturefocus>
+					<texturefocus>home-focus.gif</texturefocus>
 					<texturenofocus>-</texturenofocus>
 					<textoffsetx>20</textoffsetx>
 				</control>
@@ -568,7 +568,7 @@
 					<onright>96</onright>
 					<onup>9</onup>
 					<ondown>5</ondown>
-					<texturefocus>home-focus.png</texturefocus>
+					<texturefocus>home-focus.gif</texturefocus>
 					<texturenofocus>-</texturenofocus>
 					<textoffsetx>30</textoffsetx>
 				</control>
@@ -593,7 +593,7 @@
 					<onright>96</onright>
 					<onup>2</onup>
 					<ondown>3</ondown>
-					<texturefocus>home-focus.png</texturefocus>
+					<texturefocus>home-focus.gif</texturefocus>
 					<texturenofocus>-</texturenofocus>
 					<textoffsetx>30</textoffsetx>
 				</control>
@@ -618,7 +618,7 @@
 					<onright>96</onright>
 					<onup>5</onup>
 					<ondown>4</ondown>
-					<texturefocus>home-focus.png</texturefocus>
+					<texturefocus>home-focus.gif</texturefocus>
 					<texturenofocus>-</texturenofocus>
 					<textoffsetx>30</textoffsetx>
 				</control>
@@ -643,7 +643,7 @@
 					<onright>96</onright>
 					<onup>3</onup>
 					<ondown>7</ondown>
-					<texturefocus>home-focus.png</texturefocus>
+					<texturefocus>home-focus.gif</texturefocus>
 					<texturenofocus>-</texturenofocus>
 					<textoffsetx>30</textoffsetx>
 				</control>
@@ -668,7 +668,7 @@
 					<onright>96</onright>
 					<onup>4</onup>
 					<ondown>9</ondown>
-					<texturefocus>home-focus.png</texturefocus>
+					<texturefocus>home-focus.gif</texturefocus>
 					<texturenofocus>-</texturenofocus>
 					<textoffsetx>30</textoffsetx>
 				</control>
@@ -709,7 +709,7 @@
 				<width>35</width>
 				<height>35</height>
 				<onclick>ActivateWindow(ShutdownMenu)</onclick>
-				<texturefocus>home-power-focus.png</texturefocus>
+				<texturefocus>home-power.gif</texturefocus>
 				<texturenofocus>-</texturenofocus>
 				<label>-</label>
 				<onleft>100</onleft>

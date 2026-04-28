@@ -384,27 +384,18 @@ void CGUIFontTTF::Begin()
 	}
 
 	// Pass matrix into the vertex shader
-	g_graphicsContext.TLock();
+	// Note: TLock is held for the entire frame by DoRender()
 	m_pD3DDevice->SetVertexShaderConstantF(0, (FLOAT*)&g_graphicsContext.GetFinalMatrix(), 4);
-	g_graphicsContext.TUnlock();
 
 	if (m_nestedBeginCount == 0)
 	{
 		// Just have to blit from our texture.
-		g_graphicsContext.TLock();
-
 		m_pD3DDevice->SetTexture( 0, m_texture );
 
-		m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
-		m_pD3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
-		m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
-		m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
-		m_pD3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
-		m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
+		// Render states and stage 0 sampler states are set once per frame
+		// in CGraphicContext::ApplyStateBlock()
 
 		m_pD3DDevice->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
-
-		g_graphicsContext.TUnlock();
 	}
 
 	// Keep track of the nested begin/end calls.
@@ -419,9 +410,8 @@ void CGUIFontTTF::End()
 	if (--m_nestedBeginCount > 0)
 		return;
 
-	g_graphicsContext.TLock();
+	// Note: TLock is held for the entire frame by DoRender()
 	m_pD3DDevice->SetTexture(0, NULL);
-	g_graphicsContext.TUnlock();
 
 	m_numCharactersRendered = 0;
 }
@@ -489,7 +479,7 @@ void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, D
 	float y4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y2));
 	float z4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y2));
 
-	g_graphicsContext.TLock();
+	// Note: TLock is held for the entire frame by DoRender()
 
 #pragma warning(push)
 #pragma warning (disable:4244) // Not an issue here
@@ -499,8 +489,6 @@ void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, D
 	m_pD3DDevice->SetPixelShaderConstantF(10, fInputColor, 4);
 
 #pragma warning(pop)
-
-	g_graphicsContext.TUnlock();
 
 	m_numCharactersRendered++;
 
@@ -518,24 +506,15 @@ void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, D
 		{ x[3], y4, z4, tl, tb }
 	};
 
-	g_graphicsContext.TLock();
-
-	m_pD3DDevice->SetSamplerState( 0, D3DSAMP_MAGFILTER, D3DTEXF_ANISOTROPIC );
-	m_pD3DDevice->SetSamplerState( 0, D3DSAMP_MINFILTER, D3DTEXF_ANISOTROPIC );
-	m_pD3DDevice->SetSamplerState( 0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR );
-
-	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
-	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
-	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA );
-	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
+	// Sampler states and render states are set once per frame
+	// in CGraphicContext::ApplyStateBlock()
+	// Note: TLock is held for the entire frame by DoRender()
 
 	m_pD3DDevice->SetVertexDeclaration( m_pVertexDecl );
 	m_pD3DDevice->SetVertexShader( m_pVertexShader );
 	m_pD3DDevice->SetPixelShader( m_pPixelShader );
 
 	m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, Vertices, sizeof(CUSTOMVERTEX));
-
-	g_graphicsContext.TUnlock();
 }
 
 CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr)

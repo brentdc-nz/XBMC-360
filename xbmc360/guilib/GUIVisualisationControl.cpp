@@ -239,13 +239,12 @@ void CGUIVisualisationControl::Render()
 			g_graphicsContext.SetViewPort(m_posX, m_posY, m_width, m_height);
 			try
 			{
-				//g_graphicsContext.ApplyStateBlock();
-
 				g_graphicsContext.TLock();
 				m_pVisualisation->Render();
 				g_graphicsContext.TUnlock();
 
-				//g_graphicsContext.ApplyStateBlock();
+				// Restore GUI render states that the visualisation may have changed
+				g_graphicsContext.ApplyStateBlock();
 			}
 			catch (...)
 			{

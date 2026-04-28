@@ -482,6 +482,7 @@
     <ClInclude Include="guilib\screensavers\ScreensaverBase.h" />
     <ClInclude Include="guilib\screensavers\ScreensaverPlasma.h" />
     <ClInclude Include="guilib\SkinInfo.h" />
+    <ClInclude Include="guilib\AnimatedGif.h" />
     <ClInclude Include="guilib\TextureManager.h" />
     <ClInclude Include="guilib\tinyjson\tinyjson.h" />
     <ClInclude Include="guilib\tinyxml\tinystr.h" />
@@ -752,6 +753,7 @@
     <ClCompile Include="guilib\LocalizeStrings.cpp" />
     <ClCompile Include="guilib\screensavers\ScreensaverPlasma.cpp" />
     <ClCompile Include="guilib\SkinInfo.cpp" />
+    <ClCompile Include="guilib\AnimatedGif.cpp" />
     <ClCompile Include="guilib\TextureManager.cpp" />
     <ClCompile Include="guilib\tinyjson\tinyjson.cpp" />
     <ClCompile Include="guilib\tinyxml\tinystr.cpp" />

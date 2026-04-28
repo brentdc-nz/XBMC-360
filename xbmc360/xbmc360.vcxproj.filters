@@ -308,6 +308,9 @@
     <ClInclude Include="guilib\GUIFontManager.h">
       <Filter>Header Files\guilib</Filter>
     </ClInclude>
+    <ClInclude Include="guilib\AnimatedGif.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
     <ClInclude Include="guilib\TextureManager.h">
       <Filter>Header Files\guilib</Filter>
     </ClInclude>
@@ -1151,6 +1154,9 @@
       <Filter>Source Files\guilib</Filter>
     </ClCompile>
     <ClCompile Include="guilib\GUIFontManager.cpp">
+      <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\AnimatedGif.cpp">
       <Filter>Source Files\guilib</Filter>
     </ClCompile>
     <ClCompile Include="guilib\TextureManager.cpp">

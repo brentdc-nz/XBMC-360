@@ -124,6 +124,8 @@ public:
 
 	void EnablePreviewWindow(bool bEnable);
 
+	void ApplyStateBlock();
+
 	void Clear(DWORD color = 0x00010001);
 
 	bool SetClipRegion(float x, float y, float w, float h);

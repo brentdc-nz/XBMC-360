@@ -749,6 +749,30 @@ void CGraphicContext::EnablePreviewWindow(bool bEnable)
 	m_bShowPreviewWindow = bEnable;
 }
 
+void CGraphicContext::ApplyStateBlock()
+{
+	if (!m_pd3dDevice) return;
+
+	// Render states shared by all GUI renderers (textures and fonts).
+	// Set once per frame to avoid redundant GPU state changes.
+	m_pd3dDevice->SetRenderState( D3DRS_ALPHATESTENABLE, TRUE );
+	m_pd3dDevice->SetRenderState( D3DRS_ALPHAREF, 0 );
+	m_pd3dDevice->SetRenderState( D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL );
+	m_pd3dDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
+	m_pd3dDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
+	m_pd3dDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
+	m_pd3dDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
+	m_pd3dDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
+	m_pd3dDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
+
+	// Sampler states for stage 0 (used by both textures and fonts)
+	m_pd3dDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_ANISOTROPIC);
+	m_pd3dDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_ANISOTROPIC);
+	m_pd3dDevice->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+	m_pd3dDevice->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
+	m_pd3dDevice->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
+}
+
 void CGraphicContext::Clear(DWORD color /*= 0x00010001*/)
 {
 	Lock();
