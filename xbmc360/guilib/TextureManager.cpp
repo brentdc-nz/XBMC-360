@@ -277,9 +277,11 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
 				if ( D3D_OK == pTexture->LockRect( 0, &lr, &rc, 0 ))
 				{
 					COLOR *palette = AnimatedGifSet.m_vecimg[0]->Palette;
-					// set the alpha values to fully opaque
+					
+					// Set the alpha values to fully opaque
 					for (int i = 0; i < iPaletteSize; i++)
 						palette[i].x = 0xff;
+					
 					// and set the transparent colour
 					if (AnimatedGifSet.m_vecimg[0]->Transparency && AnimatedGifSet.m_vecimg[0]->Transparent >= 0)
 						palette[AnimatedGifSet.m_vecimg[0]->Transparent].x = 0;
