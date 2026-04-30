@@ -30,6 +30,7 @@
 #include "ApplicationRenderer.h"
 #include "PlayListPlayer.h"
 #include "guilib\GUITextureD3D.h"
+#include "cores\FFmpegThreading.h"
 
 // Window includes
 #include "guilib\windows\GUIWindowHome.h"
@@ -83,6 +84,9 @@ CApplication::~CApplication()
 
 bool CApplication::Create()
 {
+	// Needed to decode multithreaded
+	ffmpeg_threading_init();
+
 #ifdef _DEBUG
 	g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG;
 #else
@@ -2036,6 +2040,8 @@ void CApplication::Cleanup()
 		g_guiSettings.Clear();
 		g_advancedSettings.Clear();
 		g_buttonTranslator.Clear();
+
+		ffmpeg_threading_deinit();
 	}
 	catch(...)
 	{

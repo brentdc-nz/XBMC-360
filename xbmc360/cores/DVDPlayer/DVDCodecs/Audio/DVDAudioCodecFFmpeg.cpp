@@ -45,6 +45,9 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 	m_pCodecContext->debug = 0;
 	m_pCodecContext->workaround_bugs = 1;
 
+	// Xbox 360: Enable multi-threaded audio decoding
+	m_pCodecContext->thread_count = 0;
+
 	if (pCodec->capabilities & CODEC_CAP_TRUNCATED)
 		m_pCodecContext->flags |= CODEC_FLAG_TRUNCATED;
 

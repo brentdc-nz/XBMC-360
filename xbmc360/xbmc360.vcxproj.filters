@@ -221,6 +221,9 @@
     <ClInclude Include="XBApplicationEx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="cores\FFmpegThreading.h">
+      <Filter>Header Files\cores</Filter>
+    </ClInclude>
     <ClInclude Include="cores\DVDPlayer\DVDPlayer.h">
       <Filter>Header Files\cores\DVDPlayer</Filter>
     </ClInclude>
@@ -1068,6 +1071,9 @@
     </ClCompile>
     <ClCompile Include="xbmc.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cores\FFmpegThreading.cpp">
+      <Filter>Source Files\cores</Filter>
     </ClCompile>
     <ClCompile Include="cores\DVDPlayer\DVDPlayer.cpp">
       <Filter>Source Files\cores\DVDPlayer</Filter>

@@ -488,8 +488,15 @@ static int update_context_from_user(AVCodecContext *dst, AVCodecContext *src)
 
 static void free_progress(AVFrame *f)
 {
-    PerThreadContext *p = f->owner->thread_opaque;
+    PerThreadContext *p;
     volatile int *progress = f->thread_opaque;
+
+    if (!progress || !f->owner)
+        return;
+
+    p = f->owner->thread_opaque;
+    if (!p)
+        return;
 
     p->progress_used[(progress - p->progress[0]) / 2] = 0;
 }
@@ -748,13 +755,29 @@ static void frame_thread_free(AVCodecContext *avctx, int thread_count)
         if (p->thread_init)
             pthread_join(p->thread, NULL);
         p->thread_init=0;
+    }
+
+    /*
+     * Xbox 360: Two-pass cleanup for frame threading.
+     * Pass 1: Release all delayed buffers across ALL threads first,
+     * while all thread contexts are still valid.
+     * Pass 2: Close codecs and set codec to NULL.
+     * This prevents cross-thread buffer ownership issues where
+     * codec->close defers buffers owned by other thread contexts
+     * that get freed before release_delayed_buffers runs.
+     */
+    for (i = 0; i < thread_count; i++)
+        release_delayed_buffers(&fctx->threads[i]);
+
+    for (i = 0; i < thread_count; i++) {
+        PerThreadContext *p = &fctx->threads[i];
+
+        p->avctx->active_thread_type = 0;
 
         if (codec->close)
             codec->close(p->avctx);
 
         avctx->codec = NULL;
-
-        release_delayed_buffers(p);
     }
 
     for (i = 0; i < thread_count; i++) {
@@ -1011,7 +1034,15 @@ void ff_thread_release_buffer(AVCodecContext *avctx, AVFrame *f)
         return;
 
     if (!(avctx->active_thread_type&FF_THREAD_FRAME)) {
-        avctx->release_buffer(avctx, f);
+        /*
+         * Xbox 360: Use f->owner for buffer release when available.
+         * During frame threading cleanup, frames may have been allocated by
+         * a different thread context than avctx. The buffer must be released
+         * from the correct pool (f->owner->internal->buffer[]) or
+         * avcodec_default_release_buffer will fail to find it.
+         */
+        AVCodecContext *owner = (f->owner && f->owner->release_buffer) ? f->owner : avctx;
+        owner->release_buffer(owner, f);
         return;
     }
 

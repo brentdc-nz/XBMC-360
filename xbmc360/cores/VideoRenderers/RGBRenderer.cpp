@@ -310,6 +310,24 @@ void CRGBRenderer::CalculateFrameAspectRatio(int desired_width, int desired_heig
 
 bool CRGBRenderer::Configure(int iWidth, int iHeight, int d_width, int d_height)
 {
+	// Release old textures if source dimensions have changed
+	if(m_pFrameY && (m_iSourceWidth != iWidth || m_iSourceHeight != iHeight))
+	{
+		CLog::Log(LOGDEBUG, "CRGBRenderer::Configure - dimensions changed from %dx%d to %dx%d, releasing old textures",
+			m_iSourceWidth, m_iSourceHeight, iWidth, iHeight);
+
+		g_graphicsContext.TLock();
+		// Unbind any textures the GPU may still be referencing
+		m_pd3dDevice->SetTexture(0, NULL);
+		m_pd3dDevice->SetTexture(1, NULL);
+		m_pd3dDevice->SetTexture(2, NULL);
+		g_graphicsContext.TUnlock();
+
+		if(m_pFrameY) { g_graphicsContext.TLock(); m_pFrameY->Release(); g_graphicsContext.TUnlock(); m_pFrameY = NULL; }
+		if(m_pFrameU) { g_graphicsContext.TLock(); m_pFrameU->Release(); g_graphicsContext.TUnlock(); m_pFrameU = NULL; }
+		if(m_pFrameV) { g_graphicsContext.TLock(); m_pFrameV->Release(); g_graphicsContext.TUnlock(); m_pFrameV = NULL; }
+	}
+
 	m_iSourceWidth = iWidth;
 	m_iSourceHeight = iHeight;
 
@@ -363,6 +381,7 @@ bool CRGBRenderer::Configure(int iWidth, int iHeight, int d_width, int d_height)
 bool CRGBRenderer::GetImage(YV12Image* image)
 {
 	if (!image) return false;
+	if (!m_pFrameY || !m_pFrameU || !m_pFrameV) return false;
 
 	image->width = m_iSourceWidth;
 	image->height = m_iSourceHeight;
@@ -392,9 +411,9 @@ bool CRGBRenderer::GetImage(YV12Image* image)
 
 void CRGBRenderer::ReleaseImage()
 {
-	m_pFrameU->UnlockRect(0);
-	m_pFrameY->UnlockRect(0);
-	m_pFrameV->UnlockRect(0);
+	if(m_pFrameU) m_pFrameU->UnlockRect(0);
+	if(m_pFrameY) m_pFrameY->UnlockRect(0);
+	if(m_pFrameV) m_pFrameV->UnlockRect(0);
 }
 
 void CRGBRenderer::Render()

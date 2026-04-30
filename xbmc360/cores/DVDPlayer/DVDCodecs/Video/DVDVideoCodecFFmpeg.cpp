@@ -59,6 +59,10 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 	m_pCodecContext->workaround_bugs = FF_BUG_AUTODETECT;
 	m_pCodecContext->codec_tag = hints.codec_tag;
 
+	// Xbox 360: Enable multi-threaded decoding across all 6 hardware threads
+	// thread_count=0 triggers auto-detection in xb_thread.c (uses 5 HW threads, reserving thread 0 for system)
+	m_pCodecContext->thread_count = 0;
+
 	if (pCodec->capabilities & CODEC_CAP_DR1)
 		m_pCodecContext->flags |= CODEC_FLAG_EMU_EDGE;
 
@@ -130,7 +134,7 @@ void CDVDVideoCodecFFmpeg::Dispose()
 	if (m_pCodecContext)
 	{
 		if (m_pCodecContext->codec) avcodec_close(m_pCodecContext);
-		
+
 		if (m_pCodecContext->extradata)
 		{
 			av_free(m_pCodecContext->extradata);

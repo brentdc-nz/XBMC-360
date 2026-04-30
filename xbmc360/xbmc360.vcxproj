@@ -320,6 +320,7 @@
     <ClInclude Include="ApplicationRenderer.h" />
     <ClInclude Include="BackgroundInfoLoader.h" />
     <ClInclude Include="ButtonTranslator.h" />
+    <ClInclude Include="cores\FFmpegThreading.h" />
     <ClInclude Include="cores\AudioRenderers\IAudioCallback.h" />
     <ClInclude Include="cores\AudioRenderers\IAudioRenderer.h" />
     <ClInclude Include="cores\AudioRenderers\NullSound.h" />
@@ -624,6 +625,7 @@
     <ClCompile Include="cores\DVDPlayer\DVDMessage.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDMessageQueue.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDPerformanceCounter.cpp" />
+    <ClCompile Include="cores\FFmpegThreading.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDPlayer.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDPlayerAudio.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDPlayerVideo.cpp" />
