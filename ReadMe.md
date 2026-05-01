@@ -11,8 +11,8 @@ This is early stages and still very much a work in progress.
 
 Usable but many features still need reimplementation or improvements.
 
-### Compiled alpha build (last updated 30-04-26):
-https://drive.google.com/file/d/1CHYLyJ6rbznQSBduTT9FsRnJBXhQxxNR/view
+### Compiled alpha build (last updated 02-05-26):
+https://drive.google.com/file/d/1WreApfTnWtGe8UxeO1MBSrMDYg-7jHoC/view
 
 ### Libraries
 - FFmpeg (DVDPlayer)
