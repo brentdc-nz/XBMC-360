@@ -127,6 +127,15 @@
 #endif /* POLARSSL_VERSION_NUMBER<0x01010000 */
 #endif /* USE_POLARSSL */
 
+#ifdef USE_MBEDTLS
+#include <mbedtls/ssl.h>
+#include <mbedtls/x509_crt.h>
+#include <mbedtls/ctr_drbg.h>
+#include <mbedtls/entropy.h>
+#include <mbedtls/pk.h>
+#include <mbedtls/version.h>
+#endif /* USE_MBEDTLS */
+
 #ifdef USE_CYASSL
 #undef OCSP_REQUEST  /* avoid cyassl/openssl/ssl.h clash with wincrypt.h */
 #undef OCSP_RESPONSE /* avoid cyassl/openssl/ssl.h clash with wincrypt.h */
@@ -315,6 +324,15 @@ struct ssl_connect_data {
   rsa_context rsa;
   ssl_connect_state connecting_state;
 #endif /* USE_POLARSSL */
+#ifdef USE_MBEDTLS
+  mbedtls_ssl_context ssl;
+  mbedtls_ssl_config config;
+  mbedtls_ctr_drbg_context ctr_drbg;
+  mbedtls_x509_crt cacert;
+  mbedtls_x509_crt clicert;
+  mbedtls_pk_context pk;
+  ssl_connect_state connecting_state;
+#endif /* USE_MBEDTLS */
 #ifdef USE_CYASSL
   SSL_CTX* ctx;
   SSL*     handle;

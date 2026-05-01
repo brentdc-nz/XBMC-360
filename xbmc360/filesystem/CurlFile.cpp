@@ -465,12 +465,22 @@ bool CCurlFile::CReadState::FillBuffer(unsigned int want)
             if (CURLM_OK != curl_multi_timeout((CURLM*)m_multiHandle, &timeout) || timeout == -1)
                 timeout = 200;
 
-            struct timeval t = { timeout / 1000, (timeout % 1000) * 1000 };
-
-            if (SOCKET_ERROR == select(maxfd + 1, &fdread, &fdwrite, &fdexcep, &t))
+            if (maxfd == -1)
             {
-                CLog::Log(LOGERROR, "CCurlFile::FillBuffer - Failed with socket error");
-                return false;
+                // libcurl has no fds to wait on (e.g. during DNS or TLS handshake).
+                // XNet select() rejects empty fd_sets with WSAEINVAL, so just wait
+                // a short time and let curl_multi_perform retry.
+                Sleep(timeout > 100 ? 100 : (DWORD)timeout);
+            }
+            else
+            {
+                struct timeval t = { timeout / 1000, (timeout % 1000) * 1000 };
+
+                if (SOCKET_ERROR == select(maxfd + 1, &fdread, &fdwrite, &fdexcep, &t))
+                {
+                    CLog::Log(LOGERROR, "CCurlFile::FillBuffer - Failed with socket error");
+                    return false;
+                }
             }
         }
         break;
@@ -495,6 +505,7 @@ CCurlFile::CCurlFile()
     m_multisession = true;
     m_bufferSize = 32768;
     m_httpresponse = -1;
+    m_connecttimeout = 0;
     m_state = new CReadState();
 }
 
@@ -503,6 +514,13 @@ CCurlFile::~CCurlFile()
     Close();
     g_curlSessionPool.easy_release(&m_state->m_easyHandle, &m_state->m_multiHandle);
     delete m_state;
+}
+
+void CCurlFile::Cancel()
+{
+    m_state->m_cancelled = true;
+    while (m_opened)
+        Sleep(1);
 }
 
 void CCurlFile::SetCommonOptions(CReadState* state)
@@ -537,10 +555,16 @@ void CCurlFile::SetCommonOptions(CReadState* state)
     curl_easy_setopt(h, CURLOPT_TRANSFERTEXT, 0L);
 
     // Set user agent
-    curl_easy_setopt(h, CURLOPT_USERAGENT, g_sysinfo.GetUserAgent().c_str());
+    if (!m_userAgent.IsEmpty())
+        curl_easy_setopt(h, CURLOPT_USERAGENT, m_userAgent.c_str());
+    else
+        curl_easy_setopt(h, CURLOPT_USERAGENT, g_sysinfo.GetUserAgent().c_str());
 
     // Timeouts
-    curl_easy_setopt(h, CURLOPT_CONNECTTIMEOUT, 10L);
+    if (m_connecttimeout > 0)
+        curl_easy_setopt(h, CURLOPT_CONNECTTIMEOUT, (long)m_connecttimeout);
+    else
+        curl_easy_setopt(h, CURLOPT_CONNECTTIMEOUT, 10L);
     curl_easy_setopt(h, CURLOPT_LOW_SPEED_LIMIT, 1L);
     curl_easy_setopt(h, CURLOPT_LOW_SPEED_TIME, 20L);
 

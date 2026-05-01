@@ -49,6 +49,7 @@ public:
 
 	bool LoadSettings(const CStdString& strSettingsFile);
 	bool Load();
+	void LoadRSSFeeds();
 	bool SaveSettings(const CStdString& strSettingsFile) const;
 	void Save() const;
 

@@ -212,6 +212,7 @@ void CGUISettings::Initialize()
 	AddCategory(7,"lookandfeel", 166);
 	AddString(1, "lookandfeel.skin",166,DEFAULT_SKIN, SPIN_CONTROL_TEXT);
 	AddInt(5, "lookandfeel.skinzoom",20109, 0, -20, 2, 20, SPIN_CONTROL_INT, MASK_PERCENT);
+	AddBool(9, "lookandfeel.enablerssfeeds",13305, true);
 
 	AddCategory(7, "locale", 14090);
 	AddString(1, "locale.language",248,"english", SPIN_CONTROL_TEXT);

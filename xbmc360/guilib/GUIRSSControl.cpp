@@ -24,7 +24,7 @@
 #include "GUISettings.h"
 #include "utils\CriticalSection.h"
 #include "utils\SingleLock.h"
-// TODO: #include "utils\RssReader.h" - Not yet ported
+#include "utils\RssReader.h"
 #include "utils\StringUtils.h"
 
 using namespace std;
@@ -58,10 +58,10 @@ CGUIRSSControl::CGUIRSSControl(const CGUIRSSControl &from)
 CGUIRSSControl::~CGUIRSSControl(void)
 {
 	CSingleLock lock(m_criticalSection);
+
 	if (m_pReader)
-	{
-		// TODO: m_pReader->SetObserver(NULL); - Not yet ported
-	}
+		m_pReader->SetObserver(NULL);
+
 	m_pReader = NULL;
 }
 
@@ -90,8 +90,48 @@ void CGUIRSSControl::UpdateColors()
 
 void CGUIRSSControl::Render()
 {
-	// TODO: RSS rendering requires RssReader/RssManager which are not yet ported
-	// When ported, this should match the xbmc4xbox implementation
+	// Only render the control if they are enabled
+	if (g_guiSettings.GetBool("lookandfeel.enablerssfeeds") && g_rssManager.IsActive())
+	{
+		CSingleLock lock(m_criticalSection);
+		// Create RSS background/worker thread if needed
+		if (m_pReader == NULL)
+		{
+			if (g_rssManager.GetReader(GetID(), GetParentID(), this, m_pReader))
+				m_scrollInfo.characterPos = m_pReader->m_SavedScrollPos;
+			else
+			{
+				if (m_strRSSTags != "")
+				{
+					CStdStringArray vecSplitTags;
+
+					CStringUtils::SplitString(m_strRSSTags, ",", vecSplitTags);
+
+					for (unsigned int i = 0;i < vecSplitTags.size();i++)
+						m_pReader->AddTag(vecSplitTags[i]);
+				}
+				
+				// Use half the width of the control as spacing between feeds, and double this between feed sets
+				float spaceWidth = (m_label.font) ? m_label.font->GetCharWidth(L' ') : 15;
+				m_pReader->Create(this, m_vecUrls, m_vecIntervals, (int)(0.5f*GetWidth() / spaceWidth) + 1, m_rtl);
+			}
+		}
+
+		if (m_label.font)
+		{
+			vecColors colors;
+			colors.push_back(m_label.textColor);
+			colors.push_back(m_headlineColor);
+			colors.push_back(m_channelColor);
+			m_label.font->DrawScrollingText(m_posX, m_posY, colors, m_label.shadowColor, m_feed, 0, m_width, m_scrollInfo);
+		}
+
+		if (m_pReader)
+		{
+			m_pReader->CheckForUpdates();
+			m_pReader->m_SavedScrollPos = m_scrollInfo.characterPos;
+		}
+	}
 	CGUIControl::Render();
 }
 

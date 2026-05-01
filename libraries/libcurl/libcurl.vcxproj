@@ -84,8 +84,8 @@
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(ProjectDir)lib;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>BUILDING_LIBCURL;CURL_STATICLIB;HTTP_ONLY;_XBOX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)lib;$(ProjectDir)include;$(ProjectDir)mbedTLS\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>BUILDING_LIBCURL;CURL_STATICLIB;_XBOX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -95,13 +95,14 @@
     </ClCompile>
     <Lib>
       <OutputFile>$(OutDir)libcurl.lib</OutputFile>
+      <AdditionalDependencies>$(ProjectDir)mbedTLS\$(Configuration)\mbedtls.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Release' or '$(Configuration)'=='Release_New' or '$(Configuration)'=='Release_LTCG'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(ProjectDir)lib;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>BUILDING_LIBCURL;CURL_STATICLIB;HTTP_ONLY;_XBOX;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)lib;$(ProjectDir)include;$(ProjectDir)mbedTLS\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>BUILDING_LIBCURL;CURL_STATICLIB;_XBOX;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Optimization>MaxSpeed</Optimization>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
@@ -110,13 +111,14 @@
     </ClCompile>
     <Lib>
       <OutputFile>$(OutDir)libcurl.lib</OutputFile>
+      <AdditionalDependencies>$(ProjectDir)mbedTLS\$(Configuration)\mbedtls.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)'=='CodeAnalysis'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(ProjectDir)lib;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>BUILDING_LIBCURL;CURL_STATICLIB;HTTP_ONLY;_XBOX;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)lib;$(ProjectDir)include;$(ProjectDir)mbedTLS\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>BUILDING_LIBCURL;CURL_STATICLIB;_XBOX;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Optimization>MaxSpeed</Optimization>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
@@ -125,13 +127,14 @@
     </ClCompile>
     <Lib>
       <OutputFile>$(OutDir)libcurl.lib</OutputFile>
+      <AdditionalDependencies>$(ProjectDir)mbedTLS\$(Configuration)\mbedtls.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Profile' or '$(Configuration)'=='Profile_FastCap'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(ProjectDir)lib;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>BUILDING_LIBCURL;CURL_STATICLIB;HTTP_ONLY;_XBOX;NDEBUG;PROFILE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)lib;$(ProjectDir)include;$(ProjectDir)mbedTLS\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>BUILDING_LIBCURL;CURL_STATICLIB;_XBOX;NDEBUG;PROFILE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Optimization>MaxSpeed</Optimization>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
@@ -140,6 +143,7 @@
     </ClCompile>
     <Lib>
       <OutputFile>$(OutDir)libcurl.lib</OutputFile>
+      <AdditionalDependencies>$(ProjectDir)mbedTLS\$(Configuration)\mbedtls.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -211,8 +215,9 @@
     <ClCompile Include="lib\http_proxy.c" />
     <!-- DNS -->
     <ClCompile Include="lib\asyn-thread.c" />
-    <!-- SSL stubs + SOCKS -->
+    <!-- SSL (mbedTLS) + SOCKS -->
     <ClCompile Include="lib\vtls\vtls.c" />
+    <ClCompile Include="lib\vtls\mbedtls.c" />
     <ClCompile Include="lib\socks.c" />
     <!-- Xbox 360 stubs -->
     <ClCompile Include="lib\xbox360_stubs.c" />

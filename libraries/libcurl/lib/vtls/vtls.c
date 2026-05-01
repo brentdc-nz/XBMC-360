@@ -66,6 +66,7 @@
 #include "qssl.h"   /* QSOSSL versions */
 #include "gskit.h"  /* Global Secure ToolKit versions */
 #include "polarssl.h" /* PolarSSL versions */
+#include "mbedtls.h" /* mbedTLS versions */
 #include "axtls.h"  /* axTLS versions */
 #include "cyassl.h"  /* CyaSSL versions */
 #include "curl_schannel.h" /* Schannel SSPI version */

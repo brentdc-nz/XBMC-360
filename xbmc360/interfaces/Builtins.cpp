@@ -2,10 +2,12 @@
 #include "ApplicationMessenger.h"
 #include "Builtins.h"
 #include "FileItem.h"
+#include "Settings.h"
 #include "utils\StringUtils.h"
 #include "utils\Util.h"
 #include "utils\Log.h"
 #include "utils\URIUtils.h"
+#include "utils\RssReader.h"
 #include "ButtonTranslator.h"
 #include "guilib\GUIWindowManager.h"
 
@@ -174,6 +176,12 @@ int CBuiltins::Execute(const CStdString& execString)
 			CLog::Log(LOGERROR, "Activate/ReplaceWindow called with invalid destination window: %s", strWindow.c_str());
 			return false;
 		}
+	}
+	else if (execute.Equals("refreshrss"))
+	{
+		g_rssManager.Stop();
+		g_settings.LoadRSSFeeds();
+		g_rssManager.Start();
 	}
 	// WIP - More to be re-added!
 	else

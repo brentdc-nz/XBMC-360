@@ -79,6 +79,8 @@ bool CSettings::Load()
 		return false;
 	}
 
+	LoadRSSFeeds();
+
 	// Clear sources, then load xml file...
 	m_fileSources.clear();
 	m_musicSources.clear();
@@ -398,6 +400,72 @@ void CSettings::Clear()
 	m_videoSources.clear();
 	m_skinBools.clear();
 	m_skinStrings.clear();
+	m_mapRssUrls.clear();
+}
+
+void CSettings::LoadRSSFeeds()
+{
+	CStdString rssXML;
+	rssXML = GetUserDataFolder() + "\\RssFeeds.xml";
+	TiXmlDocument rssDoc;
+
+	if (!XFILE::CFile::Exists(rssXML))
+	{
+		// Set defaults, or assume no rss feeds??
+		return;
+	}
+
+	if (!rssDoc.LoadFile(rssXML))
+	{
+		CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", rssXML.c_str(), rssDoc.ErrorRow(), rssDoc.ErrorDesc());
+		return;
+	}
+
+	TiXmlElement *pRootElement = rssDoc.RootElement();
+	if (!pRootElement || strcmpi(pRootElement->Value(),"rssfeeds") != 0)
+	{
+		CLog::Log(LOGERROR, "Error loading %s, no <rssfeeds> node", rssXML.c_str());
+		return;
+	}
+
+	m_mapRssUrls.clear();
+	TiXmlElement* pSet = pRootElement->FirstChildElement("set");
+
+	while (pSet)
+	{
+		int iId;
+		
+		if (pSet->QueryIntAttribute("id", &iId) == TIXML_SUCCESS)
+		{
+			RssSet set;
+			set.rtl = pSet->Attribute("rtl") && stricmp(pSet->Attribute("rtl"),"true")==0;
+			TiXmlElement* pFeed = pSet->FirstChildElement("feed");
+			
+			while (pFeed)
+			{
+				int iInterval;
+				
+				if ( pFeed->QueryIntAttribute("updateinterval",&iInterval) != TIXML_SUCCESS)
+				{
+					iInterval=30; // default to 30 min
+					CLog::Log(LOGDEBUG,"no interval set, default to 30!");
+				}
+				if (pFeed->FirstChild())
+				{
+					CStdString strUrl = pFeed->FirstChild()->Value();
+					set.url.push_back(strUrl);
+					set.interval.push_back(iInterval);
+				}
+				
+				pFeed = pFeed->NextSiblingElement("feed");
+			}
+			m_mapRssUrls.insert(std::make_pair(iId,set));
+		}
+		else
+			CLog::Log(LOGERROR,"found rss url set with no id in RssFeeds.xml, ignored");
+
+		pSet = pSet->NextSiblingElement("set");
+	}
 }
 
 int CSettings::TranslateSkinString(const CStdString &setting)

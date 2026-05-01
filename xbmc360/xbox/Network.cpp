@@ -2,6 +2,7 @@
 #include "utils\Log.h"
 #include "Application.h"
 #include "utils/Weather.h"
+#include "utils/RssReader.h"
 
 // Time to wait before we give up on network init
 #define WAIT_TIME 10000
@@ -255,6 +256,7 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
 #ifdef HAS_UPNP
 			g_application.StartUPnP();
 #endif
+			g_rssManager.Start();
 			g_weatherManager.Refresh();
 			// TODO: Add the other services smb, etc
 		}
@@ -266,6 +268,7 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
 
 			g_application.StopTimeServer();
 //			g_application.StopFtpServer();
+			g_rssManager.Stop();
 		}
 		break;
 	}

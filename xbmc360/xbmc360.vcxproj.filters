@@ -1055,6 +1055,12 @@
     <ClInclude Include="utils\HttpHeader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="utils\HTMLUtil.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\RssReader.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
     <ClInclude Include="GUILargeTextureManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1830,6 +1836,12 @@
     </ClCompile>
     <ClCompile Include="utils\HttpHeader.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\HTMLUtil.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\RssReader.cpp">
+      <Filter>Source Files\utils</Filter>
     </ClCompile>
     <ClCompile Include="filesystem\UPnPFile.cpp">
       <Filter>Source Files\filesystem</Filter>

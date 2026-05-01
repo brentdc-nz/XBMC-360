@@ -23,8 +23,9 @@
 #define CURL_DISABLE_FILE    1
 #define CURL_DISABLE_FTP     1
 
-/* No SSL/TLS on Xbox 360 */
-#define CURL_DISABLE_CRYPTO_AUTH 1
+/* SSL/TLS via mbedTLS */
+#define USE_MBEDTLS 1
+#define MBEDTLS_CONFIG_FILE "mbedtls/config-xbox360.h"
 
 /* Use synchronous DNS (Xbox 360 doesn't have getaddrinfo_a) */
 #define USE_SYNC_DNS 1

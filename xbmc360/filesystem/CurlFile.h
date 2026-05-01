@@ -91,6 +91,10 @@ public:
     bool Get(const CStdString& strURL, CStdString& strHTML);
     bool ReadData(CStdString& strHTML);
 
+    void Cancel();
+    void SetUserAgent(CStdString sUserAgent)                   { m_userAgent = sUserAgent; }
+    void SetTimeout(int connecttimeout)                        { m_connecttimeout = connecttimeout; }
+
 protected:
     void SetCommonOptions(CReadState* state);
 
@@ -98,9 +102,11 @@ protected:
     unsigned int    m_bufferSize;
 
     CStdString      m_url;
+    CStdString      m_userAgent;
     bool            m_opened;
     bool            m_seekable;
     bool            m_multisession;
+    int             m_connecttimeout;
     int             m_httpresponse;
 };
 

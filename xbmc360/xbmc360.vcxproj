@@ -549,11 +549,13 @@
     <ClInclude Include="utils\JobManager.h" />
     <ClInclude Include="utils\LabelFormatter.h" />
     <ClInclude Include="utils\Log.h" />
+    <ClInclude Include="utils\HTMLUtil.h" />
     <ClInclude Include="utils\HttpHeader.h" />
     <ClInclude Include="utils\MathUtils.h" />
     <ClInclude Include="utils\md5.h" />
     <ClInclude Include="utils\POUtils.h" />
     <ClInclude Include="utils\RingBuffer.h" />
+    <ClInclude Include="utils\RssReader.h" />
     <ClInclude Include="utils\SharedSection.h" />
     <ClInclude Include="utils\SingleLock.h" />
     <ClInclude Include="utils\Splash.h" />
@@ -824,10 +826,12 @@
     <ClCompile Include="utils\JobManager.cpp" />
     <ClCompile Include="utils\LabelFormatter.cpp" />
     <ClCompile Include="utils\Log.cpp" />
+    <ClCompile Include="utils\HTMLUtil.cpp" />
     <ClCompile Include="utils\HttpHeader.cpp" />
     <ClCompile Include="utils\md5.cpp" />
     <ClCompile Include="utils\POUtils.cpp" />
     <ClCompile Include="utils\RingBuffer.cpp" />
+    <ClCompile Include="utils\RssReader.cpp" />
     <ClCompile Include="utils\SharedSection.cpp" />
     <ClCompile Include="utils\SingleLock.cpp" />
     <ClCompile Include="utils\Splash.cpp" />
