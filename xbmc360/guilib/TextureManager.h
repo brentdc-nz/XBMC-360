@@ -4,6 +4,7 @@
 #include "utils\Stdafx.h"
 #include "utils\stdstring.h"
 #include <vector>
+#include <list>
 
 using namespace std;
 
@@ -76,18 +77,24 @@ public:
 	CGUITextureManager(void);
 	virtual ~CGUITextureManager(void);
 
+	void StartPreLoad();
+	void PreLoad(const CStdString& strTextureName);
+	void EndPreLoad();
+	void FlushPreLoad();
+	bool HasTexture(const CStdString &textureName, CStdString *path = NULL, int *bundle = NULL, int *size = NULL);
+	bool CanLoad(const CStdString &texturePath) const;     // Returns true if the texture manager can load this texture
 	int Load(const CStdString& strTextureName, bool checkBundleOnly = false);
 	const CTexture &GetTexture(const CStdString& strTextureName);
-
-	void Flush();
+	void ReleaseTexture(const CStdString& strTextureName);
 	void Cleanup();
-
+	void Dump() const;
+	unsigned int GetMemoryUsage() const;
+	void Flush();
 	CStdString GetTexturePath(const CStdString& textureName, bool directory = false);
 
 	void AddTexturePath(const CStdString &texturePath);    // Add a new path to the paths to check when loading media
 	void SetTexturePath(const CStdString &texturePath);    // Set a single path as the path to check when loading media (clear then add)
 	void RemoveTexturePath(const CStdString &texturePath); // Remove a path from the paths to check when loading media
-	bool CanLoad(const CStdString &texturePath) const;     // Returns true if the texture manager can load this texture
 
 protected:
 	CStdString m_strMediaDir;
@@ -95,6 +102,7 @@ protected:
 	vector<CTextureMap*> m_vecTextures;
 	typedef   vector<CTextureMap*>::iterator ivecTextures;
 
+	std::list<CStdString> m_PreLoadNames;
 	std::vector<CStdString> m_texturePaths;
 };
 

@@ -1,4 +1,5 @@
 #include "Application.h"
+#include "GUILargeTextureManager.h"
 #include "guilib\GraphicContext.h"
 #include "utils\Log.h"
 #include "utils\Util.h"
@@ -63,6 +64,7 @@ using namespace PLAYLIST;
 CStdString g_LoadErrorStr;
 
 CApplication::CApplication() 
+: m_ctrDpad(220, 220), m_itemCurrentFile(new CFileItem), m_progressTrackingItem(new CFileItem)
 {
 	m_pPlayer = NULL;
 	m_iPlaySpeed = 1;
@@ -72,9 +74,7 @@ CApplication::CApplication()
 	m_bScreenSave = false;
 	m_bInitializing = true;
 	m_splash = NULL;
-	m_itemCurrentFile = CFileItemPtr(new CFileItem);
 	m_nextPlaylistItem = -1;
-	m_progressTrackingItem = CFileItemPtr(new CFileItem);
 	m_progressTrackingPlayCountUpdate = false;
 }
 
@@ -255,6 +255,8 @@ bool CApplication::Initialize()
 	m_slowTimer.StartZero();
 
 	g_windowManager.ActivateWindow(WINDOW_HOME);
+
+	m_ctrDpad.SetDelays(100, 500);
 
 	if(m_splash)
 		m_splash->Stop();
@@ -451,6 +453,9 @@ void CApplication::ProcessSlow()
 	if(g_guiSettings.GetString("screensaver.mode") != "None")
 		CheckScreenSaver();
 
+	if (!IsPlayingVideo())
+		g_largeTextureManager.CleanupUnusedImages();
+
 #ifdef HAS_UPNP
 	// Update upnp renderer state
 	if (CUPnP::IsInstantiated())
@@ -467,91 +472,22 @@ void CApplication::ProcessSlow()
 // case of the analog sticks which can produce more than 1 key event.)
 bool CApplication::ProcessGamepad(float frameTime)
 {
-	if(m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_A)
-	{
-		CKey key(KEY_BUTTON_A);		
-		if (OnKey(key)) return true;
-	}
+	// Handle the gamepad button presses.  We check for button down,
+	// then call OnKey() which handles the translation to actions, and sends the
+	// action to our window manager's OnAction() function, which filters the messages
+	// to where they're supposed to end up, returning true if the message is successfully
+	// processed.  If OnKey() returns false, then the key press wasn't processed at all,
+	// and we can safely process the next key (or next check on the same key in the
+	// case of the analog sticks which can produce more than 1 key event.)
 
-	if(m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_B)
-	{
-		CKey key(KEY_BUTTON_B);		
-		if (OnKey(key)) return true;
-	}
+	WORD wButtons = m_DefaultGamepad.wButtons;
+	WORD wDpad = wButtons & (XINPUT_GAMEPAD_DPAD_UP | XINPUT_GAMEPAD_DPAD_DOWN | XINPUT_GAMEPAD_DPAD_LEFT | XINPUT_GAMEPAD_DPAD_RIGHT);
 
-	if(m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_X)
-	{
-		CKey key(KEY_BUTTON_X);		
-		if (OnKey(key)) return true;
-	}
+	BYTE bLeftTrigger = m_DefaultGamepad.bLeftTrigger;
+	BYTE bRightTrigger = m_DefaultGamepad.bRightTrigger;
 
-	if(m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_Y)
-	{
-		CKey key(KEY_BUTTON_Y);		
-		if (OnKey(key)) return true;
-	}
-
-	if(m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_DPAD_UP)
-	{
-		CKey key(KEY_BUTTON_DPAD_UP);		
-		if (OnKey(key)) return true;
-	}	
-	
-	if(m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_DPAD_DOWN)
-	{
-		CKey key(KEY_BUTTON_DPAD_DOWN);		
-		if (OnKey(key)) return true;
-	}	
-
-	if(m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_DPAD_LEFT)
-	{
-		CKey key(KEY_BUTTON_DPAD_LEFT);		
-		if (OnKey(key)) return true;
-	}	
-	
-	if(m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_DPAD_RIGHT)
-	{
-		CKey key(KEY_BUTTON_DPAD_RIGHT);		
-		if (OnKey(key)) return true;
-	}	
-
-	if(m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_START)
-	{
-		CKey key(KEY_BUTTON_START);		
-		if (OnKey(key)) return true;
-	}
-
-	if(m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_BACK)
-	{
-		CKey key(KEY_BUTTON_BACK);		
-		if (OnKey(key)) return true;
-	}
-
-	BYTE bLeftTrigger = m_DefaultGamepad.bLeftTrigger;//m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_LEFT_TRIGGER];
-	BYTE bRightTrigger = m_DefaultGamepad.bRightTrigger;//m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_RIGHT_TRIGGER];
-
-	if (m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_LEFT_THUMB)
-	{
-		CKey key(KEY_BUTTON_LEFT_THUMB_BUTTON, bLeftTrigger, bRightTrigger, m_DefaultGamepad.fX1, m_DefaultGamepad.fY1, m_DefaultGamepad.fX2, m_DefaultGamepad.fY2, frameTime);
-		if (OnKey(key)) return true;
-	}
-	if (m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_THUMB)
-	{
-		CKey key(KEY_BUTTON_RIGHT_THUMB_BUTTON, bLeftTrigger, bRightTrigger, m_DefaultGamepad.fX1, m_DefaultGamepad.fY1, m_DefaultGamepad.fX2, m_DefaultGamepad.fY2, frameTime);
-		if (OnKey(key)) return true;
-	}
-
-	if(m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)
-	{
-		CKey key(KEY_BUTTON_LEFT_SHOULDER);		
-		if (OnKey(key)) return true;
-	}
-
-	if(m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)
-	{
-		CKey key(KEY_BUTTON_RIGHT_SHOULDER);		
-		if (OnKey(key)) return true;
-	}
+	// Pass dpad and triggers through the delay controller
+	WORD wDir = m_ctrDpad.DpadInput(wDpad, 0 != bLeftTrigger, 0 != bRightTrigger);
 
 	// Map all controller & remote actions to their keys
 	if (m_DefaultGamepad.fX1 || m_DefaultGamepad.fY1)
@@ -589,7 +525,6 @@ bool CApplication::ProcessGamepad(float frameTime)
 		else if (m_DefaultGamepad.fX2 != 0)
 		{
 			newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_UP;
-			//m_DefaultGamepad.fY2 = 0.00001f; // small amount of movement
 		}
 	}
 	else if (lastRightStickKey == KEY_BUTTON_RIGHT_THUMB_STICK_LEFT || lastRightStickKey == KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT)
@@ -601,7 +536,6 @@ bool CApplication::ProcessGamepad(float frameTime)
 		else if (m_DefaultGamepad.fY2 != 0)
 		{
 			newRightStickKey = KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT;
-			//m_DefaultGamepad.fX2 = 0.00001f; // small amount of movement
 		}
 	}
 	else
@@ -620,7 +554,7 @@ bool CApplication::ProcessGamepad(float frameTime)
 	{
 		// Was held down last time - and we have a new key now
 		// post old key reset message...
-		CKey key(lastRightStickKey/*, 0, 0, 0, 0, 0, 0*/);
+		CKey key(lastRightStickKey, 0, 0, 0, 0, 0, 0);
 		lastRightStickKey = newRightStickKey;
 
 		if (OnKey(key)) return true;
@@ -632,13 +566,13 @@ bool CApplication::ProcessGamepad(float frameTime)
 	if (newRightStickKey)
 	{
 		CKey key(newRightStickKey, bLeftTrigger, bRightTrigger, m_DefaultGamepad.fX1, m_DefaultGamepad.fY1, m_DefaultGamepad.fX2, m_DefaultGamepad.fY2, frameTime);
-		if (OnKey(key))	return true;
+		if (OnKey(key)) return true;
 	}
 
 	// Now the left stick
 	static int lastLeftStickKey = 0;
 	int newLeftStickKey = 0;
-	
+
 	if (lastLeftStickKey == KEY_BUTTON_LEFT_THUMB_STICK_UP || lastLeftStickKey == KEY_BUTTON_LEFT_THUMB_STICK_DOWN)
 	{
 		if (m_DefaultGamepad.fY1 > 0)
@@ -654,7 +588,7 @@ bool CApplication::ProcessGamepad(float frameTime)
 			newLeftStickKey = KEY_BUTTON_LEFT_THUMB_STICK_LEFT;
 	}
 	else
-	{ 
+	{
 		// Check for a new control movement
 		if (m_DefaultGamepad.fY1 > 0 && m_DefaultGamepad.fX1 < m_DefaultGamepad.fY1 && -m_DefaultGamepad.fX1 < m_DefaultGamepad.fY1)
 			newLeftStickKey = KEY_BUTTON_LEFT_THUMB_STICK_UP;
@@ -670,32 +604,32 @@ bool CApplication::ProcessGamepad(float frameTime)
 	{
 		// Was held down last time - and we have a new key now
 		// post old key reset message...
-		CKey key(lastLeftStickKey/*, 0, 0, 0, 0, 0, 0*/);
+		CKey key(lastLeftStickKey, 0, 0, 0, 0, 0, 0);
 		lastLeftStickKey = newLeftStickKey;
-
-		if (OnKey(key))	return true;
+		if (OnKey(key)) return true;
 	}
-	
+
 	lastLeftStickKey = newLeftStickKey;
-	
+
 	// Post the new key's message
 	if (newLeftStickKey)
 	{
 		CKey key(newLeftStickKey, bLeftTrigger, bRightTrigger, m_DefaultGamepad.fX1, m_DefaultGamepad.fY1, m_DefaultGamepad.fX2, m_DefaultGamepad.fY2, frameTime);
-		if (OnKey(key))	return true;
+		if (OnKey(key)) return true;
 	}
 
 	// Trigger detection
 	static int lastTriggerKey = 0;
 	int newTriggerKey = 0;
-	
+
 	if (bLeftTrigger)
 		newTriggerKey = KEY_BUTTON_LEFT_ANALOG_TRIGGER;
 	else if (bRightTrigger)
 		newTriggerKey = KEY_BUTTON_RIGHT_ANALOG_TRIGGER;
+
 	if (lastTriggerKey && newTriggerKey != lastTriggerKey)
 	{
-		// was held down last time - and we have a new key now
+		// Was held down last time - and we have a new key now
 		// post old key reset message...
 		CKey key(lastTriggerKey, 0, 0, 0, 0, 0, 0);
 		lastTriggerKey = newTriggerKey;
@@ -703,11 +637,94 @@ bool CApplication::ProcessGamepad(float frameTime)
 	}
 
 	lastTriggerKey = newTriggerKey;
-	
+
 	// Post the new key's message
 	if (newTriggerKey)
 	{
 		CKey key(newTriggerKey, bLeftTrigger, bRightTrigger, m_DefaultGamepad.fX1, m_DefaultGamepad.fY1, m_DefaultGamepad.fX2, m_DefaultGamepad.fY2, frameTime);
+		if (OnKey(key)) return true;
+	}
+
+	// Now the digital buttons via the delay controller...
+	if ( wDir & DC_LEFTTRIGGER)
+	{
+		CKey key(KEY_BUTTON_LEFT_TRIGGER, bLeftTrigger, bRightTrigger, m_DefaultGamepad.fX1, m_DefaultGamepad.fY1, m_DefaultGamepad.fX2, m_DefaultGamepad.fY2, frameTime);
+		if (OnKey(key)) return true;
+	}
+	if ( wDir & DC_RIGHTTRIGGER)
+	{
+		CKey key(KEY_BUTTON_RIGHT_TRIGGER, bLeftTrigger, bRightTrigger, m_DefaultGamepad.fX1, m_DefaultGamepad.fY1, m_DefaultGamepad.fX2, m_DefaultGamepad.fY2, frameTime);
+		if (OnKey(key)) return true;
+	}
+	if ( wDir & DC_LEFT )
+	{
+		CKey key(KEY_BUTTON_DPAD_LEFT, bLeftTrigger, bRightTrigger, m_DefaultGamepad.fX1, m_DefaultGamepad.fY1, m_DefaultGamepad.fX2, m_DefaultGamepad.fY2, frameTime);
+		if (OnKey(key)) return true;
+	}
+	if ( wDir & DC_RIGHT)
+	{
+		CKey key(KEY_BUTTON_DPAD_RIGHT, bLeftTrigger, bRightTrigger, m_DefaultGamepad.fX1, m_DefaultGamepad.fY1, m_DefaultGamepad.fX2, m_DefaultGamepad.fY2, frameTime);
+		if (OnKey(key)) return true;
+	}
+	if ( wDir & DC_UP )
+	{
+		CKey key(KEY_BUTTON_DPAD_UP, bLeftTrigger, bRightTrigger, m_DefaultGamepad.fX1, m_DefaultGamepad.fY1, m_DefaultGamepad.fX2, m_DefaultGamepad.fY2, frameTime);
+		if (OnKey(key)) return true;
+	}
+	if ( wDir & DC_DOWN )
+	{
+		CKey key(KEY_BUTTON_DPAD_DOWN, bLeftTrigger, bRightTrigger, m_DefaultGamepad.fX1, m_DefaultGamepad.fY1, m_DefaultGamepad.fX2, m_DefaultGamepad.fY2, frameTime);
+		if (OnKey(key)) return true;
+	}
+
+	if (m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_BACK)
+	{
+		CKey key(KEY_BUTTON_BACK, bLeftTrigger, bRightTrigger, m_DefaultGamepad.fX1, m_DefaultGamepad.fY1, m_DefaultGamepad.fX2, m_DefaultGamepad.fY2, frameTime);
+		if (OnKey(key)) return true;
+	}
+	if (m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_START)
+	{
+		CKey key(KEY_BUTTON_START, bLeftTrigger, bRightTrigger, m_DefaultGamepad.fX1, m_DefaultGamepad.fY1, m_DefaultGamepad.fX2, m_DefaultGamepad.fY2, frameTime);
+		if (OnKey(key)) return true;
+	}
+	if (m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_LEFT_THUMB)
+	{
+		CKey key(KEY_BUTTON_LEFT_THUMB_BUTTON, bLeftTrigger, bRightTrigger, m_DefaultGamepad.fX1, m_DefaultGamepad.fY1, m_DefaultGamepad.fX2, m_DefaultGamepad.fY2, frameTime);
+		if (OnKey(key)) return true;
+	}
+	if (m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_THUMB)
+	{
+		CKey key(KEY_BUTTON_RIGHT_THUMB_BUTTON, bLeftTrigger, bRightTrigger, m_DefaultGamepad.fX1, m_DefaultGamepad.fY1, m_DefaultGamepad.fX2, m_DefaultGamepad.fY2, frameTime);
+		if (OnKey(key)) return true;
+	}
+	if (m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_A)
+	{
+		CKey key(KEY_BUTTON_A, bLeftTrigger, bRightTrigger, m_DefaultGamepad.fX1, m_DefaultGamepad.fY1, m_DefaultGamepad.fX2, m_DefaultGamepad.fY2, frameTime);
+		if (OnKey(key)) return true;
+	}
+	if (m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_B)
+	{
+		CKey key(KEY_BUTTON_B, bLeftTrigger, bRightTrigger, m_DefaultGamepad.fX1, m_DefaultGamepad.fY1, m_DefaultGamepad.fX2, m_DefaultGamepad.fY2, frameTime);
+		if (OnKey(key)) return true;
+	}
+	if (m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_X)
+	{
+		CKey key(KEY_BUTTON_X, bLeftTrigger, bRightTrigger, m_DefaultGamepad.fX1, m_DefaultGamepad.fY1, m_DefaultGamepad.fX2, m_DefaultGamepad.fY2, frameTime);
+		if (OnKey(key)) return true;
+	}
+	if (m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_Y)
+	{
+		CKey key(KEY_BUTTON_Y, bLeftTrigger, bRightTrigger, m_DefaultGamepad.fX1, m_DefaultGamepad.fY1, m_DefaultGamepad.fX2, m_DefaultGamepad.fY2, frameTime);
+		if (OnKey(key)) return true;
+	}
+	if (m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)
+	{
+		CKey key(KEY_BUTTON_LEFT_SHOULDER, bLeftTrigger, bRightTrigger, m_DefaultGamepad.fX1, m_DefaultGamepad.fY1, m_DefaultGamepad.fX2, m_DefaultGamepad.fY2, frameTime);
+		if (OnKey(key)) return true;
+	}
+	if (m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)
+	{
+		CKey key(KEY_BUTTON_RIGHT_SHOULDER, bLeftTrigger, bRightTrigger, m_DefaultGamepad.fX1, m_DefaultGamepad.fY1, m_DefaultGamepad.fX2, m_DefaultGamepad.fY2, frameTime);
 		if (OnKey(key)) return true;
 	}
 

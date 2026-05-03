@@ -49,8 +49,6 @@ void CGUIViewControl::SetCurrentView(int viewMode)
 
 	if (m_currentView >= 0 && m_currentView < (int)m_visibleViews.size())
 		previousView = m_visibleViews[m_currentView];
-  
-	int iDickTest = m_visibleViews.size();
 
 	UpdateViewVisibility();
 

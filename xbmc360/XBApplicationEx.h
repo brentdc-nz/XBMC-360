@@ -32,6 +32,15 @@ protected:
 	IDirect3DDevice9*				m_pd3dDevice;	
 	D3DPRESENT_PARAMETERS			m_d3dpp;	
 
+	// Variables for timing
+	FLOAT m_fTime;             // Current absolute time in seconds
+	FLOAT m_fElapsedTime;      // Elapsed absolute time since last frame
+	FLOAT m_fAppTime;          // Current app time in seconds
+	FLOAT m_fElapsedAppTime;   // Elapsed app time since last frame
+	BOOL m_bPaused;            // Whether app time is paused by user
+	WCHAR m_strFrameRate[20];  // Frame rate written to a string
+	HANDLE m_hFrameCounter;    // Handle to frame rate perf counter
+
 	// Members to init the XBINPUT devices.
 	GAMEPAD	   m_Gamepads[4];
 	GAMEPAD    m_DefaultGamepad;

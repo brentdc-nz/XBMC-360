@@ -13,6 +13,7 @@
 #include "services\NTPClient\WinSckNTP.h"
 #include "services\FTPServer\FTPServer.h"
 #include "ApplicationMessenger.h"
+#include "utils\DelayController.h"
 #include "filesystem\DrivesManager.h"
 #include "guilib\dialogs\GUIDialogSeekBar.h"
 #include "guilib\dialogs\GUIDialogVolumeBar.h"
@@ -110,6 +111,8 @@ public:
 	CGUIDialogVolumeBar m_guiDialogVolumeBar;
 	CGUIDialogSeekBar m_guiDialogSeekBar;
 	CGUIDialogMuteBug m_guiDialogMuteBug;
+
+	CDelayController m_ctrDpad;
 
 	CIdleThread& GetIdleThread() { return m_idleThread; };
 	CNetwork& getNetwork() { return m_network; };

@@ -732,16 +732,16 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
 	QueryPerformanceCounter(&slend);
 
 	// and now allocate resources
-//	g_TextureManager.StartPreLoad();
+	g_TextureManager.StartPreLoad();
 	CGUIControlGroup::PreAllocResources();
-//	g_TextureManager.EndPreLoad();
+	g_TextureManager.EndPreLoad();
 
 	LARGE_INTEGER plend;
 	QueryPerformanceCounter(&plend);
 
 	CGUIControlGroup::AllocResources();
 
-//	g_TextureManager.FlushPreLoad();
+	g_TextureManager.FlushPreLoad();
 
 #ifdef _DEBUG
 	LARGE_INTEGER end, freq;
@@ -757,7 +757,7 @@ void CGUIWindow::FreeResources(bool forceUnload /*= FALSE */)
 {
 	m_bAllocated = false;
 	CGUIControlGroup::FreeResources();
-	//g_TextureManager.Dump();
+
 	// Unload the skin
 	if (m_loadOnDemand || forceUnload) ClearAll();
 }

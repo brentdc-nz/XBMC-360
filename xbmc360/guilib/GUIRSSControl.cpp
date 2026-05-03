@@ -94,6 +94,7 @@ void CGUIRSSControl::Render()
 	if (g_guiSettings.GetBool("lookandfeel.enablerssfeeds") && g_rssManager.IsActive())
 	{
 		CSingleLock lock(m_criticalSection);
+
 		// Create RSS background/worker thread if needed
 		if (m_pReader == NULL)
 		{

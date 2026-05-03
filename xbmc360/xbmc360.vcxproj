@@ -540,6 +540,7 @@
     <ClInclude Include="utils\CRC_32.h" />
     <ClInclude Include="utils\Crc32.h" />
     <ClInclude Include="utils\CriticalSection.h" />
+    <ClInclude Include="utils\DelayController.h" />
     <ClInclude Include="utils\Event.h" />
     <ClInclude Include="utils\Idle.h" />
     <ClInclude Include="utils\InfoLoader.h" />
@@ -818,6 +819,7 @@
     <ClCompile Include="utils\CRC_32.cpp" />
     <ClCompile Include="utils\Crc32.cpp" />
     <ClCompile Include="utils\CriticalSection.cpp" />
+    <ClCompile Include="utils\DelayController.cpp" />
     <ClCompile Include="utils\Event.cpp" />
     <ClCompile Include="utils\Idle.cpp" />
     <ClCompile Include="utils\InfoLoader.cpp" />

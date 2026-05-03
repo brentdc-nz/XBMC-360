@@ -251,13 +251,12 @@ void CGUITextureBase::Render(float left, float top, float right, float bottom, f
 void CGUITextureBase::PreAllocResources()
 {
 	FreeResources();
-/*
+
 	if (!m_info.useLarge)
-		g_TextureManager.PreLoad(m_info.filename);  //TODO
+		g_TextureManager.PreLoad(m_info.filename);
 
 	if (!m_info.diffuse.IsEmpty())
-		g_TextureManager.PreLoad(m_info.diffuse); //TODO
-*/
+		g_TextureManager.PreLoad(m_info.diffuse);
 }
 
 void CGUITextureBase::AllocResources()
@@ -439,9 +438,11 @@ void CGUITextureBase::FreeResources(bool immediately /* = false */)
 {
 	if (m_isAllocated == LARGE || m_isAllocated == LARGE_FAILED)
 		g_largeTextureManager.ReleaseImage(m_info.filename, immediately || (m_isAllocated == LARGE_FAILED));
+	else if (m_isAllocated == NORMAL && m_texture.size())
+		g_TextureManager.ReleaseTexture(m_info.filename);
 
-	// NOTE: 360 port - CGUITextureManager does not have ReleaseTexture().
-	// Textures are ref-counted internally via CTextureMap::Release() / Load().
+	if (m_diffuse.size())
+		g_TextureManager.ReleaseTexture(m_info.diffuse);
 	m_diffuse.Reset();
 
 	m_texture.Reset();

@@ -10,7 +10,15 @@ CXBApplicationEX::CXBApplicationEX()
 {
 	m_pD3D = NULL;
 	m_pd3dDevice = NULL;
-	
+
+	// Variables to perform app timing
+	m_bPaused = FALSE;
+	m_fTime = 0.0f;
+	m_fElapsedTime = 0.0f;
+	m_fAppTime = 0.0f;
+	m_fElapsedAppTime = 0.0f;
+	m_strFrameRate[0] = L'\0';
+
 	// Set up the presentation parameters for a double-buffered
 	// 32-bit display using depth-stencil. Override these parameters in
 	// your derived class as your app requires.
@@ -53,12 +61,112 @@ int CXBApplicationEX::Run()
 {
 	CLog::Log(LOGNOTICE, "Running the application..." );
 
+	// Get the frequency of the timer
+	LARGE_INTEGER qwTicksPerSec;
+	QueryPerformanceFrequency( &qwTicksPerSec );
+	FLOAT fSecsPerTick = 1.0f / (FLOAT)qwTicksPerSec.QuadPart;
+
+	// Save the start time
+	LARGE_INTEGER qwTime, qwLastTime, qwElapsedTime;
+	QueryPerformanceCounter( &qwTime );
+	qwLastTime.QuadPart = qwTime.QuadPart;
+
+	LARGE_INTEGER qwAppTime, qwElapsedAppTime;
+	qwAppTime.QuadPart = 0;
+	qwElapsedTime.QuadPart = 0;
+	qwElapsedAppTime.QuadPart = 0;
+
+	BYTE processExceptionCount = 0;
+	BYTE frameMoveExceptionCount = 0;
+	BYTE renderExceptionCount = 0;
+
+	const BYTE MAX_EXCEPTION_COUNT = 10;
+
 	// Run the game loop, animating and rendering frames
 	while(!m_bStop)
 	{
-		Process();
-		FrameMove();
-		Render();
+		//-----------------------------------------
+		// Perform app timing
+		//-----------------------------------------
+
+		// Get the current time (keep in LARGE_INTEGER format for precision)
+		QueryPerformanceCounter( &qwTime );
+		qwElapsedTime.QuadPart = qwTime.QuadPart - qwLastTime.QuadPart;
+		qwLastTime.QuadPart = qwTime.QuadPart;
+		if ( m_bPaused )
+			qwElapsedAppTime.QuadPart = 0;
+		else
+			qwElapsedAppTime.QuadPart = qwElapsedTime.QuadPart;
+		qwAppTime.QuadPart += qwElapsedAppTime.QuadPart;
+
+		// Store the current time values as floating point
+		m_fTime = fSecsPerTick * ((FLOAT)(qwTime.QuadPart));
+		m_fElapsedTime = fSecsPerTick * ((FLOAT)(qwElapsedTime.QuadPart));
+		m_fAppTime = fSecsPerTick * ((FLOAT)(qwAppTime.QuadPart));
+		m_fElapsedAppTime = fSecsPerTick * ((FLOAT)(qwElapsedAppTime.QuadPart));
+
+		//-----------------------------------------
+		// Animate and render a frame
+		//-----------------------------------------
+#ifndef _DEBUG
+		try
+		{
+#endif
+			Process();
+			processExceptionCount = 0;
+#ifndef _DEBUG
+		}
+		catch (...)
+		{
+			CLog::Log(LOGERROR, "exception in CApplication::Process()");
+			processExceptionCount++;
+			if (processExceptionCount > MAX_EXCEPTION_COUNT)
+			{
+				CLog::Log(LOGERROR, "CApplication::Process(), too many exceptions");
+				throw;
+			}
+		}
+#endif
+
+#ifndef _DEBUG
+		try
+		{
+#endif
+			FrameMove();
+			frameMoveExceptionCount = 0;
+#ifndef _DEBUG
+		}
+		catch (...)
+		{
+			CLog::Log(LOGERROR, "exception in CApplication::FrameMove()");
+			frameMoveExceptionCount++;
+			if (frameMoveExceptionCount > MAX_EXCEPTION_COUNT)
+			{
+				CLog::Log(LOGERROR, "CApplication::FrameMove(), too many exceptions");
+				throw;
+			}
+		}
+#endif
+
+#ifndef _DEBUG
+		try
+		{
+#endif
+			Render();
+			renderExceptionCount = 0;
+#ifndef _DEBUG
+		}
+		catch (...)
+		{
+			CLog::Log(LOGERROR, "exception in CApplication::Render()");
+			renderExceptionCount++;
+			if (renderExceptionCount > MAX_EXCEPTION_COUNT)
+			{
+				CLog::Log(LOGERROR, "CApplication::Render(), too many exceptions");
+				throw;
+			}
+		}
+#endif
 	}
 
 //	Destroy(); // Called from CApplication derived class

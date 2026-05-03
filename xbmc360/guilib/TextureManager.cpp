@@ -28,6 +28,8 @@
 #include "filesystem\Directory.h"
 #include "filesystem\File.h"
 #include "SkinInfo.h"
+#include "pictures\Picture.h"
+#include "AdvancedSettings.h"
 
 CGUITextureManager g_TextureManager;
 
@@ -163,17 +165,11 @@ const CStdString& CTextureMap::GetName() const
 
 void CTextureMap::Add(LPDIRECT3DTEXTURE9 pTexture, int delay)
 {
-#ifdef HAS_SDL_OPENGL
-  CGLTexture *glTexture = new CGLTexture(pTexture, false);
-  m_texture.Add(glTexture, delay);
-#else
   m_texture.Add(pTexture, delay);
-#endif
 
   D3DSURFACE_DESC desc;
   if (pTexture && D3D_OK == pTexture->GetLevelDesc(0, &desc))
-  //  m_memUsage += desc.Size;
-  int idick = 0;
+    m_memUsage += desc.Width * desc.Height * 4; // estimate 4 bytes per pixel for LIN_A8R8G8B8
 }
 
 bool CTextureMap::Release()
@@ -226,28 +222,102 @@ CGUITextureManager::CGUITextureManager(void)
 
 CGUITextureManager::~CGUITextureManager(void)
 {
+	Cleanup();
+}
+
+void CGUITextureManager::StartPreLoad()
+{
+	m_PreLoadNames.clear();
+}
+
+void CGUITextureManager::PreLoad(const CStdString& strTextureName)
+{
+	if (strTextureName.c_str()[1] == ':' || strTextureName == "-")
+		return;
+
+	// Already loaded?
+	for (int i = 0; i < (int)m_vecTextures.size(); ++i)
+	{
+		CTextureMap *pMap = m_vecTextures[i];
+		if (pMap->GetName() == strTextureName)
+			return;
+	}
+
+	// Already in preload list?
+	for (std::list<CStdString>::iterator i = m_PreLoadNames.begin(); i != m_PreLoadNames.end(); ++i)
+	{
+		if (*i == strTextureName)
+			return;
+	}
+
+	m_PreLoadNames.push_back(strTextureName);
+}
+
+void CGUITextureManager::EndPreLoad()
+{
+	// Batch-load all queued textures into the cache now
+	for (std::list<CStdString>::iterator i = m_PreLoadNames.begin(); i != m_PreLoadNames.end(); ++i)
+	{
+		Load(*i);
+	}
+}
+
+void CGUITextureManager::FlushPreLoad()
+{
+	m_PreLoadNames.clear();
+}
+
+bool CGUITextureManager::HasTexture(const CStdString &textureName, CStdString *path, int *bundle, int *size)
+{
+	// default values
+	if (bundle) *bundle = -1;
+	if (size) *size = 0;
+	if (path) *path = textureName;
+
+	if (!CanLoad(textureName))
+		return false;
+
+	// Check our loaded textures
+	for (int i = 0; i < (int)m_vecTextures.size(); ++i)
+	{
+		CTextureMap *pMap = m_vecTextures[i];
+		if (pMap->GetName() == textureName)
+		{
+			if (size) *size = 1;
+			return true;
+		}
+	}
+
+	CStdString fullPath = GetTexturePath(textureName);
+	if (path)
+		*path = fullPath;
+
+	return !fullPath.IsEmpty();
 }
 
 int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleOnly /*= false */)
 {
-	// First check of texture exists...
-	for (int i=0; i < (int)m_vecTextures.size(); ++i)
-	{
-		CTextureMap *pMap = m_vecTextures[i];
-		if (pMap->GetName() == strTextureName)
-		{
-			return 1;
-		}
-	}
-  
-	LPDIRECT3DTEXTURE9 pTexture;
-	
 	CStdString strPath;
+	int bundle = -1;
+	int size = 0;
+	if (!HasTexture(strTextureName, &strPath, &bundle, &size))
+		return 0;
 
-	if (CURL::IsFullPath(strTextureName))
-		strPath = strTextureName;
-	else
-		strPath = g_SkinInfo.GetSkinPath("media\\" + strTextureName);
+	if (size) // we found the texture already loaded
+		return size;
+
+	if (checkBundleOnly && bundle == -1)
+		return 0;
+
+	LPDIRECT3DTEXTURE9 pTexture;
+
+	if (strPath.IsEmpty())
+	{
+		if (CURL::IsFullPath(strTextureName))
+			strPath = strTextureName;
+		else
+			strPath = g_SkinInfo.GetSkinPath("media\\" + strTextureName);
+	}
 
 	if (strPath.Right(4).ToLower() == ".gif")
 	{
@@ -315,16 +385,34 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
 	D3DXIMAGE_INFO info;
 	memset(&info, 0, sizeof(D3DXIMAGE_INFO)); // Stop compiler warning
 
-	g_graphicsContext.TLock();
-	HRESULT hr = D3DXCreateTextureFromFileEx(g_graphicsContext.Get3DDevice(), strPath.c_str(),
-	   D3DX_DEFAULT_NONPOW2, D3DX_DEFAULT_NONPOW2, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED,
-       D3DX_FILTER_NONE, D3DX_FILTER_NONE, 0, &info, NULL, &pTexture);
-	g_graphicsContext.TUnlock();
-
-	if(hr != D3D_OK)
+	// if the file is a thumbnail, load with picture loader (fast jpeg decoder), and limit to our chosen thumbsize
+	// as thumbnails could be slightly bigger on disk due to libjpeg scaling
+	if (URIUtils::GetExtension(strPath).Equals(".tbn"))
 	{
-		CLog::Log(LOGWARNING, "Texture manager unable to find file: %s \n", strPath.c_str());
-		return NULL;
+		CPicture pic;
+		pTexture = pic.Load(strPath, g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize);
+		info.Width = pic.GetWidth();
+		info.Height = pic.GetHeight();
+	}
+	else
+	{
+		g_graphicsContext.TLock();
+		HRESULT hr = D3DXCreateTextureFromFileEx(g_graphicsContext.Get3DDevice(), strPath.c_str(),
+		   D3DX_DEFAULT_NONPOW2, D3DX_DEFAULT_NONPOW2, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED,
+		   D3DX_FILTER_NONE, D3DX_FILTER_NONE, 0, &info, NULL, &pTexture);
+		g_graphicsContext.TUnlock();
+
+		if(hr != D3D_OK)
+		{
+			CLog::Log(LOGWARNING, "Texture manager unable to find file: %s \n", strPath.c_str());
+			return NULL;
+		}
+	}
+
+	if (!pTexture)
+	{
+		CLog::Log(LOGWARNING, "Texture manager unable to load file: %s \n", strPath.c_str());
+		return 0;
 	}
 
 	CTextureMap* pMap = new CTextureMap(strTextureName, info.Width, info.Height, 0, false);
@@ -353,6 +441,30 @@ const CTexture &CGUITextureManager::GetTexture(const CStdString& strTextureName)
   return emptyTexture;
 }
 
+void CGUITextureManager::ReleaseTexture(const CStdString& strTextureName)
+{
+	CSingleLock lock(g_graphicsContext);
+
+	ivecTextures i;
+	i = m_vecTextures.begin();
+	while (i != m_vecTextures.end())
+	{
+		CTextureMap* pMap = *i;
+		if (pMap->GetName() == strTextureName)
+		{
+			if (pMap->Release())
+			{
+				//CLog::Log(LOGINFO, "  cleanup:%s", strTextureName.c_str());
+				delete pMap;
+				i = m_vecTextures.erase(i);
+			}
+			return;
+		}
+		++i;
+	}
+	CLog::Log(LOGWARNING, "%s: Unable to release texture %s", __FUNCTION__, strTextureName.c_str());
+}
+
 void CGUITextureManager::Flush()
 {
 	CSingleLock lock(g_graphicsContext);
@@ -378,15 +490,41 @@ void CGUITextureManager::Flush()
 
 void CGUITextureManager::Cleanup()
 {
+	CSingleLock lock(g_graphicsContext);
+
 	ivecTextures i;
 	i = m_vecTextures.begin();
 
 	while(i != m_vecTextures.end())
 	{
 		CTextureMap* pMap=*i;
+		CLog::Log(LOGWARNING, "%s: Having to cleanup texture %s", __FUNCTION__, pMap->GetName().c_str());
 		delete pMap;
 		i = m_vecTextures.erase(i);
 	}
+}
+
+void CGUITextureManager::Dump() const
+{
+	CStdString strLog;
+	strLog.Format("\n}}}}}}}} TEXTURE MANAGER DUMP }}}}}}}}");
+	OutputDebugString(strLog.c_str());
+	for (int i = 0; i < (int)m_vecTextures.size(); ++i)
+	{
+		m_vecTextures[i]->Dump();
+	}
+	strLog.Format("Total textures used: %i  Estimated Total Memory Usage: %u\n", m_vecTextures.size(), GetMemoryUsage());
+	OutputDebugString(strLog.c_str());
+}
+
+unsigned int CGUITextureManager::GetMemoryUsage() const
+{
+	unsigned int memUsage = 0;
+	for (int i = 0; i < (int)m_vecTextures.size(); ++i)
+	{
+		memUsage += m_vecTextures[i]->GetMemoryUsage();
+	}
+	return memUsage;
 }
 
 CStdString CGUITextureManager::GetTexturePath(const CStdString &textureName, bool directory /* = false */)
