@@ -70,6 +70,16 @@ IDirect3DVertexShader9*      CGUITextureD3D::s_pVertexShader = NULL;
 IDirect3DPixelShader9*       CGUITextureD3D::s_pPixelShader = NULL;
 IDirect3DPixelShader9*       CGUITextureD3D::s_pPixelShaderDiffuse = NULL;
 bool                         CGUITextureD3D::s_bSharedAllocated = false;
+IDirect3DPixelShader9*       CGUITextureD3D::s_pLastPixelShader = NULL;
+bool                         CGUITextureD3D::s_bLastHadDiffuse = false;
+bool                         CGUITextureD3D::s_bVertexStateSet = false;
+
+void CGUITextureD3D::ResetStateCache()
+{
+	s_pLastPixelShader = NULL;
+	s_bLastHadDiffuse = false;
+	s_bVertexStateSet = false;
+}
 
 void CGUITextureD3D::AllocateShared(LPDIRECT3DDEVICE9 pDevice)
 {
@@ -167,20 +177,40 @@ void CGUITextureD3D::Begin()
 	// Set texture
 	p3DDevice->SetTexture( 0, m_texture.m_textures[m_currentFrame] );
 
-	if (m_diffuse.size())
+	bool hasDiffuse = m_diffuse.size() > 0;
+
+	if (hasDiffuse)
 	{
 		p3DDevice->SetTexture( 1, m_diffuse.m_textures[0] );
-		p3DDevice->SetSamplerState(1, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-		p3DDevice->SetSamplerState(1, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+
+		// Only set diffuse sampler states if previous texture didn't have diffuse
+		if (!s_bLastHadDiffuse)
+		{
+			p3DDevice->SetSamplerState(1, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+			p3DDevice->SetSamplerState(1, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+		}
 	}
 
 	// Render states and stage 0 sampler states are set once per frame
 	// in CGraphicContext::ApplyStateBlock()
 
-	// Set shared vertex declaration and shaders
-	p3DDevice->SetVertexDeclaration(s_pVertexDecl);
-	p3DDevice->SetVertexShader(s_pVertexShader);
-	p3DDevice->SetPixelShader(m_diffuse.size() ? s_pPixelShaderDiffuse : s_pPixelShader);
+	// Set vertex declaration and vertex shader once per frame
+	if (!s_bVertexStateSet)
+	{
+		p3DDevice->SetVertexDeclaration(s_pVertexDecl);
+		p3DDevice->SetVertexShader(s_pVertexShader);
+		s_bVertexStateSet = true;
+	}
+
+	// Only change pixel shader if it differs from last texture's shader
+	IDirect3DPixelShader9* pDesiredShader = hasDiffuse ? s_pPixelShaderDiffuse : s_pPixelShader;
+	if (pDesiredShader != s_pLastPixelShader)
+	{
+		p3DDevice->SetPixelShader(pDesiredShader);
+		s_pLastPixelShader = pDesiredShader;
+	}
+
+	s_bLastHadDiffuse = hasDiffuse;
 }
 
 void CGUITextureD3D::End()

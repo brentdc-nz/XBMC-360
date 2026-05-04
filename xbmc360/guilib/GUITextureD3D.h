@@ -38,6 +38,15 @@ private:
 	static IDirect3DPixelShader9*		s_pPixelShader;
 	static IDirect3DPixelShader9*		s_pPixelShaderDiffuse;
 	static bool							s_bSharedAllocated;
+
+	// State cache - Avoids redundant GPU state changes between consecutive textures
+	static IDirect3DPixelShader9*		s_pLastPixelShader;
+	static bool							s_bLastHadDiffuse;
+	static bool							s_bVertexStateSet;
+
+public:
+	// Call once per frame (from ApplyStateBlock) to reset the state cache
+	static void ResetStateCache();
 };
 
 #endif //GUILIB_GUITEXTURED3D_H

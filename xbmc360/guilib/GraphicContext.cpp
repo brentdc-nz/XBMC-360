@@ -1,4 +1,5 @@
 #include "GraphicContext.h"
+#include "GUITextureD3D.h"
 #include "utils\Log.h"
 #include "Settings.h"
 #include "GuiSettings.h"
@@ -753,6 +754,9 @@ void CGraphicContext::EnablePreviewWindow(bool bEnable)
 void CGraphicContext::ApplyStateBlock()
 {
 	if (!m_pd3dDevice) return;
+
+	// Reset texture state cache so first Begin() of the frame sets state unconditionally
+	CGUITextureD3D::ResetStateCache();
 
 	// Render states shared by all GUI renderers (textures and fonts).
 	// Set once per frame to avoid redundant GPU state changes.

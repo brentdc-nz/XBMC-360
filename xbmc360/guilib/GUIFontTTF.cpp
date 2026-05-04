@@ -1,4 +1,5 @@
 #include "GUIFontTTF.h"
+#include "GUITextureD3D.h"
 #include "utils\MathUtils.h"
 #include "utils\Log.h"
 #include "GUIFontManager.h"
@@ -170,6 +171,8 @@ CGUIFontTTF::CGUIFontTTF(const CStdString& strFileName)
 	m_referenceCount = 0;
 
 	m_numCharactersRendered = 0;
+	m_batchVertexCount = 0;
+	m_lastColor = 0;
 }
 
 CGUIFontTTF::~CGUIFontTTF(void)
@@ -395,7 +398,16 @@ void CGUIFontTTF::Begin()
 		// Render states and stage 0 sampler states are set once per frame
 		// in CGraphicContext::ApplyStateBlock()
 
-		m_pD3DDevice->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
+		// Set vertex format and shaders once for the entire text batch
+		m_pD3DDevice->SetVertexDeclaration( m_pVertexDecl );
+		m_pD3DDevice->SetVertexShader( m_pVertexShader );
+		m_pD3DDevice->SetPixelShader( m_pPixelShader );
+
+		// Font shaders override texture shaders - invalidate texture state cache
+		CGUITextureD3D::ResetStateCache();
+
+		m_lastColor = 0; // Force color update on first character
+		m_batchVertexCount = 0;
 	}
 
 	// Keep track of the nested begin/end calls.
@@ -410,10 +422,22 @@ void CGUIFontTTF::End()
 	if (--m_nestedBeginCount > 0)
 		return;
 
+	// Flush any remaining batched character quads
+	FlushBatch();
+
 	// Note: TLock is held for the entire frame by DoRender()
 	m_pD3DDevice->SetTexture(0, NULL);
 
 	m_numCharactersRendered = 0;
+}
+
+void CGUIFontTTF::FlushBatch()
+{
+	if (m_batchVertexCount > 0)
+	{
+		m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, m_batchVertexCount / 3, m_vertexBatch, sizeof(CUSTOMVERTEX));
+		m_batchVertexCount = 0;
+	}
 }
 
 void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, D3DCOLOR dwColor, bool roundX)
@@ -481,15 +505,6 @@ void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, D
 
 	// Note: TLock is held for the entire frame by DoRender()
 
-#pragma warning(push)
-#pragma warning (disable:4244) // Not an issue here
-
-	// Get the color and parse into the pixel shader
-	float fInputColor[4] = { ((dwColor >> 16) & 0xFF) / 255.0, ((dwColor >> 8) & 0xFF) / 255.0, ((dwColor) & 0xFF) / 255.0, (dwColor >> 24 & 0xFF) / 255.0};
-	m_pD3DDevice->SetPixelShaderConstantF(10, fInputColor, 4);
-
-#pragma warning(pop)
-
 	m_numCharactersRendered++;
 
 	// Tex coords converted to 0..1 range
@@ -506,15 +521,30 @@ void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, D
 		{ x[3], y4, z4, tl, tb }
 	};
 
-	// Sampler states and render states are set once per frame
-	// in CGraphicContext::ApplyStateBlock()
-	// Note: TLock is held for the entire frame by DoRender()
+	// Flush batch on color change (draw pending verts with old color, then update)
+	if (dwColor != m_lastColor)
+	{
+		FlushBatch();
 
-	m_pD3DDevice->SetVertexDeclaration( m_pVertexDecl );
-	m_pD3DDevice->SetVertexShader( m_pVertexShader );
-	m_pD3DDevice->SetPixelShader( m_pPixelShader );
+#pragma warning(push)
+#pragma warning (disable:4244) // Not an issue here
+		float fInputColor[4] = { ((dwColor >> 16) & 0xFF) / 255.0, ((dwColor >> 8) & 0xFF) / 255.0, ((dwColor) & 0xFF) / 255.0, (dwColor >> 24 & 0xFF) / 255.0};
+#pragma warning(pop)
+		m_pD3DDevice->SetPixelShaderConstantF(10, fInputColor, 4);
+		m_lastColor = dwColor;
+	}
 
-	m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, Vertices, sizeof(CUSTOMVERTEX));
+	// Flush batch if full
+	if (m_batchVertexCount + 6 > MAX_BATCH_VERTICES)
+		FlushBatch();
+
+	// Append two triangles (v0,v1,v2 and v0,v2,v3) to the batch
+	m_vertexBatch[m_batchVertexCount++] = Vertices[0];
+	m_vertexBatch[m_batchVertexCount++] = Vertices[1];
+	m_vertexBatch[m_batchVertexCount++] = Vertices[2];
+	m_vertexBatch[m_batchVertexCount++] = Vertices[0];
+	m_vertexBatch[m_batchVertexCount++] = Vertices[2];
+	m_vertexBatch[m_batchVertexCount++] = Vertices[3];
 }
 
 CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr)

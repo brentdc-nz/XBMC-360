@@ -109,6 +109,14 @@ public:
 		float fTexCoord[2];
 	};
 
+	// Batched character rendering - Accumulates quads and draws in one call
+	static const DWORD MAX_BATCH_CHARS = 256;
+	static const DWORD MAX_BATCH_VERTICES = MAX_BATCH_CHARS * 6; // Triangle list: 6 verts per quad
+	CUSTOMVERTEX m_vertexBatch[MAX_BATCH_VERTICES];
+	DWORD m_batchVertexCount;
+	D3DCOLOR m_lastColor;
+	void FlushBatch();
+
 	IDirect3DVertexDeclaration9*	m_pVertexDecl; // Vertex format decl
 	IDirect3DVertexShader9*			m_pVertexShader; // Vertex Shader
 	IDirect3DPixelShader9*			m_pPixelShader;  // Pixel Shader
