@@ -1160,6 +1160,10 @@ void CApplication::DoRenderFullScreen()
 		CGUIWindowFullScreen *pFSWin = (CGUIWindowFullScreen *)g_windowManager.GetWindow(WINDOW_FULLSCREEN_VIDEO);
 		if (!pFSWin)
 			return;
+
+		// Video renderer leaves its own shaders/sampler state bound.
+		// Reset GUI render states before drawing any GUI elements.
+		g_graphicsContext.ApplyStateBlock();
 		
 		pFSWin->RenderFullScreen();
 
