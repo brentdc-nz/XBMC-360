@@ -346,6 +346,10 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
 	g_graphicsContext.SetMediaDir(strSkinPath);
 
+	// Load all bundle textures into cache now (while splash is visible)
+	// so AllocResources finds everything already in memory with zero disk I/O
+	g_TextureManager.LoadAllBundleTextures();
+
 	g_colorManager.Load(g_guiSettings.GetString("lookandfeel.skincolors"));
 
 	CLog::Log(LOGINFO, "Load fonts for skin...");

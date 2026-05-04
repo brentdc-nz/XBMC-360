@@ -2,6 +2,7 @@
 #include "FileItem.h"
 #include "FileSystem\Directory.h"
 #include "utils\URIUtils.h"
+#include "TextureManager.h"
 
 using namespace XFILE;
 
@@ -67,7 +68,6 @@ void CGUIMultiImage::FreeResources(bool immediately)
 {
 	m_image.FreeResources(immediately);
 	m_currentImage = 0;
-
 	CGUIControl::FreeResources(immediately);
 }
 
@@ -199,26 +199,29 @@ void CGUIMultiImage::LoadDirectory()
 	}
 	else
 	{
-		// Folder of images
-//		g_TextureManager.GetBundledTexturesFromPath(m_currentPath, m_files); //TODO
+		// Folder of images - check texture bundle first
+		g_TextureManager.GetBundledTexturesFromPath(m_currentPath, m_files);
 
-		// Load in our images from the directory specified
-		// m_currentPath is relative (as are all skin paths)
-		CStdString realPath = g_TextureManager.GetTexturePath(m_currentPath, true);
-
-		if(realPath.IsEmpty())
-			return;
-
-		URIUtils::AddSlashAtEnd(realPath);
-		CFileItemList items;
-		CDirectory::GetDirectory(realPath, items);
-		
-		for (int i=0; i < items.Size(); i++)
+		if (m_files.empty())
 		{
-			CFileItemPtr pItem = items[i];
+			// Load in our images from the directory specified
+			// m_currentPath is relative (as are all skin paths)
+			CStdString realPath = g_TextureManager.GetTexturePath(m_currentPath, true);
 
-			if (pItem->IsPicture())
-				m_files.push_back(pItem->GetPath());
+			if(realPath.IsEmpty())
+				return;
+
+			URIUtils::AddSlashAtEnd(realPath);
+			CFileItemList items;
+			CDirectory::GetDirectory(realPath, items);
+		
+			for (int i=0; i < items.Size(); i++)
+			{
+				CFileItemPtr pItem = items[i];
+
+				if (pItem->IsPicture())
+					m_files.push_back(pItem->GetPath());
+			}
 		}
 	}
 

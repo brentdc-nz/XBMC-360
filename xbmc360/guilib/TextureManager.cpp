@@ -218,6 +218,10 @@ bool CTextureMap::IsEmpty() const
 CGUITextureManager::CGUITextureManager(void)
 {
 	m_strMediaDir = "";
+	m_TexBundle[0].SetThemeBundle(false);
+	m_TexBundle[1].SetThemeBundle(true);
+	for (int i = 0; i < 2; i++)
+		m_iNextPreload[i] = m_PreLoadNames[i].end();
 }
 
 CGUITextureManager::~CGUITextureManager(void)
@@ -227,7 +231,8 @@ CGUITextureManager::~CGUITextureManager(void)
 
 void CGUITextureManager::StartPreLoad()
 {
-	m_PreLoadNames.clear();
+	for (int bundle = 0; bundle < 2; bundle++)
+		m_PreLoadNames[bundle].clear();
 }
 
 void CGUITextureManager::PreLoad(const CStdString& strTextureName)
@@ -235,36 +240,52 @@ void CGUITextureManager::PreLoad(const CStdString& strTextureName)
 	if (strTextureName.c_str()[1] == ':' || strTextureName == "-")
 		return;
 
+	// Normalize so the name matches what's stored in the cache
+	CStdString bundledName = CTextureBundle::Normalize(strTextureName);
+
 	// Already loaded?
 	for (int i = 0; i < (int)m_vecTextures.size(); ++i)
 	{
 		CTextureMap *pMap = m_vecTextures[i];
-		if (pMap->GetName() == strTextureName)
+		if (pMap->GetName() == bundledName)
 			return;
 	}
 
-	// Already in preload list?
-	for (std::list<CStdString>::iterator i = m_PreLoadNames.begin(); i != m_PreLoadNames.end(); ++i)
+	// Already in a preload list?
+	for (int bundle = 0; bundle < 2; bundle++)
 	{
-		if (*i == strTextureName)
-			return;
-	}
+		for (std::list<CStdString>::iterator i = m_PreLoadNames[bundle].begin(); i != m_PreLoadNames[bundle].end(); ++i)
+		{
+			if (*i == bundledName)
+				return;
+		}
 
-	m_PreLoadNames.push_back(strTextureName);
+		if (m_TexBundle[bundle].HasFile(bundledName))
+		{
+			m_PreLoadNames[bundle].push_back(bundledName);
+			return;
+		}
+	}
 }
 
 void CGUITextureManager::EndPreLoad()
 {
-	// Batch-load all queued textures into the cache now
-	for (std::list<CStdString>::iterator i = m_PreLoadNames.begin(); i != m_PreLoadNames.end(); ++i)
+	for (int i = 0; i < 2; i++)
 	{
-		Load(*i);
+		m_iNextPreload[i] = m_PreLoadNames[i].begin();
+		// Kick off first async read
+		if (m_iNextPreload[i] != m_PreLoadNames[i].end())
+			m_TexBundle[i].PreloadFile(*m_iNextPreload[i]);
 	}
 }
 
 void CGUITextureManager::FlushPreLoad()
 {
-	m_PreLoadNames.clear();
+	for (int i = 0; i < 2; i++)
+	{
+		m_PreLoadNames[i].clear();
+		m_iNextPreload[i] = m_PreLoadNames[i].end();
+	}
 }
 
 bool CGUITextureManager::HasTexture(const CStdString &textureName, CStdString *path, int *bundle, int *size)
@@ -277,13 +298,43 @@ bool CGUITextureManager::HasTexture(const CStdString &textureName, CStdString *p
 	if (!CanLoad(textureName))
 		return false;
 
-	// Check our loaded textures
+	// Check our loaded and bundled textures - we store in bundles using backslash
+	CStdString bundledName = CTextureBundle::Normalize(textureName);
 	for (int i = 0; i < (int)m_vecTextures.size(); ++i)
 	{
 		CTextureMap *pMap = m_vecTextures[i];
-		if (pMap->GetName() == textureName)
+		if (pMap->GetName() == bundledName)
 		{
+			// Advance preload iterators if this was the next expected texture
+			for (int j = 0; j < 2; j++)
+			{
+				if (m_iNextPreload[j] != m_PreLoadNames[j].end() && (*m_iNextPreload[j] == bundledName))
+				{
+					++m_iNextPreload[j];
+					if (m_iNextPreload[j] != m_PreLoadNames[j].end())
+						m_TexBundle[j].PreloadFile(*m_iNextPreload[j]);
+				}
+			}
 			if (size) *size = 1;
+			return true;
+		}
+	}
+
+	// Check preload list first (async read already in flight)
+	for (int i = 0; i < 2; i++)
+	{
+		if (m_iNextPreload[i] != m_PreLoadNames[i].end() && (*m_iNextPreload[i] == bundledName))
+		{
+			if (bundle) *bundle = i;
+			++m_iNextPreload[i];
+			// Kick off next async read
+			if (m_iNextPreload[i] != m_PreLoadNames[i].end())
+				m_TexBundle[i].PreloadFile(*m_iNextPreload[i]);
+			return true;
+		}
+		else if (m_TexBundle[i].HasFile(bundledName))
+		{
+			if (bundle) *bundle = i;
 			return true;
 		}
 	}
@@ -309,7 +360,60 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
 	if (checkBundleOnly && bundle == -1)
 		return 0;
 
+	// Normalize the name for storage so all lookups use the same key
+	CStdString normalName = CTextureBundle::Normalize(strTextureName);
+
+	// Lock here, we will do stuff that could break rendering
+	CSingleLock lock(g_graphicsContext);
+
 	LPDIRECT3DTEXTURE9 pTexture;
+
+	// Try loading from bundle first
+	if (bundle >= 0 && bundle < 2)
+	{
+		D3DXIMAGE_INFO info;
+		memset(&info, 0, sizeof(D3DXIMAGE_INFO));
+
+		if (strTextureName.Right(4).ToLower() == ".gif")
+		{
+			// Animated texture from bundle
+			std::vector<LPDIRECT3DTEXTURE9> textures;
+			std::vector<int> delays;
+			int loops = 0;
+
+			HRESULT hr = m_TexBundle[bundle].LoadAnim(g_graphicsContext.Get3DDevice(),
+				strTextureName, &info, textures, delays, loops);
+
+			if (SUCCEEDED(hr) && textures.size() > 0)
+			{
+				CTextureMap* pMap = new CTextureMap(normalName, info.Width, info.Height, loops, true);
+				for (size_t i = 0; i < textures.size(); i++)
+					pMap->Add(textures[i], delays[i]);
+
+				m_vecTextures.push_back(pMap);
+				return (int)textures.size();
+			}
+			// Fall through to file-based loading if bundle load failed
+		}
+		else
+		{
+			// Single texture from bundle
+			HRESULT hr = m_TexBundle[bundle].LoadTexture(g_graphicsContext.Get3DDevice(),
+				strTextureName, &info, &pTexture);
+
+			if (SUCCEEDED(hr) && pTexture)
+			{
+				CTextureMap* pMap = new CTextureMap(normalName, info.Width, info.Height, 0, true);
+				pMap->Add(pTexture, 0);
+				m_vecTextures.push_back(pMap);
+				return 1;
+			}
+			// Fall through to file-based loading if bundle load failed
+		}
+
+		if (checkBundleOnly)
+			return 0;
+	}
 
 	if (strPath.IsEmpty())
 	{
@@ -334,7 +438,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
 		int iHeight = AnimatedGifSet.FrameHeight;
 
 		int iPaletteSize = (1 << AnimatedGifSet.m_vecimg[0]->BPP);
-		CTextureMap* pMap = new CTextureMap(strTextureName, iWidth, iHeight, AnimatedGifSet.nLoops, false);
+		CTextureMap* pMap = new CTextureMap(normalName, iWidth, iHeight, AnimatedGifSet.nLoops, false);
 
 		for (int iImage = 0; iImage < iImages; iImage++)
 		{
@@ -396,11 +500,9 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
 	}
 	else
 	{
-		g_graphicsContext.TLock();
 		HRESULT hr = D3DXCreateTextureFromFileEx(g_graphicsContext.Get3DDevice(), strPath.c_str(),
-		   D3DX_DEFAULT_NONPOW2, D3DX_DEFAULT_NONPOW2, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED,
+		   D3DX_DEFAULT, D3DX_DEFAULT, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED,
 		   D3DX_FILTER_NONE, D3DX_FILTER_NONE, 0, &info, NULL, &pTexture);
-		g_graphicsContext.TUnlock();
 
 		if(hr != D3D_OK)
 		{
@@ -415,7 +517,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
 		return 0;
 	}
 
-	CTextureMap* pMap = new CTextureMap(strTextureName, info.Width, info.Height, 0, false);
+	CTextureMap* pMap = new CTextureMap(normalName, info.Width, info.Height, 0, false);
 
 	pMap->Add(pTexture, 0);
 
@@ -428,11 +530,12 @@ static const CTexture emptyTexture;
 
 const CTexture &CGUITextureManager::GetTexture(const CStdString& strTextureName)
 {
+  CStdString lookupName = CTextureBundle::Normalize(strTextureName);
   //  CLog::Log(LOGINFO, " refcount++ for  GetTexture(%s)\n", strTextureName.c_str());
   for (int i = 0; i < (int)m_vecTextures.size(); ++i)
   {
     CTextureMap *pMap = m_vecTextures[i];
-    if (pMap->GetName() == strTextureName)
+    if (pMap->GetName() == lookupName)
     {
       //CLog::Log(LOGDEBUG, "Total memusage %u", GetMemoryUsage());
       return pMap->GetTexture();
@@ -445,12 +548,13 @@ void CGUITextureManager::ReleaseTexture(const CStdString& strTextureName)
 {
 	CSingleLock lock(g_graphicsContext);
 
+	CStdString lookupName = CTextureBundle::Normalize(strTextureName);
 	ivecTextures i;
 	i = m_vecTextures.begin();
 	while (i != m_vecTextures.end())
 	{
 		CTextureMap* pMap = *i;
-		if (pMap->GetName() == strTextureName)
+		if (pMap->GetName() == lookupName)
 		{
 			if (pMap->Release())
 			{
@@ -502,6 +606,9 @@ void CGUITextureManager::Cleanup()
 		delete pMap;
 		i = m_vecTextures.erase(i);
 	}
+
+	m_TexBundle[0].Cleanup();
+	m_TexBundle[1].Cleanup();
 }
 
 void CGUITextureManager::Dump() const
@@ -525,6 +632,12 @@ unsigned int CGUITextureManager::GetMemoryUsage() const
 		memUsage += m_vecTextures[i]->GetMemoryUsage();
 	}
 	return memUsage;
+}
+
+void CGUITextureManager::GetBundledTexturesFromPath(const CStdString& path, std::vector<CStdString>& items)
+{
+	for (int i = 0; i < 2; i++)
+		m_TexBundle[i].GetTexturesFromPath(path, items);
 }
 
 CStdString CGUITextureManager::GetTexturePath(const CStdString &textureName, bool directory /* = false */)
@@ -557,6 +670,27 @@ void CGUITextureManager::SetTexturePath(const CStdString &texturePath)
 {
 	m_texturePaths.clear();
 	AddTexturePath(texturePath);
+}
+
+void CGUITextureManager::OpenBundles()
+{
+	for (int i = 0; i < 2; i++)
+		m_TexBundle[i].OpenBundle();
+}
+
+void CGUITextureManager::LoadAllBundleTextures()
+{
+	for (int i = 0; i < 2; i++)
+	{
+		std::vector<CStdString> files;
+		m_TexBundle[i].GetAllFiles(files);
+		CLog::Log(LOGINFO, "TextureManager: Pre-loading %d textures from bundle %d", files.size(), i);
+		for (size_t j = 0; j < files.size(); j++)
+		{
+			Load(files[j]);
+			GetTexture(files[j]); // Pin with a permanent refcount so controls can't evict
+		}
+	}
 }
 
 void CGUITextureManager::AddTexturePath(const CStdString &texturePath)

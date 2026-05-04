@@ -31,22 +31,17 @@ void CSplash::Process()
 
 	g_graphicsContext.TLock();
 	g_graphicsContext.Get3DDevice()->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
-	g_graphicsContext.TUnlock();
-  
+
 	g_graphicsContext.SetCameraPosition(CPoint(0, 0));
 	float w = g_graphicsContext.GetWidth() * 0.5f;
 	float h = g_graphicsContext.GetHeight() * 0.5f;
-	
+
 	CGUIImage* image = new CGUIImage(0, 0, w*0.5f, h*0.5f, w, h, m_ImageName);
 	image->SetAspectRatio(CAspectRatio::AR_KEEP);
-	g_graphicsContext.TLock();
 	image->AllocResources();
-	g_graphicsContext.TUnlock();
 
 	// Store the old gamma ramp
-	g_graphicsContext.TLock();
 	g_graphicsContext.Get3DDevice()->GetGammaRamp(NULL, &oldRamp);
-	g_graphicsContext.TUnlock();
 
 	float fade = 0.5f;
 	for (int i = 0; i < 256; i++)
@@ -56,12 +51,12 @@ void CSplash::Process()
 		newRamp.blue[i] = (int)((float)oldRamp.red[i] * fade);
 	}
 
-	g_graphicsContext.TLock();
 	g_graphicsContext.Get3DDevice()->SetGammaRamp(NULL, NULL, &newRamp);
-	g_graphicsContext.TUnlock();
+
+	// Set up render states needed by the shader-based GUI renderer
+	g_graphicsContext.ApplyStateBlock();
 
 	// Render splash image
-	g_graphicsContext.TLock();
 	image->Render();
 	image->FreeResources();
 	delete image;

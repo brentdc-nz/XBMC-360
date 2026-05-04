@@ -1067,6 +1067,15 @@
     <ClInclude Include="utils\JpegIO.h">
       <Filter>Header Files\utils</Filter>
     </ClInclude>
+    <ClInclude Include="utils\DelayController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\minilzo.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\TextureBundle.h">
+      <Filter>Header Files\guilib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -1851,6 +1860,15 @@
     </ClCompile>
     <ClCompile Include="utils\JpegIO.cpp">
       <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\DelayController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\minilzo.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\TextureBundle.cpp">
+      <Filter>Source Files\guilib</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

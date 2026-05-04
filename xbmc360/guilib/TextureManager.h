@@ -3,6 +3,7 @@
 
 #include "utils\Stdafx.h"
 #include "utils\stdstring.h"
+#include "TextureBundle.h"
 #include <vector>
 #include <list>
 
@@ -91,10 +92,13 @@ public:
 	unsigned int GetMemoryUsage() const;
 	void Flush();
 	CStdString GetTexturePath(const CStdString& textureName, bool directory = false);
+	void GetBundledTexturesFromPath(const CStdString& path, std::vector<CStdString>& items);
 
 	void AddTexturePath(const CStdString &texturePath);    // Add a new path to the paths to check when loading media
 	void SetTexturePath(const CStdString &texturePath);    // Set a single path as the path to check when loading media (clear then add)
 	void RemoveTexturePath(const CStdString &texturePath); // Remove a path from the paths to check when loading media
+	void OpenBundles();
+	void LoadAllBundleTextures();
 
 protected:
 	CStdString m_strMediaDir;
@@ -102,8 +106,11 @@ protected:
 	vector<CTextureMap*> m_vecTextures;
 	typedef   vector<CTextureMap*>::iterator ivecTextures;
 
-	std::list<CStdString> m_PreLoadNames;
+	std::list<CStdString> m_PreLoadNames[2];
+	std::list<CStdString>::iterator m_iNextPreload[2];
 	std::vector<CStdString> m_texturePaths;
+
+	CTextureBundle m_TexBundle[2]; // [0] = skin bundle, [1] = theme bundle
 };
 
 extern CGUITextureManager g_TextureManager;

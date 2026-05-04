@@ -418,6 +418,7 @@ void CGraphicContext::SetMediaDir(const CStdString &strMediaDir)
 {
 	g_TextureManager.SetTexturePath(strMediaDir);
 	m_strMediaDir = strMediaDir;
+	g_TextureManager.OpenBundles();
 }
 
 void CGraphicContext::Lock()

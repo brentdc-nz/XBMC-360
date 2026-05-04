@@ -386,6 +386,7 @@
     <ClInclude Include="filesystem\MultiPathDirectory.h" />
     <ClInclude Include="filesystem\SMBDirectory.h" />
     <ClInclude Include="filesystem\UPnPDirectory.h" />
+    <ClInclude Include="guilib\TextureBundle.h" />
     <ClInclude Include="network\UPnP.h" />
     <ClInclude Include="filesystem\VirtualDirectory.h" />
     <ClInclude Include="filesystem\XBFS_Wrap\EmuFileWrapper.h" />
@@ -545,6 +546,7 @@
     <ClInclude Include="utils\Idle.h" />
     <ClInclude Include="utils\InfoLoader.h" />
     <ClInclude Include="utils\JpegIO.h" />
+    <ClInclude Include="utils\minilzo.h" />
     <ClInclude Include="utils\SystemInfo.h" />
     <ClInclude Include="utils\Job.h" />
     <ClInclude Include="utils\JobManager.h" />
@@ -664,6 +666,7 @@
     <ClCompile Include="filesystem\MultiPathDirectory.cpp" />
     <ClCompile Include="filesystem\SMBDirectory.cpp" />
     <ClCompile Include="filesystem\UPnPDirectory.cpp" />
+    <ClCompile Include="guilib\TextureBundle.cpp" />
     <ClCompile Include="network\UPnP.cpp" />
     <ClCompile Include="filesystem\VirtualDirectory.cpp" />
     <ClCompile Include="filesystem\XBFS_Wrap\XBFS_Wrap.cpp" />
@@ -824,6 +827,7 @@
     <ClCompile Include="utils\Idle.cpp" />
     <ClCompile Include="utils\InfoLoader.cpp" />
     <ClCompile Include="utils\JpegIO.cpp" />
+    <ClCompile Include="utils\minilzo.cpp" />
     <ClCompile Include="utils\SystemInfo.cpp" />
     <ClCompile Include="utils\JobManager.cpp" />
     <ClCompile Include="utils\LabelFormatter.cpp" />
