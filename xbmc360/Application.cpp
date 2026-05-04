@@ -366,6 +366,11 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	g_audioManager.Initialize();
 	g_audioManager.Load();
 
+	// Preload all GUI sounds into memory now (while splash is still visible)
+	// so PlayWindowSound() never hits the disk during window activation
+	// we have enough memory on Xbox 360, and stops I/O stutters
+	g_audioManager.PreloadSounds();
+
 	CLog::Log(LOGINFO, "Skin loaded...");
 
 	// Leave the graphics lock

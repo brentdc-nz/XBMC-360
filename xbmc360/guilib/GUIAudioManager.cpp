@@ -73,6 +73,18 @@ void CGUIAudioManager::Stop()
 	}
 	
 	m_pythonSounds.clear();
+
+	for(soundCacheMap::iterator it2 = m_soundCache.begin(); it2 != m_soundCache.end();it2++)
+	{
+		CGUISound* sound=it2->second;
+		
+		if(sound->IsPlaying())
+			sound->Stop();
+
+		delete sound;
+	}
+	
+	m_soundCache.clear();
 }
 
 // Clear any unused audio buffers
@@ -136,6 +148,15 @@ void CGUIAudioManager::PlayActionSound(const CAction& action)
 		m_actionSound = NULL;
 	}
 
+	// Check the preloaded cache first
+	soundCacheMap::iterator cacheIt = m_soundCache.find(it->second);
+	if(cacheIt != m_soundCache.end())
+	{
+		cacheIt->second->SetVolume(m_iVolume);
+		cacheIt->second->Play();
+		return;
+	}
+
 	m_actionSound = new CGUISound();
 
 	if(!m_actionSound->Load(it->second, m_iVolume))
@@ -177,6 +198,19 @@ void CGUIAudioManager::PlayWindowSound(int id, WINDOW_SOUND event)
 
 	if(strFile.IsEmpty())
 		return;
+
+	// Check preloaded cache first to avoid disk I/O during window activation
+	soundCacheMap::iterator cacheIt = m_soundCache.find(strFile);
+	if(cacheIt != m_soundCache.end())
+	{
+		CGUISound* cached = cacheIt->second;
+		if(cached->IsPlaying())
+			cached->Stop();
+
+		cached->SetVolume(m_iVolume);
+		cached->Play();
+		return;
+	}
 
 	// One sound buffer for each window
 	windowSoundsMap::iterator itsb = m_windowSounds.find(id);
@@ -344,6 +378,47 @@ bool CGUIAudioManager::LoadWindowSound(TiXmlNode* pWindowNode, const CStdString&
 	}
 
 	return false;
+}
+
+// Preload all sound files referenced in sounds.xml into cache
+void CGUIAudioManager::PreloadSounds()
+{
+	CSingleLock lock(m_cs);
+
+	// Preload window sounds (init/deinit)
+	for(windowSoundMap::iterator it = m_windowSoundMap.begin(); it != m_windowSoundMap.end(); it++)
+	{
+		if(!it->second.strInitFile.IsEmpty() && m_soundCache.find(it->second.strInitFile) == m_soundCache.end())
+		{
+			CGUISound* sound = new CGUISound();
+			if(sound->Load(it->second.strInitFile, m_iVolume))
+				m_soundCache.insert(pair<CStdString, CGUISound*>(it->second.strInitFile, sound));
+			else
+				delete sound;
+		}
+
+		if(!it->second.strDeInitFile.IsEmpty() && m_soundCache.find(it->second.strDeInitFile) == m_soundCache.end())
+		{
+			CGUISound* sound = new CGUISound();
+			if(sound->Load(it->second.strDeInitFile, m_iVolume))
+				m_soundCache.insert(pair<CStdString, CGUISound*>(it->second.strDeInitFile, sound));
+			else
+				delete sound;
+		}
+	}
+
+	// Preload action sounds
+	for(actionSoundMap::iterator it = m_actionSoundMap.begin(); it != m_actionSoundMap.end(); it++)
+	{
+		if(!it->second.IsEmpty() && m_soundCache.find(it->second) == m_soundCache.end())
+		{
+			CGUISound* sound = new CGUISound();
+			if(sound->Load(it->second, m_iVolume))
+				m_soundCache.insert(pair<CStdString, CGUISound*>(it->second, sound));
+			else
+				delete sound;
+		}
+	}
 }
 
 // Enable/Disable nav sounds

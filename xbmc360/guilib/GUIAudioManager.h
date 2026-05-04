@@ -33,6 +33,7 @@ public:
 	void PlayWindowSound(int id, WINDOW_SOUND event);
 	void PlayPythonSound(const CStdString& strFileName);
 
+	void PreloadSounds();
 	void FreeUnused();
 
 	void Enable(bool bEnable);
@@ -55,6 +56,9 @@ private:
 	CGUISound* m_actionSound;
 	windowSoundsMap m_windowSounds;
 	pythonSoundsMap m_pythonSounds;
+
+	typedef std::map<CStdString, CGUISound*> soundCacheMap;
+	soundCacheMap m_soundCache;
 
 	CStdString m_strMediaDir;
 	bool m_bEnabled;

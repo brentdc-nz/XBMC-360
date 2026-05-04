@@ -12,7 +12,7 @@ This is early stages and still very much a work in progress.
 Usable but many features still need reimplementation or improvements.
 
 ### Compiled alpha build (last updated 02-05-26):
-https://drive.google.com/file/d/1WreApfTnWtGe8UxeO1MBSrMDYg-7jHoC/view
+https://drive.google.com/file/d/1zd2tS0thSc4ldshQxOhtOFknUFdlpi0T/view
 
 ### Libraries
 - FFmpeg (DVDPlayer)
@@ -31,6 +31,9 @@ https://drive.google.com/file/d/1WreApfTnWtGe8UxeO1MBSrMDYg-7jHoC/view
 - FTP Server
 - NTP Client
 - UPnP
+
+### Tools
+- XBMC360Tex (XPR skin textures bundle tool)
 
 ### Notes:
 Special thanks to XBMC4XBOX and Kodi.
