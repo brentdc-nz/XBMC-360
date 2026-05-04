@@ -591,7 +591,7 @@ bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, const CStdStri
 	pKeyboard->SetText(aTextString);
 	
 	// Do this using a thread message to avoid render() conflicts
-	pKeyboard->DoModal();//	pKeyboard->DoModalThreadSafe(); // FIXME - Make threadsafe asap!
+	pKeyboard->DoModalThreadSafe();
 	pKeyboard->Close();
 
 	// If have text - update this

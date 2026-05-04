@@ -688,7 +688,7 @@ bool CGUIDialogFileBrowser::ShowAndGetFile(const VECSOURCES &shares, const CStdS
 	browser->m_rootDir.SetMask(strMask);
 	browser->m_selectedPath = path;
 	browser->m_addNetworkShareEnabled = false;
-	browser->DoModal();//	browser->DoModalThreadSafe(); // FIXME
+	browser->DoModalThreadSafe();
 	
 	bool confirmed(browser->IsConfirmed());
 
@@ -813,7 +813,7 @@ bool CGUIDialogFileBrowser::ShowAndGetSource(CStdString &path, bool allowNetwork
 	browser->m_browsingForFolders = 1;
 	browser->m_addNetworkShareEnabled = allowNetworkShares;
 	browser->m_selectedPath = "";
-	browser->DoModal(); //browser->DoModalThreadSafe(); // TODO // FIXME - Important to fix asap!
+	browser->DoModalThreadSafe();
 	
 	bool confirmed = browser->IsConfirmed();
 	if (confirmed)

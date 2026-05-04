@@ -42,6 +42,33 @@ void CApplicationMessenger::Cleanup()
 
 void CApplicationMessenger::SendMessage(ThreadMessage& message, bool wait)
 {
+	message.hWaitEvent = NULL;
+
+	if (wait)
+	{
+		// Check that we're not being called from our application thread, else we'll be waiting
+		// forever!
+		if (!g_application.IsCurrentThread())
+			message.hWaitEvent = CreateEvent(NULL, true, false, NULL);
+		else
+		{
+			ProcessMessage(&message);
+			return;
+		}
+	}
+
+	CSingleLock lock (m_critSection);
+
+	if (g_application.IsStopping())
+	{
+		if (message.hWaitEvent)
+		{
+			CloseHandle(message.hWaitEvent);
+			message.hWaitEvent = NULL;
+		}
+		return;
+	}
+
 	ThreadMessage* msg = new ThreadMessage();
 	msg->dwMessage = message.dwMessage;
 	msg->dwParam1 = message.dwParam1;
@@ -49,8 +76,6 @@ void CApplicationMessenger::SendMessage(ThreadMessage& message, bool wait)
 	msg->hWaitEvent = message.hWaitEvent;
 	msg->lpVoid = message.lpVoid;
 	msg->strParam = message.strParam;
-
-	CSingleLock lock (m_critSection);
 
 	if (msg->dwMessage == TMSG_DIALOG_DOMODAL/* ||
       msg->dwMessage == TMSG_WRITE_SCRIPT_OUTPUT*/) // TODO
@@ -64,6 +89,8 @@ void CApplicationMessenger::SendMessage(ThreadMessage& message, bool wait)
 	if (message.hWaitEvent)
 	{
 		WaitForSingleObject(message.hWaitEvent, INFINITE);
+		CloseHandle(message.hWaitEvent);
+		message.hWaitEvent = NULL;
 	}
 }
 
