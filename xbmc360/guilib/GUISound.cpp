@@ -33,6 +33,9 @@ bool CGUISound::Load(const CStdString& strFile, int iVolume)
 
 void CGUISound::Play()
 {
+	if(!m_pSourceVoice || !m_pbWaveData)
+		return;
+
 	Stop();
 
 	// Fill our temp buffer

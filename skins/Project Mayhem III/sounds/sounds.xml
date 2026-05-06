@@ -35,6 +35,10 @@
       <file>click.wav</file>
     </action>
     <action>
+      <name>parentdir</name>
+      <file>back.wav</file>
+    </action>
+    <action>
       <name>previousmenu</name>
       <file>back.wav</file>
     </action>

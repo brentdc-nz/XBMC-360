@@ -179,8 +179,7 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
 
 bool CGUIMediaWindow::OnBack(int actionID)
 {
-	// BDC - Why was this ACTION_NAV_BACK? This makes no sense with default keymap
-	if (actionID == /*ACTION_NAV_BACK*/ACTION_PREVIOUS_MENU && !(m_vecItems->IsVirtualDirectoryRoot() || m_vecItems->GetPath() == m_startDirectory))
+	if ((actionID == ACTION_NAV_BACK || actionID == ACTION_PREVIOUS_MENU) && !(m_vecItems->IsVirtualDirectoryRoot() || m_vecItems->GetPath() == m_startDirectory))
 	{
 		GoParentFolder();
 		return true;
