@@ -76,6 +76,8 @@
 #define ACTION_PAGE_DOWN               6
 
 #define ACTION_SELECT_ITEM             7
+#define ACTION_HIGHLIGHT_ITEM          8
+#define ACTION_PARENT_DIR              9
 #define ACTION_PREVIOUS_MENU          10
 #define ACTION_SHOW_INFO              11 // Show information about currently playing item, or toggles info in vis
 #define ACTION_PAUSE                  12
@@ -97,47 +99,58 @@
 
 #define ACTION_SMALL_STEP_BACK        76 // Jumps a few seconds back during playback of movie. Can be used in videoFullScreen.xml window id=2005
 
+#define ACTION_PLAYER_PLAY            79 // Play current song. Unpauses song and sets playspeed to 1x. global action, can be used anywhere
+
+#define ACTION_DELETE_ITEM            80 // delete current selected item. Can be used in myfiles.xml window id=3 and in myvideoTitle.xml window id=25
+#define ACTION_COPY_ITEM              81 // copy current selected item. Can be used in myfiles.xml window id=3
+#define ACTION_MOVE_ITEM              82 // move current selected item. Can be used in myfiles.xml window id=3
+#define ACTION_RENAME_ITEM            87 // rename item
+
 #define ACTION_VOLUME_UP              88
 #define ACTION_VOLUME_DOWN            89
 #define ACTION_MUTE                   91
 #define ACTION_NAV_BACK				  92
-#define ACTION_CONTEXT_MENU           117 // Pops up the context menu
-#define ACTION_BUILT_IN_FUNCTION	  122
 
-#define ACTION_ANALOG_SEEK_FORWARD    124 // Seeks forward, and displays the seek bar.
-#define ACTION_ANALOG_SEEK_BACK       125 // Seeks backward, and displays the seek bar.
+#define ACTION_MOUSE_LEFT_CLICK      100
+#define ACTION_MOUSE_RIGHT_CLICK     101
+#define ACTION_MOUSE_DOUBLE_CLICK    103
 
-#define ACTION_ENTER                  135
+#define ACTION_BACKSPACE             110
+#define ACTION_SCROLL_UP             111
+#define ACTION_SCROLL_DOWN           112
+#define ACTION_ANALOG_FORWARD        113
+#define ACTION_ANALOG_REWIND         114
+
+#define ACTION_CONTEXT_MENU          117 // Pops up the context menu
 
 // Stuff for virtual keyboard shortcuts
-#define ACTION_SHIFT              118
-#define ACTION_SYMBOLS            119
-#define ACTION_CURSOR_LEFT        120
-#define ACTION_CURSOR_RIGHT       121
+#define ACTION_SHIFT                 118
+#define ACTION_SYMBOLS               119
+#define ACTION_CURSOR_LEFT           120
+#define ACTION_CURSOR_RIGHT          121
 
-#define ACTION_NEXT_CONTROL           181
-#define ACTION_PREV_CONTROL           182
+#define ACTION_BUILT_IN_FUNCTION	 122
 
-#define ACTION_INCREASE_PAR           219 // Increase pixel aspect ratio. Used in videoFullScreen
-#define ACTION_DECREASE_PAR           220 // Decrease pixel aspect ratio. Used in videoFullScreen
+#define ACTION_ANALOG_SEEK_FORWARD   124 // Seeks forward, and displays the seek bar.
+#define ACTION_ANALOG_SEEK_BACK      125 // Seeks backward, and displays the seek bar.
 
-#define ACTION_BACKSPACE          110
-#define ACTION_SCROLL_UP          111
-#define ACTION_SCROLL_DOWN        112
-#define ACTION_ANALOG_FORWARD     113
-#define ACTION_ANALOG_REWIND      114
+#define ACTION_ENTER                 135
 
-#define ACTION_PARENT_DIR              9
+#define ACTION_FILTER_CLEAR          150
+#define ACTION_FILTER_SMS2           151
+#define ACTION_FILTER_SMS3           152
+#define ACTION_FILTER_SMS4           153
+#define ACTION_FILTER_SMS5           154
+#define ACTION_FILTER_SMS6           155
+#define ACTION_FILTER_SMS7           156
+#define ACTION_FILTER_SMS8           157
+#define ACTION_FILTER_SMS9           158
 
-#define ACTION_FILTER_CLEAR           150
-#define ACTION_FILTER_SMS2            151
-#define ACTION_FILTER_SMS3            152
-#define ACTION_FILTER_SMS4            153
-#define ACTION_FILTER_SMS5            154
-#define ACTION_FILTER_SMS6            155
-#define ACTION_FILTER_SMS7            156
-#define ACTION_FILTER_SMS8            157
-#define ACTION_FILTER_SMS9            158
+#define ACTION_NEXT_CONTROL          181
+#define ACTION_PREV_CONTROL          182
+
+#define ACTION_INCREASE_PAR          219 // Increase pixel aspect ratio. Used in videoFullScreen
+#define ACTION_DECREASE_PAR          220 // Decrease pixel aspect ratio. Used in videoFullScreen
 
 //====================
 //		Windows

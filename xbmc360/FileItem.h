@@ -68,7 +68,10 @@ public:
 	bool SortsOnBottom() const { return m_specialSort == SORT_ON_BOTTOM; }
 	void SetSpecialSort(SPECIAL_SORT sort) { m_specialSort = sort; }
 	bool IsVirtualDirectoryRoot() const;
+	bool IsReadOnly() const;
 	bool IsRemovable() const;
+	bool IsHD() const;
+	bool IsPlayList() const;
 	bool IsFileFolder() const;
 	bool IsInternetStream() const { return false; } ; // TODO
 	bool IsStack() const { return false; } ; // TODO - Stack file support not ported
@@ -98,6 +101,7 @@ public:
 	bool CacheLocalFanart() const;
 
 	virtual void SetLabel(const CStdString &strLabel);
+	void SetFileSizeLabel();
 	void FillInDefaultIcon();
 	void RemoveExtension();
 	void SetLabelPreformated(bool bYesNo) { m_bLabelPreformated = bYesNo; }
@@ -255,6 +259,7 @@ public:
 	void RemoveDiscCache(int windowID = 0) const;
 
 	int GetObjectCount() const;
+	int GetSelectedCount() const;
 
 	bool AlwaysCache() const;
 

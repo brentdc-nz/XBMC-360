@@ -1,10 +1,11 @@
 #include "File.h"
-#include "FileHD.h"
 #include "FileFactory.h"
 #include "..\utils\Log.h"
 #include "..\utils\Stdafx.h"
 #include "..\utils\AutoPtrHandle.h"
 #include "..\utils\Win32Exception.h"
+#include "..\utils\Stopwatch.h"
+#include "..\URL.h"
 #include <algorithm>
 #include <memory>
 
@@ -232,35 +233,99 @@ void CFile::Close()
 
 bool CFile::Exists(const CStdString& strFileName)
 {
-	if(strFileName.IsEmpty()) return false;
-		
-	//
-	// TODO - Check other future protocols i.e. ftp, http, etc
-	//
+	try
+	{
+		if (strFileName.IsEmpty())
+			return false;
 
-	// Check HDD
-	if(CFileHD::Exists(strFileName)) return true;
+		CURL url(strFileName);
 
+		std::auto_ptr<CFileBase> pFile(CFileFactory::CreateLoader(url));
+		if (!pFile.get())
+			return false;
+
+		return pFile->Exists(url);
+	}
+	catch (const win32_exception &e)
+	{
+		e.writelog(__FUNCTION__);
+	}
+	catch (...)
+	{
+		CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
+	}
+	return false;
+}
+
+bool CFile::Delete(const CStdString& strFileName)
+{
+	try
+	{
+		CURL url(strFileName);
+
+		std::auto_ptr<CFileBase> pFile(CFileFactory::CreateLoader(url));
+		if (!pFile.get())
+			return false;
+
+		if (pFile->Delete(url))
+			return true;
+	}
+	catch (const win32_exception &e)
+	{
+		e.writelog(__FUNCTION__);
+	}
+	catch (...)
+	{
+		CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
+	}
+	if (Exists(strFileName))
+		CLog::Log(LOGERROR, "%s - Error deleting file %s", __FUNCTION__, strFileName.c_str());
+	return false;
+}
+
+bool CFile::Rename(const CStdString& strFile, const CStdString& strNewFile)
+{
+	try
+	{
+		CURL url(strFile);
+		CURL urlnew(strNewFile);
+
+		std::auto_ptr<CFileBase> pFile(CFileFactory::CreateLoader(url));
+		if (!pFile.get())
+			return false;
+
+		if (pFile->Rename(url, urlnew))
+			return true;
+	}
+	catch (const win32_exception &e)
+	{
+		e.writelog(__FUNCTION__);
+	}
+	catch (...)
+	{
+		CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
+	}
+	CLog::Log(LOGERROR, "%s - Error renaming file %s", __FUNCTION__, strFile.c_str());
 	return false;
 }
 
 int CFile::Stat(const CStdString& strFileName, struct __stat64* buffer)
 {
-	CURL url;
-
 	try
 	{
-		CFileBase* pFile = CFileFactory::CreateLoader(url);
+		CURL url(strFileName);
 
-		int iResult = 0;
+		std::auto_ptr<CFileBase> pFile(CFileFactory::CreateLoader(url));
+		if (!pFile.get())
+			return -1;
 
-		if(pFile)
-			iResult = pFile->Stat(url, buffer);
-
-		SAFE_DELETE(pFile);
-		return iResult;
+		return pFile->Stat(url, buffer);
 	}
-	catch(...)
+	catch (const win32_exception &e)
+	{
+		e.writelog(__FUNCTION__);
+	}
+	catch (...)
 	{
 		CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
 	}
@@ -269,30 +334,93 @@ int CFile::Stat(const CStdString& strFileName, struct __stat64* buffer)
 	return -1;
 }
 
-bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest)
+bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, IFileCallback* pCallback, void* pContext)
 {
 	CFile file;
-	if (file.Open(strFileName))
+	if (file.Open(strFileName, READ_TRUNCATED))
 	{
-		CFile destFile;
-		if (destFile.OpenForWrite(strDest, true))
+		CFile newFile;
+		if (CFile::Exists(strDest))
+			CFile::Delete(strDest);
+		if (!newFile.OpenForWrite(strDest, true))
 		{
-			char buf[16384];
-			unsigned int read;
-			while ((read = file.Read(buf, sizeof(buf))) > 0)
+			file.Close();
+			return false;
+		}
+
+		int iBufferSize = 128 * 1024;
+		char *buffer = new char[iBufferSize];
+		int iRead, iWrite;
+
+		UINT64 llFileSize = file.GetLength();
+		UINT64 llPos = 0;
+
+		CStopWatch timer;
+		timer.StartZero();
+		float start = 0.0f;
+		while (true)
+		{
+			iRead = file.Read(buffer, iBufferSize);
+			if (iRead == 0) break;
+			else if (iRead < 0)
 			{
-				if (destFile.Write(buf, read) < 0)
+				CLog::Log(LOGERROR, "%s - Failed read from file %s", __FUNCTION__, strFileName.c_str());
+				llFileSize = (UINT64)-1;
+				break;
+			}
+
+			/* write data and make sure we managed to write it all */
+			iWrite = 0;
+			while (iWrite < iRead)
+			{
+				int iWrite2 = newFile.Write(buffer + iWrite, iRead - iWrite);
+				if (iWrite2 <= 0)
+					break;
+				iWrite += iWrite2;
+			}
+
+			if (iWrite != iRead)
+			{
+				CLog::Log(LOGERROR, "%s - Failed write to file %s", __FUNCTION__, strDest.c_str());
+				llFileSize = (UINT64)-1;
+				break;
+			}
+
+			llPos += iRead;
+
+			// calculate the current and average speeds
+			float end = timer.GetElapsedSeconds();
+
+			if (pCallback && end - start > 0.5 && end)
+			{
+				start = end;
+
+				float averageSpeed = llPos / end;
+				int ipercent = 0;
+				if (llFileSize)
+					ipercent = (int)(100 * llPos / llFileSize);
+
+				if (!pCallback->OnFileCallback(pContext, ipercent, averageSpeed))
 				{
-					file.Close();
-					destFile.Close();
-					return false;
+					CLog::Log(LOGERROR, "%s - User aborted copy", __FUNCTION__);
+					llFileSize = (UINT64)-1;
+					break;
 				}
 			}
-			destFile.Close();
-			file.Close();
-			return true;
 		}
+
+		/* close both files */
+		newFile.Close();
 		file.Close();
+		delete[] buffer;
+
+		/* verify that we managed to completed the file */
+		if (llFileSize && llPos != llFileSize)
+		{
+			CFile::Delete(strDest);
+			return false;
+		}
+		return true;
 	}
 	return false;
 }

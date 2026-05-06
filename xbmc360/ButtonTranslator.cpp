@@ -19,6 +19,7 @@ static const ActionMapping actions[] =
 		{"up"                , ACTION_MOVE_UP},
         {"down"              , ACTION_MOVE_DOWN},
         {"select"            , ACTION_SELECT_ITEM},
+        {"highlight"         , ACTION_HIGHLIGHT_ITEM},
         {"parentdir"         , ACTION_NAV_BACK}, // Backward compatibility
         {"back"              , ACTION_NAV_BACK},
         {"previousmenu"      , ACTION_PREVIOUS_MENU},
@@ -53,6 +54,8 @@ static const ActionMapping windows[] =
        {{"home"                     , WINDOW_HOME},
         {"programs"                 , WINDOW_PROGRAMS},
         {"pictures"                 , WINDOW_PICTURES},
+        {"filemanager"              , WINDOW_FILES},
+        {"files"                    , WINDOW_FILES},
         {"music"                    , WINDOW_MUSIC},
         {"video"                    , WINDOW_VIDEOS},
         {"videos"                   , WINDOW_VIDEOS},

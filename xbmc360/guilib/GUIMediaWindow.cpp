@@ -15,7 +15,7 @@
 //#include "utils\RegExp.h" // TODO
 //#include "PartyModeManager.h"
 #include "dialogs\GUIDialogMediaSource.h"
-//#include "windows\GUIWindowFileManager.h"
+#include "windows\GUIWindowFileManager.h"
 //#include "Favourites.h"
 #include "utils\LabelFormatter.h"
 //#include "dialogs\GUIDialogProgress.h"

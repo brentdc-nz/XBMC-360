@@ -22,8 +22,10 @@
 #include "utils\Log.h"
 #include "utils\Util.h"
 #include "utils\URIUtils.h"
+#include "utils\StringUtils.h"
 #include "utils\Crc32.h"
 #include "filesystem\File.h"
+#include "playlists\PlayListFactory.h"
 #include "Settings.h"
 #include "music\tags\MusicInfoTag.h"
 #include "video\VideoInfoTag.h"
@@ -292,6 +294,29 @@ bool CFileItem::IsVirtualDirectoryRoot() const
 bool CFileItem::IsRemovable() const
 {
 	return false; //TODO!!!
+}
+
+bool CFileItem::IsReadOnly() const
+{
+	return false; //TODO!!!
+}
+
+bool CFileItem::IsHD() const
+{
+	return URIUtils::IsHD(m_strPath);
+}
+
+bool CFileItem::IsPlayList() const
+{
+	return PLAYLIST::CPlayListFactory::IsPlaylist(*this);
+}
+
+void CFileItem::SetFileSizeLabel()
+{
+	if( m_bIsFolder && m_dwSize == 0 )
+		SetLabel2("");
+	else
+		SetLabel2(CStringUtils::SizeToString(m_dwSize));
 }
 
 bool CFileItem::IsFileFolder() const
@@ -1033,6 +1058,19 @@ int CFileItemList::GetObjectCount() const
 		numObjects--;
 
 	return numObjects;
+}
+
+int CFileItemList::GetSelectedCount() const
+{
+	CSingleLock lock(m_lock);
+
+	int count = 0;
+	for (int i = 0; i < (int)m_items.size(); i++)
+	{
+		if (m_items[i]->IsSelected())
+			count++;
+	}
+	return count;
 }
 
 void CFileItemList::FillSortFields(FILEITEMFILLFUNC func)

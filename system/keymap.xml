@@ -2,12 +2,12 @@
   <global>
     <gamepad>
       <A>Select</A>
-      <B>PreviousMenu</B>
+      <B>Back</B>
       <X>FullScreen</X>
       <Y>Queue</Y>
       <rightshoulder>ContextMenu</rightshoulder>
       <start>XBMC.ActivateWindow(PlayerControls)</start>
-      <back>Back</back>
+      <back>PreviousMenu</back>
       <dpadleft>Left</dpadleft>
       <dpadright>Right</dpadright>
       <dpadup>Up</dpadup>
@@ -50,6 +50,11 @@
        <dpaddown>PreviousPreset</dpaddown>
     </gamepad>
   </Visualisation>  
+  <MyFiles>
+    <gamepad>
+      <Y>Highlight</Y>
+    </gamepad>
+  </MyFiles>
   <ContextMenu>
     <gamepad>
       <rightshoulder>Back</rightshoulder>

@@ -5,6 +5,14 @@
 #include "utils\StdString.h"
 #include "utils\BitstreamStats.h"
 
+// File operation callback interface
+class IFileCallback
+{
+public:
+	virtual bool OnFileCallback(void* pContext, int ipercent, float avgSpeed) = 0;
+	virtual ~IFileCallback() {};
+};
+
 // Indicate that caller can handle truncated reads, where function returns before entire buffer has been filled
 #define READ_TRUNCATED 0x01
 
@@ -53,7 +61,9 @@ public:
 	}
 
 	static bool Exists(const CStdString& strFileName);
-	static bool Cache(const CStdString& strFileName, const CStdString& strDest);
+	static bool Delete(const CStdString& strFileName);
+	static bool Rename(const CStdString& strFile, const CStdString& strNewFile);
+	static bool Cache(const CStdString& strFileName, const CStdString& strDest, IFileCallback* pCallback = NULL, void* pContext = NULL);
 	static int  Stat(const CStdString& strFileName, struct __stat64* buffer);
 
 private:

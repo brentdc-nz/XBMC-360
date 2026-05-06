@@ -43,60 +43,55 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
 	strSearchMask += "*.*";
 
 	FILETIME localTime;
-	HANDLE hFind = NULL;
-	
-	hFind =  FindFirstFile(strSearchMask.c_str(), &wfd);
+	HANDLE hFind = FindFirstFile(strSearchMask.c_str(), &wfd);
   
 	// On error, check if path exists at all, this will return true if empty folder
-	if (!hFind)
+	if (hFind == INVALID_HANDLE_VALUE)
       return Exists(strPath1);
 
-	if (hFind != NULL)
+	do
 	{
-		do
+		if (wfd.cFileName[0] != 0)
 		{
-			if (wfd.cFileName[0] != 0)
+			if ( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
 			{
-				if ( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
+				CStdString strDir = wfd.cFileName;
+				if (strDir != "." && strDir != "..")
 				{
-					CStdString strDir = wfd.cFileName;
-					if (strDir != "." && strDir != "..")
-					{
-						CStdString strLabel = wfd.cFileName;
-					g_charsetConverter.unknownToUTF8(strLabel);
-					CFileItemPtr pItem(new CFileItem(strLabel));
-					CStdString itemPath = strRoot + wfd.cFileName;
-					g_charsetConverter.unknownToUTF8(itemPath);
-						pItem->m_bIsFolder = true;
-						URIUtils::AddSlashAtEnd(itemPath);
-						pItem->SetPath(itemPath);
-						FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
-						pItem->m_dateTime = localTime;
-
-						items.Add(pItem);
-					}
-				}
-				else
-				{
-					CStdString strLabel=wfd.cFileName;
-					g_charsetConverter.unknownToUTF8(strLabel);
-					CFileItemPtr pItem(new CFileItem(strLabel));
-					CStdString itemPath = strRoot + wfd.cFileName;
-					g_charsetConverter.unknownToUTF8(itemPath);
+					CStdString strLabel = wfd.cFileName;
+				g_charsetConverter.unknownToUTF8(strLabel);
+				CFileItemPtr pItem(new CFileItem(strLabel));
+				CStdString itemPath = strRoot + wfd.cFileName;
+				g_charsetConverter.unknownToUTF8(itemPath);
+					pItem->m_bIsFolder = true;
+					URIUtils::AddSlashAtEnd(itemPath);
 					pItem->SetPath(itemPath);
-					pItem->m_bIsFolder = false;
-					pItem->m_dwSize = CUtil::ToInt64(wfd.nFileSizeHigh, wfd.nFileSizeLow);
 					FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
 					pItem->m_dateTime = localTime;
 
 					items.Add(pItem);
 				}
 			}
-		}
-		while (FindNextFile((HANDLE)hFind, &wfd));
+			else
+			{
+				CStdString strLabel=wfd.cFileName;
+				g_charsetConverter.unknownToUTF8(strLabel);
+				CFileItemPtr pItem(new CFileItem(strLabel));
+				CStdString itemPath = strRoot + wfd.cFileName;
+				g_charsetConverter.unknownToUTF8(itemPath);
+				pItem->SetPath(itemPath);
+				pItem->m_bIsFolder = false;
+				pItem->m_dwSize = CUtil::ToInt64(wfd.nFileSizeHigh, wfd.nFileSizeLow);
+				FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
+				pItem->m_dateTime = localTime;
 
-		FindClose(hFind); // Should be closed
+				items.Add(pItem);
+			}
+		}
 	}
+	while (FindNextFile((HANDLE)hFind, &wfd));
+
+	FindClose(hFind);
 	return true;
 }
 
@@ -139,4 +134,11 @@ bool CHDDirectory::Create(const char* strPath)
 		return true;
 
 	return false;
+}
+
+bool CHDDirectory::Remove(const char* strPath)
+{
+	CStdString strPath1 = strPath;
+	g_charsetConverter.utf8ToStringCharset(strPath1);
+	return (::RemoveDirectory(strPath1) || GetLastError() == ERROR_PATH_NOT_FOUND) ? true : false;
 }

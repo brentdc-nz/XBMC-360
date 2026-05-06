@@ -16,8 +16,8 @@ public:
 	virtual ~CFileBase();
 
 	virtual bool Open(const CURL& strURL, bool bBinary = true) = 0;
-	virtual bool OpenForWrite(const CURL& strURL, bool bOverWrite = false) { return false; };/*
-  virtual bool Exists(const CURL& url) = 0;*/
+	virtual bool Exists(const CURL& url) { return false; }
+	virtual bool OpenForWrite(const CURL& strURL, bool bOverWrite = false) { return false; };
 	virtual int Stat(const CURL& url, struct __stat64* buffer) = 0;/*
 	virtual int Stat(struct __stat64* buffer) = 0;*/
 	virtual unsigned int Read(void* lpBuf, int64_t uiBufSize) = 0;
@@ -37,15 +37,8 @@ public:
 	* but accepts any read size, have it return the value 1          */
 	virtual int  GetChunkSize() { return 0; }
 
- /* virtual bool SkipNext(){return false;}
-
-  virtual bool Delete(const CURL& url) { return false; }
-  virtual bool Rename(const CURL& url, const CURL& urlnew) { return false; }
-  virtual bool SetHidden(const CURL& url, bool hidden) { return false; }
-
-  virtual int IoControl(EIoControl request, void* param) { return -1; }
-
-  virtual CStdString GetContent()                            { return "application/octet-stream"; }*/
+	virtual bool Delete(const CURL& url) { return false; }
+	virtual bool Rename(const CURL& url, const CURL& urlnew) { return false; }
 };
 
 class CRedirectException

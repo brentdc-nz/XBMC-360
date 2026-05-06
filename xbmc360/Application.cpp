@@ -45,6 +45,7 @@
 #include "guilib\windows\GUIWindowSettingsCategory.h"
 #include "guilib\windows\GUIWindowScreensaver.h"
 #include "guilib\windows\GUIWindowSystemInfo.h"
+#include "guilib\windows\GUIWindowFileManager.h"
 #include "guilib\windows\GUIWindowWeather.h"
 
 // Dialog includes
@@ -228,6 +229,7 @@ bool CApplication::Initialize()
 	g_windowManager.Add(new CGUIWindowSettingsCategory);
 	g_windowManager.Add(new CGUIWindowScreensaver);
 	g_windowManager.Add(new CGUIWindowSystemInfo);
+	g_windowManager.Add(new CGUIWindowFileManager);  // window id = 10003
 
 	// Dialogs
 	g_windowManager.Add(new CGUIDialogYesNo);           // window id = 100

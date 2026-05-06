@@ -15,6 +15,7 @@ public:
 
 	bool GetDirectory(const CStdString& strPath, CFileItemList &items);
 	bool Create(const char* strPath);
+	bool Remove(const char* strPath);
 	bool Exists(const char* strPath);
 };
 

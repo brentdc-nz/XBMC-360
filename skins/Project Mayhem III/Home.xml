@@ -686,6 +686,21 @@
 			<font>special12</font>
 			<include>contentpanelslide</include>
 		</control>
+		<control type="rss" id="1">
+			<description>rss feed</description>
+			<posx>0</posx>
+			<posy>493</posy>
+			<width>720</width>
+			<aligy>center</aligy>
+			<font>font13</font>
+			<urlset>1</urlset>
+			<titlecolor>green</titlecolor>
+			<headlinecolor>dialogheader</headlinecolor>
+			<textcolor>green</textcolor>
+			<visible>!Player.HasVideo</visible>
+			<visible>!Player.HasAudio | Skin.HasSetting(NoAudioRSS)</visible>
+			<include>homemisc</include>
+		</control>
 
 		<!-- sub-buttons -->
 		<control type="group">

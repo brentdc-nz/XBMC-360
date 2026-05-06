@@ -506,6 +506,7 @@
     <ClInclude Include="guilib\windows\GUIWindowSettings.h" />
     <ClInclude Include="guilib\windows\GUIWindowSettingsCategory.h" />
     <ClInclude Include="guilib\windows\GUIWindowSystemInfo.h" />
+    <ClInclude Include="guilib\windows\GUIWindowFileManager.h" />
     <ClInclude Include="guilib\windows\GUIWindowVideoFiles.h" />
     <ClInclude Include="guilib\windows\GUIWindowVisualisation.h" />
     <ClInclude Include="guilib\windows\GUIWindowWeather.h" />
@@ -551,6 +552,7 @@
     <ClInclude Include="utils\Job.h" />
     <ClInclude Include="utils\JobManager.h" />
     <ClInclude Include="utils\LabelFormatter.h" />
+    <ClInclude Include="utils\AsyncFileCopy.h" />
     <ClInclude Include="utils\Log.h" />
     <ClInclude Include="utils\HTMLUtil.h" />
     <ClInclude Include="utils\HttpHeader.h" />
@@ -783,6 +785,7 @@
     <ClCompile Include="guilib\windows\GUIWindowSettings.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowSettingsCategory.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowSystemInfo.cpp" />
+    <ClCompile Include="guilib\windows\GUIWindowFileManager.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowVideoFiles.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowVisualisation.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowWeather.cpp" />
@@ -831,6 +834,7 @@
     <ClCompile Include="utils\SystemInfo.cpp" />
     <ClCompile Include="utils\JobManager.cpp" />
     <ClCompile Include="utils\LabelFormatter.cpp" />
+    <ClCompile Include="utils\AsyncFileCopy.cpp" />
     <ClCompile Include="utils\Log.cpp" />
     <ClCompile Include="utils\HTMLUtil.cpp" />
     <ClCompile Include="utils\HttpHeader.cpp" />

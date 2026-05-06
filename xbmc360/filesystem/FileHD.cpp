@@ -1,5 +1,6 @@
 #include "FileHD.h"
 #include "..\utils\Stdafx.h"
+#include "..\utils\CharsetConverter.h"
 
 using namespace XFILE;
 
@@ -127,18 +128,13 @@ __int64 CFileHD::Seek(__int64 iFilePosition, int iWhence)
 		return -1;
 }
 
-bool CFileHD::Exists(const CStdString& strPath)
+bool CFileHD::Exists(const CURL& url)
 {
-	if (strPath.size()==0) return false;
+	CStdString strFile = GetLocal(url);
 
-	FILE *fd;
-	fd = fopen(strPath.c_str(), "rb");
-
-	if (fd != NULL)
-	{
-		fclose(fd);
+	WIN32_FILE_ATTRIBUTE_DATA info;
+	if (GetFileAttributesEx(strFile.c_str(), GetFileExInfoStandard, &info))
 		return true;
-	}
 
 	return false;
 }
@@ -166,7 +162,33 @@ int CFileHD::Stat(const CURL& url, struct __stat64* buffer)
 CStdString CFileHD::GetLocal(const CURL &url)
 {
 	CStdString path(url.GetFileName());
-	path.Replace('/', '\\');
 
+	if (url.GetProtocol().Equals("file", false))
+	{
+		CStdString host(url.GetHostName());
+		if (host.size() > 0)
+		{
+			if (host.Right(1) == ":")
+				path = host + "/" + path;
+			else
+				path = host + ":/" + path;
+		}
+	}
+
+	path.Replace('/', '\\');
+	g_charsetConverter.utf8ToStringCharset(path);
 	return path;
+}
+
+bool CFileHD::Delete(const CURL& url)
+{
+	CStdString strFile = GetLocal(url);
+	return ::DeleteFile(strFile.c_str()) ? true : false;
+}
+
+bool CFileHD::Rename(const CURL& url, const CURL& urlnew)
+{
+	CStdString strFile = GetLocal(url);
+	CStdString strNewFile = GetLocal(urlnew);
+	return ::MoveFile(strFile.c_str(), strNewFile.c_str()) ? true : false;
 }
