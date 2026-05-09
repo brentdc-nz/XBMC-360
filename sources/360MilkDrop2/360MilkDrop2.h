@@ -13,6 +13,17 @@ public:
 	void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
 	void Render();
 	void Stop();
+	bool OnAction(VIS_ACTION action, void *param = NULL);
+	void GetPresets(char ***pPresets, int *currentPreset, int *numPresets, bool *locked);
+	void GetCurrentPreset(char **pPreset, bool *locked);
+	bool IsLocked();
+	char *GetPreset();
+
+private:
+	char **m_presetNames;
+	int m_numPresets;
+	void BuildPresetNames();
+	void FreePresetNames();
 };
 
 #endif //CVISUALISATION_MILKDROP2_H

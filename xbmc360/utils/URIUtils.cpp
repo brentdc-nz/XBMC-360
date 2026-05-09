@@ -120,6 +120,30 @@ bool URIUtils::IsMultiPath(const CStdString& strPath)
 	return strPath.Left(10).Equals("multipath:");
 }
 
+bool URIUtils::IsStack(const CStdString& strFile)
+{
+	return strFile.Left(6).Equals("stack:");
+}
+
+bool URIUtils::IsInArchive(const CStdString &strFile)
+{
+	return IsInZIP(strFile) || IsInRAR(strFile);
+}
+
+bool URIUtils::IsInZIP(const CStdString& strFile)
+{
+	CURL url(strFile);
+
+	return url.GetProtocol() == "zip" && url.GetFileName() != "";
+}
+
+bool URIUtils::IsInRAR(const CStdString& strFile)
+{
+	CURL url(strFile);
+
+	return url.GetProtocol() == "rar" && url.GetFileName() != "";
+}
+
 bool URIUtils::IsHD(const CStdString& strFileName)
 {
 	CURL url(strFileName);
@@ -219,6 +243,31 @@ void URIUtils::RemoveExtension(CStdString& strFileName)
 		if (strFileMask.Find(strExtension) >= 0)
 			strFileName = strFileName.Left(iPos);
 	}
+}
+
+CStdString URIUtils::ReplaceExtension(const CStdString& strFile, const CStdString& strNewExtension)
+{
+	if(IsURL(strFile))
+	{
+		CURL url(strFile);
+		url.SetFileName(ReplaceExtension(url.GetFileName(), strNewExtension));
+		return url.Get();
+	}
+
+	CStdString strChangedFile;
+	CStdString strExtension;
+	GetExtension(strFile, strExtension);
+	if ( strExtension.size() )
+	{
+		strChangedFile = strFile.substr(0, strFile.size() - strExtension.size()) ;
+		strChangedFile += strNewExtension;
+	}
+	else
+	{
+		strChangedFile = strFile;
+		strChangedFile += strNewExtension;
+	}
+	return strChangedFile;
 }
 
 CStdString URIUtils::GetParentPath(const CStdString& strPath)

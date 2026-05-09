@@ -14,10 +14,13 @@ unsigned char waves[2][576];
 
 CVisualisationMilkDrop2::CVisualisationMilkDrop2(const std::string strVisualisationName) : CVisualisation(strVisualisationName)
 {
+	m_presetNames = NULL;
+	m_numPresets = 0;
 }
 
 CVisualisationMilkDrop2::~CVisualisationMilkDrop2()
 {
+	FreePresetNames();
 }
 
 void CVisualisationMilkDrop2::Create(LPDIRECT3DDEVICE9 pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight)
@@ -114,4 +117,140 @@ void CVisualisationMilkDrop2::Stop() // FIXME ME : We have other shutdown functi
 		DeleteCriticalSection(&g_critSection);
 		g_bCritSectionInitialized = false;
 	}
+}
+
+void CVisualisationMilkDrop2::BuildPresetNames()
+{
+	FreePresetNames();
+
+	if (!g_pPlugin || !g_bInitialized)
+		return;
+
+	int nDirs = g_pPlugin->m_nDirs;
+	int nTotal = g_pPlugin->m_nPresets;
+	m_numPresets = nTotal - nDirs;
+
+	if (m_numPresets <= 0)
+	{
+		m_numPresets = 0;
+		return;
+	}
+
+	m_presetNames = new char*[m_numPresets];
+	for (int i = 0; i < m_numPresets; i++)
+	{
+		const std::string &name = g_pPlugin->m_presets[nDirs + i].szFilename;
+		m_presetNames[i] = new char[name.size() + 1];
+		strcpy(m_presetNames[i], name.c_str());
+	}
+}
+
+void CVisualisationMilkDrop2::FreePresetNames()
+{
+	if (m_presetNames)
+	{
+		for (int i = 0; i < m_numPresets; i++)
+			delete[] m_presetNames[i];
+		delete[] m_presetNames;
+		m_presetNames = NULL;
+	}
+	m_numPresets = 0;
+}
+
+bool CVisualisationMilkDrop2::OnAction(VIS_ACTION action, void *param)
+{
+	if (!g_pPlugin || !g_bInitialized)
+		return false;
+
+	switch (action)
+	{
+	case VIS_ACTION_NEXT_PRESET:
+		g_pPlugin->NextPreset(g_pPlugin->m_fBlendTimeUser);
+		return true;
+	case VIS_ACTION_PREV_PRESET:
+		g_pPlugin->PrevPreset(g_pPlugin->m_fBlendTimeUser);
+		return true;
+	case VIS_ACTION_LOCK_PRESET:
+		g_pPlugin->m_bPresetLockedByUser = !g_pPlugin->m_bPresetLockedByUser;
+		return true;
+	case VIS_ACTION_RANDOM_PRESET:
+		g_pPlugin->LoadRandomPreset(g_pPlugin->m_fBlendTimeUser);
+		return true;
+	case VIS_ACTION_LOAD_PRESET:
+		if (param)
+		{
+			int index = *(int *)param;
+			int nDirs = g_pPlugin->m_nDirs;
+			if (index >= 0 && index < (g_pPlugin->m_nPresets - nDirs))
+			{
+				char szFile[MAX_PATH] = {0};
+				strcpy(szFile, g_pPlugin->m_szPresetDir);
+				strcat(szFile, g_pPlugin->m_presets[nDirs + index].szFilename.c_str());
+				g_pPlugin->LoadPreset(szFile, g_pPlugin->m_fBlendTimeUser);
+			}
+		}
+		return true;
+	default:
+		break;
+	}
+	return false;
+}
+
+void CVisualisationMilkDrop2::GetPresets(char ***pPresets, int *currentPreset, int *numPresets, bool *locked)
+{
+	if (!g_pPlugin || !g_bInitialized)
+	{
+		if (pPresets) *pPresets = NULL;
+		if (currentPreset) *currentPreset = 0;
+		if (numPresets) *numPresets = 0;
+		if (locked) *locked = false;
+		return;
+	}
+
+	// Rebuild preset name cache if count changed
+	int nDirs = g_pPlugin->m_nDirs;
+	int count = g_pPlugin->m_nPresets - nDirs;
+	if (count != m_numPresets)
+		BuildPresetNames();
+
+	if (pPresets) *pPresets = m_presetNames;
+	if (numPresets) *numPresets = m_numPresets;
+	if (locked) *locked = g_pPlugin->m_bPresetLockedByUser;
+	if (currentPreset)
+	{
+		int cur = g_pPlugin->m_nCurrentPreset - nDirs;
+		*currentPreset = (cur >= 0 && cur < m_numPresets) ? cur : 0;
+	}
+}
+
+void CVisualisationMilkDrop2::GetCurrentPreset(char **pPreset, bool *locked)
+{
+	if (pPreset && locked)
+	{
+		char **presets = NULL;
+		int currentPreset = 0;
+		int numPresets = 0;
+		*locked = false;
+		GetPresets(&presets, &currentPreset, &numPresets, locked);
+		if (presets && currentPreset < numPresets)
+			*pPreset = presets[currentPreset];
+		else
+			*pPreset = NULL;
+	}
+}
+
+bool CVisualisationMilkDrop2::IsLocked()
+{
+	char *preset = NULL;
+	bool locked = false;
+	GetCurrentPreset(&preset, &locked);
+	return locked;
+}
+
+char *CVisualisationMilkDrop2::GetPreset()
+{
+	char *preset = NULL;
+	bool locked = false;
+	GetCurrentPreset(&preset, &locked);
+	return preset;
 }

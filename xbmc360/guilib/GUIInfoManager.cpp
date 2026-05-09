@@ -17,6 +17,7 @@
 #include "LangInfo.h"
 #include "music\tags\MusicInfoTag.h"
 #include "video\VideoInfoTag.h"
+#include "visualizations\Visualisation.h"
 #include "utils\MathUtils.h"
 #include "utils\TimeUtils.h"
 #include "utils\Util.h"
@@ -408,6 +409,13 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 		
 		if (offset || ret == LISTITEM_ISSELECTED || ret == LISTITEM_ISPLAYING || ret == LISTITEM_IS_FOLDER)
 			return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, 0, offset, INFOFLAG_LISTITEM_WRAP));
+	}
+	else if (strCategory.Equals("visualisation"))
+	{
+		if (strTest.Equals("visualisation.locked")) ret = VISUALISATION_LOCKED;
+		else if (strTest.Equals("visualisation.preset")) ret = VISUALISATION_PRESET;
+		else if (strTest.Equals("visualisation.name")) ret = VISUALISATION_NAME;
+		else if (strTest.Equals("visualisation.enabled")) ret = VISUALISATION_ENABLED;
 	}
 	else if (strCategory.Equals("skin"))
 	{
@@ -1025,6 +1033,33 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
 			if (g_application.IsPlaying())
 				strLabel = GetDuration();
 			break;
+
+		case VISUALISATION_PRESET:
+		{
+			CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
+			g_windowManager.SendMessage(msg);
+			if (msg.GetPointer())
+			{
+				CVisualisation *pVis = (CVisualisation *)msg.GetPointer();
+				char *preset = pVis->GetPreset();
+				if (preset)
+				{
+					strLabel = preset;
+					URIUtils::RemoveExtension(strLabel);
+				}
+			}
+		}
+		break;
+		case VISUALISATION_NAME:
+		{
+			strLabel = g_guiSettings.GetString("musicplayer.visualisation");
+			if (strLabel != "None" && strLabel.size() > 4)
+			{ // make it look pretty
+				strLabel = strLabel.Left(strLabel.size() - 4);
+				strLabel[0] = toupper(strLabel[0]);
+			}
+		}
+		break;
 	}
 
 	return strLabel;
@@ -1095,6 +1130,18 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
 		bReturn = m_playerShowInfo;
 	else if (condition == PLAYER_MUTED)
 		bReturn = g_settings.m_bMute;
+	else if (condition == VISUALISATION_LOCKED)
+	{
+		CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
+		g_windowManager.SendMessage(msg);
+		if (msg.GetPointer())
+		{
+			CVisualisation *pVis = (CVisualisation *)msg.GetPointer();
+			bReturn = pVis->IsLocked();
+		}
+	}
+	else if (condition == VISUALISATION_ENABLED)
+		bReturn = !g_guiSettings.GetString("musicplayer.visualisation").Equals("None");
 	else if (condition >= SKIN_HAS_THEME_START && condition <= SKIN_HAS_THEME_END)
 	{
 		// Note that the code used here could probably be extended to general

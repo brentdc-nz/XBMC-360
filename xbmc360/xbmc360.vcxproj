@@ -580,6 +580,7 @@
     <ClInclude Include="utils\XEXUtils.h" />
     <ClInclude Include="VideoSettings.h" />
     <ClInclude Include="video\VideoInfoTag.h" />
+    <ClInclude Include="NfoFile.h" />
     <ClInclude Include="video\Bookmark.h" />
     <ClInclude Include="video\VideoDatabase.h" />
     <ClInclude Include="Database.h" />
@@ -860,6 +861,7 @@
     <ClCompile Include="utils\XEXUtils.cpp" />
     <ClCompile Include="VideoSettings.cpp" />
     <ClCompile Include="video\VideoInfoTag.cpp" />
+    <ClCompile Include="NfoFile.cpp" />
     <ClCompile Include="video\Bookmark.cpp" />
     <ClCompile Include="video\VideoDatabase.cpp" />
     <ClCompile Include="Database.cpp" />

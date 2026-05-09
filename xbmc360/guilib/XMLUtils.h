@@ -24,6 +24,7 @@
 #include "utils/StdString.h"
 
 class TiXmlDocument;
+class TiXmlElement;
 class TiXmlNode;
 
 class XMLUtils
@@ -38,6 +39,11 @@ public:
 	static bool GetDouble(const TiXmlNode* pRootNode, const char* strTag, double &value);
 	static bool GetFloat(const TiXmlNode* pRootNode, const char* strTag, float& value);
 	static bool GetEncoding(const TiXmlDocument* pDoc, CStdString& strEncoding);
+
+	static bool GetAdditiveString(const TiXmlNode* pRootNode, const char* strTag,
+	                              const CStdString& strSeparator, CStdString& strStringValue);
+	static void SetAdditiveString(TiXmlNode* pRootNode, const char *strTag,
+	                              const CStdString& strSeparator, const CStdString& strValue);
 
 	static void SetString(TiXmlNode* pRootNode, const char *strTag, const CStdString& strValue);
 	static void SetInt(TiXmlNode* pRootNode, const char *strTag, int value);

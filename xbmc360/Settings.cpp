@@ -29,6 +29,7 @@ void CSettings::Initialize()
 	}
 
 	m_iMyMusicStartWindow = WINDOW_MUSIC_FILES;
+	m_bMyMusicSongThumbInVis = false; // Used for music info in vis screen
 
 	m_nVolumeLevel = 0;
 	m_dynamicRangeCompressionLevel = 0;
@@ -143,7 +144,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 	TiXmlElement *pElement = pRootElement->FirstChildElement("mymusic");
 	if (pElement)
 	{
-		// TODO
+		XMLUtils::GetBoolean(pElement, "songthumbinvis", m_bMyMusicSongThumbInVis);
 	}
 
 	// My Videos settings
@@ -245,6 +246,14 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	if (!pNode) return false;
 	XMLUtils::SetInt(pNode, "volumelevel", m_nVolumeLevel);
 	XMLUtils::SetInt(pNode, "dynamicrangecompression", m_dynamicRangeCompressionLevel);
+
+	// My Music settings
+	TiXmlElement mymusicNode("mymusic");
+	pNode = pRoot->InsertEndChild(mymusicNode);
+	if (pNode)
+	{
+		XMLUtils::SetBoolean(pNode, "songthumbinvis", m_bMyMusicSongThumbInVis);
+	}
 
 	// Default video settings
 	TiXmlElement videoSettingsNode("defaultvideosettings");

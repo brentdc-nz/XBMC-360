@@ -14,3 +14,19 @@ CVideoSettings::CVideoSettings()
 	m_PostProcess = false;
 	m_InterlaceMethod = VS_INTERLACEMETHOD_NONE;
 }
+
+bool CVideoSettings::operator!=(const CVideoSettings &right) const
+{
+	if (m_InterlaceMethod != right.m_InterlaceMethod) return true;
+	if (m_ViewMode != right.m_ViewMode) return true;
+	if (m_CustomZoomAmount != right.m_CustomZoomAmount) return true;
+	if (m_CustomPixelRatio != right.m_CustomPixelRatio) return true;
+	if (m_AudioStream != right.m_AudioStream) return true;
+	if (m_SubtitleStream != right.m_SubtitleStream) return true;
+	if (m_SubtitleDelay != right.m_SubtitleDelay) return true;
+	if (m_SubtitleOn != right.m_SubtitleOn) return true;
+	if (m_SubtitleCached != right.m_SubtitleCached) return true;
+	if (m_PostProcess != right.m_PostProcess) return true;
+	if (m_AudioDelay != right.m_AudioDelay) return true;
+	return false;
+}

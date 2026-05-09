@@ -22,6 +22,8 @@ public:
 	CVideoSettings();
 	~CVideoSettings() {};
 
+	bool operator!=(const CVideoSettings &right) const;
+
 	int m_ViewMode;
 	float m_CustomZoomAmount;
 	float m_CustomPixelRatio;

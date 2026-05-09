@@ -746,6 +746,9 @@
     <ClInclude Include="video\VideoInfoTag.h">
       <Filter>Header Files\video</Filter>
     </ClInclude>
+    <ClInclude Include="NfoFile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="video\Bookmark.h">
       <Filter>Header Files\video</Filter>
     </ClInclude>
@@ -1581,6 +1584,9 @@
     </ClCompile>
     <ClCompile Include="video\VideoInfoTag.cpp">
       <Filter>Source Files\video</Filter>
+    </ClCompile>
+    <ClCompile Include="NfoFile.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="video\Bookmark.cpp">
       <Filter>Source Files\video</Filter>

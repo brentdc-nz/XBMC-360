@@ -1,6 +1,8 @@
 #pragma once
 
 #include "guilib\GUIWindow.h"
+#include "guilib\GUIDialog.h"
+#include "music\tags\MusicInfoTag.h"
 
 class CGUIWindowVisualisation :
 	public CGUIWindow
@@ -18,4 +20,5 @@ protected:
 	DWORD m_dwInitTimer;
 	DWORD m_dwLockedTimer;
 	bool m_bShowPreset;
+	MUSIC_INFO::CMusicInfoTag m_tag; // Current tag info, for finding when the info manager updates
 };

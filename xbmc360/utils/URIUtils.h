@@ -38,11 +38,16 @@ public:
 	static bool IsRemote(const CStdString& strFile);
 	static bool IsUPnP(const CStdString& strFile);
 	static bool IsMultiPath(const CStdString& strPath);
+	static bool IsStack(const CStdString& strFile);
+	static bool IsInArchive(const CStdString& strFile);
+	static bool IsInZIP(const CStdString& strFile);
+	static bool IsInRAR(const CStdString& strFile);
 	static bool IsHD(const CStdString& strFileName);
 	static const CStdString GetFileName(const CStdString& strFileNameAndPath);
 	static bool HasSlashAtEnd(const CStdString& strFile);
 	static void RemoveSlashAtEnd(CStdString& strFolder);
 	static void RemoveExtension(CStdString& strFileName);
+	static CStdString ReplaceExtension(const CStdString& strFile, const CStdString& strNewExtension);
 	static CStdString GetParentPath(const CStdString& strPath);
 	static bool GetParentPath(const CStdString& strPath, CStdString& strParent);
 

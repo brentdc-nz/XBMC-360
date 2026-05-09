@@ -2,6 +2,7 @@
 #define GUILIB_LOCALIZESTRINGS_H
 
 #include "utils/StdString.h"
+#include <map>
 
 struct LocStr
 {

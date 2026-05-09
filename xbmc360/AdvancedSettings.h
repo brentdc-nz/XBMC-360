@@ -42,6 +42,9 @@ public:
 	int m_videoIgnorePercentAtEnd;
 	int m_videoIgnoreSecondsAtStart;
 
+	float m_audioPlayCountMinimumPercent;
+	float m_videoPlayCountMinimumPercent;
+
 	int m_curlconnecttimeout;
 	int m_curllowspeedtime;
 	int m_curlretries;
@@ -49,6 +52,9 @@ public:
 	int m_thumbSize;
 	int m_fanartHeight;
 	bool m_useddsfanart;
+
+	CStdString m_videoItemSeparator;
+	bool m_bVideoLibraryMyMoviesCategoriesToGenres;
 };
 
 extern CAdvancedSettings g_advancedSettings;

@@ -19,6 +19,7 @@
  */
 
 #include "XMLUtils.h"
+#include "utils\StringUtils.h"
 
 #include "tinyxml\tinyxml.h"
 
@@ -128,6 +129,38 @@ bool XMLUtils::GetEncoding(const TiXmlDocument* pDoc, CStdString& strEncoding)
 	strEncoding.MakeUpper();
 
 	return !strEncoding.IsEmpty(); // Other encoding then UTF8?
+}
+
+bool XMLUtils::GetAdditiveString(const TiXmlNode* pRootNode, const char* strTag,
+                                 const CStdString& strSeparator, CStdString& strStringValue)
+{
+	CStdString strTemp;
+	const TiXmlElement* node = pRootNode->FirstChildElement(strTag);
+	bool bResult=false;
+	while (node)
+	{
+		if (node->FirstChild())
+		{
+			bResult = true;
+			strTemp = node->FirstChild()->Value();
+			const char* clear=node->Attribute("clear");
+			if (strStringValue.IsEmpty() || (clear && stricmp(clear,"true")==0))
+				strStringValue = strTemp;
+			else
+				strStringValue += strSeparator+strTemp;
+		}
+		node = node->NextSiblingElement(strTag);
+	}
+
+	return bResult;
+}
+
+void XMLUtils::SetAdditiveString(TiXmlNode* pRootNode, const char *strTag, const CStdString& strSeparator, const CStdString& strValue)
+{
+	CStdStringArray list;
+	CStringUtils::SplitString(strValue, strSeparator, list);
+	for (unsigned int i=0;i<list.size() && !list[i].IsEmpty();++i)
+		SetString(pRootNode,strTag,list[i]);
 }
 
 void XMLUtils::SetString(TiXmlNode* pRootNode, const char *strTag, const CStdString& strValue)

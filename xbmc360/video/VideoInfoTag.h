@@ -24,6 +24,9 @@
 
 #include <vector>
 
+class TiXmlElement;
+class TiXmlNode;
+
 struct SActorInfo
 {
   CStdString strName;
@@ -35,6 +38,8 @@ class CVideoInfoTag
 public:
   CVideoInfoTag() { Reset(); };
   void Reset();
+  bool Load(const TiXmlElement *movie, bool chained = false);
+  bool Save(TiXmlNode *node, const CStdString &tag, bool savePathInfo = true);
   bool IsEmpty() const;
   bool HasStreamDetails() const;
   const CStdString GetCast(bool bIncludeRole = false) const;
@@ -47,6 +52,7 @@ public:
   CStdString m_strPlotOutline;
   CStdString m_strTrailer;
   CStdString m_strPlot;
+  CStdString m_strPictureURL;
   CStdString m_strTitle;
   CStdString m_strSortTitle;
   CStdString m_strVotes;
@@ -84,7 +90,12 @@ public:
   float m_fRating;
   float m_fEpBookmark;
   int m_iBookmarkId;
+  CStdString m_strFanart;
   CStreamDetails m_streamDetails;
+
+private:
+  void ParseNative(const TiXmlElement* movie);
+  void ParseMyMovies(const TiXmlElement* movie);
 };
 
 typedef std::vector<CVideoInfoTag> VECMOVIES;

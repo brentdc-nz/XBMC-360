@@ -365,13 +365,11 @@ void CGUIVisualisationControl::OnAudioData(const unsigned char* pAudioData, int 
 	return;
 }
 
-bool CGUIVisualisationControl::OnAction(const CAction &action) //BRENT WIP
+bool CGUIVisualisationControl::OnAction(const CAction &action)
 {
-	 if (!m_pVisualisation)
-		  return false;
+	if (!m_pVisualisation)
+		return false;
 
-	 return false; // WIP!!
-/*
 	enum CVisualisation::VIS_ACTION visAction = CVisualisation::VIS_ACTION_NONE;
 	
 	if (action.GetID() == ACTION_VIS_PRESET_NEXT)
@@ -387,7 +385,7 @@ bool CGUIVisualisationControl::OnAction(const CAction &action) //BRENT WIP
 	else if (action.GetID() == ACTION_VIS_RATE_PRESET_MINUS)
 		visAction = CVisualisation::VIS_ACTION_RATE_PRESET_MINUS;
 
-	return m_pVisualisation->OnAction(visAction);*/
+	return m_pVisualisation->OnAction(visAction);
 }
 
 bool CGUIVisualisationControl::UpdateTrack()

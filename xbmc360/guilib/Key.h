@@ -134,6 +134,15 @@
 #define ACTION_ANALOG_SEEK_FORWARD   124 // Seeks forward, and displays the seek bar.
 #define ACTION_ANALOG_SEEK_BACK      125 // Seeks backward, and displays the seek bar.
 
+#define ACTION_VIS_PRESET_SHOW       126
+#define ACTION_VIS_PRESET_LIST       127
+#define ACTION_VIS_PRESET_NEXT       128
+#define ACTION_VIS_PRESET_PREV       129
+#define ACTION_VIS_PRESET_LOCK       130
+#define ACTION_VIS_PRESET_RANDOM     131
+#define ACTION_VIS_RATE_PRESET_PLUS  132
+#define ACTION_VIS_RATE_PRESET_MINUS 133
+
 #define ACTION_ENTER                 135
 
 #define ACTION_FILTER_CLEAR          150

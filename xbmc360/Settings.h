@@ -94,6 +94,7 @@ public:
 	CStdString m_logFolder;
 	int m_iSystemTimeTotalUp; // Uptime in minutes!
 
+	CVideoSettings m_defaultVideoSettings;
 	CVideoSettings m_currentVideoSettings;
 
 	float m_fZoomAmount;      // Current zoom amount
@@ -102,6 +103,7 @@ public:
 	RESOLUTION_INFO m_ResInfo[10];
 
 	int m_iMyMusicStartWindow;
+	bool m_bMyMusicSongThumbInVis;
 
 	int m_nVolumeLevel; // Measured in milliBels -60dB -> 0dB range.
 	int m_dynamicRangeCompressionLevel; // Measured in milliBels  0dB -> 30dB range.

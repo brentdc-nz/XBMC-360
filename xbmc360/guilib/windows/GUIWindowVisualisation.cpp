@@ -7,6 +7,7 @@
 #include "guilib\GUIUserMessages.h"
 #include "Settings.h"
 #include "AdvancedSettings.h"
+#include "visualizations\Visualisation.h"
 
 #define TRANSISTION_COUNT   50  // 1 Second
 #define TRANSISTION_LENGTH 200  // 4 Seconds
@@ -32,11 +33,11 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
 	{
 		case ACTION_SHOW_INFO:
 		{
-			//if (!m_dwInitTimer || g_settings.m_bMyMusicSongThumbInVis) // TODO: m_bMyMusicSongThumbInVis not yet implemented
-			//	g_settings.m_bMyMusicSongThumbInVis = !g_settings.m_bMyMusicSongThumbInVis;
-			//g_infoManager.SetShowInfo(g_settings.m_bMyMusicSongThumbInVis);
-			g_infoManager.SetShowInfo(!g_infoManager.GetBool(PLAYER_SHOWINFO));
-			m_dwInitTimer = 0; // Cancel any pending auto-hide
+			if (!m_dwInitTimer || g_settings.m_bMyMusicSongThumbInVis)
+				g_settings.m_bMyMusicSongThumbInVis = !g_settings.m_bMyMusicSongThumbInVis;
+
+			g_infoManager.SetShowInfo(g_settings.m_bMyMusicSongThumbInVis);
+
 			return true;
 		}
 		break;
@@ -47,7 +48,44 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
 		g_windowManager.PreviousWindow();
 		return true;
 		break;
+
+		case ACTION_VIS_PRESET_LOCK:
+		{ // Show the locked icon + fall through so that the vis handles the locking
+			CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
+			g_windowManager.SendMessage(msg);
+			if (msg.GetPointer())
+			{
+				CVisualisation *pVis = (CVisualisation *)msg.GetPointer();
+				char **pPresets = NULL;
+				int currpreset = 0, numpresets = 0;
+				bool locked;
+
+				pVis->GetPresets(&pPresets, &currpreset, &numpresets, &locked);
+				if (numpresets == 1 || !pPresets)
+					return true;
+			}
+			if (!m_bShowPreset)
+			{
+				m_dwLockedTimer = START_FADE_LENGTH;
+				g_infoManager.SetShowCodec(true);
+			}
+		}
+		break;
+		case ACTION_VIS_PRESET_SHOW:
+		{
+			if (!m_dwLockedTimer || m_bShowPreset)
+				m_bShowPreset = !m_bShowPreset;
+			g_infoManager.SetShowCodec(m_bShowPreset);
+			return true;
+		}
+		break;
 	}
+	
+	// Default action is to send to the visualisation first
+	CGUIVisualisationControl *pVisControl = (CGUIVisualisationControl *)GetControl(CONTROL_VIS);
+	if (pVisControl && pVisControl->OnAction(action))
+		return true;
+		
 	return CGUIWindow::OnAction(action);
 }
 
@@ -55,6 +93,40 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
 {
 	switch ( message.GetMessage() )
 	{
+		case GUI_MSG_PLAYBACK_STARTED:
+		{
+			CGUIVisualisationControl *pVisControl = (CGUIVisualisationControl *)GetControl(CONTROL_VIS);
+			if (pVisControl)
+				return pVisControl->OnMessage(message);
+		}
+		break;
+		case GUI_MSG_GET_VISUALISATION:
+		{
+			CGUIVisualisationControl *pVisControl = (CGUIVisualisationControl *)GetControl(CONTROL_VIS);
+			if (pVisControl)
+				message.SetPointer(pVisControl->GetVisualisation());
+			return true;
+		}
+		break;
+		case GUI_MSG_VISUALISATION_ACTION:
+		{
+			CGUIVisualisationControl *pVisControl = (CGUIVisualisationControl *)GetControl(CONTROL_VIS);
+			if (pVisControl)
+				return pVisControl->OnMessage(message);
+		}
+		break;
+		case GUI_MSG_WINDOW_DEINIT:
+		{
+			if (IsActive()) // Save any changed settings from the OSD
+				g_settings.Save();
+			// Check and close any OSD windows
+/* //TODO
+			CGUIDialog *pOSD = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_OSD);
+			if (pOSD && pOSD->IsDialogRunning()) pOSD->Close(true);
+			CGUIDialog *pList = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_VIS_PRESET_LIST);
+			if (pList && pList->IsDialogRunning()) pList->Close(true);
+*/		}
+		break;
 		case GUI_MSG_WINDOW_INIT:
 		{
 			// Check whether we've come back here from a window during which time we've actually
@@ -71,15 +143,17 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
 			g_infoManager.SetShowInfo(true); // Always show the info initially.
 			
 			CGUIWindow::OnMessage(message);
+			if (g_infoManager.GetCurrentSongTag())
+				m_tag = *g_infoManager.GetCurrentSongTag();
 
-			if (/*g_settings.m_bMyMusicSongThumbInVis*/0) // TODO BRENT
-			{ 
+			if (g_settings.m_bMyMusicSongThumbInVis)
+			{
 				// Always on
 				m_dwInitTimer = 0;
 			}
 			else
 			{
-				// Start display init timer (fade out after 3 secs...)
+				// Start display init timer (fade out after configured duration)
 				m_dwInitTimer = g_advancedSettings.m_songInfoDuration * 50;
 			}
 			return true;
@@ -91,25 +165,21 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
 void CGUIWindowVisualisation::FrameMove()
 {
 	g_application.ResetScreenSaver();
-
 	// Check for a tag change
-//	const CMusicInfoTag* tag = g_infoManager.GetCurrentSongTag(); // TODO BRENT
-/*	
+	const MUSIC_INFO::CMusicInfoTag* tag = g_infoManager.GetCurrentSongTag();
 	if (tag && *tag != m_tag)
 	{
 		// Need to fade in then out again
 		m_tag = *tag;
-
 		// Fade in
 		m_dwInitTimer = g_advancedSettings.m_songInfoDuration * 50;
 		g_infoManager.SetShowInfo(true);
 	}
-*/	
 	if (m_dwInitTimer)
 	{
 		m_dwInitTimer--;
 		
-		if (!m_dwInitTimer/* && !g_settings.m_bMyMusicSongThumbInVis*/) // TODO BRENT
+		if (!m_dwInitTimer && !g_settings.m_bMyMusicSongThumbInVis)
 		{
 			// Reached end of fade in, fade out again
 			g_infoManager.SetShowInfo(false);
@@ -127,13 +197,30 @@ void CGUIWindowVisualisation::FrameMove()
 	CGUIWindow::FrameMove();
 }
 
-void CGUIWindowVisualisation::AllocResources(bool forceLoad) // TODO
+void CGUIWindowVisualisation::AllocResources(bool forceLoad)
 {
 	CGUIWindow::AllocResources(forceLoad);
+	// TODO: Enable dialog AllocResources once MusicOSD.xml and VisualisationPresetList.xml
+	// exist in the skin. Loading nonexistent XMLs sets the dialog ID to WINDOW_INVALID
+	// via LoadXML() failure, corrupting window state.
+	//CGUIWindow *pWindow;
+	//pWindow = g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_OSD);
+	//if (pWindow) pWindow->AllocResources(true);
+	//pWindow = g_windowManager.GetWindow(WINDOW_DIALOG_VIS_PRESET_LIST);
+	//if (pWindow) pWindow->AllocResources(true);
 }
 
-void CGUIWindowVisualisation::FreeResources(bool forceUnload) // TODO
+void CGUIWindowVisualisation::FreeResources(bool forceUnload)
 {
+	// Save changed settings from music OSD
+	g_settings.Save();
+	// TODO: Enable dialog FreeResources once MusicOSD.xml and VisualisationPresetList.xml
+	// exist in the skin.
+	//CGUIWindow *pWindow;
+	//pWindow = g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_OSD);
+	//if (pWindow) pWindow->FreeResources(true);
+	//pWindow = g_windowManager.GetWindow(WINDOW_DIALOG_VIS_PRESET_LIST);
+	//if (pWindow) pWindow->FreeResources(true);
 	CGUIWindow::FreeResources(forceUnload);
 }
 

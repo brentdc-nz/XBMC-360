@@ -43,6 +43,9 @@ CAdvancedSettings::CAdvancedSettings()
 	m_videoIgnorePercentAtEnd = 5;
 	m_videoIgnoreSecondsAtStart = 180;
 
+	m_audioPlayCountMinimumPercent = 90.0f;
+	m_videoPlayCountMinimumPercent = 90.0f;
+
 	m_curlconnecttimeout = 10;
 	m_curllowspeedtime = 20;
 	m_curlretries = 2;
@@ -50,6 +53,9 @@ CAdvancedSettings::CAdvancedSettings()
 	m_thumbSize = 192;
 	m_fanartHeight = 480;
 	m_useddsfanart = false;
+
+	m_videoItemSeparator = " / ";
+	m_bVideoLibraryMyMoviesCategoriesToGenres = false;
 }
 
 bool CAdvancedSettings::Load()

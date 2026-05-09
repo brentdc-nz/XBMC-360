@@ -20,8 +20,11 @@
  */
 #include "Database.h"
 #include "video/Bookmark.h"
+#include "VideoSettings.h"
+#include "utils/StreamDetails.h"
 
 class CFileItem;
+class CFileItemList;
 
 class CVideoDatabase : public CDatabase
 {
@@ -37,14 +40,39 @@ public:
 	void ClearBookMarkOfFile(const CStdString& strFilenameAndPath, CBookmark& bookmark, CBookmark::EType type = CBookmark::STANDARD);
 	void ClearBookMarksOfFile(const CStdString& strFilenameAndPath, CBookmark::EType type = CBookmark::STANDARD);
 
+	// Play count methods
+	int GetPlayCount(const CFileItem &item);
+	void SetPlayCount(const CFileItem &item, int count, const CStdString &date = "");
+	void IncrementPlayCount(const CFileItem &item);
+	void UpdateLastPlayed(const CFileItem &item);
+	bool GetPlayCounts(CFileItemList &items);
+
+	int AddFile(const CFileItem &item);
+	int GetFileId(const CFileItem &item);
+
+	// Video settings
+	void SetVideoSettings(const CStdString &strFilenameAndPath, const CVideoSettings &settings);
+	bool GetVideoSettings(const CStdString &strFilenameAndPath, CVideoSettings &settings);
+	void EraseVideoSettings();
+
+	// Stream details
+	void SetStreamDetailsForFile(const CStreamDetails& details, const CStdString &strFileNameAndPath);
+	void SetStreamDetailsForFileId(const CStreamDetails& details, int idFile);
+
+	// Stack times
+	bool GetStackTimes(const CStdString &filePath, std::vector<int> &times);
+	void SetStackTimes(const CStdString &filePath, std::vector<int> &times);
+
 protected:
 	int GetPathId(const CStdString& strPath);
 	int AddPath(const CStdString& strPath);
 	int GetFileId(const CStdString& strFilenameAndPath);
 	int AddFile(const CStdString& strFilenameAndPath);
 
+	int RunQuery(const CStdString &sql);
+	void ConstructPath(CStdString& strDest, const CStdString& strPath, const CStdString& strFileName);
 	void SplitPath(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
 
 	virtual bool CreateTables();
-	virtual int GetMinVersion() const { return 1; }
+	virtual int GetMinVersion() const { return 4; }
 };

@@ -187,6 +187,11 @@ namespace INFO
 #define CONTAINER_SHOWPLOT          379
 #define CONTAINER_TOTALTIME         380
 
+#define VISUALISATION_LOCKED         400
+#define VISUALISATION_PRESET         401
+#define VISUALISATION_NAME           402
+#define VISUALISATION_ENABLED        403
+
 #define SKIN_HAS_THEME_START        500
 #define SKIN_HAS_THEME_END          599 // Allow for max 100 themes
 

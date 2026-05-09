@@ -225,6 +225,10 @@ void CGUISettings::Initialize()
 	AddCategory(7, "screensaver", 360);
 	AddInt(1, "screensaver.time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
 	AddString(2, "screensaver.mode", 356, "Plasma", SPIN_CONTROL_TEXT);
+
+	// Music settings
+	AddCategory(7, "musicplayer", 2);
+	AddString(1, "musicplayer.visualisation", 250, "MilkDrop2.vis", SPIN_CONTROL_TEXT);
 }
 
 void CGUISettings::AddGroup(int groupID, int labelID)

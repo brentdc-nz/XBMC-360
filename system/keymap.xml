@@ -40,8 +40,8 @@
        <A>Pause</A>
        <B>Stop</B>
        <Y>XBMC.ActivateWindow(VisualisationPresetList)</Y>
-       <rightshoulder>CodecInfo</rightshoulder>    <!-- was black -->
-       <leftshoulder>Info</leftshoulder>           <!-- was white -->
+       <rightshoulder>ShowPreset</rightshoulder>
+       <leftshoulder>Info</leftshoulder>
        <start>XBMC.ActivateWindow(MusicOSD)</start>
        <back>LockPreset</back>
        <dpadleft>SkipPrevious</dpadleft>

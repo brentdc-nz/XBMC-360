@@ -6,7 +6,7 @@
 #include "guilib\GUIInfoManager.h"
 //#include "playlists/PlayListFactory.h"
 #include "Application.h"
-//#include "NfoFile.h"
+#include "NfoFile.h"
 //#include "PlayListPlayer.h"
 //#include "GUIPassword.h"
 //#include "dialogs/GUIDialogMediaSource.h"

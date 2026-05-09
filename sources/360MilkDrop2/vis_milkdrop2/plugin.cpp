@@ -3642,6 +3642,27 @@ void CPlugin::MyRenderFn(int redraw)
 
 void CPlugin::PrevPreset(float fBlendTime)
 {
+	if (m_bSequentialPresetOrder)
+	{
+		m_nCurrentPreset--;
+		if (m_nCurrentPreset < m_nDirs || m_nCurrentPreset >= m_nPresets)
+			m_nCurrentPreset = m_nPresets - 1;
+
+		char szFile[MAX_PATH] = {0};
+		strcpy(szFile, m_szPresetDir);
+		strcat(szFile, m_presets[m_nCurrentPreset].szFilename.c_str());
+		LoadPreset(szFile, fBlendTime);
+	}
+	else
+	{
+		// Go back through history
+		int prev = (m_presetHistoryPos - 1 + PRESET_HIST_LEN) % PRESET_HIST_LEN;
+		if (prev != m_presetHistoryBackFence)
+		{
+			m_presetHistoryPos = prev;
+			LoadPreset(m_presetHistory[m_presetHistoryPos].c_str(), fBlendTime);
+		}
+	}
 }
 
 void CPlugin::NextPreset(float fBlendTime)  // if not retracing our former steps, it will choose a random one.
