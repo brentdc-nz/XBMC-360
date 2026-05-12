@@ -120,6 +120,8 @@
 #define ACTION_SCROLL_DOWN           112
 #define ACTION_ANALOG_FORWARD        113
 #define ACTION_ANALOG_REWIND         114
+#define ACTION_MOVE_ITEM_UP          115 // Move item up in playlist
+#define ACTION_MOVE_ITEM_DOWN        116 // Move item down in playlist
 
 #define ACTION_CONTEXT_MENU          117 // Pops up the context menu
 
@@ -208,6 +210,7 @@
 #define WINDOW_DIALOG_BUSY                10138
 #define WINDOW_DIALOG_SLIDER              10145
 #define WINDOW_DIALOG_KEYBOARD            10103
+#define WINDOW_DIALOG_FAVOURITES          10134
 #define WINDOW_DIALOG_SELECT              12000
 #define WINDOW_DIALOG_OK                  12002
 

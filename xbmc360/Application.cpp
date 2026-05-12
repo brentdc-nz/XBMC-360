@@ -59,6 +59,7 @@
 #include "guilib\dialogs\GUIDialogNumeric.h"
 #include "guilib\dialogs\GUIDialogOK.h"
 #include "guilib\dialogs\GUIDialogSelect.h"
+#include "guilib\dialogs\GUIDialogFavourites.h"
 
 using namespace PLAYLIST;
 
@@ -242,6 +243,7 @@ bool CApplication::Initialize()
 	g_windowManager.Add(&m_guiDialogSeekBar);           // window id = 115
 	g_windowManager.Add(new CGUIDialogNetworkSetup);    // window id = 128
 	g_windowManager.Add(new CGUIDialogMediaSource);     // window id = 129
+	g_windowManager.Add(new CGUIDialogFavourites);      // window id = 134	
 	g_windowManager.Add(new CGUIDialogSelect);          // window id = 2000
 	g_windowManager.Add(new CGUIDialogOK);              // window id = 2002
 	g_windowManager.Add(new CGUIWindowWeather);         // Window id = 2600 WEATHER
@@ -2050,6 +2052,7 @@ void CApplication::Cleanup()
 		g_windowManager.Delete(WINDOW_DIALOG_CONTEXT_MENU);
 		g_windowManager.Delete(WINDOW_DIALOG_BUTTON_MENU);
 		g_windowManager.Delete(WINDOW_DIALOG_MEDIA_SOURCE);
+		g_windowManager.Delete(WINDOW_DIALOG_FAVOURITES);
 		g_windowManager.Delete(WINDOW_DIALOG_NETWORK_SETUP);
 		g_windowManager.Delete(WINDOW_DIALOG_KEYBOARD);
 		g_windowManager.Delete(WINDOW_DIALOG_NUMERIC);

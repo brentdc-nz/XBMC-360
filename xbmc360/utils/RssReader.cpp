@@ -53,7 +53,9 @@ CRssReader::~CRssReader()
 {
 	if (m_pObserver)
 		m_pObserver->OnFeedRelease();
+
 	StopThread();
+
 	for (unsigned int i = 0; i < m_vecTimeStamps.size(); i++)
 		delete m_vecTimeStamps[i];
 }
@@ -67,12 +69,13 @@ void CRssReader::Create(IRssObserver* aObserver, const vector<string>& aUrls, co
 	m_vecUrls = aUrls;
 	m_strFeed.resize(aUrls.size());
 	m_strColors.resize(aUrls.size());
-	// set update times
+
+	// Set update times
 	m_vecUpdateTimes = times;
 	m_rtlText = rtl;
 	m_requestRefresh = false;
 
-	// update each feed on creation
+	// Update each feed on creation
 	for (unsigned int i=0;i<m_vecUpdateTimes.size();++i )
 	{
 		AddToQueue(i);
@@ -90,8 +93,10 @@ void CRssReader::requestRefresh()
 void CRssReader::AddToQueue(int iAdd)
 {  
 	CSingleLock lock(*this);
+	
 	if (iAdd < (int)m_vecUrls.size())
 		m_vecQueue.push_back(iAdd);
+
 	if (!m_bIsRunning)
 	{
 		StopThread();
@@ -134,7 +139,7 @@ void CRssReader::Process()
 		int nRetries = 3;
 		CURL url(strUrl);
 
-		// we wait for the network to come up
+		// We wait for the network to come up
 		if ((url.GetProtocol() == "http" || url.GetProtocol() == "https") && !g_application.getNetwork().IsAvailable())
 			strXML = "<rss><item><title>"+g_localizeStrings.Get(15301)+"</title></item></rss>";
 		else
@@ -176,15 +181,15 @@ void CRssReader::Process()
 
 		if ((!strXML.IsEmpty()) && m_pObserver)
 		{
-			// erase any <content:encoded> tags (also unsupported by tinyxml)
+			// Erase any <content:encoded> tags (also unsupported by tinyxml)
 			int iStart = strXML.Find("<content:encoded>");
 			int iEnd = 0;
 			while (iStart > 0)
 			{
-				// get <content:encoded> end position
+				// Get <content:encoded> end position
 				iEnd = strXML.Find("</content:encoded>", iStart) + 18;
 
-				// erase the section
+				// Erase the section
 				strXML = strXML.erase(iStart, iEnd - iStart);
 
 				iStart = strXML.Find("<content:encoded>");
@@ -202,7 +207,8 @@ void CRssReader::Process()
 void CRssReader::getFeed(vecText &text)
 {
 	text.clear();
-	// double the spaces at the start of the set
+
+	// Double the spaces at the start of the set
 	for (int j = 0; j < m_spacesBetweenFeeds; j++)
 		text.push_back(L' ');
 	for (unsigned int i = 0; i < m_strFeed.size(); i++)
@@ -264,6 +270,7 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
 		bEmpty = false;
 		TiXmlNode* childNode = itemNode->FirstChild();
 		mTagElements.clear();
+
 		while (childNode > 0)
 		{
 			CStdString strName = childNode->Value();
@@ -296,6 +303,7 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
 		}
 
 		int rsscolour = RSS_COLOR_HEADLINE;
+
 		for (i = m_tagSet.begin();i != m_tagSet.end();i++)
 		{
 			map <CStdString, CStdStringW>::iterator j = mTagElements.find(*i);
@@ -327,6 +335,7 @@ bool CRssReader::Parse(LPSTR szBuffer, int iFeed)
 	m_xml.Parse((LPCSTR)szBuffer, 0, TIXML_ENCODING_LEGACY);
 
 	m_encoding = "UTF-8";
+
 	if (m_xml.RootElement())
 	{
 		TiXmlDeclaration *tiXmlDeclaration = m_xml.RootElement()->Parent()->FirstChild()->ToDeclaration();
@@ -362,6 +371,7 @@ bool CRssReader::Parse(int iFeed)
 	}
 
 	TiXmlElement* channelXmlNode = rssXmlNode->FirstChildElement("channel");
+
 	if (channelXmlNode)
 	{
 		TiXmlElement* titleNode = channelXmlNode->FirstChildElement("title");
@@ -381,7 +391,7 @@ bool CRssReader::Parse(int iFeed)
 
 	GetNewsItems(rssXmlNode,iFeed);
 
-	// avoid trailing ' - '
+	// Avoid trailing ' - '
 	if (m_strFeed[iFeed].size() > 3 && m_strFeed[iFeed].Mid(m_strFeed[iFeed].size()-3) == L" - " && !m_rtlText)
 	{
 		m_strFeed[iFeed].erase(m_strFeed[iFeed].length()-3);
@@ -392,6 +402,7 @@ bool CRssReader::Parse(int iFeed)
 		m_strFeed[iFeed].erase(0, 3);
 		m_strColors[iFeed].erase(0, 3);
 	}
+
 	return true;
 }
 
@@ -403,13 +414,17 @@ void CRssReader::SetObserver(IRssObserver *observer)
 void CRssReader::UpdateObserver()
 {
 	if (!m_pObserver) return;
+	
 	vecText feed;
 	getFeed(feed);
+	
 	if (feed.size() > 0)
 	{
 		g_graphicsContext.Lock();
-		if (m_pObserver) // need to check again when locked to make sure observer wasnt removed
+		
+		if (m_pObserver) // Need to check again when locked to make sure observer wasnt removed
 			m_pObserver->OnFeedUpdate(feed);
+
 		g_graphicsContext.Unlock();
 	}
 }
@@ -452,6 +467,7 @@ void CRssManager::Start()
 void CRssManager::Stop()
 {
 	m_bActive = false;
+
 	for (unsigned int i = 0; i < m_readers.size(); i++)
 	{
 		if (m_readers[i].reader)
@@ -459,6 +475,7 @@ void CRssManager::Stop()
 			delete m_readers[i].reader;
 		}
 	}
+	
 	m_readers.clear();
 }
 
@@ -467,10 +484,10 @@ void CRssManager::Reset()
 	Stop();
 }
 
-// returns true if the reader doesn't need creating, false otherwise
+// Returns true if the reader doesn't need creating, false otherwise
 bool CRssManager::GetReader(int controlID, int windowID, IRssObserver* observer, CRssReader *&reader)
 {
-	// check to see if we've already created this reader
+	// Check to see if we've already created this reader
 	for (unsigned int i = 0; i < m_readers.size(); i++)
 	{
 		if (m_readers[i].controlID == controlID && m_readers[i].windowID == windowID)
@@ -481,11 +498,13 @@ bool CRssManager::GetReader(int controlID, int windowID, IRssObserver* observer,
 			return true;
 		}
 	}
-	// need to create a new one
+
+	// Need to create a new one
 	READERCONTROL readerControl;
 	readerControl.controlID = controlID;
 	readerControl.windowID = windowID;
 	reader = readerControl.reader = new CRssReader;
 	m_readers.push_back(readerControl);
+
 	return false;
 }

@@ -81,6 +81,7 @@ static const ActionMapping windows[] =
         {"virtualkeyboard"          , WINDOW_DIALOG_KEYBOARD},
         {"contextmenu"              , WINDOW_DIALOG_CONTEXT_MENU},
         {"shutdownmenu"             , WINDOW_DIALOG_BUTTON_MENU},
+        {"favourites"               , WINDOW_DIALOG_FAVOURITES},
         {"seekbar"                  , WINDOW_DIALOG_SEEK_BAR},
         {"filebrowser"              , WINDOW_DIALOG_FILE_BROWSER},
         {"networksetup"             , WINDOW_DIALOG_NETWORK_SETUP},

@@ -615,6 +615,26 @@ void CFileItemList::AddFront(const CFileItemPtr &pItem, int itemPosition)
 	}
 }
 
+void CFileItemList::Remove(CFileItem* pItem)
+{
+	CSingleLock lock(m_lock);
+
+	for (IVECFILEITEMS it = m_items.begin(); it != m_items.end(); ++it)
+	{
+		if (pItem == it->get())
+		{
+			if (m_fastLookup)
+			{
+				CStdString path(pItem->GetPath());
+				path.ToLower();
+				m_map.erase(path);
+			}
+			m_items.erase(it);
+			break;
+		}
+	}
+}
+
 void CFileItemList::Remove(int iItem)
 {
 	CSingleLock lock(m_lock);
@@ -630,6 +650,12 @@ void CFileItemList::Remove(int iItem)
 		}
 		m_items.erase(m_items.begin() + iItem);
 	}
+}
+
+void CFileItemList::Swap(unsigned int item1, unsigned int item2)
+{
+	if (item1 != item2 && item1 < m_items.size() && item2 < m_items.size())
+		std::swap(m_items[item1], m_items[item2]);
 }
 
 CFileItemPtr CFileItemList::Get(int iItem)

@@ -3,6 +3,9 @@
 #include "Builtins.h"
 #include "FileItem.h"
 #include "Settings.h"
+#include "PlayListPlayer.h"
+#include "guilib\GUIWindowVideoBase.h"
+#include "filesystem\Directory.h"
 #include "utils\StringUtils.h"
 #include "utils\Util.h"
 #include "utils\Log.h"
@@ -14,6 +17,8 @@
 #include <vector>
 
 using namespace std;
+using namespace XFILE;
+using namespace PLAYLIST;
 
 typedef struct
 {
@@ -182,6 +187,79 @@ int CBuiltins::Execute(const CStdString& execString)
 		g_rssManager.Stop();
 		g_settings.LoadRSSFeeds();
 		g_rssManager.Start();
+	}
+	else if (execute.Equals("playmedia"))
+	{
+		if (!params.size())
+		{
+			CLog::Log(LOGERROR, "XBMC.PlayMedia called with empty parameter");
+			return -3;
+		}
+
+		CFileItem item(params[0], false);
+		if (URIUtils::HasSlashAtEnd(params[0]))
+			item.m_bIsFolder = true;
+
+		// Restore to previous window if needed
+		if (//g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW || // TODO: WINDOW_SLIDESHOW not ported
+			g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
+			g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
+			g_windowManager.PreviousWindow();
+
+		// Reset screensaver
+		g_application.ResetScreenSaver();
+		g_application.ResetScreenSaverWindow();
+
+		// Ask if we need to check guisettings to resume
+		bool askToResume = true;
+		for (unsigned int i = 1; i < params.size(); i++)
+		{
+			if (params[i].Equals("isdir"))
+				item.m_bIsFolder = true;
+			else if (params[i].Equals("1")) // Set fullscreen or windowed
+				; // g_settings.m_bStartVideoWindowed = true; // TODO: not ported
+			else if (params[i].Equals("resume"))
+			{
+				// Force the item to resume (if applicable) (see CApplication::PlayMedia)
+				item.m_lStartOffset = STARTOFFSET_RESUME;
+				askToResume = false;
+			}
+			else if (params[i].Equals("noresume"))
+			{
+				// Force the item to start at the beginning (m_lStartOffset is initialized to 0)
+				askToResume = false;
+			}
+			// else if (params[i].Left(11).Equals("playoffset=")) // TODO: SetProperty not ported on CFileItem
+			//	item.SetProperty("playlist_starting_track", atoi(params[i].Mid(11)) - 1);
+		}
+
+		// if (!item.m_bIsFolder && item.IsPlugin()) // TODO: Plugins not ported
+		//	item.SetProperty("IsPlayable", true);
+
+		if (askToResume == true)
+		{
+			if (CGUIWindowVideoBase::OnResumeShowMenu(item) == false)
+				return false;
+		}
+
+		if (item.m_bIsFolder)
+		{
+			CFileItemList items;
+			CDirectory::GetDirectory(item.GetPath(), items); // TODO: add g_settings.m_videoExtensions filter when ported
+			g_playlistPlayer.Add(PLAYLIST_VIDEO, items);
+			g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
+			g_playlistPlayer.Play();
+		}
+		else
+		{
+			// Play media
+			// TODO: g_application.PlayMedia(item, item.IsAudio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO) - PlayMedia not ported
+			if (!g_application.PlayFile(item))
+			{
+				CLog::Log(LOGERROR, "XBMC.PlayMedia could not play media: %s", params[0].c_str());
+				return false;
+			}
+		}
 	}
 	// WIP - More to be re-added!
 	else

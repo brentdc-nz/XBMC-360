@@ -75,6 +75,10 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
 			CGUIDialogContextMenu::GetContextButtons("video", item, buttons);
 			CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
 		}
+		else
+		{
+			CGUIWindowVideoBase::GetContextButtons(itemNumber, buttons);
+		}
 	}
 }
 

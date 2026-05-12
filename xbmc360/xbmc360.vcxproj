@@ -363,6 +363,7 @@
     <ClInclude Include="cores\VideoRenderers\BaseRenderer.h" />
     <ClInclude Include="cores\VideoRenderers\RenderManager.h" />
     <ClInclude Include="cores\VideoRenderers\RGBRenderer.h" />
+    <ClInclude Include="Favourites.h" />
     <ClInclude Include="FileItem.h" />
     <ClInclude Include="filesystem\Directory.h" />
     <ClInclude Include="filesystem\DirectoryCache.h" />
@@ -396,6 +397,7 @@
     <ClInclude Include="guilib\dialogs\GUIDialogBusy.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogButtonMenu.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogContextMenu.h" />
+    <ClInclude Include="guilib\dialogs\GUIDialogFavourites.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogFileBrowser.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogKeyboard.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogMediaSource.h" />
@@ -647,6 +649,7 @@
     <ClCompile Include="cores\PlayerCoreFactory.cpp" />
     <ClCompile Include="cores\VideoRenderers\RenderManager.cpp" />
     <ClCompile Include="cores\VideoRenderers\RGBRenderer.cpp" />
+    <ClCompile Include="Favourites.cpp" />
     <ClCompile Include="FileItem.cpp" />
     <ClCompile Include="filesystem\Directory.cpp" />
     <ClCompile Include="filesystem\DirectoryCache.cpp" />
@@ -678,6 +681,7 @@
     <ClCompile Include="guilib\dialogs\GUIDialogBusy.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogButtonMenu.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogContextMenu.cpp" />
+    <ClCompile Include="guilib\dialogs\GUIDialogFavourites.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogFileBrowser.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogKeyboard.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogMediaSource.cpp" />

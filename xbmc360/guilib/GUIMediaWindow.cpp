@@ -16,9 +16,10 @@
 //#include "PartyModeManager.h"
 #include "dialogs\GUIDialogMediaSource.h"
 #include "windows\GUIWindowFileManager.h"
-//#include "Favourites.h"
+#include "Favourites.h"
 #include "utils\LabelFormatter.h"
-//#include "dialogs\GUIDialogProgress.h"
+#include "dialogs\GUIDialogProgress.h"
+#include "URL.h"
 #include "GUIUserMessages.h"
 //#include "settings\AdvancedSettings.h"
 #include "LocalizeStrings.h"
@@ -1417,29 +1418,27 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
 */
 	if (item->GetPropertyBOOL("pluginreplacecontextitems"))
 		return;
-	
-/*	// TODO: FAVOURITES Conditions on masterlock and localisation
-	if (item && !item->IsParentFolder() && !item->GetPath().Equals("add") && !item->GetPath().Equals("newplaylist://") && !item->GetPath().Left(19).Equals("newsmartplaylist://"))
+
+	if (item && !item->IsParentFolder() && !item->GetPath().Equals("add") && !item->GetPath().Equals("newplaylist://"))
 	{
 		if (CFavourites::IsFavourite(item.get(), GetID()))
 			buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14077); // Remove Favourite
 		else
 			buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14076); // Add To Favourites;
 	}
-*/
 }
 
 bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button) // TODO
 {
 	switch (button)
 	{
-/*		case CONTEXT_BUTTON_ADD_FAVOURITE:
+		case CONTEXT_BUTTON_ADD_FAVOURITE:
 		{
 			CFileItemPtr item = m_vecItems->Get(itemNumber);
 			CFavourites::AddOrRemove(item.get(), GetID());
 			return true;
 		}
-		case CONTEXT_BUTTON_PLUGIN_SETTINGS:
+/*		case CONTEXT_BUTTON_PLUGIN_SETTINGS:
 		{
 			CURL url(m_vecItems->Get(itemNumber)->GetPath());
 			
@@ -1492,11 +1491,11 @@ const CFileItemList& CGUIMediaWindow::CurrentDirectory() const
 	return *m_vecItems;
 }
 
-bool CGUIMediaWindow::WaitForNetwork() const // TODO
+bool CGUIMediaWindow::WaitForNetwork() const
 {
 	if (g_application.getNetwork().IsAvailable())
 		return true;
-/*
+
 	CGUIDialogProgress *progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
 	if (!progress)
@@ -1519,7 +1518,7 @@ bool CGUIMediaWindow::WaitForNetwork() const // TODO
 		}
 	}
 
-	progress->Close();*/
+	progress->Close();
 	return true;
 }
 

@@ -428,6 +428,9 @@
     <ClInclude Include="FileItem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Favourites.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="guilib\GUIListItem.h">
       <Filter>Header Files\guilib</Filter>
     </ClInclude>
@@ -441,6 +444,9 @@
       <Filter>Header Files\utils</Filter>
     </ClInclude>
     <ClInclude Include="guilib\dialogs\GUIDialogButtonMenu.h">
+      <Filter>Header Files\guilib\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\dialogs\GUIDialogFavourites.h">
       <Filter>Header Files\guilib\dialogs</Filter>
     </ClInclude>
     <ClInclude Include="guilib\GUIDialog.h">
@@ -1297,6 +1303,9 @@
     <ClCompile Include="FileItem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Favourites.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="guilib\GUIListItem.cpp">
       <Filter>Source Files\guilib</Filter>
     </ClCompile>
@@ -1310,6 +1319,9 @@
       <Filter>Source Files\utils</Filter>
     </ClCompile>
     <ClCompile Include="guilib\dialogs\GUIDialogButtonMenu.cpp">
+      <Filter>Source Files\guilib\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\dialogs\GUIDialogFavourites.cpp">
       <Filter>Source Files\guilib\dialogs</Filter>
     </ClCompile>
     <ClCompile Include="guilib\GUIDialog.cpp">

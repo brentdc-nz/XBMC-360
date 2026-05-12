@@ -205,7 +205,9 @@ public:
 
 	void Add(const CFileItemPtr &pItem);
 	void AddFront(const CFileItemPtr &pItem, int itemPosition);
+	void Remove(CFileItem* pItem);
 	void Remove(int iItem);
+	void Swap(unsigned int item1, unsigned int item2);
 
 	CFileItemPtr Get(int iItem);
 	const CFileItemPtr Get(int iItem) const;

@@ -707,7 +707,29 @@
 			<posx>510</posx>
 			<posy>525</posy>
 
-	
+			<control type="image">
+				<description>favourites button</description>
+				<posx>70</posx>
+				<posy>0</posy>
+				<width>35</width>
+				<height>35</height>
+				<texture>home-sub.png</texture>
+			</control>
+			<control type="button" id="100">
+				<description>favourites button</description>
+				<posx>70</posx>
+				<posy>0</posy>
+				<width>35</width>
+				<height>35</height>
+				<onclick>ActivateWindow(Favourites)</onclick>
+				<texturefocus>home-sub.gif</texturefocus>
+				<texturenofocus>-</texturenofocus>
+				<label>-</label>
+				<onleft>96</onleft>
+				<onright>96</onright>
+				<onup>9001</onup>
+				<ondown>9001</ondown>
+			</control>
 			<control type="image">
 				<description>submenu button</description>
 				<posx>105</posx>
