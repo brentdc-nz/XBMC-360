@@ -55,6 +55,8 @@ public:
 
 	CStdString m_videoItemSeparator;
 	bool m_bVideoLibraryMyMoviesCategoriesToGenres;
+
+	int m_bgInfoLoaderMaxThreads;
 };
 
 extern CAdvancedSettings g_advancedSettings;

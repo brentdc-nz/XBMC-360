@@ -157,6 +157,7 @@ CProgramThumbLoader::~CProgramThumbLoader()
 bool CProgramThumbLoader::LoadItem(CFileItem *pItem)
 {
 	if (pItem->m_bIsShareOrDrive) return true;
+
 	if (!pItem->HasThumbnail())
 		pItem->SetUserProgramThumb();
 	else
@@ -177,6 +178,7 @@ CMusicThumbLoader::~CMusicThumbLoader()
 bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
 {
 	if (pItem->m_bIsShareOrDrive) return true;
+
 	if (!pItem->HasThumbnail())
 		pItem->SetUserMusicThumb();
 	else
@@ -197,6 +199,7 @@ CPictureThumbLoader::~CPictureThumbLoader()
 bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
 {
 	if (pItem->m_bIsShareOrDrive) return true;
+
 	if (pItem->HasThumbnail())
 		LoadRemoteThumb(pItem);
 	return true;

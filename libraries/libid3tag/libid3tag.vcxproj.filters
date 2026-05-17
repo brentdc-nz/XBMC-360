@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source">
+      <UniqueIdentifier>{2b3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zlib">
+      <UniqueIdentifier>{3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\config.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\id3tag.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\metadata.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="source\compat.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\crc.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\debug.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\field.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\file.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\frame.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\frametype.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\genre.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\global.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\id3tag.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\latin1.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\metadata.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\parse.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\render.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\tag.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ucs4.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\utf16.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\utf8.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\util.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\version.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\zconf.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\zlib.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\zutil.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\crc32.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\deflate.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\inffast.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\inffixed.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\inflate.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\inftrees.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\trees.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\compat.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\crc.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\debug.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\field.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\file.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\frame.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\frametype.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\genre.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\latin1.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\metadata.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\parse.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\render.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\tag.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ucs4.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\utf16.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\utf8.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\util.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\version.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\adler32.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\compress.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\crc32.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\deflate.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\gzio.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\infback.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\inffast.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\inflate.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\inftrees.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\trees.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\uncompr.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\zutil.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

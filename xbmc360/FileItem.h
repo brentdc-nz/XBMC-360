@@ -71,6 +71,7 @@ public:
 	bool IsReadOnly() const;
 	bool IsRemovable() const;
 	bool IsHD() const;
+	bool IsNFO() const;
 	bool IsPlayList() const;
 	bool IsFileFolder() const;
 	bool IsInternetStream() const { return false; } ; // TODO
@@ -98,6 +99,8 @@ public:
 	void SetUserVideoThumb();
 	void SetUserMusicThumb(bool alwaysCheckRemote = false);
 	void SetUserProgramThumb();
+	void SetMusicThumb(bool alwaysCheckRemote = true);
+	CStdString GetPreviouslyCachedMusicThumb() const;
 	bool CacheLocalFanart() const;
 
 	virtual void SetLabel(const CStdString &strLabel);
@@ -125,6 +128,8 @@ public:
 	{
 		return m_musicInfoTag;
 	}
+
+	bool LoadMusicTag();
 
 	inline bool HasVideoInfoTag() const
 	{
@@ -232,6 +237,8 @@ public:
 
 	void FillInDefaultIcons();
 
+	void SetCachedMusicThumbs();
+
 	void SetFastLookup(bool fastLookup);
 	bool Contains(const CStdString& fileName) const;
 
@@ -261,6 +268,8 @@ public:
 	void RemoveDiscCache(int windowID = 0) const;
 
 	int GetObjectCount() const;
+	int GetFolderCount() const;
+	int GetFileCount() const;
 	int GetSelectedCount() const;
 
 	bool AlwaysCache() const;

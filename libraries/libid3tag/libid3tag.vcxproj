@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Xbox 360">
+      <Configuration>Debug</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="CodeAnalysis|Xbox 360">
+      <Configuration>CodeAnalysis</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Profile|Xbox 360">
+      <Configuration>Profile</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Profile_FastCap|Xbox 360">
+      <Configuration>Profile_FastCap</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Xbox 360">
+      <Configuration>Release</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_LTCG|Xbox 360">
+      <Configuration>Release_LTCG</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_New|Xbox 360">
+      <Configuration>Release_New</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{A1B2C3D4-E5F6-4A7B-8C9D-0E1F2A3B4C5D}</ProjectGuid>
+    <RootNamespace>libid3tag</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release_New'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release_LTCG'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='CodeAnalysis'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Profile'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Profile_FastCap'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup>
+    <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <!-- ============================================================ -->
+  <!-- Debug configuration                                          -->
+  <!-- ============================================================ -->
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)source;$(ProjectDir)zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>HAVE_CONFIG_H;_DEBUG;_XBOX;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4996;4244;4267;4018;4101;4706;4127;4232;4005;4068;4028;4047;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)libid3tag.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <!-- ============================================================ -->
+  <!-- Release / Release_New / Release_LTCG configurations          -->
+  <!-- ============================================================ -->
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Release' or '$(Configuration)'=='Release_New' or '$(Configuration)'=='Release_LTCG'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)source;$(ProjectDir)zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>HAVE_CONFIG_H;_XBOX;_LIB;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization>MaxSpeed</Optimization>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4996;4244;4267;4018;4101;4706;4127;4232;4005;4068;4028;4047;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)libid3tag.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <!-- ============================================================ -->
+  <!-- CodeAnalysis configuration                                   -->
+  <!-- ============================================================ -->
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='CodeAnalysis'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)source;$(ProjectDir)zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>HAVE_CONFIG_H;_XBOX;_LIB;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization>MaxSpeed</Optimization>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4996;4244;4267;4018;4101;4706;4127;4232;4005;4068;4028;4047;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)libid3tag.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <!-- ============================================================ -->
+  <!-- Profile / Profile_FastCap configurations                     -->
+  <!-- ============================================================ -->
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Profile' or '$(Configuration)'=='Profile_FastCap'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)source;$(ProjectDir)zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>HAVE_CONFIG_H;_XBOX;_LIB;NDEBUG;PROFILE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization>MaxSpeed</Optimization>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4996;4244;4267;4018;4101;4706;4127;4232;4005;4068;4028;4047;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)libid3tag.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <!-- ============================================================ -->
+  <!-- Header files                                                 -->
+  <!-- ============================================================ -->
+  <ItemGroup>
+    <!-- Xbox 360 config -->
+    <ClInclude Include="include\config.h" />
+    <!-- Public headers -->
+    <ClInclude Include="include\id3tag.h" />
+    <ClInclude Include="include\metadata.h" />
+    <!-- Internal headers -->
+    <ClInclude Include="source\compat.h" />
+    <ClInclude Include="source\crc.h" />
+    <ClInclude Include="source\debug.h" />
+    <ClInclude Include="source\field.h" />
+    <ClInclude Include="source\file.h" />
+    <ClInclude Include="source\frame.h" />
+    <ClInclude Include="source\frametype.h" />
+    <ClInclude Include="source\genre.h" />
+    <ClInclude Include="source\global.h" />
+    <ClInclude Include="source\id3tag.h" />
+    <ClInclude Include="source\latin1.h" />
+    <ClInclude Include="source\metadata.h" />
+    <ClInclude Include="source\parse.h" />
+    <ClInclude Include="source\render.h" />
+    <ClInclude Include="source\tag.h" />
+    <ClInclude Include="source\ucs4.h" />
+    <ClInclude Include="source\utf16.h" />
+    <ClInclude Include="source\utf8.h" />
+    <ClInclude Include="source\util.h" />
+    <ClInclude Include="source\version.h" />
+    <!-- zlib headers -->
+    <ClInclude Include="zlib\zconf.h" />
+    <ClInclude Include="zlib\zlib.h" />
+    <ClInclude Include="zlib\zutil.h" />
+    <ClInclude Include="zlib\crc32.h" />
+    <ClInclude Include="zlib\deflate.h" />
+    <ClInclude Include="zlib\inffast.h" />
+    <ClInclude Include="zlib\inffixed.h" />
+    <ClInclude Include="zlib\inflate.h" />
+    <ClInclude Include="zlib\inftrees.h" />
+    <ClInclude Include="zlib\trees.h" />
+  </ItemGroup>
+  <!-- ============================================================ -->
+  <!-- Source files                                                  -->
+  <!-- ============================================================ -->
+  <ItemGroup>
+    <!-- libid3tag core sources -->
+    <ClCompile Include="source\compat.c" />
+    <ClCompile Include="source\crc.c" />
+    <ClCompile Include="source\debug.c" />
+    <ClCompile Include="source\field.c" />
+    <ClCompile Include="source\file.c" />
+    <ClCompile Include="source\frame.c" />
+    <ClCompile Include="source\frametype.c" />
+    <ClCompile Include="source\genre.c" />
+    <ClCompile Include="source\latin1.c" />
+    <ClCompile Include="source\metadata.c" />
+    <ClCompile Include="source\parse.c" />
+    <ClCompile Include="source\render.c" />
+    <ClCompile Include="source\tag.c" />
+    <ClCompile Include="source\ucs4.c" />
+    <ClCompile Include="source\utf16.c" />
+    <ClCompile Include="source\utf8.c" />
+    <ClCompile Include="source\util.c" />
+    <ClCompile Include="source\version.c" />
+    <!-- zlib sources (bundled for standalone build) -->
+    <ClCompile Include="zlib\adler32.c" />
+    <ClCompile Include="zlib\compress.c" />
+    <ClCompile Include="zlib\crc32.c" />
+    <ClCompile Include="zlib\deflate.c" />
+    <ClCompile Include="zlib\gzio.c" />
+    <ClCompile Include="zlib\infback.c" />
+    <ClCompile Include="zlib\inffast.c" />
+    <ClCompile Include="zlib\inflate.c" />
+    <ClCompile Include="zlib\inftrees.c" />
+    <ClCompile Include="zlib\trees.c" />
+    <ClCompile Include="zlib\uncompr.c" />
+    <ClCompile Include="zlib\zutil.c" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+</Project>

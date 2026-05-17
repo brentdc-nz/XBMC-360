@@ -56,6 +56,8 @@ CAdvancedSettings::CAdvancedSettings()
 
 	m_videoItemSeparator = " / ";
 	m_bVideoLibraryMyMoviesCategoriesToGenres = false;
+
+	m_bgInfoLoaderMaxThreads = 5;
 }
 
 bool CAdvancedSettings::Load()

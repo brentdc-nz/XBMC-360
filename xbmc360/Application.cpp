@@ -1409,7 +1409,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 	{
 		m_iPlaySpeed = 1;
 		*m_itemCurrentFile = item;
-		m_nextPlaylistItem = -1;		
+		m_nextPlaylistItem = -1;
 	}
 	
 	// Tell system we are starting a file

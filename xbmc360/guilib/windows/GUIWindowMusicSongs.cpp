@@ -2,11 +2,14 @@
 #include "utils\Util.h"
 #include "utils\URIUtils.h"
 #include "guilib\GUIInfoManager.h"
+#include "guilib\dialogs\GUIDialogProgress.h"
+#include "GUISettings.h"
 #include "Application.h"
 #include "FileSystem\MultiPathDirectory.h"
 #include "guilib\GUIWindowManager.h"
 #include "FileSystem\File.h"
 #include "utils\Log.h"
+#include "URL.h"
 
 #include "viewstate.h"
 
@@ -28,6 +31,8 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 	{
 		case GUI_MSG_WINDOW_INIT:
 		{
+			m_dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+
 			// Is this the first time accessing this window?
 			if (m_vecItems->GetPath() == "?" && message.GetStringParam().IsEmpty())
 				message.SetStringParam(/*g_settings.m_defaultMusicSource*/""); // TODO
@@ -157,4 +162,69 @@ bool CGUIWindowMusicSongs::Update(const CStdString &strDirectory)
 	m_thumbLoader.Load(*m_vecItems);
 
 	return true;
+}
+
+void CGUIWindowMusicSongs::OnPrepareFileItems(CFileItemList &items)
+{
+	RetrieveMusicInfo();
+
+	items.SetCachedMusicThumbs();
+}
+
+void CGUIWindowMusicSongs::RetrieveMusicInfo()
+{
+	DWORD dwStartTick = GetTickCount();
+
+	OnRetrieveMusicInfo(*m_vecItems);
+
+	CLog::Log(LOGDEBUG, "RetrieveMusicInfo() took %u msec",
+		GetTickCount() - dwStartTick);
+}
+
+void CGUIWindowMusicSongs::OnRetrieveMusicInfo(CFileItemList& items)
+{
+	if (items.GetFolderCount() == items.Size() ||
+		!g_guiSettings.GetBool("musicfiles.usetags"))
+	{
+		return;
+	}
+
+	// Start the music info loader thread
+	m_musicInfoLoader.SetProgressCallback(m_dlgProgress);
+	m_musicInfoLoader.Load(items);
+
+	bool bShowProgress = !g_windowManager.HasModalDialog();
+	bool bProgressVisible = false;
+
+	DWORD dwTick = GetTickCount();
+
+	while (m_musicInfoLoader.IsLoading())
+	{
+		if (bShowProgress)
+		{ // Do we have to init a progress dialog?
+			DWORD dwElapsed = GetTickCount() - dwTick;
+
+			if (!bProgressVisible && dwElapsed > 1500 && m_dlgProgress)
+			{ // tag loading takes more then 1.5 secs, show a progress dialog
+				CURL url(items.GetPath());
+				CStdString strStrippedPath = url.GetWithoutUserDetails();
+				m_dlgProgress->SetHeading(189);
+				m_dlgProgress->SetLine(0, 505);
+				m_dlgProgress->SetLine(1, "");
+				m_dlgProgress->SetLine(2, strStrippedPath);
+				m_dlgProgress->StartModal();
+				m_dlgProgress->ShowProgressBar(true);
+				bProgressVisible = true;
+			}
+
+			if (bProgressVisible && m_dlgProgress && !m_dlgProgress->IsCanceled())
+			{ // keep GUI alive
+				m_dlgProgress->Progress();
+			}
+		} // if (bShowProgress)
+		Sleep(1);
+	} // while (m_musicInfoLoader.IsLoading())
+
+	if (bProgressVisible && m_dlgProgress)
+		m_dlgProgress->Close();
 }

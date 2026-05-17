@@ -7,6 +7,8 @@
 #include "libsmb2.h"
 #include "smb2.h"
 
+class CXBLibSMB2;
+
 namespace XFILE
 {
 
@@ -29,7 +31,8 @@ public:
 	static bool Exists(const CStdString& strPath);
 
 protected:
-
+	struct smb2fh*	m_pFileHandle;
+	UINT64			m_fileSize;
 };
 
 }

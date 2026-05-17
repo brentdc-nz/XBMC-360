@@ -6,24 +6,30 @@
 
 using namespace XFILE;
 
+// Shared connection manager — serializes all SMB operations via its
+// CCriticalSection base class, but no longer owns individual file handles.
 CXBLibSMB2 xbsmb_f;
 
 CFileSMB::CFileSMB()
 {
+	m_pFileHandle = NULL;
+	m_fileSize = 0;
 }
 
 CFileSMB::~CFileSMB()
 {
+	Close();
 }
 
 bool CFileSMB::Open(const CURL& strURL, bool bBinary)
 {
-	// LibSMB2 isn't thread safe, always lock
+	Close(); // Ensure any previous handle is released
+
 	CSingleLock lock(xbsmb_f);
 
-	xbsmb_f.Init();
+	m_pFileHandle = xbsmb_f.FileOpen(strURL, m_fileSize);
 
-	if(!xbsmb_f.OpenFile(strURL))
+	if(!m_pFileHandle)
 	{
 		CLog::Log(LOGERROR, "CFileSMB::Open - Failed to open file");
 		return false;
@@ -40,37 +46,39 @@ bool CFileSMB::OpenForWrite(const CURL& strURL, bool bOverWrite)
 
 __int64 CFileSMB::GetLength()
 {
-	CSingleLock lock(xbsmb_f);
-
-	return xbsmb_f.GetLength();
+	return (__int64)m_fileSize;
 }
 
 __int64 CFileSMB::GetPosition()
 {
 	CSingleLock lock(xbsmb_f);
 
-	return xbsmb_f.GetPosition();
+	return xbsmb_f.FileGetPosition(m_pFileHandle);
 }
 
 void CFileSMB::Close()
 {
-	CSingleLock lock(xbsmb_f);
-
-	xbsmb_f.Close();
+	if(m_pFileHandle)
+	{
+		CSingleLock lock(xbsmb_f);
+		xbsmb_f.FileClose(m_pFileHandle);
+		m_pFileHandle = NULL;
+	}
+	m_fileSize = 0;
 }
 
 unsigned int CFileSMB::Read(void *lpBuf, __int64 uiBufSize)
 {
 	CSingleLock lock(xbsmb_f);
 
-	return xbsmb_f.Read(lpBuf, uiBufSize);
+	return xbsmb_f.FileRead(m_pFileHandle, lpBuf, uiBufSize);
 }
 	
 __int64 CFileSMB::Seek(__int64 iFilePosition, int iWhence)
 {
 	CSingleLock lock(xbsmb_f);
 
-	return xbsmb_f.Seek(iFilePosition, iWhence);
+	return xbsmb_f.FileSeek(m_pFileHandle, iFilePosition, iWhence);
 }
 
 int CFileSMB::Write(const void* lpBuf, __int64 uiBufSize)

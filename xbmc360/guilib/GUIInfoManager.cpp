@@ -1978,7 +1978,7 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
 	CLog::Log(LOGDEBUG, "CGUIInfoManager::SetCurrentSong(%s)", item.GetPath().c_str());
 	*m_currentFile = item;
 
-//	m_currentFile->LoadMusicTag(); // TODO - Port LoadMusicTag / MusicInfoTagLoaderFactory
+	m_currentFile->LoadMusicTag();
 
 	if (m_currentFile->GetMusicInfoTag()->GetTitle().IsEmpty())
 	{
@@ -1987,6 +1987,10 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
 	}
 	
 	m_currentFile->GetMusicInfoTag()->SetLoaded(true);
+
+	// find a thumb for this file.
+	m_currentFile->SetMusicThumb();
+	m_currentFile->FillInDefaultIcon();
 }
 
 CStdString CGUIInfoManager::GetMusicLabel(int item)

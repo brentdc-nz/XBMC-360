@@ -47,6 +47,12 @@ public:
 	static bool ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps);
 	static int GetMatchingSource(const CStdString& strPath, VECSOURCES& VECSOURCES, bool& bIsSourceName);
 	static bool MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTextMaxLength);
+
+	// Thumb cache helpers (match xbmc4xbox CUtil API)
+	static CStdString GetCachedAlbumThumb(const CStdString& album, const CStdString& artist);
+	static CStdString GetCachedMusicThumb(const CStdString& path);
+	static bool ThumbExists(const CStdString& strFileName);
+	static void ThumbCacheAdd(const CStdString& strFileName, bool bExists);
 };
 
 #endif //CUTIL_H

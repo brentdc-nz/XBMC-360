@@ -207,6 +207,13 @@ void CGUISettings::Initialize()
 	// Pictures settings
 	AddBool(1, "pictures.useexifrotation", 20184, true);
 
+	// Music settings
+	AddGroup(3, 2);
+	AddCategory(3, "musicplayer", 14086);
+	AddString(1, "musicplayer.visualisation", 250, "MilkDrop2.vis", SPIN_CONTROL_TEXT);
+
+	AddCategory(3, "musicfiles", 14081);
+	AddBool(1, "musicfiles.usetags", 258, true);
 	// Appearance settings
 	AddGroup(7, 480);
 	AddCategory(7,"lookandfeel", 166);
@@ -225,10 +232,6 @@ void CGUISettings::Initialize()
 	AddCategory(7, "screensaver", 360);
 	AddInt(1, "screensaver.time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
 	AddString(2, "screensaver.mode", 356, "Plasma", SPIN_CONTROL_TEXT);
-
-	// Music settings
-	AddCategory(7, "musicplayer", 2);
-	AddString(1, "musicplayer.visualisation", 250, "MilkDrop2.vis", SPIN_CONTROL_TEXT);
 }
 
 void CGUISettings::AddGroup(int groupID, int labelID)

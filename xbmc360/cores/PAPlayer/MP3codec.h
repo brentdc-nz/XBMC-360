@@ -1,8 +1,7 @@
 #pragma once
 
 #include "CachingCodec.h"
-// TODO BRENT - port MusicInfoTagLoaderMP3 for seek/replaygain/ID3v2
-// #include "music/tags/MusicInfoTagLoaderMP3.h"
+#include "music\tags\MusicInfoTagLoaderMP3.h"
 #include "MadMp3Decoder.h"
 
 class MP3Codec : public CachingCodec
@@ -48,8 +47,7 @@ private:
 	unsigned int m_Formatdata[8];
 
 	// Seeking helpers
-	// TODO BRENT - port CVBRMP3SeekHelper
-	// MUSIC_INFO::CVBRMP3SeekHelper m_seekInfo;
+	MUSIC_INFO::CVBRMP3SeekHelper m_seekInfo;
 
 	// Gapless playback
 	bool m_IgnoreFirst;     // Ignore first samples if this is true (for gapless playback)

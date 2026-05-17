@@ -2,6 +2,7 @@
 
 #include "utils\StdString.h"
 #include "FileSystem\File.h"
+#include "cores\PAPlayer\ReplayGain.h"
 
 #define READ_EOF      -1
 #define READ_SUCCESS   0
@@ -81,6 +82,6 @@ public:
 	int m_Channels;
 	int m_Bitrate;
 	CStdString m_CodecName;
-//	CReplayGain m_replayGain; // TODO BRENT
+	CReplayGain m_replayGain;
 	XFILE::CFile m_file;
 };

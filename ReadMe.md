@@ -1,8 +1,8 @@
-# XBMC-360 Alpha
+# XBMC-360
 
 This is a port of XBMC4XBOX to XBox 360 using the Microsoft XBox 360 SDK (not using Linux and Kodi).
 
-This is early stages and still very much a work in progress.
+This is a work in progress, stil many features to bring over. Though getting more usable.
 
 ### Current Status:
 - GUILib - Mostly ported now, still have some areas to finish
@@ -11,8 +11,8 @@ This is early stages and still very much a work in progress.
 
 Usable but many features still need reimplementation or improvements.
 
-### Compiled alpha build (last updated 02-05-26):
-https://drive.google.com/file/d/1zd2tS0thSc4ldshQxOhtOFknUFdlpi0T/view
+### Compiled alpha build (last updated 17-05-26):
+https://drive.google.com/file/d/173BIaqegtG7Ujsf7M9BVqGlLJDto7GD9/view
 
 ### Libraries
 - FFmpeg (DVDPlayer)
@@ -26,6 +26,7 @@ https://drive.google.com/file/d/1zd2tS0thSc4ldshQxOhtOFknUFdlpi0T/view
 - sqlite3
 - libiconv (Charset Converter)
 - libjpeg
+- libid3tag
 
 ### Services
 - FTP Server

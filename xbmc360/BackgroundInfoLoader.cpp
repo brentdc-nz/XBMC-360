@@ -2,7 +2,7 @@
 #include "utils\log.h"
 #include "BackgroundInfoLoader.h"
 #include "FileItem.h"
-//#include "settings\AdvancedSettings.h" // TODO
+#include "AdvancedSettings.h"
 #include "utils\SingleLock.h"
 
 using namespace std;
@@ -116,8 +116,8 @@ void CBackgroundInfoLoader::Load(CFileItemList& items)
 	if (nThreads == -1)
 		nThreads = (m_vecItems.size() / (ITEMS_PER_THREAD+1)) + 1;
 
-//	if (nThreads > g_advancedSettings.m_bgInfoLoaderMaxThreads) // TODO
-		nThreads = 5;////g_advancedSettings.m_bgInfoLoaderMaxThreads; // TODO
+	if (nThreads > g_advancedSettings.m_bgInfoLoaderMaxThreads)
+		nThreads = g_advancedSettings.m_bgInfoLoaderMaxThreads;
 
 	m_nActiveThreads = nThreads;
 

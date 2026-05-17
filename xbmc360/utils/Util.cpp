@@ -8,6 +8,8 @@
 #include "filesystem\UPnPDirectory.h"
 #include "URIUtils.h"
 #include "Settings.h"
+#include "Crc32.h"
+#include "..\ThumbnailCache.h"
 #include "guilib\LocalizeStrings.h"
 //#include "RegExp.h" // TODO
 
@@ -782,4 +784,36 @@ bool CUtil::MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTex
 
 	StrOutput = StrInput;
 	return true;
+}
+
+CStdString CUtil::GetCachedAlbumThumb(const CStdString& album, const CStdString& artist)
+{
+	if (album.IsEmpty())
+		return GetCachedMusicThumb("unknown" + artist);
+	if (artist.IsEmpty())
+		return GetCachedMusicThumb(album + "unknown");
+	return GetCachedMusicThumb(album + artist);
+}
+
+CStdString CUtil::GetCachedMusicThumb(const CStdString& path)
+{
+	Crc32 crc;
+	CStdString noSlashPath(path);
+	URIUtils::RemoveSlashAtEnd(noSlashPath);
+	crc.ComputeFromLowerCase(noSlashPath);
+	CStdString hex;
+	hex.Format("%08x", (unsigned __int32)crc);
+	CStdString thumb;
+	thumb.Format("%c\\%s.tbn", hex[0], hex.c_str());
+	return URIUtils::AddFileToFolder(g_settings.GetMusicThumbFolder(), thumb);
+}
+
+bool CUtil::ThumbExists(const CStdString& strFileName)
+{
+	return CThumbnailCache::GetThumbnailCache()->ThumbExists(strFileName);
+}
+
+void CUtil::ThumbCacheAdd(const CStdString& strFileName, bool bExists)
+{
+	CThumbnailCache::GetThumbnailCache()->Add(strFileName, bExists);
 }

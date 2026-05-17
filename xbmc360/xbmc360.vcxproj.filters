@@ -1064,6 +1064,30 @@
     <ClInclude Include="music\tags\MusicInfoTag.h">
       <Filter>Header Files\music\tags</Filter>
     </ClInclude>
+    <ClInclude Include="music\tags\LibID3Tag.h">
+      <Filter>Header Files\music\tags</Filter>
+    </ClInclude>
+    <ClInclude Include="music\tags\Id3Tag.h">
+      <Filter>Header Files\music\tags</Filter>
+    </ClInclude>
+    <ClInclude Include="music\tags\IMusicInfoTagLoader.h">
+      <Filter>Header Files\music\tags</Filter>
+    </ClInclude>
+    <ClInclude Include="music\tags\MusicInfoTagLoaderFactory.h">
+      <Filter>Header Files\music\tags</Filter>
+    </ClInclude>
+    <ClInclude Include="music\tags\MusicInfoTagLoaderMP3.h">
+      <Filter>Header Files\music\tags</Filter>
+    </ClInclude>
+    <ClInclude Include="music\tags\Tag.h">
+      <Filter>Header Files\music\tags</Filter>
+    </ClInclude>
+    <ClInclude Include="music\MusicInfoLoader.h">
+      <Filter>Header Files\music</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\PAPlayer\ReplayGain.h">
+      <Filter>Header Files\cores\PAPlayer</Filter>
+    </ClInclude>
     <ClInclude Include="filesystem\UPnPFile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1872,6 +1896,18 @@
     </ClCompile>
     <ClCompile Include="music\tags\MusicInfoTag.cpp">
       <Filter>Source Files\music\tags</Filter>
+    </ClCompile>
+    <ClCompile Include="music\tags\Id3Tag.cpp">
+      <Filter>Source Files\music\tags</Filter>
+    </ClCompile>
+    <ClCompile Include="music\tags\MusicInfoTagLoaderFactory.cpp">
+      <Filter>Source Files\music\tags</Filter>
+    </ClCompile>
+    <ClCompile Include="music\tags\MusicInfoTagLoaderMP3.cpp">
+      <Filter>Source Files\music\tags</Filter>
+    </ClCompile>
+    <ClCompile Include="music\MusicInfoLoader.cpp">
+      <Filter>Source Files\music</Filter>
     </ClCompile>
     <ClCompile Include="utils\HttpHeader.cpp">
       <Filter>Source Files</Filter>

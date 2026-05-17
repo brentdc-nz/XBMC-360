@@ -28,6 +28,7 @@
 #include "playlists\PlayListFactory.h"
 #include "Settings.h"
 #include "music\tags\MusicInfoTag.h"
+#include "music\tags\MusicInfoTagLoaderFactory.h"
 #include "video\VideoInfoTag.h"
 #include <algorithm>
 
@@ -306,6 +307,11 @@ bool CFileItem::IsHD() const
 	return URIUtils::IsHD(m_strPath);
 }
 
+bool CFileItem::IsNFO() const
+{
+	return URIUtils::GetExtension(m_strPath).Equals(".nfo", false);
+}
+
 bool CFileItem::IsPlayList() const
 {
 	return PLAYLIST::CPlayListFactory::IsPlaylist(*this);
@@ -514,6 +520,29 @@ CVideoInfoTag* CFileItem::GetVideoInfoTag()
 		m_videoInfoTag = new CVideoInfoTag;
 
 	return m_videoInfoTag;
+}
+
+bool CFileItem::LoadMusicTag()
+{
+	if (!IsAudio())
+		return false;
+
+	// Already loaded
+	if (HasMusicInfoTag() && m_musicInfoTag->Loaded())
+		return true;
+
+	MUSIC_INFO::IMusicInfoTagLoader* pLoader = MUSIC_INFO::CMusicInfoTagLoaderFactory::CreateLoader(m_strPath);
+
+	if (pLoader != NULL)
+	{
+		if (pLoader->Load(m_strPath, *GetMusicInfoTag()))
+		{
+			delete pLoader;
+			return true;
+		}
+		delete pLoader;
+	}
+	return false;
 }
 
 bool CFileItem::IsSamePath(const CFileItem *item) const
@@ -959,6 +988,16 @@ void CFileItemList::FillInDefaultIcons()
 	}
 }
 
+void CFileItemList::SetCachedMusicThumbs()
+{
+	CSingleLock lock(m_lock);
+	for (unsigned int i = 0; i < m_items.size(); ++i)
+	{
+		CFileItemPtr pItem = m_items[i];
+		pItem->SetCachedMusicThumb();
+	}
+}
+
 void CFileItemList::SetFastLookup(bool fastLookup)
 {
 	CSingleLock lock(m_lock);
@@ -1086,6 +1125,34 @@ int CFileItemList::GetObjectCount() const
 	return numObjects;
 }
 
+int CFileItemList::GetFolderCount() const
+{
+	CSingleLock lock(m_lock);
+	int nFolderCount = 0;
+	for (int i = 0; i < (int)m_items.size(); i++)
+	{
+		CFileItemPtr pItem = m_items[i];
+		if (pItem->m_bIsFolder)
+			nFolderCount++;
+	}
+
+	return nFolderCount;
+}
+
+int CFileItemList::GetFileCount() const
+{
+	CSingleLock lock(m_lock);
+	int nFileCount = 0;
+	for (int i = 0; i < (int)m_items.size(); i++)
+	{
+		CFileItemPtr pItem = m_items[i];
+		if (!pItem->m_bIsFolder)
+			nFileCount++;
+	}
+
+	return nFileCount;
+}
+
 int CFileItemList::GetSelectedCount() const
 {
 	CSingleLock lock(m_lock);
@@ -1177,9 +1244,66 @@ void CFileItem::SetCachedMusicThumb()
 {
 	if (IsParentFolder()) return;
 	if (HasThumbnail()) return;
-	CStdString cachedThumb(GetCachedMusicThumb());
-	if (XFILE::CFile::Exists(cachedThumb))
+	
+	CStdString cachedThumb(GetPreviouslyCachedMusicThumb());
+
+	if (!cachedThumb.IsEmpty())
 		SetThumbnailImage(cachedThumb);
+}
+
+CStdString CFileItem::GetPreviouslyCachedMusicThumb() const
+{
+	// look if an album thumb is available,
+	// could be any file with tags loaded or
+	// a directory in album window
+	CStdString strAlbum, strArtist;
+	if (HasMusicInfoTag() && m_musicInfoTag->Loaded())
+	{
+		strAlbum = m_musicInfoTag->GetAlbum();
+		if (!m_musicInfoTag->GetAlbumArtist().IsEmpty())
+			strArtist = m_musicInfoTag->GetAlbumArtist();
+		else
+			strArtist = m_musicInfoTag->GetArtist();
+	}
+	if (!strAlbum.IsEmpty() && !strArtist.IsEmpty())
+	{
+		// try permanent album thumb using "album name + artist name"
+		CStdString thumb(CUtil::GetCachedAlbumThumb(strAlbum, strArtist));
+		if (XFILE::CFile::Exists(thumb))
+			return thumb;
+	}
+
+	// if a file, try to find a cached filename.tbn
+	if (!m_bIsFolder)
+	{
+		CStdString thumb(CUtil::GetCachedMusicThumb(m_strPath));
+		if (XFILE::CFile::Exists(thumb))
+			return thumb;
+	}
+
+	// try and find a cached folder thumb (folder.jpg or folder.tbn)
+	CStdString strPath;
+	if (!m_bIsFolder)
+		URIUtils::GetDirectory(m_strPath, strPath);
+	else
+		strPath = m_strPath;
+	// music thumbs are cached without slash at end
+	URIUtils::RemoveSlashAtEnd(strPath);
+
+	CStdString thumb(CUtil::GetCachedMusicThumb(strPath));
+	if (XFILE::CFile::Exists(thumb))
+		return thumb;
+
+	return "";
+}
+
+void CFileItem::SetMusicThumb(bool alwaysCheckRemote /* = true */)
+{
+	if (HasThumbnail()) return;
+
+	SetCachedMusicThumb();
+	if (!HasThumbnail())
+		SetUserMusicThumb(alwaysCheckRemote);
 }
 
 void CFileItem::SetCachedPictureThumb()
@@ -1207,7 +1331,9 @@ void CFileItem::SetUserVideoThumb()
 
 void CFileItem::SetUserMusicThumb(bool /*alwaysCheckRemote*/)
 {
-	// TODO: port local cover art detection (folder.jpg, embedded tag art, etc.)
+	// TODO: port GetUserMusicThumb (folder.jpg, .tbn sibling detection)
+
+	SetCachedMusicThumb();
 }
 
 void CFileItem::SetUserProgramThumb()

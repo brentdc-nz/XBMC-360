@@ -2,8 +2,7 @@
 #include "MP3codec.h"
 #include "FileItem.h"
 
-// TODO BRENT - uncomment when MusicInfoTagLoaderMP3 is ported
-// using namespace MUSIC_INFO;
+using namespace MUSIC_INFO;
 
 #define DECODER_DELAY 529 // decoder delay in samples
 
@@ -104,12 +103,11 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
 
 	if (!bIsInternetStream)
 	{
-		// TODO BRENT - port CMusicInfoTagLoaderMP3 for seek/replaygain
 		// Guess Bitrate and obtain replayGain information etc.
-		// CMusicInfoTagLoaderMP3 mp3info;
-		// mp3info.ReadSeekAndReplayGainInfo(strFile);
-		// mp3info.GetSeekInfo(m_seekInfo);
-		// mp3info.GetReplayGain(m_replayGain);
+		CMusicInfoTagLoaderMP3 mp3info;
+		mp3info.ReadSeekAndReplayGainInfo(strFile);
+		mp3info.GetSeekInfo(m_seekInfo);
+		mp3info.GetReplayGain(m_replayGain);
 	}
 
 	int id3v2Size = 0;
@@ -126,8 +124,7 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
 
 	if (!bIsInternetStream)
 	{
-		// TODO BRENT - use m_seekInfo.GetDuration() when ported
-		// m_TotalTime = (__int64)(m_seekInfo.GetDuration() * 1000.0f);
+		m_TotalTime = (__int64)(m_seekInfo.GetDuration() * 1000.0f);
 	}
 
 	// Read in some data so we can determine the sample size and so on
@@ -136,55 +133,22 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
 	// as a first workaround skip the id3v2 tag at the beginning of the file
 	if (!bIsInternetStream)
 	{
-		// TODO BRENT - use m_seekInfo offsets when ported
-		// if (m_seekInfo.GetNumOffsets() > 0)
-		// {
-		//   const float* offsets=m_seekInfo.GetOffsets();
-		//   id3v2Size=(int)offsets[0];
-		//   m_file.Seek(id3v2Size);
-		// }
-		// else
-		// {
-		//   CLog::Log(LOGERROR, "MP3Codec: Seek info unavailable for file <%s> (corrupt?)", strFile.c_str());
-		//   goto error;
-		// }
-
-		// ---------------------------------------------------------------
-		// WORKAROUND: Skip ID3v2 tag manually until CMusicInfoTagLoaderMP3
-		// is ported. The ID3v2 header starts with "ID3" followed by 2 version
-		// bytes and 4 syncsafe-integer size bytes.  We read the 10-byte header
-		// and compute the tag size so the decoder doesn't choke on tag data
-		// and so the bitrate/duration math excludes it.
-		//
-		// REVERT: Remove this block once m_seekInfo offsets above are active.
-		// ---------------------------------------------------------------
+		if (m_seekInfo.GetNumOffsets() > 0)
 		{
-			BYTE id3Header[10];
-			if (m_file.Read(id3Header, 10) == 10 &&
-				id3Header[0] == 'I' && id3Header[1] == 'D' && id3Header[2] == '3')
-			{
-				// ID3v2 size is a 28-bit syncsafe integer (4 bytes, 7 bits each)
-				id3v2Size = ((id3Header[6] & 0x7F) << 21) |
-				            ((id3Header[7] & 0x7F) << 14) |
-				            ((id3Header[8] & 0x7F) << 7)  |
-				             (id3Header[9] & 0x7F);
-				id3v2Size += 10; // Add the 10-byte header itself
-				CLog::Log(LOGDEBUG, "MP3Codec: Detected ID3v2 tag, size = %d bytes (workaround)", id3v2Size);
-				m_file.Seek(id3v2Size);
-			}
-			else
-			{
-				// No ID3v2 tag found – rewind to start
-				m_file.Seek(0);
-			}
+			const float* offsets = m_seekInfo.GetOffsets();
+			id3v2Size = (int)offsets[0];
+			m_file.Seek(id3v2Size);
 		}
-		// --------------- END WORKAROUND (ID3v2 skip) -------------------
+		else
+		{
+			CLog::Log(LOGERROR, "MP3Codec: Seek info unavailable for file <%s> (corrupt?)", strFile.c_str());
+			goto error;
+		}
 	}
 
 	if ( m_TotalTime && (length-id3v2Size > 0) )
 	{
-		// TODO BRENT - use m_seekInfo.GetDuration() when ported
-		// m_Bitrate = (int)(((length-id3v2Size) / m_seekInfo.GetDuration()) * 8);  // average bitrate
+		m_Bitrate = (int)(((length-id3v2Size) / m_seekInfo.GetDuration()) * 8);  // average bitrate
 	}
 
 	m_eof = false;
@@ -202,35 +166,6 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
 		if (bIsInternetStream && !m_Bitrate) // Use tag bitrate if average bitrate is not available
 			m_Bitrate = m_Formatdata[4];
 	} ;
-
-	// ---------------------------------------------------------------
-	// WORKAROUND: For local (non-stream) files, grab the bitrate from
-	// the first successfully decoded frame (m_Formatdata[4]) so we can
-	// estimate m_TotalTime even without CMusicInfoTagLoaderMP3.  This
-	// gives accurate results for CBR MP3s; VBR files will be approximate.
-	//
-	// REVERT: Remove this block once m_seekInfo.GetDuration() is used
-	//         to set m_TotalTime and m_Bitrate above.
-	// ---------------------------------------------------------------
-	if (!bIsInternetStream && !m_Bitrate && m_Formatdata[4] > 0)
-	{
-		m_Bitrate = m_Formatdata[4];
-		CLog::Log(LOGDEBUG, "MP3Codec: Using first-frame bitrate %d bps for seeking (workaround)", m_Bitrate);
-	}
-	// --------------- END WORKAROUND (bitrate from frame) ------------
-
-	// Fallback: estimate total time from file size and bitrate
-	// (Works for CBR; approximate for VBR until m_seekInfo is ported)
-	if (!m_TotalTime && m_Bitrate > 0 && length > 0)
-	{
-		// Subtract id3v2 tag size from file length so the estimate is more accurate
-		__int64 audioBytes = length - id3v2Size;
-		if (audioBytes > 0)
-			m_TotalTime = (__int64)((audioBytes * 8.0) / m_Bitrate * 1000.0);
-		else
-			m_TotalTime = (__int64)((length * 8.0) / m_Bitrate * 1000.0);
-		CLog::Log(LOGDEBUG, "MP3Codec: Estimated TotalTime = %I64d ms from bitrate (workaround)", m_TotalTime);
-	}
 
 	return true;
 
@@ -264,16 +199,8 @@ void MP3Codec::FlushDecoder()
 __int64 MP3Codec::Seek(__int64 iSeekTime)
 {
 	// Calculate our offset to seek to in the file
-	// TODO BRENT - use m_seekInfo.GetByteOffset() when ported
-	// m_lastByteOffset = m_seekInfo.GetByteOffset(0.001f * iSeekTime);
-	// m_file.Seek(m_lastByteOffset, SEEK_SET);
-
-	// Fallback: rough byte-offset seek based on average bitrate
-	if (m_Bitrate > 0)
-	{
-		m_lastByteOffset = (__int64)((double)iSeekTime / 1000.0 * m_Bitrate / 8.0);
-		m_file.Seek(m_lastByteOffset, SEEK_SET);
-	}
+	m_lastByteOffset = m_seekInfo.GetByteOffset(0.001f * iSeekTime);
+	m_file.Seek(m_lastByteOffset, SEEK_SET);
 
 	FlushDecoder();
 
@@ -384,27 +311,26 @@ int MP3Codec::Read(int size, bool init)
 				}
 
 				// Let's check if we need to ignore the decoded data
-				// TODO BRENT - enable gapless when m_seekInfo is ported
-				// if ( m_IgnoreFirst && outputsize && m_seekInfo.GetFirstSample() )
-				// {
-				//   // starting up - lets ignore the first (typically 576) samples
-				//   int iDelay = DECODER_DELAY + m_seekInfo.GetFirstSample();  // decoder delay + encoder delay
-				//   iDelay *= m_Channels * m_BitsPerSampleInternal / 8;            // sample size
-				//   if (outputsize + m_IgnoredBytes >= iDelay)
-				//   {
-				//     // have enough data to ignore - let's move the valid data to the start
-				//     int iAmountToMove = outputsize + m_IgnoredBytes - iDelay;
-				//     memmove(m_OutputBuffer, m_OutputBuffer + outputsize - iAmountToMove, iAmountToMove);
-				//     outputsize = iAmountToMove;
-				//     m_IgnoreFirst = false;
-				//     m_IgnoredBytes = 0;
-				//   }
-				//   else
-				//   { // not enough data yet - ignore all of this
-				//     m_IgnoredBytes += outputsize;
-				//     outputsize = 0;
-				//   }
-				// }
+				if ( m_IgnoreFirst && outputsize && m_seekInfo.GetFirstSample() )
+				{
+					// starting up - lets ignore the first (typically 576) samples
+					int iDelay = DECODER_DELAY + m_seekInfo.GetFirstSample();  // decoder delay + encoder delay
+					iDelay *= m_Channels * m_BitsPerSampleInternal / 8;            // sample size
+					if (outputsize + m_IgnoredBytes >= iDelay)
+					{
+						// have enough data to ignore - let's move the valid data to the start
+						int iAmountToMove = outputsize + m_IgnoredBytes - iDelay;
+						memmove(m_OutputBuffer, m_OutputBuffer + outputsize - iAmountToMove, iAmountToMove);
+						outputsize = iAmountToMove;
+						m_IgnoreFirst = false;
+						m_IgnoredBytes = 0;
+					}
+					else
+					{ // not enough data yet - ignore all of this
+						m_IgnoredBytes += outputsize;
+						outputsize = 0;
+					}
+				}
 
 				// Do we still have data in the buffer to decode?
 				if ( result == DECODING_CALLAGAIN )
@@ -419,16 +345,15 @@ int MP3Codec::Read(int size, bool init)
 					{
 						m_Decoding = false;
 						// EOF reached - let's remove any unused samples from our frame buffers
-						// TODO BRENT - enable gapless when m_seekInfo is ported
-						// if (m_IgnoreLast && m_seekInfo.GetLastSample())
-						// {
-						//   unsigned int samplestoremove = (m_seekInfo.GetLastSample() - DECODER_DELAY);
-						//   samplestoremove *= m_Channels * m_BitsPerSampleInternal / 8;
-						//   if (samplestoremove > m_OutputBufferPos)
-						//     samplestoremove = m_OutputBufferPos;
-						//   m_OutputBufferPos -= samplestoremove;
-						//   m_IgnoreLast = false;
-						// }
+						if (m_IgnoreLast && m_seekInfo.GetLastSample())
+						{
+							unsigned int samplestoremove = (m_seekInfo.GetLastSample() - DECODER_DELAY);
+							samplestoremove *= m_Channels * m_BitsPerSampleInternal / 8;
+							if (samplestoremove > m_OutputBufferPos)
+								samplestoremove = m_OutputBufferPos;
+							m_OutputBufferPos -= samplestoremove;
+							m_IgnoreLast = false;
+						}
 					}
 				}
 				m_OutputBufferPos += outputsize;

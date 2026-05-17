@@ -245,3 +245,137 @@ void CXBLibSMB2::Close()
 	m_ConnectedServer.Empty();
 	m_ConnectedShare.Empty();
 }
+
+// ---------------------------------------------------------------------------
+// Per-instance file handle API
+// These methods allow multiple files to be open concurrently on the shared
+// SMB connection.  Each CFileSMB instance owns its own smb2fh* and calls
+// these through the global CXBLibSMB2 (which serializes access via its
+// CCriticalSection base class).
+// ---------------------------------------------------------------------------
+
+bool CXBLibSMB2::EnsureConnection(const CURL& url)
+{
+	// Create context if needed
+	if(!m_pLibSMB2Context)
+	{
+		m_pLibSMB2Context = smb2_init_context();
+
+		if(m_pLibSMB2Context == NULL)
+		{
+			CLog::Log(LOGERROR, "CXBLibSMB2::EnsureConnection - Failed to init context");
+			return false;
+		}
+	}
+
+	smb2_set_user(m_pLibSMB2Context, url.GetUserName());
+	smb2_set_password(m_pLibSMB2Context, url.GetPassWord());
+	smb2_set_domain(m_pLibSMB2Context, "workgroup");
+
+	struct smb2_url* pUrl = smb2_parse_url(m_pLibSMB2Context, "smb://"+url.GetHostName()+":445/"+url.GetShareName());
+
+	if(!pUrl)
+	{
+		CLog::Log(LOGERROR, "CXBLibSMB2::EnsureConnection - Failed to parse url: %s", smb2_get_error(m_pLibSMB2Context));
+		return false;
+	}
+
+	smb2_set_security_mode(m_pLibSMB2Context, SMB2_NEGOTIATE_SIGNING_ENABLED);
+
+	if(!IsConnectedToShare(pUrl->server, pUrl->share))
+	{
+		if(!m_ConnectedServer.IsEmpty())
+		{
+			smb2_disconnect_share(m_pLibSMB2Context);
+			m_ConnectedServer.Empty();
+			m_ConnectedShare.Empty();
+		}
+
+		if(smb2_connect_share(m_pLibSMB2Context, pUrl->server, pUrl->share, pUrl->user) != 0)
+		{
+			CLog::Log(LOGERROR, "CXBLibSMB2::EnsureConnection - smb2_connect_share failed. %s", smb2_get_error(m_pLibSMB2Context));
+			smb2_destroy_url(pUrl);
+			return false;
+		}
+		m_ConnectedServer = pUrl->server;
+		m_ConnectedShare = pUrl->share;
+	}
+
+	smb2_destroy_url(pUrl);
+	return true;
+}
+
+smb2fh* CXBLibSMB2::FileOpen(const CURL& url, UINT64& outFileSize)
+{
+	outFileSize = 0;
+
+	if(!EnsureConnection(url))
+		return NULL;
+
+	struct smb2_url* pUrl = smb2_parse_url(m_pLibSMB2Context, "smb://"+url.GetHostName()+":445/"+url.GetShareName());
+
+	if(!pUrl)
+	{
+		CLog::Log(LOGERROR, "CXBLibSMB2::FileOpen - Failed to parse url: %s", smb2_get_error(m_pLibSMB2Context));
+		return NULL;
+	}
+
+	struct smb2fh* fh = smb2_open(m_pLibSMB2Context, pUrl->path, O_RDONLY | O_BINARY);
+	smb2_destroy_url(pUrl);
+
+	if(fh == NULL)
+		return NULL;
+
+	outFileSize = smb2_lseek(m_pLibSMB2Context, fh, 0, SEEK_END, NULL);
+	smb2_lseek(m_pLibSMB2Context, fh, 0, SEEK_SET, NULL);
+
+	return fh;
+}
+
+unsigned int CXBLibSMB2::FileRead(smb2fh* fh, void* lpBuf, __int64 uiBufSize)
+{
+	if(fh == NULL || m_pLibSMB2Context == NULL)
+		return 0;
+
+	int bytesRead = smb2_read(m_pLibSMB2Context, fh, static_cast<uint8_t*>(lpBuf), (unsigned int)uiBufSize);
+
+	if(bytesRead < 0)
+	{
+		CLog::Log(LOGERROR, __FUNCTION__" - smb2_read returned error %i", errno);
+		return 0;
+	}
+
+	return (unsigned int)bytesRead;
+}
+
+__int64 CXBLibSMB2::FileSeek(smb2fh* fh, __int64 iFilePosition, int iWhence)
+{
+	if(fh == NULL || m_pLibSMB2Context == NULL)
+		return -1;
+
+	INT64 iPos = smb2_lseek(m_pLibSMB2Context, fh, iFilePosition, iWhence, NULL);
+
+	if(iPos < 0)
+		return -1;
+
+	return (__int64)iPos;
+}
+
+__int64 CXBLibSMB2::FileGetPosition(smb2fh* fh)
+{
+	if(fh == NULL || m_pLibSMB2Context == NULL)
+		return 0;
+
+	__int64 iPos = smb2_lseek(m_pLibSMB2Context, fh, 0, SEEK_CUR, NULL);
+
+	if(iPos < 0)
+		return 0;
+
+	return iPos;
+}
+
+void CXBLibSMB2::FileClose(smb2fh* fh)
+{
+	if(fh != NULL && m_pLibSMB2Context != NULL)
+		smb2_close(m_pLibSMB2Context, fh);
+}
