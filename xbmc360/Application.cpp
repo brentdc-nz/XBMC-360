@@ -27,6 +27,7 @@
 #include "utils\URIUtils.h"
 #include "guilib\SkinInfo.h"
 #include "interfaces\Builtins.h"
+#include "interfaces\json-rpc\JSONRPC.h"
 #include "guilib\GUIColorManager.h"
 #include "ApplicationRenderer.h"
 #include "PlayListPlayer.h"
@@ -286,6 +287,9 @@ void CApplication::StopServices()
 {
 	m_network.NetworkMessage(CNetwork::SERVICES_DOWN, 0);
 
+#ifdef HAS_WEB_SERVER
+	StopWebServer();
+#endif
 #ifdef HAS_UPNP
 	StopUPnP();
 #endif
@@ -429,6 +433,9 @@ void CApplication::Process()
 
 	// Process messages, even if a movie is playing
 	m_applicationMessenger.ProcessMessages();
+
+	// Process any pending JSON-RPC input keys
+	ProcessJsonRpcButtons();
 
 	// Process messages which have to be send to the gui
 	// (this can only be done after g_windowManager.Render())
@@ -741,6 +748,47 @@ bool CApplication::ProcessGamepad(float frameTime)
 		if (OnKey(key)) return true;
 	}
 
+	return false;
+}
+
+// ProcessJsonRpcButtons() - Matches Eden's CApplication::ProcessJsonRpcButtons()
+// Polls for any pending key from the JSON-RPC Input operations and feeds it through OnKey/OnAction
+bool CApplication::ProcessJsonRpcButtons()
+{
+#ifdef HAS_WEB_SERVER
+	uint32_t keyCode = JSONRPC::CJSONRPC::GetInputKey();
+	if (keyCode != KEY_INVALID)
+	{
+		// Reset screensaver on any JSON-RPC input
+		ResetScreenSaver();
+		if (ResetScreenSaverWindow())
+			return true;
+
+		// Translate virtual key codes to actions (matches Eden's keyboard keymap)
+		int actionId = 0;
+		uint32_t vkey = keyCode & ~KEY_VKEY;
+		switch (vkey)
+		{
+			case 0x82: actionId = ACTION_MOVE_LEFT; break;   // XBMCVK_LEFT
+			case 0x83: actionId = ACTION_MOVE_RIGHT; break;  // XBMCVK_RIGHT
+			case 0x80: actionId = ACTION_MOVE_UP; break;     // XBMCVK_UP
+			case 0x81: actionId = ACTION_MOVE_DOWN; break;   // XBMCVK_DOWN
+			case 0x0D: actionId = ACTION_SELECT_ITEM; break; // XBMCVK_RETURN
+			case 0x08: actionId = ACTION_NAV_BACK; break;    // XBMCVK_BACK
+			default: break;
+		}
+
+		if (actionId != 0)
+		{
+			CAction action(actionId);
+			return OnAction(action);
+		}
+
+		// Fallback: try through OnKey with ButtonTranslator
+		CKey tempKey(keyCode);
+		return OnKey(tempKey);
+	}
+#endif
 	return false;
 }
 
@@ -1764,6 +1812,43 @@ void CApplication::StopFtpServer()
 		CLog::Log(LOGINFO, "FTP Server: Stopped");
 	}
 }
+
+#ifdef HAS_WEB_SERVER
+bool CApplication::StartWebServer()
+{
+	if (g_guiSettings.GetBool("services.webserver") && m_network.IsAvailable())
+	{
+		int webPort = atoi(g_guiSettings.GetString("services.webserverport"));
+		CLog::Log(LOGNOTICE, "Webserver: Starting...");
+
+		if (m_WebServer.Start(webPort, g_guiSettings.GetString("services.webserverusername"), g_guiSettings.GetString("services.webserverpassword")))
+		{
+			CLog::Log(LOGNOTICE, "Webserver: Started on port %d", webPort);
+			return true;
+		}
+		else
+		{
+			CLog::Log(LOGERROR, "Webserver: Failed to start on port %i", webPort);
+		}
+	}
+	return false;
+}
+
+void CApplication::StopWebServer()
+{
+	if (m_WebServer.IsStarted())
+	{
+		CLog::Log(LOGNOTICE, "Webserver: Stopping...");
+		
+		m_WebServer.Stop();
+		
+		if (!m_WebServer.IsStarted())
+			CLog::Log(LOGNOTICE, "Webserver: Stopped...");
+		else
+			CLog::Log(LOGWARNING, "Webserver: Failed to stop.");
+	}
+}
+#endif
 
 #ifdef HAS_UPNP
 void CApplication::StartUPnP()

@@ -2,7 +2,7 @@
 
 This is a port of XBMC4XBOX to XBox 360 using the Microsoft XBox 360 SDK (not using Linux and Kodi).
 
-This is a work in progress, stil many features to bring over. Though getting more usable.
+This is a work in progress, still many features to bring over. Though getting more usable.
 
 ### Current Status:
 - GUILib - Mostly ported now, still have some areas to finish
@@ -27,6 +27,7 @@ https://drive.google.com/file/d/173BIaqegtG7Ujsf7M9BVqGlLJDto7GD9/view
 - libiconv (Charset Converter)
 - libjpeg
 - libid3tag
+- libmicrohttpd
 
 ### Services
 - FTP Server

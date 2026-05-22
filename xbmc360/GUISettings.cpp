@@ -232,6 +232,16 @@ void CGUISettings::Initialize()
 	AddCategory(7, "screensaver", 360);
 	AddInt(1, "screensaver.time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
 	AddString(2, "screensaver.mode", 356, "Plasma", SPIN_CONTROL_TEXT);
+
+	// Network settings
+	AddGroup(6, 705);
+	AddCategory(6, "services", 14036);
+#ifdef HAS_WEB_SERVER
+	AddBool(1, "services.webserver", 263, true);
+	AddString(2, "services.webserverport", 730, "80", EDIT_CONTROL_NUMBER_INPUT, false, 730);
+	AddString(3, "services.webserverusername", 1048, "xbmc", EDIT_CONTROL_INPUT);
+	AddString(4, "services.webserverpassword", 733, "", EDIT_CONTROL_HIDDEN_INPUT, true, 733);
+#endif
 }
 
 void CGUISettings::AddGroup(int groupID, int labelID)

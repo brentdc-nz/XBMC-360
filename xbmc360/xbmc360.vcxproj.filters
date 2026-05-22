@@ -159,6 +159,12 @@
     <Filter Include="Source Files\interfaces">
       <UniqueIdentifier>{7e43d81f-2545-447d-ac47-f6e49789fa87}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\interfaces\json-rpc">
+      <UniqueIdentifier>{a1b2c3d4-1234-5678-9abc-def012345678}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\interfaces\json-rpc">
+      <UniqueIdentifier>{b2c3d4e5-2345-6789-abcd-ef0123456789}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Header Files\guilib\info">
       <UniqueIdentifier>{75d01943-8874-4fe8-a9f5-87ab6b7d66e9}</UniqueIdentifier>
     </Filter>
@@ -824,6 +830,15 @@
     <ClInclude Include="interfaces\Builtins.h">
       <Filter>Header Files\interfaces</Filter>
     </ClInclude>
+    <ClInclude Include="interfaces\json-rpc\ITransportLayer.h">
+      <Filter>Header Files\interfaces\json-rpc</Filter>
+    </ClInclude>
+    <ClInclude Include="interfaces\json-rpc\IClient.h">
+      <Filter>Header Files\interfaces\json-rpc</Filter>
+    </ClInclude>
+    <ClInclude Include="interfaces\json-rpc\JSONRPC.h">
+      <Filter>Header Files\interfaces\json-rpc</Filter>
+    </ClInclude>
     <ClInclude Include="utils\Log.h">
       <Filter>Header Files\utils</Filter>
     </ClInclude>
@@ -861,6 +876,9 @@
       <Filter>Header Files\utils</Filter>
     </ClInclude>
     <ClInclude Include="utils\Variant.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\JSONVariantParser.h">
       <Filter>Header Files\utils</Filter>
     </ClInclude>
     <ClInclude Include="guilib\GUIListContainer.h">
@@ -1684,6 +1702,9 @@
     <ClCompile Include="interfaces\Builtins.cpp">
       <Filter>Source Files\interfaces</Filter>
     </ClCompile>
+    <ClCompile Include="interfaces\json-rpc\JSONRPC.cpp">
+      <Filter>Source Files\interfaces\json-rpc</Filter>
+    </ClCompile>
     <ClCompile Include="utils\POUtils.cpp">
       <Filter>Source Files\utils</Filter>
     </ClCompile>
@@ -1712,6 +1733,9 @@
       <Filter>Source Files\utils</Filter>
     </ClCompile>
     <ClCompile Include="utils\Variant.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\JSONVariantParser.cpp">
       <Filter>Source Files\utils</Filter>
     </ClCompile>
     <ClCompile Include="guilib\GUIListContainer.cpp">

@@ -253,6 +253,9 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
 
 			g_application.StartTimeServer();
 			g_application.StartFtpServer();
+#ifdef HAS_WEB_SERVER
+			g_application.StartWebServer();
+#endif
 #ifdef HAS_UPNP
 			g_application.StartUPnP();
 #endif
@@ -268,6 +271,9 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
 
 			g_application.StopTimeServer();
 //			g_application.StopFtpServer();
+#ifdef HAS_WEB_SERVER
+			g_application.StopWebServer();
+#endif
 			g_rssManager.Stop();
 		}
 		break;

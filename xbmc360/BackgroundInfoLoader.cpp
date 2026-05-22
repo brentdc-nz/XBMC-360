@@ -116,7 +116,7 @@ void CBackgroundInfoLoader::Load(CFileItemList& items)
 	if (nThreads == -1)
 		nThreads = (m_vecItems.size() / (ITEMS_PER_THREAD+1)) + 1;
 
-	if (nThreads > g_advancedSettings.m_bgInfoLoaderMaxThreads)
+//	if (nThreads > g_advancedSettings.m_bgInfoLoaderMaxThreads) // FIXME: Enforcing condition seems to cause issues
 		nThreads = g_advancedSettings.m_bgInfoLoaderMaxThreads;
 
 	m_nActiveThreads = nThreads;

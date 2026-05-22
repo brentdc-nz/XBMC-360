@@ -2,9 +2,6 @@
 */Makefile
 !fuzz/Makefile
 
-*.sln
-*.vcxproj
-
 aes/crypt_and_hash
 hash/generic_sum
 hash/hello

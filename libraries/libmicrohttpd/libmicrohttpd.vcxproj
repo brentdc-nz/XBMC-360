@@ -1,0 +1,236 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Xbox 360">
+      <Configuration>Debug</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="CodeAnalysis|Xbox 360">
+      <Configuration>CodeAnalysis</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Profile|Xbox 360">
+      <Configuration>Profile</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Profile_FastCap|Xbox 360">
+      <Configuration>Profile_FastCap</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Xbox 360">
+      <Configuration>Release</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_LTCG|Xbox 360">
+      <Configuration>Release_LTCG</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_New|Xbox 360">
+      <Configuration>Release_New</Configuration>
+      <Platform>Xbox 360</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}</ProjectGuid>
+    <RootNamespace>libmicrohttpd</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release_New'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release_LTCG'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='CodeAnalysis'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Profile'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Profile_FastCap'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup>
+    <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <!-- ============================================================ -->
+  <!-- Debug configuration                                          -->
+  <!-- ============================================================ -->
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(ProjectDir)compat;$(ProjectDir)include;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;_XBOX;_LIB;MHD_W32LIB;BUILDING_MHD_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ForcedIncludeFiles>xbox360_prefix.h</ForcedIncludeFiles>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <WarningLevel>Level2</WarningLevel>
+      <DisableSpecificWarnings>4996;4244;4267;4018;4101;4706;4127;4232;4005;4702;4554;4389;4146;4245;4310;4611;4100;4189;4505;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)libmicrohttpd.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <!-- ============================================================ -->
+  <!-- Release / Release_New / Release_LTCG configurations          -->
+  <!-- ============================================================ -->
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Release' or '$(Configuration)'=='Release_New' or '$(Configuration)'=='Release_LTCG'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(ProjectDir)compat;$(ProjectDir)include;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_XBOX;_LIB;NDEBUG;MHD_W32LIB;BUILDING_MHD_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ForcedIncludeFiles>xbox360_prefix.h</ForcedIncludeFiles>
+      <Optimization>MaxSpeed</Optimization>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <WarningLevel>Level2</WarningLevel>
+      <DisableSpecificWarnings>4996;4244;4267;4018;4101;4706;4127;4232;4005;4702;4554;4389;4146;4245;4310;4611;4100;4189;4505;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)libmicrohttpd.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <!-- ============================================================ -->
+  <!-- CodeAnalysis configuration                                   -->
+  <!-- ============================================================ -->
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='CodeAnalysis'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(ProjectDir)compat;$(ProjectDir)include;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_XBOX;_LIB;NDEBUG;MHD_W32LIB;BUILDING_MHD_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ForcedIncludeFiles>xbox360_prefix.h</ForcedIncludeFiles>
+      <Optimization>MaxSpeed</Optimization>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4996;4244;4267;4018;4101;4706;4127;4232;4005;4702;4554;4389;4146;4245;4310;4611;4100;4189;4505;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)libmicrohttpd.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <!-- ============================================================ -->
+  <!-- Profile / Profile_FastCap configurations                     -->
+  <!-- ============================================================ -->
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Profile' or '$(Configuration)'=='Profile_FastCap'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(ProjectDir)compat;$(ProjectDir)include;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_XBOX;_LIB;NDEBUG;PROFILE;MHD_W32LIB;BUILDING_MHD_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ForcedIncludeFiles>xbox360_prefix.h</ForcedIncludeFiles>
+      <Optimization>MaxSpeed</Optimization>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <WarningLevel>Level2</WarningLevel>
+      <DisableSpecificWarnings>4996;4244;4267;4018;4101;4706;4127;4232;4005;4702;4554;4389;4146;4245;4310;4611;4100;4189;4505;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)libmicrohttpd.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <!-- ============================================================ -->
+  <!-- Source files (from upstream libmicrohttpd)                    -->
+  <!-- ============================================================ -->
+  <!-- ============================================================ -->
+  <!-- Header files                                                 -->
+  <!-- ============================================================ -->
+  <ItemGroup>
+    <!-- Public API header -->
+    <ClInclude Include="include\autoinit_funcs.h" />
+    <ClInclude Include="include\basicauth.h" />
+    <ClInclude Include="include\connection.h" />
+    <ClInclude Include="include\gen_auth.h" />
+    <ClInclude Include="include\internal.h" />
+    <ClInclude Include="include\memorypool.h" />
+    <ClInclude Include="include\mhd_align.h" />
+    <ClInclude Include="include\mhd_assert.h" />
+    <ClInclude Include="include\mhd_bithelpers.h" />
+    <ClInclude Include="include\mhd_byteorder.h" />
+    <ClInclude Include="include\mhd_compat.h" />
+    <ClInclude Include="include\MHD_config.h" />
+    <ClInclude Include="include\MHD_config_xbox360.h" />
+    <ClInclude Include="include\mhd_itc.h" />
+    <ClInclude Include="include\mhd_itc_types.h" />
+    <ClInclude Include="include\mhd_limits.h" />
+    <ClInclude Include="include\mhd_locks.h" />
+    <ClInclude Include="include\mhd_mono_clock.h" />
+    <ClInclude Include="include\mhd_options.h" />
+    <ClInclude Include="include\mhd_panic.h" />
+    <ClInclude Include="include\mhd_send.h" />
+    <ClInclude Include="include\mhd_sockets.h" />
+    <ClInclude Include="include\mhd_str.h" />
+    <ClInclude Include="include\mhd_str_types.h" />
+    <ClInclude Include="include\mhd_threads.h" />
+    <ClInclude Include="include\microhttpd.h" />
+    <!-- Xbox 360 configuration -->
+    <!-- Upstream infrastructure headers -->
+    <!-- Internal headers -->
+    <!-- Compat stub headers -->
+    <ClInclude Include="compat\fcntl.h" />
+    <ClInclude Include="compat\signal.h" />
+    <ClInclude Include="compat\windows.h" />
+    <ClInclude Include="compat\winsock2.h" />
+    <ClInclude Include="compat\ws2tcpip.h" />
+    <ClInclude Include="compat\search.h" />
+    <ClInclude Include="include\platform.h" />
+    <ClInclude Include="include\platform_xbox360.h" />
+    <ClInclude Include="include\postprocessor.h" />
+    <ClInclude Include="include\response.h" />
+    <ClInclude Include="include\sysfdsetsize.h" />
+    <ClInclude Include="include\tsearch.h" />
+    <ClInclude Include="include\xbox360_prefix.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="compat\GetTickCount64.c" />
+    <ClCompile Include="source\basicauth.c" />
+    <ClCompile Include="source\connection.c" />
+    <ClCompile Include="source\daemon.c" />
+    <ClCompile Include="source\gen_auth.c" />
+    <ClCompile Include="source\internal.c" />
+    <ClCompile Include="source\memorypool.c" />
+    <ClCompile Include="source\mhd_compat.c" />
+    <ClCompile Include="source\mhd_itc.c" />
+    <ClCompile Include="source\mhd_mono_clock.c" />
+    <ClCompile Include="source\mhd_panic.c" />
+    <ClCompile Include="source\mhd_send.c" />
+    <ClCompile Include="source\mhd_sockets.c" />
+    <ClCompile Include="source\mhd_str.c" />
+    <ClCompile Include="source\mhd_threads.c" />
+    <ClCompile Include="source\postprocessor.c" />
+    <ClCompile Include="source\reason_phrase.c" />
+    <ClCompile Include="source\response.c" />
+    <ClCompile Include="source\sysfdsetsize.c" />
+    <ClCompile Include="source\tsearch.c" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+</Project>

@@ -23,6 +23,9 @@
 #ifdef HAS_UPNP
 #include "network\UPnP.h"
 #endif
+#ifdef HAS_WEB_SERVER
+#include "network\WebServer.h"
+#endif
 
 class CApplication: public CXBApplicationEX, public IPlayerCallback, public IMsgTargetCallback
 {
@@ -86,6 +89,10 @@ public:
 	void StopTimeServer();
 	void StartFtpServer();
 	void StopFtpServer();
+#ifdef HAS_WEB_SERVER
+	bool StartWebServer();
+	void StopWebServer();
+#endif
 #ifdef HAS_UPNP
 	void StartUPnP();
 	void StopUPnP();
@@ -126,6 +133,7 @@ public:
 
 protected:
 	bool ProcessGamepad(float frameTime);
+	bool ProcessJsonRpcButtons();
 	bool OnKey(CKey& key);
 	bool OnAction(CAction &action);
 	void FatalErrorHandler(bool InitD3D);
@@ -157,6 +165,9 @@ protected:
 	CNetwork m_network;
 	CNTPClient *m_pNTPClient;
 	CFTPServer *m_pFTPServer;
+#ifdef HAS_WEB_SERVER
+	CWebServer m_WebServer;
+#endif
 	CDrivesManager m_drivesManager;
 	CApplicationMessenger m_applicationMessenger;
 };

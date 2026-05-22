@@ -1,4 +1,2 @@
 Makefile
-*.sln
-*.vcxproj
 mbedtls/check_config

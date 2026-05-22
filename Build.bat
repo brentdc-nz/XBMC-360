@@ -130,10 +130,18 @@ if errorlevel 1 (
     set FAILED=1
 )
 
+echo.
+echo [9/14] Building libmicrohttpd...
+"%MSBUILD%" "libraries\libmicrohttpd\libmicrohttpd.vcxproj" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
+if errorlevel 1 (
+    echo FAILED: libmicrohttpd
+    set FAILED=1
+)
+
 :: --- Sources ---
 
 echo.
-echo [9/13] Building libjpeg...
+echo [10/14] Building libjpeg...
 "%MSBUILD%" "libraries\libjpeg\libjpeg.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
 if errorlevel 1 (
     echo FAILED: libjpeg
@@ -141,7 +149,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [10/13] Building libmad...
+echo [11/14] Building libmad...
 "%MSBUILD%" "sources\PAPlayer\libmad\libmad.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
 if errorlevel 1 (
     echo FAILED: libmad
@@ -149,7 +157,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [11/13] Building libFlac...
+echo [12/14] Building libFlac...
 "%MSBUILD%" "sources\PAPlayer\libFlac\libFlac.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
 if errorlevel 1 (
     echo FAILED: libFlac
@@ -157,7 +165,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [12/13] Building 360MilkDrop2...
+echo [13/14] Building 360MilkDrop2...
 "%MSBUILD%" "sources\360MilkDrop2\360MilkDrop2.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
 if errorlevel 1 (
     echo FAILED: 360MilkDrop2
@@ -167,7 +175,7 @@ if errorlevel 1 (
 :: --- Main Project ---
 
 echo.
-echo [13/13] Building xbmc360...
+echo [14/14] Building xbmc360...
 "%MSBUILD%" "xbmc360.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
 if errorlevel 1 (
     echo FAILED: xbmc360
