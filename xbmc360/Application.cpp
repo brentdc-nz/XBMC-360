@@ -28,6 +28,7 @@
 #include "guilib\SkinInfo.h"
 #include "interfaces\Builtins.h"
 #include "interfaces\json-rpc\JSONRPC.h"
+#include "interfaces\python\XBPython.h"
 #include "guilib\GUIColorManager.h"
 #include "ApplicationRenderer.h"
 #include "PlayListPlayer.h"
@@ -268,6 +269,9 @@ bool CApplication::Initialize()
 
 	SAFE_DELETE(m_splash);
 
+	/* window id's 3000 - 3100 are reserved for python */
+	g_pythonParser.bStartup = true;
+
 	CLog::Log(LOGNOTICE, "Initialize done");
 
 	m_bInitializing = false;
@@ -286,6 +290,9 @@ void CApplication::StartServices()
 void CApplication::StopServices()
 {
 	m_network.NetworkMessage(CNetwork::SERVICES_DOWN, 0);
+
+	CLog::Log(LOGNOTICE, "stop python");
+	g_pythonParser.FreeResources();
 
 #ifdef HAS_WEB_SERVER
 	StopWebServer();
@@ -433,6 +440,9 @@ void CApplication::Process()
 
 	// Process messages, even if a movie is playing
 	m_applicationMessenger.ProcessMessages();
+
+	// Process any Python scripts
+	g_pythonParser.Process();
 
 	// Process any pending JSON-RPC input keys
 	ProcessJsonRpcButtons();
@@ -1413,6 +1423,10 @@ void CApplication::OnPlayBackEnded()
 
 	CLog::Log(LOGDEBUG, "%s - Playback has finished", __FUNCTION__);
 
+	// Informs python script currently running playback has ended
+	// (does nothing if python is not loaded)
+	g_pythonParser.OnPlayBackEnded();
+
 	SaveFileState();
 
 	CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0);
@@ -1425,6 +1439,10 @@ void CApplication::OnPlayBackStarted()
 		return;
 
 	CLog::Log(LOGDEBUG, "%s - Playback has started", __FUNCTION__);
+
+	// Informs python script currently running playback has started
+	// (does nothing if python is not loaded)
+	g_pythonParser.OnPlayBackStarted();
 
 	CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0);
 	g_windowManager.SendThreadMessage(msg);
@@ -1444,6 +1462,10 @@ void CApplication::OnPlayBackStopped()
 		return;
 
 	CLog::Log(LOGDEBUG, "%s - Playback was stopped", __FUNCTION__);
+
+	// Informs python script currently running playback has ended
+	// (does nothing if python is not loaded)
+	g_pythonParser.OnPlayBackStopped();
 
 	SaveFileState();
 

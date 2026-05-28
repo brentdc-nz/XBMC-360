@@ -8,6 +8,7 @@ This is a work in progress, still many features to bring over. Though getting mo
 - GUILib - Mostly ported now, still have some areas to finish
 - VideoPlayer/DVDPlayer
 - PAPlayer - Works well for flac and MP3 (more codecs coming)
+- Python 3 - Working well, but missing some of the modules (coming soon).
 
 Usable but many features still need reimplementation or improvements.
 
@@ -28,6 +29,7 @@ https://drive.google.com/file/d/173BIaqegtG7Ujsf7M9BVqGlLJDto7GD9/view
 - libjpeg
 - libid3tag
 - libmicrohttpd
+- libPython
 
 ### Services
 - FTP Server

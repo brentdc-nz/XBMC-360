@@ -3,6 +3,11 @@
 
 #include "utils\stdstring.h"
 
+// Win32/XTL macro conflicts
+#ifdef GetFileType
+#undef GetFileType
+#endif
+
 class CURL
 {
 public:

@@ -57,6 +57,7 @@ public:
 	void MediaPlay(const CFileItem &item);
 	void MediaStop();
 	void MediaPause();
+	void PlayListPlayerPlay(int iSong = -1);
 	void PlayListPlayerNext();
 	void PlayListPlayerPrevious();
 

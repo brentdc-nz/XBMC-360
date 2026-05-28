@@ -226,6 +226,13 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 			}
 		break;
 
+		case TMSG_PLAYLISTPLAYER_PLAY:
+			if ((int)pMsg->dwParam1 >= 0)
+				g_playlistPlayer.Play((int)pMsg->dwParam1);
+			else
+				g_playlistPlayer.Play();
+		break;
+
 		case TMSG_PLAYLISTPLAYER_NEXT:
 			g_playlistPlayer.PlayNext();
 		break;
@@ -333,5 +340,12 @@ void CApplicationMessenger::PlayListPlayerNext()
 void CApplicationMessenger::PlayListPlayerPrevious()
 {
 	ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PREV};
+	SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::PlayListPlayerPlay(int iSong)
+{
+	ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY};
+	tMsg.dwParam1 = (DWORD)iSong;
 	SendMessage(tMsg, true);
 }
