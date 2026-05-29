@@ -25,6 +25,13 @@
 #include "Python.h"
 #include "utils/log.h"
 #include "player.h"
+#include "pyutil.h"
+#include "keyboard.h"
+#include "pyplaylist.h"
+#include "infotagmusic.h"
+#include "infotagvideo.h"
+#include "language.h"
+#include "PythonSettings.h"
 #include "PlayListPlayer.h"
 #include "cores/PlayerCoreFactory.h"
 
@@ -351,15 +358,6 @@ PyMODINIT_FUNC PyInit_xbmc(void)
 	PyModule_AddIntConstant(pModule, "LOGFATAL",   LOGFATAL);
 	PyModule_AddIntConstant(pModule, "LOGNONE",    LOGNONE);
 
-	// TODO: add playlist constants when PlayListPlayer is integrated
-	// PyModule_AddIntConstant(pModule, "PLAYLIST_MUSIC", PLAYLIST_MUSIC);
-	// PyModule_AddIntConstant(pModule, "PLAYLIST_VIDEO", PLAYLIST_VIDEO);
-
-	// Player core constants
-	PyModule_AddIntConstant(pModule, "PLAYER_CORE_AUTO", EPC_NONE);
-	PyModule_AddIntConstant(pModule, "PLAYER_CORE_DVDPLAYER", EPC_DVDPLAYER);
-	PyModule_AddIntConstant(pModule, "PLAYER_CORE_PAPLAYER", EPC_PAPLAYER);
-
 	// Playlist constants
 	PyModule_AddIntConstant(pModule, "PLAYLIST_MUSIC", PLAYLIST_MUSIC);
 	PyModule_AddIntConstant(pModule, "PLAYLIST_VIDEO", PLAYLIST_VIDEO);
@@ -373,6 +371,62 @@ PyMODINIT_FUNC PyInit_xbmc(void)
 	}
 	Py_INCREF(&Player_Type);
 	PyModule_AddObject(pModule, "Player", (PyObject*)&Player_Type);
+
+	// Keyboard type
+	initKeyboard_Type();
+	if (PyType_Ready(&Keyboard_Type) < 0)
+	{
+		Py_DECREF(pModule);
+		return NULL;
+	}
+	Py_INCREF(&Keyboard_Type);
+	PyModule_AddObject(pModule, "Keyboard", (PyObject*)&Keyboard_Type);
+
+	// PlayList types
+	initPlayList_Type();
+	initPlayListItem_Type();
+	if (PyType_Ready(&PlayList_Type) < 0 || PyType_Ready(&PlayListItem_Type) < 0)
+	{
+		Py_DECREF(pModule);
+		return NULL;
+	}
+	Py_INCREF(&PlayList_Type);
+	PyModule_AddObject(pModule, "PlayList", (PyObject*)&PlayList_Type);
+	Py_INCREF(&PlayListItem_Type);
+	PyModule_AddObject(pModule, "PlayListItem", (PyObject*)&PlayListItem_Type);
+
+	// InfoTag types
+	initInfoTagMusic_Type();
+	initInfoTagVideo_Type();
+	if (PyType_Ready(&InfoTagMusic_Type) < 0 || PyType_Ready(&InfoTagVideo_Type) < 0)
+	{
+		Py_DECREF(pModule);
+		return NULL;
+	}
+	Py_INCREF(&InfoTagMusic_Type);
+	PyModule_AddObject(pModule, "InfoTagMusic", (PyObject*)&InfoTagMusic_Type);
+	Py_INCREF(&InfoTagVideo_Type);
+	PyModule_AddObject(pModule, "InfoTagVideo", (PyObject*)&InfoTagVideo_Type);
+
+	// Language type
+	initLanguage_Type();
+	if (PyType_Ready(&Language_Type) < 0)
+	{
+		Py_DECREF(pModule);
+		return NULL;
+	}
+	Py_INCREF(&Language_Type);
+	PyModule_AddObject(pModule, "Language", (PyObject*)&Language_Type);
+
+	// Settings type
+	initSettings_Type();
+	if (PyType_Ready(&Settings_Type) < 0)
+	{
+		Py_DECREF(pModule);
+		return NULL;
+	}
+	Py_INCREF(&Settings_Type);
+	PyModule_AddObject(pModule, "Settings", (PyObject*)&Settings_Type);
 
 	return pModule;
 }

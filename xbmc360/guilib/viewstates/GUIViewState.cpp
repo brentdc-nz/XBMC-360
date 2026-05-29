@@ -3,7 +3,7 @@
 #include "guilib\viewstates\GUIViewStateVideo.h"
 #include "guilib\viewstates\GUIViewStatePictures.h"
 #include "guilib\viewstates\GUIViewStatePrograms.h"
-//#include "guilib\viewstates\GUIViewStateScripts.h" // TODO - Not yet implemented
+#include "guilib\viewstates\GUIViewStateScripts.h"
 //#include "guilib\viewstates\GUIViewStateGameSaves.h" // TODO - Not yet implemented
 #include "PlayListPlayer.h"
 #include "utils\URIUtils.h"
@@ -107,10 +107,8 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
 		return new CGUIViewStateWindowVideoPlaylist(items);
 	*/
 
-	/* TODO - Scripts window not yet implemented
-	if (windowId==WINDOW_SCRIPTS)
+	if (windowId == WINDOW_SCRIPTS)
 		return new CGUIViewStateWindowScripts(items);
-	*/
 
 	/* TODO - GameSaves window not yet implemented
 	if (windowId==WINDOW_GAMESAVES)

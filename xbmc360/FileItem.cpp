@@ -282,6 +282,11 @@ bool CFileItem::IsXEX() const
 	return URIUtils::GetExtension(m_strPath).Equals(".xex", false);
 }
 
+bool CFileItem::IsPythonScript() const
+{
+	return URIUtils::GetExtension(m_strPath).Equals(".py", false);
+}
+
 bool CFileItem::IsParentFolder() const
 {
 	return m_bIsParentFolder;
@@ -393,11 +398,11 @@ void CFileItem::FillInDefaultIcon()
 				SetLabel(strDescription);
 				SetIconImage("DefaultShortcut.png");
 			}
-			else if (IsPythonScript())
+*/			else if (IsPythonScript())
 			{
 				SetIconImage("DefaultScript.png");
 			}
-*/			else
+			else
 			{
 				// Default icon for unknown file type
 				SetIconImage("DefaultFile.png");

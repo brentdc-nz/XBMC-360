@@ -614,6 +614,12 @@
     <ClInclude Include="guilib\windows\GUIWindowPrograms.h">
       <Filter>Header Files\guilib\windows</Filter>
     </ClInclude>
+    <ClInclude Include="guilib\windows\GUIWindowScripts.h">
+      <Filter>Header Files\guilib\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\windows\GUIWindowScriptsInfo.h">
+      <Filter>Header Files\guilib\windows</Filter>
+    </ClInclude>
     <ClInclude Include="guilib\dialogs\GUIDialogFileBrowser.h">
       <Filter>Header Files\guilib\dialogs</Filter>
     </ClInclude>
@@ -639,6 +645,9 @@
       <Filter>Header Files\guilib\viewstates</Filter>
     </ClInclude>
     <ClInclude Include="guilib\viewstates\GUIViewStatePrograms.h">
+      <Filter>Header Files\guilib\viewstates</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\viewstates\GUIViewStateScripts.h">
       <Filter>Header Files\guilib\viewstates</Filter>
     </ClInclude>
     <ClInclude Include="filesystem\MultiPathDirectory.h">
@@ -864,6 +873,57 @@
       <Filter>Header Files\interfaces\python\xbmcmodule</Filter>
     </ClInclude>
     <ClInclude Include="interfaces\python\xbmcmodule\PythonPlayer.h">
+      <Filter>Header Files\interfaces\python\xbmcmodule</Filter>
+    </ClInclude>
+    <ClInclude Include="interfaces\python\xbmcmodule\pyutil.h">
+      <Filter>Header Files\interfaces\python\xbmcmodule</Filter>
+    </ClInclude>
+    <ClInclude Include="interfaces\python\xbmcmodule\action.h">
+      <Filter>Header Files\interfaces\python\xbmcmodule</Filter>
+    </ClInclude>
+    <ClInclude Include="interfaces\python\xbmcmodule\keyboard.h">
+      <Filter>Header Files\interfaces\python\xbmcmodule</Filter>
+    </ClInclude>
+    <ClInclude Include="interfaces\python\xbmcmodule\pyplaylist.h">
+      <Filter>Header Files\interfaces\python\xbmcmodule</Filter>
+    </ClInclude>
+    <ClInclude Include="interfaces\python\xbmcmodule\infotagmusic.h">
+      <Filter>Header Files\interfaces\python\xbmcmodule</Filter>
+    </ClInclude>
+    <ClInclude Include="interfaces\python\xbmcmodule\infotagvideo.h">
+      <Filter>Header Files\interfaces\python\xbmcmodule</Filter>
+    </ClInclude>
+    <ClInclude Include="interfaces\python\xbmcmodule\listitem.h">
+      <Filter>Header Files\interfaces\python\xbmcmodule</Filter>
+    </ClInclude>
+    <ClInclude Include="interfaces\python\xbmcmodule\control.h">
+      <Filter>Header Files\interfaces\python\xbmcmodule</Filter>
+    </ClInclude>
+    <ClInclude Include="interfaces\python\xbmcmodule\window.h">
+      <Filter>Header Files\interfaces\python\xbmcmodule</Filter>
+    </ClInclude>
+    <ClInclude Include="interfaces\python\xbmcmodule\dialog.h">
+      <Filter>Header Files\interfaces\python\xbmcmodule</Filter>
+    </ClInclude>
+    <ClInclude Include="interfaces\python\xbmcmodule\winxml.h">
+      <Filter>Header Files\interfaces\python\xbmcmodule</Filter>
+    </ClInclude>
+    <ClInclude Include="interfaces\python\xbmcmodule\language.h">
+      <Filter>Header Files\interfaces\python\xbmcmodule</Filter>
+    </ClInclude>
+    <ClInclude Include="interfaces\python\xbmcmodule\PythonSettings.h">
+      <Filter>Header Files\interfaces\python\xbmcmodule</Filter>
+    </ClInclude>
+    <ClInclude Include="interfaces\python\xbmcmodule\GUIPythonWindow.h">
+      <Filter>Header Files\interfaces\python\xbmcmodule</Filter>
+    </ClInclude>
+    <ClInclude Include="interfaces\python\xbmcmodule\GUIPythonWindowDialog.h">
+      <Filter>Header Files\interfaces\python\xbmcmodule</Filter>
+    </ClInclude>
+    <ClInclude Include="interfaces\python\xbmcmodule\GUIPythonWindowXML.h">
+      <Filter>Header Files\interfaces\python\xbmcmodule</Filter>
+    </ClInclude>
+    <ClInclude Include="interfaces\python\xbmcmodule\GUIPythonWindowXMLDialog.h">
       <Filter>Header Files\interfaces\python\xbmcmodule</Filter>
     </ClInclude>
     <ClInclude Include="utils\Log.h">
@@ -1531,6 +1591,12 @@
     <ClCompile Include="guilib\windows\GUIWindowPrograms.cpp">
       <Filter>Source Files\guilib\windows</Filter>
     </ClCompile>
+    <ClCompile Include="guilib\windows\GUIWindowScripts.cpp">
+      <Filter>Source Files\guilib\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\windows\GUIWindowScriptsInfo.cpp">
+      <Filter>Source Files\guilib\windows</Filter>
+    </ClCompile>
     <ClCompile Include="guilib\dialogs\GUIDialogFileBrowser.cpp">
       <Filter>Source Files\guilib\dialogs</Filter>
     </ClCompile>
@@ -1550,6 +1616,9 @@
       <Filter>Source Files\guilib\viewstates</Filter>
     </ClCompile>
     <ClCompile Include="guilib\viewstates\GUIViewStatePrograms.cpp">
+      <Filter>Source Files\guilib\viewstates</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\viewstates\GUIViewStateScripts.cpp">
       <Filter>Source Files\guilib\viewstates</Filter>
     </ClCompile>
     <ClCompile Include="filesystem\MultiPathDirectory.cpp">
@@ -1754,6 +1823,93 @@
       <Filter>Source Files\interfaces\python\xbmcmodule</Filter>
     </ClCompile>
     <ClCompile Include="interfaces\python\xbmcmodule\PythonPlayer.cpp">
+      <Filter>Source Files\interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\pyutil.cpp">
+      <Filter>Source Files\interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\action.cpp">
+      <Filter>Source Files\interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\keyboard.cpp">
+      <Filter>Source Files\interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\pyplaylist.cpp">
+      <Filter>Source Files\interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\infotagmusic.cpp">
+      <Filter>Source Files\interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\infotagvideo.cpp">
+      <Filter>Source Files\interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\listitem.cpp">
+      <Filter>Source Files\interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\control.cpp">
+      <Filter>Source Files\interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\controllabel.cpp">
+      <Filter>Source Files\interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\controlbutton.cpp">
+      <Filter>Source Files\interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\controlcheckmark.cpp">
+      <Filter>Source Files\interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\controlfadelabel.cpp">
+      <Filter>Source Files\interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\controltextbox.cpp">
+      <Filter>Source Files\interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\controlimage.cpp">
+      <Filter>Source Files\interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\controlprogress.cpp">
+      <Filter>Source Files\interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\controlgroup.cpp">
+      <Filter>Source Files\interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\controllist.cpp">
+      <Filter>Source Files\interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\controlradiobutton.cpp">
+      <Filter>Source Files\interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\controlspin.cpp">
+      <Filter>Source Files\interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\window.cpp">
+      <Filter>Source Files\interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\dialog.cpp">
+      <Filter>Source Files\interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\winxml.cpp">
+      <Filter>Source Files\interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\winxmldialog.cpp">
+      <Filter>Source Files\interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\language.cpp">
+      <Filter>Source Files\interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\PythonSettings.cpp">
+      <Filter>Source Files\interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\GUIPythonWindow.cpp">
+      <Filter>Source Files\interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\GUIPythonWindowDialog.cpp">
+      <Filter>Source Files\interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\GUIPythonWindowXML.cpp">
+      <Filter>Source Files\interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\GUIPythonWindowXMLDialog.cpp">
       <Filter>Source Files\interfaces\python\xbmcmodule</Filter>
     </ClCompile>
     <ClCompile Include="utils\POUtils.cpp">

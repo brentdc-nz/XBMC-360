@@ -88,8 +88,8 @@
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(ProjectDir)Include;$(ProjectDir)PC;$(ProjectDir)Python;$(ProjectDir)Modules;$(ProjectDir)Modules\zlib;$(ProjectDir)Modules\_io;$(ProjectDir)Modules\cjkcodecs;$(ProjectDir)Parser;$(ProjectDir)xbox360;$(ProjectDir)..\..\xbmc360;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;_XBOX;_LIB;Py_BUILD_CORE;Py_NO_ENABLE_SHARED;WITH_THREAD;NT_THREADS;HAVE_ROUND;_ITERATOR_DEBUG_LEVEL=0;_HAS_ITERATOR_DEBUGGING=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)Include;$(ProjectDir)PC;$(ProjectDir)Python;$(ProjectDir)Modules;$(ProjectDir)Modules\zlib;$(ProjectDir)Modules\_io;$(ProjectDir)Modules\cjkcodecs;$(ProjectDir)Modules\_sqlite;$(ProjectDir)Modules\expat;$(ProjectDir)..\..\libraries\sqlite3\include;$(ProjectDir)Parser;$(ProjectDir)xbox360;$(ProjectDir)..\..\xbmc360;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;_XBOX;_LIB;Py_BUILD_CORE;Py_NO_ENABLE_SHARED;WITH_THREAD;NT_THREADS;HAVE_ROUND;HAVE_EXPAT_CONFIG_H;XML_STATIC;_ITERATOR_DEBUG_LEVEL=0;_HAS_ITERATOR_DEBUGGING=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ForcedIncludeFiles>pyconfig-xbox360.h</ForcedIncludeFiles>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -108,8 +108,8 @@
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Release' or '$(Configuration)'=='Release_New' or '$(Configuration)'=='Release_LTCG'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(ProjectDir)Include;$(ProjectDir)PC;$(ProjectDir)Python;$(ProjectDir)Modules;$(ProjectDir)Modules\zlib;$(ProjectDir)Modules\_io;$(ProjectDir)Modules\cjkcodecs;$(ProjectDir)Parser;$(ProjectDir)xbox360;$(ProjectDir)..\..\xbmc360;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_XBOX;_LIB;NDEBUG;Py_BUILD_CORE;Py_NO_ENABLE_SHARED;WITH_THREAD;NT_THREADS;HAVE_ROUND;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)Include;$(ProjectDir)PC;$(ProjectDir)Python;$(ProjectDir)Modules;$(ProjectDir)Modules\zlib;$(ProjectDir)Modules\_io;$(ProjectDir)Modules\cjkcodecs;$(ProjectDir)Modules\_sqlite;$(ProjectDir)Modules\expat;$(ProjectDir)..\..\libraries\sqlite3\include;$(ProjectDir)Parser;$(ProjectDir)xbox360;$(ProjectDir)..\..\xbmc360;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_XBOX;_LIB;NDEBUG;Py_BUILD_CORE;Py_NO_ENABLE_SHARED;WITH_THREAD;NT_THREADS;HAVE_ROUND;HAVE_EXPAT_CONFIG_H;XML_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ForcedIncludeFiles>pyconfig-xbox360.h</ForcedIncludeFiles>
       <Optimization>MaxSpeed</Optimization>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -127,8 +127,8 @@
   <ItemDefinitionGroup Condition="'$(Configuration)'=='CodeAnalysis'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(ProjectDir)Include;$(ProjectDir)PC;$(ProjectDir)Python;$(ProjectDir)Modules;$(ProjectDir)Modules\zlib;$(ProjectDir)Modules\_io;$(ProjectDir)Modules\cjkcodecs;$(ProjectDir)Parser;$(ProjectDir)xbox360;$(ProjectDir)..\..\xbmc360;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_XBOX;_LIB;NDEBUG;Py_BUILD_CORE;Py_NO_ENABLE_SHARED;WITH_THREAD;NT_THREADS;HAVE_ROUND;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)Include;$(ProjectDir)PC;$(ProjectDir)Python;$(ProjectDir)Modules;$(ProjectDir)Modules\zlib;$(ProjectDir)Modules\_io;$(ProjectDir)Modules\cjkcodecs;$(ProjectDir)Modules\_sqlite;$(ProjectDir)Modules\expat;$(ProjectDir)..\..\libraries\sqlite3\include;$(ProjectDir)Parser;$(ProjectDir)xbox360;$(ProjectDir)..\..\xbmc360;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_XBOX;_LIB;NDEBUG;Py_BUILD_CORE;Py_NO_ENABLE_SHARED;WITH_THREAD;NT_THREADS;HAVE_ROUND;HAVE_EXPAT_CONFIG_H;XML_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ForcedIncludeFiles>pyconfig-xbox360.h</ForcedIncludeFiles>
       <Optimization>MaxSpeed</Optimization>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -146,8 +146,8 @@
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Profile' or '$(Configuration)'=='Profile_FastCap'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(ProjectDir)Include;$(ProjectDir)PC;$(ProjectDir)Python;$(ProjectDir)Modules;$(ProjectDir)Modules\zlib;$(ProjectDir)Modules\_io;$(ProjectDir)Modules\cjkcodecs;$(ProjectDir)Parser;$(ProjectDir)xbox360;$(ProjectDir)..\..\xbmc360;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_XBOX;_LIB;NDEBUG;PROFILE;Py_BUILD_CORE;Py_NO_ENABLE_SHARED;WITH_THREAD;NT_THREADS;HAVE_ROUND;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)Include;$(ProjectDir)PC;$(ProjectDir)Python;$(ProjectDir)Modules;$(ProjectDir)Modules\zlib;$(ProjectDir)Modules\_io;$(ProjectDir)Modules\cjkcodecs;$(ProjectDir)Modules\_sqlite;$(ProjectDir)Modules\expat;$(ProjectDir)..\..\libraries\sqlite3\include;$(ProjectDir)Parser;$(ProjectDir)xbox360;$(ProjectDir)..\..\xbmc360;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_XBOX;_LIB;NDEBUG;PROFILE;Py_BUILD_CORE;Py_NO_ENABLE_SHARED;WITH_THREAD;NT_THREADS;HAVE_ROUND;HAVE_EXPAT_CONFIG_H;XML_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ForcedIncludeFiles>pyconfig-xbox360.h</ForcedIncludeFiles>
       <Optimization>MaxSpeed</Optimization>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -323,6 +323,47 @@
     <ClCompile Include="Modules\cjkcodecs\_codecs_kr.c" />
     <ClCompile Include="Modules\cjkcodecs\_codecs_tw.c" />
     <ClCompile Include="Modules\cjkcodecs\multibytecodec.c" />
+    <!-- Modules - _sqlite3 -->
+    <ClCompile Include="Modules\_sqlite\module.c">
+      <PreprocessorDefinitions>MODULE_NAME="sqlite3";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <ClCompile Include="Modules\_sqlite\connection.c">
+      <PreprocessorDefinitions>MODULE_NAME="sqlite3";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <ClCompile Include="Modules\_sqlite\cursor.c">
+      <PreprocessorDefinitions>MODULE_NAME="sqlite3";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <ClCompile Include="Modules\_sqlite\cache.c">
+      <PreprocessorDefinitions>MODULE_NAME="sqlite3";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <ClCompile Include="Modules\_sqlite\microprotocols.c">
+      <PreprocessorDefinitions>MODULE_NAME="sqlite3";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <ClCompile Include="Modules\_sqlite\prepare_protocol.c">
+      <PreprocessorDefinitions>MODULE_NAME="sqlite3";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <ClCompile Include="Modules\_sqlite\row.c">
+      <PreprocessorDefinitions>MODULE_NAME="sqlite3";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <ClCompile Include="Modules\_sqlite\statement.c">
+      <PreprocessorDefinitions>MODULE_NAME="sqlite3";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <ClCompile Include="Modules\_sqlite\util.c">
+      <PreprocessorDefinitions>MODULE_NAME="sqlite3";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <!-- Modules - zlib -->
+    <ClCompile Include="Modules\zlibmodule.c" />
+    <!-- Modules - expat / pyexpat -->
+    <ClCompile Include="Modules\expat\xmlparse.c" />
+    <ClCompile Include="Modules\expat\xmlrole.c" />
+    <ClCompile Include="Modules\expat\xmltok.c" />
+    <ClCompile Include="Modules\pyexpat.c" />
+    <!-- Modules - _elementtree -->
+    <ClCompile Include="Modules\_elementtree.c" />
+    <!-- Modules - unicodedata -->
+    <ClCompile Include="Modules\unicodedata.c" />
+    <!-- Modules - select -->
+    <ClCompile Include="Modules\selectmodule.c" />
   </ItemGroup>
   <!-- ============================================================ -->
   <!-- Header files                                                 -->

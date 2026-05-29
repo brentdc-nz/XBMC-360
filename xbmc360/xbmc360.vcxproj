@@ -501,6 +501,7 @@
     <ClInclude Include="guilib\viewstates\GUIViewStateMusic.h" />
     <ClInclude Include="guilib\viewstates\GUIViewStatePictures.h" />
     <ClInclude Include="guilib\viewstates\GUIViewStatePrograms.h" />
+    <ClInclude Include="guilib\viewstates\GUIViewStateScripts.h" />
     <ClInclude Include="guilib\viewstates\GUIViewStateVideo.h" />
     <ClInclude Include="guilib\VisibleEffect.h" />
     <ClInclude Include="guilib\windows\GUIWindowFullScreen.h" />
@@ -508,6 +509,8 @@
     <ClInclude Include="guilib\windows\GUIWindowMusicSongs.h" />
     <ClInclude Include="guilib\windows\GUIWindowPictures.h" />
     <ClInclude Include="guilib\windows\GUIWindowPrograms.h" />
+    <ClInclude Include="guilib\windows\GUIWindowScripts.h" />
+    <ClInclude Include="guilib\windows\GUIWindowScriptsInfo.h" />
     <ClInclude Include="guilib\windows\GUIWindowScreensaver.h" />
     <ClInclude Include="guilib\windows\GUIWindowSettings.h" />
     <ClInclude Include="guilib\windows\GUIWindowSettingsCategory.h" />
@@ -525,6 +528,23 @@
     <ClInclude Include="interfaces\python\XBPyThread.h" />
     <ClInclude Include="interfaces\python\xbmcmodule\player.h" />
     <ClInclude Include="interfaces\python\xbmcmodule\PythonPlayer.h" />
+    <ClInclude Include="interfaces\python\xbmcmodule\pyutil.h" />
+    <ClInclude Include="interfaces\python\xbmcmodule\action.h" />
+    <ClInclude Include="interfaces\python\xbmcmodule\keyboard.h" />
+    <ClInclude Include="interfaces\python\xbmcmodule\pyplaylist.h" />
+    <ClInclude Include="interfaces\python\xbmcmodule\infotagmusic.h" />
+    <ClInclude Include="interfaces\python\xbmcmodule\infotagvideo.h" />
+    <ClInclude Include="interfaces\python\xbmcmodule\listitem.h" />
+    <ClInclude Include="interfaces\python\xbmcmodule\control.h" />
+    <ClInclude Include="interfaces\python\xbmcmodule\window.h" />
+    <ClInclude Include="interfaces\python\xbmcmodule\dialog.h" />
+    <ClInclude Include="interfaces\python\xbmcmodule\winxml.h" />
+    <ClInclude Include="interfaces\python\xbmcmodule\language.h" />
+    <ClInclude Include="interfaces\python\xbmcmodule\PythonSettings.h" />
+    <ClInclude Include="interfaces\python\xbmcmodule\GUIPythonWindow.h" />
+    <ClInclude Include="interfaces\python\xbmcmodule\GUIPythonWindowDialog.h" />
+    <ClInclude Include="interfaces\python\xbmcmodule\GUIPythonWindowXML.h" />
+    <ClInclude Include="interfaces\python\xbmcmodule\GUIPythonWindowXMLDialog.h" />
     <ClInclude Include="IProgressCallback.h" />
     <ClInclude Include="LangInfo.h" />
     <ClInclude Include="MediaManager.h" />
@@ -799,6 +819,7 @@
     <ClCompile Include="guilib\viewstates\GUIViewStateMusic.cpp" />
     <ClCompile Include="guilib\viewstates\GUIViewStatePictures.cpp" />
     <ClCompile Include="guilib\viewstates\GUIViewStatePrograms.cpp" />
+    <ClCompile Include="guilib\viewstates\GUIViewStateScripts.cpp" />
     <ClCompile Include="guilib\viewstates\GUIViewStateVideo.cpp" />
     <ClCompile Include="guilib\VisibleEffect.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowFullScreen.cpp" />
@@ -806,6 +827,8 @@
     <ClCompile Include="guilib\windows\GUIWindowMusicSongs.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowPictures.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowPrograms.cpp" />
+    <ClCompile Include="guilib\windows\GUIWindowScripts.cpp" />
+    <ClCompile Include="guilib\windows\GUIWindowScriptsInfo.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowScreensaver.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowSettings.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowSettingsCategory.cpp" />
@@ -840,6 +863,93 @@
       <ForcedIncludeFiles>pyconfig-xbox360.h</ForcedIncludeFiles>
     </ClCompile>
     <ClCompile Include="interfaces\python\xbmcmodule\PythonPlayer.cpp">
+      <ForcedIncludeFiles>pyconfig-xbox360.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\pyutil.cpp">
+      <ForcedIncludeFiles>pyconfig-xbox360.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\action.cpp">
+      <ForcedIncludeFiles>pyconfig-xbox360.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\keyboard.cpp">
+      <ForcedIncludeFiles>pyconfig-xbox360.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\pyplaylist.cpp">
+      <ForcedIncludeFiles>pyconfig-xbox360.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\infotagmusic.cpp">
+      <ForcedIncludeFiles>pyconfig-xbox360.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\infotagvideo.cpp">
+      <ForcedIncludeFiles>pyconfig-xbox360.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\listitem.cpp">
+      <ForcedIncludeFiles>pyconfig-xbox360.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\control.cpp">
+      <ForcedIncludeFiles>pyconfig-xbox360.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\controllabel.cpp">
+      <ForcedIncludeFiles>pyconfig-xbox360.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\controlbutton.cpp">
+      <ForcedIncludeFiles>pyconfig-xbox360.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\controlcheckmark.cpp">
+      <ForcedIncludeFiles>pyconfig-xbox360.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\controlfadelabel.cpp">
+      <ForcedIncludeFiles>pyconfig-xbox360.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\controltextbox.cpp">
+      <ForcedIncludeFiles>pyconfig-xbox360.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\controlimage.cpp">
+      <ForcedIncludeFiles>pyconfig-xbox360.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\controlprogress.cpp">
+      <ForcedIncludeFiles>pyconfig-xbox360.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\controlgroup.cpp">
+      <ForcedIncludeFiles>pyconfig-xbox360.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\controllist.cpp">
+      <ForcedIncludeFiles>pyconfig-xbox360.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\controlradiobutton.cpp">
+      <ForcedIncludeFiles>pyconfig-xbox360.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\controlspin.cpp">
+      <ForcedIncludeFiles>pyconfig-xbox360.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\window.cpp">
+      <ForcedIncludeFiles>pyconfig-xbox360.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\dialog.cpp">
+      <ForcedIncludeFiles>pyconfig-xbox360.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\winxml.cpp">
+      <ForcedIncludeFiles>pyconfig-xbox360.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\winxmldialog.cpp">
+      <ForcedIncludeFiles>pyconfig-xbox360.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\language.cpp">
+      <ForcedIncludeFiles>pyconfig-xbox360.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\PythonSettings.cpp">
+      <ForcedIncludeFiles>pyconfig-xbox360.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\GUIPythonWindow.cpp">
+      <ForcedIncludeFiles>pyconfig-xbox360.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\GUIPythonWindowDialog.cpp">
+      <ForcedIncludeFiles>pyconfig-xbox360.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\GUIPythonWindowXML.cpp">
+      <ForcedIncludeFiles>pyconfig-xbox360.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="interfaces\python\xbmcmodule\GUIPythonWindowXMLDialog.cpp">
       <ForcedIncludeFiles>pyconfig-xbox360.h</ForcedIncludeFiles>
     </ClCompile>
     <ClCompile Include="Key.cpp" />

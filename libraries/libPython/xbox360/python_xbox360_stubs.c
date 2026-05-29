@@ -150,6 +150,45 @@ const char* Py_GetBuildInfo(void)
 const char* _Py_hgidentifier(void) { return ""; }
 const char* _Py_hgversion(void) { return ""; }
 
+/* === GetCurrentProcessId - not available on Xbox 360 === */
+unsigned long __stdcall GetCurrentProcessId(void)
+{
+    return 1;
+}
+
+/* === Expat LoadLibrary stub (pyexpat uses this for hash salt) === */
+void* _Expat_LoadLibrary(const char* name)
+{
+    return NULL;
+}
+
+/* === sqlite3 functions that may be compiled out (SQLITE_OMIT_*) === */
+int sqlite3_enable_shared_cache(int enable)
+{
+    return 0; /* SQLITE_OK */
+}
+
+void* sqlite3_trace(void* db, void (*xTrace)(void*,const char*), void* pArg)
+{
+    return NULL;
+}
+
+int sqlite3_enable_load_extension(void* db, int onoff)
+{
+    return 1; /* SQLITE_ERROR - not supported */
+}
+
+int sqlite3_load_extension(void* db, const char* zFile, const char* zProc, char** pzErrMsg)
+{
+    if (pzErrMsg) *pzErrMsg = NULL;
+    return 1; /* SQLITE_ERROR - not supported */
+}
+
+int sqlite3_transfer_bindings(void* pFromStmt, void* pToStmt)
+{
+    return 21; /* SQLITE_MISUSE - deprecated function */
+}
+
 #ifdef __cplusplus
 }
 #endif

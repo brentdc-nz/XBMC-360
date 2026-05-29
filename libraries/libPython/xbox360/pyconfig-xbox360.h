@@ -212,8 +212,9 @@ typedef int pid_t;
  * ====================================================================== */
 #define PYTHONPATH         L".\\Lib"
 #define LANDMARK           L"os.py"
-#define PREFIX             L""
-#define EXEC_PREFIX        L""
+/* Note: PREFIX and EXEC_PREFIX are NOT defined here because they conflict
+ * with expat's internal typedef 'PREFIX'. getpath_xbox360.c provides
+ * Py_GetPrefix() and Py_GetExecPrefix() directly. */
 #define VERSION            "3.4"
 #define VPATH              ""
 #define PYLONG_BITS_IN_DIGIT 15

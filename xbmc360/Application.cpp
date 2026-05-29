@@ -38,6 +38,8 @@
 // Window includes
 #include "guilib\windows\GUIWindowHome.h"
 #include "guilib\windows\GUIWindowPrograms.h"
+#include "guilib\windows\GUIWindowScripts.h"
+#include "guilib\windows\GUIWindowScriptsInfo.h"
 #include "guilib\windows\GUIWindowFullScreen.h"
 #include "guilib\windows\GUIWindowVisualisation.h"
 #include "guilib\windows\GUIWindowVideoFiles.h"
@@ -225,6 +227,8 @@ bool CApplication::Initialize()
 	g_windowManager.Add(new CGUIWindowFullScreen);
 	g_windowManager.Add(new CGUIWindowVisualisation);   // window id = 2006
 	g_windowManager.Add(new CGUIWindowPrograms);
+	g_windowManager.Add(new CGUIWindowScripts);
+	g_windowManager.Add(new CGUIWindowScriptsInfo);
 	g_windowManager.Add(new CGUIWindowVideoFiles);
 	g_windowManager.Add(new CGUIWindowMusicSongs);
 	g_windowManager.Add(new CGUIWindowPictures);	
@@ -2140,6 +2144,8 @@ void CApplication::Cleanup()
 		g_windowManager.Delete(WINDOW_HOME);
 		g_windowManager.Delete(WINDOW_FULLSCREEN_VIDEO);
 		g_windowManager.Delete(WINDOW_PROGRAMS);
+		g_windowManager.Delete(WINDOW_SCRIPTS);
+		g_windowManager.Delete(WINDOW_SCRIPTS_INFO);
 		g_windowManager.Delete(WINDOW_VIDEOS);
 		g_windowManager.Delete(WINDOW_MUSIC_FILES);
 		g_windowManager.Delete(WINDOW_PICTURES);

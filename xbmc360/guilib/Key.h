@@ -189,7 +189,9 @@
 #define WINDOW_SETTINGS_MYVIDEOS          10017
 #define WINDOW_SETTINGS_NETWORK           10018
 #define WINDOW_SETTINGS_APPEARANCE        10019
+#define WINDOW_SCRIPTS                    10020
 
+#define WINDOW_SCRIPTS_INFO               12004
 #define WINDOW_FULLSCREEN_VIDEO           12005
 #define WINDOW_VISUALISATION              12006
 #define WINDOW_WEATHER                    12600

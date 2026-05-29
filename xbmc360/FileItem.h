@@ -63,6 +63,7 @@ public:
 	bool IsAudio() const;
 	bool IsPicture() const;
 	bool IsXEX() const;
+	bool IsPythonScript() const;
 	bool IsParentFolder() const;
 	bool SortsOnTop() const { return m_specialSort == SORT_ON_TOP; }
 	bool SortsOnBottom() const { return m_specialSort == SORT_ON_BOTTOM; }

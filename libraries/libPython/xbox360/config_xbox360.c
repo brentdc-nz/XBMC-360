@@ -61,6 +61,14 @@ extern PyObject* PyInit__codecs_jp(void);
 extern PyObject* PyInit__codecs_kr(void);
 extern PyObject* PyInit__codecs_tw(void);
 
+/* Additional modules matching xbmc4xbox */
+extern PyObject* PyInit__sqlite3(void);
+extern PyObject* PyInit_zlib(void);
+extern PyObject* PyInit_pyexpat(void);
+extern PyObject* PyInit__elementtree(void);
+extern PyObject* PyInit_unicodedata(void);
+extern PyObject* PyInit_select(void);
+
 extern PyObject* PyMarshal_Init(void);
 extern PyObject* PyInit_imp(void);
 extern PyObject* PyInit_nt(void);
@@ -110,6 +118,14 @@ struct _inittab _PyImport_Inittab[] = {
     {"_codecs_jp", PyInit__codecs_jp},
     {"_codecs_kr", PyInit__codecs_kr},
     {"_codecs_tw", PyInit__codecs_tw},
+
+    /* Additional modules (matching xbmc4xbox) */
+    {"_sqlite3", PyInit__sqlite3},
+    {"zlib", PyInit_zlib},
+    {"pyexpat", PyInit_pyexpat},
+    {"_elementtree", PyInit__elementtree},
+    {"unicodedata", PyInit_unicodedata},
+    {"select", PyInit_select},
 
     /* Core runtime modules */
     {"marshal", PyMarshal_Init},
