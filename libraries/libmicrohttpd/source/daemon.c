@@ -6028,7 +6028,15 @@ MHD_polling_thread (void *cls)
       MHD_epoll (daemon, -1);
     else
 #endif
+#ifdef _XBOX
+    /* Xbox 360: shutdown() on the listen socket fails (WSAENOTCONN)
+       and ITC socket pairs cannot be created (no loopback).  Use a
+       short select timeout so the thread wakes to check the shutdown
+       flag without requiring an external signal. */
+    MHD_select (daemon, 500);
+#else
     MHD_select (daemon, -1);
+#endif
     MHD_cleanup_connections (daemon);
   }
 

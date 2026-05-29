@@ -82,11 +82,13 @@
 #define MHD_WINSOCK_SOCKETS 1
 /* #undef MHD_POSIX_SOCKETS */
 
-/* ITC: use socket pair (standard Win32 approach in libmicrohttpd) */
-/* Xbox 360 cannot create socket pairs (no loopback). Keep the type
-   defined for struct layout, but HAVE_LISTEN_SHUTDOWN prevents MHD
-   from actually creating the ITC — it uses shutdown() on the listen
-   socket to signal threads instead. */
+/* ITC: socket pair type is defined for struct layout compatibility,
+   but Xbox 360 cannot create socket pairs (no loopback, and XNet
+   does not support connecting to your own IP reliably).
+   HAVE_LISTEN_SHUTDOWN is defined so MHD does NOT attempt to create
+   an ITC socket pair.  Xbox 360's shutdown() on a listening socket
+   returns WSAENOTCONN (error 10057) and fails to wake select(), so
+   we cap the polling thread's select timeout in daemon.c instead. */
 #define _MHD_ITC_SOCKETPAIR 1
 /* #undef _MHD_ITC_EVENTFD */
 /* #undef _MHD_ITC_PIPE */
