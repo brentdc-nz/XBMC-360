@@ -417,8 +417,10 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
 
 	CStdString strParentPath;
 	URIUtils::GetParentPath(strDirectory, strParentPath);
+
 	if (strDirectory.IsEmpty() && (m_vecItems[iList]->Size() == 0 || g_guiSettings.GetBool("filelists.showaddsourcebuttons")))
-	{ // add 'add source button'
+	{
+		// Add 'add source button'
 		CStdString strLabel = g_localizeStrings.Get(1026);
 		CFileItemPtr pItem(new CFileItem(strLabel));
 		pItem->SetPath("add");

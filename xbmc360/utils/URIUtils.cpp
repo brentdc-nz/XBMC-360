@@ -2,7 +2,7 @@
 #include "Util.h"
 #include "URL.h"
 #include "filesystem\MultiPathDirectory.h"
-#include "GUISettings.h"
+#include "Settings.h"
 
 using namespace std;
 using namespace XFILE;

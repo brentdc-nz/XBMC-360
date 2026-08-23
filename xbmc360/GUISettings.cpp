@@ -175,8 +175,12 @@ CGUISettings::~CGUISettings(void)
 
 void CGUISettings::Initialize()
 {
-
 	m_LookAndFeelResolution = HDTV_720p; //FIXME AND REMOVE!!!
+	
+	// Pictures settings
+	AddGroup(0, 1);
+	AddCategory(0, "pictures", 14081);
+	AddBool(3, "pictures.useexifrotation", 20184, true);
 
 	// My Weather settings
 	AddGroup(2, 8);
@@ -185,17 +189,21 @@ void CGUISettings::Initialize()
 	AddString(2, "weather.location2", 14020, "51.52:-0.11~London, United Kingdom", BUTTON_CONTROL_STANDARD);
 	AddString(3, "weather.location3", 14021, "35.69:139.69~Tokyo, Japan", BUTTON_CONTROL_STANDARD);
 
+	// My Music Settings
+	AddGroup(3, 2);
+	AddCategory(3, "musicplayer", 14086);
+	AddString(8, "musicplayer.visualisation", 250, "MilkDrop2.vis", SPIN_CONTROL_TEXT);
+
+	AddCategory(3, "musicfiles", 14081);
+	AddBool(1, "musicfiles.usetags", 258, true);
+
 	// System settings
 	AddGroup(4, 13000);
-
 	AddCategory(4, "videooutput", 21373);
 	AddInt(1, "videooutput.aspect", 21374, VIDEO_NORMAL, VIDEO_NORMAL, 1, VIDEO_WIDESCREEN, SPIN_CONTROL_TEXT);
 
-	AddCategory(4, "videoplayer", 14086);
-	AddInt(1, "videoplayer.resumeautomatically", 12017, RESUME_ASK, RESUME_NO, 1, RESUME_ASK, SPIN_CONTROL_TEXT);
-
 	AddCategory(4, "audiooutput", 772);
-	AddBool(1, "audiooutput.downmixmultichannel", 548, true);
+	AddBool(10, "audiooutput.downmixmultichannel", 548, true);
 
 	AddCategory(4, "dvdplayercache", 483);
 	AddInt(1, "dvdplayercache.video", 14096, 1024, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
@@ -204,16 +212,21 @@ void CGUISettings::Initialize()
 	AddInt(4, "dvdplayercache.audio", 14098, 384, 0, 128, 4096, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
 	AddInt(5, "dvdplayercache.audiotime", 14099, 8, 0, 1, 30, SPIN_CONTROL_INT_PLUS, MASK_SECS);
 
-	// Pictures settings
-	AddBool(1, "pictures.useexifrotation", 20184, true);
+	// Video settings
+	AddGroup(5, 3);
+	AddCategory(5, "videoplayer", 14086);
+	AddInt(1, "videoplayer.resumeautomatically", 12017, RESUME_ASK, RESUME_NO, 1, RESUME_ASK, SPIN_CONTROL_TEXT);
 
-	// Music settings
-	AddGroup(3, 2);
-	AddCategory(3, "musicplayer", 14086);
-	AddString(1, "musicplayer.visualisation", 250, "MilkDrop2.vis", SPIN_CONTROL_TEXT);
+	// Network settings
+	AddGroup(6, 705);
+	AddCategory(6, "services", 14036);
+#ifdef HAS_WEB_SERVER
+	AddBool(4, "services.webserver", 263, true);
+	AddString(5, "services.webserverport", 730, "80", EDIT_CONTROL_NUMBER_INPUT, false, 730);
+	AddString(6, "services.webserverusername", 1048, "xbmc", EDIT_CONTROL_INPUT);
+	AddString(7, "services.webserverpassword", 733, "", EDIT_CONTROL_HIDDEN_INPUT, true, 733);
+#endif
 
-	AddCategory(3, "musicfiles", 14081);
-	AddBool(1, "musicfiles.usetags", 258, true);
 	// Appearance settings
 	AddGroup(7, 480);
 	AddCategory(7,"lookandfeel", 166);
@@ -229,19 +242,19 @@ void CGUISettings::Initialize()
 	AddCategory(7, "videoscreen", 131);
 	AddInt(1, "videoscreen.resolution",169,(int)AUTORES, (int)HDTV_1080p, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
 
+	AddCategory(7, "filelists", 14081);
+	AddBool(1, "filelists.showparentdiritems", 13306, true);
+	AddBool(2, "filelists.showextensions", 497, true);
+	AddBool(3, "filelists.ignorethewhensorting", 13399, true);
+	AddBool(4, "filelists.allowfiledeletion", 14071, false);
+	AddBool(5, "filelists.showaddsourcebuttons", 21382,  true);
+	AddBool(6, "filelists.showhidden", 21330, false);
+	AddSeparator(7, "filelists.sep1");
+	AddBool(8, "filelists.unrollarchives",516, false);
+
 	AddCategory(7, "screensaver", 360);
 	AddInt(1, "screensaver.time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
 	AddString(2, "screensaver.mode", 356, "Plasma", SPIN_CONTROL_TEXT);
-
-	// Network settings
-	AddGroup(6, 705);
-	AddCategory(6, "services", 14036);
-#ifdef HAS_WEB_SERVER
-	AddBool(1, "services.webserver", 263, true);
-	AddString(2, "services.webserverport", 730, "80", EDIT_CONTROL_NUMBER_INPUT, false, 730);
-	AddString(3, "services.webserverusername", 1048, "xbmc", EDIT_CONTROL_INPUT);
-	AddString(4, "services.webserverpassword", 733, "", EDIT_CONTROL_HIDDEN_INPUT, true, 733);
-#endif
 }
 
 void CGUISettings::AddGroup(int groupID, int labelID)

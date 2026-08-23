@@ -232,9 +232,9 @@ void CGUIViewState::AddSortMethod(SORT_METHOD sortMethod, int buttonLabel, LABEL
 	m_sortMethods.push_back(sort);
 }
 
-void CGUIViewState::SetCurrentSortMethod(int method) // TODO
+void CGUIViewState::SetCurrentSortMethod(int method)
 {
-	bool ignoreThe = false;// g_guiSettings.GetBool("filelists.ignorethewhensorting"); // TODO
+	bool ignoreThe = g_guiSettings.GetBool("filelists.ignorethewhensorting");
 
 	if (method < SORT_METHOD_NONE || method >= SORT_METHOD_MAX)
 		return; // Invalid
@@ -278,20 +278,18 @@ SORT_METHOD CGUIViewState::SetNextSortMethod(int direction /* = 1 */)
 
 bool CGUIViewState::HideExtensions()
 {
-	return false;//!g_guiSettings.GetBool("filelists.showextensions"); // TODO
+	return !g_guiSettings.GetBool("filelists.showextensions");
 }
 
 bool CGUIViewState::HideParentDirItems()
 {
-	return false;//!g_guiSettings.GetBool("filelists.showparentdiritems"); // TODO
+	return !g_guiSettings.GetBool("filelists.showparentdiritems");
 }
 
 bool CGUIViewState::DisableAddSourceButtons()
 {
-/*	if (g_settings.GetCurrentProfile().canWriteSources() || g_passwordManager.bMasterUser) // TODO
+//	if (g_settings.GetCurrentProfile().canWriteSources() || g_passwordManager.bMasterUser) // TODO
 		return !g_guiSettings.GetBool("filelists.showaddsourcebuttons");
-*/
-	return false; // TODO
 
 	return true;
 }

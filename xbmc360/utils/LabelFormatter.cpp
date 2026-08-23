@@ -83,7 +83,7 @@ CLabelFormatter::CLabelFormatter(const CStdString &mask, const CStdString &mask2
 	AssembleMask(1, mask2);
 	
 	// Save a bool for faster lookups
-	m_hideFileExtensions = false;//!g_guiSettings.GetBool("filelists.showextensions"); // TODO
+	m_hideFileExtensions = !g_guiSettings.GetBool("filelists.showextensions");
 }
 
 CStdString CLabelFormatter::GetContent(unsigned int label, const CFileItem *item) const
