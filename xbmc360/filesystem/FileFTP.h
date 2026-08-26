@@ -1,23 +1,23 @@
 #ifndef H_CFILEFTP
 #define H_CFILEFTP
 
-#include "FileBase.h"
+#include "IFile.h"
 #include "utils\CriticalSection.h"
 #include "services\FTPServer\FTPFileWriter.h"
 
 namespace XFILE
 {
-class CFileFTP : public CFileBase
+class CFileFTP : public IFile
 {
 public:
-	// Standards from CFilebase	
+	// Standards from IFile	
 	CFileFTP();
 	~CFileFTP();
 
 	virtual int64_t GetPosition();
 	virtual int64_t GetLength();
 
-	virtual bool Open(const CURL& strURL, bool bBinary = true);
+	virtual bool Open(const CURL& strURL);
 	virtual bool OpenForWrite(const CURL& strURL, bool bOverWrite = false);
 	virtual void Close();
 	virtual unsigned int Read(void* lpBuf, __int64 uiBufSize);

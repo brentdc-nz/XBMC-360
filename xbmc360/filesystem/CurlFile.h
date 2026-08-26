@@ -19,7 +19,7 @@
  *
  */
 
-#include "FileBase.h"
+#include "IFile.h"
 #include "..\utils\RingBuffer.h"
 #include "..\utils\StdString.h"
 #include "..\utils\HttpHeader.h"
@@ -32,14 +32,14 @@ struct curl_slist;
 namespace XFILE
 {
 
-class CCurlFile : public CFileBase
+class CCurlFile : public IFile
 {
 public:
     CCurlFile();
     virtual ~CCurlFile();
 
-    // CFileBase interface
-    virtual bool Open(const CURL& url, bool bBinary = true);
+    // IFile interface
+    virtual bool Open(const CURL& url);
     virtual unsigned int Read(void* lpBuf, int64_t uiBufSize);
     virtual bool ReadString(char *szLine, int iLineLength)     { return m_state->ReadString(szLine, iLineLength); }
     virtual __int64 Seek(__int64 iFilePosition, int iWhence = SEEK_SET);

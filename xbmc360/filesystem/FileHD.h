@@ -1,14 +1,14 @@
 #ifndef H_CFILEHD
 #define H_CFILEHD
 
-#include "FileBase.h"
+#include "IFile.h"
 #include "..\utils\StdString.h"
 #include "..\utils\AutoPtrHandle.h"
 
 namespace XFILE
 {
 
-class CFileHD : public CFileBase
+class CFileHD : public IFile
 {
 public:
 	CFileHD();
@@ -16,7 +16,7 @@ public:
 
 	virtual __int64 GetPosition();
 	virtual __int64 GetLength();
-	virtual bool Open(const CURL& strURL, bool bBinary = true);
+	virtual bool Open(const CURL& strURL);
 	virtual bool OpenForWrite(const CURL& strURL, bool bOverWrite = false);
 	virtual void Close();
 	virtual unsigned int Read(void* lpBuf, __int64 uiBufSize);

@@ -35,14 +35,14 @@ CUPnPFile::~CUPnPFile()
 {
 }
 
-bool CUPnPFile::Open(const CURL& url, bool bBinary)
+bool CUPnPFile::Open(const CURL& url)
 {
     CFileItem item;
     if (CUPnPDirectory::GetResource(url, item))
     {
         CLog::Log(LOGDEBUG, "CUPnPFile::Open - redirect to %s", item.m_strPath.c_str());
 
-        CFileBase *pNewImp = CFileFactory::CreateLoader(item.m_strPath);
+        IFile *pNewImp = CFileFactory::CreateLoader(item.m_strPath);
         CURL *pNewUrl = new CURL(item.m_strPath);
 
         if (pNewImp)
@@ -60,7 +60,7 @@ int CUPnPFile::Stat(const CURL& url, struct __stat64* buffer)
     CFileItem item;
     if (CUPnPDirectory::GetResource(url, item))
     {
-        CFileBase *pNewImp = CFileFactory::CreateLoader(item.m_strPath);
+        IFile *pNewImp = CFileFactory::CreateLoader(item.m_strPath);
         CURL *pNewUrl = new CURL(item.m_strPath);
 
         if (pNewImp)
@@ -77,7 +77,7 @@ bool CUPnPFile::Exists(const CURL& url)
     CFileItem item;
     if (CUPnPDirectory::GetResource(url, item))
     {
-        CFileBase *pNewImp = CFileFactory::CreateLoader(item.m_strPath);
+        IFile *pNewImp = CFileFactory::CreateLoader(item.m_strPath);
         CURL *pNewUrl = new CURL(item.m_strPath);
 
         if (pNewImp)

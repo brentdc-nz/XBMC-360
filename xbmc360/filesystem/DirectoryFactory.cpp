@@ -46,7 +46,7 @@
 #include "UPnPDirectory.h"
 #endif
 #include "xbox/Network.h"
-//#include "ZipDirectory.h" // TODO
+#include "ZipDirectory.h"
 //#include "RarDirectory.h" // TODO
 //#include "TuxBoxDirectory.h" // TODO
 //#include "HDHomeRunDirectory.h" // TODO
@@ -85,7 +85,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 	if (strProtocol == "soundtrack") return new CSndtrkDirectory();
 #endif
 //	if (strProtocol == "plugin") return new CPluginDirectory();// TODO
-//	if (strProtocol == "zip") return new CZipDirectory();// TODO
+	if (strProtocol == "zip") return new CZipDirectory();
 //	if (strProtocol == "rar") return new CRarDirectory();// TODO
 	if (strProtocol == "multipath") return new CMultiPathDirectory();
 //	if (strProtocol == "stack") return new CStackDirectory();// TODO

@@ -14,7 +14,7 @@ CFileFTP::~CFileFTP()
 {
 }
 
-bool CFileFTP::Open(const CURL &strURL, bool bBinarry)
+bool CFileFTP::Open(const CURL &strURL)
 {
 	xbftp_f->Process();
 	return false; //TODO

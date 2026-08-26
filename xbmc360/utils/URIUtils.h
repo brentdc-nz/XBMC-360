@@ -31,6 +31,12 @@ public:
 
 	static void GetDirectory(const CStdString& strFilePath, CStdString& strDirectoryPath);
 	static const CStdString GetExtension(const CStdString& strFileName);
+
+	static void CreateArchivePath(CStdString& strUrlPath,
+								const CStdString& strType,
+								const CStdString& strArchivePath,
+								const CStdString& strFilePathInArchive,
+								const CStdString& strPwd="");
 	static void GetExtension(const CStdString& strFile, CStdString& strExtension);
 	static bool IsDOSPath(const CStdString &path);
 	static void AddSlashAtEnd(CStdString& strFolder);

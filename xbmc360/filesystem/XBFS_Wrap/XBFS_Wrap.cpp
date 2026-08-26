@@ -13,10 +13,6 @@ CEmuFileWrapper g_emuFileWrapper;
 int XBFS_open(const char* szFileName, int iMode)
 {
 	XFILE::CFile* pFile = new XFILE::CFile();
-	bool bBinary = false;
-
-	if (iMode & O_BINARY)
-		bBinary = true;
 
 	bool bWrite = false;
 
@@ -29,7 +25,7 @@ int XBFS_open(const char* szFileName, int iMode)
 		bOverwrite = true;
 
     // Currently always overwrites
-	if((bWrite && pFile->OpenForWrite(szFileName, bOverwrite)) || pFile->Open(szFileName, bBinary) )
+	if((bWrite && pFile->OpenForWrite(szFileName, bOverwrite)) || pFile->Open(szFileName) )
 	{
 		EmuFileObject* object = g_emuFileWrapper.RegisterFileObject(pFile);
 		if(object == NULL)

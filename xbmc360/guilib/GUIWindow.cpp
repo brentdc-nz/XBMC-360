@@ -3,7 +3,7 @@
 #include "GUIWindowManager.h"
 #include "LocalizeStrings.h"
 #include "TextureManager.h"
-#include "Settings.h"
+#include "GUISettings.h"
 #include "GUIControlFactory.h"
 #include "GUIControlGroup.h"
 //#ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY

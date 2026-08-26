@@ -74,6 +74,7 @@ public:
 	bool IsHD() const;
 	bool IsNFO() const;
 	bool IsPlayList() const;
+	bool IsSmartPlayList() const;
 	bool IsFileFolder() const;
 	bool IsInternetStream() const { return false; } ; // TODO
 	bool IsStack() const { return false; } ; // TODO - Stack file support not ported
@@ -241,6 +242,7 @@ public:
 	void SetCachedMusicThumbs();
 
 	void SetFastLookup(bool fastLookup);
+	bool GetFastLookup() const { return m_fastLookup; };
 	bool Contains(const CStdString& fileName) const;
 
 	void ClearSortState();

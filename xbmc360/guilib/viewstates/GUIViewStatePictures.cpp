@@ -2,6 +2,7 @@
 #include "FileItem.h"
 #include "ViewState.h"
 #include "Settings.h"
+#include "GUISettings.h"
 #include "guilib\key.h"
 
 CGUIViewStateWindowPictures::CGUIViewStateWindowPictures(const CFileItemList& items) : CGUIViewState(items)
@@ -42,7 +43,7 @@ CStdString CGUIViewStateWindowPictures::GetLockType()
 
 bool CGUIViewStateWindowPictures::UnrollArchives()
 {
-	return false;//g_guiSettings.GetBool("filelists.unrollarchives"); // TODO
+	return g_guiSettings.GetBool("filelists.unrollarchives");
 }
 
 CStdString CGUIViewStateWindowPictures::GetExtensions()

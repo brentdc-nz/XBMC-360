@@ -240,7 +240,7 @@ bool CFile::Exists(const CStdString& strFileName)
 
 		CURL url(strFileName);
 
-		std::auto_ptr<CFileBase> pFile(CFileFactory::CreateLoader(url));
+		std::auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
 		if (!pFile.get())
 			return false;
 
@@ -263,7 +263,7 @@ bool CFile::Delete(const CStdString& strFileName)
 	{
 		CURL url(strFileName);
 
-		std::auto_ptr<CFileBase> pFile(CFileFactory::CreateLoader(url));
+		std::auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
 		if (!pFile.get())
 			return false;
 
@@ -290,7 +290,7 @@ bool CFile::Rename(const CStdString& strFile, const CStdString& strNewFile)
 		CURL url(strFile);
 		CURL urlnew(strNewFile);
 
-		std::auto_ptr<CFileBase> pFile(CFileFactory::CreateLoader(url));
+		std::auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
 		if (!pFile.get())
 			return false;
 
@@ -315,7 +315,7 @@ int CFile::Stat(const CStdString& strFileName, struct __stat64* buffer)
 	{
 		CURL url(strFileName);
 
-		std::auto_ptr<CFileBase> pFile(CFileFactory::CreateLoader(url));
+		std::auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
 		if (!pFile.get())
 			return -1;
 
@@ -443,7 +443,7 @@ CFileStreamBuffer::CFileStreamBuffer(int backsize)
 {
 }
 
-void CFileStreamBuffer::Attach(CFileBase *file)
+void CFileStreamBuffer::Attach(IFile *file)
 {
 	m_file = file;
 

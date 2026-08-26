@@ -6,7 +6,7 @@
 
 using namespace XFILE;
 
-// Shared connection manager — serializes all SMB operations via its
+// Shared connection manager - serializes all SMB operations via its
 // CCriticalSection base class, but no longer owns individual file handles.
 CXBLibSMB2 xbsmb_f;
 
@@ -21,7 +21,7 @@ CFileSMB::~CFileSMB()
 	Close();
 }
 
-bool CFileSMB::Open(const CURL& strURL, bool bBinary)
+bool CFileSMB::Open(const CURL& strURL)
 {
 	Close(); // Ensure any previous handle is released
 

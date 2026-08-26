@@ -43,6 +43,10 @@ using namespace XFILE;
 #define XMIN(a,b) ((a)<(b)?(a):(b))
 #define FITS_INT(a) (((a) <= INT_MAX) && ((a) >= INT_MIN))
 
+#ifndef SEEK_POSSIBLE
+#define SEEK_POSSIBLE 0x10 // flag used to check if protocol allows seeks
+#endif
+
 //------------------------------------------------------------------------------
 // C callbacks for curl
 //------------------------------------------------------------------------------
@@ -574,7 +578,7 @@ void CCurlFile::SetCommonOptions(CReadState* state)
 #endif
 }
 
-bool CCurlFile::Open(const CURL& url, bool bBinary)
+bool CCurlFile::Open(const CURL& url)
 {
     if (!g_application.getNetwork().IsAvailable())
         return false;

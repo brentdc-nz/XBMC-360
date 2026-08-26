@@ -322,6 +322,14 @@ bool CFileItem::IsPlayList() const
 	return PLAYLIST::CPlayListFactory::IsPlaylist(*this);
 }
 
+bool CFileItem::IsSmartPlayList() const
+{
+	CStdString strExtension;
+	URIUtils::GetExtension(m_strPath, strExtension);
+	strExtension.ToLower();
+	return (strExtension == ".xsp");
+}
+
 void CFileItem::SetFileSizeLabel()
 {
 	if( m_bIsFolder && m_dwSize == 0 )

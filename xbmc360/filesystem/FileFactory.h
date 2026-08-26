@@ -1,7 +1,7 @@
 #ifndef H_CFILEFACTORY
 #define H_CFILEFACTORY
 
-#include "FileBase.h"
+#include "IFile.h"
 #include "..\utils\StdString.h"
 #include "..\URL.h"
 
@@ -13,8 +13,8 @@ class CFileFactory
 public:
 	CFileFactory();
 	virtual ~CFileFactory();
-	static CFileBase* CreateLoader(const CURL& url);
-	static CFileBase* CreateLoader(const CStdString& strFileName);
+	static IFile* CreateLoader(const CURL& url);
+	static IFile* CreateLoader(const CStdString& strFileName);
 };
 
 }

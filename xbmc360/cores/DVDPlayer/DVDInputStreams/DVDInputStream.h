@@ -25,17 +25,6 @@ enum DVDStreamType
 #define DVDSTREAM_BLOCK_SIZE_FILE (2048 * 16)
 #define DVDSTREAM_BLOCK_SIZE_DVD  2048
 
-namespace XFILE
-{
-  struct SCacheStatus
-  {
-    __int64 forward;  /**< number of bytes cached forward of current position */
-    unsigned currate;      /**< current read rate from source file since last position change */
-    unsigned maxrate;      /**< maximum read rate from source file (at curved position) */
-    bool     full;         /**< is the fill level of the cache at the maximum? */
-  };
-}
-
 class CPoint;
 
 class CDVDInputStream

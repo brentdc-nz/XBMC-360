@@ -478,14 +478,20 @@ void CRGBRenderer::PrepareDisplay()
 		Render();
 
 		if(g_application.NeedRenderFullScreen())
-		{ 
+		{
 			// Render our subtitles and OSD
+			// This runs on the DVDPlayerVideo thread, so D3D thread ownership
+			// must be acquired (the app render loop does this on its own thread)
+			g_graphicsContext.TLock();
 			g_application.RenderFullScreen();
+			g_graphicsContext.TUnlock();
 		}
-    
+
 		if (!g_application.IsPaused())
 		{
+			g_graphicsContext.TLock();
 			g_application.RenderMemoryStatus();
+			g_graphicsContext.TUnlock();
 		}
 
 //		m_pd3dDevice->KickPushBuffer();

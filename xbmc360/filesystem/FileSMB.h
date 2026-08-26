@@ -1,7 +1,7 @@
 #ifndef H_CFILESMB
 #define H_CFILESMB
 
-#include "FileBase.h"
+#include "IFile.h"
 #include "..\utils\CriticalSection.h"
 
 #include "libsmb2.h"
@@ -12,7 +12,7 @@ class CXBLibSMB2;
 namespace XFILE
 {
 
-class CFileSMB : public CFileBase
+class CFileSMB : public IFile
 {
 public:
 	CFileSMB();
@@ -21,7 +21,7 @@ public:
 	virtual __int64 GetPosition();
 	virtual __int64 GetLength();
 
-	virtual bool Open(const CURL& strURL, bool bBinary = true);
+	virtual bool Open(const CURL& strURL);
 	virtual bool OpenForWrite(const CURL& strURL, bool bOverWrite = false);
 	virtual void Close();
 	virtual unsigned int Read(void* lpBuf, __int64 uiBufSize);

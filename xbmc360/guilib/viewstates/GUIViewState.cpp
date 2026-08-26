@@ -14,7 +14,7 @@
 //#include "AutoSwitch.h" // TODO - Not yet implemented
 #include "guilib\GUIWindowManager.h"
 #include "ViewState.h"
-#include "Settings.h"
+#include "GUISettings.h"
 #include "FileItem.h"
 
 using namespace std;

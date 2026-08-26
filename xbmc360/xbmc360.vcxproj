@@ -122,7 +122,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PreprocessorDefinitions>_DEBUG;_XBOX;__STDC_CONSTANT_MACROS;HAS_UPNP;HAS_WEB_SERVER;CURL_STATICLIB;_ITERATOR_DEBUG_LEVEL=0;_HAS_ITERATOR_DEBUGGING=0;HAS_PYTHON;Py_NO_ENABLE_SHARED</PreprocessorDefinitions>
       <CallAttributedProfiling>Callcap</CallAttributedProfiling>
-      <AdditionalIncludeDirectories>..\libraries\libPython\Include;..\libraries\libPython\PC;..\libraries\libPython\xbox360;..\libraries\libid3tag\include;..\libraries\libjpeg\include;..\xbmc360\;..\libraries\freetype\freetype\include;..\libraries\ffmpeg\;..\libraries\ffmpeg\vcproj\external\include;..\sources\360MilkDrop2;..\sources\PAPlayer\libFlac\include;..\sources\PAPlayer\libmad\include;..\libraries\libUPnP\Neptune\Source\Core;..\libraries\libUPnP\Platinum\Source\Core;..\libraries\libUPnP\Platinum\Source\Platinum;..\libraries\libUPnP\Platinum\Source\Devices\MediaServer;..\libraries\libUPnP\Platinum\Source\Devices\MediaRenderer;..\libraries\libUPnP\Platinum\Source\Devices\MediaConnect;..\libraries\libUPnP\Neptune\Source\System\Xbox;..\libraries\libUPnP\Neptune\Source\System\Win32;..\libraries\libcurl\include;..\libraries\libsmb2;..\libraries\libsmb2\include;..\libraries\sqlite3\include;..\libraries\sqlite3\include\wrapper;..\libraries\libiconv\include;..\libraries\libmicrohttpd\compat;..\xbmc360\compat;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\libraries\libPython\Include;..\libraries\libPython\PC;..\libraries\libPython\xbox360;..\libraries\libid3tag\include;..\libraries\libjpeg\include;..\xbmc360\;..\libraries\freetype\freetype\include;..\libraries\ffmpeg\;..\libraries\ffmpeg\vcproj\external\include;..\sources\360MilkDrop2;..\sources\PAPlayer\libFlac\include;..\sources\PAPlayer\libmad\include;..\libraries\libUPnP\Neptune\Source\Core;..\libraries\libUPnP\Platinum\Source\Core;..\libraries\libUPnP\Platinum\Source\Platinum;..\libraries\libUPnP\Platinum\Source\Devices\MediaServer;..\libraries\libUPnP\Platinum\Source\Devices\MediaRenderer;..\libraries\libUPnP\Platinum\Source\Devices\MediaConnect;..\libraries\libUPnP\Neptune\Source\System\Xbox;..\libraries\libUPnP\Neptune\Source\System\Win32;..\libraries\libcurl\include;..\libraries\libsmb2;..\libraries\libsmb2\include;..\libraries\sqlite3\include;..\libraries\sqlite3\include\wrapper;..\libraries\libiconv\include;..\libraries\libmicrohttpd\compat;..\xbmc360\compat;..\libraries\ffmpeg\vcproj\external\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/EHa %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -259,7 +259,7 @@
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PreprocessorDefinitions>NDEBUG;_XBOX;__STDC_CONSTANT_MACROS;HAS_UPNP;HAS_WEB_SERVER;CURL_STATICLIB;HAS_PYTHON;Py_NO_ENABLE_SHARED</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\libraries\libPython\Include;..\libraries\libPython\PC;..\libraries\libPython\xbox360;..\libraries\libid3tag\include;..\libraries\libjpeg\include;..\xbmc360\;..\libraries\freetype\freetype\include;..\libraries\ffmpeg\;..\libraries\ffmpeg\vcproj\external\include;..\sources\360MilkDrop2;..\sources\PAPlayer\libFlac\include;..\sources\PAPlayer\libmad\include;..\libraries\libUPnP\Neptune\Source\Core;..\libraries\libUPnP\Platinum\Source\Core;..\libraries\libUPnP\Platinum\Source\Platinum;..\libraries\libUPnP\Platinum\Source\Devices\MediaServer;..\libraries\libUPnP\Platinum\Source\Devices\MediaRenderer;..\libraries\libUPnP\Platinum\Source\Devices\MediaConnect;..\libraries\libUPnP\Neptune\Source\System\Xbox;..\libraries\libUPnP\Neptune\Source\System\Win32;..\libraries\libcurl\include;..\libraries\libsmb2;..\libraries\libsmb2\include;..\libraries\sqlite3\include;..\libraries\sqlite3\include\wrapper;..\libraries\libiconv\include;..\libraries\libmicrohttpd\compat;..\xbmc360\compat;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\libraries\libPython\Include;..\libraries\libPython\PC;..\libraries\libPython\xbox360;..\libraries\libid3tag\include;..\libraries\libjpeg\include;..\xbmc360\;..\libraries\freetype\freetype\include;..\libraries\ffmpeg\;..\libraries\ffmpeg\vcproj\external\include;..\sources\360MilkDrop2;..\sources\PAPlayer\libFlac\include;..\sources\PAPlayer\libmad\include;..\libraries\libUPnP\Neptune\Source\Core;..\libraries\libUPnP\Platinum\Source\Core;..\libraries\libUPnP\Platinum\Source\Platinum;..\libraries\libUPnP\Platinum\Source\Devices\MediaServer;..\libraries\libUPnP\Platinum\Source\Devices\MediaRenderer;..\libraries\libUPnP\Platinum\Source\Devices\MediaConnect;..\libraries\libUPnP\Neptune\Source\System\Xbox;..\libraries\libUPnP\Neptune\Source\System\Win32;..\libraries\libcurl\include;..\libraries\libsmb2;..\libraries\libsmb2\include;..\libraries\sqlite3\include;..\libraries\sqlite3\include\wrapper;..\libraries\libiconv\include;..\libraries\libmicrohttpd\compat;..\xbmc360\compat;..\libraries\ffmpeg\vcproj\external\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <PreschedulingOptimization>true</PreschedulingOptimization>
@@ -280,6 +280,8 @@
       <SetChecksum>true</SetChecksum>
       <AdditionalDependencies>d3d9.lib;d3dx9.lib;xgraphics.lib;xapilib.lib;xaudio2.lib;x3daudio.lib;xmcore.lib;xboxkrnl.lib;xbdm.lib;xact3.lib;xuirun.lib;xuirender.lib;xmedia2.lib;xonline.lib;xnet.lib;libavformat.lib;libswresample.lib;libavutil.lib;libswscale.lib;libavcodec.lib;pthreads.lib;zlib.lib;freetype.lib;360MilkDrop2.lib;libflac.lib;libmad.lib;libPlatinum.lib;libcurl.lib;libsmb2.lib;sqlite3.lib;libiconv.lib;libjpeg.lib;libid3tag.lib;libmicrohttpd.lib;python34.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\libraries\ffmpeg\vcproj\libavcodec\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libswscale\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libavutil\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libavformat\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libswresample\Xbox 360\Release;..\libraries\ffmpeg\vcproj\pthreads\Release;..\libraries\ffmpeg\vcproj\external\zlib\Xbox 360\Release;..\libraries\freetype\freetype\Release;..\sources\360MilkDrop2\Release;..\sources\PAPlayer\libFlac\Release;..\sources\PAPlayer\libMad\Release;..\libraries\libUPnP\Release;..\libraries\libcurl\Release;..\libraries\libsmb2\Release;..\libraries\sqlite3\Release;..\libraries\libiconv\Release;..\libraries\libjpeg\Release;..\libraries\libid3tag\Release;..\libraries\libmicrohttpd\Release;..\libraries\libPython\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <StackCommitSize>2097152</StackCommitSize>
+      <StackReserveSize>2097152</StackReserveSize>
     </Link>
     <Deploy>
       <DeploymentType>CopyToHardDrive</DeploymentType>
@@ -372,7 +374,10 @@
     <ClInclude Include="filesystem\Drive.h" />
     <ClInclude Include="filesystem\DrivesManager.h" />
     <ClInclude Include="filesystem\File.h" />
-    <ClInclude Include="filesystem\FileBase.h" />
+    <ClInclude Include="filesystem\IFile.h" />
+    <ClInclude Include="filesystem\ZipDirectory.h" />
+    <ClInclude Include="filesystem\ZipFile.h" />
+    <ClInclude Include="filesystem\ZipManager.h" />
     <ClInclude Include="filesystem\FileBrowser.h" />
     <ClInclude Include="filesystem\FileDirectoryFactory.h" />
     <ClInclude Include="filesystem\FileFactory.h" />
@@ -696,7 +701,7 @@
     <ClCompile Include="filesystem\Drive.cpp" />
     <ClCompile Include="filesystem\DrivesManager.cpp" />
     <ClCompile Include="filesystem\File.cpp" />
-    <ClCompile Include="filesystem\FileBase.cpp" />
+    <ClCompile Include="filesystem\IFile.cpp" />
     <ClCompile Include="filesystem\FileBrowser.cpp" />
     <ClCompile Include="filesystem\FileDirectoryFactory.cpp" />
     <ClCompile Include="filesystem\FileFactory.cpp" />
@@ -705,6 +710,9 @@
     <ClCompile Include="filesystem\CurlFile.cpp" />
     <ClCompile Include="filesystem\CurlSessionPool.cpp" />
     <ClCompile Include="filesystem\UPnPFile.cpp" />
+    <ClCompile Include="filesystem\ZipDirectory.cpp" />
+    <ClCompile Include="filesystem\ZipFile.cpp" />
+    <ClCompile Include="filesystem\ZipManager.cpp" />
     <ClCompile Include="filesystem\HDDirectory.cpp" />
     <ClCompile Include="filesystem\IDirectory.cpp" />
     <ClCompile Include="filesystem\MultiPathDirectory.cpp" />

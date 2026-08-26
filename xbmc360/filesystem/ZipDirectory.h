@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2011 Team XBMC
+ *      Copyright (C) 2005-2013 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,27 +19,18 @@
  *
  */
 
-#include "IFile.h"
+
+#include "IFileDirectory.h"
 
 namespace XFILE
 {
-
-class CUPnPFile : public IFile
-{
-public:
-    CUPnPFile();
-    virtual ~CUPnPFile();
-
-    virtual bool Open(const CURL& url);
-    virtual bool Exists(const CURL& url);
-    virtual int Stat(const CURL& url, struct __stat64* buffer);
-
-    // These should never be called — Open throws CRedirectException
-    virtual unsigned int Read(void* lpBuf, int64_t uiBufSize) { return 0; }
-    virtual __int64 Seek(__int64 iFilePosition, int iWhence = SEEK_SET) { return -1; }
-    virtual void Close() {}
-    virtual int64_t GetPosition() { return -1; }
-    virtual int64_t GetLength() { return -1; }
-};
-
+	class CZipDirectory : public IFileDirectory
+	{
+	public:
+		CZipDirectory();
+		~CZipDirectory();
+		virtual bool GetDirectory(const CStdString& strPath, CFileItemList& items);
+		virtual bool ContainsFiles(const CStdString& strPath);
+		virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const { return DIR_CACHE_ALWAYS; };
+	};
 }

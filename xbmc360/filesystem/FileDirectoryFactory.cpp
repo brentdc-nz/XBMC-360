@@ -10,7 +10,7 @@
 #include "cores/paplayer/ASAPCodec.h"
 #endif
 //#include "RarDirectory.h" // TODO
-//#include "ZipDirectory.h" // TODO
+#include "ZipDirectory.h"
 //#include "SmartPlaylistDirectory.h" // TODO
 //#include "SmartPlaylist.h" // TODO
 //#include "PlaylistFileDirectory.h" // TODO
@@ -91,9 +91,9 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
 		return NULL;
 	}
 #endif
-/*	if (strExtension.Equals(".zip")) // TODO
+	if (strExtension.Equals(".zip"))
 	{
-		CStdString strUrl; 
+		CStdString strUrl;
 		URIUtils::CreateArchivePath(strUrl, "zip", strPath, "");
 
 		if (!g_guiSettings.GetBool("filelists.unrollarchives"))
@@ -104,13 +104,13 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
 
 		CFileItemList items;
 		CDirectory::GetDirectory(strUrl, items, strMask);
-		
+
 		if (items.Size() == 0) // No files
 			pItem->m_bIsFolder = true;
-		else if (items.Size() == 1 && items[0]->m_idepth == 0) 
+		else if (items.Size() == 1 && items[0]->m_idepth == 0)
 		{
-			// One STORED file - collapse it down
-			*pItem = *items[0]; 
+			// One STORED file - Collapse it down
+			*pItem = *items[0];
 		}
 		else
 		{
@@ -120,7 +120,6 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
 		}
 		return NULL;
 	}
-*/	
 	if (strExtension.Equals(".rar") || strExtension.Equals(".001")) // TODO
 	{
 		CStdString strUrl; 

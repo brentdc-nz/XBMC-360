@@ -178,6 +178,25 @@ void CUtil::SplitParams(const CStdString &paramString, std::vector<CStdString> &
 		parameters.push_back(parameter);
 }
 
+void CUtil::Tokenize(const CStdString& path, vector<CStdString>& tokens, const string& delimiters)
+{
+	// Tokenize ripped from http://www.linuxselfhelp.com/HOWTO/C++Programming-HOWTO-7.html
+	// Skip delimiters at beginning.
+	string::size_type lastPos = path.find_first_not_of(delimiters, 0);
+	// Find first "non-delimiter".
+	string::size_type pos = path.find_first_of(delimiters, lastPos);
+
+	while (string::npos != pos || string::npos != lastPos)
+	{
+		// Found a token, add it to the vector.
+		tokens.push_back(path.substr(lastPos, pos - lastPos));
+		// Skip delimiters.  Note the "not_of"
+		lastPos = path.find_first_not_of(delimiters, pos);
+		// Find next "non-delimiter"
+		pos = path.find_first_of(delimiters, lastPos);
+	}
+}
+
 // Returns a filename given an url
 // handles both / and \, and options in urls
 const CStdString CUtil::GetFileName(const CStdString& strFileNameAndPath)

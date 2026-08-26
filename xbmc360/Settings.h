@@ -5,7 +5,6 @@
 #include "guilib\tinyxml\tinyxml.h"
 #include "MediaSource.h"
 #include "VideoSettings.h"
-#include "GUISettings.h"
 #include "ViewState.h"
 #include "guilib\GraphicContext.h"
 

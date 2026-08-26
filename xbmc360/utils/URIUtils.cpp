@@ -2,7 +2,7 @@
 #include "Util.h"
 #include "URL.h"
 #include "filesystem\MultiPathDirectory.h"
-#include "Settings.h"
+#include "GUISettings.h"
 
 using namespace std;
 using namespace XFILE;
@@ -448,4 +448,34 @@ void URIUtils::AddFileToFolder(const CStdString& strFolder, const CStdString& st
 		strResult.Replace('\\', '/');
 	else
 		strResult.Replace('/', '\\');
+}
+
+void URIUtils::CreateArchivePath(CStdString& strUrlPath, const CStdString& strType,
+                              const CStdString& strArchivePath,
+                              const CStdString& strFilePathInArchive,
+                              const CStdString& strPwd)
+{
+	CStdString strBuffer;
+
+	strUrlPath = strType+"://";
+
+	if( !strPwd.IsEmpty() )
+	{
+		strBuffer = strPwd;
+		CURL::Encode(strBuffer);
+		strUrlPath += strBuffer;
+		strUrlPath += "@";
+	}
+
+	strBuffer = strArchivePath;
+	CURL::Encode(strBuffer);
+
+	strUrlPath += strBuffer;
+
+	strBuffer = strFilePathInArchive;
+	strBuffer.Replace('\\', '/');
+	strBuffer.TrimLeft('/');
+
+	strUrlPath += "/";
+	strUrlPath += strBuffer;
 }

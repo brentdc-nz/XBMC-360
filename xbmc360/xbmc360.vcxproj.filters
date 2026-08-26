@@ -557,9 +557,6 @@
     <ClInclude Include="services\NTPClient\WinSckNTP.h">
       <Filter>Header Files\services\NTPClient</Filter>
     </ClInclude>
-    <ClInclude Include="filesystem\FileBase.h">
-      <Filter>Header Files\filesystem</Filter>
-    </ClInclude>
     <ClInclude Include="filesystem\FileFactory.h">
       <Filter>Header Files\filesystem</Filter>
     </ClInclude>
@@ -1220,6 +1217,21 @@
     <ClInclude Include="guilib\TextureBundle.h">
       <Filter>Header Files\guilib</Filter>
     </ClInclude>
+    <ClInclude Include="filesystem\IFile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="network\WebServer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="filesystem\ZipDirectory.h">
+      <Filter>Header Files\filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="filesystem\ZipManager.h">
+      <Filter>Header Files\filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="filesystem\ZipFile.h">
+      <Filter>Header Files\filesystem</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -1539,9 +1551,6 @@
     </ClCompile>
     <ClCompile Include="services\NTPClient\WinSckNTP.cpp">
       <Filter>Source Files\services\NTPClient</Filter>
-    </ClCompile>
-    <ClCompile Include="filesystem\FileBase.cpp">
-      <Filter>Source Files\filesystem</Filter>
     </ClCompile>
     <ClCompile Include="filesystem\FileFactory.cpp">
       <Filter>Source Files\filesystem</Filter>
@@ -2166,6 +2175,21 @@
     </ClCompile>
     <ClCompile Include="guilib\TextureBundle.cpp">
       <Filter>Source Files\guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="filesystem\IFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="network\WebServer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="filesystem\ZipDirectory.cpp">
+      <Filter>Source Files\filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="filesystem\ZipManager.cpp">
+      <Filter>Source Files\filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="filesystem\ZipFile.cpp">
+      <Filter>Source Files\filesystem</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

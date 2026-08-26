@@ -1,7 +1,7 @@
 #ifndef H_CSMBDIRECTORY
 #define H_CSMBDIRECTORY
 
-#include "FileBase.h"
+#include "IFile.h"
 #include "iDirectory.h"
 #include "FileSmb.h"
 #include <fcntl.h>

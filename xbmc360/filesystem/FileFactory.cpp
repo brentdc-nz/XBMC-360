@@ -6,6 +6,7 @@
 #include "FileSMB.h"
 #include "CurlFile.h"
 #include "UPnPFile.h"
+#include "ZipFile.h"
 using namespace XFILE;
 
 CFileFactory::CFileFactory()
@@ -16,16 +17,19 @@ CFileFactory::~CFileFactory()
 {
 }
 
-CFileBase* CFileFactory::CreateLoader(const CStdString& strFileName)
+IFile* CFileFactory::CreateLoader(const CStdString& strFileName)
 {
 	CURL url(strFileName);
 	return CreateLoader(url);
 }
 
-CFileBase* CFileFactory::CreateLoader(const CURL& url)
+IFile* CFileFactory::CreateLoader(const CURL& url)
 {
 	CStdString strProtocol = url.GetProtocol();
 	strProtocol.MakeLower();
+
+	if (strProtocol == "zip") return new CZipFile();
+//	if (strProtocol == "rar") return new CRarFile(); // TODO
 
 	if(strProtocol == "file" || strProtocol.IsEmpty()) return new CFileHD();
 

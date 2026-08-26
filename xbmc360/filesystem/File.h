@@ -1,7 +1,7 @@
 #ifndef H_CFILE
 #define H_CFILE
 
-#include "FileBase.h"
+#include "IFile.h"
 #include "utils\StdString.h"
 #include "utils\BitstreamStats.h"
 
@@ -68,7 +68,7 @@ public:
 
 private:
 	unsigned int m_flags;
-	CFileBase* m_pFile;
+	IFile* m_pFile;
 	CFileStreamBuffer* m_pBuffer;
 	BitstreamStats* m_bitStreamStats;
 };
@@ -81,7 +81,7 @@ public:
 	~CFileStreamBuffer();
 	CFileStreamBuffer(int backsize = 0);
 
-	void Attach(CFileBase *file);
+	void Attach(IFile *file);
 	void Detach();
 
 private:
@@ -90,7 +90,7 @@ private:
 	virtual pos_type seekoff(off_type, std::ios_base::seekdir, std::ios_base::openmode = std::ios_base::in | std::ios_base::out);
 	virtual pos_type seekpos(pos_type, std::ios_base::openmode = std::ios_base::in | std::ios_base::out);
 
-	CFileBase* m_file;
+	IFile* m_file;
 	char*  m_buffer;
 	int    m_backsize;
 	int    m_frontsize;

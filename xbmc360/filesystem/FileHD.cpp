@@ -13,7 +13,7 @@ CFileHD::~CFileHD()
 	if(m_hFile != INVALID_HANDLE_VALUE) Close();
 }
 
-bool CFileHD::Open(const CURL& strURL, bool bBinary)
+bool CFileHD::Open(const CURL& strURL)
 {
 	CStdString strFile = GetLocal(strURL);
 

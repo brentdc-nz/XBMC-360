@@ -4,6 +4,7 @@
 #include "guilib\GUIBaseContainer.h" // for VIEW_TYPE_*
 //#include "video/VideoDatabase.h" // TODO - VideoDatabase not yet implemented
 #include "Settings.h"
+#include "GUISettings.h"
 //#include "settings/AdvancedSettings.h" // TODO - AdvancedSettings not yet implemented
 #include "FileItem.h"
 //#include "Util.h" // TODO - Util not fully ported
@@ -24,7 +25,7 @@ int CGUIViewStateWindowMusic::GetPlaylist()
 
 bool CGUIViewStateWindowMusic::UnrollArchives()
 {
-	return false; //g_guiSettings.GetBool("filelists.unrollarchives"); // TODO - g_guiSettings not yet implemented
+	return g_guiSettings.GetBool("filelists.unrollarchives");
 }
 
 bool CGUIViewStateWindowMusic::AutoPlayNextItem()

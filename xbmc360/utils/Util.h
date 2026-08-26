@@ -23,6 +23,7 @@ public:
 
 	static void SplitExecFunction(const CStdString &execString, CStdString &function, std::vector<CStdString> &parameters);
 	static void SplitParams(const CStdString &paramString, std::vector<CStdString> &parameters);
+	static void Tokenize(const CStdString& path, std::vector<CStdString>& tokens, const std::string& delimiters);
 	static const CStdString GetFileName(const CStdString& strFileNameAndPath);
 	static CStdString GetTitleFromPath(const CStdString& strFileNameAndPath, bool bIsFolder = false);
 
