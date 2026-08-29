@@ -45,6 +45,8 @@ public:
 	static bool IsUPnP(const CStdString& strFile);
 	static bool IsMultiPath(const CStdString& strPath);
 	static bool IsStack(const CStdString& strFile);
+	static bool IsRAR(const CStdString& strFile);
+	static bool IsZIP(const CStdString& strFile);
 	static bool IsInArchive(const CStdString& strFile);
 	static bool IsInZIP(const CStdString& strFile);
 	static bool IsInRAR(const CStdString& strFile);

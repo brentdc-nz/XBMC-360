@@ -14,6 +14,11 @@
 // General playlist items changed
 #define GUI_MSG_PLAYLIST_CHANGED        GUI_MSG_USER + 3
 
+// Start Slideshow in my pictures
+// Param lpVoid: CStdString* that points to the Directory
+// to start the slideshow in.
+#define GUI_MSG_START_SLIDESHOW         GUI_MSG_USER + 4
+
 #define GUI_MSG_PLAYBACK_STARTED        GUI_MSG_USER + 5
 #define GUI_MSG_PLAYBACK_ENDED          GUI_MSG_USER + 6
 

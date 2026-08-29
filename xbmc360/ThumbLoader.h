@@ -30,6 +30,10 @@ CThumbLoader(int nThreads = 1);
 virtual ~CThumbLoader();
 
 bool LoadRemoteThumb(CFileItem *pItem);
+void SetRegenerateThumbs(bool regenerate) { m_regenerateThumbs = regenerate; };
+
+protected:
+bool m_regenerateThumbs;
 };
 
 class CVideoThumbLoader : public CThumbLoader
@@ -68,6 +72,7 @@ public:
 CPictureThumbLoader();
 virtual ~CPictureThumbLoader();
 virtual bool LoadItem(CFileItem* pItem);
+void SetRegenerateThumbs(bool regenerate) { m_regenerateThumbs = regenerate; };
 };
 
 #endif // THUMBLOADER_H

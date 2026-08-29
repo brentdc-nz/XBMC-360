@@ -35,6 +35,16 @@
        <dpaddown>BigStepBack</dpaddown>
     </gamepad>
   </FullscreenVideo>
+  <Slideshow>
+    <gamepad>
+       <A>Pause</A>
+       <B>Stop</B>
+       <rightshoulder>Rotate</rightshoulder>     <!-- was black -->
+       <leftshoulder>CodecInfo</leftshoulder>    <!-- was white -->
+       <leftanalogtrigger>ZoomIn</leftanalogtrigger>
+       <rightanalogtrigger>ZoomOut</rightanalogtrigger>
+    </gamepad>
+  </Slideshow>
   <Visualisation>
     <gamepad>
        <A>Pause</A>

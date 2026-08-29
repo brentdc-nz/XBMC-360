@@ -53,6 +53,10 @@ public:
 	int m_fanartHeight;
 	bool m_useddsfanart;
 
+	float m_slideshowPanAmount;
+	float m_slideshowZoomAmount;
+	float m_slideshowBlackBarCompensation;
+
 	CStdString m_videoItemSeparator;
 	bool m_bVideoLibraryMyMoviesCategoriesToGenres;
 

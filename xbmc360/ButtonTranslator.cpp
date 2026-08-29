@@ -54,6 +54,7 @@ static const ActionMapping actions[] =
         {"aspectratio"       , ACTION_ASPECT_RATIO},
         {"zoomin"            , ACTION_ZOOM_IN},
         {"zoomout"           , ACTION_ZOOM_OUT},
+        {"rotate"            , ACTION_ROTATE_PICTURE},
         {"increasepar"       , ACTION_INCREASE_PAR},
         {"decreasepar"       , ACTION_DECREASE_PAR},
 };
@@ -100,6 +101,7 @@ static const ActionMapping windows[] =
         {"okdialog"                 , WINDOW_DIALOG_OK},
         {"weather"                  , WINDOW_WEATHER},
         {"screensaver"              , WINDOW_SCREENSAVER},
+        {"slideshow"                , WINDOW_SLIDESHOW},
         {"startwindow"              , WINDOW_START},
         {"startup"                  , WINDOW_STARTUP_ANIM},
 };

@@ -154,7 +154,11 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
 		if(NeedReset)
 		{
 			CLog::Log(LOGDEBUG, "Setting resolution %i", res);
+			// Reset needs D3D thread ownership on Xenon (same as Clear/Present below),
+			// otherwise: ERR[D3D] "thread will have to call AcquireThreadOwnership"
+			g_graphicsContext.TLock();
 			m_pd3dDevice->Reset(m_pd3dParams);
+			g_graphicsContext.TUnlock();
 		}
 
 		// Need to clear and preset, otherwise flicker filters won't take effect

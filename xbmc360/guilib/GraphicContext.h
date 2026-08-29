@@ -74,6 +74,7 @@ public:
 	void ResetOverscan(RESOLUTION res, OVERSCAN &overscan);
 	int GetWidth() const { return m_iScreenWidth; }
 	int GetHeight() const { return m_iScreenHeight; }
+	int GetMaxTextureSize() const { return 8192; } // Xenon maximum texture dimension
 	int GetFPS() const;
 	const CStdString& GetMediaDir() const { return m_strMediaDir; }
 	void SetMediaDir(const CStdString &strMediaDir);
@@ -90,7 +91,7 @@ public:
 	void Lock();
 	void Unlock();
 
-// Thread ownership lock (re-entrant safe)
+	// Thread ownership lock (re-entrant safe)
 	void TLock();
 	void TUnlock();
 

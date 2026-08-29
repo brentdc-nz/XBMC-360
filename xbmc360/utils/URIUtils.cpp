@@ -130,6 +130,37 @@ bool URIUtils::IsInArchive(const CStdString &strFile)
 	return IsInZIP(strFile) || IsInRAR(strFile);
 }
 
+bool URIUtils::IsRAR(const CStdString& strFile)
+{
+	CStdString strExtension;
+	GetExtension(strFile, strExtension);
+
+	if (strExtension.Equals(".001") && strFile.Mid(strFile.length()-7,7).CompareNoCase(".ts.001"))
+		return true;
+
+	if (strExtension.CompareNoCase(".cbr") == 0)
+		return true;
+
+	if (strExtension.CompareNoCase(".rar") == 0)
+		return true;
+
+	return false;
+}
+
+bool URIUtils::IsZIP(const CStdString& strFile) // also checks for comic books!
+{
+	CStdString strExtension;
+	GetExtension(strFile, strExtension);
+
+	if (strExtension.CompareNoCase(".zip") == 0)
+		return true;
+
+	if (strExtension.CompareNoCase(".cbz") == 0)
+		return true;
+
+	return false;
+}
+
 bool URIUtils::IsInZIP(const CStdString& strFile)
 {
 	CURL url(strFile);

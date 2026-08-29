@@ -34,6 +34,7 @@
 #include <vector>
 
 class CVideoInfoTag;
+class CPictureInfoTag;
 
 namespace MUSIC_INFO
 {
@@ -84,6 +85,12 @@ public:
 	bool IsLiveTV() const { return false; } ; // TODO - LiveTV not ported
 	bool IsPlugin() const { return false; } ; // TODO - Plugins not ported
 	bool IsSamePath(const CFileItem *item) const;
+
+	bool IsRAR() const;
+	bool IsZIP() const;
+	bool IsCBZ() const;
+	bool IsCBR() const;
+	bool IsMultiPath() const;
 
 	// --- Thumb/fanart helpers (signatures mirrored 1:1 from xbmc4xbox) -------
 	CStdString GetCachedVideoThumb() const;
@@ -145,6 +152,18 @@ public:
 		return m_videoInfoTag;
 	}
 
+	inline bool HasPictureInfoTag() const
+	{
+		return m_pictureInfoTag != NULL;
+	}
+
+	CPictureInfoTag* GetPictureInfoTag();
+
+	inline const CPictureInfoTag* GetPictureInfoTag() const
+	{
+		return m_pictureInfoTag;
+	}
+
 public:
 	bool m_bIsShareOrDrive; // Is this a root share/drive
 	int m_iDriveType; // If \e m_bIsShareOrDrive is \e true, use to get the share type. Types see: CMediaSource::m_iDriveType
@@ -166,6 +185,7 @@ public:
 	CStdString m_mimetype;
 	MUSIC_INFO::CMusicInfoTag* m_musicInfoTag;
 	CVideoInfoTag* m_videoInfoTag;
+	CPictureInfoTag* m_pictureInfoTag;
 };
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -231,6 +251,7 @@ public:
 	bool Copy (const CFileItemList& item);
 	void Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder);
 	void Sort(FILEITEMLISTCOMPARISONFUNC func);
+	void Randomize();
 	void Append(const CFileItemList& itemlist);
 	void Assign(const CFileItemList& itemlist, bool append = false);
 

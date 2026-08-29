@@ -54,6 +54,10 @@ CAdvancedSettings::CAdvancedSettings()
 	m_fanartHeight = 480;
 	m_useddsfanart = false;
 
+	m_slideshowPanAmount = 2.5f;
+	m_slideshowZoomAmount = 5.0f;
+	m_slideshowBlackBarCompensation = 20.0f;
+
 	m_videoItemSeparator = " / ";
 	m_bVideoLibraryMyMoviesCategoriesToGenres = false;
 

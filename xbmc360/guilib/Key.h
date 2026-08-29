@@ -92,8 +92,24 @@
 #define ACTION_SHOW_OSD               24 // Show/hide OSD. Can be used in videoFullScreen.xml window id=2005
 #define ACTION_SHOW_CODEC             27 // Show information about file. Can be used in videoFullScreen.xml window id=2005
 
+#define ACTION_NEXT_PICTURE           28 // Show next picture of slideshow. Can b used in slideshow.xml window id=2007
+#define ACTION_PREV_PICTURE           29 // Show previous picture of slideshow. Can b used in slideshow.xml window id=2007
+
 #define ACTION_ZOOM_OUT               30 // Zoom out video. Can be used in videoFullScreen.xml window id=2005
 #define ACTION_ZOOM_IN                31 // Zoom in video. Can be used in videoFullScreen.xml window id=2005
+
+#define ACTION_ZOOM_LEVEL_NORMAL      37 // Zoom 1x picture during slideshow. Can b used in slideshow.xml window id=2007
+#define ACTION_ZOOM_LEVEL_1           38 // Zoom 2x picture during slideshow. Can b used in slideshow.xml window id=2007
+#define ACTION_ZOOM_LEVEL_2           39 // Zoom 3x picture during slideshow. Can b used in slideshow.xml window id=2007
+#define ACTION_ZOOM_LEVEL_3           40 // Zoom 4x picture during slideshow. Can b used in slideshow.xml window id=2007
+#define ACTION_ZOOM_LEVEL_4           41 // Zoom 5x picture during slideshow. Can b used in slideshow.xml window id=2007
+#define ACTION_ZOOM_LEVEL_5           42 // Zoom 6x picture during slideshow. Can b used in slideshow.xml window id=2007
+#define ACTION_ZOOM_LEVEL_6           43 // Zoom 7x picture during slideshow. Can b used in slideshow.xml window id=2007
+#define ACTION_ZOOM_LEVEL_7           44 // Zoom 8x picture during slideshow. Can b used in slideshow.xml window id=2007
+#define ACTION_ZOOM_LEVEL_8           45 // Zoom 9x picture during slideshow. Can b used in slideshow.xml window id=2007
+#define ACTION_ZOOM_LEVEL_9           46 // Zoom 10x picture during slideshow. Can b used in slideshow.xml window id=2007
+
+#define ACTION_ROTATE_PICTURE         50 // Rotate current picture during slideshow. Can b used in slideshow.xml window id=2007
 
 #define ACTION_ANALOG_MOVE            49 // Analog thumbstick move
 
@@ -194,6 +210,7 @@
 #define WINDOW_SCRIPTS_INFO               12004
 #define WINDOW_FULLSCREEN_VIDEO           12005
 #define WINDOW_VISUALISATION              12006
+#define WINDOW_SLIDESHOW                  12007
 #define WINDOW_WEATHER                    12600
 #define WINDOW_SCREENSAVER                12900
 
@@ -210,6 +227,7 @@
 #define WINDOW_DIALOG_FILE_BROWSER        10126
 #define WINDOW_DIALOG_NETWORK_SETUP       10128
 #define WINDOW_DIALOG_BUSY                10138
+#define WINDOW_DIALOG_PICTURE_INFO        10139
 #define WINDOW_DIALOG_SLIDER              10145
 #define WINDOW_DIALOG_KEYBOARD            10103
 #define WINDOW_DIALOG_FAVOURITES          10134

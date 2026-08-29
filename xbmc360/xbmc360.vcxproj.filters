@@ -524,6 +524,33 @@
     <ClInclude Include="pictures\Picture.h">
       <Filter>Header Files\pictures</Filter>
     </ClInclude>
+    <ClInclude Include="pictures\GUIWindowSlideShow.h">
+      <Filter>Header Files\pictures</Filter>
+    </ClInclude>
+    <ClInclude Include="pictures\SlideShowPicture.h">
+      <Filter>Header Files\pictures</Filter>
+    </ClInclude>
+    <ClInclude Include="pictures\GUIDialogPictureInfo.h">
+      <Filter>Header Files\pictures</Filter>
+    </ClInclude>
+    <ClInclude Include="pictures\PictureInfoTag.h">
+      <Filter>Header Files\pictures</Filter>
+    </ClInclude>
+    <ClInclude Include="pictures\PictureInfoLoader.h">
+      <Filter>Header Files\pictures</Filter>
+    </ClInclude>
+    <ClInclude Include="pictures\libexif\libexif.h">
+      <Filter>Header Files\pictures</Filter>
+    </ClInclude>
+    <ClInclude Include="pictures\libexif\ExifParse.h">
+      <Filter>Header Files\pictures</Filter>
+    </ClInclude>
+    <ClInclude Include="pictures\libexif\IptcParse.h">
+      <Filter>Header Files\pictures</Filter>
+    </ClInclude>
+    <ClInclude Include="pictures\libexif\JpegParse.h">
+      <Filter>Header Files\pictures</Filter>
+    </ClInclude>
     <ClInclude Include="guilib\windows\GUIWindowMusicSongs.h">
       <Filter>Header Files\guilib\windows</Filter>
     </ClInclude>
@@ -1517,6 +1544,33 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="pictures\Picture.cpp">
+      <Filter>Source Files\pictures</Filter>
+    </ClCompile>
+    <ClCompile Include="pictures\GUIWindowSlideShow.cpp">
+      <Filter>Source Files\pictures</Filter>
+    </ClCompile>
+    <ClCompile Include="pictures\SlideShowPicture.cpp">
+      <Filter>Source Files\pictures</Filter>
+    </ClCompile>
+    <ClCompile Include="pictures\GUIDialogPictureInfo.cpp">
+      <Filter>Source Files\pictures</Filter>
+    </ClCompile>
+    <ClCompile Include="pictures\PictureInfoTag.cpp">
+      <Filter>Source Files\pictures</Filter>
+    </ClCompile>
+    <ClCompile Include="pictures\PictureInfoLoader.cpp">
+      <Filter>Source Files\pictures</Filter>
+    </ClCompile>
+    <ClCompile Include="pictures\libexif\libexif.cpp">
+      <Filter>Source Files\pictures</Filter>
+    </ClCompile>
+    <ClCompile Include="pictures\libexif\ExifParse.cpp">
+      <Filter>Source Files\pictures</Filter>
+    </ClCompile>
+    <ClCompile Include="pictures\libexif\IptcParse.cpp">
+      <Filter>Source Files\pictures</Filter>
+    </ClCompile>
+    <ClCompile Include="pictures\libexif\JpegParse.cpp">
       <Filter>Source Files\pictures</Filter>
     </ClCompile>
     <ClCompile Include="guilib\windows\GUIWindowMusicSongs.cpp">

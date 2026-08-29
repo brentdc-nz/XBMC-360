@@ -34,6 +34,7 @@
 #include "guilib\GraphicContext.h"
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
+#include "FileItem.h"
 
 #include <algorithm>
 
@@ -76,12 +77,19 @@ static bool D3DXCreateThumbnail(const unsigned char* fileData, unsigned int file
 
 	LPDIRECT3DTEXTURE9 pTexture = NULL;
 	D3DXIMAGE_INFO imgInfo;
+	
+	// Maybe called from a loader thread - D3D device usage needs thread
+	// ownership on Xenon.  Only held around the device call: the lock/read/
+	// re-encode below works on the managed texture's system memory copy.
+	g_graphicsContext.TLock();
 	HRESULT hr = D3DXCreateTextureFromFileInMemoryEx(
 		pDevice, fileData, fileSize,
 		width, height, 1, 0,
 		D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED,
 		D3DX_FILTER_LINEAR, D3DX_FILTER_LINEAR,
 		0, &imgInfo, NULL, &pTexture);
+	g_graphicsContext.TUnlock();
+
 	if (FAILED(hr) || !pTexture)
 	{
 		CLog::Log(LOGERROR, "%s - D3DX decode failed (0x%08X)", __FUNCTION__, hr);
@@ -138,16 +146,27 @@ LPDIRECT3DTEXTURE9 CPicture::Load(const CStdString& file, int width, int height)
 			m_info.originalheight = jpegImage.OrgHeight();
 			m_info.width = jpegImage.Width();
 			m_info.height = jpegImage.Height();
+			
+			// Expose the EXIF orientation so the slideshow can rotate the
+			// (unrotated) decoded texture accordingly
+			m_info.exifInfo.Orientation = (int)jpegImage.Orientation();
 
 			LPDIRECT3DTEXTURE9 pTexture = NULL;
 			LPDIRECT3DDEVICE9 pDevice = g_graphicsContext.Get3DDevice();
 			if (!pDevice)
 				return NULL;
 
+			// Maybe called from a loader thread - D3D device usage needs
+			// thread ownership on Xenon.  Only the device call is held: the
+			// lock/decode below works on the managed texture's system memory
+			// copy and would otherwise stall the render thread.
+			g_graphicsContext.TLock();
 			pDevice->CreateTexture(
 				((m_info.width + 3) / 4) * 4,
 				((m_info.height + 3) / 4) * 4,
 				1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED, &pTexture, NULL);
+			g_graphicsContext.TUnlock();
+
 			if (pTexture)
 			{
 				D3DLOCKED_RECT lr;
@@ -226,12 +245,16 @@ LPDIRECT3DTEXTURE9 CPicture::Load(const CStdString& file, int width, int height)
 
 	if (pDevice)
 	{
+		// Maybe called from a loader thread - D3D device usage needs
+		// thread ownership on Xenon
+		g_graphicsContext.TLock();
 		HRESULT hr = D3DXCreateTextureFromFileInMemoryEx(
 			pDevice, buffer, totalRead,
 			width, height, 1, 0,
 			D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED,
 			D3DX_FILTER_LINEAR, D3DX_FILTER_LINEAR,
 			0, &imgInfo, NULL, &pTexture);
+		g_graphicsContext.TUnlock();
 		if (SUCCEEDED(hr) && pTexture)
 		{
 			memset(&m_info, 0, sizeof(ImageInfo));
@@ -380,10 +403,74 @@ bool CPicture::CreateThumbnailFromSurface(const unsigned char* buffer, int width
 	return false;
 }
 
-void CPicture::CreateFolderThumb(const CStdString* /*thumbs*/, const CStdString& folderThumb)
+void CPicture::CreateFolderThumb(const CStdString *thumbs, const CStdString &folderThumb)
 {
-	// TODO: Port when image subsystem is ported (4-tile folder mosaic)
-	CLog::Log(LOGWARNING, "CPicture::CreateFolderThumb: not implemented (%s)", folderThumb.c_str());
+	// We want to mold the thumbs together into one single one
+	int size = g_advancedSettings.m_thumbSize;
+
+	// First create the individual thumbs (as the original did)
+	CStdString cachedThumbs[4];
+	for (int i = 0; i < 4; i++)
+	{
+		if (!thumbs[i].IsEmpty())
+		{
+			CFileItem item(thumbs[i], false);
+			cachedThumbs[i] = item.GetCachedPictureThumb();
+			CreateThumbnail(thumbs[i], cachedThumbs[i], true);
+		}
+	}
+
+	// Compose the 2x2 mosaic natively (replaces DllImageLib::CreateFolderThumbnail
+	// of the original - CxImage is not available on the 360)
+	EnsureDirectoryExists(folderThumb);
+	int half = size / 2;
+	BYTE* mosaic = (BYTE*)calloc(size * size, 4); // black background
+	LPDIRECT3DDEVICE9 pDevice = g_graphicsContext.Get3DDevice();
+	
+	if (!mosaic || !pDevice)
+	{
+		free(mosaic);
+		return;
+	}
+	
+	for (int i = 0; i < 4; i++)
+	{
+		if (cachedThumbs[i].IsEmpty() || !CFile::Exists(cachedThumbs[i]))
+			continue;
+	
+		CPicture pic;
+		LPDIRECT3DTEXTURE9 pTexture = pic.Load(cachedThumbs[i], half, half);
+		
+		if (!pTexture)
+			continue;
+		
+		D3DLOCKED_RECT lr;
+		if (D3D_OK == pTexture->LockRect(0, &lr, NULL, 0))
+		{
+			const BYTE* src = (const BYTE*)lr.pBits;
+			// Tile position: 0=top-left, 1=top-right, 2=bottom-left, 3=bottom-right
+			int ox = (i & 1) ? half : 0;
+			int oy = (i & 2) ? half : 0;
+			
+			for (int y = 0; y < half; y++)
+			{
+				DWORD* dst = (DWORD*)(mosaic + ((oy + y) * size + ox) * 4);
+				const DWORD* s = (const DWORD*)(src + y * lr.Pitch);
+				
+				for (int x = 0; x < half; x++)
+					dst[x] = 0xFF000000 | (s[x] & 0xFFFFFF); // force opaque
+			}
+			pTexture->UnlockRect(0);
+		}
+		pTexture->Release();
+	}
+	
+	CJpegIO jpegImage;
+	bool ret = jpegImage.CreateThumbnailFromSurface(mosaic, size, size, XB_FMT_A8R8G8B8, size * 4, folderThumb);
+	free(mosaic);
+	
+	if (!ret)
+		CLog::Log(LOGERROR, "%s failed for folder thumb %s", __FUNCTION__, folderThumb.c_str());
 }
 
 bool CPicture::CacheSkinImage(const CStdString& /*srcFile*/, const CStdString& /*destFile*/)

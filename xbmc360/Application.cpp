@@ -45,6 +45,8 @@
 #include "guilib\windows\GUIWindowVideoFiles.h"
 #include "guilib\windows\GUIWindowMusicSongs.h"
 #include "guilib\windows\GUIWindowPictures.h"
+#include "pictures\GUIWindowSlideShow.h"
+#include "pictures\GUIDialogPictureInfo.h"
 #include "guilib\windows\GUIWindowSettings.h"
 #include "guilib\windows\GUIWindowSettingsCategory.h"
 #include "guilib\windows\GUIWindowScreensaver.h"
@@ -231,12 +233,13 @@ bool CApplication::Initialize()
 	g_windowManager.Add(new CGUIWindowScriptsInfo);
 	g_windowManager.Add(new CGUIWindowVideoFiles);
 	g_windowManager.Add(new CGUIWindowMusicSongs);
-	g_windowManager.Add(new CGUIWindowPictures);	
+	g_windowManager.Add(new CGUIWindowPictures);
+	g_windowManager.Add(new CGUIWindowSlideShow);       // window id = 2007
 	g_windowManager.Add(new CGUIWindowSettings);
 	g_windowManager.Add(new CGUIWindowSettingsCategory);
 	g_windowManager.Add(new CGUIWindowScreensaver);
 	g_windowManager.Add(new CGUIWindowSystemInfo);
-	g_windowManager.Add(new CGUIWindowFileManager);  // window id = 10003
+	g_windowManager.Add(new CGUIWindowFileManager);     // window id = 10003
 
 	// Dialogs
 	g_windowManager.Add(new CGUIDialogYesNo);           // window id = 100
@@ -249,7 +252,8 @@ bool CApplication::Initialize()
 	g_windowManager.Add(&m_guiDialogSeekBar);           // window id = 115
 	g_windowManager.Add(new CGUIDialogNetworkSetup);    // window id = 128
 	g_windowManager.Add(new CGUIDialogMediaSource);     // window id = 129
-	g_windowManager.Add(new CGUIDialogFavourites);      // window id = 134	
+	g_windowManager.Add(new CGUIDialogFavourites);      // window id = 134
+	g_windowManager.Add(new CGUIDialogPictureInfo);     // window id = 139
 	g_windowManager.Add(new CGUIDialogSelect);          // window id = 2000
 	g_windowManager.Add(new CGUIDialogOK);              // window id = 2002
 	g_windowManager.Add(new CGUIWindowWeather);         // Window id = 2600 WEATHER
@@ -1300,6 +1304,10 @@ void CApplication::Render()
 // SwitchToFullScreen() returns true if a switch is made, else returns false
 bool CApplication::SwitchToFullScreen()
 {
+	// Don't switch if there is a dialog on screen or the slideshow is active
+	if (g_windowManager.HasModalDialog() || g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW)
+		return false;
+
 	// See if we're playing a video, and are in GUI mode
 	if ( IsPlayingVideo() && g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
 	{
@@ -2149,6 +2157,7 @@ void CApplication::Cleanup()
 		g_windowManager.Delete(WINDOW_VIDEOS);
 		g_windowManager.Delete(WINDOW_MUSIC_FILES);
 		g_windowManager.Delete(WINDOW_PICTURES);
+		g_windowManager.Delete(WINDOW_SLIDESHOW);
 		g_windowManager.Delete(WINDOW_SETTINGS);
 		g_windowManager.Delete(WINDOW_SETTINGS_MYPICTURES); // All the settings categories
 		g_windowManager.Delete(WINDOW_SCREENSAVER);
@@ -2167,6 +2176,7 @@ void CApplication::Cleanup()
 		g_windowManager.Delete(WINDOW_DIALOG_MEDIA_SOURCE);
 		g_windowManager.Delete(WINDOW_DIALOG_FAVOURITES);
 		g_windowManager.Delete(WINDOW_DIALOG_NETWORK_SETUP);
+		g_windowManager.Delete(WINDOW_DIALOG_PICTURE_INFO);
 		g_windowManager.Delete(WINDOW_DIALOG_KEYBOARD);
 		g_windowManager.Delete(WINDOW_DIALOG_NUMERIC);
 		g_windowManager.Delete(WINDOW_DIALOG_SELECT);

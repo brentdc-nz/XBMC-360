@@ -19,16 +19,17 @@
  */
 
 // =============================================================================
-// Structure mirrored 1:1 from xbmc4xbox xbmc/ThumbLoader.cpp so DLNA/remote
-// thumbs get the same caching behaviour (cached .tbn is reused across list
-// redraws / playback transitions instead of being re-fetched every time).
+// Structure mirrored 1:1 from xbmc4xbox xbmc/ThumbLoader.cpp so picture /
+// DLNA / remote thumbs get the same caching behaviour (cached .tbn is reused
+// across list redraws / playback transitions instead of being re-fetched
+// every time).
 //
 // Things the Xbox 360 port does NOT do yet (stubbed in their matching source
 // positions so this file can be diffed against xbmc4xbox cleanly):
 //   - CVideoThumbLoader::SetWatchedOverlay hits the video database
 //   - CFileItem::SetUserVideoThumb / SetUserMusicThumb / SetUserProgramThumb
 //   - CFileItem::CacheLocalFanart / GetCachedFanart (returns empty)
-//   - CPicture::CreateThumbnail is currently a byte-copy (no decode/resize).
+//   - CPictureThumbLoader::DownloadVideoThumb (needs video info tags)
 // =============================================================================
 
 #include "ThumbLoader.h"
@@ -44,6 +45,7 @@ using namespace XFILE;
 CThumbLoader::CThumbLoader(int nThreads) :
 	CBackgroundInfoLoader(nThreads)
 {
+	m_regenerateThumbs = false;
 }
 
 CThumbLoader::~CThumbLoader()
@@ -190,6 +192,7 @@ bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
 
 CPictureThumbLoader::CPictureThumbLoader()
 {
+	m_regenerateThumbs = false;
 }
 
 CPictureThumbLoader::~CPictureThumbLoader()
@@ -201,6 +204,41 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
 	if (pItem->m_bIsShareOrDrive) return true;
 
 	if (pItem->HasThumbnail())
-		LoadRemoteThumb(pItem);
+	{
+		CStdString thumb(pItem->GetThumbnailImage());
+
+		// look for remote thumbs
+		if (!g_TextureManager.CanLoad(thumb))
+		{
+			CStdString cachedThumb(pItem->GetCachedPictureThumb());
+			if (CFile::Exists(cachedThumb))
+				pItem->SetThumbnailImage(cachedThumb);
+			else
+			{
+				// TODO: DownloadVideoThumb (video info tag) not ported yet
+				CPicture pic;
+				if (pic.CreateThumbnail(thumb, cachedThumb))
+					pItem->SetThumbnailImage(cachedThumb);
+				else
+					pItem->SetThumbnailImage("");
+			}
+		}
+		else if (m_regenerateThumbs)
+		{
+			CFile::Delete(thumb);
+			pItem->SetThumbnailImage("");
+		}
+	}
+
+	if ((pItem->IsPicture() && !pItem->IsZIP() && !pItem->IsRAR() && !pItem->IsCBZ() && !pItem->IsCBR() && !pItem->IsPlayList()) && !pItem->HasThumbnail())
+	{
+		// Load the thumb from the image file
+		CPicture pic;
+		pic.CreateThumbnail(pItem->GetPath(), pItem->GetCachedPictureThumb());
+	}
+	
+	// Refill in the thumb to get it to update
+	pItem->SetCachedPictureThumb();
+	pItem->FillInDefaultIcon();
 	return true;
 }

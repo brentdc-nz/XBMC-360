@@ -188,6 +188,36 @@ int CBuiltins::Execute(const CStdString& execString)
 		g_settings.LoadRSSFeeds();
 		g_rssManager.Start();
 	}
+	else if (execute.Equals("slideshow") || execute.Equals("recursiveslideshow"))
+	{
+		if (!params.size())
+		{
+			CLog::Log(LOGERROR, "XBMC.SlideShow called with empty parameter");
+			return -2;
+		}
+		
+		// Leave RecursiveSlideShow command as-is
+		unsigned int flags = 0;
+		
+		if (execute.Equals("recursiveslideshow"))
+			flags |= 1;
+			
+		// SlideShow(dir[,recursive][,[not]random])
+		else
+		{
+			if ((params.size() > 1 && params[1] == "recursive") || (params.size() > 2 && params[2] == "recursive"))
+				flags |= 1;
+			if ((params.size() > 1 && params[1] == "random") || (params.size() > 2 && params[2] == "random"))
+				flags |= 2;
+			if ((params.size() > 1 && params[1] == "notrandom") || (params.size() > 2 && params[2] == "notrandom"))
+				flags |= 4;
+		}
+
+		CGUIMessage msg(GUI_MSG_START_SLIDESHOW, 0, 0, flags);
+		msg.SetStringParam(params[0]);
+		CGUIWindow *pWindow = g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+		if (pWindow) pWindow->OnMessage(msg);
+	}
 	else if (execute.Equals("playmedia"))
 	{
 		if (!params.size())

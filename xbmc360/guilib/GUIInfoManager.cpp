@@ -23,6 +23,9 @@
 #include "utils\Util.h"
 #include "utils\CharsetConverter.h"
 #include "filesystem\File.h"
+#include "URL.h"
+#include "pictures\GUIWindowSlideShow.h"
+#include "pictures\PictureInfoTag.h"
 
 using namespace std;
 using namespace MUSIC_INFO;
@@ -66,6 +69,7 @@ CGUIInfoManager::CGUIInfoManager(void)
 	m_prevWindowID = WINDOW_INVALID;
 	m_stringParameters.push_back("__ZZZZ__"); // To offset the string parameters by 1 to assure that all entries are non-zero
 	m_currentFile = new CFileItem;
+	m_currentSlide = new CFileItem;
 	m_lastMusicBitrateTime = 0;
 	m_MusicBitrate = 0;
 	m_frameCounter = 0;
@@ -76,6 +80,7 @@ CGUIInfoManager::CGUIInfoManager(void)
 CGUIInfoManager::~CGUIInfoManager(void)
 {
 	delete m_currentFile;
+	delete m_currentSlide;
 }
 
 unsigned int CGUIInfoManager::Register(const CStdString &expression, int context)
@@ -827,6 +832,9 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
 	CStdString strLabel;
 	if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
 		return GetMultiInfoLabel(m_multiInfo[info - MULTI_INFO_START], contextWindow);
+
+	if (info >= SLIDE_INFO_START && info <= SLIDE_INFO_END)
+		return GetPictureLabel(info);
 
 	if (info >= LISTITEM_START && info <= LISTITEM_END)
 	{
@@ -1991,6 +1999,57 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
 	// find a thumb for this file.
 	m_currentFile->SetMusicThumb();
 	m_currentFile->FillInDefaultIcon();
+}
+
+CStdString CGUIInfoManager::GetPictureLabel(int info)
+{
+	if (info == SLIDE_FILE_NAME)
+		return GetItemLabel(m_currentSlide, LISTITEM_FILENAME);
+	else if (info == SLIDE_FILE_PATH)
+	{
+		CStdString path;
+		URIUtils::GetDirectory(m_currentSlide->GetPath(), path);
+		return CURL(path).GetWithoutUserDetails();
+	}
+	else if (info == SLIDE_FILE_SIZE)
+		return GetItemLabel(m_currentSlide, LISTITEM_SIZE);
+	else if (info == SLIDE_FILE_DATE)
+		return GetItemLabel(m_currentSlide, LISTITEM_DATE);
+	else if (info == SLIDE_INDEX)
+	{
+		CGUIWindowSlideShow *slideshow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+		if (slideshow && slideshow->NumSlides())
+		{
+			CStdString index;
+			index.Format("%d/%d", slideshow->CurrentSlide(), slideshow->NumSlides());
+			return index;
+		}
+	}
+	
+	if (m_currentSlide->HasPictureInfoTag())
+		return m_currentSlide->GetPictureInfoTag()->GetInfo(info);
+		
+	return "";
+}
+
+void CGUIInfoManager::SetCurrentSlide(CFileItem &item)
+{
+	if (m_currentSlide->GetPath() != item.GetPath())
+	{
+		if (!item.HasPictureInfoTag() && !item.GetPictureInfoTag()->Loaded())
+			item.GetPictureInfoTag()->Load(item.GetPath());
+		*m_currentSlide = item;
+	}
+}
+
+void CGUIInfoManager::ResetCurrentSlide()
+{
+	m_currentSlide->Reset();
+}
+
+const CFileItem &CGUIInfoManager::GetCurrentSlide() const
+{
+	return *m_currentSlide;
 }
 
 CStdString CGUIInfoManager::GetMusicLabel(int item)

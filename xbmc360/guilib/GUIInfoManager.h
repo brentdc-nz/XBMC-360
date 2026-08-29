@@ -205,6 +205,10 @@ namespace INFO
 #define SKIN_THEME                  800
 #define SKIN_COLOUR_THEME           801
 
+// Picture slideshow information
+#define SLIDE_INFO_START            900
+#define SLIDE_INFO_END              980
+
 #define WINDOW_PROPERTY             9993
 #define WINDOW_IS_TOPMOST           9994
 #define WINDOW_IS_VISIBLE           9995
@@ -408,7 +412,12 @@ public:
 	void SetCurrentMovie(CFileItem &item);
 	CStdString GetMusicLabel(int item);
 	CStdString GetVideoLabel(int item);
+	CStdString GetPictureLabel(int info);
 	CStdString GetMusicTagLabel(int info, const CFileItem *item);
+
+	void SetCurrentSlide(CFileItem &item);
+	const CFileItem &GetCurrentSlide() const;
+	void ResetCurrentSlide();
 
 	void SetCurrentSongTag(const MUSIC_INFO::CMusicInfoTag &tag);
 	void SetCurrentVideoTag(const CVideoInfoTag &tag);
@@ -484,6 +493,7 @@ protected:
 
 	// Current playing stuff
 	CFileItem* m_currentFile;
+	CFileItem* m_currentSlide;
 	unsigned int m_lastMusicBitrateTime;
 	int m_MusicBitrate;
 

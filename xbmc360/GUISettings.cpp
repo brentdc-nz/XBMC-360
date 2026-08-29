@@ -180,7 +180,17 @@ void CGUISettings::Initialize()
 	// Pictures settings
 	AddGroup(0, 1);
 	AddCategory(0, "pictures", 14081);
+	AddBool(1, "pictures.usetags", 14082, true);
+	AddBool(2, "pictures.generatethumbs", 13360, true);
 	AddBool(3, "pictures.useexifrotation", 20184, true);
+	
+	// TODO: Re-enable display resolution switching for the slideshow.
+//	AddInt(8, "pictures.displayresolution", 169, (int)AUTORES, (int)HDTV_1080p, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
+
+	AddCategory(0, "slideshow", 108);
+	AddInt(1, "slideshow.staytime", 12378, 5, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
+	AddBool(2, "slideshow.displayeffects", 12379, true);
+	AddBool(0, "slideshow.shuffle", 13319, false);
 
 	// My Weather settings
 	AddGroup(2, 8);
