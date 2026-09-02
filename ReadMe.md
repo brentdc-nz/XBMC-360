@@ -12,8 +12,8 @@ This is a work in progress, still many features to bring over. Though getting mo
 
 Usable but many features still need reimplementation or improvements.
 
-### Compiled build (last updated 30-08-26):
-https://drive.google.com/file/d/1KIRtkuLLYL4aaWBZyKw9xJHprkBlcqKB/view
+### Compiled build (last updated 02-09-26):
+https://drive.google.com/file/d/1_9eX5Zqhq0IYpvZffo0vuhAgXd8WAg-L/view
 
 ### Libraries
 - FFmpeg (DVDPlayer)
