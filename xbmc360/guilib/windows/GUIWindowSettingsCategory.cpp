@@ -3,9 +3,9 @@
 #include "guilib\LocalizeStrings.h"
 #include "guilib\GUIMessage.h"
 #include "guilib\dialogs\GUIDialogKeyboard.h"
-#include "SettingsControls.h" // TODO: Move to GUILIB?
 #include "utils\Weather.h"
 #include "guilib\GUIUserMessages.h"
+#include "guilib\GUIWindowManager.h"
 #include "xbox\XBVideoConfig.h"
 #include "xbox\XBTimeZone.h"
 #include "LangInfo.h"
@@ -357,6 +357,10 @@ void CGUIWindowSettingsCategory::CreateSettings()
 		{
 			FillInScreenSavers(pSetting);
 		}
+		else if (strSetting.Equals("musicplayer.visualisation"))
+		{
+			FillInVisualisations(pSetting);
+		}
     }
 
 	// Update our settings (turns controls on/off as appropriate)
@@ -570,6 +574,17 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
 		CStdString strMode = pControl->GetCurrentLabel();
 		g_guiSettings.SetString("screensaver.mode", strMode);
 	}
+	else if (strSetting.Equals("musicplayer.visualisation"))
+	{
+		// New visualisation choosen...
+		CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
+		CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+
+		if (pControl->GetValue() == 0)
+			pSettingString->SetData("None");
+		else
+			pSettingString->SetData(pControl->GetCurrentLabel() + ".vis");
+	}
 	else if (strSetting.Equals("locale.timezone"))
 	{
 		// Timezone change is applied on next boot via LoadXML
@@ -721,4 +736,40 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
 	}
 
 	pControl->SetValue(iCurrentScr);
+}
+
+void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting)
+{
+	// Visualisation - From xbmc4xbox, minus the directory scan
+	// (we are static linking as we don't have a DLL loader yet, so only
+	// MilkDrop2 is available - See CVisualisationFactory::LoadVisualisation)
+	CSettingString *pSettingString = (CSettingString*)pSetting;
+	if (!pSetting) return;
+	int iWinID = g_windowManager.GetActiveWindow();
+	CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+	pControl->Clear();
+
+	// find visz....
+	std::vector<CStdString> vecVis;
+	vecVis.push_back("MilkDrop2"); // Statically linked - the only .vis we have
+
+	CStdString strDefaultVis = pSettingString->GetData();
+	if (!strDefaultVis.Equals("None"))
+		strDefaultVis.Delete(strDefaultVis.size() - 4, 4);
+
+	// add the "disabled" setting first
+	int iVis = 0;
+	int iCurrentVis = 0;
+	pControl->AddLabel(g_localizeStrings.Get(231), iVis++);
+
+	for (int i = 0; i < (int) vecVis.size(); ++i)
+	{
+		CStdString strVis = vecVis[i];
+
+		if (strcmpi(strVis.c_str(), strDefaultVis.c_str()) == 0)
+			iCurrentVis = iVis;
+
+		pControl->AddLabel(strVis, iVis++);
+	}
+	pControl->SetValue(iCurrentVis);
 }

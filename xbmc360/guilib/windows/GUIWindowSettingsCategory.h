@@ -43,6 +43,7 @@ protected:
 	void FillInLanguages(CSetting *pSetting);
 	void FillInRegions(CSetting *pSetting);
 	void FillInScreenSavers(CSetting *pSetting);
+	void FillInVisualisations(CSetting *pSetting);
 
 	CGUISpinControlEx *m_pOriginalSpin;
 	CGUIRadioButtonControl *m_pOriginalRadioButton;
