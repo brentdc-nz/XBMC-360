@@ -71,7 +71,7 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
 		strPath = g_SkinInfo.GetSkinPath(strFileName, &resToUse);
 
 	if (!bContainsPath)
-		m_coordsRes = HDTV_480p_16x9;//resToUse; // FIXME
+		m_coordsRes = resToUse;
 
 	bool ret = LoadXML(strPath.c_str(), strLowerPath.c_str());
 

@@ -66,6 +66,10 @@
 #include "guilib\dialogs\GUIDialogOK.h"
 #include "guilib\dialogs\GUIDialogSelect.h"
 #include "guilib\dialogs\GUIDialogFavourites.h"
+#include "guilib\dialogs\GUIDialogSubMenu.h"
+#include "guilib\GUIStandardWindow.h"
+#include "guilib\GUIControlFactory.h"
+#include "utils\CharsetConverter.h"
 
 using namespace PLAYLIST;
 
@@ -324,27 +328,28 @@ void CApplication::CancelDelayLoadSkin()
 
 void CApplication::LoadSkin(const CStdString& strSkin)
 {
+	bool bPreviousPlayingState=false;
+	bool bPreviousRenderingState=false;
+	
 	if (g_application.m_pPlayer && g_application.IsPlayingVideo())
 	{
-/*		bPreviousPlayingState = !g_application.m_pPlayer->IsPaused();
+		bPreviousPlayingState = !g_application.m_pPlayer->IsPaused();
+
 		if (bPreviousPlayingState)
 			g_application.m_pPlayer->Pause();
 
-		if (!g_renderManager.Paused())
+		if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
 		{
-			if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
-			{
-				g_windowManager.ActivateWindow(WINDOW_HOME);
-				bPreviousRenderingState = true;
-			}
-		}*/
+			g_windowManager.ActivateWindow(WINDOW_HOME);
+			bPreviousRenderingState = true;
+		}
 	}
 
 	// Stop the busy renderer if it's running before we lock the graphiccontext or we could deadlock.
 	g_ApplicationRenderer.Stop();
 	// close the music and video overlays (they're re-opened automatically later)
 	CSingleLock lock(g_graphicsContext);
-	
+
 	m_dwSkinTime = 0;
 
 	CStdString strHomePath;
@@ -353,34 +358,69 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
 	CLog::Log(LOGINFO, "Load skin from:%s", strSkinPath.c_str());
 
-	if(IsPlaying())
-	{
-		CLog::Log(LOGINFO, "Stop playing...");
-		m_pPlayer->CloseFile();
-		delete m_pPlayer;
-		m_pPlayer = NULL;
-	}
+	// Save the current window details
+	int currentWindow = g_windowManager.GetActiveWindow();
+	std::vector<int> currentModelessWindows;
+	g_windowManager.GetActiveModelessWindows(currentModelessWindows);
 
 	CLog::Log(LOGINFO, "Delete old skin...");
-	UnloadSkin();	
+	UnloadSkin();
 
 	// Load in the skin.xml file if it exists
 	g_SkinInfo.Load(strSkinPath);
 
+	CLog::Log(LOGINFO, "Load fonts for skin...");
 	g_graphicsContext.SetMediaDir(strSkinPath);
+
+	if (g_langInfo.ForceUnicodeFont() && !g_fontManager.IsFontSetUnicode(g_guiSettings.GetString("lookandfeel.font")))
+	{
+		CLog::Log(LOGINFO, "  language needs a ttf font, loading first ttf font available");
+		CStdString strFontSet;
+
+		if (g_fontManager.GetFirstFontSetUnicode(strFontSet))
+		{
+			CLog::Log(LOGINFO, "  new font is '%s'", strFontSet.c_str());
+			g_guiSettings.SetString("lookandfeel.font", strFontSet);
+			g_settings.Save();
+		}
+		else
+			CLog::Log(LOGERROR, "  no ttf font found, but needed for the language %s.", g_guiSettings.GetString("locale.language").c_str());
+	}
+
+	g_colorManager.Load(g_guiSettings.GetString("lookandfeel.skincolors"));
+
+	g_fontManager.LoadFonts(g_guiSettings.GetString("lookandfeel.font"));
+
+	// Load in the skin strings
+	CStdString langPath;
+	URIUtils::AddFileToFolder(strSkinPath, "language", langPath);
+	URIUtils::AddSlashAtEnd(langPath);
+
+	g_localizeStrings.LoadSkinStrings(langPath, g_guiSettings.GetString("locale.language"));
+
+	CLog::Log(LOGINFO, "  load new skin...");
+	CGUIWindowHome *pHome = (CGUIWindowHome *)g_windowManager.GetWindow(WINDOW_HOME);
+	
+	if (!g_SkinInfo.Check(strSkinPath) || !pHome || !pHome->Load("Home.xml"))
+	{
+		// Failed to load home.xml
+		// fallback to default skin
+		if (strcmpi(strSkin.c_str(), DEFAULT_SKIN) != 0)
+		{
+			CLog::Log(LOGERROR, "failed to load home.xml for skin:%s, fallback to \"%s\" skin", strSkin.c_str(), DEFAULT_SKIN);
+			g_guiSettings.SetString("lookandfeel.skin", DEFAULT_SKIN);
+			LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
+			return;
+		}
+	}
+
+	// Load the user windows
+	LoadUserWindows();
 
 	// Load all bundle textures into cache now (while splash is visible)
 	// so AllocResources finds everything already in memory with zero disk I/O
 	g_TextureManager.LoadAllBundleTextures();
 
-	g_colorManager.Load(g_guiSettings.GetString("lookandfeel.skincolors"));
-
-	CLog::Log(LOGINFO, "Load fonts for skin...");
-
-	CStdString strFontPath = strSkinPath += "\\Fonts.xml";
-	g_fontManager.LoadFonts(strFontPath);
-
-	CLog::Log(LOGINFO, "Initialize new skin...");
 	m_guiDialogVolumeBar.AllocResources(true);
 	m_guiDialogSeekBar.AllocResources(true);
 	m_guiDialogMuteBug.AllocResources(true);
@@ -399,13 +439,32 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	// Leave the graphics lock
 	lock.Leave();
 	g_ApplicationRenderer.Start();
+
+	// Restore windows
+	if (currentWindow != WINDOW_INVALID)
+	{
+		g_windowManager.ActivateWindow(currentWindow);
+		for (unsigned int i = 0; i < currentModelessWindows.size(); i++)
+		{
+			CGUIDialog *dialog = (CGUIDialog *)g_windowManager.GetWindow(currentModelessWindows[i]);
+			if (dialog) dialog->Show();
+		}
+	}
+
+	if (g_application.m_pPlayer && g_application.IsPlayingVideo())
+	{
+		if (bPreviousPlayingState)
+			g_application.m_pPlayer->Pause();
+		if (bPreviousRenderingState)
+			g_windowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
+	}
 }
 
 void CApplication::ReloadSkin()
 {
 	CGUIMessage msg(GUI_MSG_LOAD_SKIN, -1, g_windowManager.GetActiveWindow());
 	g_windowManager.SendMessage(msg);
-	
+
 	// Reload the skin, restoring the previously focused control.  We need this as
 	// the window unload will reset all control states.
 	CGUIWindow* pWindow = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
@@ -423,6 +482,9 @@ void CApplication::ReloadSkin()
 void CApplication::UnloadSkin()
 {
 	g_ApplicationRenderer.Stop();
+	g_audioManager.DeInitialize();
+
+	g_windowManager.DeInitialize();
 
 	// These windows are not handled by the windowmanager (why not?) so we should unload them manually
 	CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
@@ -430,11 +492,121 @@ void CApplication::UnloadSkin()
 	m_guiDialogMuteBug.ResetControlStates();
 	m_guiDialogMuteBug.FreeResources(true);
 
-	g_windowManager.DeInitialize();
 	g_TextureManager.Cleanup();
+
 	g_fontManager.Clear();
-	g_audioManager.DeInitialize();
+
+	g_colorManager.Clear();
+
+	g_charsetConverter.reset();
+
 	g_infoManager.Clear();
+}
+
+bool CApplication::LoadUserWindows()
+{
+	// Start from wherever home.xml is
+
+	std::vector<CStdString> vecSkinPath;
+	g_SkinInfo.GetSkinPaths(vecSkinPath);
+	
+	for (unsigned int i = 0; i < vecSkinPath.size(); ++i)
+	{
+		CStdString strPath = URIUtils::AddFileToFolder(vecSkinPath[i], "custom*.xml");
+		CLog::Log(LOGINFO, "Loading user windows, path %s", vecSkinPath[i].c_str());
+		WIN32_FIND_DATA NextFindFileData;
+		HANDLE hFind = FindFirstFile(strPath.c_str(), &NextFindFileData);
+		
+		while (hFind != INVALID_HANDLE_VALUE)
+		{
+			WIN32_FIND_DATA FindFileData = NextFindFileData;
+
+			if (!FindNextFile(hFind, &NextFindFileData))
+			{
+				FindClose(hFind);
+				hFind = INVALID_HANDLE_VALUE;
+			}
+
+			// skip "up" directories, which come in all queries
+			if (!strcmp(FindFileData.cFileName, ".") || !strcmp(FindFileData.cFileName, ".."))
+				continue;
+
+			CStdString strFileName = URIUtils::AddFileToFolder(vecSkinPath[i], FindFileData.cFileName);
+			CLog::Log(LOGINFO, "Loading skin file: %s", strFileName.c_str());
+			CStdString strLower(FindFileData.cFileName);
+			strLower.MakeLower();
+			strLower = URIUtils::AddFileToFolder(vecSkinPath[i], strLower);
+			TiXmlDocument xmlDoc;
+			
+			if (!xmlDoc.LoadFile(strFileName) && !xmlDoc.LoadFile(strLower))
+			{
+				CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", strFileName.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+				continue;
+			}
+
+			// Root element should be <window>
+			TiXmlElement* pRootElement = xmlDoc.RootElement();
+			CStdString strValue = pRootElement->Value();
+			if (!strValue.Equals("window"))
+			{
+				CLog::Log(LOGERROR, "file :%s doesnt contain <window>", strFileName.c_str());
+				continue;
+			}
+
+			// Read the <type> element to get the window type to create
+			// If no type is specified, create a CGUIWindow as default
+			CGUIWindow* pWindow = NULL;
+			CStdString strType;
+			
+			if (pRootElement->Attribute("type"))
+				strType = pRootElement->Attribute("type");
+			else
+			{
+				const TiXmlNode *pType = pRootElement->FirstChild("type");
+				if (pType && pType->FirstChild())
+					strType = pType->FirstChild()->Value();
+			}
+			
+			int id = WINDOW_INVALID;
+			
+			if (!pRootElement->Attribute("id", &id))
+			{
+				const TiXmlNode *pType = pRootElement->FirstChild("id");
+				if (pType && pType->FirstChild())
+					id = atol(pType->FirstChild()->Value());
+			}
+			
+			int visibleCondition = 0;
+			CGUIControlFactory::GetConditionalVisibility(pRootElement, visibleCondition);
+
+			if (strType.Equals("dialog"))
+				pWindow = new CGUIDialog(id + WINDOW_HOME, FindFileData.cFileName);
+			else if (strType.Equals("submenu"))
+				pWindow = new CGUIDialogSubMenu(id + WINDOW_HOME, FindFileData.cFileName);
+			else if (strType.Equals("buttonmenu"))
+				pWindow = new CGUIDialogButtonMenu(id + WINDOW_HOME, FindFileData.cFileName);
+			else
+				pWindow = new CGUIStandardWindow(id + WINDOW_HOME, FindFileData.cFileName);
+
+			// Check to make sure the pointer isn't still null
+			if (pWindow == NULL)
+			{
+				CLog::Log(LOGERROR, "Out of memory / Failed to create new object in LoadUserWindows");
+				return false;
+			}
+			
+			if (id == WINDOW_INVALID || g_windowManager.GetWindow(WINDOW_HOME + id))
+			{
+				delete pWindow;
+				continue;
+			}
+			
+			pWindow->SetVisibleCondition(visibleCondition, false);
+			g_windowManager.AddCustomWindow(pWindow);
+		}
+		CloseHandle(hFind);
+	}
+	return true;
 }
 
 void CApplication::Process()

@@ -3,148 +3,122 @@
 		<font>
 			<name>font101</name>
 			<filename>FrancophilSans.ttf</filename>
-			<size>20</size>
+			<size>12</size>
+			<aspect>1.3</aspect>
 		</font>
 		<font>
 			<name>font10</name>
 			<filename>FrancophilSans.ttf</filename>
-			<size>19</size>
+			<size>12</size>
 			<style>bold</style>
+			<aspect>1.3</aspect>
 		</font>
 		<font>
 			<name>font12</name>
 			<filename>FrancophilSans.ttf</filename>
-			<size>21</size>
+			<size>15</size>
 			<style>bold</style>
+			<aspect>1.3</aspect>
 		</font>
 		<font>
 			<name>font13</name>
 			<filename>FrancophilSans.ttf</filename>
-			<size>23</size>
+			<size>16</size>
+			<aspect>1.3</aspect>
 		</font>
 		<font>
 			<name>special12</name>
 			<filename>FrancophilSans.ttf</filename>
-			<size>25</size>
+			<size>17</size>
+			<aspect>1.3</aspect>
 		</font>
 		<font>
 			<name>special13</name>
 			<filename>FrancophilSans.ttf</filename>
-			<size>25</size>
+			<size>17</size>
 			<style>bold</style>
+			<aspect>1.3</aspect>
 		</font>
 	</fontset>
 	<fontset id="Arial TTF" unicode="true">
 		<font>
 			<name>font101</name>
 			<filename>Arial.ttf</filename>
-			<size>20</size>
+			<size>13</size>
+			<aspect>1.2</aspect>
 		</font>
 		<font>
 			<name>font10</name>
 			<filename>Arial.ttf</filename>
-			<size>14</size>
+			<size>13</size>
 			<style>bold</style>
+			<aspect>1.2</aspect>
 		</font>
 		<font>
 			<name>font12</name>
 			<filename>Arial.ttf</filename>
+			<size>13</size>
+			<style>bold</style>
+			<aspect>1.2</aspect>
+		</font>
+		<font>
+			<name>font13</name>
+			<filename>Arial.ttf</filename>
 			<size>14</size>
-			<style>bold</style>
-		</font>
-		<font>
-			<name>font13</name>
-			<filename>Arial.ttf</filename>
-			<size>19</size>
+			<aspect>1.2</aspect>
 		</font>
 		<font>
 			<name>special12</name>
 			<filename>Arial.ttf</filename>
-			<size>21</size>
+			<size>15</size>
+			<aspect>1.2</aspect>
 		</font>
 		<font>
 			<name>special13</name>
 			<filename>Arial.ttf</filename>
-			<size>21</size>
+			<size>15</size>
 			<style>bold</style>
-		</font>
-	</fontset>
-	<fontset id="Arial TTF Bold" unicode="true">
-		<font>
-			<name>font101</name>
-			<filename>Arial.ttf</filename>
-			<size>18</size>
-			<style>bold</style>
-		</font>
-		<font>
-			<name>font10</name>
-			<filename>Arial.ttf</filename>
-			<size>17</size>
-			<style>bold</style>
-		</font>
-		<font>
-			<name>font12</name>
-			<filename>Arial.ttf</filename>
-			<size>18</size>
-			<style>bold</style>
-		</font>
-		<font>
-			<name>font13</name>
-			<filename>Arial.ttf</filename>
-			<size>21</size>
-			<style>bold</style>
-		</font>
-		<font>
-			<name>special12</name>
-			<filename>Arial.ttf</filename>
-			<size>23</size>
-			<style>bold</style>
-		</font>
-		<font>
-			<name>special13</name>
-			<filename>Arial.ttf</filename>
-			<size>23</size>
-			<style>bold</style>
+			<aspect>1.2</aspect>
 		</font>
 	</fontset>
 	<fontset id="Arial TTF New" unicode="true">
 		<font>
 			<name>font101</name>
 			<filename>Arial.ttf</filename>
-			<size>18</size>
+			<size>13</size>
 		</font>
 		<font>
 			<name>font10</name>
 			<filename>Arial.ttf</filename>
-			<size>18</size>
+			<size>13</size>
 			<style>bold</style>
-			<aspect>0.85</aspect>
+			<aspect>1.05</aspect>
 		</font>
 		<font>
 			<name>font12</name>
 			<filename>Arial.ttf</filename>
-			<size>21</size>
+			<size>16</size>
 			<style>bold</style>
-			<aspect>0.8</aspect>
+			<aspect>1</aspect>
 		</font>
 		<font>
 			<name>font13</name>
 			<filename>Arial.ttf</filename>
-			<size>23</size>
-			<aspect>0.85</aspect>
+			<size>17</size>
+			<aspect>1.05</aspect>
 		</font>
 		<font>
 			<name>special12</name>
 			<filename>Arial.ttf</filename>
-			<size>24</size>
-			<aspect>0.85</aspect>
+			<size>18</size>
+			<aspect>1.05</aspect>
 		</font>
 		<font>
 			<name>special13</name>
 			<filename>Arial.ttf</filename>
-			<size>24</size>
+			<size>18</size>
 			<style>bold</style>
-			<aspect>0.8</aspect>
+			<aspect>1</aspect>
 		</font>
 	</fontset>
 </fonts>

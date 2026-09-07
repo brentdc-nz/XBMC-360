@@ -1067,6 +1067,9 @@
     <ClInclude Include="guilib\dialogs\GUIDialogSlider.h">
       <Filter>Header Files\guilib\dialogs</Filter>
     </ClInclude>
+    <ClInclude Include="guilib\dialogs\GUIDialogSubMenu.h">
+      <Filter>Header Files\guilib\dialogs</Filter>
+    </ClInclude>
     <ClInclude Include="guilib\GUISliderControl.h">
       <Filter>Header Files\guilib</Filter>
     </ClInclude>
@@ -2069,6 +2072,9 @@
       <Filter>Source Files\guilib</Filter>
     </ClCompile>
     <ClCompile Include="guilib\dialogs\GUIDialogSlider.cpp">
+      <Filter>Source Files\guilib\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\dialogs\GUIDialogSubMenu.cpp">
       <Filter>Source Files\guilib\dialogs</Filter>
     </ClCompile>
     <ClCompile Include="guilib\GUISliderControl.cpp">

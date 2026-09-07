@@ -564,15 +564,8 @@ void CGraphicContext::SetScalingResolution(RESOLUTION res, bool needsScaling)
 			fFromHeight = (float)g_settings.m_ResInfo[res].iHeight;
 			fToPosX = (float)g_settings.m_ResInfo[m_Resolution].Overscan.left;
 			fToPosY = (float)g_settings.m_ResInfo[m_Resolution].Overscan.top;
-
-			// FIXME: These values are all screwed up for some reason!
-			//        Resolution us currently hardcoded so working around it for the moment!
-
-			fToWidth = (float)g_settings.m_ResInfo[m_Resolution].Overscan.right - fToPosX; // FIXME
-			fToHeight = (float)g_settings.m_ResInfo[m_Resolution].Overscan.bottom - fToPosY; // FIXME
-
-			fToWidth = (float)g_settings.m_ResInfo[m_Resolution].Overscan.right + 15; // HACK!
-			fToHeight = (float)g_settings.m_ResInfo[m_Resolution].Overscan.bottom - 130; // HACK!
+			fToWidth = (float)g_settings.m_ResInfo[m_Resolution].Overscan.right - fToPosX;
+			fToHeight = (float)g_settings.m_ResInfo[m_Resolution].Overscan.bottom - fToPosY;
 		}
 
 		// Add additional zoom to compensate for any overskan built in skin

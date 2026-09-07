@@ -32,6 +32,9 @@ public:
 
 	void Unload(const CStdString& strFontName);
 	void LoadFonts(const CStdString& strFontSet);
+	bool GetFirstFontSetUnicode(CStdString& strFontSet);
+	bool IsFontSetUnicode() { return m_fontsetUnicode; }
+	bool IsFontSetUnicode(const CStdString& strFontSet);
 	CGUIFont* LoadTTF(const CStdString& strFontName, const CStdString& strFilename, color_t textColor, color_t shadowColor, const int iSize, const int iStyle, bool border = false, float lineSpacing = 1.0f, float aspect = 1.0f, RESOLUTION res = INVALID, bool preserveAspect = false);
 	CGUIFont* GetFont(const CStdString& strFontName, bool fallback = true);
 

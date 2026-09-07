@@ -418,6 +418,7 @@
     <ClInclude Include="guilib\dialogs\GUIDialogSeekBar.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogSelect.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogSlider.h" />
+    <ClInclude Include="guilib\dialogs\GUIDialogSubMenu.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogVolumeBar.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogYesNo.h" />
     <ClInclude Include="guilib\Geometry.h" />
@@ -750,6 +751,7 @@
     <ClCompile Include="guilib\dialogs\GUIDialogSeekBar.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogSelect.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogSlider.cpp" />
+    <ClCompile Include="guilib\dialogs\GUIDialogSubMenu.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogVolumeBar.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogYesNo.cpp" />
     <ClCompile Include="guilib\GraphicContext.cpp" />

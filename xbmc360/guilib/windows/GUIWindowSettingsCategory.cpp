@@ -6,11 +6,19 @@
 #include "utils\Weather.h"
 #include "guilib\GUIUserMessages.h"
 #include "guilib\GUIWindowManager.h"
+#include "guilib\SkinInfo.h"
+#include "guilib\GUIFontManager.h"
+#include "guilib\GraphicContext.h"
+#include "guilib\GUITextLayout.h"
+#include "utils\CharsetConverter.h"
+#include "utils\StringUtils.h"
+#include "Application.h"
 #include "xbox\XBVideoConfig.h"
 #include "xbox\XBTimeZone.h"
 #include "LangInfo.h"
 #include "filesystem\Directory.h"
 #include "utils\Util.h"
+#include "utils\URIUtils.h"
 
 using namespace XFILE;
 
@@ -40,6 +48,15 @@ CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
 
 	m_iScreen = 0;
 	SetIDRange(8); // Needed to cover all groups
+	m_strErrorMessage = "";
+
+	m_strNewSkin.Empty();
+	m_strNewSkinTheme.Empty();
+	m_strNewSkinColors.Empty();
+	m_strNewSkinFontSet.Empty();
+	m_strNewLanguage.Empty();
+	m_NewResolution = INVALID;
+	m_returningFromSkinLoad = false;
 }
 
 CGUIWindowSettingsCategory::~CGUIWindowSettingsCategory(void)
@@ -115,16 +132,101 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
 		case GUI_MSG_WINDOW_INIT:
 		{
 //			m_delayedSetting = NULL;
-			if (message.GetParam1() != WINDOW_INVALID/* && !m_returningFromSkinLoad*/)
+			if (message.GetParam1() != WINDOW_INVALID && !m_returningFromSkinLoad)
 			{
 				// Coming to this window first time (ie not returning back from some other window)
 				// so we reset our section and control states
 				m_iSection = 0;
 				ResetControlStates();
 			}
-//			m_returningFromSkinLoad = false;
+			m_returningFromSkinLoad = false;
 			m_iScreen = (int)message.GetParam2() - (int)CGUIWindow::GetID();
 			return CGUIWindow::OnMessage(message);
+		}
+		break;
+		case GUI_MSG_LOAD_SKIN:
+		{
+			// Do we need to reload the language file
+			if (!m_strNewLanguage.IsEmpty())
+			{
+				g_guiSettings.SetString("locale.language", m_strNewLanguage);
+				g_settings.Save();
+
+				CStdString strLangInfoPath;
+				strLangInfoPath.Format("D:\\language\\%s\\langinfo.xml", m_strNewLanguage.c_str());
+				g_langInfo.Load(strLangInfoPath);
+
+       			if (g_langInfo.ForceUnicodeFont() && !g_fontManager.IsFontSetUnicode())
+				{
+					CLog::Log(LOGINFO, "Language needs a ttf font, loading first ttf font available");
+					CStdString strFontSet;
+					if (g_fontManager.GetFirstFontSetUnicode(strFontSet))
+					{
+						m_strNewSkinFontSet = strFontSet;
+					}
+					else
+						CLog::Log(LOGERROR, "No ttf font found but needed: %s", strFontSet.c_str());
+				}
+
+				g_charsetConverter.reset();
+
+				CStdString strLanguagePath = "D:\\language\\";
+				g_localizeStrings.Load(strLanguagePath, m_strNewLanguage);
+
+        		// also tell our weather to reload, as this must be localized
+        		g_weatherManager.Refresh();
+			}
+
+			// Do we need to reload the skin font set
+			if (!m_strNewSkinFontSet.IsEmpty())
+			{
+				g_guiSettings.SetString("lookandfeel.font", m_strNewSkinFontSet);
+				g_settings.Save();
+			}
+
+			// Reload another skin
+			if (!m_strNewSkin.IsEmpty())
+			{
+				g_guiSettings.SetString("lookandfeel.skin", m_strNewSkin);
+				g_settings.Save();
+			}
+
+			// Reload a skin theme
+			if (!m_strNewSkinTheme.IsEmpty())
+			{
+				g_guiSettings.SetString("lookandfeel.skintheme", m_strNewSkinTheme);
+
+				// also set the default color theme
+				CStdString colorTheme(URIUtils::ReplaceExtension(m_strNewSkinTheme, ".xml"));
+
+				if (colorTheme.Equals("Textures.xml"))
+					colorTheme = "defaults.xml";
+
+				g_guiSettings.SetString("lookandfeel.skincolors", colorTheme);
+				g_settings.Save();
+			}
+
+			// Reload a skin color
+			if (!m_strNewSkinColors.IsEmpty())
+			{
+				g_guiSettings.SetString("lookandfeel.skincolors", m_strNewSkinColors);
+				g_settings.Save();
+			}
+
+			// Reload a resolution
+			if (m_NewResolution != INVALID)
+			{
+				g_guiSettings.SetInt("videoscreen.resolution", m_NewResolution);
+				
+				// Set the gui resolution, if newRes is AUTORES newRes will be set to the highest available resolution
+				g_graphicsContext.SetVideoResolution(m_NewResolution, TRUE);
+				
+				// Set our lookandfeelres to the resolution set in graphiccontext
+				g_guiSettings.m_LookAndFeelResolution = m_NewResolution;
+			}
+
+			if (IsActive())
+				m_returningFromSkinLoad = true;
 		}
 		break;
 		case GUI_MSG_UPDATE_ITEM: // TODO
@@ -194,15 +296,13 @@ void CGUIWindowSettingsCategory::Render()
 	}
 
 	// Render the error message if necessary
-/*
-	if (m_strErrorMessage.size()) // TODO
+	if (m_strErrorMessage.size())
 	{
 		CGUIFont *pFont = g_fontManager.GetFont("font13");
 		float fPosY = g_graphicsContext.GetHeight() * 0.8f;
 		float fPosX = g_graphicsContext.GetWidth() * 0.5f;
 		CGUITextLayout::DrawText(pFont, fPosX, fPosY, 0xffffffff, 0, m_strErrorMessage, XBFONT_CENTER_X);
 	}
-*/
 }
 
 void CGUIWindowSettingsCategory::SetupControls()
@@ -546,17 +646,54 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
 
 	if (strSetting.Equals("lookandfeel.skin"))
 	{
+		// new skin choosen...
 		CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
 		CStdString strSkin = pControl->GetCurrentLabel();
-		if (strSkin != g_guiSettings.GetString("lookandfeel.skin"))
-			g_guiSettings.SetString("lookandfeel.skin", strSkin);
+		CStdString strSkinPath = "D:\\skins\\" + strSkin;
+
+		if (g_SkinInfo.Check(strSkinPath))
+		{
+			m_strErrorMessage.Empty();
+			pControl->SettingsCategorySetSpinTextColor(pControl->GetButtonLabelInfo().textColor);
+			
+			if (strSkin != ".svn" && strSkin != g_guiSettings.GetString("lookandfeel.skin"))
+			{
+				m_strNewSkin = strSkin;
+				g_application.DelayLoadSkin();
+			}
+			else
+			{
+				// Do not reload the skin we are already using
+				m_strNewSkin.Empty();
+				g_application.CancelDelayLoadSkin();
+			}
+		}
+		else
+		{
+			m_strErrorMessage.Format("Incompatible skin. We require skins of version %0.2f or higher", g_SkinInfo.GetMinVersion());
+			m_strNewSkin.Empty();
+			g_application.CancelDelayLoadSkin();
+			pControl->SettingsCategorySetSpinTextColor(pControl->GetButtonLabelInfo().disabledColor);
+		}
+
 	}
 	else if (strSetting.Equals("locale.language"))
 	{
+		// New language chosen...
+		CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
 		CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
 		CStdString strLanguage = pControl->GetCurrentLabel();
-		if (strLanguage != g_guiSettings.GetString("locale.language"))
-			g_guiSettings.SetString("locale.language", strLanguage);
+		if (strLanguage != ".svn" && strLanguage != pSettingString->GetData())
+		{
+			m_strNewLanguage = strLanguage;
+			g_application.DelayLoadSkin();
+		}
+		else
+		{
+			// Do not reload the language we are already using
+			m_strNewLanguage.Empty();
+			g_application.CancelDelayLoadSkin();
+		}
 	}
 	else if (strSetting.Equals("locale.country"))
 	{
@@ -566,6 +703,30 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
 		{
 			g_guiSettings.SetString("locale.country", strRegion);
 			g_langInfo.SetCurrentRegion(strRegion);
+		}
+	}
+	else if (strSetting.Equals("videoscreen.resolution"))
+	{
+		// New resolution choosen... - update if necessary
+		CSettingInt *pSettingInt = (CSettingInt *)pSettingControl->GetSetting();
+		int iControlID = pSettingControl->GetID();
+		
+		CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID);
+		g_windowManager.SendMessage(msg);
+		
+		m_NewResolution = (RESOLUTION)msg.GetParam1();
+		
+		// Reset our skin if necessary
+		// delay change of resolution	
+		if (m_NewResolution != g_guiSettings.m_LookAndFeelResolution)
+		{
+			g_application.DelayLoadSkin();
+		}
+		else
+		{
+			// Do not reload the resolution we are using
+			m_NewResolution = INVALID;
+			g_application.CancelDelayLoadSkin();
 		}
 	}
 	else if (strSetting.Equals("screensaver.mode"))

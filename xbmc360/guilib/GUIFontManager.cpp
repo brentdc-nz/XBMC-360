@@ -96,6 +96,86 @@ void GUIFontManager::LoadFonts(const CStdString& strFontSet)
 	}
 }
 
+bool GUIFontManager::GetFirstFontSetUnicode(CStdString& strFontSet)
+{
+	strFontSet.Empty();
+
+	// Load our font file
+	TiXmlDocument xmlDoc;
+	if (!OpenFontFile(xmlDoc))
+		return false;
+
+	TiXmlElement* pRootElement = xmlDoc.RootElement();
+	const TiXmlNode *pChild = pRootElement->FirstChild();
+
+	CStdString strValue = pChild->Value();
+	if (strValue == "fontset")
+	{
+		while (pChild)
+		{
+			strValue = pChild->Value();
+			if (strValue == "fontset")
+			{
+				const char* idAttr = ((TiXmlElement*) pChild)->Attribute("id");
+
+				const char* unicodeAttr = ((TiXmlElement*) pChild)->Attribute("unicode");
+
+				// Check if this is a fontset with a unicode attribute set to true
+				if (unicodeAttr != NULL && stricmp(unicodeAttr, "true") == 0)
+				{
+					//  This is the first ttf fontset
+					strFontSet = idAttr;
+					break;
+				}
+			}
+			pChild = pChild->NextSibling();
+		}
+
+		// If no fontset was loaded
+		if (pChild == NULL)
+			CLog::Log(LOGWARNING, "file doesnt have <fontset> with attribute unicode=\"true\"");
+	}
+	else
+	{
+		CLog::Log(LOGERROR, "file doesnt have <fontset> in <fonts>, but rather %s", strValue.c_str());
+	}
+
+	return !strFontSet.IsEmpty();
+}
+
+bool GUIFontManager::IsFontSetUnicode(const CStdString& strFontSet)
+{
+	TiXmlDocument xmlDoc;
+	
+	if (!OpenFontFile(xmlDoc))
+		return false;
+
+	TiXmlElement* pRootElement = xmlDoc.RootElement();
+	const TiXmlNode *pChild = pRootElement->FirstChild();
+
+	CStdString strValue = pChild->Value();
+	if (strValue == "fontset")
+	{
+		while (pChild)
+		{
+			strValue = pChild->Value();
+			if (strValue == "fontset")
+			{
+				const char* idAttr = ((TiXmlElement*) pChild)->Attribute("id");
+
+				const char* unicodeAttr = ((TiXmlElement*) pChild)->Attribute("unicode");
+
+				// Check if this is the fontset that we want
+				if (idAttr != NULL && stricmp(strFontSet.c_str(), idAttr) == 0)
+					return (unicodeAttr != NULL && stricmp(unicodeAttr, "true") == 0);
+			}
+			pChild = pChild->NextSibling();
+		}
+	}
+
+	return false;
+}
+
 CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdString& strFilename, color_t textColor, color_t shadowColor, const int iSize, const int iStyle, bool border, float lineSpacing, float aspect, RESOLUTION sourceRes, bool preserveAspect)
 {
 	float originalAspect = aspect;

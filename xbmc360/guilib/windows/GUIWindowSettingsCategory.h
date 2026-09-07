@@ -6,6 +6,7 @@
 #include "Settings.h"
 #include "utils\Stopwatch.h"
 #include "GUISettings.h"
+#include "guilib\GraphicContext.h"
 
 #include "guilib\GUISpinControlEx.h"
 #include "guilib\GUIImage.h"
@@ -56,6 +57,17 @@ protected:
 	int m_iSection;
 	vecSettingsCategory m_vecSections;
 	std::vector<CBaseSettingControl*> m_vecSettings;
+
+	// look + feel settings (for delayed loading)
+	CStdString m_strNewSkinFontSet;
+	CStdString m_strNewSkin;
+	CStdString m_strNewLanguage;
+	CStdString m_strNewSkinTheme;
+	CStdString m_strNewSkinColors;
+
+	RESOLUTION m_NewResolution;
+	bool m_returningFromSkinLoad;
+	CStdString m_strErrorMessage;
 };
 
 #endif //GUILIB_GUIWINDOWSETTINGSCATEGORY_H

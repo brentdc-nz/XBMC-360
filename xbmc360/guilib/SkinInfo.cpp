@@ -1,5 +1,6 @@
 #include "SkinInfo.h"
 #include "utils\Log.h"
+#include "Key.h"
 #include "XMLUtils.h"
 #include "utils\URIUtils.h"
 #include "filesystem\File.h"
@@ -89,7 +90,7 @@ void CSkinInfo::Load(const CStdString& strSkinDir, bool loadIncludes)
 			}
 
 			// Now load the startupwindow information
-//			LoadStartupWindows(root->FirstChildElement("startupwindows")); // TODO
+			LoadStartupWindows(root->FirstChildElement("startupwindows"));
 		}
 		else
 			CLog::Log(LOGERROR, "%s - %s doesnt contain <skin>", __FUNCTION__, strFile.c_str());
@@ -98,6 +99,35 @@ void CSkinInfo::Load(const CStdString& strSkinDir, bool loadIncludes)
 	// Load the skin includes
 	if(loadIncludes)
 		LoadIncludes();
+}
+
+bool CSkinInfo::Check(const CStdString& strSkinDir)
+{
+	CSkinInfo info;
+	info.Load(strSkinDir, false);
+	
+	if (info.GetVersion() < GetMinVersion())
+	{
+		CLog::Log(LOGERROR, "%s(%s) version is to old (%f versus %f)", __FUNCTION__, strSkinDir.c_str(), info.GetVersion(), GetMinVersion());
+		return false;
+	}
+	
+	if (!info.HasSkinFile("Home.xml") || !info.HasSkinFile("Fonts.xml"))
+	{
+		CLog::Log(LOGERROR, "%s(%s) does not contain Home.xml or Fonts.xml", __FUNCTION__, strSkinDir.c_str());
+		return false;
+	}
+	return true;
+}
+
+bool CSkinInfo::HasSkinFile(const CStdString &strFile) const
+{
+	return CFile::Exists(GetSkinPath(strFile));
+}
+
+double CSkinInfo::GetMinVersion()
+{
+	return SKIN_MIN_VERSION;
 }
 
 bool CSkinInfo::ResolveConstant(const CStdString &constant, float &value) const
@@ -136,7 +166,13 @@ CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION *res, co
 	strPath = URIUtils::AddFileToFolder(strPath, strFile);
 	
 	if (CFile::Exists(strPath))
+	{
+		// Flat skin layout: the file lives at the skin root rather than in a
+		// resolution subfolder, so the coordinates are authored in the skin's
+		// default resolution (from skin.xml), not the current video resolution.
+		*res = IsWide(*res) ? m_DefaultResolutionWide : m_DefaultResolution;
 		return strPath;
+	}
 
 	// If we're in 1080i mode, try 720p next
 	if (*res == HDTV_1080p)
@@ -252,6 +288,72 @@ int CSkinInfo::GetStartWindow() const
 
 	// Return our first one
 	return m_startupWindows[0].m_id;
+}
+
+int CSkinInfo::GetFirstWindow() const
+{
+	int startWindow = GetStartWindow();
+	
+	if (HasSkinFile("Startup.xml") && (!m_onlyAnimateToHome || startWindow == WINDOW_HOME))
+		startWindow = WINDOW_STARTUP_ANIM;
+		
+	return startWindow;
+}
+
+bool CSkinInfo::LoadStartupWindows(const TiXmlElement *startup)
+{
+	m_startupWindows.clear();
+	
+	if (startup)
+	{
+		// Yay, run through and grab the startup windows
+		const TiXmlElement *window = startup->FirstChildElement("window");
+		while (window && window->FirstChild())
+		{
+			int id;
+			window->Attribute("id", &id);
+			CStdString name = window->FirstChild()->Value();
+			m_startupWindows.push_back(CStartupWindow(id + WINDOW_HOME, name));
+			window = window->NextSiblingElement("window");
+		}
+	}
+
+	// ok, now see if we have any startup windows
+	if (!m_startupWindows.size())
+	{
+		// Nope - add the default ones
+		m_startupWindows.push_back(CStartupWindow(WINDOW_HOME, "513"));
+		m_startupWindows.push_back(CStartupWindow(WINDOW_PROGRAMS, "0"));
+		m_startupWindows.push_back(CStartupWindow(WINDOW_PICTURES, "1"));
+		m_startupWindows.push_back(CStartupWindow(WINDOW_MUSIC, "2"));
+		m_startupWindows.push_back(CStartupWindow(WINDOW_VIDEOS, "3"));
+		m_startupWindows.push_back(CStartupWindow(WINDOW_FILES, "7"));
+//		m_startupWindows.push_back(CStartupWindow(WINDOW_SETTINGS_MENU, "5")); // FIXME
+		m_startupWindows.push_back(CStartupWindow(WINDOW_SCRIPTS, "247"));
+		m_onlyAnimateToHome = true;
+	}
+	else
+		m_onlyAnimateToHome = false;
+	return true;
+}
+
+bool CSkinInfo::IsWide(RESOLUTION res) const
+{
+	return (res == PAL_16x9 || res == NTSC_16x9 || res == HDTV_480p_16x9 || res == HDTV_720p || res == HDTV_1080p);
+}
+
+void CSkinInfo::GetSkinPaths(std::vector<CStdString> &paths) const
+{
+	RESOLUTION resToUse = INVALID;
+	GetSkinPath("Home.xml", &resToUse);
+	paths.push_back(URIUtils::AddFileToFolder(m_strBaseDir, GetDirFromRes(resToUse)));
+	
+	// See if we need to add other paths
+	if (resToUse != m_DefaultResolutionWide && IsWide(resToUse))
+		paths.push_back(URIUtils::AddFileToFolder(m_strBaseDir, GetDirFromRes(m_DefaultResolutionWide)));
+	
+	if (resToUse != m_DefaultResolution && (!IsWide(resToUse) || m_DefaultResolutionWide != m_DefaultResolution))
+		paths.push_back(URIUtils::AddFileToFolder(m_strBaseDir, GetDirFromRes(m_DefaultResolution)));
 }
 
 void CSkinInfo::ResolveIncludes(TiXmlElement *node, const CStdString &type)

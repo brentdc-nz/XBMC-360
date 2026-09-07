@@ -8,6 +8,7 @@
 #include "tinyxml\tinyxml.h"
 
 #define CREDIT_LINE_LENGTH 50
+#define SKIN_MIN_VERSION 2.1f
 
 class CSkinInfo
 {
@@ -30,6 +31,11 @@ public:
 	void Load(const CStdString& skinDir, bool loadIncludes = true);
 	bool ResolveConstant(const CStdString &constant, float &value) const;
 	bool ResolveConstant(const CStdString &constant, unsigned int &value) const;
+
+	bool HasSkinFile(const CStdString &strFile) const;
+
+	static bool Check(const CStdString& strSkinDir); // checks if everything is present and accounted for without loading the skin
+	static double GetMinVersion();
 
 	// Brief Get the full path to the specified file in the skin
 	// We search for XML files in the skin folder that best matches the current resolution
@@ -54,6 +60,14 @@ public:
 	// id of the start window
 	int GetStartWindow() const;
 
+	// Get the id of the first window to load (Startup.xml if present)
+	int GetFirstWindow() const;
+
+	const std::vector<CStartupWindow> &GetStartupWindows() const { return m_startupWindows; };
+
+	// Retrieve the skin paths to search for skin XML files
+	void GetSkinPaths(std::vector<CStdString> &paths) const;
+
 	void ResolveIncludes(TiXmlElement *node, const CStdString &type = "");
 
 	const INFO::CSkinVariableString* CreateSkinVariable(const CStdString& name, int context);
@@ -67,6 +81,8 @@ protected:
 	bool GetResolution(const TiXmlNode *node, const char *tag, RESOLUTION &res) const;
 
 	void LoadIncludes();
+	bool LoadStartupWindows(const TiXmlElement *startup);
+	bool IsWide(RESOLUTION res) const;
 
 
 	wchar_t credits[6][CREDIT_LINE_LENGTH];  // Credits info

@@ -39,6 +39,7 @@ public:
 	void LoadSkin(const CStdString& strSkin);
 	void ReloadSkin();
 	void UnloadSkin();
+	bool LoadUserWindows();
 
 	virtual bool Initialize();
 	virtual void Process();
