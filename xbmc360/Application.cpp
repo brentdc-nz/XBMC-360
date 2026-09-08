@@ -18,6 +18,7 @@
 #include "Settings.h"
 #include "filesystem\File.h"
 #include "filesystem\CurlSessionPool.h"
+#include "filesystem\SpecialProtocol.h"
 #include "ApplicationMessenger.h"
 #include "ButtonTranslator.h"
 #include "guilib\AudioContext.h"
@@ -111,6 +112,15 @@ bool CApplication::Create()
 
 	// Grab a handle to our thread to be used later in identifying the render thread
 	m_threadID = GetCurrentThreadId();
+
+	// TODO: Move to it's own function like xbmc4xbox
+	// Map our special:// protocol roots (special://xbmc, special://home,
+	CSpecialProtocol::SetXBMCPath("D:\\");
+	CSpecialProtocol::SetHomePath("D:\\");
+	CSpecialProtocol::SetTempPath("D:\\cache");
+	CSpecialProtocol::SetMasterProfilePath(g_settings.GetUserDataFolder());
+	CSpecialProtocol::SetProfilePath(g_settings.GetUserDataFolder());
+	CSpecialProtocol::LogPaths();
 
 	// Check logpath
 	CStdString strLogFile, strLogFileOld;

@@ -27,6 +27,7 @@
 #include "utils\URIUtils.h"
 #include "filesystem\Directory.h"
 #include "filesystem\File.h"
+#include "filesystem\SpecialProtocol.h"
 #include "SkinInfo.h"
 #include "pictures\Picture.h"
 #include "AdvancedSettings.h"
@@ -351,6 +352,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
 	CStdString strPath;
 	int bundle = -1;
 	int size = 0;
+	
 	if (!HasTexture(strTextureName, &strPath, &bundle, &size))
 		return 0;
 
@@ -422,6 +424,10 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
 		else
 			strPath = g_SkinInfo.GetSkinPath("media\\" + strTextureName);
 	}
+
+	// Translate any special:// URL 
+	if (URIUtils::IsSpecial(strPath))
+		strPath = CSpecialProtocol::TranslatePath(strPath);
 
 	if (strPath.Right(4).ToLower() == ".gif")
 	{

@@ -382,6 +382,9 @@
     <ClInclude Include="filesystem\FileDirectoryFactory.h" />
     <ClInclude Include="filesystem\FileFactory.h" />
     <ClInclude Include="filesystem\FileHD.h" />
+    <ClInclude Include="filesystem\SpecialProtocol.h" />
+    <ClInclude Include="filesystem\SpecialProtocolFile.h" />
+    <ClInclude Include="filesystem\SpecialProtocolDirectory.h" />
     <ClInclude Include="filesystem\FileSMB.h" />
     <ClInclude Include="filesystem\CurlFile.h" />
     <ClInclude Include="filesystem\CurlSessionPool.h" />
@@ -716,6 +719,9 @@
     <ClCompile Include="filesystem\FileDirectoryFactory.cpp" />
     <ClCompile Include="filesystem\FileFactory.cpp" />
     <ClCompile Include="filesystem\FileHD.cpp" />
+    <ClCompile Include="filesystem\SpecialProtocol.cpp" />
+    <ClCompile Include="filesystem\SpecialProtocolFile.cpp" />
+    <ClCompile Include="filesystem\SpecialProtocolDirectory.cpp" />
     <ClCompile Include="filesystem\FileSMB.cpp" />
     <ClCompile Include="filesystem\CurlFile.cpp" />
     <ClCompile Include="filesystem\CurlSessionPool.cpp" />

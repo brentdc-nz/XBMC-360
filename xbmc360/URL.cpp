@@ -87,7 +87,8 @@ CURL::CURL(const CStdString& strURL)
 	if( m_strProtocol.Equals("stack") ||
 		m_strProtocol.Equals("virtualpath") ||
 		m_strProtocol.Equals("multipath") ||
-		m_strProtocol.Equals("filereader") )
+		m_strProtocol.Equals("filereader") ||
+		m_strProtocol.Equals("special") )
 	{
 		m_strFileName = strURL.Mid(iPos);
 		return;

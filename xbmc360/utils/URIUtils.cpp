@@ -2,6 +2,7 @@
 #include "Util.h"
 #include "URL.h"
 #include "filesystem\MultiPathDirectory.h"
+#include "filesystem\SpecialProtocol.h"
 #include "GUISettings.h"
 
 using namespace std;
@@ -179,7 +180,15 @@ bool URIUtils::IsHD(const CStdString& strFileName)
 {
 	CURL url(strFileName);
 
+	if (IsSpecial(strFileName))
+		return IsHD(CSpecialProtocol::TranslatePath(strFileName));
+
 	return url.IsLocal();
+}
+
+bool URIUtils::IsSpecial(const CStdString& strFile)
+{
+	return strFile.Left(8).Equals("special:");
 }
 
 // Returns a filename given an url

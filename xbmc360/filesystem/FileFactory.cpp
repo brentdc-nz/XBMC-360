@@ -7,6 +7,8 @@
 #include "CurlFile.h"
 #include "UPnPFile.h"
 #include "ZipFile.h"
+#include "SpecialProtocolFile.h"
+
 using namespace XFILE;
 
 CFileFactory::CFileFactory()
@@ -30,6 +32,8 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 
 	if (strProtocol == "zip") return new CZipFile();
 //	if (strProtocol == "rar") return new CRarFile(); // TODO
+
+	if (strProtocol == "special") return new CSpecialProtocolFile();
 
 	if(strProtocol == "file" || strProtocol.IsEmpty()) return new CFileHD();
 

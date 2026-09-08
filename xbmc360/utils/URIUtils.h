@@ -51,6 +51,7 @@ public:
 	static bool IsInZIP(const CStdString& strFile);
 	static bool IsInRAR(const CStdString& strFile);
 	static bool IsHD(const CStdString& strFileName);
+	static bool IsSpecial(const CStdString& strFile);
 	static const CStdString GetFileName(const CStdString& strFileNameAndPath);
 	static bool HasSlashAtEnd(const CStdString& strFile);
 	static void RemoveSlashAtEnd(CStdString& strFolder);

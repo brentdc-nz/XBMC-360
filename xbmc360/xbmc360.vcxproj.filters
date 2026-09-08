@@ -458,6 +458,15 @@
     <ClInclude Include="filesystem\FileHD.h">
       <Filter>Header Files\filesystem</Filter>
     </ClInclude>
+    <ClInclude Include="filesystem\SpecialProtocol.h">
+      <Filter>Header Files\filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="filesystem\SpecialProtocolFile.h">
+      <Filter>Header Files\filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="filesystem\SpecialProtocolDirectory.h">
+      <Filter>Header Files\filesystem</Filter>
+    </ClInclude>
     <ClInclude Include="utils\Stdafx.h">
       <Filter>Header Files\utils</Filter>
     </ClInclude>
@@ -1484,6 +1493,15 @@
       <Filter>Source Files\filesystem</Filter>
     </ClCompile>
     <ClCompile Include="filesystem\FileHD.cpp">
+      <Filter>Source Files\filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="filesystem\SpecialProtocol.cpp">
+      <Filter>Source Files\filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="filesystem\SpecialProtocolFile.cpp">
+      <Filter>Source Files\filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="filesystem\SpecialProtocolDirectory.cpp">
       <Filter>Source Files\filesystem</Filter>
     </ClCompile>
     <ClCompile Include="utils\Stdafx.cpp">
