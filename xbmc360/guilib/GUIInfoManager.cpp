@@ -75,6 +75,7 @@ CGUIInfoManager::CGUIInfoManager(void)
 	m_frameCounter = 0;
 	m_lastFPSTime = 0;
 	m_updateTime = 0;
+	ResetLibraryBools();
 }
 
 CGUIInfoManager::~CGUIInfoManager(void)
@@ -517,6 +518,57 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 			if (winID != WINDOW_INVALID)
 				return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_NEXT : WINDOW_NEXT, winID, 0));
 		}
+	}
+	// Library test conditions
+	else if (strTest.Left(7).Equals("library"))
+	{
+		if (strTest.Equals("library.hascontent(music)")) ret = LIBRARY_HAS_MUSIC;
+		else if (strTest.Equals("library.hascontent(video)")) ret = LIBRARY_HAS_VIDEO;
+		else if (strTest.Equals("library.hascontent(movies)")) ret = LIBRARY_HAS_MOVIES;
+		else if (strTest.Equals("library.hascontent(tvshows)")) ret = LIBRARY_HAS_TVSHOWS;
+		else if (strTest.Equals("library.hascontent(musicvideos)")) ret = LIBRARY_HAS_MUSICVIDEOS;
+		else if (strTest.Equals("library.isscanning")) ret = LIBRARY_IS_SCANNING;
+	}
+	else if (strTest.Left(8).Equals("isempty("))
+	{
+		CStdString str = strTest.Mid(8, strTest.GetLength() - 9);
+		return AddMultiInfo(GUIInfo(bNegate ? -STRING_IS_EMPTY : STRING_IS_EMPTY, TranslateSingleString(str)));
+	}
+	else if (strTest.Left(7).Equals("istrue("))
+	{
+		CStdString str = strTest.Mid(7, strTest.GetLength() - 8);
+		return AddMultiInfo(GUIInfo(bNegate ? -VALUE_IS_TRUE : VALUE_IS_TRUE, TranslateSingleString(str)));
+	}
+	else if (strTest.Left(14).Equals("stringcompare("))
+	{
+		int pos = strTest.Find(",");
+		int info = TranslateString(strTest.Mid(14, pos - 14));
+		int info2 = TranslateString(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
+		
+		if (info2 > 0)
+			return AddMultiInfo(GUIInfo(bNegate ? -STRING_COMPARE : STRING_COMPARE, info, -info2));
+		
+		// Pipe our original string through the localize parsing then make it lowercase (picks up $LBRACKET etc.)
+		CStdString label = CGUIInfoLabel::GetLabel(original.Mid(pos + 1, original.GetLength() - (pos + 2))).ToLower();
+		int compareString = ConditionalStringParameter(label);
+		return AddMultiInfo(GUIInfo(bNegate ? -STRING_COMPARE : STRING_COMPARE, info, compareString));
+	}
+	else if (strTest.Left(19).Equals("integergreaterthan("))
+	{
+		int pos = strTest.Find(",");
+		int info = TranslateString(strTest.Mid(19, pos - 19));
+		int compareInt = atoi(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)).c_str());
+		return AddMultiInfo(GUIInfo(bNegate ? -INTEGER_GREATER_THAN : INTEGER_GREATER_THAN, info, compareInt));
+	}
+	else if (strTest.Left(10).Equals("substring("))
+	{
+		int pos = strTest.Find(",");
+		int info = TranslateString(strTest.Mid(10, pos - 10));
+		
+		// Pipe our original string through the localize parsing then make it lowercase (picks up $LBRACKET etc.)
+		CStdString label = CGUIInfoLabel::GetLabel(original.Mid(pos + 1, original.GetLength() - (pos + 2))).ToLower();
+		int compareString = ConditionalStringParameter(label);
+		return AddMultiInfo(GUIInfo(bNegate ? -STRING_STR : STRING_STR, info, compareString));
 	}
 
 	return bNegate ? -ret : ret;
@@ -1138,6 +1190,8 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
 		bReturn = m_playerShowInfo;
 	else if (condition == PLAYER_MUTED)
 		bReturn = g_settings.m_bMute;
+	else if (condition >= LIBRARY_HAS_MUSIC && condition <= LIBRARY_HAS_MUSICVIDEOS)
+		bReturn = GetLibraryBool(condition);
 	else if (condition == VISUALISATION_LOCKED)
 	{
 		CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
@@ -1163,7 +1217,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
 	else if(condition >= MULTI_INFO_START && condition <= MULTI_INFO_END)
 	{
 		// Cache return value
-		bool result = GetMultiInfoBool(m_multiInfo[condition - MULTI_INFO_START], contextWindow);
+		bool result = GetMultiInfoBool(m_multiInfo[condition - MULTI_INFO_START], contextWindow, item);
 		return result;
 	}
 	else if (condition == WEATHER_IS_FETCHED)
@@ -1489,7 +1543,7 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
 }
 
 // Examines the multi information sent and returns true or false accordingly.
-bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow)
+bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, const CGUIListItem *item)
 {
 	bool bReturn = false;
 	int condition = abs(info.m_info);
@@ -1537,6 +1591,75 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow)
 					bReturn = g_settings.GetSkinString(info.GetData1()).Equals(m_stringParameters[info.GetData2()]);
 				else
 					bReturn = !g_settings.GetSkinString(info.GetData1()).IsEmpty();
+			}
+			break;
+			case STRING_IS_EMPTY:
+				// Note: GetItemImage() falls back to labels, so this should cover all of them
+				if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
+					 bReturn = GetItemImage((const CFileItem *)item, info.GetData1()).IsEmpty();
+				else
+					 bReturn = GetImage(info.GetData1(), contextWindow).IsEmpty();
+			break;
+			case STRING_COMPARE:
+			{
+				CStdString compare;
+				
+				if (info.GetData2() < 0) // Info labels are stored with negative numbers
+				{
+					int info2 = -info.GetData2();
+					if (item && item->IsFileItem() && info2 >= LISTITEM_START && info2 < LISTITEM_END)
+						compare = GetItemImage((const CFileItem *)item, info2);
+					else
+						compare = GetImage(info2, contextWindow);
+				}
+				else if (info.GetData2() < (int)m_stringParameters.size())
+				{
+					// Conditional string
+					compare = m_stringParameters[info.GetData2()];
+				}
+				
+				if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
+					 bReturn = GetItemImage((const CFileItem *)item, info.GetData1()).Equals(compare);
+				else
+					 bReturn = GetImage(info.GetData1(), contextWindow).Equals(compare);
+			}
+			break;
+			case INTEGER_GREATER_THAN:
+			{
+				CStdString value;
+
+				if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
+					 value = GetItemImage((const CFileItem *)item, info.GetData1());
+				else
+					 value = GetImage(info.GetData1(), contextWindow);
+
+				// Handle the case when a value contains time separator (:). This makes IntegerGreaterThan
+				// useful for Player.Time* members without adding a separate set of members returning time in seconds
+				if (value.find_first_of(':') != value.npos)
+					 bReturn = CStringUtils::TimeStringToSeconds(value) > info.GetData2();
+				else
+					 bReturn = atoi(value.c_str()) > info.GetData2();
+			}
+			break;
+			case STRING_STR:
+			{
+				CStdString compare = m_stringParameters[info.GetData2()];
+				// our compare string is already in lowercase, so lower case our label as well
+				// as CStdString::Find() is case sensitive
+				CStdString label;
+				if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
+					 label = GetItemImage((const CFileItem *)item, info.GetData1()).ToLower();
+				else
+					 label = GetImage(info.GetData1(), contextWindow).ToLower();
+				if (compare.Right(5).Equals(",left"))
+					 bReturn = label.Find(compare.Mid(0, compare.size() - 5)) == 0;
+				else if (compare.Right(6).Equals(",right"))
+				{
+					compare = compare.Mid(0, compare.size() - 6);
+						 bReturn = label.Find(compare) == (int)(label.size() - compare.size());
+				}
+				else
+					 bReturn = label.Find(compare) > -1;
 			}
 			break;
 			case CONTROL_HAS_FOCUS:
@@ -2372,4 +2495,55 @@ const CVideoInfoTag* CGUIInfoManager::GetCurrentMovieTag() const
 		return m_currentFile->GetVideoInfoTag();
 
 	return NULL;
+}
+
+
+void CGUIInfoManager::SetLibraryBool(int condition, bool value)
+{
+	switch (condition)
+	{
+		case LIBRARY_HAS_MUSIC:
+			m_libraryHasMusic = value ? 1 : 0;
+			break;
+		case LIBRARY_HAS_MOVIES:
+			m_libraryHasMovies = value ? 1 : 0;
+			break;
+		case LIBRARY_HAS_TVSHOWS:
+			m_libraryHasTVShows = value ? 1 : 0;
+			break;
+		case LIBRARY_HAS_MUSICVIDEOS:
+			m_libraryHasMusicVideos = value ? 1 : 0;
+			break;
+		default:
+			break;
+	}
+}
+
+void CGUIInfoManager::ResetLibraryBools()
+{
+	m_libraryHasMusic = -1;
+	m_libraryHasMovies = -1;
+	m_libraryHasTVShows = -1;
+	m_libraryHasMusicVideos = -1;
+}
+
+bool CGUIInfoManager::GetLibraryBool(int condition)
+{
+	// TODO: query music/videodatabase once ported
+	// CMusicDatabase::GetSongsCount() and CVideoDatabase::HasContent()).
+	// For now report an empty library so skins fall back to their
+	// non-library visibility paths.
+	if (condition == LIBRARY_HAS_MUSIC)
+		return m_libraryHasMusic > 0;
+	else if (condition == LIBRARY_HAS_MOVIES)
+		return m_libraryHasMovies > 0;
+	else if (condition == LIBRARY_HAS_TVSHOWS)
+		return m_libraryHasTVShows > 0;
+	else if (condition == LIBRARY_HAS_MUSICVIDEOS)
+		return m_libraryHasMusicVideos > 0;
+	else if (condition == LIBRARY_HAS_VIDEO)
+		return (GetLibraryBool(LIBRARY_HAS_MOVIES) ||
+			GetLibraryBool(LIBRARY_HAS_TVSHOWS) ||
+			GetLibraryBool(LIBRARY_HAS_MUSICVIDEOS));
+	return false;
 }

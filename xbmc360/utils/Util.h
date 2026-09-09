@@ -49,6 +49,9 @@ public:
 	static int GetMatchingSource(const CStdString& strPath, VECSOURCES& VECSOURCES, bool& bIsSourceName);
 	static bool MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTextMaxLength);
 
+	// Skin themes
+	static void GetSkinThemes(std::vector<CStdString>& vecTheme);
+
 	// Thumb cache helpers (match xbmc4xbox CUtil API)
 	static CStdString GetCachedAlbumThumb(const CStdString& album, const CStdString& artist);
 	static CStdString GetCachedMusicThumb(const CStdString& path);

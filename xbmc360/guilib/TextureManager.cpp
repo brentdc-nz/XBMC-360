@@ -219,10 +219,12 @@ bool CTextureMap::IsEmpty() const
 CGUITextureManager::CGUITextureManager(void)
 {
 	m_strMediaDir = "";
-	m_TexBundle[0].SetThemeBundle(false);
-	m_TexBundle[1].SetThemeBundle(true);
-	for (int i = 0; i < 2; i++)
-		m_iNextPreload[i] = m_PreLoadNames[i].end();
+	
+	for (int bundle = 0; bundle < 2; bundle++)
+		m_iNextPreload[bundle] = m_PreLoadNames[bundle].end();
+
+	// We set the theme bundle to be the first bundle (thus prioritising it
+	m_TexBundle[0].SetThemeBundle(true);
 }
 
 CGUITextureManager::~CGUITextureManager(void)
@@ -352,7 +354,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
 	CStdString strPath;
 	int bundle = -1;
 	int size = 0;
-	
+
 	if (!HasTexture(strTextureName, &strPath, &bundle, &size))
 		return 0;
 

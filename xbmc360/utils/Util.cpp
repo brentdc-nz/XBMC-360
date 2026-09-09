@@ -11,6 +11,9 @@
 #include "Crc32.h"
 #include "..\ThumbnailCache.h"
 #include "guilib\LocalizeStrings.h"
+#include "FileItem.h"
+#include "filesystem\Directory.h"
+#include "guilib\GraphicContext.h"
 //#include "RegExp.h" // TODO
 
 typedef struct
@@ -835,4 +838,31 @@ bool CUtil::ThumbExists(const CStdString& strFileName)
 void CUtil::ThumbCacheAdd(const CStdString& strFileName, bool bExists)
 {
 	CThumbnailCache::GetThumbnailCache()->Add(strFileName, bExists);
+}
+
+void CUtil::GetSkinThemes(vector<CStdString>& vecTheme)
+{
+	CStdString strPath;
+	URIUtils::AddFileToFolder(g_graphicsContext.GetMediaDir(), "media", strPath);
+	CFileItemList items;
+	XFILE::CDirectory::GetDirectory(strPath, items);
+	
+	// Search for Themes in the Current skin!
+	for (int i = 0; i < items.Size(); ++i)
+	{
+		CFileItemPtr pItem = items[i];
+		
+		if (!pItem->m_bIsFolder)
+		{
+			CStdString strExtension;
+			URIUtils::GetExtension(pItem->GetPath(), strExtension);
+			if (strExtension == ".xpr" && pItem->GetLabel().CompareNoCase("Textures.xpr"))
+			{
+				CStdString strLabel = pItem->GetLabel();
+				vecTheme.push_back(strLabel.Mid(0, strLabel.size() - 4));
+			}
+		}
+	}
+	
+	sort(vecTheme.begin(), vecTheme.end(), sortstringbyname());
 }

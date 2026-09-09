@@ -41,6 +41,8 @@ protected:
 
 	void FillInResolutions(CSetting *pSetting);
 	void FillInSkins(CSetting *pSetting);
+	void FillInSkinThemes(CSetting *pSetting);
+	void FillInSkinColors(CSetting *pSetting);
 	void FillInLanguages(CSetting *pSetting);
 	void FillInRegions(CSetting *pSetting);
 	void FillInScreenSavers(CSetting *pSetting);

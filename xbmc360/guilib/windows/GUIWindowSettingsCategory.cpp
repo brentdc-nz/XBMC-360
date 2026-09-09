@@ -445,6 +445,14 @@ void CGUIWindowSettingsCategory::CreateSettings()
 		{
 			FillInSkins(pSetting);
 		}
+		else if (strSetting.Equals("lookandfeel.skintheme"))
+		{
+			FillInSkinThemes(pSetting);
+		}
+		else if (strSetting.Equals("lookandfeel.skincolors"))
+		{
+			FillInSkinColors(pSetting);
+		}
 		else if (strSetting.Equals("locale.language"))
 		{
 			FillInLanguages(pSetting);
@@ -677,6 +685,56 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
 		}
 
 	}
+	else if (strSetting.Equals("lookandfeel.skintheme"))
+	{ 
+		// A new Theme was chosen
+		CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
+		CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+
+		CStdString strSkinTheme;
+
+		if (pControl->GetValue() == 0) // Use default theme
+			strSkinTheme = "SKINDEFAULT";
+		else
+			strSkinTheme = pControl->GetCurrentLabel() + ".xpr";
+
+		if (strSkinTheme != pSettingString->GetData())
+		{
+			m_strNewSkinTheme = strSkinTheme;
+			g_application.DelayLoadSkin();
+		}
+		else
+		{
+			// Do not reload the skin theme we are using
+			m_strNewSkinTheme.Empty();
+			g_application.CancelDelayLoadSkin();
+		}
+	}
+	else if (strSetting.Equals("lookandfeel.skincolors"))
+	{
+		// A new color was chosen
+		CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
+		CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+
+		CStdString strSkinColor;
+
+		if (pControl->GetValue() == 0) // Use default colors
+			strSkinColor = "SKINDEFAULT";
+		else
+			strSkinColor = pControl->GetCurrentLabel() + ".xml";
+
+		if (strSkinColor != pSettingString->GetData())
+		{
+			m_strNewSkinColors = strSkinColor;
+			g_application.DelayLoadSkin();
+		}
+		else
+		{
+			// Do not reload the skin colors we are using
+			m_strNewSkinColors.Empty();
+			g_application.CancelDelayLoadSkin();
+		}
+	}
 	else if (strSetting.Equals("locale.language"))
 	{
 		// New language chosen...
@@ -808,6 +866,104 @@ void CGUIWindowSettingsCategory::FillInSkins(CSetting *pSetting)
 	pControl->SetValue(iCurrentSkin);
 }
 
+void CGUIWindowSettingsCategory::FillInSkinThemes(CSetting *pSetting)
+{
+	// There is a default theme (just Textures.xpr)
+	// any other *.xpr files are additional themes on top of this one.
+	CSettingString *pSettingString = (CSettingString*)pSetting;
+	CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+	CStdString strSettingString = g_guiSettings.GetString("lookandfeel.skintheme");
+
+	m_strNewSkinTheme.Empty();
+
+	// Clear and add. the Default Label
+	pControl->Clear();
+	pControl->SetShowRange(true);
+	pControl->AddLabel(g_localizeStrings.Get(15109), 0); // "SKINDEFAULT"! The standart Textures.xpr will be used!
+
+	// find all *.xpr in this path
+	CStdString strDefaultTheme = pSettingString->GetData();
+
+	// Search for Themes in the Current skin!
+	std::vector<CStdString> vecTheme;
+	CUtil::GetSkinThemes(vecTheme);
+
+	// Remove the .xpr extension from the Themes
+	CStdString strExtension;
+	URIUtils::GetExtension(strSettingString, strExtension);
+	if (strExtension == ".xpr") strSettingString.Delete(strSettingString.size() - 4, 4);
+	
+	// Sort the Themes for GUI and list them
+	int iCurrentTheme = 0;
+	
+	for (int i = 0; i < (int) vecTheme.size(); ++i)
+	{
+		CStdString strTheme = vecTheme[i];
+		// Is the Current Theme our Used Theme! If yes set the ID!
+		if (strTheme.CompareNoCase(strSettingString) == 0 )
+			iCurrentTheme = i + 1; // 1: #of Predefined Theme [Label]
+		pControl->AddLabel(strTheme, i + 1);
+	}
+	
+	// Set the Choosen Theme
+	pControl->SetValue(iCurrentTheme);
+}
+
+void CGUIWindowSettingsCategory::FillInSkinColors(CSetting *pSetting)
+{
+	// There is a default theme (just defaults.xml)
+	// any other *.xml files are additional color themes on top of this one.
+	CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+	CStdString strSettingString = g_guiSettings.GetString("lookandfeel.skincolors");
+
+	m_strNewSkinColors.Empty();
+
+	// Clear and add. the Default Label
+	pControl->Clear();
+	pControl->SetShowRange(true);
+	pControl->AddLabel(g_localizeStrings.Get(15109), 0); // "SKINDEFAULT"! The standard defaults.xml will be used!
+
+	// Search for colors in the Current skin!
+	std::vector<CStdString> vecColors;
+
+	CStdString strPath;
+	URIUtils::AddFileToFolder(g_SkinInfo.GetBaseDir(), "colors", strPath);
+
+	CFileItemList items;
+	CDirectory::GetDirectory(strPath, items, ".xml");
+	
+	// Search for Themes in the Current skin!
+	for (int i = 0; i < items.Size(); ++i)
+	{
+		CFileItemPtr pItem = items[i];
+		if (!pItem->m_bIsFolder && pItem->GetLabel().CompareNoCase("defaults.xml") != 0)
+		{ // not the default one
+			CStdString strLabel = pItem->GetLabel();
+			vecColors.push_back(strLabel.Mid(0, strLabel.size() - 4));
+		}
+	}
+	
+	sort(vecColors.begin(), vecColors.end(), sortstringbyname());
+
+	// Remove the .xml extension from the Themes
+	if (URIUtils::GetExtension(strSettingString) == ".xml")
+		URIUtils::RemoveExtension(strSettingString);
+
+	int iCurrentColor = 0;
+	
+	for (int i = 0; i < (int) vecColors.size(); ++i)
+	{
+		CStdString strColor = vecColors[i];
+		// Is the Current Theme our Used Theme! If yes set the ID!
+		if (strColor.CompareNoCase(strSettingString) == 0 )
+			iCurrentColor = i + 1; // 1: #of Predefined Theme [Label]
+		pControl->AddLabel(strColor, i + 1);
+	}
+	
+	// Set the Choosen Theme
+	pControl->SetValue(iCurrentColor);
+}
+
 void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)
 {
 	CSettingString *pSettingString = (CSettingString*)pSetting;
@@ -871,7 +1027,8 @@ void CGUIWindowSettingsCategory::FillInRegions(CSetting *pSetting)
 }
 
 void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
-{	// Screensaver mode
+{
+	// Screensaver mode
 	CSettingString *pSettingString = (CSettingString*)pSetting;
 	CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
 	pControl->Clear();

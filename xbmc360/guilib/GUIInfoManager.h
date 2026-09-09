@@ -187,10 +187,16 @@ namespace INFO
 #define CONTAINER_SHOWPLOT          379
 #define CONTAINER_TOTALTIME         380
 
-#define VISUALISATION_LOCKED         400
-#define VISUALISATION_PRESET         401
-#define VISUALISATION_NAME           402
-#define VISUALISATION_ENABLED        403
+#define VISUALISATION_LOCKED        400
+#define VISUALISATION_PRESET        401
+#define VISUALISATION_NAME          402
+#define VISUALISATION_ENABLED       403
+
+#define STRING_IS_EMPTY             410
+#define STRING_COMPARE              411
+#define STRING_STR                  412
+#define INTEGER_GREATER_THAN        413
+#define VALUE_IS_TRUE               414
 
 #define SKIN_HAS_THEME_START        500
 #define SKIN_HAS_THEME_END          599 // Allow for max 100 themes
@@ -199,6 +205,15 @@ namespace INFO
 #define SKIN_STRING                 601
 #define SKIN_HAS_MUSIC_OVERLAY      602
 #define SKIN_HAS_VIDEO_OVERLAY      603
+
+#define LIBRARY_HAS_MUSIC           720
+#define LIBRARY_HAS_VIDEO           721
+#define LIBRARY_HAS_MOVIES          722
+#define LIBRARY_HAS_TVSHOWS         723
+#define LIBRARY_HAS_MUSICVIDEOS     724
+#define LIBRARY_IS_SCANNING         725
+#define LIBRARY_IS_SCANNING_VIDEO   726
+#define LIBRARY_IS_SCANNING_MUSIC   727
 
 #define SYSTEM_FREE_MEMORY          648
 
@@ -435,11 +450,21 @@ protected:
 	bool CheckWindowCondition(CGUIWindow *window, int condition) const;
 	CGUIWindow *GetWindowWithCondition(int contextWindow, int condition) const;
 
-	bool GetMultiInfoBool(const GUIInfo &info, int contextWindow = 0);
+	bool GetMultiInfoBool(const GUIInfo &info, int contextWindow = 0, const CGUIListItem *item = NULL);
 	CStdString GetMultiInfoLabel(const GUIInfo &info, int contextWindow = 0);
 	int TranslateListItem(const CStdString &info);
 	TIME_FORMAT TranslateTimeFormat(const CStdString &format);
 	bool GetItemBool(const CGUIListItem *item, int condition) const;
+
+	void SetLibraryBool(int condition, bool value);
+	void ResetLibraryBools();
+	bool GetLibraryBool(int condition);
+
+	// library caching bools for faster lookups
+	int m_libraryHasMusic;
+	int m_libraryHasMovies;
+	int m_libraryHasTVShows;
+	int m_libraryHasMusicVideos;
 
 	CStdString GetTime(bool bSeconds = false);
 	CStdString GetDate(bool bNumbersOnly = false);
