@@ -128,6 +128,7 @@ public:
 	CApplicationMessenger& getApplicationMessenger() { return m_applicationMessenger; };
 
 	bool ExecuteXBMCAction(std::string action);
+	bool OnAction(CAction &action);
 	void RenderMemoryStatus();
 
 	CStdString m_strPlayListFile;
@@ -136,7 +137,6 @@ protected:
 	bool ProcessGamepad(float frameTime);
 	bool ProcessJsonRpcButtons();
 	bool OnKey(CKey& key);
-	bool OnAction(CAction &action);
 	void FatalErrorHandler(bool InitD3D);
 	void ActivateScreenSaver();
 	void ProcessSlow();

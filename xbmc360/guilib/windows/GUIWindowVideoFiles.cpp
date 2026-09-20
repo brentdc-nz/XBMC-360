@@ -26,7 +26,7 @@
 using namespace std;
 
 CGUIWindowVideoFiles::CGUIWindowVideoFiles()
-	: CGUIWindowVideoBase(WINDOW_VIDEO_FILES, "MyVideos.xml")
+	: CGUIWindowVideoBase(WINDOW_VIDEO_FILES, "MyVideo.xml")
 {
 }
 

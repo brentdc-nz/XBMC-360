@@ -69,6 +69,7 @@ public:
 	virtual bool HasAudio() const = 0;
 	virtual bool CanSeek() {return true;}
 	virtual bool CanPause() {return true;}
+	virtual bool SkipNext(){return false;}
 	virtual void SetVolume(long nVolume){}
 	virtual void DoAudioWork(){}
 	virtual bool OnAction(const CAction &action){ return false; };

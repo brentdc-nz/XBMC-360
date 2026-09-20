@@ -13,6 +13,7 @@
 #include "ButtonTranslator.h"
 #include "GUIMediaWindow.h"
 #include "GUIBaseContainer.h"
+#include "GUITextBox.h"
 #include "utils\Weather.h"
 #include "LangInfo.h"
 #include "music\tags\MusicInfoTag.h"
@@ -251,6 +252,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 		else if(strTest.Equals("system.gputemperature")) ret = SYSTEM_GPU_TEMPERATURE;
 		else if(strTest.Equals("system.memory(free)") || strTest.Equals("system.freememory")) ret = SYSTEM_FREE_MEMORY;
 		else if (strTest.Equals("system.progressbar")) ret = SYSTEM_PROGRESS_BAR;
+		else if (strTest.Left(15).Equals("system.getbool("))
+			return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_GET_BOOL : SYSTEM_GET_BOOL, ConditionalStringParameter(strTest.Mid(15, strTest.size() - 16)), 0));
 	}
 	else if (strCategory.Equals("network"))
 	{
@@ -371,7 +374,14 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 	{
 		int id = atoi(strCategory.Mid(10, strCategory.GetLength() - 11));
 		CStdString info = strTest.Mid(strCategory.GetLength() + 1);
-		if (info.Left(16).Equals("listitemposition"))
+		if (info.Left(14).Equals("listitemnowrap"))
+		{
+			int offset = atoi(info.Mid(15, info.GetLength() - 16));
+			ret = TranslateListItem(info.Mid(info.Find(".")+1));
+			if (offset || id)
+				return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, id, offset));
+		}
+		else if (info.Left(16).Equals("listitemposition"))
 		{
 			int offset = atoi(info.Mid(17, info.GetLength() - 18));
 			ret = TranslateListItem(info.Mid(info.Find(".")+1));
@@ -385,6 +395,15 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 			if (offset || id)
 				return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, id, offset, INFOFLAG_LISTITEM_WRAP));
 		}
+		else if (info.Equals("hasfiles")) ret = CONTAINER_HASFILES;
+		else if (info.Equals("hasfolders")) ret = CONTAINER_HASFOLDERS;
+		else if (info.Equals("isstacked")) ret = CONTAINER_STACKED;
+		else if (info.Equals("folderthumb")) ret = CONTAINER_FOLDERTHUMB;
+		else if (info.Equals("tvshowthumb")) ret = CONTAINER_TVSHOWTHUMB;
+		else if (info.Equals("seasonthumb")) ret = CONTAINER_SEASONTHUMB;
+		else if (info.Equals("folderpath")) ret = CONTAINER_FOLDERPATH;
+		else if (info.Equals("foldername")) ret = CONTAINER_FOLDERNAME;
+		else if (info.Equals("pluginname")) ret = CONTAINER_PLUGINNAME;
 		else if (info.Equals("viewmode")) ret = CONTAINER_VIEWMODE;
 		else if (info.Equals("onnext")) ret = CONTAINER_MOVE_NEXT;
 		else if (info.Equals("onprevious")) ret = CONTAINER_MOVE_PREVIOUS;
@@ -407,6 +426,43 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 			return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_POSITION : CONTAINER_POSITION, id, atoi(info.Mid(9, info.GetLength() - 10))));
 		else if (info.Left(8).Equals("subitem("))
 			return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_SUBITEM : CONTAINER_SUBITEM, id, atoi(info.Mid(8, info.GetLength() - 9))));
+		else if (info.Equals("hasthumb")) ret = CONTAINER_HAS_THUMB;
+		else if (info.Equals("numpages")) ret = CONTAINER_NUM_PAGES;
+		else if (info.Equals("numitems")) ret = CONTAINER_NUM_ITEMS;
+		else if (info.Equals("currentpage")) ret = CONTAINER_CURRENT_PAGE;
+		else if (info.Equals("sortmethod")) ret = CONTAINER_SORT_METHOD;
+		else if (info.Left(13).Equals("sortdirection"))
+		{
+			CStdString direction = info.Mid(14, info.GetLength() - 15);
+			SORT_ORDER order = SORT_ORDER_NONE;
+			if (direction == "ascending")
+				order = SORT_ORDER_ASC;
+			else if (direction == "descending")
+				order = SORT_ORDER_DESC;
+			return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_SORT_DIRECTION : CONTAINER_SORT_DIRECTION, order));
+		}
+		else if (info.Left(5).Equals("sort("))
+		{
+			SORT_METHOD sort = SORT_METHOD_NONE;
+			CStdString method(info.Mid(5, info.GetLength() - 6));
+			if (method.Equals("songrating")) sort = SORT_METHOD_SONG_RATING;
+			if (sort != SORT_METHOD_NONE)
+				return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_SORT_METHOD : CONTAINER_SORT_METHOD, sort));
+		}
+		else if (id && info.Left(9).Equals("hasfocus("))
+		{
+			int itemID = atoi(info.Mid(9, info.GetLength() - 10));
+			return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_HAS_FOCUS : CONTAINER_HAS_FOCUS, id, itemID));
+		}
+		else if (info.Left(9).Equals("property("))
+		{
+			int compareString = ConditionalStringParameter(info.Mid(9, info.GetLength() - 10));
+			return AddMultiInfo(GUIInfo(CONTAINER_PROPERTY, id, compareString));
+		}
+		else if (info.Equals("showplot")) ret = CONTAINER_SHOWPLOT;
+		if (id && ((ret >= CONTAINER_SCROLL_PREVIOUS && ret <= CONTAINER_SCROLL_NEXT) || ret == CONTAINER_NUM_PAGES ||
+			ret == CONTAINER_NUM_ITEMS || ret == CONTAINER_CURRENT_PAGE))
+			return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, id));
 	}
 	else if (strCategory.Left(8).Equals("listitem"))
 	{
@@ -1120,6 +1176,87 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
 			}
 		}
 		break;
+		case CONTAINER_FOLDERPATH:
+		case CONTAINER_FOLDERNAME:
+		{
+			CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+			if (window)
+			{
+				if (info == CONTAINER_FOLDERNAME)
+					strLabel = ((CGUIMediaWindow*)window)->CurrentDirectory().GetLabel();
+				else
+					strLabel = CURL(((CGUIMediaWindow*)window)->CurrentDirectory().GetPath()).GetWithoutUserDetails();
+			}
+		}
+		break;
+		case CONTAINER_PLUGINNAME:
+		{
+			CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+			if (window)
+			{
+				CURL url(((CGUIMediaWindow*)window)->CurrentDirectory().GetPath());
+				if (url.GetProtocol().Equals("plugin"))
+				{
+					strLabel = url.GetFileName();
+					URIUtils::RemoveSlashAtEnd(strLabel);
+				}
+			}
+		}
+		break;
+		case CONTAINER_VIEWMODE:
+		{
+			CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+			if (window)
+			{
+				const CGUIControl *control = window->GetControl(window->GetViewContainerID());
+				if (control && control->IsContainer())
+					strLabel = ((CGUIBaseContainer *)control)->GetLabel();
+			}
+		}
+		break;
+		case CONTAINER_SORT_METHOD:
+		{
+			CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+			if (window)
+			{
+				const CGUIViewState *viewState = ((CGUIMediaWindow*)window)->GetViewState();
+				if (viewState)
+					strLabel = g_localizeStrings.Get(viewState->GetSortMethodLabel());
+			}
+		}
+		break;
+		case CONTAINER_NUM_PAGES:
+		case CONTAINER_NUM_ITEMS:
+		case CONTAINER_CURRENT_PAGE:
+			return GetMultiInfoLabel(GUIInfo(info), contextWindow);
+		break;
+		case CONTAINER_SHOWPLOT:
+		{
+			CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+			if (window)
+				return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("showplot");
+		}
+		break;
+		case CONTAINER_TOTALTIME:
+		{
+			CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+			if (window)
+			{
+				const CFileItemList& items = ((CGUIMediaWindow *)window)->CurrentDirectory();
+				int duration = 0;
+				for (int i = 0; i < items.Size(); ++i)
+				{
+					CFileItemPtr item = items.Get(i);
+					if (item->HasMusicInfoTag())
+						duration += item->GetMusicInfoTag()->GetDuration();
+					else if (item->HasVideoInfoTag())
+						duration += item->GetVideoInfoTag()->m_streamDetails.GetVideoDuration();
+				}
+				if (duration > 0)
+					return CStringUtils::SecondsToTimeString(duration);
+			}
+		}
+		break;
 	}
 
 	return strLabel;
@@ -1150,6 +1287,24 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
 		if(m_currentMovieThumb.IsEmpty())
 			return m_currentFile->HasThumbnail() ? m_currentFile->GetThumbnailImage() : "DefaultVideoCover.png";
 		else return m_currentMovieThumb;
+	}
+	else if (info == CONTAINER_FOLDERTHUMB)
+	{
+		CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+		if (window)
+			return GetItemImage(&const_cast<CFileItemList&>(((CGUIMediaWindow*)window)->CurrentDirectory()), LISTITEM_THUMB);
+	}
+	else if (info == CONTAINER_TVSHOWTHUMB)
+	{
+		CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+		if (window)
+			return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("tvshowthumb");
+	}
+	else if (info == CONTAINER_SEASONTHUMB)
+	{
+		CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+		if (window)
+			return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("seasonthumb");
 	}
 	else if (info == LISTITEM_THUMB || info == LISTITEM_ICON || info == LISTITEM_ACTUAL_ICON ||
           info == LISTITEM_OVERLAY || info == LISTITEM_RATING || info == LISTITEM_STAR_RATING)
@@ -1222,6 +1377,40 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
 	}
 	else if (condition == WEATHER_IS_FETCHED)
 		bReturn = g_weatherManager.IsFetched();
+	else if (condition == CONTAINER_HASFILES || condition == CONTAINER_HASFOLDERS)
+	{
+		CGUIWindow *pWindow = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+		if (pWindow)
+		{
+			const CFileItemList& items = ((CGUIMediaWindow*)pWindow)->CurrentDirectory();
+			for (int i = 0; i < items.Size(); ++i)
+			{
+				CFileItemPtr item = items.Get(i);
+				if (!item->m_bIsFolder && condition == CONTAINER_HASFILES)
+				{
+					bReturn = true;
+					break;
+				}
+				else if (item->m_bIsFolder && !item->IsParentFolder() && condition == CONTAINER_HASFOLDERS)
+				{
+					bReturn = true;
+					break;
+				}
+			}
+		}
+	}
+	else if (condition == CONTAINER_STACKED)
+	{
+		CGUIWindow *pWindow = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+		if (pWindow)
+			bReturn = ((CGUIMediaWindow*)pWindow)->CurrentDirectory().GetProperty("isstacked") == "1";
+	}
+	else if (condition == CONTAINER_HAS_THUMB)
+	{
+		CGUIWindow *pWindow = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+		if (pWindow)
+			bReturn = ((CGUIMediaWindow*)pWindow)->CurrentDirectory().HasThumbnail();
+	}
 	else if (condition >= CONTAINER_SCROLL_PREVIOUS && condition <= CONTAINER_SCROLL_NEXT)
 	{
 		CGUIWindow *pWindow = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
@@ -1507,6 +1696,44 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
 		if (m_seekOffset > 0)
 			return "+" + seekOffset;
 	}
+	else if (info.m_info == CONTAINER_NUM_PAGES || info.m_info == CONTAINER_CURRENT_PAGE ||
+				 info.m_info == CONTAINER_NUM_ITEMS || info.m_info == CONTAINER_POSITION)
+	{
+		const CGUIControl *control = NULL;
+		if (info.GetData1())
+		{ // container specified
+			CGUIWindow *window = GetWindowWithCondition(contextWindow, 0);
+			if (window)
+				control = window->GetControl(info.GetData1());
+		}
+		else
+		{ // no container specified - assume a mediawindow
+			CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+			if (window)
+				control = window->GetControl(window->GetViewContainerID());
+		}
+		if (control)
+		{
+			if (control->IsContainer())
+				return ((CGUIBaseContainer *)control)->GetLabel(info.m_info);
+			else if (control->GetControlType() == CGUIControl::GUICONTROL_TEXTBOX)
+				return ((CGUITextBox *)control)->GetLabel(info.m_info);
+		}
+	}
+	else if (info.m_info == CONTAINER_PROPERTY)
+	{
+		CGUIWindow *window = NULL;
+		if (info.GetData1())
+		{ // container specified
+			window = GetWindowWithCondition(contextWindow, 0);
+		}
+		else
+		{ // no container specified - assume a mediawindow
+			window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+		}
+		if (window)
+			return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty(m_stringParameters[info.GetData2()]);
+	}
 
 	// TODO - Add more!
 
@@ -1583,6 +1810,11 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
 			case SKIN_BOOL:
 			{
 				bReturn = g_settings.GetSkinBool(info.GetData1());
+			}
+			break;
+			case SYSTEM_GET_BOOL:
+			{
+				bReturn = g_guiSettings.GetBool(m_stringParameters[info.GetData1()]);
 			}
 			break;
 			case SKIN_STRING:
@@ -1786,6 +2018,44 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
 				}
 				if (control)
 					bReturn = control->GetCondition(condition, info.GetData2());
+			}
+			break;
+			case CONTAINER_HAS_FOCUS:
+			{ // grab our container
+				CGUIWindow *window = GetWindowWithCondition(contextWindow, 0);
+				if (window)
+				{
+					const CGUIControl *control = window->GetControl(info.GetData1());
+					if (control && control->IsContainer())
+					{
+						CGUIListItemPtr listItem = ((CGUIBaseContainer *)control)->GetListItem(0);
+						CFileItem *item = (listItem && listItem->IsFileItem()) ? (CFileItem *)listItem.get() : NULL;
+						if (item && item->m_iprogramCount == info.GetData2())  // programcount used to store item id
+							bReturn = true;
+					}
+				}
+				break;
+			}
+			case CONTAINER_SORT_METHOD:
+			{
+				CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+				if (window)
+				{
+					const CGUIViewState *viewState = ((CGUIMediaWindow*)window)->GetViewState();
+					if (viewState)
+						bReturn = ((unsigned int)viewState->GetSortMethod() == info.GetData1());
+				}
+			}
+			break;
+			case CONTAINER_SORT_DIRECTION:
+			{
+				CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+				if (window)
+				{
+					const CGUIViewState *viewState = ((CGUIMediaWindow*)window)->GetViewState();
+					if (viewState)
+						bReturn = ((unsigned int)viewState->GetDisplaySortOrder() == info.GetData1());
+				}
 			}
 			break;
 		}

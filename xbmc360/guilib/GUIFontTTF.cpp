@@ -182,41 +182,44 @@ CGUIFontTTF::~CGUIFontTTF(void)
 
 void CGUIFontTTF::Clear()
 {
-	if (m_texture)
+	g_graphicsContext.TLock();
+
+	LPDIRECT3DDEVICE9 pDevice = g_graphicsContext.Get3DDevice();
+	if (pDevice)
 	{
-		g_graphicsContext.TLock();
-		m_texture->Release();
-		g_graphicsContext.TUnlock();
+		pDevice->SetTexture(0, NULL);
+		pDevice->SetVertexShader(NULL);
+		pDevice->SetPixelShader(NULL);
+		pDevice->SetVertexDeclaration(NULL);
 	}
 
+	if (m_texture)
+		m_texture->Release();
+
 	m_texture = NULL;
-	
+
 	if (m_pVertexDecl)
-	{
-		g_graphicsContext.TLock();
 		m_pVertexDecl->Release();
-		g_graphicsContext.TUnlock();
-	}
 
 	m_pVertexDecl = NULL;
 
 	if (m_pVertexShader)
-	{
-		g_graphicsContext.TLock();
 		m_pVertexShader->Release();
-		g_graphicsContext.TUnlock();
-	}
 
 	m_pVertexShader = NULL;
 
 	if (m_pPixelShader)
-	{
-		g_graphicsContext.TLock();	
 		m_pPixelShader->Release();
-		g_graphicsContext.TUnlock();
-	}
 
 	m_pPixelShader = NULL;
+
+	// We may have unbound the shared texture-rendering shaders behind the
+	// back of the CGUITextureD3D state cache - Force it to re-apply its
+	// state on the next draw, otherwise it would skip setting the vertex
+	// shader/declaration and crash on the first DrawPrimitiveUP.
+	CGUITextureD3D::ResetStateCache();
+
+	g_graphicsContext.TUnlock();
 
 	if (m_char)
 		delete[] m_char;

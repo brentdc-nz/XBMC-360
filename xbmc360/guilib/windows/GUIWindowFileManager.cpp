@@ -1209,7 +1209,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
 	}
 	if (btnid == 10)
 	{
-		g_windowManager.ActivateWindow(WINDOW_SETTINGS);
+		g_windowManager.ActivateWindow(WINDOW_SETTINGS_MENU);
 		return;
 	}
 	if (btnid == 11)

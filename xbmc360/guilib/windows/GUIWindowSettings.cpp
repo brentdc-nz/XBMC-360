@@ -2,7 +2,7 @@
 #include "guilib\GUIUserMessages.h"
 #include "guilib\GUIWindowManager.h"
 
-CGUIWindowSettings::CGUIWindowSettings(void) : CGUIWindow(WINDOW_SETTINGS, "Settings.xml")
+CGUIWindowSettings::CGUIWindowSettings(void) : CGUIWindow(WINDOW_SETTINGS_MENU, "Settings.xml")
 {
 }
 

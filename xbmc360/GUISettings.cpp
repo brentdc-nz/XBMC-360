@@ -329,10 +329,16 @@ bool CGUISettings::GetBool(const char *strSetting) const
 	}
 	
 	// Forward compatibility for new skins (skins use this setting)
-// TODO
-/*	if (lower == "input.enablemouse")
+#ifndef _HAS_MOUSE
+	// No mouse on Xbox 360 - Always report it as disabled so that mouse-only
+	// skin controls (system.getbool(input.enablemouse)) stay hidden.
+	if (lower == "input.enablemouse")
+		return false;
+#else
+	if (lower == "input.enablemouse")
 		return GetBool("lookandfeel.enablemouse");
-*/
+#endif
+
 	// Assert here and write debug output
 	CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
 	return false;

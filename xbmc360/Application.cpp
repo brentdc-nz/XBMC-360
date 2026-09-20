@@ -1161,6 +1161,34 @@ bool CApplication::OnAction(CAction &action)
 		return true;
 	}
 
+	// Previous : Play previous song from playlist
+	if (action.GetID() == ACTION_PREV_ITEM)
+	{
+		// first check whether we're within 3 seconds of the start of the track
+		// if not, we just revert to the start of the track
+		if (m_pPlayer && m_pPlayer->CanSeek() && GetTime() > 3)
+		{
+			SeekTime(0);
+			SetPlaySpeed(1);
+		}
+		else
+		{
+			g_playlistPlayer.PlayPrevious();
+		}
+		return true;
+	}
+
+	// Next : Play next song from playlist
+	if (action.GetID() == ACTION_NEXT_ITEM)
+	{
+		if (IsPlaying() && m_pPlayer->SkipNext())
+			return true;
+
+		g_playlistPlayer.PlayNext();
+
+		return true;
+	}
+
 	if (IsPlaying())
 	{
 		// Pause : Pauses current audio song
@@ -2281,7 +2309,7 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr)
 
 		if (CButtonTranslator::TranslateActionString(actionStr.c_str(), actionID))
 		{
-//			OnAction(CAction(actionID));// TODO 
+			OnAction(CAction(actionID));
 			return true;
 		}
 
@@ -2340,7 +2368,7 @@ void CApplication::Cleanup()
 		g_windowManager.Delete(WINDOW_MUSIC_FILES);
 		g_windowManager.Delete(WINDOW_PICTURES);
 		g_windowManager.Delete(WINDOW_SLIDESHOW);
-		g_windowManager.Delete(WINDOW_SETTINGS);
+		g_windowManager.Delete(WINDOW_SETTINGS_MENU);
 		g_windowManager.Delete(WINDOW_SETTINGS_MYPICTURES); // All the settings categories
 		g_windowManager.Delete(WINDOW_SCREENSAVER);
 		g_windowManager.Delete(WINDOW_SYSTEM_INFORMATION);

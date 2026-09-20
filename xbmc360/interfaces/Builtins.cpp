@@ -188,6 +188,102 @@ int CBuiltins::Execute(const CStdString& execString)
 		g_settings.LoadRSSFeeds();
 		g_rssManager.Start();
 	}
+	else if (execute.Equals("setfocus") || execute.Equals("control.setfocus") && params.size())
+	{
+		int controlID = atol(params[0].c_str());
+		int subItem = (params.size() > 1) ? atol(params[1].c_str())+1 : 0;
+		CGUIMessage msg(GUI_MSG_SETFOCUS, g_windowManager.GetActiveWindow(), controlID, subItem);
+		g_windowManager.SendMessage(msg);
+	}
+	else if (execute.Equals("playercontrol"))
+	{
+		g_application.ResetScreenSaver();
+		g_application.ResetScreenSaverWindow();
+		
+		if (!params.size())
+		{
+			CLog::Log(LOGERROR, "XBMC.PlayerControl called with empty parameter");
+			return -3;
+		}
+		if (parameter.Equals("play"))
+		{
+			// play/pause
+			// Either resume playing, or pause
+			if (g_application.IsPlaying())
+			{
+				if (g_application.GetPlaySpeed() != 1)
+					g_application.SetPlaySpeed(1);
+				else
+					g_application.m_pPlayer->Pause();
+			}
+		}
+		else if (parameter.Equals("stop"))
+		{
+			g_application.StopPlaying();
+		}
+		else if (parameter.Equals("rewind") || parameter.Equals("forward"))
+		{
+			if (g_application.IsPlaying() && !g_application.m_pPlayer->IsPaused())
+			{
+				int iPlaySpeed = g_application.GetPlaySpeed();
+				if (parameter.Equals("rewind") && iPlaySpeed == 1) // Enables Rewinding
+					iPlaySpeed *= -2;
+				else if (parameter.Equals("rewind") && iPlaySpeed > 1) // Goes down a notch if you're FFing
+					iPlaySpeed /= 2;
+				else if (parameter.Equals("forward") && iPlaySpeed < 1) //Goes up a notch if you're RWing
+				{
+					iPlaySpeed /= 2;
+					if (iPlaySpeed == -1) iPlaySpeed = 1;
+				}
+				else
+					iPlaySpeed *= 2;
+
+				if (iPlaySpeed > 32 || iPlaySpeed < -32)
+					iPlaySpeed = 1;
+
+				g_application.SetPlaySpeed(iPlaySpeed);
+			}
+		}
+		else if (parameter.Equals("next"))
+		{
+			g_application.OnAction(CAction(ACTION_NEXT_ITEM));
+		}
+		else if (parameter.Equals("previous"))
+		{
+			g_application.OnAction(CAction(ACTION_PREV_ITEM));
+		}
+		else if (parameter.Equals("bigskipbackward"))
+		{
+			if (g_application.IsPlaying())
+				g_application.m_pPlayer->Seek(false, true);
+		}
+		else if (parameter.Equals("bigskipforward"))
+		{
+			if (g_application.IsPlaying())
+				g_application.m_pPlayer->Seek(true, true);
+		}
+		else if (parameter.Equals("smallskipbackward"))
+		{
+			if (g_application.IsPlaying())
+				g_application.m_pPlayer->Seek(false, false);
+		}
+		else if (parameter.Equals("smallskipforward"))
+		{
+			if (g_application.IsPlaying())
+				g_application.m_pPlayer->Seek(true, false);
+		}
+		else if (parameter.Equals("record") ||
+						 parameter.Left(9).Equals("partymode") ||
+						 parameter.Equals("random")    ||
+						 parameter.Equals("randomoff") ||
+						 parameter.Equals("randomon")  ||
+						 parameter.Left(6).Equals("repeat"))
+		{
+			// Not ported: requires record support / party mode manager / public
+			// playlist shuffle+repeat setters that this port does not expose yet
+			CLog::Log(LOGDEBUG, "XBMC.PlayerControl parameter '%s' is not supported yet", parameter.c_str());
+		}
+	}
 	else if (execute.Equals("slideshow") || execute.Equals("recursiveslideshow"))
 	{
 		if (!params.size())

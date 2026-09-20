@@ -163,13 +163,27 @@ namespace INFO
 #define VIDEOPLAYER_PLAYCOUNT         293
 #define VIDEOPLAYER_LASTPLAYED        294
 
-#define CONTAINER_SCROLL_PREVIOUS   345
+#define CONTAINER_SCROLL_PREVIOUS   345 // NOTE: These 5 must be kept in this consecutive order
 #define CONTAINER_MOVE_PREVIOUS     346
 #define CONTAINER_STATIC            347
 #define CONTAINER_MOVE_NEXT         348
 #define CONTAINER_SCROLL_NEXT       349
 
+#define CONTAINER_HASFILES          351
+#define CONTAINER_HASFOLDERS        352
+#define CONTAINER_STACKED           353
+#define CONTAINER_FOLDERNAME        354
+#define CONTAINER_SCROLLING         355
+#define CONTAINER_PLUGINNAME        356
+#define CONTAINER_PROPERTY          357
+#define CONTAINER_SORT_DIRECTION    358
+#define CONTAINER_NUM_ITEMS         359
+#define CONTAINER_FOLDERTHUMB       360
+#define CONTAINER_FOLDERPATH        361
 #define CONTAINER_CONTENT           362
+#define CONTAINER_HAS_THUMB         363
+#define CONTAINER_SORT_METHOD       364
+
 #define CONTAINER_HAS_FOCUS         367
 #define CONTAINER_ROW               368
 #define CONTAINER_COLUMN            369
@@ -177,8 +191,6 @@ namespace INFO
 #define CONTAINER_VIEWMODE          371
 #define CONTAINER_HAS_NEXT          372
 #define CONTAINER_HAS_PREVIOUS      373
-#define CONTAINER_SCROLLING         355
-#define CONTAINER_NUM_ITEMS         359
 #define CONTAINER_SUBITEM           374
 #define CONTAINER_TVSHOWTHUMB       375
 #define CONTAINER_NUM_PAGES         376
@@ -205,6 +217,8 @@ namespace INFO
 #define SKIN_STRING                 601
 #define SKIN_HAS_MUSIC_OVERLAY      602
 #define SKIN_HAS_VIDEO_OVERLAY      603
+
+#define SYSTEM_GET_BOOL             704
 
 #define LIBRARY_HAS_MUSIC           720
 #define LIBRARY_HAS_VIDEO           721

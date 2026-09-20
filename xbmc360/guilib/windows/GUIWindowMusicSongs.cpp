@@ -16,7 +16,7 @@
 using namespace std;
 
 CGUIWindowMusicSongs::CGUIWindowMusicSongs()
-	: CGUIMediaWindow(WINDOW_MUSIC_FILES, "MyMusic.xml")
+	: CGUIMediaWindow(WINDOW_MUSIC_FILES, "MyMusicSongs.xml")
 {
 }
 

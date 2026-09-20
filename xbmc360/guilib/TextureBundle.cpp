@@ -51,6 +51,15 @@ CStdString CTextureBundle::Normalize(const CStdString& name)
 {
 	CStdString newName(name);
 	newName.MakeLower();
+	
+	// Resolve special://skin/ references against bundle entries packed from
+	// the skin's media folder (e.g. special://skin/backgrounds/videos.jpg ->
+	// backgrounds\videos.jpg). Strip BEFORE the slash flip below so there are
+	// no backslash-escape pitfalls. Falls through untouched for other
+	// special:// roots so non-media lookups still miss cleanly.
+	if (newName.Left(15) == "special://skin/")
+		newName = newName.Mid(15);
+		
 	newName.Replace('/', '\\');
 	return newName;
 }
