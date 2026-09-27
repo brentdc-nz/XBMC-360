@@ -13,6 +13,10 @@
 #include "utils\RssReader.h"
 #include "ButtonTranslator.h"
 #include "guilib\GUIWindowManager.h"
+#include "guilib\GUIDialog.h"
+#include "guilib\dialogs\GUIDialogNumeric.h"
+#include "guilib\LocalizeStrings.h"
+#include "utils\AlarmClock.h"
 
 #include <vector>
 
@@ -149,11 +153,111 @@ int CBuiltins::Execute(const CStdString& execString)
 
 	if (execute.Equals("reboot") || execute.Equals("restart")) // Will reboot the Xbox, aka cold reboot
 	{
-		g_application.getApplicationMessenger().Reboot();
+		g_application.getApplicationMessenger().Restart();
 	}
 	else if (execute.Equals("shutdown"))
 	{
 		g_application.getApplicationMessenger().Shutdown();
+	}
+	else if (execute.Equals("powerdown"))
+	{
+		g_application.getApplicationMessenger().Powerdown();
+	}
+	else if (execute.Equals("restartapp"))
+	{
+		g_application.getApplicationMessenger().RestartApp();
+	}
+	else if (execute.Equals("hibernate"))
+	{
+		g_application.getApplicationMessenger().Hibernate();
+	}
+	else if (execute.Equals("suspend"))
+	{
+		g_application.getApplicationMessenger().Suspend();
+	}
+	else if (execute.Equals("quit"))
+	{
+		g_application.getApplicationMessenger().Quit();
+	}
+	else if (execute.Equals("reset")) // Will reset the Xbox, aka warm reboot
+	{
+		g_application.getApplicationMessenger().Reset();
+	}
+	else if (execute.Equals("alarmclock") && params.size() > 1)
+	{
+		// Format is alarmclock(name,command[,seconds,true]);
+		float seconds = 0;
+		
+		if (params.size() > 2)
+		{
+			if (params[2].Find(':') == -1)
+				seconds = static_cast<float>(atoi(params[2].c_str()) * 60);
+			else
+				seconds = (float)CStringUtils::TimeStringToSeconds(params[2]);
+		}
+		else
+		{
+			// Check if shutdown is specified in particular, and get the time for it
+			CStdString strHeading;
+			CStdString command;
+			vector<CStdString> commandParams;
+			CUtil::SplitExecFunction(params[1], command, commandParams);
+			if (command.CompareNoCase("shutdown") == 0)
+				strHeading = g_localizeStrings.Get(20145);
+			else
+				strHeading = g_localizeStrings.Get(13209);
+			CStdString strTime;
+			if (CGUIDialogNumeric::ShowAndGetNumber(strTime, strHeading))
+				seconds = static_cast<float>(atoi(strTime.c_str()) * 60);
+			else
+				return false;
+		}
+		
+		bool silent = false;
+		bool loop = false;
+		
+		for (unsigned int i = 3; i < params.size(); i++)
+		{
+			// check "true" for backward comp
+			if (params[i].CompareNoCase("true") == 0 || params[i].CompareNoCase("silent") == 0)
+				silent = true;
+			else if (params[i].CompareNoCase("loop") == 0)
+				loop = true;
+		}
+
+		if (g_alarmClock.isRunning())
+			g_alarmClock.Stop(params[0]);
+
+		g_alarmClock.Start(params[0], seconds, params[1], silent, loop);
+	}
+	else if (execute.Equals("cancelalarm"))
+	{
+		g_alarmClock.Stop(parameter);
+	}
+	else if (execute.Equals("ejecttray"))
+	{
+		// TODO: CIoSupport::ToggleTray() not ported (no disc drive support yet)
+		CLog::Log(LOGNOTICE, "EjectTray requested - CIoSupport::ToggleTray() not ported");
+	}
+	else if (execute.Equals("dialog.close") && params.size())
+	{
+		bool bForce = false;
+
+		if (params.size() > 1 && params[1].CompareNoCase("true") == 0)
+			bForce = true;
+
+		if (params[0].CompareNoCase("all") == 0)
+		{
+			g_windowManager.CloseDialogs(bForce);
+		}
+		else
+		{
+			int id = CButtonTranslator::TranslateWindow(params[0]);
+			CGUIWindow *window = (CGUIWindow *)g_windowManager.GetWindow(id);
+
+			if (window && window->IsDialog())
+				((CGUIDialog *)window)->Close(bForce);
+		}
 	}
 	else if (execute.Equals("activatewindow") || execute.Equals("replacewindow"))
 	{

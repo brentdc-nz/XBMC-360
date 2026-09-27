@@ -136,6 +136,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 		}
 		break;
 
+		case TMSG_RESTART: // Xbox 360 has a single reset path (power cycle)
 		case TMSG_REBOOT:
 		{
 			g_application.Stop();
@@ -144,6 +145,31 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 			while(1){Sleep(0);}
 		}
 		break;
+
+		case TMSG_RESTARTAPP:
+		{
+			// Xbox 360: relaunch via XLaunchNewImage with our own loaded image name
+			g_application.Stop();
+			Sleep(200);
+			XLaunchNewImage(GetLoadedImageName(), 0);
+			while(1){Sleep(0);}
+		}
+		break;
+
+		case TMSG_QUIT:
+		{
+			// Xbox 360: return to dashboard by launching the default image
+			g_application.Stop();
+			Sleep(200);
+			XLaunchNewImage("", 0);
+			while(1){Sleep(0);}
+		}
+		break;
+
+		case TMSG_HIBERNATE:
+		case TMSG_SUSPEND:
+			// xbmc4xbox (_XBOX): no-op (HAS_HAL/Win32 power management not compiled)
+			break;
 
 		case TMSG_SWITCHTOFULLSCREEN:
 			if( g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO )
@@ -275,7 +301,49 @@ void CApplicationMessenger::Shutdown()
 	SendMessage(tMsg);
 }
 
+void CApplicationMessenger::Powerdown()
+{
+	ThreadMessage tMsg = {TMSG_POWERDOWN};
+	SendMessage(tMsg);
+}
+
+void CApplicationMessenger::Quit()
+{
+	ThreadMessage tMsg = {TMSG_QUIT};
+	SendMessage(tMsg);
+}
+
+void CApplicationMessenger::Hibernate()
+{
+	ThreadMessage tMsg = {TMSG_HIBERNATE};
+	SendMessage(tMsg);
+}
+
+void CApplicationMessenger::Suspend()
+{
+	ThreadMessage tMsg = {TMSG_SUSPEND};
+	SendMessage(tMsg);
+}
+
+void CApplicationMessenger::Restart()
+{
+	ThreadMessage tMsg = {TMSG_RESTART};
+	SendMessage(tMsg);
+}
+
 void CApplicationMessenger::Reboot()
+{
+	ThreadMessage tMsg = {TMSG_REBOOT};
+	SendMessage(tMsg);
+}
+
+void CApplicationMessenger::RestartApp()
+{
+	ThreadMessage tMsg = {TMSG_RESTARTAPP};
+	SendMessage(tMsg);
+}
+
+void CApplicationMessenger::Reset()
 {
 	ThreadMessage tMsg = {TMSG_REBOOT};
 	SendMessage(tMsg);

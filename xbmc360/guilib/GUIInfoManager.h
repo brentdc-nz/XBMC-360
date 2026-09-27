@@ -81,6 +81,14 @@ namespace INFO
 #define SYSTEM_FPS                  123
 #define SYSTEM_ALWAYS_TRUE          125   // Useful for <visible fade="10" start="hidden">true</visible>, to fade in a control
 #define SYSTEM_ALWAYS_FALSE         126   // Used for <visible fade="10">false</visible>, to fade out a control (i.e not particularly useful!)
+#define SYSTEM_HAS_ALARM            129
+#define SYSTEM_HASLOCKS             140
+#define SYSTEM_ISMASTER             141
+#define SYSTEM_ALARM_POS            144
+#define SYSTEM_LOGGEDON             145
+#define SYSTEM_PROFILENAME          146
+#define SYSTEM_PROFILETHUMB         147
+#define SYSTEM_HAS_LOGINSCREEN      148
 
 #define SYSTEM_INTERNET_STATE       159
 

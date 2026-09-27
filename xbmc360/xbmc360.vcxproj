@@ -617,6 +617,7 @@
     <ClInclude Include="utils\md5.h" />
     <ClInclude Include="utils\POUtils.h" />
     <ClInclude Include="utils\RingBuffer.h" />
+    <ClInclude Include="utils\AlarmClock.h" />
     <ClInclude Include="utils\RssReader.h" />
     <ClInclude Include="utils\SharedSection.h" />
     <ClInclude Include="utils\SingleLock.h" />
@@ -1038,6 +1039,7 @@
     <ClCompile Include="utils\md5.cpp" />
     <ClCompile Include="utils\POUtils.cpp" />
     <ClCompile Include="utils\RingBuffer.cpp" />
+    <ClCompile Include="utils\AlarmClock.cpp" />
     <ClCompile Include="utils\RssReader.cpp" />
     <ClCompile Include="utils\SharedSection.cpp" />
     <ClCompile Include="utils\SingleLock.cpp" />

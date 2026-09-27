@@ -13,7 +13,12 @@ class CFileItem;
 #define TMSG_EXECUTE_BUILT_IN     103
 #define TMSG_SHUTDOWN             300
 #define TMSG_POWERDOWN            301
+#define TMSG_QUIT                 302
+#define TMSG_HIBERNATE            303
+#define TMSG_SUSPEND              304
+#define TMSG_RESTART              305
 #define TMSG_REBOOT               306
+#define TMSG_RESTARTAPP           307
 #define TMSG_NETWORKMESSAGE       500
 #define TMSG_SWITCHTOFULLSCREEN   308
 
@@ -48,7 +53,14 @@ public:
 	void ProcessWindowMessages();
 
 	void Shutdown();
+	void Powerdown();
+	void Quit();
+	void Hibernate();
+	void Suspend();
+	void Restart();
 	void Reboot();
+	void RestartApp();
+	void Reset();
 	void SwitchToFullscreen();
 
 	void NetworkMessage(DWORD dwMessage, DWORD dwParam = 0);

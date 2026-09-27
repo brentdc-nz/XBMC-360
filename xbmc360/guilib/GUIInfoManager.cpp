@@ -27,6 +27,7 @@
 #include "URL.h"
 #include "pictures\GUIWindowSlideShow.h"
 #include "pictures\PictureInfoTag.h"
+#include "utils\AlarmClock.h"
 
 using namespace std;
 using namespace MUSIC_INFO;
@@ -252,6 +253,15 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 		else if(strTest.Equals("system.gputemperature")) ret = SYSTEM_GPU_TEMPERATURE;
 		else if(strTest.Equals("system.memory(free)") || strTest.Equals("system.freememory")) ret = SYSTEM_FREE_MEMORY;
 		else if (strTest.Equals("system.progressbar")) ret = SYSTEM_PROGRESS_BAR;
+		else if (strTest.Equals("system.haslocks")) ret = SYSTEM_HASLOCKS;
+		else if (strTest.Equals("system.hasloginscreen")) ret = SYSTEM_HAS_LOGINSCREEN;
+		else if (strTest.Equals("system.ismaster")) ret = SYSTEM_ISMASTER;
+		else if (strTest.Equals("system.loggedon")) ret = SYSTEM_LOGGEDON;
+		else if (strTest.Equals("system.profilename")) ret = SYSTEM_PROFILENAME;
+		else if (strTest.Equals("system.profilethumb")) ret = SYSTEM_PROFILETHUMB;
+		else if (strTest.Equals("system.alarmpos")) ret = SYSTEM_ALARM_POS;
+		else if (strTest.Left(16).Equals("system.hasalarm("))
+			return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_HAS_ALARM : SYSTEM_HAS_ALARM, ConditionalStringParameter(strTest.Mid(16, strTest.size() - 17)), 0));
 		else if (strTest.Left(15).Equals("system.getbool("))
 			return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_GET_BOOL : SYSTEM_GET_BOOL, ConditionalStringParameter(strTest.Mid(15, strTest.size() - 16)), 0));
 	}
@@ -1007,6 +1017,24 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
 				strLabel.Format("%i", percent);
 		}
 		break;
+		case SYSTEM_PROFILENAME:
+			// TODO: Profiles not ported - xbmc4xbox: strLabel = g_settings.GetCurrentProfile().getName();
+			strLabel = "Profile";
+			break;
+		case SYSTEM_ALARM_POS:
+		{
+			if (g_alarmClock.GetRemaining("shutdowntimer") == 0.f)
+				strLabel = "";
+			else
+			{
+				double fTime = g_alarmClock.GetRemaining("shutdowntimer");
+				if (fTime > 60.f)
+					strLabel.Format("%2.0fm", fTime / 60.f);
+				else
+					strLabel.Format("%2.0fs", fTime);
+			}
+		}
+		break;
 
 		// Skin theme
 		case SKIN_THEME:
@@ -1274,6 +1302,15 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
 	}
 	else if (info == WEATHER_CONDITIONS)
 		return g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON);
+	else if (info == SYSTEM_PROFILETHUMB)
+	{
+		// TODO: Profiles not ported - xbmc4xbox:
+		//   CStdString thumb = g_settings.GetCurrentProfile().getThumb();
+		//   if (thumb.IsEmpty())
+		//     thumb = "unknown-user.png";
+		//   return thumb;
+		return "unknown-user.png";
+	}
 	else if (info == MUSICPLAYER_COVER)
 	{
 		if (!g_application.IsPlayingAudio()) return "";
@@ -1377,6 +1414,23 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
 	}
 	else if (condition == WEATHER_IS_FETCHED)
 		bReturn = g_weatherManager.IsFetched();
+	else if (condition == SYSTEM_LOGGEDON)
+		bReturn = !(g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN);
+	else if (condition == SYSTEM_HAS_LOGINSCREEN)
+	{
+		// TODO: Profiles not ported - xbmc4xbox: bReturn = g_settings.UsingLoginScreen();
+		bReturn = false;
+	}
+	else if (condition == SYSTEM_HASLOCKS)
+	{
+		// TODO: Profiles not ported - xbmc4xbox: bReturn = g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE;
+		bReturn = false;
+	}
+	else if (condition == SYSTEM_ISMASTER)
+	{
+		// TODO: Profiles not ported - xbmc4xbox: bReturn = g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && g_passwordManager.bMasterUser;
+		bReturn = true;
+	}
 	else if (condition == CONTAINER_HASFILES || condition == CONTAINER_HASFOLDERS)
 	{
 		CGUIWindow *pWindow = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
@@ -1815,6 +1869,11 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
 			case SYSTEM_GET_BOOL:
 			{
 				bReturn = g_guiSettings.GetBool(m_stringParameters[info.GetData1()]);
+			}
+			break;
+			case SYSTEM_HAS_ALARM:
+			{
+				bReturn = g_alarmClock.hasAlarm(m_stringParameters[info.GetData1()]);
 			}
 			break;
 			case SKIN_STRING:
