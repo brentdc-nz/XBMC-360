@@ -17,6 +17,7 @@
 #include "guilib\dialogs\GUIDialogNumeric.h"
 #include "guilib\LocalizeStrings.h"
 #include "utils\AlarmClock.h"
+#include "xbox\IoSupport.h"
 
 #include <vector>
 
@@ -236,8 +237,7 @@ int CBuiltins::Execute(const CStdString& execString)
 	}
 	else if (execute.Equals("ejecttray"))
 	{
-		// TODO: CIoSupport::ToggleTray() not ported (no disc drive support yet)
-		CLog::Log(LOGNOTICE, "EjectTray requested - CIoSupport::ToggleTray() not ported");
+		CIoSupport::ToggleTray();
 	}
 	else if (execute.Equals("dialog.close") && params.size())
 	{

@@ -566,6 +566,9 @@
     <ClInclude Include="guilib\windows\GUIWindowMusicSongs.h">
       <Filter>Header Files\guilib\windows</Filter>
     </ClInclude>
+    <ClInclude Include="xbox\IoSupport.h">
+      <Filter>Header Files\xbox</Filter>
+    </ClInclude>
     <ClInclude Include="xbox\Network.h">
       <Filter>Header Files\xbox</Filter>
     </ClInclude>
@@ -1602,6 +1605,9 @@
     </ClCompile>
     <ClCompile Include="guilib\windows\GUIWindowMusicSongs.cpp">
       <Filter>Source Files\guilib\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="xbox\IoSupport.cpp">
+      <Filter>Source Files\xbox</Filter>
     </ClCompile>
     <ClCompile Include="xbox\Network.cpp">
       <Filter>Source Files\xbox</Filter>
