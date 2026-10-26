@@ -830,6 +830,22 @@ void CPlugin::MyPreInitialize()
     m_nLoadingPreset   = 0;
     m_nPresetsLoadedTotal = 0;
     m_fSnapPoint = 0.5f;
+
+    // Async preset loader
+    m_hPresetThread = NULL;
+    m_bPresetLoaderQuit = false;
+    m_bPresetJobActive = false;
+    m_bPresetJobDone = false;
+    m_uPresetJobGen = 0;
+    m_bPresetJobWarpOK = false;
+    m_bPresetJobCompOK = false;
+    m_pPresetJobWarpCode = NULL;
+    m_pPresetJobCompCode = NULL;
+    m_pPresetJobWarpCT = NULL;
+    m_pPresetJobCompCT = NULL;
+    m_dwPresetJobApplyFlags = 0;
+    InitializeCriticalSection(&m_csPresetLoad);
+
 	m_pState    = &m_state_DO_NOT_USE[0];
 	m_pOldState = &m_state_DO_NOT_USE[1];
 	m_pNewState = &m_state_DO_NOT_USE[2];
@@ -3118,8 +3134,10 @@ bool CPlugin::LoadShaders(PShaderSet* sh, CState* pState, bool bTick)
 
 //----------------------------------------------------------------------
 
-bool CPlugin::LoadShaderFromMemory( const char* szOrigShaderText, char* szFn, char* szProfile, 
-                                    LPD3DXCONSTANTTABLE* ppConstTable, void** ppShader, int shaderType, bool bHardErrors )
+// Builds the final HLSL source text for a shader (string munging only;
+// touches no device state, so it is safe to call from the loader thread).
+bool CPlugin::BuildShaderText(const char* szOrigShaderText, const char* szFn, const char* szProfile,
+                              int shaderType, char* szShaderText)
 {
     const char szWarpDefines[] = "#define rad _rad_ang.x\n"
                                  "#define ang _rad_ang.y\n"
@@ -3135,23 +3153,6 @@ bool CPlugin::LoadShaderFromMemory( const char* szOrigShaderText, char* szFn, ch
     const char szFirstLine[]  = "    float3 ret = 0;";
     const char szLastLine[]   = "    _return_value = float4(ret.xyz, _vDiffuse.w);";
 
-    char szWhichShader[64];
-    switch(shaderType)
-    {
-    case SHADER_WARP:  lstrcpy(szWhichShader, "warp"); break;
-    case SHADER_COMP:  lstrcpy(szWhichShader, "composite"); break;
-    case SHADER_BLUR:  lstrcpy(szWhichShader, "blur"); break;
-    case SHADER_OTHER: lstrcpy(szWhichShader, "(other)"); break;
-    default:           lstrcpy(szWhichShader, "(unknown)"); break;
-    }
-
-    LPD3DXBUFFER pShaderByteCode;
-//    wchar_t title[64];
-    
-    *ppShader = NULL;
-    *ppConstTable = NULL;
-
-    char szShaderText[92800];
     char temp[92800];
     int writePos = 0;
 
@@ -3276,14 +3277,29 @@ bool CPlugin::LoadShaderFromMemory( const char* szOrigShaderText, char* szFn, ch
         if (!p)
         {
 //			wchar_t temp[512];
- //           swprintf(temp, WASABI_API_LNGSTRINGW(IDS_ERROR_PARSING_X_X_SHADER), szProfile, szWhichShader);
+//          swprintf(temp, WASABI_API_LNGSTRINGW(IDS_ERROR_PARSING_X_X_SHADER), szProfile, szWhichShader);
 //		    dumpmsg(temp);
- //           AddError(temp, 8.0f, ERR_PRESET, true);
+//          AddError(temp, 8.0f, ERR_PRESET, true);
 		    return false;
         }
     }
-    
-    // now really try to compile it.
+
+    return true;
+}
+
+//----------------------------------------------------------------------
+
+// Compiles prepared shader source text to bytecode (CPU only; no device
+// access, safe to call from the loader thread). Caller owns *ppByteCode
+// and *ppConstTable on success.
+bool CPlugin::CompileBuiltShaderText(const char* szShaderText, const char* szFn, const char* szProfile,
+                                     LPD3DXBUFFER* ppByteCode, LPD3DXCONSTANTTABLE* ppConstTable)
+{
+    LPD3DXBUFFER pShaderByteCode = NULL;
+    LPD3DXBUFFER pErrors = NULL;
+
+    *ppByteCode = NULL;
+    *ppConstTable = NULL;
 
     int len = lstrlen(szShaderText);
 
@@ -3297,7 +3313,7 @@ bool CPlugin::LoadShaderFromMemory( const char* szOrigShaderText, char* szFn, ch
         szProfile,
         D3D10_SHADER_ENABLE_BACKWARDS_COMPATIBILITY  ,
         &pShaderByteCode,
-				&m_pShaderCompileErrors,
+				&pErrors,
 				ppConstTable
 				)) 
 		{
@@ -3307,9 +3323,9 @@ bool CPlugin::LoadShaderFromMemory( const char* szOrigShaderText, char* szFn, ch
 		// before we totally fail, let's try using ps_2_b instead of ps_2_a
 		if (failed && !strcmp(szProfile, "ps_2_a"))
 		{
-			SafeRelease(m_pShaderCompileErrors);
+			SafeRelease(pErrors);
 			if (D3D_OK == D3DXCompileShader(szShaderText, len, NULL, NULL, szFn,
-				"ps_2_b", m_dwShaderFlags, &pShaderByteCode, &m_pShaderCompileErrors, ppConstTable))
+				"ps_2_b", m_dwShaderFlags, &pShaderByteCode, &pErrors, ppConstTable))
 			{
 				failed=false;
 			}
@@ -3317,25 +3333,36 @@ bool CPlugin::LoadShaderFromMemory( const char* szOrigShaderText, char* szFn, ch
 
 		if (failed)
 		{
-/*			wchar_t temp[1024];
-			swprintf(temp, WASABI_API_LNGSTRINGW(IDS_ERROR_COMPILING_X_X_SHADER), szProfile, szWhichShader);
-			if (m_pShaderCompileErrors && m_pShaderCompileErrors->GetBufferSize() < sizeof(temp) - 256) 
-			{
-				lstrcatW(temp, L"\n\n");
-				lstrcatW(temp, AutoWide((char*)m_pShaderCompileErrors->GetBufferPointer()));
-			}
-			SafeRelease(m_pShaderCompileErrors);
-			dumpmsg(temp);
-			if (bHardErrors)
-				MessageBoxW(GetPluginWindow(), temp, WASABI_API_LNGSTRINGW_BUF(IDS_MILKDROP_ERROR,title,64), MB_OK|MB_SETFOREGROUND|MB_TOPMOST );
-			else {
-				AddError(temp, 8.0f, ERR_PRESET, true);
-			}*/
+			SafeRelease(pShaderByteCode);
+			SafeRelease(pErrors);
+			if (*ppConstTable) { (*ppConstTable)->Release(); *ppConstTable = NULL; }
 			return false;
 		}
-        else
-        {
-        }
+
+    SafeRelease(pErrors);
+
+    *ppByteCode = pShaderByteCode;
+    return true;
+}
+
+//----------------------------------------------------------------------
+
+// Legacy synchronous path: build + compile + create the device shader in one go.
+bool CPlugin::LoadShaderFromMemory( const char* szOrigShaderText, char* szFn, char* szProfile, 
+                                    LPD3DXCONSTANTTABLE* ppConstTable, void** ppShader, int shaderType, bool bHardErrors )
+{
+    char szShaderText[92800];
+    LPD3DXBUFFER pShaderByteCode = NULL;
+    LPD3DXCONSTANTTABLE pCT = NULL;
+
+    *ppShader = NULL;
+    *ppConstTable = NULL;
+
+    if (!BuildShaderText(szOrigShaderText, szFn, szProfile, shaderType, szShaderText))
+        return false;
+
+    if (!CompileBuiltShaderText(szShaderText, szFn, szProfile, &pShaderByteCode, &pCT))
+        return false;
 
     HRESULT hr = 1;
     if (szProfile[0] == 'v') 
@@ -3347,21 +3374,15 @@ bool CPlugin::LoadShaderFromMemory( const char* szOrigShaderText, char* szFn, ch
         hr = GetDevice()->CreatePixelShader((const unsigned long *)(pShaderByteCode->GetBufferPointer()), (IDirect3DPixelShader9**)ppShader);
     }
 
-    if (hr != D3D_OK)
-    {
-/*		wchar_t temp[512];
-        WASABI_API_LNGSTRINGW_BUF(IDS_ERROR_CREATING_SHADER,temp,sizeof(temp));
-		dumpmsg(temp); 
-        if (bHardErrors)
-		    MessageBoxW(GetPluginWindow(), temp, WASABI_API_LNGSTRINGW_BUF(IDS_MILKDROP_ERROR,title,64), MB_OK|MB_SETFOREGROUND|MB_TOPMOST );
-        else {
-            AddError(temp, 6.0f, ERR_PRESET, true);
-        }*/
-		return false;
-    }
-
     pShaderByteCode->Release();
 
+    if (hr != D3D_OK)
+    {
+        SafeRelease(pCT);
+        return false;
+    }
+
+    *ppConstTable = pCT;
     return true;
 }
 
@@ -3400,9 +3421,21 @@ void CPlugin::CleanUpMyDX9Stuff(int final_cleanup)
     // Otherwise the old preset wouldn't get all reloaded, and it app would crash
     //  when trying to use its stuff.
     if (m_nLoadingPreset != 0) {
-        // finish up the pre-load & start the official blend
-        m_nLoadingPreset = 8;
-        LoadPresetTick();        
+        // Finish up the pre-load & start the official blend -
+        // but only if the background loader has finished; otherwise cancel
+        // the load (the current preset keeps running, with no blend).
+        bool bDone;
+        EnterCriticalSection(&m_csPresetLoad);
+        bDone = m_bPresetJobDone;
+        LeaveCriticalSection(&m_csPresetLoad);
+        if (bDone) {
+            m_nLoadingPreset = 8;
+            LoadPresetTick();
+        } else {
+            CancelPresetJob();
+            m_nLoadingPreset = 0;
+            m_szLoadingPreset[0] = 0;
+        }
     }
     // just force this:
     m_pState->m_bBlending = false;
@@ -3494,6 +3527,17 @@ void CPlugin::CleanUpMyDX9Stuff(int final_cleanup)
 	}
 
     ClearErrors();
+
+    if (final_cleanup)
+    {
+        // shut down the background preset loader
+        StopPresetLoaderThread();
+        DeleteCriticalSection(&m_csPresetLoad);
+        SafeRelease(m_pPresetJobWarpCode);
+        SafeRelease(m_pPresetJobCompCode);
+        SafeRelease(m_pPresetJobWarpCT);
+        SafeRelease(m_pPresetJobCompCT);
+    }
 
     // This setting is closely tied to the modern skin "random" button.
     // The "random" state should be preserved from session to session.
@@ -4031,8 +4075,11 @@ void CPlugin::LoadPreset(std::string szPresetFilename, float fBlendTime)
         DWORD ApplyFlags = STATE_ALL;
         ApplyFlags ^= (m_bWarpShaderLock ? STATE_WARP : 0);
         ApplyFlags ^= (m_bCompShaderLock ? STATE_COMP : 0);
-	    
-        m_pNewState->Import(szPresetFilename, GetTime(), m_pOldState, ApplyFlags);
+
+        // The slow parts (file read, parse, equation + shader compilation)
+        // are queued on the background loader thread; LoadPresetTick() picks
+        // up the results and applies them when they are ready.
+        QueuePresetJob(szPresetFilename, ApplyFlags);
 
         m_nLoadingPreset = 1;   // this will cause LoadPresetTick() to get called over the next few frames...
 
@@ -4052,18 +4099,313 @@ void CPlugin::OnFinishedLoadingPreset()
         m_nMashPreset[mash] = m_nCurrentPreset;
 }
 
+//----------------------------------------------------------------------
+// Background preset loader: does the slow, CPU-only parts of a preset
+// switch (file read, text parse, equation compilation, HLSL compilation)
+// off the render thread so animation never stalls.
+
+void CPlugin::EnsurePresetLoaderThread()
+{
+    if (m_hPresetThread)
+        return;
+        
+    DWORD dwThreadId;
+    HANDLE hThread = CreateThread(NULL, 0, PresetLoaderThread, (LPVOID)this, 0, &dwThreadId);
+    
+    if (hThread)
+        m_hPresetThread = hThread;
+}
+
+void CPlugin::StopPresetLoaderThread()
+{
+    if (!m_hPresetThread)
+        return;
+        
+    m_bPresetLoaderQuit = true;
+    
+    // The worker only touches m_pNewState + its own result buffers; once
+    // it is gone those are exclusively ours again.
+    WaitForSingleObject(m_hPresetThread, 5000);
+    CloseHandle(m_hPresetThread);
+    
+    m_hPresetThread = NULL;
+    m_bPresetJobActive = false;
+    m_bPresetJobDone = false;
+}
+
+void CPlugin::QueuePresetJob(const std::string &szFile, DWORD ApplyFlags)
+{
+    if (!m_hPresetThread)
+        EnsurePresetLoaderThread();
+
+    if (!m_hPresetThread)
+    {
+        // couldn't create the worker thread - do the work inline
+        // (legacy synchronous behaviour, same as before the async loader).
+        m_pNewState->Import(szFile, m_prev_time, m_pOldState, ApplyFlags);
+        m_bPresetJobWarpOK = m_bPresetJobCompOK = false;
+        if (m_nMaxPSVersion > 0 && m_pNewState->m_nWarpPSVersion > 0)
+            m_bPresetJobWarpOK = CompilePShaderToBuffer(m_pNewState->m_szWarpShadersText, SHADER_WARP,
+                                        min(m_pNewState->m_nWarpPSVersion, m_nMaxPSVersion),
+                                        &m_pPresetJobWarpCode, &m_pPresetJobWarpCT);
+        if (m_nMaxPSVersion > 0 && m_pNewState->m_nCompPSVersion > 0)
+            m_bPresetJobCompOK = CompilePShaderToBuffer(m_pNewState->m_szCompShadersText, SHADER_COMP,
+                                        min(m_pNewState->m_nCompPSVersion, m_nMaxPSVersion),
+                                        &m_pPresetJobCompCode, &m_pPresetJobCompCT);
+        m_bPresetJobDone = true;
+        m_bPresetJobActive = true;
+        return;
+    }
+
+    EnterCriticalSection(&m_csPresetLoad);
+    if (m_bPresetJobActive && !m_bPresetJobDone)
+    {
+        // A previous job is still in flight; supersede it. The worker will
+        // notice the new generation when it next checks in and discard its
+        // results without touching any more shared state.
+        m_uPresetJobGen++;
+    }
+    
+    // Clear any stale results from a previous job
+    SafeRelease(m_pPresetJobWarpCode);
+    SafeRelease(m_pPresetJobCompCode);
+    SafeRelease(m_pPresetJobWarpCT);
+    SafeRelease(m_pPresetJobCompCT);
+    m_bPresetJobWarpOK = false;
+    m_bPresetJobCompOK = false;
+    m_szPresetJobFile = szFile;
+    m_dwPresetJobApplyFlags = ApplyFlags;
+    m_bPresetJobDone = false;
+    m_bPresetJobActive = true;
+    LeaveCriticalSection(&m_csPresetLoad);
+}
+
+void CPlugin::CancelPresetJob()
+{
+    EnterCriticalSection(&m_csPresetLoad);
+    
+    if (m_bPresetJobActive && !m_bPresetJobDone)
+        m_uPresetJobGen++; // Supersede: worker discards results
+        
+    m_bPresetJobActive = false;
+    m_bPresetJobDone = false;
+    
+    SafeRelease(m_pPresetJobWarpCode);
+    SafeRelease(m_pPresetJobCompCode);
+    SafeRelease(m_pPresetJobWarpCT);
+    SafeRelease(m_pPresetJobCompCT);
+    
+    LeaveCriticalSection(&m_csPresetLoad);
+}
+
+// Worker-side: Compile a preset pixel shader to bytecode (no device access)
+bool CPlugin::CompilePShaderToBuffer(const char* szShadersText, int shaderType, int PSVersion,
+                                     LPD3DXBUFFER* ppByteCode, LPD3DXCONSTANTTABLE* ppCT)
+{
+    char ver[16];
+    lstrcpy(ver, "ps_0_0");
+    
+    switch(PSVersion)
+    {
+    case MD2_PS_NONE:
+    case MD2_PS_2_0: lstrcpy(ver, "ps_2_0"); break;
+    case MD2_PS_2_X: lstrcpy(ver, "ps_2_a"); break; // CompileBuiltShaderText falls back to ps_2_b
+    case MD2_PS_3_0: lstrcpy(ver, "ps_3_0"); break;
+    case MD2_PS_4_0: lstrcpy(ver, "ps_4_0"); break;
+    default:         lstrcpy(ver, "ps_2_0"); break;
+    }
+
+    char szShaderText[92800];
+    if (!BuildShaderText(szShadersText, "PS", ver, shaderType, szShaderText))
+        return false;
+
+    return CompileBuiltShaderText(szShaderText, "PS", ver, ppByteCode, ppCT);
+}
+
+DWORD WINAPI CPlugin::PresetLoaderThread(LPVOID lpParam)
+{
+    CPlugin* pThis = (CPlugin*)lpParam;
+
+    while (!pThis->m_bPresetLoaderQuit)
+    {
+        bool bRun = false;
+        std::string szFile;
+        DWORD ApplyFlags = 0;
+        unsigned int uGen = 0;
+        
+        EnterCriticalSection(&pThis->m_csPresetLoad);
+        
+        if (pThis->m_bPresetJobActive && !pThis->m_bPresetJobDone)
+        {
+            bRun = true;
+            szFile = pThis->m_szPresetJobFile;
+            ApplyFlags = pThis->m_dwPresetJobApplyFlags;
+            uGen = pThis->m_uPresetJobGen;
+        }
+        
+        LeaveCriticalSection(&pThis->m_csPresetLoad);
+
+        if (!bRun)
+        {
+            Sleep(15); // idle poll; negligible cost
+            continue;
+        }
+
+        // 1. read + parse the preset file & compile its equations.
+        //    (CState::Import touches no DirectX resources.)
+        pThis->m_pNewState->Import(szFile, pThis->m_prev_time, pThis->m_pOldState, ApplyFlags);
+
+        // check for supersede between the two big steps
+        bool bSuperseded = false;
+        EnterCriticalSection(&pThis->m_csPresetLoad);
+        bSuperseded = (pThis->m_uPresetJobGen != uGen) || !pThis->m_bPresetJobActive;
+        LeaveCriticalSection(&pThis->m_csPresetLoad);
+        if (bSuperseded)
+            continue;
+
+        // 2. compile the warp & composite shaders to bytecode (CPU only).
+        LPD3DXBUFFER pWarpCode = NULL, pCompCode = NULL;
+        LPD3DXCONSTANTTABLE pWarpCT = NULL, pCompCT = NULL;
+        bool bWarpOK = false, bCompOK = false;
+
+        if (pThis->m_nMaxPSVersion > 0 && pThis->m_pNewState->m_nWarpPSVersion > 0)
+        {
+            int warpPS = min(pThis->m_pNewState->m_nWarpPSVersion, pThis->m_nMaxPSVersion);
+            bWarpOK = pThis->CompilePShaderToBuffer(pThis->m_pNewState->m_szWarpShadersText,
+                                                    SHADER_WARP, warpPS, &pWarpCode, &pWarpCT);
+        }
+
+        if (pThis->m_nMaxPSVersion > 0 && pThis->m_pNewState->m_nCompPSVersion > 0)
+        {
+            int compPS = min(pThis->m_pNewState->m_nCompPSVersion, pThis->m_nMaxPSVersion);
+            bCompOK = pThis->CompilePShaderToBuffer(pThis->m_pNewState->m_szCompShadersText,
+                                                    SHADER_COMP, compPS, &pCompCode, &pCompCT);
+        }
+
+        // publish results
+        EnterCriticalSection(&pThis->m_csPresetLoad);
+        if ((pThis->m_uPresetJobGen != uGen) || !pThis->m_bPresetJobActive)
+        {
+            // superseded while compiling - discard
+            if (pWarpCode) pWarpCode->Release();
+            if (pCompCode) pCompCode->Release();
+            if (pWarpCT)   pWarpCT->Release();
+            if (pCompCT)   pCompCT->Release();
+        }
+        else
+        {
+            pThis->m_bPresetJobWarpOK = bWarpOK;
+            pThis->m_bPresetJobCompOK = bCompOK;
+            pThis->m_pPresetJobWarpCode = pWarpCode;
+            pThis->m_pPresetJobCompCode = pCompCode;
+            pThis->m_pPresetJobWarpCT = pWarpCT;
+            pThis->m_pPresetJobCompCT = pCompCT;
+            pThis->m_bPresetJobDone = true;
+        }
+        LeaveCriticalSection(&pThis->m_csPresetLoad);
+    }
+
+    return 0;
+}
+
+// Render-thread: create the device shader from precompiled bytecode for the
+// incoming preset, with the same fallback behaviour as LoadShaders().
+void CPlugin::ApplyPresetJobShader(bool bWarp)
+{
+    PShaderInfo* si = bWarp ? &m_NewShaders.warp : &m_NewShaders.comp;
+    if (si->ptr)
+        return;     // already done
+
+    LPD3DXBUFFER pCode = NULL;
+    LPD3DXCONSTANTTABLE pCT = NULL;
+    bool bOK = false;
+
+    EnterCriticalSection(&m_csPresetLoad);
+    if (m_bPresetJobDone)
+    {
+        bOK = bWarp ? m_bPresetJobWarpOK : m_bPresetJobCompOK;
+        pCode = bWarp ? m_pPresetJobWarpCode : m_pPresetJobCompCode;
+        pCT  = bWarp ? m_pPresetJobWarpCT : m_pPresetJobCompCT;
+        if (bWarp) { m_pPresetJobWarpCode = NULL; m_pPresetJobWarpCT = NULL; }
+        else       { m_pPresetJobCompCode = NULL; m_pPresetJobCompCT = NULL; }
+    }
+    LeaveCriticalSection(&m_csPresetLoad);
+
+    if (bOK && pCode)
+    {
+        HRESULT hr = GetDevice()->CreatePixelShader((const unsigned long*)pCode->GetBufferPointer(), &si->ptr);
+        pCode->Release();
+        if (hr == D3D_OK)
+        {
+            si->CT = pCT;
+            // bind texture & float4 params (may load preset textures from disk)
+            si->params.CacheParams(si->CT, false);
+            return;
+        }
+        SafeRelease(pCT);
+    }
+    else
+    {
+        if (pCode) pCode->Release();
+        if (pCT)   pCT->Release();
+    }
+
+    // compile failed or shader creation failed -> use the fallback shader,
+    // exactly as the synchronous LoadShaders() path does.
+    if (bWarp)
+    {
+        m_fallbackShaders_ps.warp.ptr->AddRef();
+        m_fallbackShaders_ps.warp.CT->AddRef();
+        memcpy(si, &m_fallbackShaders_ps.warp, sizeof(PShaderInfo));
+    }
+    else
+    {
+        m_fallbackShaders_ps.comp.ptr->AddRef();
+        m_fallbackShaders_ps.comp.CT->AddRef();
+        memcpy(si, &m_fallbackShaders_ps.comp, sizeof(PShaderInfo));
+    }
+}
+
 void CPlugin::LoadPresetTick()
 {
+    // While the background loader is still working, just keep animating the
+    // old preset - retry on the next frame.
+    if (m_nLoadingPreset > 0 && m_nLoadingPreset < 8)
+    {
+        bool bDone;
+        EnterCriticalSection(&m_csPresetLoad);
+        bDone = m_bPresetJobDone;
+        LeaveCriticalSection(&m_csPresetLoad);
+        if (!bDone)
+            return;
+    }
+
     if (m_nLoadingPreset == 2 || m_nLoadingPreset == 5)
     {
-        // just loads one shader (warp or comp) then returns.
-        LoadShaders(&m_NewShaders, m_pNewState, true);
+        if (m_hPresetThread)
+        {
+            // Cheap: create one device shader (warp at tick 2, comp at tick 5)
+            // from bytecode compiled on the loader thread
+            ApplyPresetJobShader(m_nLoadingPreset == 2);
+        }
+        else
+        {
+            // No worker thread available: legacy synchronous behaviour
+            LoadShaders(&m_NewShaders, m_pNewState, true);
+        }
     }
     else if (m_nLoadingPreset == 8)
     {
         // finished loading the shaders - apply the preset!
-    //    lstrcpyW(m_szCurrentPresetFile, m_szLoadingPreset);
+//      lstrcpyW(m_szCurrentPresetFile, m_szLoadingPreset);
         m_szLoadingPreset[0] = 0;
+
+        // Pick up anything ticks 2/5 didn't get to (e.g. forced jump to 8)
+        if (m_hPresetThread)
+        {
+            ApplyPresetJobShader(true);
+            ApplyPresetJobShader(false);
+        }
 	    
 	    CState *temp = m_pState;
 	    m_pState = m_pOldState;
@@ -4089,6 +4431,8 @@ void CPlugin::LoadPresetTick()
 
         // end slow-preset-load mode
         m_nLoadingPreset = 0;
+
+        CancelPresetJob();
 
         OnFinishedLoadingPreset();
     }

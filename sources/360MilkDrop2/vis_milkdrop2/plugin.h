@@ -330,6 +330,10 @@ public:
         #define SHADER_OTHER 3
         bool LoadShaderFromMemory( const char* szShaderText, char* szFn, char* szProfile, 
                                    LPD3DXCONSTANTTABLE* ppConstTable, void** ppShader, int shaderType, bool bHardErrors );
+        bool BuildShaderText(const char* szOrigShaderText, const char* szFn, const char* szProfile,
+                             int shaderType, char* szShaderText);
+        bool CompileBuiltShaderText(const char* szShaderText, const char* szFn, const char* szProfile,
+                                    LPD3DXBUFFER* ppByteCode, LPD3DXCONSTANTTABLE* ppConstTable);
         bool RecompileVShader(const char* szShadersText, VShaderInfo *si, int shaderType, bool bHardErrors);
         bool RecompilePShader(const char* szShadersText, PShaderInfo *si, int shaderType, bool bHardErrors, int PSVersion);
         bool EvictSomeTexture();
@@ -474,6 +478,34 @@ public:
 	    void		LoadRandomPreset(float fBlendTime);
 	    void		LoadPreset(std::string szPresetFilename, float fBlendTime);
         void        LoadPresetTick();
+
+        // ---- Asynchronous preset loading (background loader thread) ----
+        // The slow parts of a preset switch (file read, text parse, equation
+        // compilation and HLSL shader compilation) run on a worker thread;
+        // the render thread only does the cheap device-object creation.
+        HANDLE              m_hPresetThread;
+        CRITICAL_SECTION    m_csPresetLoad;     // protects everything below
+        volatile bool       m_bPresetLoaderQuit;
+        volatile bool       m_bPresetJobActive;
+        volatile bool       m_bPresetJobDone;
+        unsigned int        m_uPresetJobGen;    // bumped to supersede an in-flight job
+        std::string         m_szPresetJobFile;
+        DWORD               m_dwPresetJobApplyFlags;
+        bool                m_bPresetJobWarpOK;
+        bool                m_bPresetJobCompOK;
+        LPD3DXBUFFER        m_pPresetJobWarpCode;
+        LPD3DXBUFFER        m_pPresetJobCompCode;
+        LPD3DXCONSTANTTABLE m_pPresetJobWarpCT;
+        LPD3DXCONSTANTTABLE m_pPresetJobCompCT;
+
+        static DWORD WINAPI PresetLoaderThread(LPVOID lpParam);
+        void        EnsurePresetLoaderThread();
+        void        StopPresetLoaderThread();
+        void        QueuePresetJob(const std::string &szFile, DWORD ApplyFlags);
+        void        CancelPresetJob();
+        bool        CompilePShaderToBuffer(const char* szShadersText, int shaderType, int PSVersion,
+                                           LPD3DXBUFFER* ppByteCode, LPD3DXCONSTANTTABLE* ppCT);
+        void        ApplyPresetJobShader(bool bWarp);
 	    bool		ReversePropagatePoint(float fx, float fy, float *fx2, float *fy2);
 	    void		DrawWave(float *fL, float *fR);
         void        DrawCustomWaves();

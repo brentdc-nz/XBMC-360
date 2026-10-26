@@ -12,11 +12,13 @@ This is a work in progress, still many features to bring over. Though getting mo
 
 Usable but many features still need reimplementation or improvements.
 
-### Compiled build (last updated 20-09-26):
-https://drive.google.com/file/d/14B63cQPku8q38NM8lubEbL79v8RdTwCW/view
+### Compiled build (last updated 26-10-26):
+https://drive.google.com/file/d/1H1zvXRBK-mJDk_cjROJDCq2tB8bKgZxK/view
 
 ### Libraries
 - FFmpeg (DVDPlayer)
+- libdvdnav
+- libdvdread
 - LibSMB2
 - FreeType
 - MilkDrop2 (Music Visualizations)
