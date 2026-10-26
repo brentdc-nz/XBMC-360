@@ -3,8 +3,9 @@
 #include "CodecFactory.h"
 #include "guilib\GUIInfoManager.h"
 #include "guilib\AudioContext.h"
-//#include "music\tags\MusicInfoTag.h"
+#include "music\tags\MusicInfoTag.h"
 #include "Settings.h"
+#include "GUISettings.h"
 #include "AdvancedSettings.h"
 #include "FileItem.h"
 #include "utils\TimeUtils.h"
@@ -79,10 +80,10 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 {
 	if (m_currentlyCrossFading) CloseFileInternal(false); // User seems to be in a hurry
 
-	m_crossFading = 0;//g_guiSettings.GetInt("musicplayer.crossfade"); // TODO BRENT - Disabled for now
+	m_crossFading = g_guiSettings.GetInt("musicplayer.crossfade");
 
 	// No crossfading for cdda, cd-reading goes mad and no crossfading for last.fm doesn't like two connections
-//	if (file.IsCDDA() || file.IsLastFM()) m_crossFading = 0;  // TODO BRENT
+//	if (file.IsCDDA() || file.IsLastFM()) m_crossFading = 0;  // Not used atm!
 
 	if (m_crossFading && IsPlaying())
 	{
@@ -503,9 +504,9 @@ void PAPlayer::SetStreamVolume(int stream, long nVolume)
 
 void PAPlayer::UpdateCrossFadingTime(const CFileItem& file)
 {
-/*	if (m_crossFading = g_guiSettings.GetInt("musicplayer.crossfade")) // TODO BRENT
+	if (m_crossFading = g_guiSettings.GetInt("musicplayer.crossfade"))
 	{
-		if (m_crossFading && ( file.IsCDDA() || file.IsLastFM() ||
+		if (m_crossFading && ( /*file.IsCDDA() || file.IsLastFM() ||*/
 			(
 			!g_guiSettings.GetBool("musicplayer.crossfadealbumtracks") && m_currentFile->HasMusicInfoTag() && file.HasMusicInfoTag() &&
 			(m_currentFile->GetMusicInfoTag()->GetAlbum() != "") &&
@@ -518,7 +519,7 @@ void PAPlayer::UpdateCrossFadingTime(const CFileItem& file)
 		{
 			m_crossFading = 0;
 		}
-	}*/
+	}
 }
 
 void PAPlayer::WaitForStream()

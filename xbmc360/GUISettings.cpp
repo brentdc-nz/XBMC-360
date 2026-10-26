@@ -202,6 +202,8 @@ void CGUISettings::Initialize()
 	// My Music Settings
 	AddGroup(3, 2);
 	AddCategory(3, "musicplayer", 14086);
+	AddInt(5, "musicplayer.crossfade", 13314, 0, 0, 1, 15, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
+	AddBool(6, "musicplayer.crossfadealbumtracks", 13400, true);
 	AddString(8, "musicplayer.visualisation", 250, "MilkDrop2.vis", SPIN_CONTROL_TEXT);
 
 	AddCategory(3, "musicfiles", 14081);

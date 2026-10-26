@@ -503,6 +503,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
 			CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
 			pControl->SetLabel2(g_weatherManager.GetLocationName(pSetting->GetData()));
 		}
+		else if (strSetting.Equals("musicplayer.crossfadealbumtracks"))
+		{
+			CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+			if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("musicplayer.crossfade") > 0);
+		}
 	}
 }
 
