@@ -9,9 +9,10 @@
 class CDVDCodecUtils
 {
 public:
-	//static DVDVideoPicture* AllocatePicture(int iWidth, int iHeight);
+	static DVDVideoPicture* AllocatePicture(int iWidth, int iHeight);
 	static void FreePicture(DVDVideoPicture* pPicture);
-	//static bool CopyPicture(DVDVideoPicture* pDst, DVDVideoPicture* pSrc);
+	static bool CopyPicture(DVDVideoPicture* pDst, DVDVideoPicture* pSrc);
+	static bool CopyPicture(YV12Image* pDst, DVDVideoPicture *pSrc);
 	static bool CopyPictureToOverlay(YV12Image* pImage, DVDVideoPicture *pSrc);
 
 	static double NormalizeFrameduration(double framerate);

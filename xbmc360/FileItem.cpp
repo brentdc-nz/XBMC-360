@@ -336,6 +336,37 @@ bool CFileItem::IsNFO() const
 	return URIUtils::GetExtension(m_strPath).Equals(".nfo", false);
 }
 
+bool CFileItem::IsDVDImage() const
+{
+	CStdString strExtension;
+	URIUtils::GetExtension(m_strPath, strExtension);
+	if (strExtension.Equals(".img") || strExtension.Equals(".iso") || strExtension.Equals(".nrg")) return true;
+	return false;
+}
+
+bool CFileItem::IsDVDFile(bool bVobs /*= true*/, bool bIfos /*= true*/) const
+{
+	CStdString strFileName = URIUtils::GetFileName(m_strPath);
+	if (bIfos)
+	{
+		if (strFileName.Equals("video_ts.ifo")) return true;
+		if (strFileName.Left(4).Equals("vts_") && strFileName.Right(6).Equals("_0.ifo") && strFileName.length() == 12) return true;
+	}
+	if (bVobs)
+	{
+		if (strFileName.Equals("video_ts.vob")) return true;
+		if (strFileName.Left(4).Equals("vts_") && strFileName.Right(4).Equals(".vob")) return true;
+	}
+
+	return false;
+}
+
+bool CFileItem::IsDVD() const
+{
+	CStdString strFile(m_strPath);
+	return (strFile.Left(6).Equals("dvd://", false) || strFile.Equals("\\Device\\Cdrom0", false));
+}
+
 bool CFileItem::IsPlayList() const
 {
 	return PLAYLIST::CPlayListFactory::IsPlaylist(*this);

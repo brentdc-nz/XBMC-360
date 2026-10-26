@@ -43,7 +43,7 @@ public:
 		// Demuxer related messages
 		DEMUXER_PACKET,                 // data packet
 		DEMUXER_RESET,                  // reset the demuxer
-    
+
 		// Video related messages
 		VIDEO_NOSKIP,                   // next pictures is not to be skipped by the video renderer
 		VIDEO_SET_ASPECT,               // set aspectratio of video
@@ -74,7 +74,7 @@ public:
 		g_dvdMessageTracker.Register(this);
 #endif
 	}
-  
+
 	virtual ~CDVDMsg()
 	{
 		assert(m_references == 0);
@@ -172,6 +172,14 @@ public:
 	int GetStreamId()                     { return m_streamId; }
 private:
 	int m_streamId;
+};
+
+class CDVDMsgSubtitleClutChange : public CDVDMsg
+{
+public:
+	CDVDMsgSubtitleClutChange(BYTE* data) : CDVDMsg(SUBTITLE_CLUTCHANGE) { memcpy(m_data, data, 16*4); }
+	BYTE m_data[16][4];
+private:
 };
 
 class CDVDMsgPlayerSetState : public CDVDMsg

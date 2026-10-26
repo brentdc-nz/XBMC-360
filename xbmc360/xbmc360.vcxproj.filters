@@ -752,6 +752,30 @@
     <ClInclude Include="cores\DVDPlayer\DVDPlayerVideo.h">
       <Filter>Header Files\cores\DVDPlayer</Filter>
     </ClInclude>
+    <ClInclude Include="cores\DVDPlayer\DVDOverlayContainer.h">
+      <Filter>Header Files\cores\DVDPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\DVDPlayer\DVDOverlayRenderer.h">
+      <Filter>Header Files\cores\DVDPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\DVDPlayer\DVDDemuxSPU.h">
+      <Filter>Header Files\cores\DVDPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\DVDPlayer\DVDPlayerSubtitle.h">
+      <Filter>Header Files\cores\DVDPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\DVDPlayer\DVDCodecs\Overlay\DVDOverlay.h">
+      <Filter>Header Files\cores\DVDPlayer\DVDCodecs</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\DVDPlayer\DVDCodecs\Overlay\DVDOverlaySpu.h">
+      <Filter>Header Files\cores\DVDPlayer\DVDCodecs</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\DVDPlayer\DVDCodecs\Overlay\DVDOverlayImage.h">
+      <Filter>Header Files\cores\DVDPlayer\DVDCodecs</Filter>
+    </ClInclude>
+    <ClInclude Include="cores\DVDPlayer\DVDCodecs\Overlay\DVDOverlayText.h">
+      <Filter>Header Files\cores\DVDPlayer\DVDCodecs</Filter>
+    </ClInclude>
     <ClInclude Include="cores\DVDPlayer\DVDCodecs\video\DVDVideoCodec.h">
       <Filter>Header Files\cores\DVDPlayer\DVDCodecs\Video</Filter>
     </ClInclude>
@@ -1778,6 +1802,18 @@
       <Filter>Source Files\cores\DVDPlayer</Filter>
     </ClCompile>
     <ClCompile Include="cores\DVDPlayer\DVDPlayerVideo.cpp">
+      <Filter>Source Files\cores\DVDPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="cores\DVDPlayer\DVDOverlayContainer.cpp">
+      <Filter>Source Files\cores\DVDPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="cores\DVDPlayer\DVDOverlayRenderer.cpp">
+      <Filter>Source Files\cores\DVDPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="cores\DVDPlayer\DVDDemuxSPU.cpp">
+      <Filter>Source Files\cores\DVDPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="cores\DVDPlayer\DVDPlayerSubtitle.cpp">
       <Filter>Source Files\cores\DVDPlayer</Filter>
     </ClCompile>
     <ClCompile Include="cores\DVDPlayer\DVDCodecs\DVDFactoryCodec.cpp">

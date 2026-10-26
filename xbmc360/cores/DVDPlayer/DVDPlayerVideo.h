@@ -15,14 +15,15 @@
 enum AVCodecID;
 class CDemuxStreamVideo;
 class CDVDOverlayCodecCC;
+class CDVDOverlayContainer;
 
 #define VIDEO_PICTURE_QUEUE_SIZE 1
 
 class CDVDPlayerVideo : public CThread
 {
 public:
-	CDVDPlayerVideo(CDVDClock* pClock/* 
-                 , CDVDOverlayContainer* pOverlayContainer*/
+	CDVDPlayerVideo(CDVDClock* pClock
+                 , CDVDOverlayContainer* pOverlayContainer
                  , CDVDMessageQueue& parent);
 	virtual ~CDVDPlayerVideo();
 
@@ -81,7 +82,7 @@ public:
 	void SetSpeed(int iSpeed);
 
   // Classes
-//  CDVDOverlayContainer* m_pOverlayContainer;
+  CDVDOverlayContainer* m_pOverlayContainer;
   
 	CDVDClock* m_pClock;
 
@@ -95,7 +96,7 @@ protected:
 #define EOS_VERYLATE 4
 
 	int OutputPicture(DVDVideoPicture* pPicture, double pts);
-#ifdef HAS_VIDEO_PLAYBACK
+#if 1//def HAS_VIDEO_PLAYBACK
 	void ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest, double pts);
 #endif
 	void ProcessVideoUserData(DVDVideoUserData* pVideoUserData, double pts);

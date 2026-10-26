@@ -376,6 +376,11 @@ int CBuiltins::Execute(const CStdString& execString)
 			if (g_application.IsPlaying())
 				g_application.m_pPlayer->Seek(true, false);
 		}
+		else if (parameter.Equals("showvideomenu"))
+		{
+			if (g_application.IsPlaying() && g_application.m_pPlayer)
+				g_application.m_pPlayer->OnAction(CAction(ACTION_SHOW_VIDEOMENU));
+		}
 		else if (parameter.Equals("record") ||
 						 parameter.Left(9).Equals("partymode") ||
 						 parameter.Equals("random")    ||

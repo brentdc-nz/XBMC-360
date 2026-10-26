@@ -14,7 +14,7 @@
 #include "DVDPlayerSubtitle.h"
 
 //#include "DVDChapterReader.h"
-#include "DVDSubtitles/DVDFactorySubtitle.h"
+// #include "DVDSubtitles/DVDFactorySubtitle.h"// TODO
 #endif
 #include "utils/BitstreamStats.h"
 
@@ -323,10 +323,10 @@ protected:
 
 	CDVDPlayerVideo m_dvdPlayerVideo; // video part
 	CDVDPlayerAudio m_dvdPlayerAudio; // audio part
-//	CDVDPlayerSubtitle m_dvdPlayerSubtitle; // subtitle part
+	CDVDPlayerSubtitle m_dvdPlayerSubtitle; // subtitle part
 
 	CDVDClock m_clock;                // master clock
-//	CDVDOverlayContainer m_overlayContainer;
+	CDVDOverlayContainer m_overlayContainer;
 
 	CDVDInputStream* m_pInputStream;  // input stream for current playing file
 	CDVDDemux* m_pDemuxer;            // demuxer for current playing file

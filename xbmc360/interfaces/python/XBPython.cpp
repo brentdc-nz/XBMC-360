@@ -20,6 +20,8 @@
 
 #include "XBPython.h"
 #include "LibPython.h"
+#include "Application.h"
+#include "filesystem/SpecialProtocol.h"
 #include "utils/log.h"
 #include "utils/SingleLock.h"
 
@@ -180,22 +182,26 @@ void XBPython::FreeResources()
 
 void XBPython::Process()
 {
+	CStdString strAutoExecPy;
+
 	if (bStartup)
 	{
 		bStartup = false;
 
-		// autoexec.py - system
-		const char* strAutoExecPy = "D:\\scripts\\autoexec.py";
+		// autoexec.py
+		strAutoExecPy = CSpecialProtocol::TranslatePath("special://xbmc/scripts/autoexec.py");
 
 		if (FileExist(strAutoExecPy))
 		{
-			CLog::Log(LOGINFO, "XBPython: Running autoexec.py");
+			CLog::Log(LOGINFO, "XBPython: Running autoexec.py (%s)", strAutoExecPy.c_str());
+
+			// We need to make sure the network is up in case the start scripts require network
+			g_application.getNetwork().WaitForSetup(5000);
+
 			evalFile(strAutoExecPy);
 		}
 		else
-		{
-			CLog::Log(LOGDEBUG, "XBPython: No system autoexec.py found, skipping");
-		}
+			CLog::Log(LOGDEBUG, "%s - no system autoexec.py (%s) found, skipping", __FUNCTION__, strAutoExecPy.c_str());
 	}
 
 	if (bLogin)
@@ -203,12 +209,13 @@ void XBPython::Process()
 		bLogin = false;
 
 		// autoexec.py - profile
-		const char* strProfileAutoExec = "D:\\scripts\\profile_autoexec.py";
+		// TODO: bLogin is only set by the login screen - profiles not ported yet)
+		strAutoExecPy = CSpecialProtocol::TranslatePath("special://profile/scripts/autoexec.py");
 
-		if (FileExist(strProfileAutoExec))
-			evalFile(strProfileAutoExec);
+		if (FileExist(strAutoExecPy))
+			evalFile(strAutoExecPy);
 		else
-			CLog::Log(LOGDEBUG, "XBPython: No profile autoexec.py found, skipping");
+			CLog::Log(LOGDEBUG, "%s - no profile autoexec.py (%s) found, skipping", __FUNCTION__, strAutoExecPy.c_str());
 	}
 
 	CSingleLock lock(m_critSection);

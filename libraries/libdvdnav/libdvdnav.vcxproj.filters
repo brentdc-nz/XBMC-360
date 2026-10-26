@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="config">
+      <UniqueIdentifier>{b5c6d7e8-f9a0-4b1c-8d2e-3f4a5b6c7d8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source">
+      <UniqueIdentifier>{c6d7e8f9-a0b1-4c2d-9e3f-4a5b6c7d8e9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dvdnav">
+      <UniqueIdentifier>{d7e8f9a0-b1c2-4d3e-0f4a-5b6c7d8e9f0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vm">
+      <UniqueIdentifier>{e8f9a0b1-c2d3-4e4f-1a5b-6c7d8e9f0a1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="xbox360">
+      <UniqueIdentifier>{f9a0b1c2-d3e4-4f5a-2b6c-7d8e9f0a1b2c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="config.h">
+      <Filter>config</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dvdnav_internal.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\read_cache.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\remap.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dvdnav\dvdnav.h">
+      <Filter>dvdnav</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dvdnav\dvdnav_events.h">
+      <Filter>dvdnav</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dvdnav\dvd_types.h">
+      <Filter>dvdnav</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vm\decoder.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vm\vm.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vm\vmcmd.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="xbox360\unistd.h">
+      <Filter>xbox360</Filter>
+    </ClInclude>
+    <ClInclude Include="xbox360\inttypes.h">
+      <Filter>xbox360</Filter>
+    </ClInclude>
+    <ClInclude Include="xbox360\sys\time.h">
+      <Filter>xbox360</Filter>
+    </ClInclude>
+    <ClInclude Include="xbox360\sys\param.h">
+      <Filter>xbox360</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\dvdnav.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\highlight.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\navigation.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\read_cache.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\remap.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\searching.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\settings.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vm\decoder.c">
+      <Filter>vm</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vm\vm.c">
+      <Filter>vm</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vm\vmcmd.c">
+      <Filter>vm</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

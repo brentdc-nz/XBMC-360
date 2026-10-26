@@ -279,6 +279,8 @@
 
 // WINDOW_ID's from 13000 to 13099 reserved for Python
 
+#define ACTION_SHOW_VIDEOMENU         134 // Show DVD video menu during playback
+
 #define ACTION_NEXT_LETTER            140 // Jump through a list or container by letter
 #define ACTION_PREV_LETTER            141
 

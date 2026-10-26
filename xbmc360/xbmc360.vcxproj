@@ -120,9 +120,9 @@
       <MinimalRebuild>true</MinimalRebuild>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PreprocessorDefinitions>_DEBUG;_XBOX;__STDC_CONSTANT_MACROS;HAS_UPNP;HAS_WEB_SERVER;CURL_STATICLIB;_ITERATOR_DEBUG_LEVEL=0;_HAS_ITERATOR_DEBUGGING=0;HAS_PYTHON;Py_NO_ENABLE_SHARED</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_XBOX;__STDC_CONSTANT_MACROS;HAS_UPNP;HAS_WEB_SERVER;CURL_STATICLIB;_ITERATOR_DEBUG_LEVEL=0;_HAS_ITERATOR_DEBUGGING=0;HAS_PYTHON;Py_NO_ENABLE_SHARED;_ENABLE_SUBTITLES</PreprocessorDefinitions>
       <CallAttributedProfiling>Callcap</CallAttributedProfiling>
-      <AdditionalIncludeDirectories>..\libraries\libPython\Include;..\libraries\libPython\PC;..\libraries\libPython\xbox360;..\libraries\libid3tag\include;..\libraries\libjpeg\include;..\xbmc360\;..\libraries\freetype\freetype\include;..\libraries\ffmpeg\;..\libraries\ffmpeg\vcproj\external\include;..\sources\360MilkDrop2;..\sources\PAPlayer\libFlac\include;..\sources\PAPlayer\libmad\include;..\libraries\libUPnP\Neptune\Source\Core;..\libraries\libUPnP\Platinum\Source\Core;..\libraries\libUPnP\Platinum\Source\Platinum;..\libraries\libUPnP\Platinum\Source\Devices\MediaServer;..\libraries\libUPnP\Platinum\Source\Devices\MediaRenderer;..\libraries\libUPnP\Platinum\Source\Devices\MediaConnect;..\libraries\libUPnP\Neptune\Source\System\Xbox;..\libraries\libUPnP\Neptune\Source\System\Win32;..\libraries\libcurl\include;..\libraries\libsmb2;..\libraries\libsmb2\include;..\libraries\sqlite3\include;..\libraries\sqlite3\include\wrapper;..\libraries\libiconv\include;..\libraries\libmicrohttpd\compat;..\xbmc360\compat;..\libraries\ffmpeg\vcproj\external\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\libraries\libPython\Include;..\libraries\libPython\PC;..\libraries\libPython\xbox360;..\libraries\libid3tag\include;..\libraries\libjpeg\include;..\xbmc360\;..\libraries\freetype\freetype\include;..\libraries\ffmpeg\;..\libraries\ffmpeg\vcproj\external\include;..\sources\360MilkDrop2;..\sources\PAPlayer\libFlac\include;..\sources\PAPlayer\libmad\include;..\libraries\libUPnP\Neptune\Source\Core;..\libraries\libUPnP\Platinum\Source\Core;..\libraries\libUPnP\Platinum\Source\Platinum;..\libraries\libUPnP\Platinum\Source\Devices\MediaServer;..\libraries\libUPnP\Platinum\Source\Devices\MediaRenderer;..\libraries\libUPnP\Platinum\Source\Devices\MediaConnect;..\libraries\libUPnP\Neptune\Source\System\Xbox;..\libraries\libUPnP\Neptune\Source\System\Win32;..\libraries\libcurl\include;..\libraries\libsmb2;..\libraries\libsmb2\include;..\libraries\sqlite3\include;..\libraries\sqlite3\include\wrapper;..\libraries\libiconv\include;..\libraries\libmicrohttpd\compat;..\libraries\libdvdnav;..\libraries\libdvdnav\src;..\libraries\libdvdnav\src\dvdnav;..\libraries\libdvdread;..\libraries\libdvdread\src;..\libraries\libdvdread\src\dvdread;..\xbmc360\compat;..\libraries\ffmpeg\vcproj\external\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/EHa %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -131,8 +131,8 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
-      <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirenderd.lib;xmediad2.lib;Xonline.lib;xnetd.lib;libavformat.lib;libswresample.lib;libavutil.lib;libswscale.lib;libavcodec.lib;zlib.lib;pthreads.lib;freetype.lib;360MilkDrop2.lib;libFlac.lib;libmad.lib;libPlatinum.lib;libcurl.lib;libsmb2.lib;sqlite3.lib;libiconv.lib;libjpeg.lib;libid3tag.lib;libmicrohttpd.lib;python34.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\libraries\ffmpeg\vcproj\libavcodec\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\libswscale\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\libavutil\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\libavformat\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\libswresample\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\pthreads\Debug;..\libraries\ffmpeg\vcproj\external\zlib\Xbox 360\Debug;..\libraries\freetype\freetype\Debug;..\sources\360MilkDrop2\Debug;..\sources\PAPlayer\libFlac\Debug;..\sources\PAPlayer\libmad\Debug;..\libraries\libUPnP\Debug;..\libraries\libcurl\Debug;..\libraries\libsmb2\Debug;..\libraries\sqlite3\Debug;..\libraries\libiconv\Debug;..\libraries\libjpeg\Debug;..\libraries\libid3tag\Debug;..\libraries\libmicrohttpd\Debug;..\libraries\libPython\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirenderd.lib;xmediad2.lib;Xonline.lib;xnetd.lib;libavformat.lib;libswresample.lib;libavutil.lib;libswscale.lib;libavcodec.lib;zlib.lib;pthreads.lib;freetype.lib;360MilkDrop2.lib;libFlac.lib;libmad.lib;libPlatinum.lib;libcurl.lib;libsmb2.lib;sqlite3.lib;libiconv.lib;libjpeg.lib;libid3tag.lib;libmicrohttpd.lib;python34.lib;libdvdnav.lib;libdvdread.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\libraries\ffmpeg\vcproj\libavcodec\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\libswscale\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\libavutil\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\libavformat\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\libswresample\Xbox 360\Debug;..\libraries\ffmpeg\vcproj\pthreads\Debug;..\libraries\ffmpeg\vcproj\external\zlib\Xbox 360\Debug;..\libraries\freetype\freetype\Debug;..\sources\360MilkDrop2\Debug;..\sources\PAPlayer\libFlac\Debug;..\sources\PAPlayer\libmad\Debug;..\libraries\libUPnP\Debug;..\libraries\libcurl\Debug;..\libraries\libsmb2\Debug;..\libraries\sqlite3\Debug;..\libraries\libiconv\Debug;..\libraries\libjpeg\Debug;..\libraries\libid3tag\Debug;..\libraries\libmicrohttpd\Debug;..\libraries\libdvdnav\Debug;..\libraries\libdvdread\Debug;..\libraries\libPython\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <StackCommitSize>2097152</StackCommitSize>
       <StackReserveSize>2097152</StackReserveSize>
     </Link>
@@ -153,9 +153,9 @@
       <MinimalRebuild>true</MinimalRebuild>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <PreprocessorDefinitions>_XBOX;__STDC_CONSTANT_MACROS;HAS_UPNP;HAS_WEB_SERVER;CURL_STATICLIB;HAS_PYTHON;Py_NO_ENABLE_SHARED</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_XBOX;__STDC_CONSTANT_MACROS;HAS_UPNP;HAS_WEB_SERVER;CURL_STATICLIB;HAS_PYTHON;Py_NO_ENABLE_SHARED;_ENABLE_SUBTITLES</PreprocessorDefinitions>
       <CallAttributedProfiling>Callcap</CallAttributedProfiling>
-      <AdditionalIncludeDirectories>..\libraries\libPython\Include;..\libraries\libPython\PC;..\libraries\libPython\xbox360;..\libraries\libid3tag\include;..\libraries\libjpeg\include;..\xbmc360\;..\libraries\freetype\freetype\include;..\libraries\ffmpeg\;..\libraries\ffmpeg\vcproj\external\include;..\sources\360MilkDrop2;..\sources\PAPlayer\libFlac\include;..\sources\PAPlayer\libmad\include;..\libraries\libUPnP\Neptune\Source\Core;..\libraries\libUPnP\Platinum\Source\Core;..\libraries\libUPnP\Platinum\Source\Platinum;..\libraries\libUPnP\Platinum\Source\Devices\MediaServer;..\libraries\libUPnP\Platinum\Source\Devices\MediaRenderer;..\libraries\libUPnP\Platinum\Source\Devices\MediaConnect;..\libraries\libUPnP\Neptune\Source\System\Xbox;..\libraries\libUPnP\Neptune\Source\System\Win32;..\libraries\libcurl\include;..\libraries\libsmb2;..\libraries\libsmb2\include;..\libraries\sqlite3\include;..\libraries\sqlite3\include\wrapper;..\libraries\libiconv\include;..\libraries\libmicrohttpd\compat;..\xbmc360\compat;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\libraries\libPython\Include;..\libraries\libPython\PC;..\libraries\libPython\xbox360;..\libraries\libid3tag\include;..\libraries\libjpeg\include;..\xbmc360\;..\libraries\freetype\freetype\include;..\libraries\ffmpeg\;..\libraries\ffmpeg\vcproj\external\include;..\sources\360MilkDrop2;..\sources\PAPlayer\libFlac\include;..\sources\PAPlayer\libmad\include;..\libraries\libUPnP\Neptune\Source\Core;..\libraries\libUPnP\Platinum\Source\Core;..\libraries\libUPnP\Platinum\Source\Platinum;..\libraries\libUPnP\Platinum\Source\Devices\MediaServer;..\libraries\libUPnP\Platinum\Source\Devices\MediaRenderer;..\libraries\libUPnP\Platinum\Source\Devices\MediaConnect;..\libraries\libUPnP\Neptune\Source\System\Xbox;..\libraries\libUPnP\Neptune\Source\System\Win32;..\libraries\libcurl\include;..\libraries\libsmb2;..\libraries\libsmb2\include;..\libraries\sqlite3\include;..\libraries\sqlite3\include\wrapper;..\libraries\libiconv\include;..\libraries\libmicrohttpd\compat;..\libraries\libdvdnav;..\libraries\libdvdnav\src;..\libraries\libdvdnav\src\dvdnav;..\libraries\libdvdread;..\libraries\libdvdread\src;..\libraries\libdvdread\src\dvdread;..\xbmc360\compat;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/EHa %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -167,8 +167,8 @@
     <Link>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
-      <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirender.lib;xmediad2.lib;xonline.lib;xnetd.lib;libavformat.lib;libavutil.lib;libswscale.lib;libavcodec.lib;zlib.lib;pthreads.lib;freetype.lib;360MilkDrop2.lib;libFlac.lib;libmad.lib;libPlatinum.lib;libcurl.lib;libsmb2.lib;sqlite3.lib;libiconv.lib;libjpeg.lib;libid3tag.lib;libmicrohttpd.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\libraries\ffmpeg\vcproj\libavcodec\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libswscale\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libavutil\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libavformat\Xbox 360\Release;..\libraries\ffmpeg\vcproj\pthreads\Release;..\libraries\ffmpeg\vcproj\external\zlib\Xbox 360\Release;..\libraries\freetype\freetype\Release;..\sources\360MilkDrop2\Release;..\sources\PAPlayer\libFlac\Release;..\sources\PAPlayer\libMad\Release;..\libraries\libUPnP\Release_New;..\libraries\libcurl\Release;..\libraries\libsmb2\Release;..\libraries\sqlite3\Release;..\libraries\libiconv\Release;..\libraries\libjpeg\Release;..\libraries\libid3tag\Release;..\libraries\libmicrohttpd\Release;..\libraries\libPython\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d9d.lib;d3dx9d.lib;xgraphicsd.lib;xapilibd.lib;xaudiod2.lib;x3daudiod.lib;xmcored.lib;xboxkrnl.lib;xbdm.lib;xactd3.lib;xuirund.lib;xuirender.lib;xmediad2.lib;xonline.lib;xnetd.lib;libavformat.lib;libavutil.lib;libswscale.lib;libavcodec.lib;zlib.lib;pthreads.lib;freetype.lib;360MilkDrop2.lib;libFlac.lib;libmad.lib;libPlatinum.lib;libcurl.lib;libsmb2.lib;sqlite3.lib;libiconv.lib;libjpeg.lib;libid3tag.lib;libmicrohttpd.lib;libdvdnav.lib;libdvdread.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\libraries\ffmpeg\vcproj\libavcodec\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libswscale\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libavutil\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libavformat\Xbox 360\Release;..\libraries\ffmpeg\vcproj\pthreads\Release;..\libraries\ffmpeg\vcproj\external\zlib\Xbox 360\Release;..\libraries\freetype\freetype\Release;..\sources\360MilkDrop2\Release;..\sources\PAPlayer\libFlac\Release;..\sources\PAPlayer\libMad\Release;..\libraries\libUPnP\Release_New;..\libraries\libcurl\Release;..\libraries\libsmb2\Release;..\libraries\sqlite3\Release;..\libraries\libiconv\Release;..\libraries\libjpeg\Release;..\libraries\libid3tag\Release;..\libraries\libmicrohttpd\Release;..\libraries\libdvdnav\Release;..\libraries\libdvdread\Release;..\libraries\libPython\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Deploy>
       <DeploymentType>CopyToHardDrive</DeploymentType>
@@ -185,7 +185,7 @@
       <PREfast>AnalyzeOnly</PREfast>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PreprocessorDefinitions>_DEBUG;_XBOX;HAS_UPNP</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_XBOX;HAS_UPNP;_ENABLE_SUBTITLES</PreprocessorDefinitions>
       <CallAttributedProfiling>Callcap</CallAttributedProfiling>
     </ClCompile>
     <Link>
@@ -206,7 +206,7 @@
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <PreprocessorDefinitions>NDEBUG;_XBOX;PROFILE;HAS_UPNP</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_XBOX;PROFILE;HAS_UPNP;_ENABLE_SUBTITLES</PreprocessorDefinitions>
       <CallAttributedProfiling>Callcap</CallAttributedProfiling>
     </ClCompile>
     <Link>
@@ -235,7 +235,7 @@
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <PreprocessorDefinitions>NDEBUG;_XBOX;PROFILE;FASTCAP;HAS_UPNP</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_XBOX;PROFILE;FASTCAP;HAS_UPNP;_ENABLE_SUBTITLES</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -258,8 +258,8 @@
       <ExceptionHandling>false</ExceptionHandling>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <PreprocessorDefinitions>NDEBUG;_XBOX;__STDC_CONSTANT_MACROS;HAS_UPNP;HAS_WEB_SERVER;CURL_STATICLIB;HAS_PYTHON;Py_NO_ENABLE_SHARED</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\libraries\libPython\Include;..\libraries\libPython\PC;..\libraries\libPython\xbox360;..\libraries\libid3tag\include;..\libraries\libjpeg\include;..\xbmc360\;..\libraries\freetype\freetype\include;..\libraries\ffmpeg\;..\libraries\ffmpeg\vcproj\external\include;..\sources\360MilkDrop2;..\sources\PAPlayer\libFlac\include;..\sources\PAPlayer\libmad\include;..\libraries\libUPnP\Neptune\Source\Core;..\libraries\libUPnP\Platinum\Source\Core;..\libraries\libUPnP\Platinum\Source\Platinum;..\libraries\libUPnP\Platinum\Source\Devices\MediaServer;..\libraries\libUPnP\Platinum\Source\Devices\MediaRenderer;..\libraries\libUPnP\Platinum\Source\Devices\MediaConnect;..\libraries\libUPnP\Neptune\Source\System\Xbox;..\libraries\libUPnP\Neptune\Source\System\Win32;..\libraries\libcurl\include;..\libraries\libsmb2;..\libraries\libsmb2\include;..\libraries\sqlite3\include;..\libraries\sqlite3\include\wrapper;..\libraries\libiconv\include;..\libraries\libmicrohttpd\compat;..\xbmc360\compat;..\libraries\ffmpeg\vcproj\external\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;_XBOX;__STDC_CONSTANT_MACROS;HAS_UPNP;HAS_WEB_SERVER;CURL_STATICLIB;HAS_PYTHON;Py_NO_ENABLE_SHARED;_ENABLE_SUBTITLES</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\libraries\libPython\Include;..\libraries\libPython\PC;..\libraries\libPython\xbox360;..\libraries\libid3tag\include;..\libraries\libjpeg\include;..\xbmc360\;..\libraries\freetype\freetype\include;..\libraries\ffmpeg\;..\libraries\ffmpeg\vcproj\external\include;..\sources\360MilkDrop2;..\sources\PAPlayer\libFlac\include;..\sources\PAPlayer\libmad\include;..\libraries\libUPnP\Neptune\Source\Core;..\libraries\libUPnP\Platinum\Source\Core;..\libraries\libUPnP\Platinum\Source\Platinum;..\libraries\libUPnP\Platinum\Source\Devices\MediaServer;..\libraries\libUPnP\Platinum\Source\Devices\MediaRenderer;..\libraries\libUPnP\Platinum\Source\Devices\MediaConnect;..\libraries\libUPnP\Neptune\Source\System\Xbox;..\libraries\libUPnP\Neptune\Source\System\Win32;..\libraries\libcurl\include;..\libraries\libsmb2;..\libraries\libsmb2\include;..\libraries\sqlite3\include;..\libraries\sqlite3\include\wrapper;..\libraries\libiconv\include;..\libraries\libmicrohttpd\compat;..\libraries\libdvdnav;..\libraries\libdvdnav\src;..\libraries\libdvdnav\src\dvdnav;..\libraries\libdvdread;..\libraries\libdvdread\src;..\libraries\libdvdread\src\dvdread;..\xbmc360\compat;..\libraries\ffmpeg\vcproj\external\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <InlineAssemblyOptimization>true</InlineAssemblyOptimization>
       <PreschedulingOptimization>true</PreschedulingOptimization>
@@ -278,8 +278,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
       <SetChecksum>true</SetChecksum>
-      <AdditionalDependencies>d3d9.lib;d3dx9.lib;xgraphics.lib;xapilib.lib;xaudio2.lib;x3daudio.lib;xmcore.lib;xboxkrnl.lib;xbdm.lib;xact3.lib;xuirun.lib;xuirender.lib;xmedia2.lib;xonline.lib;xnet.lib;libavformat.lib;libswresample.lib;libavutil.lib;libswscale.lib;libavcodec.lib;pthreads.lib;zlib.lib;freetype.lib;360MilkDrop2.lib;libflac.lib;libmad.lib;libPlatinum.lib;libcurl.lib;libsmb2.lib;sqlite3.lib;libiconv.lib;libjpeg.lib;libid3tag.lib;libmicrohttpd.lib;python34.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\libraries\ffmpeg\vcproj\libavcodec\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libswscale\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libavutil\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libavformat\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libswresample\Xbox 360\Release;..\libraries\ffmpeg\vcproj\pthreads\Release;..\libraries\ffmpeg\vcproj\external\zlib\Xbox 360\Release;..\libraries\freetype\freetype\Release;..\sources\360MilkDrop2\Release;..\sources\PAPlayer\libFlac\Release;..\sources\PAPlayer\libMad\Release;..\libraries\libUPnP\Release;..\libraries\libcurl\Release;..\libraries\libsmb2\Release;..\libraries\sqlite3\Release;..\libraries\libiconv\Release;..\libraries\libjpeg\Release;..\libraries\libid3tag\Release;..\libraries\libmicrohttpd\Release;..\libraries\libPython\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d9.lib;d3dx9.lib;xgraphics.lib;xapilib.lib;xaudio2.lib;x3daudio.lib;xmcore.lib;xboxkrnl.lib;xbdm.lib;xact3.lib;xuirun.lib;xuirender.lib;xmedia2.lib;xonline.lib;xnet.lib;libavformat.lib;libswresample.lib;libavutil.lib;libswscale.lib;libavcodec.lib;pthreads.lib;zlib.lib;freetype.lib;360MilkDrop2.lib;libflac.lib;libmad.lib;libPlatinum.lib;libcurl.lib;libsmb2.lib;sqlite3.lib;libiconv.lib;libjpeg.lib;libid3tag.lib;libmicrohttpd.lib;python34.lib;libdvdnav.lib;libdvdread.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\libraries\ffmpeg\vcproj\libavcodec\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libswscale\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libavutil\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libavformat\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libswresample\Xbox 360\Release;..\libraries\ffmpeg\vcproj\pthreads\Release;..\libraries\ffmpeg\vcproj\external\zlib\Xbox 360\Release;..\libraries\freetype\freetype\Release;..\sources\360MilkDrop2\Release;..\sources\PAPlayer\libFlac\Release;..\sources\PAPlayer\libMad\Release;..\libraries\libUPnP\Release;..\libraries\libcurl\Release;..\libraries\libsmb2\Release;..\libraries\sqlite3\Release;..\libraries\libiconv\Release;..\libraries\libjpeg\Release;..\libraries\libid3tag\Release;..\libraries\libmicrohttpd\Release;..\libraries\libdvdnav\Release;..\libraries\libdvdread\Release;..\libraries\libPython\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <StackCommitSize>2097152</StackCommitSize>
       <StackReserveSize>2097152</StackReserveSize>
     </Link>
@@ -304,7 +304,7 @@
       <ExceptionHandling>false</ExceptionHandling>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <PreprocessorDefinitions>NDEBUG;_XBOX;LTCG;HAS_UPNP</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_XBOX;LTCG;HAS_UPNP;_ENABLE_SUBTITLES</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -344,12 +344,23 @@
     <ClInclude Include="cores\DVDPlayer\DVDInputStreams\DVDInputStream.h" />
     <ClInclude Include="cores\DVDPlayer\DVDInputStreams\DVDInputStreamFile.h" />
     <ClInclude Include="cores\DVDPlayer\DVDInputStreams\DVDInputStreamSMB.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDInputStreams\DVDInputStreamNavigator.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDInputStreams\DVDStateSerializer.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDInputStreams\DllDvdNav.h" />
     <ClInclude Include="cores\DVDPlayer\DVDMessage.h" />
     <ClInclude Include="cores\DVDPlayer\DVDMessageQueue.h" />
     <ClInclude Include="cores\DVDPlayer\DVDPerformanceCounter.h" />
     <ClInclude Include="cores\DVDPlayer\DVDPlayer.h" />
     <ClInclude Include="cores\DVDPlayer\DVDPlayerAudio.h" />
     <ClInclude Include="cores\DVDPlayer\DVDPlayerVideo.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDOverlayContainer.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDOverlayRenderer.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDDemuxSPU.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDPlayerSubtitle.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDCodecs\Overlay\DVDOverlay.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDCodecs\Overlay\DVDOverlaySpu.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDCodecs\Overlay\DVDOverlayImage.h" />
+    <ClInclude Include="cores\DVDPlayer\DVDCodecs\Overlay\DVDOverlayText.h" />
     <ClInclude Include="cores\DVDPlayer\DVDStreamInfo.h" />
     <ClInclude Include="cores\DVDPlayer\Edl.h" />
     <ClInclude Include="cores\DVDPlayer\IDVDPlayer.h" />
@@ -592,6 +603,7 @@
     <ClInclude Include="ThumbnailCache.h" />
     <ClInclude Include="URL.h" />
     <ClInclude Include="utils\Archive.h" />
+    <ClInclude Include="utils\LangCodeExpander.h" />
     <ClInclude Include="utils\asprintf.h" />
     <ClInclude Include="utils\AutoPtrHandle.h" />
     <ClInclude Include="utils\BitstreamStats.h" />
@@ -690,6 +702,8 @@
     <ClCompile Include="cores\DVDPlayer\DVDInputStreams\DVDInputStream.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDInputStreams\DVDInputStreamFile.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDInputStreams\DVDInputStreamSMB.cpp" />
+    <ClCompile Include="cores\DVDPlayer\DVDInputStreams\DVDInputStreamNavigator.cpp" />
+    <ClCompile Include="cores\DVDPlayer\DVDInputStreams\DVDStateSerializer.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDMessage.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDMessageQueue.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDPerformanceCounter.cpp" />
@@ -697,6 +711,10 @@
     <ClCompile Include="cores\DVDPlayer\DVDPlayer.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDPlayerAudio.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDPlayerVideo.cpp" />
+    <ClCompile Include="cores\DVDPlayer\DVDOverlayContainer.cpp" />
+    <ClCompile Include="cores\DVDPlayer\DVDOverlayRenderer.cpp" />
+    <ClCompile Include="cores\DVDPlayer\DVDDemuxSPU.cpp" />
+    <ClCompile Include="cores\DVDPlayer\DVDPlayerSubtitle.cpp" />
     <ClCompile Include="cores\DVDPlayer\DVDStreamInfo.cpp" />
     <ClCompile Include="cores\DVDPlayer\Edl.cpp" />
     <ClCompile Include="cores\PAPlayer\AudioDecoder.cpp" />
@@ -1013,6 +1031,7 @@
     <ClCompile Include="ThumbnailCache.cpp" />
     <ClCompile Include="URL.cpp" />
     <ClCompile Include="utils\Archive.cpp" />
+    <ClCompile Include="utils\LangCodeExpander.cpp" />
     <ClCompile Include="utils\asprintf.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_New|Xbox 360'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>

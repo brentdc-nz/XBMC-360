@@ -25,6 +25,8 @@ static const ActionMapping actions[] =
         {"previousmenu"      , ACTION_PREVIOUS_MENU},
         {"pause"             , ACTION_PAUSE},
         {"stop"              , ACTION_STOP},
+        {"skipnext"          , ACTION_NEXT_ITEM},
+        {"skipprevious"      , ACTION_PREV_ITEM},
         {"fullscreen"        , ACTION_SHOW_GUI},
         {"stepforward"       , ACTION_STEP_FORWARD},
         {"stepback"          , ACTION_STEP_BACK},
@@ -52,6 +54,7 @@ static const ActionMapping actions[] =
         {"osd"               , ACTION_SHOW_OSD},
         {"smallstepback"     , ACTION_SMALL_STEP_BACK},
         {"aspectratio"       , ACTION_ASPECT_RATIO},
+        {"showvideomenu"     , ACTION_SHOW_VIDEOMENU},
         {"zoomin"            , ACTION_ZOOM_IN},
         {"zoomout"           , ACTION_ZOOM_OUT},
         {"rotate"            , ACTION_ROTATE_PICTURE},
@@ -144,7 +147,12 @@ static const ActionMapping windows[] =
         {"startup"                  , WINDOW_STARTUP_ANIM}
 };
 
-CButtonTranslator g_buttonTranslator;
+CButtonTranslator& CButtonTranslator::GetInstance()
+{
+	static CButtonTranslator sInstance;
+	return sInstance;
+}
+
 extern CStdString g_LoadErrorStr;
 
 CButtonTranslator::CButtonTranslator()

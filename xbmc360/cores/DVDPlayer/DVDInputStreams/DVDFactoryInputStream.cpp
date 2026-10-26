@@ -2,6 +2,7 @@
 #include "DVDInputStream.h"
 #include "DVDInputStreamFile.h"
 #include "DVDInputStreamSMB.h"
+#include "DVDInputStreamNavigator.h"
 #ifdef HAS_FILESYSTEM
 #include "DVDInputStreamHTSP.h"
 #endif
@@ -12,13 +13,13 @@
 
 CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, const std::string& file, const std::string& content)
 {
-#if 0
   CFileItem item(file.c_str(), false);
   if (item.IsDVDFile(false, true) || item.IsDVDImage() ||
       file.compare("\\Device\\Cdrom0") == 0)
   {
     return (new CDVDInputStreamNavigator(pPlayer));
   }
+#if 0
   else if(file.substr(0, 6) == "rtp://"
        || file.substr(0, 7) == "rtsp://"
        || file.substr(0, 6) == "sdp://"

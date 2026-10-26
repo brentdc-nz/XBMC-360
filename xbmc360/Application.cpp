@@ -205,7 +205,7 @@ bool CApplication::Create()
 		FatalErrorHandler(true);
 
 	CLog::Log(LOGINFO, "Load keymapping");
-	if(!g_buttonTranslator.Load())
+	if(!CButtonTranslator::GetInstance().Load())
 		FatalErrorHandler(true);
 
 	return CXBApplicationEX::Create();
@@ -1003,7 +1003,7 @@ bool CApplication::OnKey(CKey& key) // FIXME : Needs updating to match!
 
 	// This will be checked for certain keycodes that need
 	// special handling if the screensaver is active
-	CAction action = g_buttonTranslator.GetAction(iWin, key);
+	CAction action = CButtonTranslator::GetInstance().GetAction(iWin, key);
 
 	// A key has been pressed.
 	// Reset the screensaver timer
@@ -1026,15 +1026,15 @@ bool CApplication::OnKey(CKey& key) // FIXME : Needs updating to match!
 	if (iWin == WINDOW_FULLSCREEN_VIDEO)
 	{
 		// Current active window is full screen video.
-		if (/*g_application.m_pPlayer && g_application.m_pPlayer->IsInMenu()*/0)
+		if (g_application.m_pPlayer && g_application.m_pPlayer->IsInMenu())
 		{
 			// If player is in some sort of menu, (ie DVDMENU) map buttons differently
-			//action = CButtonTranslator::GetInstance().GetAction(WINDOW_VIDEO_MENU, key);
+			action = CButtonTranslator::GetInstance().GetAction(WINDOW_VIDEO_MENU, key);
 		}
 		else
 		{
 			// No then use the fullscreen window section of keymap.xml to map key->action
-			action = /*CButtonTranslator::GetInstance()*/g_buttonTranslator.GetAction(iWin, key);
+			action = CButtonTranslator::GetInstance().GetAction(iWin, key);
 		}
 	}
 	else
@@ -1084,10 +1084,10 @@ bool CApplication::OnKey(CKey& key) // FIXME : Needs updating to match!
 		if (/*key.GetFromHttpApi()*/0)
 		{
 			if (key.GetButtonCode() != KEY_INVALID)
-				action = /*CButtonTranslator::GetInstance()*/g_buttonTranslator.GetAction(iWin, key);
+				action = CButtonTranslator::GetInstance().GetAction(iWin, key);
 		}
 		else
-			action = /*CButtonTranslator::GetInstance()*/g_buttonTranslator.GetAction(iWin, key);
+			action = CButtonTranslator::GetInstance().GetAction(iWin, key);
 	}
 
 	if (!key.IsAnalogButton())
@@ -2407,7 +2407,7 @@ void CApplication::Cleanup()
 		g_settings.Clear();
 		g_guiSettings.Clear();
 		g_advancedSettings.Clear();
-		g_buttonTranslator.Clear();
+		CButtonTranslator::GetInstance().Clear();
 
 		ffmpeg_threading_deinit();
 	}

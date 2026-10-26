@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="config">
+      <UniqueIdentifier>{d1a2b3c4-5e6f-4a7b-8c9d-0a1b2c3d4e5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source">
+      <UniqueIdentifier>{e2b3c4d5-6f7a-4b8c-9d0e-1b2c3d4e5f6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dvdread">
+      <UniqueIdentifier>{f3c4d5e6-7a8b-4c9d-0e1f-2c3d4e5f6a7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="xbox360">
+      <UniqueIdentifier>{a4d5e6f7-8b9c-4d0e-1f2a-3d4e5f6a7b8c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="config.h">
+      <Filter>config</Filter>
+    </ClInclude>
+    <ClInclude Include="src\bswap.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\bitreader.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dvd_input.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dvdread_internal.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\md5.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dvdread\dvd_reader.h">
+      <Filter>dvdread</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dvdread\dvd_udf.h">
+      <Filter>dvdread</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dvdread\ifo_print.h">
+      <Filter>dvdread</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dvdread\ifo_read.h">
+      <Filter>dvdread</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dvdread\ifo_types.h">
+      <Filter>dvdread</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dvdread\nav_print.h">
+      <Filter>dvdread</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dvdread\nav_read.h">
+      <Filter>dvdread</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dvdread\nav_types.h">
+      <Filter>dvdread</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dvdread\bitreader.h">
+      <Filter>dvdread</Filter>
+    </ClInclude>
+    <ClInclude Include="xbox360\unistd.h">
+      <Filter>xbox360</Filter>
+    </ClInclude>
+    <ClInclude Include="xbox360\inttypes.h">
+      <Filter>xbox360</Filter>
+    </ClInclude>
+    <ClInclude Include="xbox360\dirent.h">
+      <Filter>xbox360</Filter>
+    </ClInclude>
+    <ClInclude Include="xbox360\dlfcn.h">
+      <Filter>xbox360</Filter>
+    </ClInclude>
+    <ClInclude Include="xbox360\sys\time.h">
+      <Filter>xbox360</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\bitreader.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dvd_input.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dvd_reader.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dvd_udf.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ifo_print.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ifo_read.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\md5.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nav_print.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nav_read.c">
+      <Filter>source</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

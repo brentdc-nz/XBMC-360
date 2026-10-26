@@ -79,6 +79,9 @@ public:
 	bool IsFileFolder() const;
 	bool IsInternetStream() const { return false; } ; // TODO
 	bool IsStack() const { return false; } ; // TODO - Stack file support not ported
+	bool IsDVDImage() const;
+	bool IsDVDFile(bool bVobs = true, bool bIfos = true) const;
+	bool IsDVD() const;
 	bool IsRemote() const;
 	bool IsVideoDb() const { return false; } ; // TODO - VideoDb not ported
 	bool IsMusicDb() const { return false; } ; // TODO - MusicDb not ported

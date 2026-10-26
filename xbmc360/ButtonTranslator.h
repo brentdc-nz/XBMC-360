@@ -22,6 +22,9 @@ public:
 	CButtonTranslator();
 	virtual ~CButtonTranslator();
 
+	// Access to singleton
+	static CButtonTranslator& GetInstance();
+
 	bool Load();
 	void Clear(); // Clears the maps
 
@@ -42,7 +45,5 @@ private:
 	WORD TranslateGamepadString(const char *szButton);
 	WORD GetActionCode(WORD wWindow, const CKey &key, CStdString &strAction);
 };
-
-extern CButtonTranslator g_buttonTranslator;
 
 #endif //BUTTONTRANSLATOR_H

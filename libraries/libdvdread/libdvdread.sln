@@ -1,0 +1,34 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libdvdread", "libdvdread.vcxproj", "{B7A1D2C3-4E5F-4A6B-8C9D-1F2A3B4C5D6E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		CodeAnalysis|Xbox 360 = CodeAnalysis|Xbox 360
+		Debug|Xbox 360 = Debug|Xbox 360
+		Profile_FastCap|Xbox 360 = Profile_FastCap|Xbox 360
+		Profile|Xbox 360 = Profile|Xbox 360
+		Release_LTCG|Xbox 360 = Release_LTCG|Xbox 360
+		Release|Xbox 360 = Release|Xbox 360
+		Release_New|Xbox 360 = Release_New|Xbox 360
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B7A1D2C3-4E5F-4A6B-8C9D-1F2A3B4C5D6E}.CodeAnalysis|Xbox 360.ActiveCfg = CodeAnalysis|Xbox 360
+		{B7A1D2C3-4E5F-4A6B-8C9D-1F2A3B4C5D6E}.CodeAnalysis|Xbox 360.Build.0 = CodeAnalysis|Xbox 360
+		{B7A1D2C3-4E5F-4A6B-8C9D-1F2A3B4C5D6E}.Debug|Xbox 360.ActiveCfg = Debug|Xbox 360
+		{B7A1D2C3-4E5F-4A6B-8C9D-1F2A3B4C5D6E}.Debug|Xbox 360.Build.0 = Debug|Xbox 360
+		{B7A1D2C3-4E5F-4A6B-8C9D-1F2A3B4C5D6E}.Profile_FastCap|Xbox 360.ActiveCfg = Profile_FastCap|Xbox 360
+		{B7A1D2C3-4E5F-4A6B-8C9D-1F2A3B4C5D6E}.Profile_FastCap|Xbox 360.Build.0 = Profile_FastCap|Xbox 360
+		{B7A1D2C3-4E5F-4A6B-8C9D-1F2A3B4C5D6E}.Profile|Xbox 360.ActiveCfg = Profile|Xbox 360
+		{B7A1D2C3-4E5F-4A6B-8C9D-1F2A3B4C5D6E}.Profile|Xbox 360.Build.0 = Profile|Xbox 360
+		{B7A1D2C3-4E5F-4A6B-8C9D-1F2A3B4C5D6E}.Release_LTCG|Xbox 360.ActiveCfg = Release_LTCG|Xbox 360
+		{B7A1D2C3-4E5F-4A6B-8C9D-1F2A3B4C5D6E}.Release_LTCG|Xbox 360.Build.0 = Release_LTCG|Xbox 360
+		{B7A1D2C3-4E5F-4A6B-8C9D-1F2A3B4C5D6E}.Release|Xbox 360.ActiveCfg = Release|Xbox 360
+		{B7A1D2C3-4E5F-4A6B-8C9D-1F2A3B4C5D6E}.Release|Xbox 360.Build.0 = Release|Xbox 360
+		{B7A1D2C3-4E5F-4A6B-8C9D-1F2A3B4C5D6E}.Release_New|Xbox 360.ActiveCfg = Release_New|Xbox 360
+		{B7A1D2C3-4E5F-4A6B-8C9D-1F2A3B4C5D6E}.Release_New|Xbox 360.Build.0 = Release_New|Xbox 360
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

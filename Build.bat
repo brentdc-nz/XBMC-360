@@ -149,7 +149,23 @@ if errorlevel 1 (
 :: --- Sources ---
 
 echo.
-echo [11/15] Building libjpeg...
+echo [11/17] Building libdvdread...
+"%MSBUILD%" "libraries\libdvdread\libdvdread.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
+if errorlevel 1 (
+    echo FAILED: libdvdread
+    set FAILED=1
+)
+
+echo.
+echo [12/17] Building libdvdnav...
+"%MSBUILD%" "libraries\libdvdnav\libdvdnav.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
+if errorlevel 1 (
+    echo FAILED: libdvdnav
+    set FAILED=1
+)
+
+echo.
+echo [13/17] Building libjpeg...
 "%MSBUILD%" "libraries\libjpeg\libjpeg.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
 if errorlevel 1 (
     echo FAILED: libjpeg
@@ -157,7 +173,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [12/15] Building libmad...
+echo [14/17] Building libmad...
 "%MSBUILD%" "sources\PAPlayer\libmad\libmad.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
 if errorlevel 1 (
     echo FAILED: libmad
@@ -165,7 +181,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [13/15] Building libFlac...
+echo [15/17] Building libFlac...
 "%MSBUILD%" "sources\PAPlayer\libFlac\libFlac.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
 if errorlevel 1 (
     echo FAILED: libFlac
@@ -173,7 +189,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [14/15] Building 360MilkDrop2...
+echo [16/17] Building 360MilkDrop2...
 "%MSBUILD%" "sources\360MilkDrop2\360MilkDrop2.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
 if errorlevel 1 (
     echo FAILED: 360MilkDrop2
@@ -183,7 +199,7 @@ if errorlevel 1 (
 :: --- Main Project ---
 
 echo.
-echo [15/15] Building xbmc360...
+echo [17/17] Building xbmc360...
 "%MSBUILD%" "xbmc360.sln" /p:Configuration=%CONFIG% /p:Platform="%PLATFORM%" /m /nologo /v:minimal
 if errorlevel 1 (
     echo FAILED: xbmc360

@@ -1,11 +1,91 @@
 #include "DVDCodecUtils.h"
 #include "..\DVDClock.h"
+#include "utils\Log.h"
 #include <math.h>
 
 void CDVDCodecUtils::FreePicture(DVDVideoPicture* pPicture)
 {
 	delete[] pPicture->data[0];
 	delete pPicture;
+}
+
+DVDVideoPicture* CDVDCodecUtils::AllocatePicture(int iWidth, int iHeight)
+{
+	DVDVideoPicture* pPicture = new DVDVideoPicture;
+	if (pPicture)
+	{
+		pPicture->iWidth = iWidth;
+		pPicture->iHeight = iHeight;
+
+		int w = iWidth / 2;
+		int h = iHeight / 2;
+		int size = w * h;
+		int totalsize = (iWidth * iHeight) + size * 2;
+		BYTE* data = new BYTE[totalsize];
+		if (data)
+		{
+			pPicture->data[0] = data;
+			pPicture->data[1] = pPicture->data[0] + (iWidth * iHeight);
+			pPicture->data[2] = pPicture->data[1] + size;
+			pPicture->data[3] = NULL;
+			pPicture->iLineSize[0] = iWidth;
+			pPicture->iLineSize[1] = w;
+			pPicture->iLineSize[2] = w;
+			pPicture->iLineSize[3] = 0;
+		}
+		else
+		{
+			CLog::Log(LOGFATAL, "CDVDCodecUtils::AllocatePicture, unable to allocate new video picture, out of memory.");
+			delete pPicture;
+			pPicture = NULL;
+		}
+	}
+	return pPicture;
+}
+
+bool CDVDCodecUtils::CopyPicture(DVDVideoPicture* pDst, DVDVideoPicture* pSrc)
+{
+	BYTE *s, *d;
+	int w = pSrc->iWidth;
+	int h = pSrc->iHeight;
+
+	s = pSrc->data[0];
+	d = pDst->data[0];
+
+	for (int y = 0; y < h; y++)
+	{
+		memcpy(d, s, w);
+		s += pSrc->iLineSize[0];
+		d += pDst->iLineSize[0];
+	}
+
+	w >>= 1;
+	h >>= 1;
+
+	s = pSrc->data[1];
+	d = pDst->data[1];
+	for (int y = 0; y < h; y++)
+	{
+		memcpy(d, s, w);
+		s += pSrc->iLineSize[1];
+		d += pDst->iLineSize[1];
+	}
+
+	s = pSrc->data[2];
+	d = pDst->data[2];
+	for (int y = 0; y < h; y++)
+	{
+		memcpy(d, s, w);
+		s += pSrc->iLineSize[2];
+		d += pDst->iLineSize[2];
+	}
+	return true;
+}
+
+bool CDVDCodecUtils::CopyPicture(YV12Image* pDst, DVDVideoPicture *pSrc)
+{
+	// The port renders into the YV12 overlay via CopyPictureToOverlay
+	return CopyPictureToOverlay(pDst, pSrc);
 }
 
 bool CDVDCodecUtils::CopyPictureToOverlay(YV12Image* pImage, DVDVideoPicture *pSrc)
@@ -68,7 +148,7 @@ double CDVDCodecUtils::NormalizeFrameduration(double frameduration)
 		}
 	}
 	
-  if (selected != -1)
+	if (selected != -1)
 		return durations[selected];
 	else
 		return frameduration;

@@ -61,6 +61,9 @@
 #define GUI_MSG_GET_VISUALISATION       GUI_MSG_USER + 19 // Request to vis for the visualisation object
 #define GUI_MSG_VISUALISATION_ACTION    GUI_MSG_USER + 20 // Request the vis perform an action
 
+// Sent by dvdplayer on entry to the menu
+#define GUI_MSG_VIDEO_MENU_STARTED    GUI_MSG_USER + 21
+
 // Message is sent by the background info loader when it's finished with fetching a weather location
 #define GUI_MSG_WEATHER_FETCHED       GUI_MSG_USER + 24
 
