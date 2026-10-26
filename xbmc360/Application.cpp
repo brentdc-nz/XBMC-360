@@ -673,6 +673,10 @@ void CApplication::ProcessSlow()
 	if(g_guiSettings.GetString("screensaver.mode") != "None")
 		CheckScreenSaver();
 
+	// Check if we need to shutdown (if enabled)
+	if (g_guiSettings.GetInt("system.shutdowntime"))
+		CheckShutdown();
+
 	if (!IsPlayingVideo())
 		g_largeTextureManager.CleanupUnusedImages();
 
@@ -2135,7 +2139,7 @@ bool CApplication::IsCurrentThread() const
 void CApplication::ResetScreenSaver()
 {
 	// Reset our timers
-//	m_shutdownTimer.StartZero(); //TODO
+	m_shutdownTimer.StartZero();
 
 	// Screen saver timer is reset only if we're not already in screensaver mode
 	if(!m_bScreenSave)
@@ -2191,6 +2195,46 @@ void CApplication::CheckScreenSaver()
 
 	if(m_screenSaverTimer.GetElapsedSeconds() > g_guiSettings.GetInt("screensaver.time") * 60)
 		ActivateScreenSaver();
+}
+
+void CApplication::CheckShutdown()
+{
+	// First check if we should reset the timer
+	bool resetTimer = false;
+
+	if (IsPlaying()) // is something playing?
+		resetTimer = true;
+
+	if (m_pFTPServer) // is FTP active?
+	{
+		std::vector<CFTPServerConn*> vecConnections;
+		m_pFTPServer->GetAllConnections(vecConnections);
+		
+		if (!vecConnections.empty())
+			resetTimer = true;
+	}
+
+	// TODO
+/*	
+	if (pMusicScan && pMusicScan->IsScanning()) // music scanning?
+		resetTimer = true;
+
+	if (pVideoScan && pVideoScan->IsScanning()) // video scanning?
+		resetTimer = true;	
+*/
+	if (g_windowManager.IsWindowActive(WINDOW_DIALOG_PROGRESS)) // progress dialog is onscreen
+		resetTimer = true;
+
+	if (resetTimer)
+	{
+		m_shutdownTimer.StartZero();
+		return;
+	}
+
+	if (m_shutdownTimer.GetElapsedSeconds() > g_guiSettings.GetInt("system.shutdowntime") * 60)
+	{
+		m_applicationMessenger.Shutdown(); // Turn off the box
+	}
 }
 
 void CApplication::ActivateScreenSaver()

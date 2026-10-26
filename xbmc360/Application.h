@@ -104,6 +104,7 @@ public:
 	bool IsCurrentThread() const;
 
 	void ResetScreenSaver();
+	void CheckShutdown();
 	bool ResetScreenSaverWindow();
 	bool IsInScreenSaver() { return m_bScreenSave; };
 	void CheckScreenSaver();
@@ -157,6 +158,7 @@ protected:
 	// Timer information
 	CStopWatch m_frameTime;
 	CStopWatch m_screenSaverTimer;
+	CStopWatch m_shutdownTimer;
 	CStopWatch m_slowTimer;
 
 	CIdleThread m_idleThread;

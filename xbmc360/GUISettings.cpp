@@ -222,6 +222,10 @@ void CGUISettings::Initialize()
 	AddInt(4, "dvdplayercache.audio", 14098, 384, 0, 128, 4096, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
 	AddInt(5, "dvdplayercache.audiotime", 14099, 8, 0, 1, 30, SPIN_CONTROL_INT_PLUS, MASK_SECS);
 
+	// System settings
+	AddCategory(4, "system", 13000);
+	AddInt(1, "system.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
+
 	// Video settings
 	AddGroup(5, 3);
 	AddCategory(5, "videoplayer", 14086);
