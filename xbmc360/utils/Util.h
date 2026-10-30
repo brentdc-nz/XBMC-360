@@ -44,6 +44,11 @@ public:
 	static bool IsPicture(const CStdString& strFile);
 	static void UrlDecode(CStdString& strURLData);
 	static float CurrentCpuUsage();
+	static void SetBrightnessContrastGamma(float Brightness, float Contrast, float Gamma, bool bImmediate);
+	static void SetBrightnessContrastGammaPercent(float brightness, float contrast, float gamma, bool immediate);
+	static void RestoreBrightnessContrastGamma();
+	static void InitGamma();
+	static bool IsUsingTTFSubtitles();
 	static __int64 ToInt64(DWORD dwHigh, DWORD dwLow);
 	static bool ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps);
 	static int GetMatchingSource(const CStdString& strPath, VECSOURCES& VECSOURCES, bool& bIsSourceName);

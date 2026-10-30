@@ -491,6 +491,9 @@
     <ClInclude Include="guilib\windows\GUIWindowFileManager.h">
       <Filter>Header Files\guilib\windows</Filter>
     </ClInclude>
+    <ClInclude Include="guilib\windows\GUIWindowOSD.h">
+      <Filter>Header Files\guilib\windows</Filter>
+    </ClInclude>
     <ClInclude Include="utils\AsyncFileCopy.h">
       <Filter>Header Files\utils</Filter>
     </ClInclude>
@@ -504,6 +507,21 @@
       <Filter>Header Files\cores</Filter>
     </ClInclude>
     <ClInclude Include="guilib\dialogs\GUIDialogSeekBar.h">
+      <Filter>Header Files\guilib\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\dialogs\GUIDialogSettings.h">
+      <Filter>Header Files\guilib\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\dialogs\GUIDialogVideoSettings.h">
+      <Filter>Header Files\guilib\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\dialogs\GUIDialogAudioSubtitleSettings.h">
+      <Filter>Header Files\guilib\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\dialogs\GUIDialogVideoBookmarks.h">
+      <Filter>Header Files\guilib\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="guilib\dialogs\GUIDialogFullScreenInfo.h">
       <Filter>Header Files\guilib\dialogs</Filter>
     </ClInclude>
     <ClInclude Include="guilib\GUIAudioManager.h">
@@ -1558,6 +1576,9 @@
     <ClCompile Include="guilib\windows\GUIWindowFileManager.cpp">
       <Filter>Source Files\guilib\windows</Filter>
     </ClCompile>
+    <ClCompile Include="guilib\windows\GUIWindowOSD.cpp">
+      <Filter>Source Files\guilib\windows</Filter>
+    </ClCompile>
     <ClCompile Include="utils\AsyncFileCopy.cpp">
       <Filter>Source Files\utils</Filter>
     </ClCompile>
@@ -1571,6 +1592,21 @@
       <Filter>Source Files\cores</Filter>
     </ClCompile>
     <ClCompile Include="guilib\dialogs\GUIDialogSeekBar.cpp">
+      <Filter>Source Files\guilib\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\dialogs\GUIDialogSettings.cpp">
+      <Filter>Source Files\guilib\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\dialogs\GUIDialogVideoSettings.cpp">
+      <Filter>Source Files\guilib\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\dialogs\GUIDialogAudioSubtitleSettings.cpp">
+      <Filter>Source Files\guilib\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\dialogs\GUIDialogVideoBookmarks.cpp">
+      <Filter>Source Files\guilib\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="guilib\dialogs\GUIDialogFullScreenInfo.cpp">
       <Filter>Source Files\guilib\dialogs</Filter>
     </ClCompile>
     <ClCompile Include="guilib\GUIAudioManager.cpp">

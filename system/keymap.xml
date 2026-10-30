@@ -33,6 +33,8 @@
        <dpadright>StepForward</dpadright>
        <dpadup>BigStepForward</dpadup>
        <dpaddown>BigStepBack</dpaddown>
+       <leftanalogtrigger>Rewind</leftanalogtrigger>
+       <rightanalogtrigger>FastForward</rightanalogtrigger>
     </gamepad>
   </FullscreenVideo>
   <Slideshow>

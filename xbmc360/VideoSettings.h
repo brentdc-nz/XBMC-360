@@ -24,17 +24,34 @@ public:
 
 	bool operator!=(const CVideoSettings &right) const;
 
-	int m_ViewMode;
-	float m_CustomZoomAmount;
-	float m_CustomPixelRatio;
-	float m_AudioDelay;
+	bool m_NoCache;
+	bool m_NonInterleaved;
+	bool m_bForceIndex;
+	EINTERLACEMETHOD m_InterlaceMethod;
+	float m_FilmGrain;
+	int m_ViewMode;   // Current view mode
+	float m_CustomZoomAmount; // Custom setting zoom amount
+	float m_CustomPixelRatio; // Custom setting pixel ratio
 	int m_AudioStream;
+	float m_VolumeAmplification;
+	bool m_OutputToAllSpeakers;
 	int m_SubtitleStream;
 	float m_SubtitleDelay;
 	bool m_SubtitleOn;
 	bool m_SubtitleCached;
+	float m_Brightness;
+	float m_Contrast;
+	float m_Gamma;
+	float m_NoiseReduction;
 	bool m_PostProcess;
-	EINTERLACEMETHOD m_InterlaceMethod;
+	float m_Sharpness;
+	float m_AudioDelay;
+	int m_ResumeTime;
+	bool m_Crop;
+	int m_CropTop;
+	int m_CropBottom;
+	int m_CropLeft;
+	int m_CropRight;
 };
 
 #endif //H_CVIDEOSETTINGS

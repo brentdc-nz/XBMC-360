@@ -56,12 +56,15 @@ public:
 	virtual bool CloseFile(){ return true;};
 	virtual void SeekTime(__int64 iTime = 0){};
 	virtual void Seek(bool bPlus, bool bLargeStep) = 0;
+	virtual bool SeekScene(bool bPlus = true) {return false;}
 	virtual __int64 GetTime(){ return 0;};
 	virtual int GetTotalTime(){ return 0;};
 	virtual float GetPercentage(){ return 0;}
 	virtual void GetVideoInfo(CStdString& strVideoInfo) = 0;
 	virtual void GetAudioInfo(CStdString& strAudioInfo) = 0;
 	virtual void GetGeneralInfo(CStdString& strGeneralInfo) = 0;
+	virtual void GetVideoRect(RECT& SrcRect, RECT& DestRect) = 0;
+	virtual void GetVideoAspectRatio(float& fAR) = 0;
 	virtual bool IsPlaying() const { return false;} ;
 	virtual void Pause() = 0;
 	virtual bool IsPaused() const = 0;
@@ -73,6 +76,7 @@ public:
 	virtual bool HasMenu() { return false; };
 	virtual bool SkipNext(){return false;}
 	virtual void SetVolume(long nVolume){}
+	virtual void SetDynamicRangeCompression(long drc){}
 	virtual void DoAudioWork(){}
 	virtual bool OnAction(const CAction &action){ return false; };
 	virtual bool QueueNextFile(const CFileItem &file) { return false; }
@@ -82,10 +86,38 @@ public:
 	virtual int GetBitsPerSample(){ return 0; }
 	virtual int GetSampleRate(){ return 0; }
 	virtual CStdString GetAudioCodecName(){ return ""; }
+
 	virtual void  SetAVDelay(float fValue = 0.0f) { return; }
 	virtual float GetAVDelay()                     { return 0.0f; }
+
+	virtual void SetSubTitleDelay(float fValue = 0.0f){};
+	virtual float GetSubTitleDelay()    { return 0.0f; }
+	virtual int  GetSubtitleCount()     { return 0; }
+	virtual int  GetSubtitle()          { return -1; }
+	virtual void GetSubtitleName(int iStream, CStdString &strStreamName){};
+	virtual void GetSubtitleLanguage(int iStream, CStdString &strStreamLang){};
+	virtual void SetSubtitle(int iStream){};
+	virtual bool GetSubtitleVisible(){ return false;};
+	virtual void SetSubtitleVisible(bool bVisible){};
+	virtual bool GetSubtitleExtension(CStdString &strSubtitleExtension){ return false;};
+	virtual int  AddSubtitle(const CStdString& strSubPath) {return -1;};
+
+	virtual int  GetAudioStreamCount()  { return 0; }
+	virtual int  GetAudioStream()       { return -1; }
+	virtual void GetAudioStreamName(int iStream, CStdString &strStreamName){};
+	virtual void SetAudioStream(int iStream){};
+	virtual void GetAudioStreamLanguage(int iStream, CStdString &strLanguage){};
+
+	virtual int  GetChapterCount()                               { return 0; }
+	virtual int  GetChapter()                                    { return -1; }
+	virtual void GetChapterName(CStdString& strChapterName)      { return; }
+	virtual int  SeekChapter(int iChapter)                       { return -1; }
+
 	virtual bool GetStreamDetails(CStreamDetails &details){ return false; }
-	virtual CStdString GetPlayerState(){ return ""; }
+	virtual bool GetCurrentSubtitle(CStdString& strSubtitle) { strSubtitle = ""; return false; }
+	//returns a state that is needed for resuming from a specific time
+	virtual CStdString GetPlayerState(){ return ""; };
+	virtual bool SetPlayerState(CStdString state) { return false;};
 	virtual void ToFFRW(int iSpeed = 0){}
 
 	// Returns true if not playback (paused or stopped beeing filled)

@@ -20,3 +20,5 @@
 #define SAFE_DELETE(p)       { delete (p);     (p)=NULL; }
 #define SAFE_DELETE_ARRAY(p) { delete[] (p);   (p)=NULL; }
 #define SAFE_RELEASE(p)      { if(p) { (p)->Release(); (p)=NULL; } }
+
+#define GAMMA_RAMP_FLAG  D3DSGR_IMMEDIATE

@@ -51,6 +51,7 @@ namespace INFO
 #define PLAYER_FORWARDING_8x        15
 #define PLAYER_FORWARDING_16x       16
 #define PLAYER_FORWARDING_32x       17
+#define PLAYER_CACHING              20
 #define PLAYER_DISPLAY_AFTER_SEEK   21
 #define PLAYER_PROGRESS             22
 #define PLAYER_SEEKBAR              23
@@ -423,6 +424,7 @@ public:
 	bool GetDisplayAfterSeek();
 	void SetDisplayAfterSeek(unsigned int timeOut = 2500, int seekOffset = 0);
 	void SetSeeking(bool seeking) { m_playerSeeking = seeking; };
+	void SetShowTime(bool showtime) { m_playerShowTime = showtime; };
 	void SetShowCodec(bool showcodec) { m_playerShowCodec = showcodec; };
 	void ToggleShowCodec() { m_playerShowCodec = !m_playerShowCodec; };
 	void SetShowInfo(bool showinfo) { m_playerShowInfo = showinfo; };
@@ -506,6 +508,7 @@ protected:
 	DWORD m_AfterSeekTimeout;
 	int m_seekOffset;
 	bool m_playerSeeking;
+	bool m_playerShowTime;
 	bool m_playerShowCodec;
 	bool m_playerShowInfo;
 

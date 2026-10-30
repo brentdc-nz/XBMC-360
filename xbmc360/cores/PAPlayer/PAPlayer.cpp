@@ -506,7 +506,7 @@ void PAPlayer::UpdateCrossFadingTime(const CFileItem& file)
 {
 	if (m_crossFading = g_guiSettings.GetInt("musicplayer.crossfade"))
 	{
-		if (m_crossFading && ( /*file.IsCDDA() || file.IsLastFM() ||*/
+		if (m_crossFading && ( /*file.IsCDDA() || file.IsLastFM() ||*/ // Not used atm
 			(
 			!g_guiSettings.GetBool("musicplayer.crossfadealbumtracks") && m_currentFile->HasMusicInfoTag() && file.HasMusicInfoTag() &&
 			(m_currentFile->GetMusicInfoTag()->GetAlbum() != "") &&

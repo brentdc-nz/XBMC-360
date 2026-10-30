@@ -14,7 +14,12 @@
 #include "FileItem.h"
 #include "filesystem\Directory.h"
 #include "guilib\GraphicContext.h"
+#include "GUISettings.h"
 //#include "RegExp.h" // TODO
+
+#define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x+0.5f)) // Valid ranges: brightness[-1 -> 1 (0 is default)] contrast[0 -> 2 (1 is default)]  gamma[0.5 -> 3.5 (1 is default)] default[ramp is linear]
+
+static D3DGAMMARAMP oldramp, flashramp;
 
 typedef struct
 {
@@ -539,6 +544,58 @@ void CUtil::UrlDecode(CStdString& strURLData)
 float CUtil::CurrentCpuUsage()
 {
 	return (1.0f - g_application.GetIdleThread().GetRelativeUsage())*100;
+}
+
+void CUtil::InitGamma()
+{
+	g_graphicsContext.Get3DDevice()->GetGammaRamp(0, &oldramp);
+}
+
+void CUtil::RestoreBrightnessContrastGamma()
+{
+	g_graphicsContext.Lock();
+	// Xbox 360 port: D3D9 gamma ramp functions take a leading (unused) swap-chain arg
+	g_graphicsContext.Get3DDevice()->SetGammaRamp(0, 0, &oldramp);
+	g_graphicsContext.Unlock();
+}
+
+void CUtil::SetBrightnessContrastGammaPercent(float brightness, float contrast, float gamma, bool immediate)
+{
+	if (brightness < 0) brightness = 0;
+	if (brightness > 100) brightness = 100;
+	if (contrast < 0) contrast = 0;
+	if (contrast > 100) contrast = 100;
+	if (gamma < 0) gamma = 0;
+	if (gamma > 100) gamma = 100;
+
+	float fBrightNess = brightness / 50.0f - 1.0f; // -1..1    Default: 0
+	float fContrast = contrast / 50.0f;            // 0..2     Default: 1
+	float fGamma = gamma / 40.0f + 0.5f;           // 0.5..3.0 Default: 1
+	CUtil::SetBrightnessContrastGamma(fBrightNess, fContrast, fGamma, immediate);
+}
+
+void CUtil::SetBrightnessContrastGamma(float Brightness, float Contrast, float Gamma, bool bImmediate)
+{
+	// calculate ramp
+	D3DGAMMARAMP ramp;
+
+	Gamma = 1.0f / Gamma;
+	for (int i = 0; i < 256; ++i)
+	{
+		float f = (powf((float)i / 255.f, Gamma) * Contrast + Brightness) * 255.f;
+		ramp.blue[i] = ramp.green[i] = ramp.red[i] = clamp(f);
+	}
+
+	// set ramp next v sync
+	// Xbox 360 port: D3D9 gamma ramp functions take a leading (unused) swap-chain arg (flags also unused)
+	g_graphicsContext.Lock();
+	g_graphicsContext.Get3DDevice()->SetGammaRamp(0, bImmediate ? GAMMA_RAMP_FLAG : 0, &ramp);
+	g_graphicsContext.Unlock();
+}
+
+bool CUtil::IsUsingTTFSubtitles()
+{
+	return URIUtils::GetExtension(g_guiSettings.GetString("subtitles.font")).Equals(".ttf");
 }
 
 __int64 CUtil::ToInt64(DWORD dwHigh, DWORD dwLow)

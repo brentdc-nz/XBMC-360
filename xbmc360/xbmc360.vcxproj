@@ -422,6 +422,8 @@
     <ClInclude Include="guilib\dialogs\GUIDialogContextMenu.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogFavourites.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogFileBrowser.h" />
+    <ClInclude Include="guilib\dialogs\GUIDialogAudioSubtitleSettings.h" />
+    <ClInclude Include="guilib\dialogs\GUIDialogFullScreenInfo.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogKeyboard.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogMediaSource.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogMuteBug.h" />
@@ -431,8 +433,11 @@
     <ClInclude Include="guilib\dialogs\GUIDialogProgress.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogSeekBar.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogSelect.h" />
+    <ClInclude Include="guilib\dialogs\GUIDialogSettings.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogSlider.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogSubMenu.h" />
+    <ClInclude Include="guilib\dialogs\GUIDialogVideoBookmarks.h" />
+    <ClInclude Include="guilib\dialogs\GUIDialogVideoSettings.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogVolumeBar.h" />
     <ClInclude Include="guilib\dialogs\GUIDialogYesNo.h" />
     <ClInclude Include="guilib\Geometry.h" />
@@ -536,6 +541,7 @@
     <ClInclude Include="guilib\windows\GUIWindowSettingsCategory.h" />
     <ClInclude Include="guilib\windows\GUIWindowSystemInfo.h" />
     <ClInclude Include="guilib\windows\GUIWindowFileManager.h" />
+    <ClInclude Include="guilib\windows\GUIWindowOSD.h" />
     <ClInclude Include="guilib\windows\GUIWindowVideoFiles.h" />
     <ClInclude Include="guilib\windows\GUIWindowVisualisation.h" />
     <ClInclude Include="guilib\windows\GUIWindowWeather.h" />
@@ -774,10 +780,15 @@
     <ClCompile Include="guilib\dialogs\GUIDialogNumeric.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogOK.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogProgress.cpp" />
+    <ClCompile Include="guilib\dialogs\GUIDialogAudioSubtitleSettings.cpp" />
+    <ClCompile Include="guilib\dialogs\GUIDialogFullScreenInfo.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogSeekBar.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogSelect.cpp" />
+    <ClCompile Include="guilib\dialogs\GUIDialogSettings.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogSlider.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogSubMenu.cpp" />
+    <ClCompile Include="guilib\dialogs\GUIDialogVideoBookmarks.cpp" />
+    <ClCompile Include="guilib\dialogs\GUIDialogVideoSettings.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogVolumeBar.cpp" />
     <ClCompile Include="guilib\dialogs\GUIDialogYesNo.cpp" />
     <ClCompile Include="guilib\GraphicContext.cpp" />
@@ -879,6 +890,7 @@
     <ClCompile Include="guilib\windows\GUIWindowSettingsCategory.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowSystemInfo.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowFileManager.cpp" />
+    <ClCompile Include="guilib\windows\GUIWindowOSD.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowVideoFiles.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowVisualisation.cpp" />
     <ClCompile Include="guilib\windows\GUIWindowWeather.cpp" />

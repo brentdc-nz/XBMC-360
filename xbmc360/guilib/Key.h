@@ -90,6 +90,8 @@
 #define ACTION_BIG_STEP_FORWARD       22 // Seek +10% in the movie. Can be used in videoFullScreen.xml window id=2005
 #define ACTION_BIG_STEP_BACK          23 // Seek -10% in the movie. Can be used in videoFullScreen.xml window id=2005
 #define ACTION_SHOW_OSD               24 // Show/hide OSD. Can be used in videoFullScreen.xml window id=2005
+#define ACTION_SHOW_SUBTITLES         25 // Turn subtitles on/off. Can be used in videoFullScreen.xml window id=2005
+#define ACTION_NEXT_SUBTITLE          26 // Switch to next subtitle of movie. Can b used in videoFullScreen.xml window id=2005
 #define ACTION_SHOW_CODEC             27 // Show information about file. Can be used in videoFullScreen.xml window id=2005
 
 #define ACTION_NEXT_PICTURE           28 // Show next picture of slideshow. Can b used in slideshow.xml window id=2007
@@ -98,6 +100,8 @@
 #define ACTION_ZOOM_OUT               30 // Zoom out video. Can be used in videoFullScreen.xml window id=2005
 #define ACTION_ZOOM_IN                31 // Zoom in video. Can be used in videoFullScreen.xml window id=2005
 
+#define ACTION_SHOW_PLAYLIST          33 // used to toggle between current view and playlist view. Can b used in all mymusic xml files
+#define ACTION_QUEUE_ITEM             34 // used to queue a item to the playlist. Can b used in all mymusic xml files
 #define ACTION_ZOOM_LEVEL_NORMAL      37 // Zoom 1x picture during slideshow. Can b used in slideshow.xml window id=2007
 #define ACTION_ZOOM_LEVEL_1           38 // Zoom 2x picture during slideshow. Can b used in slideshow.xml window id=2007
 #define ACTION_ZOOM_LEVEL_2           39 // Zoom 3x picture during slideshow. Can b used in slideshow.xml window id=2007
@@ -109,12 +113,19 @@
 #define ACTION_ZOOM_LEVEL_8           45 // Zoom 9x picture during slideshow. Can b used in slideshow.xml window id=2007
 #define ACTION_ZOOM_LEVEL_9           46 // Zoom 10x picture during slideshow. Can b used in slideshow.xml window id=2007
 
+#define ACTION_ANALOG_MOVE            49 // Analog thumbstick move
 #define ACTION_ROTATE_PICTURE         50 // Rotate current picture during slideshow. Can b used in slideshow.xml window id=2007
 
-#define ACTION_ANALOG_MOVE            49 // Analog thumbstick move
+#define ACTION_SUBTITLE_DELAY_MIN     52 // Decrease subtitle/movie Delay.  Can b used in videoFullScreen.xml window id=2005
+#define ACTION_SUBTITLE_DELAY_PLUS    53 // Increase subtitle/movie Delay.  Can b used in videoFullScreen.xml window id=2005
+#define ACTION_AUDIO_DELAY_MIN        54 // Increase avsync delay.  Can b used in videoFullScreen.xml window id=2005
+#define ACTION_AUDIO_DELAY_PLUS       55 // Decrease avsync delay.  Can b used in videoFullScreen.xml window id=2005
+#define ACTION_AUDIO_NEXT_LANGUAGE    56 // Select next language in movie.  Can b used in videoFullScreen.xml window id=2005
 
 #define ACTION_SMALL_STEP_BACK        76 // Jumps a few seconds back during playback of movie. Can be used in videoFullScreen.xml window id=2005
 
+#define ACTION_PLAYER_FORWARD         77 // FF in current file played. global action, can be used anywhere
+#define ACTION_PLAYER_REWIND          78 // RW in current file played. global action, can be used anywhere
 #define ACTION_PLAYER_PLAY            79 // Play current song. Unpauses song and sets playspeed to 1x. global action, can be used anywhere
 
 #define ACTION_DELETE_ITEM            80 // delete current selected item. Can be used in myfiles.xml window id=3 and in myvideoTitle.xml window id=25
@@ -130,6 +141,8 @@
 #define ACTION_MOUSE_LEFT_CLICK      100
 #define ACTION_MOUSE_RIGHT_CLICK     101
 #define ACTION_MOUSE_DOUBLE_CLICK    103
+#define ACTION_MOUSE_WHEEL_UP        104
+#define ACTION_MOUSE_WHEEL_DOWN      105
 
 #define ACTION_BACKSPACE             110
 #define ACTION_SCROLL_UP             111
@@ -149,6 +162,8 @@
 
 #define ACTION_BUILT_IN_FUNCTION	 122
 
+#define ACTION_SHOW_OSD_TIME         123 // Displays current time, can be used in videoFullScreen.xml window id=2005
+
 #define ACTION_ANALOG_SEEK_FORWARD   124 // Seeks forward, and displays the seek bar.
 #define ACTION_ANALOG_SEEK_BACK      125 // Seeks backward, and displays the seek bar.
 
@@ -157,6 +172,7 @@
 #define ACTION_VIS_PRESET_NEXT       128
 #define ACTION_VIS_PRESET_PREV       129
 #define ACTION_VIS_PRESET_LOCK       130
+
 #define ACTION_VIS_PRESET_RANDOM     131
 #define ACTION_VIS_RATE_PRESET_PLUS  132
 #define ACTION_VIS_RATE_PRESET_MINUS 133

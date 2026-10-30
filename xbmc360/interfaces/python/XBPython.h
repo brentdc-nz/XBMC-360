@@ -39,7 +39,7 @@ typedef struct {
 
 typedef std::vector<PyElem> PyList;
 
-class XBPython
+class XBPython : public IPlayerCallback
 {
 public:
 	XBPython();
@@ -75,11 +75,12 @@ public:
 	void PulseGlobalEvent();
 
 	// Player event forwarding (called from CApplication)
-	void OnPlayBackStarted();
-	void OnPlayBackEnded();
-	void OnPlayBackStopped();
-	void OnPlayBackPaused();
-	void OnPlayBackResumed();
+	virtual void OnPlayBackEnded();
+	virtual void OnPlayBackStarted();
+	virtual void OnPlayBackPaused();
+	virtual void OnPlayBackResumed();
+	virtual void OnPlayBackStopped();
+	virtual void OnQueueNextItem() {}; // unimplemented
 
 	bool bStartup;
 	bool bLogin;

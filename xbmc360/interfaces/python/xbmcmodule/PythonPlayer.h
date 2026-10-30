@@ -35,12 +35,12 @@ public:
 	CPythonPlayer();
 	virtual ~CPythonPlayer(void);
 	void    SetCallback(PyObject *object);
-	void    OnPlayBackEnded();
-	void    OnPlayBackStarted();
-	void    OnPlayBackPaused();
-	void    OnPlayBackResumed();
-	void    OnPlayBackStopped();
-	void    OnQueueNextItem() {};
+	virtual void OnPlayBackEnded();
+	virtual void OnPlayBackStarted();
+	virtual void OnPlayBackPaused();
+	virtual void OnPlayBackResumed();
+	virtual void OnPlayBackStopped();
+	virtual void OnQueueNextItem() {}; // Unimplemented
 
 protected:
 	PyObject*   pCallback;

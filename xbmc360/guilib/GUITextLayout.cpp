@@ -127,6 +127,61 @@ void CGUITextLayout::RenderScrolling(float x, float y, float angle, color_t colo
 		g_graphicsContext.RemoveTransform();
 }
 
+void CGUITextLayout::RenderOutline(float x, float y, color_t color, color_t outlineColor, uint32_t alignment, float maxWidth)
+{
+	if (!m_font)
+		return;
+
+	// Set the outline color
+	if (m_colors.size())
+		m_colors[0] = outlineColor;
+
+	// Center our text vertically
+	if (alignment & XBFONT_CENTER_Y)
+	{
+		y -= m_font->GetTextHeight(m_lines.size()) * 0.5f;;
+		alignment &= ~XBFONT_CENTER_Y;
+	}
+
+	if (m_borderFont)
+	{
+		float by = y;
+		m_borderFont->Begin();
+		
+		for (vector<CGUIString>::iterator i = m_lines.begin(); i != m_lines.end(); i++)
+		{
+			const CGUIString &string = *i;
+			uint32_t align = alignment;
+			
+			if (align & XBFONT_JUSTIFIED && string.m_carriageReturn)
+				align &= ~XBFONT_JUSTIFIED;
+
+			m_borderFont->DrawText(x, by, m_colors, 0, string.m_text, align, maxWidth);
+			by += m_borderFont->GetLineHeight();
+		}
+		
+		m_borderFont->End();
+	}
+
+	// Set the main text color
+	if (m_colors.size())
+		m_colors[0] = color;
+
+	m_font->Begin();
+	for (vector<CGUIString>::iterator i = m_lines.begin(); i != m_lines.end(); i++)
+	{
+		const CGUIString &string = *i;
+		uint32_t align = alignment;
+		
+		if (align & XBFONT_JUSTIFIED && string.m_carriageReturn)
+			align &= ~XBFONT_JUSTIFIED;
+
+		m_font->DrawText(x, y, m_colors, 0, string.m_text, align, maxWidth);
+		y += m_font->GetLineHeight();
+	}
+	m_font->End();
+}
+
 void CGUITextLayout::GetTextExtent(float &width, float &height) const
 {
 	width = m_textWidth;

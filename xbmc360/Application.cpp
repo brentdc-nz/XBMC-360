@@ -53,6 +53,11 @@
 #include "guilib\windows\GUIWindowScreensaver.h"
 #include "guilib\windows\GUIWindowSystemInfo.h"
 #include "guilib\windows\GUIWindowFileManager.h"
+#include "guilib\windows\GUIWindowOSD.h"
+#include "guilib\dialogs\GUIDialogVideoSettings.h"
+#include "guilib\dialogs\GUIDialogAudioSubtitleSettings.h"
+#include "guilib\dialogs\GUIDialogVideoBookmarks.h"
+#include "guilib\dialogs\GUIDialogFullScreenInfo.h"
 #include "guilib\windows\GUIWindowWeather.h"
 
 // Dialog includes
@@ -67,12 +72,15 @@
 #include "guilib\dialogs\GUIDialogOK.h"
 #include "guilib\dialogs\GUIDialogSelect.h"
 #include "guilib\dialogs\GUIDialogFavourites.h"
+#include "guilib\dialogs\GUIDialogSlider.h"
 #include "guilib\dialogs\GUIDialogSubMenu.h"
 #include "guilib\GUIStandardWindow.h"
 #include "guilib\GUIControlFactory.h"
 #include "utils\CharsetConverter.h"
 
 using namespace PLAYLIST;
+
+#define MAX_FFWD_SPEED 5
 
 CStdString g_LoadErrorStr;
 
@@ -157,6 +165,8 @@ bool CApplication::Create()
 
 	g_graphicsContext.SetD3DDevice(m_pd3dDevice);
 
+	CUtil::InitGamma();
+
 	// Allocate shared GPU resources (shaders, vertex declarations) once
 	CGUITextureD3D::AllocateShared(m_pd3dDevice);
 
@@ -240,49 +250,45 @@ bool CApplication::Initialize()
 	LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
 
 	// Windows
-	g_windowManager.Add(new CGUIWindowFullScreen);
-	g_windowManager.Add(new CGUIWindowVisualisation);   // window id = 2006
 	g_windowManager.Add(new CGUIWindowPrograms);
-	g_windowManager.Add(new CGUIWindowScripts);
-	g_windowManager.Add(new CGUIWindowScriptsInfo);
-	g_windowManager.Add(new CGUIWindowVideoFiles);
-	g_windowManager.Add(new CGUIWindowMusicSongs);
 	g_windowManager.Add(new CGUIWindowPictures);
-	g_windowManager.Add(new CGUIWindowSlideShow);       // window id = 2007
+	g_windowManager.Add(new CGUIWindowFileManager);     	// window id = 10003
+	g_windowManager.Add(new CGUIWindowVideoFiles);
 	g_windowManager.Add(new CGUIWindowSettings);
-	g_windowManager.Add(new CGUIWindowSettingsCategory);
-	g_windowManager.Add(new CGUIWindowScreensaver);
 	g_windowManager.Add(new CGUIWindowSystemInfo);
-	g_windowManager.Add(new CGUIWindowFileManager);     // window id = 10003
+	g_windowManager.Add(new CGUIWindowSettingsCategory);
+	g_windowManager.Add(new CGUIWindowScripts);
+	g_windowManager.Add(new CGUIWindowMusicSongs);
+	g_windowManager.Add(new CGUIWindowScriptsInfo);
+	g_windowManager.Add(new CGUIWindowFullScreen);
+	g_windowManager.Add(new CGUIWindowVisualisation);		// window id = 2006
+	g_windowManager.Add(new CGUIWindowSlideShow);			// window id = 2007
+	g_windowManager.Add(new CGUIWindowOSD);					// window id = 2901
+	g_windowManager.Add(new CGUIWindowScreensaver);
 
 	// Dialogs
-	g_windowManager.Add(new CGUIDialogYesNo);           // window id = 100
-	g_windowManager.Add(new CGUIDialogProgress);        // window id = 101
-	g_windowManager.Add(new CGUIDialogKeyboard);        // window id = 103
-	g_windowManager.Add(new CGUIDialogContextMenu);     // window id = 106
-	g_windowManager.Add(new CGUIDialogNumeric);         // window id = 109
-	g_windowManager.Add(new CGUIDialogButtonMenu);      // window id = 111
-	g_windowManager.Add(&m_guiDialogVolumeBar);         // window id = 104
-	g_windowManager.Add(&m_guiDialogSeekBar);           // window id = 115
-	g_windowManager.Add(new CGUIDialogNetworkSetup);    // window id = 128
-	g_windowManager.Add(new CGUIDialogMediaSource);     // window id = 129
-	g_windowManager.Add(new CGUIDialogFavourites);      // window id = 134
-	g_windowManager.Add(new CGUIDialogPictureInfo);     // window id = 139
-	g_windowManager.Add(new CGUIDialogSelect);          // window id = 2000
-	g_windowManager.Add(new CGUIDialogOK);              // window id = 2002
-	g_windowManager.Add(new CGUIWindowWeather);         // Window id = 2600 WEATHER
+	g_windowManager.Add(new CGUIDialogYesNo);				// window id = 100
+	g_windowManager.Add(new CGUIDialogProgress);			// window id = 101
+	g_windowManager.Add(new CGUIDialogKeyboard);			// window id = 103
+	g_windowManager.Add(&m_guiDialogVolumeBar);				// window id = 104
+	g_windowManager.Add(&m_guiDialogSeekBar);				// window id = 115
+	g_windowManager.Add(new CGUIDialogContextMenu);			// window id = 106
+	g_windowManager.Add(new CGUIDialogNumeric);				// window id = 109
+	g_windowManager.Add(new CGUIDialogButtonMenu);			// window id = 111
+	g_windowManager.Add(new CGUIDialogSlider);				// window id = 145
+	g_windowManager.Add(new CGUIDialogVideoSettings);		// window id = 123
+	g_windowManager.Add(new CGUIDialogAudioSubtitleSettings); // window id = 124
+	g_windowManager.Add(new CGUIDialogVideoBookmarks);		// window id = 125
+	g_windowManager.Add(new CGUIDialogNetworkSetup);		// window id = 128
+	g_windowManager.Add(new CGUIDialogMediaSource);			// window id = 129
+	g_windowManager.Add(new CGUIDialogFavourites);			// window id = 134
+	g_windowManager.Add(new CGUIDialogPictureInfo);			// window id = 139
+	g_windowManager.Add(new CGUIDialogSelect);				// window id = 2000
+	g_windowManager.Add(new CGUIDialogOK);					// window id = 2002
+	g_windowManager.Add(new CGUIWindowWeather);				// Window id = 2600 WEATHER
 
-	g_windowManager.SetCallback(*this);
-
-	g_windowManager.Initialize();
-
-	//  Show mute symbol
-	if (g_settings.m_nVolumeLevel == VOLUME_MINIMUM)
-		Mute();
-
-	m_slowTimer.StartZero();
-
-	g_windowManager.ActivateWindow(WINDOW_HOME);
+	/* window id's 3000 - 3100 are reserved for python */
+	// TODO: DownloadManager not ported - xbmc4xbox: g_DownloadManager.Initialize();
 
 	m_ctrDpad.SetDelays(100, 500);
 
@@ -291,8 +297,14 @@ bool CApplication::Initialize()
 
 	SAFE_DELETE(m_splash);
 
-	/* window id's 3000 - 3100 are reserved for python */
+	g_windowManager.ActivateWindow(/*g_SkinInfo.GetFirstWindow()*/WINDOW_HOME);
+
 	g_pythonParser.bStartup = true;
+
+	//  Show mute symbol
+	if (g_settings.m_nVolumeLevel == VOLUME_MINIMUM)
+		Mute();
+	m_slowTimer.StartZero();
 
 	CLog::Log(LOGNOTICE, "Initialize done");
 
@@ -408,6 +420,9 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
 	g_localizeStrings.LoadSkinStrings(langPath, g_guiSettings.GetString("locale.language"));
 
+	LARGE_INTEGER start;
+	QueryPerformanceCounter(&start);
+
 	CLog::Log(LOGINFO, "  load new skin...");
 	CGUIWindowHome *pHome = (CGUIWindowHome *)g_windowManager.GetWindow(WINDOW_HOME);
 	
@@ -427,6 +442,12 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	// Load the user windows
 	LoadUserWindows();
 
+	LARGE_INTEGER end, freq;
+	QueryPerformanceCounter(&end);
+	QueryPerformanceFrequency(&freq);
+	CLog::Log(LOGDEBUG,"Load Skin XML: %.2fms", 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart);
+
+	CLog::Log(LOGINFO, "  initialize new skin...");
 	// Load all bundle textures into cache now (while splash is visible)
 	// so AllocResources finds everything already in memory with zero disk I/O
 	g_TextureManager.LoadAllBundleTextures();
@@ -435,6 +456,8 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiDialogSeekBar.AllocResources(true);
 	m_guiDialogMuteBug.AllocResources(true);
 	g_windowManager.AddMsgTarget(this);
+	g_windowManager.AddMsgTarget(&g_playlistPlayer);
+	g_windowManager.SetCallback(*this);
 	g_windowManager.Initialize();
 	g_audioManager.Initialize();
 	g_audioManager.Load();
@@ -676,6 +699,9 @@ void CApplication::ProcessSlow()
 	// Check if we need to shutdown (if enabled)
 	if (g_guiSettings.GetInt("system.shutdowntime"))
 		CheckShutdown();
+
+	// check if we should restart the player
+	CheckDelayedPlayerRestart();
 
 	if (!IsPlayingVideo())
 		g_largeTextureManager.CleanupUnusedImages();
@@ -1199,7 +1225,79 @@ bool CApplication::OnAction(CAction &action)
 		if (action.GetID() == ACTION_PAUSE)
 		{
 			m_pPlayer->Pause();
+
+			if (!m_pPlayer->IsPaused())
+			{ 
+				// unpaused - set the playspeed back to normal
+				SetPlaySpeed(1);
+			}
+			
+			g_audioManager.Enable(m_pPlayer->IsPaused());
 			return true;
+		}
+		
+		if (!m_pPlayer->IsPaused())
+		{
+			// If we do a FF/RW in my music then map PLAY action togo back to normal speed
+			// If we are playing at normal speed, then allow play to pause
+			if (action.GetID() == ACTION_PLAYER_PLAY)
+			{
+				if (m_iPlaySpeed != 1)
+				{
+					SetPlaySpeed(1);
+				}
+				else
+				{
+					m_pPlayer->Pause();
+				}
+				return true;
+			}
+			if (action.GetID() == ACTION_PLAYER_FORWARD || action.GetID() == ACTION_PLAYER_REWIND)
+			{
+				int iPlaySpeed = m_iPlaySpeed;
+				if (action.GetID() == ACTION_PLAYER_REWIND && iPlaySpeed == 1) // Enables Rewinding
+					iPlaySpeed *= -2;
+				else if (action.GetID() == ACTION_PLAYER_REWIND && iPlaySpeed > 1) //goes down a notch if you're FFing
+					iPlaySpeed /= 2;
+				else if (action.GetID() == ACTION_PLAYER_FORWARD && iPlaySpeed < 1) //goes up a notch if you're RWing
+					iPlaySpeed /= 2;
+				else
+					iPlaySpeed *= 2;
+
+				if (action.GetID() == ACTION_PLAYER_FORWARD && iPlaySpeed == -1) //sets iSpeed back to 1 if -1 (didn't plan for a -1)
+					iPlaySpeed = 1;
+				if (iPlaySpeed > 32 || iPlaySpeed < -32)
+					iPlaySpeed = 1;
+
+				SetPlaySpeed(iPlaySpeed);
+				return true;
+			}
+			else if ((action.GetAmount() || GetPlaySpeed() != 1) && (action.GetID() == ACTION_ANALOG_REWIND || action.GetID() == ACTION_ANALOG_FORWARD))
+			{
+				// calculate the speed based on the amount the button is held down
+				int iPower = (int)(action.GetAmount() * MAX_FFWD_SPEED + 0.5f);
+				// returns 0 -> MAX_FFWD_SPEED
+				int iSpeed = 1 << iPower;
+				if (iSpeed != 1 && action.GetID() == ACTION_ANALOG_REWIND)
+					iSpeed = -iSpeed;
+				g_application.SetPlaySpeed(iSpeed);
+				if (iSpeed == 1)
+					CLog::Log(LOGDEBUG,"Resetting playspeed");
+				return true;
+			}
+		}
+		// allow play to unpause
+		else
+		{
+			if (action.GetID() == ACTION_PLAYER_PLAY)
+			{
+				// unpause, and set the playspeed back to normal
+				m_pPlayer->Pause();
+				g_audioManager.Enable(m_pPlayer->IsPaused());
+
+				g_application.SetPlaySpeed(1);
+				return true;
+			}
 		}
 	}
 
@@ -1575,6 +1673,62 @@ void CApplication::SaveFileState()
 	}
 }
 
+void CApplication::DelayedPlayerRestart()
+{
+	m_restartPlayerTimer.StartZero();
+}
+
+void CApplication::CheckDelayedPlayerRestart()
+{
+	if (m_restartPlayerTimer.GetElapsedSeconds() > 3)
+	{
+		m_restartPlayerTimer.Stop();
+		m_restartPlayerTimer.Reset();
+		Restart(true);
+	}
+}
+
+void CApplication::Restart(bool bSamePosition)
+{
+	// This function gets called when the user changes a setting (like noninterleaved)
+	// and which means we gotta close & reopen the current playing file
+
+	// First check if we're playing a file
+	if ( !IsPlayingVideo() && !IsPlayingAudio())
+		return ;
+
+	if( !m_pPlayer )
+		return ;
+
+	SaveFileState();
+
+	// Do we want to return to the current position in the file
+	if (false == bSamePosition)
+	{
+		// No, then just reopen the file and start at the beginning
+		PlayFile(*m_itemCurrentFile, true);
+		return ;
+	}
+
+	// else get current position
+	double time = GetTime();
+
+	// Get player state, needed for dvd's
+	CStdString state = m_pPlayer->GetPlayerState();
+
+	// set the requested starttime
+	m_itemCurrentFile->m_lStartOffset = (long)(time * 75.0);
+
+	// reopen the file
+	if ( PlayFile(*m_itemCurrentFile, true) && m_pPlayer )
+		m_pPlayer->SetPlayerState(state);
+}
+
+PLAYERCOREID CApplication::GetCurrentPlayer()
+{
+	return m_eCurrentPlayer;
+}
+
 void CApplication::UpdateFileState()
 {
 	// Did the file change?
@@ -1676,6 +1830,10 @@ void CApplication::OnPlayBackStarted()
 
 void CApplication::OnQueueNextItem()
 {
+	// Informs python script currently running that we are requesting the next track
+	// (does nothing if python is not loaded)
+	g_pythonParser.OnQueueNextItem(); // Currently unimplemented
+
 	CLog::Log(LOGDEBUG, "Player has asked for the next item");
 
 	CGUIMessage msg(GUI_MSG_QUEUE_NEXT_ITEM, 0, 0);
@@ -1893,13 +2051,41 @@ bool CApplication::IsPlayingVideo() const
 
 void CApplication::SetPlaySpeed(int iSpeed)
 {
-	if(!IsPlayingAudio() && !IsPlayingVideo())
+	if (!IsPlayingAudio() && !IsPlayingVideo())
+		return ;
+
+	if (m_iPlaySpeed == iSpeed)
+		return ;
+
+	if (!m_pPlayer->CanSeek())
 		return;
- 
-	if(m_iPlaySpeed == iSpeed)
-		return;
- 
+
+	if (m_pPlayer->IsPaused())
+	{
+		if (
+			((m_iPlaySpeed > 1) && (iSpeed > m_iPlaySpeed)) ||
+			((m_iPlaySpeed < -1) && (iSpeed < m_iPlaySpeed))
+		)
+		{
+			iSpeed = m_iPlaySpeed; // From pause to ff/rw, do previous ff/rw speed
+		}
+		m_pPlayer->Pause();
+	}
+
 	m_iPlaySpeed = iSpeed;
+
+	m_pPlayer->ToFFRW(m_iPlaySpeed);
+
+	if (m_iPlaySpeed == 1)
+	{
+		// Restore volume
+		m_pPlayer->SetVolume(g_settings.m_nVolumeLevel);
+	}
+	else
+	{
+		// Mute volume
+		m_pPlayer->SetVolume(VOLUME_MINIMUM);
+	}
 }
 
 int CApplication::GetPlaySpeed() const
@@ -2418,6 +2604,8 @@ void CApplication::Cleanup()
 		g_windowManager.Delete(WINDOW_SYSTEM_INFORMATION);
 		g_windowManager.Delete(WINDOW_WEATHER);
 		g_windowManager.Delete(WINDOW_VISUALISATION);
+		g_windowManager.Delete(WINDOW_FILES);
+		g_windowManager.Delete(WINDOW_OSD);
 
 		// Settings Windows
 		g_windowManager.Remove(WINDOW_SETTINGS_MYWEATHER);
@@ -2435,6 +2623,10 @@ void CApplication::Cleanup()
 		g_windowManager.Delete(WINDOW_DIALOG_NUMERIC);
 		g_windowManager.Delete(WINDOW_DIALOG_SELECT);
 		g_windowManager.Delete(WINDOW_DIALOG_OK);
+		g_windowManager.Delete(WINDOW_DIALOG_VIDEO_OSD_SETTINGS);
+		g_windowManager.Delete(WINDOW_DIALOG_AUDIO_OSD_SETTINGS);
+		g_windowManager.Delete(WINDOW_DIALOG_VIDEO_BOOKMARKS);
+		g_windowManager.Delete(WINDOW_DIALOG_SLIDER);
 
 		g_windowManager.Remove(WINDOW_DIALOG_SEEK_BAR);
 		g_windowManager.Remove(WINDOW_DIALOG_VOLUME_BAR);

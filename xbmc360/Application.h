@@ -84,6 +84,11 @@ public:
 	void SaveFileState();
 	void UpdateFileState();
 
+	PLAYERCOREID GetCurrentPlayer();
+	void Restart(bool bSamePosition = true);
+	void DelayedPlayerRestart();
+	void CheckDelayedPlayerRestart();
+
 	void StartIdleThread();
 	void StopIdleThread();
 	void StartTimeServer();
@@ -160,6 +165,7 @@ protected:
 	CStopWatch m_screenSaverTimer;
 	CStopWatch m_shutdownTimer;
 	CStopWatch m_slowTimer;
+	CStopWatch m_restartPlayerTimer;
 
 	CIdleThread m_idleThread;
 	CSplash *m_splash;

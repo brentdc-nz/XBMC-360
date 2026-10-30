@@ -221,6 +221,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 		else if (strTest.Equals("player.forwarding16x")) ret = PLAYER_FORWARDING_16x;
 		else if (strTest.Equals("player.forwarding32x")) ret = PLAYER_FORWARDING_32x;
 		else if (strTest.Equals("player.displayafterseek")) ret = PLAYER_DISPLAY_AFTER_SEEK;
+		else if (strTest.Equals("player.caching")) ret = PLAYER_CACHING;
 		else if (strTest.Equals("player.seekbar")) ret = PLAYER_SEEKBAR;
 		else if (strTest.Equals("player.progress")) ret = PLAYER_PROGRESS;
 		else if (strTest.Equals("player.seeking")) ret = PLAYER_SEEKING;
@@ -1534,6 +1535,9 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
 				break;
 			case PLAYER_DISPLAY_AFTER_SEEK:
 				bReturn = GetDisplayAfterSeek();
+				break;
+			case PLAYER_CACHING:
+				bReturn = g_application.m_pPlayer->IsCaching();
 				break;
 			case PLAYER_SEEKBAR:
 			{

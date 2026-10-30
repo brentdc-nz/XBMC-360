@@ -26,6 +26,8 @@ public:
 	CStdString m_videoPPFFmpegPostProc;
 	int m_iSkipLoopFilter;
 	int m_videoSmallStepBackSeconds;
+	float m_videoSubsDelayRange;
+	float m_videoAudioDelayRange;
 	bool m_musicUseTimeSeeking;
 	int m_musicTimeSeekForward;
 	int m_musicTimeSeekBackward;

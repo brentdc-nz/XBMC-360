@@ -25,6 +25,8 @@ CAdvancedSettings::CAdvancedSettings()
 	m_videoPPFFmpegPostProc = "ha:128:7,va,dr";
 	m_iSkipLoopFilter = 0;
 	m_videoSmallStepBackSeconds = 7;
+	m_videoSubsDelayRange = 10;
+	m_videoAudioDelayRange = 10;
 
 	// Music seek defaults from Source xbmc4xbox AdvancedSettings.cpp
 	m_musicUseTimeSeeking = true;
