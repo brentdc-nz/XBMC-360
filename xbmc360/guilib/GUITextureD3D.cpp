@@ -30,21 +30,19 @@ const char* g_strVertexShader =
     "     return Out;                              "
     " }                                            ";
 
-// Pixel shader - single texture
+// Pixel shader - single texture, tinted by the control's diffuse color
 const char* g_strPixelShader =
-    " float InputAlpha : register(c10);             "
+    " float4 InputColor : register(c10);            "
     " sampler2D InputTexture : register(S0);        "
     "                                               "
     " float4 main(float2 uv : TEXCOORD0) : COLOR    "
     " {                                             "
-    "    float4 color = tex2D( InputTexture, uv.xy);"
-    "    color[3] = InputAlpha * color[3];          "
-    "    return color;                              "
+    "    return tex2D( InputTexture, uv.xy) * InputColor;"
     " }                                             ";
 
 // Pixel shader - with diffuse texture (used for effects like mirror reflections)
 const char* g_strPixelShaderDiffuse =
-    " float InputAlpha : register(c10);             "
+    " float4 InputColor : register(c10);            "
     " sampler2D InputTexture : register(S0);        "
     " sampler2D DiffuseTexture : register(S1);      "
     "                                               "
@@ -53,9 +51,7 @@ const char* g_strPixelShaderDiffuse =
     " {                                             "
     "    float4 color = tex2D( InputTexture, uv.xy);"
     "    float4 diff = tex2D( DiffuseTexture, uv2.xy);"
-    "    color *= diff;                             "
-    "    color[3] = InputAlpha * color[3];          "
-    "    return color;                              "
+    "    return color * diff * InputColor;          "
     " }                                             ";
 }
 
@@ -288,11 +284,10 @@ void CGUITextureD3D::Draw(float *x, float *y, float *z, const CRect &texture, co
 	// Set per-draw constants
 	m_pd3dDevice->SetVertexShaderConstantF(0, ( FLOAT* )&g_graphicsContext.GetFinalMatrix(), 4);
 
-#pragma warning(push)
-#pragma warning (disable:4244)
-	float fInputAlpha[] = { (color >> 24 & 0xFF) / 255.0 };
-	m_pd3dDevice->SetPixelShaderConstantF(10, fInputAlpha, 4);
-#pragma warning(pop)
+	// The diffuse color (ARGB) as the shader's RGBA tint
+	float fInputColor[] = { (color >> 16 & 0xFF) / 255.0f, (color >> 8 & 0xFF) / 255.0f,
+	                        (color & 0xFF) / 255.0f, (color >> 24 & 0xFF) / 255.0f };
+	m_pd3dDevice->SetPixelShaderConstantF(10, fInputColor, 1);
 
 	// Draw directly from user pointer - no VB lock/unlock overhead
 	m_pd3dDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, Vertices, sizeof(D3DCUSTOMVERTEX));
