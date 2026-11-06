@@ -108,12 +108,44 @@ int CFileSMB::Write(const void* lpBuf, __int64 uiBufSize)
 
 int CFileSMB::Stat(const CURL& url, struct __stat64* buffer)
 {
-	// TODO!!
+	CSingleLock lock(xbsmb_f);
+
+	struct smb2_stat_64 st;
+	if(!xbsmb_f.Stat(url, st))
+		return -1;
+
+	if(buffer)
+	{
+		memset(buffer, 0, sizeof(struct __stat64));
+		buffer->st_mode = (st.smb2_type == SMB2_TYPE_DIRECTORY) ? _S_IFDIR : _S_IFREG;
+		buffer->st_nlink = 1;
+		buffer->st_size = st.smb2_size;
+		buffer->st_atime = st.smb2_atime;
+		buffer->st_mtime = st.smb2_mtime;
+		buffer->st_ctime = st.smb2_ctime;
+	}
+
 	return 0;
 }
 
-bool CFileSMB::Exists(const CStdString& strPath)
+bool CFileSMB::Exists(const CURL& url)
 {
-	// TODO!!
-	return false;
+	CSingleLock lock(xbsmb_f);
+
+	struct smb2_stat_64 st;
+	return xbsmb_f.Stat(url, st);
+}
+
+bool CFileSMB::Delete(const CURL& url)
+{
+	CSingleLock lock(xbsmb_f);
+
+	return xbsmb_f.Delete(url);
+}
+
+bool CFileSMB::Rename(const CURL& url, const CURL& urlnew)
+{
+	CSingleLock lock(xbsmb_f);
+
+	return xbsmb_f.Rename(url, urlnew);
 }

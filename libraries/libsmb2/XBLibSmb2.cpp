@@ -449,3 +449,70 @@ int CXBLibSMB2::FileWrite(smb2fh* fh, const void* lpBuf, __int64 uiBufSize)
 
 	return (int)iWritten;
 }
+
+bool CXBLibSMB2::Stat(const CURL& url, struct smb2_stat_64& st)
+{
+	if(!EnsureConnection(url))
+		return false;
+
+	struct smb2_url* pUrl = ParseUrl(url);
+
+	if(!pUrl)
+		return false;
+
+	// Not logged when it fails: asking whether something exists is often expected to
+	int rc = smb2_stat(m_pLibSMB2Context, pUrl->path, &st);
+	smb2_destroy_url(pUrl);
+
+	return rc == 0;
+}
+
+bool CXBLibSMB2::Delete(const CURL& url)
+{
+	if(!EnsureConnection(url))
+		return false;
+
+	struct smb2_url* pUrl = ParseUrl(url);
+
+	if(!pUrl)
+		return false;
+
+	int rc = smb2_unlink(m_pLibSMB2Context, pUrl->path);
+	smb2_destroy_url(pUrl);
+
+	if(rc != 0)
+	{
+		CLog::Log(LOGERROR, "CXBLibSMB2::Delete - smb2_unlink failed: %s", smb2_get_error(m_pLibSMB2Context));
+		return false;
+	}
+
+	return true;
+}
+
+bool CXBLibSMB2::Rename(const CURL& url, const CURL& urlNew)
+{
+	if(!EnsureConnection(url))
+		return false;
+
+	struct smb2_url* pUrl = ParseUrl(url);
+	struct smb2_url* pUrlNew = ParseUrl(urlNew);
+	bool bRenamed = false;
+
+	if(pUrl && pUrlNew)
+	{
+		// SMB renames within a share; moving elsewhere is a copy
+		if(CStdString(pUrl->server).CompareNoCase(pUrlNew->server) != 0 || CStdString(pUrl->share).CompareNoCase(pUrlNew->share) != 0)
+			CLog::Log(LOGERROR, "CXBLibSMB2::Rename - Can't rename across shares");
+		else if(smb2_rename(m_pLibSMB2Context, pUrl->path, pUrlNew->path) != 0)
+			CLog::Log(LOGERROR, "CXBLibSMB2::Rename - smb2_rename failed: %s", smb2_get_error(m_pLibSMB2Context));
+		else
+			bRenamed = true;
+	}
+
+	if(pUrl)
+		smb2_destroy_url(pUrl);
+	if(pUrlNew)
+		smb2_destroy_url(pUrlNew);
+
+	return bRenamed;
+}
