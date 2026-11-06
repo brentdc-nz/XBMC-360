@@ -261,6 +261,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 		else if (strTest.Equals("system.profilename")) ret = SYSTEM_PROFILENAME;
 		else if (strTest.Equals("system.profilethumb")) ret = SYSTEM_PROFILETHUMB;
 		else if (strTest.Equals("system.alarmpos")) ret = SYSTEM_ALARM_POS;
+		else if (strTest.Equals("system.internetstate")) ret = SYSTEM_INTERNET_STATE;
 		else if (strTest.Left(16).Equals("system.hasalarm("))
 			return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_HAS_ALARM : SYSTEM_HAS_ALARM, ConditionalStringParameter(strTest.Mid(16, strTest.size() - 17)), 0));
 		else if (strTest.Left(15).Equals("system.getbool("))
@@ -1057,6 +1058,26 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
 			return g_application.getNetwork().m_networkinfo.ip;
 		}
 		break;
+		case NETWORK_MAC_ADDRESS:
+		{
+			return g_application.getNetwork().m_networkinfo.mac;
+		}
+		break;
+		case SYSTEM_INTERNET_STATE:
+		{
+			switch (g_application.getNetwork().GetInternetState())
+			{
+				case CNetwork::INTERNET_CONNECTED:
+					return g_localizeStrings.Get(13296); // Connected
+				case CNetwork::INTERNET_NO_DNS:
+					return g_localizeStrings.Get(13274); // Connected, but no DNS is available
+				case CNetwork::INTERNET_NOT_CONNECTED:
+					return g_localizeStrings.Get(13297); // Not connected
+				default:
+					return g_localizeStrings.Get(13176); // Checking...
+			}
+		}
+		break;
 		case NETWORK_SUBNET_ADDRESS:
 		{
 			return g_application.getNetwork().m_networkinfo.subnet;
@@ -1064,12 +1085,19 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
 		break;
 		case NETWORK_GATEWAY_ADDRESS:
 		{
-			return g_application.getNetwork().m_networkinfo.gateway;
+			// No address from XNet: whether there's one
+			const network_info &info = g_application.getNetwork().m_networkinfo;
+			if (info.gateway[0])
+				return info.gateway;
+			return g_localizeStrings.Get(info.hasGateway ? 13175 : 231); // Set up, None
 		}
 		break;
 		case NETWORK_DNS1_ADDRESS:
 		{
-			return g_application.getNetwork().m_networkinfo.DNS1;
+			const network_info &info = g_application.getNetwork().m_networkinfo;
+			if (info.DNS1[0])
+				return info.DNS1;
+			return g_localizeStrings.Get(info.hasDNS ? 13175 : 231); // Set up, None
 		}
 		break;
 		case NETWORK_DNS2_ADDRESS:

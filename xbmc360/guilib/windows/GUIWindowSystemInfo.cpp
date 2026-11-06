@@ -114,10 +114,11 @@ void CGUIWindowSystemInfo::FrameMove()
 		SetControlLabel(i++, "%s %s", 151, NETWORK_LINK_STATE);
 		SetControlLabel(i++, "%s: %s", 149, NETWORK_MAC_ADDRESS);
 		SetControlLabel(i++, "%s: %s", 150, NETWORK_IP_ADDRESS);
-		SetControlLabel(i++, "%s: %s", 13159, NETWORK_SUBNET_ADDRESS);
+		// TODO: The subnet mask and second DNS server, when they can be read (XNet doesn't give them)
+//		SetControlLabel(i++, "%s: %s", 13159, NETWORK_SUBNET_ADDRESS);
 		SetControlLabel(i++, "%s: %s", 13160, NETWORK_GATEWAY_ADDRESS);
 		SetControlLabel(i++, "%s: %s", 13161, NETWORK_DNS1_ADDRESS);
-		SetControlLabel(i++, "%s: %s", 20307, NETWORK_DNS2_ADDRESS);
+//		SetControlLabel(i++, "%s: %s", 20307, NETWORK_DNS2_ADDRESS);
 		SetControlLabel(i++, "%s %s", 13295, SYSTEM_INTERNET_STATE);
 	}
 	else if(iControl == CONTROL_BT_VIDEO)
