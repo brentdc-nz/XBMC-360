@@ -2373,6 +2373,9 @@ void CApplication::CheckScreenSaver()
 	if (IsPlayingAudio() && g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION) // Are we playing some music in fullscreen vis?
 		resetTimer = true;
 
+	if (g_windowManager.IsWindowActive(WINDOW_DIALOG_PROGRESS)) // Is something being done, such as a disc saved or a game copied?
+		resetTimer = true;
+
 	if(resetTimer)
 	{
 		m_screenSaverTimer.StartZero();
