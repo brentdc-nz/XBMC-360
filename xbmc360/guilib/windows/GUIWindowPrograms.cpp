@@ -148,11 +148,18 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
 
 		if (item->m_bIsFolder && !item->IsParentFolder()/* && !item->IsPlugin()*/)
 		{
-			// Folder item - let's check for a default.xbe file, and flatten if we have one
-			CStdString defaultXBE;
+			// Folder item - let's check for a default.xex (an Xbox 360 game or app,
+			// as copied from a disc) or default.xbe file, and flatten if we have one
+			CStdString defaultXEX, defaultXBE;
+			URIUtils::AddFileToFolder(item->GetPath(), "default.xex", defaultXEX);
 			URIUtils::AddFileToFolder(item->GetPath(), "default.xbe", defaultXBE);
-			
-			if (CFile::Exists(defaultXBE))
+
+			if (CFile::Exists(defaultXEX))
+			{
+				item->SetPath(defaultXEX);
+				item->m_bIsFolder = false;
+			}
+			else if (CFile::Exists(defaultXBE))
 			{
 				// Yes, format the item up
 				item->SetPath(defaultXBE);
