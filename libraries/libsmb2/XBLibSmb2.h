@@ -42,6 +42,8 @@ public:
 	bool Stat(const CURL& url, struct smb2_stat_64& st);
 	bool Delete(const CURL& url);
 	bool Rename(const CURL& url, const CURL& urlNew);
+	bool CreateDir(const CURL& url);
+	bool RemoveDir(const CURL& url);
 
 private:
 	bool EnsureConnection(const CURL& url);

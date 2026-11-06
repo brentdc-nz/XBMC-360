@@ -94,15 +94,22 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 
 bool CSMBDirectory::Create(const char* strPath)
 {
-	return false;
+	CSingleLock lock(xbsmb);
+
+	return xbsmb.CreateDir(CURL(strPath));
 }
 
 bool CSMBDirectory::Remove(const char* strPath)
 {
-	return false;
+	CSingleLock lock(xbsmb);
+
+	return xbsmb.RemoveDir(CURL(strPath));
 }
 
 bool CSMBDirectory::Exists(const char* strPath)
 {
-	return true;
+	CSingleLock lock(xbsmb);
+
+	struct smb2_stat_64 st;
+	return xbsmb.Stat(CURL(strPath), st) && st.smb2_type == SMB2_TYPE_DIRECTORY;
 }

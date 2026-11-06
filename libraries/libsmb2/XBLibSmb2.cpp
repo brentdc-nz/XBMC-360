@@ -525,3 +525,47 @@ bool CXBLibSMB2::Rename(const CURL& url, const CURL& urlNew)
 
 	return bRenamed;
 }
+
+bool CXBLibSMB2::CreateDir(const CURL& url)
+{
+	if(!EnsureConnection(url))
+		return false;
+
+	struct smb2_url* pUrl = ParseUrl(url);
+
+	if(!pUrl)
+		return false;
+
+	int rc = smb2_mkdir(m_pLibSMB2Context, PathInShare(pUrl).c_str());
+	smb2_destroy_url(pUrl);
+
+	if(rc != 0)
+	{
+		CLog::Log(LOGERROR, "CXBLibSMB2::CreateDir - smb2_mkdir failed: %s", smb2_get_error(m_pLibSMB2Context));
+		return false;
+	}
+
+	return true;
+}
+
+bool CXBLibSMB2::RemoveDir(const CURL& url)
+{
+	if(!EnsureConnection(url))
+		return false;
+
+	struct smb2_url* pUrl = ParseUrl(url);
+
+	if(!pUrl)
+		return false;
+
+	int rc = smb2_rmdir(m_pLibSMB2Context, PathInShare(pUrl).c_str());
+	smb2_destroy_url(pUrl);
+
+	if(rc != 0)
+	{
+		CLog::Log(LOGERROR, "CXBLibSMB2::RemoveDir - smb2_rmdir failed: %s", smb2_get_error(m_pLibSMB2Context));
+		return false;
+	}
+
+	return true;
+}
