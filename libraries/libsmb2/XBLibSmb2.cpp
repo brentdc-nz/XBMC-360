@@ -2,6 +2,28 @@
 #include "utils\Log.h"
 #include <fcntl.h>
 
+// Who to sign in as. A plain name is an account on the server itself, as before (domain "workgroup"); a domain
+// account can be DOMAIN\name, or name@domain, whose domain is in the name, so NTLM is sent none beside it; and an
+// smb://domain;name@server/ URL gives its domain apart.
+static void SetCredentials(struct smb2_context* smb2, const CURL& url)
+{
+	CStdString user = url.GetUserName();
+	CStdString domain = url.GetDomain();
+
+	int iSlash = user.Find('\\');
+	if (domain.IsEmpty() && iSlash > 0)
+	{
+		domain = user.Left(iSlash);
+		user = user.Mid(iSlash + 1);
+	}
+	if (domain.IsEmpty() && user.Find('@') < 0)
+		domain = "workgroup";
+
+	smb2_set_user(smb2, user.c_str());
+	smb2_set_password(smb2, url.GetPassWord().c_str());
+	smb2_set_domain(smb2, domain.c_str());
+}
+
 CXBLibSMB2::CXBLibSMB2()
 {
 	m_pLibSMB2Context = NULL;
@@ -50,9 +72,7 @@ bool CXBLibSMB2::OpenDir(const CURL& url)
 	if(!m_pLibSMB2Context)
 		return false;
 
-	smb2_set_user(m_pLibSMB2Context, url.GetUserName());		
-	smb2_set_password(m_pLibSMB2Context, url.GetPassWord());
-	smb2_set_domain(m_pLibSMB2Context, "workgroup");
+	SetCredentials(m_pLibSMB2Context, url);
 		
 	m_pLibSMB2Url = smb2_parse_url(m_pLibSMB2Context, "smb://"+url.GetHostName()+":445/"+url.GetShareName());
 
@@ -103,9 +123,7 @@ bool CXBLibSMB2::OpenFile(const CURL& url)
 	if(!m_pLibSMB2Context)
 		return false;
 
-	smb2_set_user(m_pLibSMB2Context, url.GetUserName());		
-	smb2_set_password(m_pLibSMB2Context, url.GetPassWord());
-	smb2_set_domain(m_pLibSMB2Context, "workgroup");
+	SetCredentials(m_pLibSMB2Context, url);
 		
 	m_pLibSMB2Url = smb2_parse_url(m_pLibSMB2Context, "smb://"+url.GetHostName()+":445/"+url.GetShareName());
 
@@ -268,9 +286,7 @@ bool CXBLibSMB2::EnsureConnection(const CURL& url)
 		}
 	}
 
-	smb2_set_user(m_pLibSMB2Context, url.GetUserName());
-	smb2_set_password(m_pLibSMB2Context, url.GetPassWord());
-	smb2_set_domain(m_pLibSMB2Context, "workgroup");
+	SetCredentials(m_pLibSMB2Context, url);
 
 	struct smb2_url* pUrl = smb2_parse_url(m_pLibSMB2Context, "smb://"+url.GetHostName()+":445/"+url.GetShareName());
 
