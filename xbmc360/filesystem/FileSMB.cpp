@@ -40,8 +40,19 @@ bool CFileSMB::Open(const CURL& strURL)
 
 bool CFileSMB::OpenForWrite(const CURL& strURL, bool bOverWrite)
 {
-	CLog::Log(LOGERROR, "CFileSMB OpenForWrite not yet supported.");
-	return false; // TODO!!
+	Close(); // Ensure any previous handle is released
+
+	CSingleLock lock(xbsmb_f);
+
+	m_pFileHandle = xbsmb_f.FileOpenForWrite(strURL, bOverWrite, m_fileSize);
+
+	if(!m_pFileHandle)
+	{
+		CLog::Log(LOGERROR, "CFileSMB::OpenForWrite - Failed to open file");
+		return false;
+	}
+
+	return true;
 }
 
 __int64 CFileSMB::GetLength()
@@ -83,8 +94,16 @@ __int64 CFileSMB::Seek(__int64 iFilePosition, int iWhence)
 
 int CFileSMB::Write(const void* lpBuf, __int64 uiBufSize)
 {
-	// TODO!
-	return 0;
+	CSingleLock lock(xbsmb_f);
+
+	int iWritten = xbsmb_f.FileWrite(m_pFileHandle, lpBuf, uiBufSize);
+
+	// The length was read when opening: keep it up as the file grows
+	__int64 iPos = xbsmb_f.FileGetPosition(m_pFileHandle);
+	if(iPos > (__int64)m_fileSize)
+		m_fileSize = iPos;
+
+	return iWritten;
 }
 
 int CFileSMB::Stat(const CURL& url, struct __stat64* buffer)

@@ -305,6 +305,18 @@ bool CXBLibSMB2::EnsureConnection(const CURL& url)
 	return true;
 }
 
+// The URL as libsmb2 sees it: server, share and the path within the share.
+// The caller frees it with smb2_destroy_url().
+struct smb2_url* CXBLibSMB2::ParseUrl(const CURL& url)
+{
+	struct smb2_url* pUrl = smb2_parse_url(m_pLibSMB2Context, "smb://"+url.GetHostName()+":445/"+url.GetShareName());
+
+	if(!pUrl)
+		CLog::Log(LOGERROR, "CXBLibSMB2::ParseUrl - Failed to parse url: %s", smb2_get_error(m_pLibSMB2Context));
+
+	return pUrl;
+}
+
 smb2fh* CXBLibSMB2::FileOpen(const CURL& url, UINT64& outFileSize)
 {
 	outFileSize = 0;
@@ -378,4 +390,62 @@ void CXBLibSMB2::FileClose(smb2fh* fh)
 {
 	if(fh != NULL && m_pLibSMB2Context != NULL)
 		smb2_close(m_pLibSMB2Context, fh);
+}
+
+smb2fh* CXBLibSMB2::FileOpenForWrite(const CURL& url, bool bOverWrite, UINT64& outFileSize)
+{
+	outFileSize = 0;
+
+	if(!EnsureConnection(url))
+		return NULL;
+
+	struct smb2_url* pUrl = ParseUrl(url);
+
+	if(!pUrl)
+		return NULL;
+
+	// As CFileHD does: create the file if it's missing, and empty it only when overwriting
+	int flags = O_RDWR | O_CREAT | O_BINARY;
+	if(bOverWrite)
+		flags |= O_TRUNC;
+
+	struct smb2fh* fh = smb2_open(m_pLibSMB2Context, pUrl->path, flags);
+	smb2_destroy_url(pUrl);
+
+	if(fh == NULL)
+	{
+		CLog::Log(LOGERROR, "CXBLibSMB2::FileOpenForWrite - smb2_open failed: %s", smb2_get_error(m_pLibSMB2Context));
+		return NULL;
+	}
+
+	outFileSize = smb2_lseek(m_pLibSMB2Context, fh, 0, SEEK_END, NULL);
+	smb2_lseek(m_pLibSMB2Context, fh, 0, SEEK_SET, NULL);
+
+	return fh;
+}
+
+int CXBLibSMB2::FileWrite(smb2fh* fh, const void* lpBuf, __int64 uiBufSize)
+{
+	if(fh == NULL || m_pLibSMB2Context == NULL)
+		return 0;
+
+	// A request carries no more than the server's max write size, so
+	// smb2_write can write less than it's given: go on until it's all written
+	const uint8_t* pBuf = static_cast<const uint8_t*>(lpBuf);
+	__int64 iWritten = 0;
+
+	while(iWritten < uiBufSize)
+	{
+		int bytesWritten = smb2_write(m_pLibSMB2Context, fh, pBuf + iWritten, (uint32_t)(uiBufSize - iWritten));
+
+		if(bytesWritten <= 0)
+		{
+			CLog::Log(LOGERROR, __FUNCTION__" - smb2_write failed: %s", smb2_get_error(m_pLibSMB2Context));
+			break;
+		}
+
+		iWritten += bytesWritten;
+	}
+
+	return (int)iWritten;
 }
