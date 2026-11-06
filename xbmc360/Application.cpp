@@ -285,6 +285,9 @@ bool CApplication::Initialize()
 	g_windowManager.Add(new CGUIDialogPictureInfo);			// window id = 139
 	g_windowManager.Add(new CGUIDialogSelect);				// window id = 2000
 	g_windowManager.Add(new CGUIDialogOK);					// window id = 2002
+	// Skin-only dialogs: their buttons call the player's built-in functions
+	g_windowManager.Add(new CGUIDialog(WINDOW_DIALOG_PLAYER_CONTROLS, "PlayerControls.xml")); // window id = 114
+	g_windowManager.Add(new CGUIDialog(WINDOW_DIALOG_MUSIC_OSD, "MusicOSD.xml"));			// window id = 120
 	g_windowManager.Add(new CGUIWindowWeather);				// Window id = 2600 WEATHER
 
 	/* window id's 3000 - 3100 are reserved for python */
@@ -2623,6 +2626,8 @@ void CApplication::Cleanup()
 		g_windowManager.Delete(WINDOW_DIALOG_NUMERIC);
 		g_windowManager.Delete(WINDOW_DIALOG_SELECT);
 		g_windowManager.Delete(WINDOW_DIALOG_OK);
+		g_windowManager.Delete(WINDOW_DIALOG_PLAYER_CONTROLS);
+		g_windowManager.Delete(WINDOW_DIALOG_MUSIC_OSD);
 		g_windowManager.Delete(WINDOW_DIALOG_VIDEO_OSD_SETTINGS);
 		g_windowManager.Delete(WINDOW_DIALOG_AUDIO_OSD_SETTINGS);
 		g_windowManager.Delete(WINDOW_DIALOG_VIDEO_BOOKMARKS);
