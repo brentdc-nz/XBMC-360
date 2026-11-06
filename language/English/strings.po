@@ -4211,7 +4211,20 @@ msgctxt "#13176"
 msgid "Checking..."
 msgstr ""
 
-#empty strings from id 13177 to 13199
+#. A drive's free space, of its size: "Hdd1: 85.3 GB free of 111.7 GB"
+msgctxt "#13177"
+msgid "%s: %s free of %s"
+msgstr ""
+
+msgctxt "#13178"
+msgid "Memory temperature:"
+msgstr ""
+
+msgctxt "#13179"
+msgid "Board temperature:"
+msgstr ""
+
+#empty strings from id 13180 to 13199
 
 msgctxt "#13200"
 msgid "Profiles"

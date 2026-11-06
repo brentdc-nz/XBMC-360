@@ -3,11 +3,17 @@
 #include "guilib\GUIWindowManager.h"
 #include "guilib\LocalizeStrings.h"
 #include "guilib\GUIMessage.h"
+#include "Application.h"
+#include "filesystem\Drive.h"
+#include "utils\StringUtils.h"
+
+#define STORAGE_UPDATE_EVERY 5000
 
 CGUIWindowSystemInfo::CGUIWindowSystemInfo(void)
 :CGUIWindow(WINDOW_SYSTEM_INFORMATION, "SettingsSystemInfo.xml")
 {
 	iControl = CONTROL_BT_DEFAULT;
+	m_storageUpdated = 0;
 }
 
 CGUIWindowSystemInfo::~CGUIWindowSystemInfo(void)
@@ -22,6 +28,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 		{
 			CGUIWindow::OnMessage(message);
 			SetLabelDummy();
+			m_storageUpdated = 0;
 			return true;
 		}
 		break;
@@ -47,12 +54,10 @@ void CGUIWindowSystemInfo::FrameMove()
 //		SetControlLabel(i++, "%s: %s", 13300, SYSTEM_FAN_SPEED);
 		SetControlLabel(i++, "%s: %s", 158, SYSTEM_FREE_MEMORY);
 		SetControlLabel(i++, "%s: %s", 150, NETWORK_IP_ADDRESS);
-//		SetControlLabel(i++, "%s %s", 13287, SYSTEM_SCREEN_RESOLUTION);
-#ifdef HAS_SYSINFO
+		SetControlLabel(i++, "%s %s", 13287, SYSTEM_SCREEN_RESOLUTION);
 		SetControlLabel(i++, "%s %s", 13283, SYSTEM_KERNEL_VERSION);
-#endif
-//		SetControlLabel(i++, "%s: %s", 12390, SYSTEM_UPTIME);
-//		SetControlLabel(i++, "%s: %s", 12394, SYSTEM_TOTALUPTIME);
+		SetControlLabel(i++, "%s: %s", 12390, SYSTEM_UPTIME);
+		SetControlLabel(i++, "%s: %s", 12394, SYSTEM_TOTALUPTIME);
 	}
 	else if(iControl == CONTROL_BT_HDD)
 	{
@@ -89,8 +94,12 @@ void CGUIWindowSystemInfo::FrameMove()
 		SetLabelDummy();
 		
 		SET_CONTROL_LABEL(40,g_localizeStrings.Get(20155));
-		// For backward compatibility just show Free space info else would be to long...
-//		SET_CONTROL_LABEL(2, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_C));
+
+		// Each drive with space on it: "Hdd1: 85.3 GB free of 111.7 GB"
+		if (!m_storageUpdated || GetTickCount() - m_storageUpdated > STORAGE_UPDATE_EVERY)
+			UpdateStorage();
+		for (unsigned int line = 0; line < m_storage.size() && line < 10; line++)
+			SET_CONTROL_LABEL(2 + line, m_storage[line]);
 #ifdef HAS_SYSINFO
 		SET_CONTROL_LABEL(3, g_infoManager.GetLabel(SYSTEM_DVD_TRAY_STATE));
 #endif
@@ -127,11 +136,11 @@ void CGUIWindowSystemInfo::FrameMove()
 
 		SET_CONTROL_LABEL(40,g_localizeStrings.Get(20159));
 		int i = 2;
+		SetControlLabel(i++, "%s %s", 13287, SYSTEM_SCREEN_RESOLUTION);
+		SetControlLabel(i++, "%s %s", 13293, SYSTEM_VIDEO_REGION);
 #ifdef HAS_SYSINFO
 		SetControlLabel(i++, "%s %s", 13286, SYSTEM_VIDEO_ENCODER_INFO);
-		SetControlLabel(i++, "%s %s", 13287, SYSTEM_SCREEN_RESOLUTION);
 		SetControlLabel(i++, "%s %s", 13292, SYSTEM_AV_PACK_INFO);
-		SetControlLabel(i++, "%s %s", 13293, SYSTEM_XBE_REGION);
 #endif
 	}
 	else if(iControl == CONTROL_BT_HARDWARE)
@@ -140,6 +149,20 @@ void CGUIWindowSystemInfo::FrameMove()
 
 		SET_CONTROL_LABEL(40,g_localizeStrings.Get(20160));
 		int i = 2;
+		SetControlLabel(i++, "%s %s", 22011, SYSTEM_CPU_TEMPERATURE);
+		SetControlLabel(i++, "%s %s", 22010, SYSTEM_GPU_TEMPERATURE);
+		SetControlLabel(i++, "%s %s", 13178, SYSTEM_MEMORY_TEMPERATURE);
+		SetControlLabel(i++, "%s %s", 13179, SYSTEM_BOARD_TEMPERATURE);
+
+		// Controllers: connected, or None
+		for (DWORD port = 0; port < XUSER_MAX_COUNT; port++)
+		{
+			XINPUT_CAPABILITIES caps;
+			bool connected = XInputGetCapabilities(port, XINPUT_FLAG_ANYDEVICE, &caps) == ERROR_SUCCESS;
+			CStdString line;
+			line.Format("%s %u: %s", g_localizeStrings.Get(13169).c_str(), port + 1, g_localizeStrings.Get(connected ? 13296 : 231).c_str());
+			SET_CONTROL_LABEL(i++, line);
+		}
 #ifdef HAS_SYSINFO
 		SetControlLabel(i++, "%s %s", 13288, SYSTEM_XBOX_VERSION);
 		SetControlLabel(i++, "%s %s", 13289, SYSTEM_XBOX_SERIAL);
@@ -156,10 +179,30 @@ void CGUIWindowSystemInfo::FrameMove()
 	
 //	SET_CONTROL_LABEL(50, g_infoManager.GetTime(TIME_FORMAT_HH_MM_SS) + " | " + g_infoManager.GetDate());
 //	SET_CONTROL_LABEL(51, g_localizeStrings.Get(144)+" "+g_infoManager.GetVersion());
-//	SET_CONTROL_LABEL(52, "XBMC4Xbox "+g_infoManager.GetLabel(SYSTEM_BUILD_VERSION)+" (Compiled: "+g_infoManager.GetLabel(SYSTEM_BUILD_DATE)+")");
+	SET_CONTROL_LABEL(52, g_localizeStrings.Get(144) + " XBMC-360 (" + g_infoManager.GetLabel(SYSTEM_BUILD_DATE) + ")");
 //	SET_CONTROL_LABEL(53, g_infoManager.GetLabel(SYSTEM_MPLAYER_VERSION));
-	
+
 	CGUIWindow::FrameMove();
+}
+
+void CGUIWindowSystemInfo::UpdateStorage()
+{
+	m_storage.clear();
+	m_storageUpdated = GetTickCount();
+
+	std::vector<CDrive* const> drives;
+	g_application.getDriveManager().getMountedDrives(&drives);
+	for (unsigned int i = 0; i < drives.size(); i++)
+	{
+		ULARGE_INTEGER available, total, free;
+		if (!GetDiskFreeSpaceEx(drives[i]->getRootPath().c_str(), &available, &total, &free) || !total.QuadPart)
+			continue;   // no file system (the DVD drive, a whole disk)
+
+		CStdString line;
+		line.Format(g_localizeStrings.Get(13177).c_str(), drives[i]->GetCleanDriveName().c_str(),
+			CStringUtils::SizeToString(free.QuadPart).c_str(), CStringUtils::SizeToString(total.QuadPart).c_str());
+		m_storage.push_back(line);
+	}
 }
 void CGUIWindowSystemInfo::SetLabelDummy()
 {

@@ -79,6 +79,9 @@ namespace INFO
 #define SYSTEM_DATE                 111
 #define SYSTEM_CPU_TEMPERATURE      112
 #define SYSTEM_GPU_TEMPERATURE      113
+#define SYSTEM_MEMORY_TEMPERATURE   114
+#define SYSTEM_BOARD_TEMPERATURE    115
+#define SYSTEM_BUILD_DATE           121
 #define SYSTEM_FPS                  123
 #define SYSTEM_ALWAYS_TRUE          125   // Useful for <visible fade="10" start="hidden">true</visible>, to fade in a control
 #define SYSTEM_ALWAYS_FALSE         126   // Used for <visible fade="10">false</visible>, to fade out a control (i.e not particularly useful!)
@@ -238,7 +241,16 @@ namespace INFO
 #define LIBRARY_IS_SCANNING_VIDEO   726
 #define LIBRARY_IS_SCANNING_MUSIC   727
 
+#define SYSTEM_TOTAL_MEMORY         644
+#define SYSTEM_USED_MEMORY_PERCENT  646
+#define SYSTEM_USED_MEMORY          647
 #define SYSTEM_FREE_MEMORY          648
+#define SYSTEM_FREE_MEMORY_PERCENT  649
+#define SYSTEM_UPTIME               654
+#define SYSTEM_TOTALUPTIME          655
+#define SYSTEM_SCREEN_RESOLUTION    659
+#define SYSTEM_VIDEO_REGION         660
+#define SYSTEM_KERNEL_VERSION       667
 
 #define SKIN_THEME                  800
 #define SKIN_COLOUR_THEME           801

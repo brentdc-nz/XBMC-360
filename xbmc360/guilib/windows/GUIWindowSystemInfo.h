@@ -3,6 +3,8 @@
 
 #include "guilib\GUIWindow.h"
 
+#include <vector>
+
 #define CONTROL_BT_HDD      92
 #define CONTROL_BT_DVD      93
 #define CONTROL_BT_STORAGE  94
@@ -23,6 +25,11 @@ private:
 	unsigned int iControl;
 	void SetLabelDummy();
 	void SetControlLabel(int id, const char *format, int label, int info);
+	void UpdateStorage();
+
+	// The drives' free space, a line each, read every few seconds rather than every frame
+	std::vector<CStdString> m_storage;
+	DWORD m_storageUpdated;
 };
 
 #endif //H_GUILIB_CGUIWINDOWSYSTEMINFO
