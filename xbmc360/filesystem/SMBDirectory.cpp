@@ -17,7 +17,7 @@ CSMBDirectory::~CSMBDirectory(void)
 {
 }
 
-bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items) // TODO: Missing the file stats stuff!
+bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
 	// We accept smb://[[[domain;]user[:password@]]server[/share[/path[/file]]]]
 
@@ -47,6 +47,9 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 		if(strFile == ".." || strFile == ".")
 			continue;
 
+		// When it was last changed, in seconds since 1970 as the server says
+		time_t modified = (time_t)dirEnt->st.smb2_mtime;
+
 		if(dirEnt->st.smb2_type == SMB2_TYPE_DIRECTORY)
 		{
 			CFileItemPtr pItem(new CFileItem(strFile));
@@ -69,7 +72,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 				pItem->m_strPath += '/';
 
 			pItem->m_bIsFolder = true;
-//			pItem->m_dateTime = localTime;
+			pItem->m_dateTime = modified;
 //			vecCacheItems.Add(pItem);
 			items.Add(pItem);
 		}
@@ -78,8 +81,8 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 			CFileItemPtr pItem(new CFileItem(strFile));
 			pItem->m_strPath = strRoot + dirEnt->name;
 			pItem->m_bIsFolder = false;
-//			pItem->m_dwSize = iSize;
-//			pItem->m_dateTime = localTime;
+			pItem->m_dwSize = dirEnt->st.smb2_size;
+			pItem->m_dateTime = modified;
 
 //			vecCacheItems.Add(pItem);
 			if(IsAllowed(dirEnt->name))
