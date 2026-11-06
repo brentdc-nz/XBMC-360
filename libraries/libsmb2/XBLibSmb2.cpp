@@ -317,6 +317,15 @@ struct smb2_url* CXBLibSMB2::ParseUrl(const CURL& url)
 	return pUrl;
 }
 
+// The path within the share as SMB names it: empty for the share itself
+// (libsmb2 leaves it NULL) and without the trailing slash a folder URL has
+static CStdString PathInShare(const struct smb2_url* pUrl)
+{
+	CStdString strPath(pUrl->path ? pUrl->path : "");
+	strPath.TrimRight('/');
+	return strPath;
+}
+
 smb2fh* CXBLibSMB2::FileOpen(const CURL& url, UINT64& outFileSize)
 {
 	outFileSize = 0;
@@ -461,7 +470,7 @@ bool CXBLibSMB2::Stat(const CURL& url, struct smb2_stat_64& st)
 		return false;
 
 	// Not logged when it fails: asking whether something exists is often expected to
-	int rc = smb2_stat(m_pLibSMB2Context, pUrl->path, &st);
+	int rc = smb2_stat(m_pLibSMB2Context, PathInShare(pUrl).c_str(), &st);
 	smb2_destroy_url(pUrl);
 
 	return rc == 0;
@@ -477,7 +486,7 @@ bool CXBLibSMB2::Delete(const CURL& url)
 	if(!pUrl)
 		return false;
 
-	int rc = smb2_unlink(m_pLibSMB2Context, pUrl->path);
+	int rc = smb2_unlink(m_pLibSMB2Context, PathInShare(pUrl).c_str());
 	smb2_destroy_url(pUrl);
 
 	if(rc != 0)
@@ -503,7 +512,7 @@ bool CXBLibSMB2::Rename(const CURL& url, const CURL& urlNew)
 		// SMB renames within a share; moving elsewhere is a copy
 		if(CStdString(pUrl->server).CompareNoCase(pUrlNew->server) != 0 || CStdString(pUrl->share).CompareNoCase(pUrlNew->share) != 0)
 			CLog::Log(LOGERROR, "CXBLibSMB2::Rename - Can't rename across shares");
-		else if(smb2_rename(m_pLibSMB2Context, pUrl->path, pUrlNew->path) != 0)
+		else if(smb2_rename(m_pLibSMB2Context, PathInShare(pUrl).c_str(), PathInShare(pUrlNew).c_str()) != 0)
 			CLog::Log(LOGERROR, "CXBLibSMB2::Rename - smb2_rename failed: %s", smb2_get_error(m_pLibSMB2Context));
 		else
 			bRenamed = true;
