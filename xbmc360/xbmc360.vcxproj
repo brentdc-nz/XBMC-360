@@ -137,7 +137,7 @@
       <StackReserveSize>2097152</StackReserveSize>
     </Link>
     <Deploy>
-      <DeploymentType>CopyToHardDrive</DeploymentType>
+      <DeploymentType Condition="'$(RemoteMachine)' != ''">CopyToHardDrive</DeploymentType>
     </Deploy>
     <ImageXex>
       <ConfigurationFile>xex.xml</ConfigurationFile>
@@ -171,7 +171,7 @@
       <AdditionalLibraryDirectories>..\libraries\ffmpeg\vcproj\libavcodec\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libswscale\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libavutil\Xbox 360\Release;..\libraries\ffmpeg\vcproj\libavformat\Xbox 360\Release;..\libraries\ffmpeg\vcproj\pthreads\Release;..\libraries\ffmpeg\vcproj\external\zlib\Xbox 360\Release;..\libraries\freetype\freetype\Release;..\sources\360MilkDrop2\Release;..\sources\PAPlayer\libFlac\Release;..\sources\PAPlayer\libMad\Release;..\libraries\libUPnP\Release_New;..\libraries\libcurl\Release;..\libraries\libsmb2\Release;..\libraries\sqlite3\Release;..\libraries\libiconv\Release;..\libraries\libjpeg\Release;..\libraries\libid3tag\Release;..\libraries\libmicrohttpd\Release;..\libraries\libdvdnav\Release;..\libraries\libdvdread\Release;..\libraries\libPython\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Deploy>
-      <DeploymentType>CopyToHardDrive</DeploymentType>
+      <DeploymentType Condition="'$(RemoteMachine)' != ''">CopyToHardDrive</DeploymentType>
     </Deploy>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='CodeAnalysis|Xbox 360'">
@@ -284,7 +284,7 @@
       <StackReserveSize>2097152</StackReserveSize>
     </Link>
     <Deploy>
-      <DeploymentType>CopyToHardDrive</DeploymentType>
+      <DeploymentType Condition="'$(RemoteMachine)' != ''">CopyToHardDrive</DeploymentType>
     </Deploy>
     <ImageXex>
       <HeapSize>
@@ -643,6 +643,7 @@
     <ClInclude Include="utils\Stdafx.h" />
     <ClInclude Include="utils\StdString.h" />
     <ClInclude Include="utils\Stopwatch.h" />
+    <ClInclude Include="utils\Secrets.h" />
     <ClInclude Include="utils\StringUtils.h" />
     <ClInclude Include="utils\Thread.h" />
     <ClInclude Include="utils\TimeUtils.h" />
@@ -1078,6 +1079,7 @@
     <ClCompile Include="utils\Splash.cpp" />
     <ClCompile Include="utils\Stdafx.cpp" />
     <ClCompile Include="utils\Stopwatch.cpp" />
+    <ClCompile Include="utils\Secrets.cpp" />
     <ClCompile Include="utils\StringUtils.cpp" />
     <ClCompile Include="utils\Thread.cpp" />
     <ClCompile Include="utils\TimeUtils.cpp" />

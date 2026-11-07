@@ -121,6 +121,18 @@ bool CApplication::Create()
 	// Grab a handle to our thread to be used later in identifying the render thread
 	m_threadID = GetCurrentThreadId();
 
+	// Check logpath
+	CStdString strLogFile, strLogFileOld;
+	URIUtils::AddSlashAtEnd(g_settings.m_logFolder);
+	strLogFile.Format("%sxbmc.log", g_settings.m_logFolder);
+	strLogFileOld.Format("%sxbmc.old.log", g_settings.m_logFolder);
+
+	// Rotate the log (xbmc.log -> xbmc.old.log), before anything is logged: the
+	// log keeps its file open once written to, and an open file can't be renamed.
+	// That includes setting special://profile below, which logs where it is
+	::DeleteFile(strLogFileOld.c_str());
+	::MoveFile(strLogFile.c_str(), strLogFileOld.c_str());
+
 	// TODO: Move to it's own function like xbmc4xbox
 	// Map our special:// protocol roots (special://xbmc, special://home,
 	CSpecialProtocol::SetXBMCPath("D:\\");
@@ -128,21 +140,11 @@ bool CApplication::Create()
 	CSpecialProtocol::SetTempPath("D:\\cache");
 	CSpecialProtocol::SetMasterProfilePath(g_settings.GetUserDataFolder());
 	CSpecialProtocol::SetProfilePath(g_settings.GetUserDataFolder());
-	CSpecialProtocol::LogPaths();
-
-	// Check logpath
-	CStdString strLogFile, strLogFileOld;
-	URIUtils::AddSlashAtEnd(g_settings.m_logFolder);
-	strLogFile.Format("%sxbmc.log", g_settings.m_logFolder);
-	strLogFileOld.Format("%sxbmc.old.log", g_settings.m_logFolder);
-
-	// Rotate the log (xbmc.log -> xbmc.old.log)
-	::DeleteFile(strLogFileOld.c_str());
-	::MoveFile(strLogFile.c_str(), strLogFileOld.c_str());
 
 	CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 	CLog::Log(LOGNOTICE, "Starting XBox Media Center 360.  Built on %s", __DATE__);
 	CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
+	CSpecialProtocol::LogPaths();
 
 	CLog::Log(LOGNOTICE, "Setup DirectX");
 
@@ -285,6 +287,9 @@ bool CApplication::Initialize()
 	g_windowManager.Add(new CGUIDialogPictureInfo);			// window id = 139
 	g_windowManager.Add(new CGUIDialogSelect);				// window id = 2000
 	g_windowManager.Add(new CGUIDialogOK);					// window id = 2002
+	// Skin-only dialogs: their buttons call the player's built-in functions
+	g_windowManager.Add(new CGUIDialog(WINDOW_DIALOG_PLAYER_CONTROLS, "PlayerControls.xml")); // window id = 114
+	g_windowManager.Add(new CGUIDialog(WINDOW_DIALOG_MUSIC_OSD, "MusicOSD.xml"));			// window id = 120
 	g_windowManager.Add(new CGUIWindowWeather);				// Window id = 2600 WEATHER
 
 	/* window id's 3000 - 3100 are reserved for python */
@@ -2370,6 +2375,9 @@ void CApplication::CheckScreenSaver()
 	if (IsPlayingAudio() && g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION) // Are we playing some music in fullscreen vis?
 		resetTimer = true;
 
+	if (g_windowManager.IsWindowActive(WINDOW_DIALOG_PROGRESS)) // Is something being done, such as a disc saved or a game copied?
+		resetTimer = true;
+
 	if(resetTimer)
 	{
 		m_screenSaverTimer.StartZero();
@@ -2623,6 +2631,8 @@ void CApplication::Cleanup()
 		g_windowManager.Delete(WINDOW_DIALOG_NUMERIC);
 		g_windowManager.Delete(WINDOW_DIALOG_SELECT);
 		g_windowManager.Delete(WINDOW_DIALOG_OK);
+		g_windowManager.Delete(WINDOW_DIALOG_PLAYER_CONTROLS);
+		g_windowManager.Delete(WINDOW_DIALOG_MUSIC_OSD);
 		g_windowManager.Delete(WINDOW_DIALOG_VIDEO_OSD_SETTINGS);
 		g_windowManager.Delete(WINDOW_DIALOG_AUDIO_OSD_SETTINGS);
 		g_windowManager.Delete(WINDOW_DIALOG_VIDEO_BOOKMARKS);

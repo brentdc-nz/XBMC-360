@@ -56,20 +56,20 @@ void URIUtils::GetExtension(const CStdString& strFile, CStdString& strExtension)
 
 bool URIUtils::IsDOSPath(const CStdString &path)
 {
-	if(path.size() > 1 && path[1] == ':' && isalpha(path[0]))
-		return true;
+	// A drive and then its path: C:\, and the 360's drives, whose names are
+	// longer (Hdd1:\, Usb0:\, Dvd:\, Flash:\, Memunit0:\, game:\...). A URL
+	// has :// after its protocol instead
+	int iColon = path.Find(':');
+	if (iColon < 1 || path.Mid(iColon, 3).Equals("://"))
+		return false;
 
-	// BDC - Xbox 360 is different e.g.
-	//       Need a more elegant to detect
-	std::string strTestPath = path;
-	if (strTestPath.find("Hdd1:") != std::string::npos)
-		return true;
-	else if (strTestPath.find("HddX:") != std::string::npos)
-		return true;
-	else if (strTestPath.find("Flash:") != std::string::npos)
-		return true;
+	for (int i = 0; i < iColon; i++)
+	{
+		if (!isalnum((unsigned char)path[i]))
+			return false;
+	}
 
-	return false;
+	return true;
 }
 
 bool URIUtils::IsURL(const CStdString& strFile)

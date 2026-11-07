@@ -23,9 +23,12 @@
 #include "interfaces\json-rpc\JSONRPC.h"
 #include "filesystem\File.h"
 #include "filesystem\Directory.h"
+#include "filesystem\SpecialProtocol.h"
+#include "Settings.h"
 #include "URL.h"
 #include "utils\Log.h"
 #include "utils\URIUtils.h"
+#include "utils\Util.h"
 #include "utils\Variant.h"
 #include "utils\SingleLock.h"
 #include "XBDateTime.h"
@@ -95,6 +98,43 @@ bool CWebServer::IsAuthenticated(CWebServer *server, struct MHD_Connection *conn
 	return server->m_Credentials64Encoded.Equals(headervalue + strlen(strbase));
 }
 
+// What /vfs hands out: a thumbnail, or a file in a media source. Not the rest of the profile folder (the settings, and
+// sources.xml with the shares' passwords), even where a source is a whole drive, nor a path that climbs out of a source
+static bool CanServe(const CStdString& strPath)
+{
+	if (strPath.Find("..") >= 0)
+		return false;
+
+	CStdString strReal = CSpecialProtocol::TranslatePath(strPath);
+
+	CStdString strThumbs = "D:\\UserData\\Thumbnails\\";
+	if (strReal.Left(strThumbs.size()).Equals(strThumbs))
+		return true;
+
+	// The profile folder by any name: D:\ is wherever XBMC-360 was started from, which a source can also reach by its
+	// drive's own name (Hdd1:\...\UserData\)
+	CStdString strProfile = CSpecialProtocol::TranslatePath("special://profile/");
+	URIUtils::RemoveSlashAtEnd(strProfile);
+	CStdString strProfileName = URIUtils::GetFileName(strProfile);
+	strProfileName.ToLower();
+
+	CStdString strLower = strReal;
+	strLower.ToLower();
+	strLower.Replace('/', '\\');
+	if (strLower.Left(strProfile.size()).Equals(strProfile) || strLower.Find("\\" + strProfileName + "\\") >= 0)
+		return false;
+
+	const char* types[] = { "video", "music", "pictures", "programs" };
+	for (unsigned int i = 0; i < sizeof(types) / sizeof(types[0]); i++)
+	{
+		VECSOURCES* sources = g_settings.GetSourcesFromType(types[i]);
+		bool bIsSourceName = false;
+		if (sources && CUtil::GetMatchingSource(strReal, *sources, bIsSourceName) >= 0 && !bIsSourceName)
+			return true;
+	}
+	return false;
+}
+
 enum MHD_Result CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
 											const char *url, const char *method,
 											const char *version, const char *upload_data,
@@ -120,6 +160,11 @@ enum MHD_Result CWebServer::AnswerToConnection(void *cls, struct MHD_Connection 
 	{
 		strURL = strURL.Right(strURL.length() - 5);
 		CURL::Decode(strURL);
+		if (!CanServe(strURL))
+		{
+			CLog::Log(LOGNOTICE, "WebServer: refused %s, which isn't in a source", CURL(strURL).GetWithoutUserDetails().c_str());
+			return (enum MHD_Result)CreateErrorResponse(connection, MHD_HTTP_FORBIDDEN, methodType);
+		}
 		return (enum MHD_Result)CreateFileDownloadResponse(connection, strURL, methodType);
 	}
 

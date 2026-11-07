@@ -160,10 +160,22 @@ HRESULT CXAudio2::Deinitialize()
 		// FlushSourceBuffers is async on Xbox 360 - callbacks fire on the
 		// audio thread and must finish their free() calls before we
 		// destroy the voice and delete the critical section they use.
+		// But not forever: stopping a video while its sound played could
+		// spin here for good, hanging the console. After half a second the
+		// voice is destroyed anyway; DestroyVoice ends its callbacks, and
+		// the few buffers not ended by then are left
+		DWORD dwStart = GetTickCount();
 		XAUDIO2_VOICE_STATE state;
-		do {
+		for (;;)
+		{
 			m_pSourceVoice->GetState(&state);
-		} while (state.BuffersQueued > 0);
+			if (state.BuffersQueued == 0 || GetTickCount() - dwStart > 500)
+				break;
+			Sleep(1);
+		}
+
+		if (state.BuffersQueued > 0)
+			CLog::Log(LOGWARNING, "XAudio2: %u buffers still queued after half a second, closing anyway", state.BuffersQueued);
 
 		m_pSourceVoice->DestroyVoice();
 	}

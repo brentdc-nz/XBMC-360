@@ -268,10 +268,11 @@ int CZipFile::Stat(const CURL& url, struct __stat64* buffer)
 
 	memset(buffer, 0, sizeof(struct __stat64));
 	buffer->st_gid = 0;
+	buffer->st_mode = _S_IFREG;
 	buffer->st_atime = buffer->st_ctime = mZipItem.mod_time;
 	buffer->st_size = mZipItem.usize;
 
-	return -1;
+	return 0;
 }
 
 unsigned int CZipFile::Read(void* lpBuf, int64_t uiBufSize)

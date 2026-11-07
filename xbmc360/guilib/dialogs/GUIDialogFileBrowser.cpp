@@ -11,9 +11,9 @@
 #include "Application.h"
 //#include "GUIPassword.h" // TODO
 #include "guilib\GUIWindowManager.h"
-//#include "dialogs\GUIDialogOK.h" // TODO
+#include "guilib\dialogs\GUIDialogKeyboard.h"
+#include "guilib\dialogs\GUIDialogOK.h"
 #include "guilib\dialogs\GUIDialogYesNo.h"
-//#include "GUIDialogKeyboard.h" // TODO
 //#include "GUIUserMessages.h" // TODO
 #include "FileSystem\Directory.h"
 #include "FileSystem\File.h"
@@ -181,28 +181,20 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
 			{
 				if (m_browsingForFolders == 2)
 				{
+					// The folder OK chooses can be written to: a file made there, and taken away again
 					CStdString strTest;
-					int iItem = m_viewControl.GetSelectedItem();
-
-					CStdString strPath;
-					
-					if (iItem == 0)
-						strPath = m_selectedPath;
-					else
-						strPath = (*m_vecItems)[iItem]->GetPath();
-
-					URIUtils::AddFileToFolder(strPath,"1",strTest);
+					URIUtils::AddFileToFolder(m_selectedPath, "xbmc360.tmp", strTest);
 					CFile file;
-					
+
 					if (file.OpenForWrite(strTest,true))
 					{
 						file.Close();
-//						CFile::Delete(strTest); // TODO
+						CFile::Delete(strTest);
 						m_bConfirmed = true;
 						Close();
 					}
-//					else // TODO
-//						CGUIDialogOK::ShowAndGetInput(257,20072,0,0); // TODO
+					else
+						CGUIDialogOK::ShowAndGetInput(257,20072,0,0);
 				}
 				else
 				{
@@ -218,17 +210,22 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
 			}
 			else if (message.GetSenderId() == CONTROL_NEWFOLDER)
 			{
+				// A folder in this one, by the name typed, gone into so that OK takes it
 				CStdString strInput;
-//				if (CGUIDialogKeyboard::ShowAndGetInput(strInput,g_localizeStrings.Get(119),false)) // TODO
+				if (CGUIDialogKeyboard::ShowAndGetInput(strInput,g_localizeStrings.Get(119),false) && !strInput.IsEmpty())
 				{
 					CStdString strPath;
-					URIUtils::AddFileToFolder(m_vecItems->GetPath(),strInput,strPath);
+					URIUtils::AddFileToFolder(m_Directory->GetPath(),strInput,strPath);
 
 					if (CDirectory::Create(strPath))
-						Update(m_vecItems->GetPath());
-//					else // TODO
-//						CGUIDialogOK::ShowAndGetInput(20069,20072,20073,0); // TODO
+					{
+						Update(strPath);
+						SET_CONTROL_FOCUS(CONTROL_OK, 0);
+					}
+					else
+						CGUIDialogOK::ShowAndGetInput(20069,20072,20073,0);
 				}
+				return true;
 			}
 			else if (message.GetSenderId() == CONTROL_FLIP)
 				m_bFlip = !m_bFlip;
@@ -468,7 +465,8 @@ void CGUIDialogFileBrowser::FrameMove()
 			CONTROL_ENABLE(CONTROL_OK);
 		}
 		
-		if (m_browsingForFolders == 2)
+		// A new folder goes in the folder that's open: not in the list of places
+		if (m_browsingForFolders == 2 && !m_Directory->IsVirtualDirectoryRoot())
 		{
 			CONTROL_ENABLE(CONTROL_NEWFOLDER);
 		}

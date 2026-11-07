@@ -2,6 +2,7 @@
 #include "utils\stdafx.h"
 #include "utils\Util.h"
 #include "utils\Log.h"
+#include "utils\URIUtils.h"
 #include "FileItem.h"
 
 CStdString URLEncodeInline(const CStdString& strData)
@@ -34,7 +35,7 @@ CURL::CURL(const CStdString& strURL)
 	if(strURL.Equals("?", true)) return;
 
 	// First check if this URL has a protocol ("://"). If not, then it may be
-	// a drive-style path (e.g. "C:\" or "Hdd1:\"). The drive check must happen
+	// a drive-style path (e.g. "C:\", "Hdd1:\" or "Dvd:\"). The drive check must happen
 	// AFTER the "://" check, otherwise 4-letter protocols like "upnp://",
 	// "http://", "rtsp://" would incorrectly match strURL[4] == ':' and be
 	// treated as drive paths — causing the full URL to be stored as a filename
@@ -42,7 +43,7 @@ CURL::CURL(const CStdString& strURL)
 	int iProtoPos = strURL.Find("://");
 	if(iProtoPos < 0)
 	{
-		if(strURL[1] == ':' || strURL[4] == ':')
+		if(URIUtils::IsDOSPath(strURL))
 		{
 			// Form is drive:directoryandfile
 
@@ -691,7 +692,7 @@ bool CURL::IsFullPath(const CStdString &url)
 {
 	if(url.size() && url[0] == '/') return true; // - /foo/bar.ext
 	if(url.Find("://") >= 0) return true; // - foo://bar.ext
-	if(url.size() > 1 && url[1] == ':') return true; // - c:\\foo\\bar\\bar.ext
+	if(URIUtils::IsDOSPath(url)) return true; // - c:\\foo\\bar\\bar.ext, Hdd1:\\foo\\bar.ext
 	
 	return false;
 }

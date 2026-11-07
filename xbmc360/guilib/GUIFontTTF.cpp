@@ -533,7 +533,7 @@ void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, D
 #pragma warning (disable:4244) // Not an issue here
 		float fInputColor[4] = { ((dwColor >> 16) & 0xFF) / 255.0, ((dwColor >> 8) & 0xFF) / 255.0, ((dwColor) & 0xFF) / 255.0, (dwColor >> 24 & 0xFF) / 255.0};
 #pragma warning(pop)
-		m_pD3DDevice->SetPixelShaderConstantF(10, fInputColor, 4);
+		m_pD3DDevice->SetPixelShaderConstantF(10, fInputColor, 1);
 		m_lastColor = dwColor;
 	}
 
