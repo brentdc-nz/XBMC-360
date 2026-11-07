@@ -643,6 +643,7 @@
     <ClInclude Include="utils\Stdafx.h" />
     <ClInclude Include="utils\StdString.h" />
     <ClInclude Include="utils\Stopwatch.h" />
+    <ClInclude Include="utils\Secrets.h" />
     <ClInclude Include="utils\StringUtils.h" />
     <ClInclude Include="utils\Thread.h" />
     <ClInclude Include="utils\TimeUtils.h" />
@@ -1078,6 +1079,7 @@
     <ClCompile Include="utils\Splash.cpp" />
     <ClCompile Include="utils\Stdafx.cpp" />
     <ClCompile Include="utils\Stopwatch.cpp" />
+    <ClCompile Include="utils\Secrets.cpp" />
     <ClCompile Include="utils\StringUtils.cpp" />
     <ClCompile Include="utils\Thread.cpp" />
     <ClCompile Include="utils\TimeUtils.cpp" />

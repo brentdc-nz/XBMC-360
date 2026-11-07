@@ -4,6 +4,7 @@
 #include "SingleLock.h"
 #include "Settings.h"
 #include "utils\URIUtils.h"
+#include "utils\Secrets.h"
 
 FILE*       CLog::m_fd              = NULL;
 int         CLog::m_repeatCount     = 0;
@@ -71,6 +72,9 @@ void CLog::Log(int loglevel, const char *format, ... )
 		va_start(va, format);
 		strData.FormatV(format,va);
 		va_end(va);
+
+		// A share's password or a server's key never goes in the log
+		CSecrets::Hide(strData);
 
 		if(m_repeatLogLevel == loglevel && m_repeatLine == strData)
 		{

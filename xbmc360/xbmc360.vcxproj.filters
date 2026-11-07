@@ -434,6 +434,9 @@
     <ClInclude Include="utils\Stopwatch.h">
       <Filter>Header Files\utils</Filter>
     </ClInclude>
+    <ClInclude Include="utils\Secrets.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
     <ClInclude Include="guilib\windows\GUIWindowScreensaver.h">
       <Filter>Header Files\guilib\windows</Filter>
     </ClInclude>
@@ -1520,6 +1523,9 @@
       <Filter>Source Files\utils</Filter>
     </ClCompile>
     <ClCompile Include="utils\Stopwatch.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\Secrets.cpp">
       <Filter>Source Files\utils</Filter>
     </ClCompile>
     <ClCompile Include="guilib\windows\GUIWindowScreensaver.cpp">
