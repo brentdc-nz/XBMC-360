@@ -108,7 +108,10 @@ bool CXBLibSMB2::OpenDir(const CURL& url)
 	m_pLibSMB2H = smb2_opendir(m_pLibSMB2Context, m_pLibSMB2Url->path);
 
 	if(!m_pLibSMB2H)
+	{
+		CLog::Log(LOGERROR, "smb2_opendir failed. %s", smb2_get_error(m_pLibSMB2Context));
 		return false;
+	}
 	
 	return true;
 }
