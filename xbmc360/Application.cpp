@@ -121,6 +121,18 @@ bool CApplication::Create()
 	// Grab a handle to our thread to be used later in identifying the render thread
 	m_threadID = GetCurrentThreadId();
 
+	// Check logpath
+	CStdString strLogFile, strLogFileOld;
+	URIUtils::AddSlashAtEnd(g_settings.m_logFolder);
+	strLogFile.Format("%sxbmc.log", g_settings.m_logFolder);
+	strLogFileOld.Format("%sxbmc.old.log", g_settings.m_logFolder);
+
+	// Rotate the log (xbmc.log -> xbmc.old.log), before anything is logged: the
+	// log keeps its file open once written to, and an open file can't be renamed.
+	// That includes setting special://profile below, which logs where it is
+	::DeleteFile(strLogFileOld.c_str());
+	::MoveFile(strLogFile.c_str(), strLogFileOld.c_str());
+
 	// TODO: Move to it's own function like xbmc4xbox
 	// Map our special:// protocol roots (special://xbmc, special://home,
 	CSpecialProtocol::SetXBMCPath("D:\\");
@@ -128,21 +140,11 @@ bool CApplication::Create()
 	CSpecialProtocol::SetTempPath("D:\\cache");
 	CSpecialProtocol::SetMasterProfilePath(g_settings.GetUserDataFolder());
 	CSpecialProtocol::SetProfilePath(g_settings.GetUserDataFolder());
-	CSpecialProtocol::LogPaths();
-
-	// Check logpath
-	CStdString strLogFile, strLogFileOld;
-	URIUtils::AddSlashAtEnd(g_settings.m_logFolder);
-	strLogFile.Format("%sxbmc.log", g_settings.m_logFolder);
-	strLogFileOld.Format("%sxbmc.old.log", g_settings.m_logFolder);
-
-	// Rotate the log (xbmc.log -> xbmc.old.log)
-	::DeleteFile(strLogFileOld.c_str());
-	::MoveFile(strLogFile.c_str(), strLogFileOld.c_str());
 
 	CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 	CLog::Log(LOGNOTICE, "Starting XBox Media Center 360.  Built on %s", __DATE__);
 	CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
+	CSpecialProtocol::LogPaths();
 
 	CLog::Log(LOGNOTICE, "Setup DirectX");
 
