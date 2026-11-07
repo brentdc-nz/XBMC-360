@@ -4202,11 +4202,13 @@ msgctxt "#13174"
 msgid "HDD power cycle count:"
 msgstr ""
 
-msgctxt "#13175"
+#empty strings from id 13175 to 13187
+
+msgctxt "#13188"
 msgid "User name: name, DOMAIN\\name or name@domain"
 msgstr ""
 
-#empty strings from id 13176 to 13199
+#empty strings from id 13189 to 13199
 
 msgctxt "#13200"
 msgid "Profiles"
