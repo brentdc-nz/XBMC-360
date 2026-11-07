@@ -27,3 +27,10 @@ int CXBKernalExports::QueryTemps(TEMP_INDEX sTempIndex)
 	
 	return (int)((m_SMCReturn[sTempIndex * 2 + 1] | (m_SMCReturn[sTempIndex * 2 +2] <<8)) / 256.0);
 }
+
+CStdString CXBKernalExports::GetKernelVersion()
+{
+	CStdString version;
+	version.Format("%u.%u.%u.%u", XboxKrnlVersion->Major, XboxKrnlVersion->Minor, XboxKrnlVersion->Build, XboxKrnlVersion->QFE);
+	return version;
+}

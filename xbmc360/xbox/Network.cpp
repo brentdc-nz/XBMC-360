@@ -1,5 +1,6 @@
 #include "Network.h"
 #include "utils\Log.h"
+#include "utils\Thread.h"
 #include "Application.h"
 #include "utils/Weather.h"
 #include "utils/RssReader.h"
@@ -7,12 +8,103 @@
 // Time to wait before we give up on network init
 #define WAIT_TIME 10000
 
+// The Internet check: a well-known name, resolved and connected to. When it doesn't resolve,
+// a well-known address (Google's public DNS, which takes TCP on port 53) tells "no DNS" from "no Internet"
+#define INTERNET_CHECK_HOST    "www.google.com"
+#define INTERNET_CHECK_ADDRESS 0x08080808 // 8.8.8.8
+#define INTERNET_CHECK_EVERY   30000
+#define INTERNET_CHECK_TIMEOUT 10000
+
+// The first address XNet's DNS gives for a name
+static bool ResolveName(const char* name, IN_ADDR& addr)
+{
+	WSAEVENT hEvent = WSACreateEvent();
+	if (hEvent == WSA_INVALID_EVENT)
+		return false;
+
+	bool resolved = false;
+	XNDNS* pDns = NULL;
+	if (XNetDnsLookup(name, hEvent, &pDns) == 0 && pDns)
+	{
+		WaitForSingleObject(hEvent, INTERNET_CHECK_TIMEOUT);
+		if (pDns->iStatus == 0 && pDns->cina > 0)
+		{
+			addr = pDns->aina[0];
+			resolved = true;
+		}
+		XNetDnsRelease(pDns);
+	}
+	WSACloseEvent(hEvent);
+	return resolved;
+}
+
+// Whether a TCP connection to the address opens in time
+static bool CanConnect(const IN_ADDR& addr, u_short port)
+{
+	SOCKET s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	if (s == INVALID_SOCKET)
+		return false;
+
+	// XNet only connects a title to a PC on a socket marked this way (as CCurlFile's sockets)
+	BOOL option = TRUE;
+	setsockopt(s, SOL_SOCKET, 0x5801, (const char*)&option, sizeof(option));
+
+	u_long nonBlocking = 1;
+	ioctlsocket(s, FIONBIO, &nonBlocking);
+
+	SOCKADDR_IN sa;
+	memset(&sa, 0, sizeof(sa));
+	sa.sin_family = AF_INET;
+	sa.sin_port = htons(port);
+	sa.sin_addr = addr;
+	connect(s, (SOCKADDR*)&sa, sizeof(sa));
+
+	fd_set writable, failed;
+	FD_ZERO(&writable);
+	FD_SET(s, &writable);
+	FD_ZERO(&failed);
+	FD_SET(s, &failed);
+	struct timeval timeout = { INTERNET_CHECK_TIMEOUT / 1000, 0 };
+	bool connected = select(0, NULL, &writable, &failed, &timeout) > 0 && FD_ISSET(s, &writable);
+
+	closesocket(s);
+	return connected;
+}
+
+// One Internet check, on a thread of its own (it can take seconds)
+class CInternetCheck : public CThread
+{
+public:
+	CInternetCheck(CNetwork* network) : m_network(network) {}
+
+protected:
+	virtual void Process()
+	{
+		CNetwork::INTERNET_STATE state;
+		IN_ADDR addr;
+
+		if (ResolveName(INTERNET_CHECK_HOST, addr))
+			state = CanConnect(addr, 80) ? CNetwork::INTERNET_CONNECTED : CNetwork::INTERNET_NOT_CONNECTED;
+		else
+		{
+			addr.s_addr = htonl(INTERNET_CHECK_ADDRESS);
+			state = CanConnect(addr, 53) ? CNetwork::INTERNET_NO_DNS : CNetwork::INTERNET_NOT_CONNECTED;
+		}
+		m_network->OnInternetChecked(state);
+	}
+
+	CNetwork* m_network;
+};
+
 CNetwork::CNetwork()
 {
 	m_bInited = false;
 	m_bNetworkUp = false;
 	m_dwLastLink = 0;
 	m_dwLastState = 0;
+	m_internetState = INTERNET_UNKNOWN;
+	m_dwInternetChecked = 0;
+	m_bCheckingInternet = false;
 }
 
 CNetwork::~CNetwork()
@@ -191,6 +283,8 @@ void CNetwork::NetworkDown()
 	m_dwLastLink = 0;
 	m_dwLastState = 0;
 	m_bNetworkUp = false;
+	m_internetState = INTERNET_UNKNOWN;
+	m_dwInternetChecked = 0;
 
 	g_application.getApplicationMessenger().NetworkMessage(SERVICES_DOWN, 0);
 }
@@ -222,7 +316,14 @@ void CNetwork::NetworkUp()
         strcpy(m_networkinfo.ip, szip);
     }
 
-    // TODO - Other network info!
+    sprintf(m_networkinfo.mac, "%02X:%02X:%02X:%02X:%02X:%02X", xnaddr.abEnet[0], xnaddr.abEnet[1],
+        xnaddr.abEnet[2], xnaddr.abEnet[3], xnaddr.abEnet[4], xnaddr.abEnet[5]);
+
+    m_networkinfo.DHCP = (dwState & XNET_GET_XNADDR_DHCP) != 0;
+    m_networkinfo.hasGateway = (dwState & XNET_GET_XNADDR_GATEWAY) != 0;
+    m_networkinfo.hasDNS = (dwState & XNET_GET_XNADDR_DNS) != 0;
+
+    // TODO - The subnet mask and the gateway and DNS addresses (XNet doesn't give them to titles)
 
     // Get the current status 
     /*	TXNetConfigStatus status;
@@ -300,6 +401,9 @@ void CNetwork::LogState()
 	if(!(dwLink & XNET_ETHERNET_LINK_ACTIVE))
 		CLog::Log(LOGINFO, __FUNCTION__" - Link: none");
 
+	if(dwState & XNET_GET_XNADDR_GATEWAY)
+		CLog::Log(LOGINFO, __FUNCTION__" - State: gateway");
+
 	if(dwState & XNET_GET_XNADDR_DNS)
 		CLog::Log(LOGINFO, __FUNCTION__" - State: dns");
 
@@ -327,9 +431,42 @@ void CNetwork::LogState()
 	if(dwState & XNET_GET_XNADDR_DHCP)
 		CLog::Log(LOGINFO, __FUNCTION__" - State: dhcp");
 
+	if(m_bNetworkUp)
+	{
+		CLog::Log(LOGINFO,  "%s - ip: %s", __FUNCTION__, m_networkinfo.ip);
+		CLog::Log(LOGINFO,  "%s - mac: %s", __FUNCTION__, m_networkinfo.mac);
+	}
 	//TODO
-//	CLog::Log(LOGINFO,  "%s - ip: %s", __FUNCTION__, m_networkinfo.ip);
 //	CLog::Log(LOGINFO,  "%s - subnet: %s", __FUNCTION__, m_networkinfo.subnet);
 //	CLog::Log(LOGINFO,  "%s - gateway: %s", __FUNCTION__, m_networkinfo.gateway);
 //	CLog::Log(LOGINFO,  "%s - dns: %s, %s", __FUNCTION__, m_networkinfo.DNS1, m_networkinfo.DNS2);
+}
+
+CNetwork::INTERNET_STATE CNetwork::GetInternetState()
+{
+	CSingleLock lock(m_critSection);
+
+	if (!m_bNetworkUp)
+		return INTERNET_NOT_CONNECTED;
+
+	if (!m_bCheckingInternet && (m_internetState == INTERNET_UNKNOWN || GetTickCount() - m_dwInternetChecked > INTERNET_CHECK_EVERY))
+	{
+		m_bCheckingInternet = true;
+		m_dwInternetChecked = GetTickCount();
+		CInternetCheck* check = new CInternetCheck(this);
+		check->Create(true);
+	}
+	return m_internetState;
+}
+
+void CNetwork::OnInternetChecked(INTERNET_STATE state)
+{
+	CSingleLock lock(m_critSection);
+
+	m_bCheckingInternet = false;
+	if (m_bNetworkUp)
+		m_internetState = state;
+
+	CLog::Log(LOGDEBUG, "%s - Internet: %s", __FUNCTION__, state == INTERNET_CONNECTED ? "connected" :
+		state == INTERNET_NO_DNS ? "connected, no DNS" : "not connected");
 }

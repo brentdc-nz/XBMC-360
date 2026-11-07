@@ -12,6 +12,10 @@ struct network_info
 	char DNS2[32];
 	bool DHCP;
 	char dhcpserver[32];
+	char mac[32];
+	// XNet tells a title whether a gateway and DNS servers are set up, but not their addresses
+	bool hasGateway;
+	bool hasDNS;
 };
 
 class CNetwork
@@ -44,6 +48,19 @@ public:
 	// Callback from application controlled thread to handle any setup
 	void NetworkMessage(EMESSAGE message, DWORD dwParam);
 
+	enum INTERNET_STATE
+	{
+		INTERNET_UNKNOWN,       // Not checked yet
+		INTERNET_CONNECTED,
+		INTERNET_NO_DNS,        // Gets out to the Internet, but names don't resolve
+		INTERNET_NOT_CONNECTED
+	};
+
+	// Whether the Internet can be reached. Asking starts a check in the background
+	// when the last one is older than 30 seconds; until it ends, the last result
+	INTERNET_STATE GetInternetState();
+	void OnInternetChecked(INTERNET_STATE state);
+
 	struct network_info m_networkinfo;
 
 private:
@@ -51,6 +68,10 @@ private:
 	bool m_bNetworkUp; // True if network is available
 	DWORD m_dwLastLink; // Will hold the last link, to notice changes
 	DWORD m_dwLastState;  // Will hold the last state, to notice changes
+
+	INTERNET_STATE m_internetState;
+	DWORD m_dwInternetChecked; // When the last check started
+	bool m_bCheckingInternet;
 
 	void LogState();
 

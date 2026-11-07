@@ -74,6 +74,18 @@ typedef enum _TEMP_INDEX
     BRD
 } TEMP_INDEX;
 
+// The running kernel's version (2.0.17559.0)
+typedef struct _XBOX_KRNL_VERSION
+{
+	WORD Major;
+	WORD Minor;
+	WORD Build;
+	BYTE ApprovalType;
+	BYTE QFE;
+} XBOX_KRNL_VERSION, *PXBOX_KRNL_VERSION;
+
+EXTERN_C PXBOX_KRNL_VERSION XboxKrnlVersion;
+
 extern "C" // Calls to SMC message function in xboxkrnl.lib
 {
 	VOID HalReturnToFirmware(DWORD mode);
@@ -128,6 +140,7 @@ public:
 	static void RebootXbox();
 	static void ShutdownXbox();
 	static int QueryTemps(TEMP_INDEX sTempIndex);
+	static CStdString GetKernelVersion();
 };
 
 #endif //CXBKERNALEXPORTS_H

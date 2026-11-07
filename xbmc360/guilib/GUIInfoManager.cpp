@@ -252,7 +252,19 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 		else if(strTest.Equals("system.fps")) ret = SYSTEM_FPS;
 		else if(strTest.Equals("system.cputemperature")) ret = SYSTEM_CPU_TEMPERATURE;
 		else if(strTest.Equals("system.gputemperature")) ret = SYSTEM_GPU_TEMPERATURE;
+		else if(strTest.Equals("system.memorytemperature")) ret = SYSTEM_MEMORY_TEMPERATURE;
+		else if(strTest.Equals("system.boardtemperature")) ret = SYSTEM_BOARD_TEMPERATURE;
 		else if(strTest.Equals("system.memory(free)") || strTest.Equals("system.freememory")) ret = SYSTEM_FREE_MEMORY;
+		else if(strTest.Equals("system.memory(free.percent)") || strTest.Equals("system.freememorypercent")) ret = SYSTEM_FREE_MEMORY_PERCENT;
+		else if(strTest.Equals("system.memory(used)") || strTest.Equals("system.usedmemory")) ret = SYSTEM_USED_MEMORY;
+		else if(strTest.Equals("system.memory(used.percent)") || strTest.Equals("system.usedmemorypercent")) ret = SYSTEM_USED_MEMORY_PERCENT;
+		else if(strTest.Equals("system.memory(total)") || strTest.Equals("system.totalmemory")) ret = SYSTEM_TOTAL_MEMORY;
+		else if(strTest.Equals("system.uptime")) ret = SYSTEM_UPTIME;
+		else if(strTest.Equals("system.totaluptime")) ret = SYSTEM_TOTALUPTIME;
+		else if(strTest.Equals("system.builddate")) ret = SYSTEM_BUILD_DATE;
+		else if(strTest.Equals("system.kernelversion")) ret = SYSTEM_KERNEL_VERSION;
+		else if(strTest.Equals("system.screenresolution")) ret = SYSTEM_SCREEN_RESOLUTION;
+		else if(strTest.Equals("system.videoregion")) ret = SYSTEM_VIDEO_REGION;
 		else if (strTest.Equals("system.progressbar")) ret = SYSTEM_PROGRESS_BAR;
 		else if (strTest.Equals("system.haslocks")) ret = SYSTEM_HASLOCKS;
 		else if (strTest.Equals("system.hasloginscreen")) ret = SYSTEM_HAS_LOGINSCREEN;
@@ -261,6 +273,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 		else if (strTest.Equals("system.profilename")) ret = SYSTEM_PROFILENAME;
 		else if (strTest.Equals("system.profilethumb")) ret = SYSTEM_PROFILETHUMB;
 		else if (strTest.Equals("system.alarmpos")) ret = SYSTEM_ALARM_POS;
+		else if (strTest.Equals("system.internetstate")) ret = SYSTEM_INTERNET_STATE;
 		else if (strTest.Left(16).Equals("system.hasalarm("))
 			return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_HAS_ALARM : SYSTEM_HAS_ALARM, ConditionalStringParameter(strTest.Mid(16, strTest.size() - 17)), 0));
 		else if (strTest.Left(15).Equals("system.getbool("))
@@ -946,6 +959,24 @@ TIME_FORMAT CGUIInfoManager::TranslateTimeFormat(const CStdString &format)
 	return TIME_FORMAT_GUESS;
 }
 
+// Minutes as "2 Days, 3 Hours, 14 Minutes", leaving out the units it hasn't reached
+static CStdString GetUptime(int minutes)
+{
+	int days = minutes / (60 * 24);
+	int hours = (minutes / 60) % 24;
+	minutes %= 60;
+
+	CStdString uptime;
+	if (days > 0)
+		uptime.Format("%i %s, %i %s, %i %s", days, g_localizeStrings.Get(12393).c_str(), hours, g_localizeStrings.Get(12392).c_str(),
+			minutes, g_localizeStrings.Get(12391).c_str());
+	else if (hours > 0)
+		uptime.Format("%i %s, %i %s", hours, g_localizeStrings.Get(12392).c_str(), minutes, g_localizeStrings.Get(12391).c_str());
+	else
+		uptime.Format("%i %s", minutes, g_localizeStrings.Get(12391).c_str());
+	return uptime;
+}
+
 CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
 {
 	CStdString strLabel;
@@ -1002,13 +1033,83 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
 			break;
 		case SYSTEM_CPU_TEMPERATURE:
 		case SYSTEM_GPU_TEMPERATURE:
+		case SYSTEM_MEMORY_TEMPERATURE:
+		case SYSTEM_BOARD_TEMPERATURE:
 			return GetSystemHeatInfo(info);
 			break;
 		case SYSTEM_FREE_MEMORY:
+		case SYSTEM_FREE_MEMORY_PERCENT:
+		case SYSTEM_USED_MEMORY:
+		case SYSTEM_USED_MEMORY_PERCENT:
+		case SYSTEM_TOTAL_MEMORY:
 		{
 			MEMORYSTATUS stat;
 			GlobalMemoryStatus(&stat);
-			strLabel.Format("%iMB", stat.dwAvailPhys /MB);
+			int iMemPercentUsed = (int)(100.0f * (stat.dwTotalPhys - stat.dwAvailPhys) / stat.dwTotalPhys + 0.5f);
+
+			if (info == SYSTEM_FREE_MEMORY)
+				strLabel.Format("%iMB", stat.dwAvailPhys / MB);
+			else if (info == SYSTEM_FREE_MEMORY_PERCENT)
+				strLabel.Format("%i%%", 100 - iMemPercentUsed);
+			else if (info == SYSTEM_USED_MEMORY)
+				strLabel.Format("%iMB", (stat.dwTotalPhys - stat.dwAvailPhys) / MB);
+			else if (info == SYSTEM_USED_MEMORY_PERCENT)
+				strLabel.Format("%i%%", iMemPercentUsed);
+			else
+				strLabel.Format("%iMB", stat.dwTotalPhys / MB);
+		}
+		break;
+		case SYSTEM_UPTIME:
+			// Since the console started
+			strLabel = GetUptime(GetTickCount() / 60000);
+			break;
+		case SYSTEM_TOTALUPTIME:
+			// All the time this has run, this time included
+			strLabel = GetUptime(g_settings.m_iSystemTimeTotalUp + (int)(CTimeUtils::GetFrameTime() / 60000));
+			break;
+		case SYSTEM_BUILD_DATE:
+			strLabel = __DATE__;
+			break;
+		case SYSTEM_KERNEL_VERSION:
+			strLabel = "Xbox 360 " + CXBKernalExports::GetKernelVersion();
+			break;
+		case SYSTEM_SCREEN_RESOLUTION:
+		{
+			XVIDEO_MODE mode;
+			XGetVideoMode(&mode);
+			strLabel.Format("%ux%u%s, %.0f Hz", mode.dwDisplayWidth, mode.dwDisplayHeight, mode.fIsInterlaced ? "i" : "",
+				mode.RefreshRate);
+			if (mode.fIsWideScreen)
+				strLabel += ", 16:9";
+			else
+				strLabel += ", 4:3";
+		}
+		break;
+		case SYSTEM_VIDEO_REGION:
+		{
+			XVIDEO_MODE mode;
+			XGetVideoMode(&mode);
+			switch (mode.VideoStandard)
+			{
+				case XC_VIDEO_STANDARD_NTSC_M: strLabel = "NTSC-M"; break;
+				case XC_VIDEO_STANDARD_NTSC_J: strLabel = "NTSC-J"; break;
+				case XC_VIDEO_STANDARD_PAL_I: strLabel = "PAL-I"; break;
+				default: strLabel = g_localizeStrings.Get(13205); break; // Unknown
+			}
+
+			DWORD region = XGetGameRegion();
+			if (region == XC_GAME_REGION_MANUFACTURING)
+				strLabel += ", Manufacturing";
+			else if (region == XC_GAME_REGION_UNRESTRICTED)
+				strLabel += ", Region free";
+			else switch (XC_GAME_REGION_REGION(region))
+			{
+				case XC_CONSOLE_REGION_NA: strLabel += ", North America"; break;
+				case XC_CONSOLE_REGION_ASIA: strLabel += region == XC_GAME_REGION_ASIA_JAPAN ? ", Japan" : ", Asia"; break;
+				case XC_CONSOLE_REGION_EUROPE: strLabel += region == XC_GAME_REGION_EUROPE_AUNZ ? ", Australia/NZ" : ", Europe"; break;
+				case XC_CONSOLE_REGION_RESTOFWORLD: strLabel += ", Rest of world"; break;
+				case XC_CONSOLE_REGION_DEVKIT: strLabel += ", Devkit"; break;
+			}
 		}
 		break;
 		case SYSTEM_PROGRESS_BAR:
@@ -1057,6 +1158,26 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
 			return g_application.getNetwork().m_networkinfo.ip;
 		}
 		break;
+		case NETWORK_MAC_ADDRESS:
+		{
+			return g_application.getNetwork().m_networkinfo.mac;
+		}
+		break;
+		case SYSTEM_INTERNET_STATE:
+		{
+			switch (g_application.getNetwork().GetInternetState())
+			{
+				case CNetwork::INTERNET_CONNECTED:
+					return g_localizeStrings.Get(13296); // Connected
+				case CNetwork::INTERNET_NO_DNS:
+					return g_localizeStrings.Get(13274); // Connected, but no DNS is available
+				case CNetwork::INTERNET_NOT_CONNECTED:
+					return g_localizeStrings.Get(13297); // Not connected
+				default:
+					return g_localizeStrings.Get(13176); // Checking...
+			}
+		}
+		break;
 		case NETWORK_SUBNET_ADDRESS:
 		{
 			return g_application.getNetwork().m_networkinfo.subnet;
@@ -1064,12 +1185,19 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
 		break;
 		case NETWORK_GATEWAY_ADDRESS:
 		{
-			return g_application.getNetwork().m_networkinfo.gateway;
+			// No address from XNet: whether there's one
+			const network_info &info = g_application.getNetwork().m_networkinfo;
+			if (info.gateway[0])
+				return info.gateway;
+			return g_localizeStrings.Get(info.hasGateway ? 13175 : 231); // Set up, None
 		}
 		break;
 		case NETWORK_DNS1_ADDRESS:
 		{
-			return g_application.getNetwork().m_networkinfo.DNS1;
+			const network_info &info = g_application.getNetwork().m_networkinfo;
+			if (info.DNS1[0])
+				return info.DNS1;
+			return g_localizeStrings.Get(info.hasDNS ? 13175 : 231); // Set up, None
 		}
 		break;
 		case NETWORK_DNS2_ADDRESS:
@@ -1587,6 +1715,15 @@ int CGUIInfoManager::GetInt(int info, int contextWindow) const
 			CGUIDialogProgress *bar = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 			if (bar && bar->IsDialogRunning())
 				return bar->GetPercentage();
+		}
+		break;
+		case SYSTEM_FREE_MEMORY:
+		case SYSTEM_USED_MEMORY:
+		{
+			MEMORYSTATUS stat;
+			GlobalMemoryStatus(&stat);
+			int memPercentUsed = (int)(100.0f * (stat.dwTotalPhys - stat.dwAvailPhys) / stat.dwTotalPhys + 0.5f);
+			return info == SYSTEM_FREE_MEMORY ? 100 - memPercentUsed : memPercentUsed;
 		}
 	}
 	return 0; // Not found
@@ -2313,6 +2450,12 @@ CStdString CGUIInfoManager::GetSystemHeatInfo(int info)
 				strTemp.Format("%3.0i%cF", (9.0f/5.0f) * CXBKernalExports::QueryTemps(GPU) + 32.0f);
 			 else
 				strTemp.Format("%2.0i%cC", CXBKernalExports::QueryTemps(GPU), 176);
+			break;
+		case SYSTEM_MEMORY_TEMPERATURE:
+			strTemp.Format("%2.0i%cC", CXBKernalExports::QueryTemps(MEM), 176);
+			break;
+		case SYSTEM_BOARD_TEMPERATURE:
+			strTemp.Format("%2.0i%cC", CXBKernalExports::QueryTemps(BRD), 176);
 			break;
 	}
 	return strTemp;
