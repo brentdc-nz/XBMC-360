@@ -218,7 +218,8 @@ void CGUIDialogNetworkSetup::UpdateButtons()
 	// Username
 	SET_CONTROL_LABEL2(CONTROL_USERNAME, m_username);
 //	CONTROL_ENABLE_ON_CONDITION(CONTROL_USERNAME, m_protocol != NET_PROTOCOL_DAAP && m_protocol != NET_PROTOCOL_UPNP); // TODO
-	SendMessage(GUI_MSG_SET_TYPE, CONTROL_USERNAME, CGUIEditControl::INPUT_TYPE_TEXT, 1019);
+	// A share's keyboard says how a domain account is written
+	SendMessage(GUI_MSG_SET_TYPE, CONTROL_USERNAME, CGUIEditControl::INPUT_TYPE_TEXT, m_protocol == NET_PROTOCOL_SMB ? 13188 : 1019);
 
 	// Port
 	SET_CONTROL_LABEL2(CONTROL_PORT_NUMBER, m_port);

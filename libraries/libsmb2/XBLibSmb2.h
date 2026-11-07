@@ -35,9 +35,19 @@ public:
 	__int64 FileSeek(smb2fh* fh, __int64 iFilePosition, int iWhence);
 	__int64 FileGetPosition(smb2fh* fh);
 	void FileClose(smb2fh* fh);
+	smb2fh* FileOpenForWrite(const CURL& url, bool bOverWrite, UINT64& outFileSize);
+	int FileWrite(smb2fh* fh, const void* lpBuf, __int64 uiBufSize);
+
+	// Operations on a path in the share the URL names
+	bool Stat(const CURL& url, struct smb2_stat_64& st);
+	bool Delete(const CURL& url);
+	bool Rename(const CURL& url, const CURL& urlNew);
+	bool CreateDir(const CURL& url);
+	bool RemoveDir(const CURL& url);
 
 private:
 	bool EnsureConnection(const CURL& url);
+	struct smb2_url* ParseUrl(const CURL& url);
 	bool IsConnectedToShare(const char* server, const char* share);
 	
 	struct smb2_context*	m_pLibSMB2Context;

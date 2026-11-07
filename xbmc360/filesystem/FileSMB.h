@@ -28,7 +28,9 @@ public:
 	virtual int Write(const void* lpBuf, __int64 uiBufSize);
 	virtual __int64 Seek(__int64 iFilePosition, int iWhence = SEEK_SET);
 	virtual int Stat(const CURL& url, struct __stat64* buffer);
-	static bool Exists(const CStdString& strPath);
+	virtual bool Exists(const CURL& url);
+	virtual bool Delete(const CURL& url);
+	virtual bool Rename(const CURL& url, const CURL& urlnew);
 
 protected:
 	struct smb2fh*	m_pFileHandle;
